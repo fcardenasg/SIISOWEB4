@@ -3,31 +3,20 @@ import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
-    Typography,
+    useMediaQuery
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 
 import InputDatePicker from 'components/input/InputDatePicker';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import DetailedIcon from 'components/controllers/DetailedIcon';
-import { FormatDate } from 'components/helpers/Format'
+import { FormatDate } from 'components/helpers/Format';
 import InputText from 'components/input/InputText';
-import { SNACKBAR_OPEN } from 'store/actions';
+
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
@@ -42,13 +31,8 @@ import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 
-const DetailIcons = [
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-]
-
 const Cytologia = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -56,9 +40,7 @@ const Cytologia = () => {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
-    const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
-    const [openTemplate, setOpenTemplate] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
 
     const [lsEmployee, setLsEmployee] = useState([]);
@@ -68,9 +50,7 @@ const Cytologia = () => {
     const [lsConclusion, setLsConclusion] = useState([]);
     const [lsConducta, setLsConducta] = useState([]);
 
-
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
     const { handleSubmit, errors, reset } = methods;
 
     const allowedFiles = ['application/pdf'];
@@ -92,9 +72,6 @@ const Cytologia = () => {
             }
         }
     }
-
-
-
 
     const handleDocumento = async (event) => {
         try {
@@ -120,8 +97,6 @@ const Cytologia = () => {
 
     async function GetAll() {
         try {
-
-
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -149,8 +124,7 @@ const Cytologia = () => {
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
-        } catch (error) {
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -159,6 +133,8 @@ const Cytologia = () => {
 
     const handleClick = async (datos) => {
         try {
+            var savePdf = filePdf === null ? "" : filePdf;
+
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_CITOLOGIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
@@ -170,29 +146,21 @@ const Cytologia = () => {
                 false, false, false, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
-                DefaultValue.SINREGISTRO_GLOBAL, false, '', filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
-
+                DefaultValue.SINREGISTRO_GLOBAL, false, '', savePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
-                if (filePdf) {
-                    const result = await InsertParaclinics(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                        setDocumento('');
-                        setLsEmployee([]);
-                        reset();
-                        setFilePdf(null);
-                        setButtonReport(true);
-                    }
-
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Por favor ingresar el Nro. de Documento');
+                const result = await InsertParaclinics(DataToInsert);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                    setDocumento('');
+                    setLsEmployee([]);
+                    reset();
+                    setFilePdf(null);
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -210,7 +178,6 @@ const Cytologia = () => {
                 >
                     <ControllerListen />
                 </ControlModal>
-
 
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -241,7 +208,6 @@ const Cytologia = () => {
                                         <InputSelect
                                             name="idMotivo"
                                             label="Motivo"
-                                            defaultValue=""
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -254,7 +220,6 @@ const Cytologia = () => {
                                         <InputSelect
                                             name="idConductaClasificacion"
                                             label="Conducta"
-                                            defaultValue=""
                                             options={lsConducta}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -267,7 +232,6 @@ const Cytologia = () => {
                                         <InputSelect
                                             name="idConclusion"
                                             label="Conclusión"
-                                            defaultValue=""
                                             options={lsConclusion}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -280,7 +244,6 @@ const Cytologia = () => {
                                         <InputSelect
                                             name="idProveedor"
                                             label="Proveedor"
-                                            defaultValue=""
                                             options={lsProveedor}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -297,7 +260,6 @@ const Cytologia = () => {
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacion"
                                             label="Observaciones"
@@ -308,21 +270,10 @@ const Cytologia = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-
-                                </Grid>
-
                             </Grid>
+
                             <Grid item xs={12} sx={{ pt: 2 }}>
                                 <MainCard title="Resultados">
-
                                     <Grid container spacing={12}>
                                         <Grid textAlign="center" item xs={12}>
                                             <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
@@ -342,7 +293,6 @@ const Cytologia = () => {
                                             />
                                         )}
                                     </Grid>
-
                                 </MainCard>
                             </Grid>
 
@@ -356,8 +306,6 @@ const Cytologia = () => {
                                         </AnimateButton>
                                     </Grid>
 
-
-
                                     <Grid item xs={6}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/cytology/list")}>
@@ -369,11 +317,6 @@ const Cytologia = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
-
-
-
-
-
                 </Grid>
             </Fragment>
         </MainCard>

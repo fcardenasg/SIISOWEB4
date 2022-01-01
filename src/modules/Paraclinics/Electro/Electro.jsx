@@ -9,14 +9,12 @@ import {
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 
 import InputDatePicker from 'components/input/InputDatePicker';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -33,10 +31,6 @@ import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 
-const DetailIcons = [
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-]
-
 const Electro = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -47,7 +41,6 @@ const Electro = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
     const [open, setOpen] = useState(false);
-    const [openTemplate, setOpenTemplate] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
 
     const [lsEmployee, setLsEmployee] = useState([]);
@@ -56,7 +49,6 @@ const Electro = () => {
     const [lsProveedor, setLsProveedor] = useState([]);
     const [lsConclusion, setLsConclusion] = useState([]);
     const [lsConducta, setLsConducta] = useState([]);
-
 
     const methods = useForm();
     const { handleSubmit, errors, reset } = methods;
@@ -141,6 +133,8 @@ const Electro = () => {
 
     const handleClick = async (datos) => {
         try {
+            var savePdf = filePdf === null ? "" : filePdf;
+
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_ELECTRO, documento,
                 FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
@@ -151,29 +145,24 @@ const Electro = () => {
                 '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
                 false, false, false, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,'',
-                DefaultValue.SINREGISTRO_GLOBAL, false, '', filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
+                DefaultValue.SINREGISTRO_GLOBAL, false, '', savePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
 
             if (Object.keys(datos.length !== 0)) {
-                if (filePdf) {
-                    const result = await InsertParaclinics(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                        setDocumento('');
-                        setLsEmployee([]);
-                        reset();
-                        setFilePdf(null);
-                    }
 
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Por favor ingresar el Nro. de Documento');
+                const result = await InsertParaclinics(DataToInsert);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                    setDocumento('');
+                    setLsEmployee([]);
+                    reset();
+                    setFilePdf(null);
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -191,7 +180,6 @@ const Electro = () => {
                 >
                     <ControllerListen />
                 </ControlModal>
-
 
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -289,19 +277,9 @@ const Electro = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-                                </Grid>
-
                             </Grid>
                             <Grid item xs={12} sx={{ pt: 2 }}>
                                 <MainCard title="Resultados">
-
                                     <Grid container spacing={12}>
                                         <Grid textAlign="center" item xs={12}>
                                             <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
@@ -321,13 +299,12 @@ const Electro = () => {
                                             />
                                         )}
                                     </Grid>
-
                                 </MainCard>
                             </Grid>
 
                             <Grid item xs={12} sx={{ pt: 4 }}>
                                 <Grid container spacing={2} >
-                                    <Grid item xs={6}>
+                                    <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                                 {TitleButton.Guardar}
@@ -335,7 +312,7 @@ const Electro = () => {
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={6}>
+                                    <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/electro/list")}>
                                                 {TitleButton.Cancelar}

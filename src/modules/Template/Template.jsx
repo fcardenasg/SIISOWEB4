@@ -26,7 +26,7 @@ import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enum
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
-import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import InputOnChange from 'components/input/InputOnChange';
 import ViewPDF from 'components/components/ViewPDF';
 
@@ -102,6 +102,7 @@ const Template = () => {
                     setOpenSuccess(true);
                     setTextDx1('');
                     setLsDx1([]);
+                    setArchivoPdf(null);
                     reset();
                 }
             }
@@ -113,7 +114,6 @@ const Template = () => {
 
     const allowedFiles = ['application/pdf'];
     const handleFile = async (event) => {
-
 
         let selectedFile = event.target.files[0];
 

@@ -10,16 +10,13 @@ import {
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import InputCheckBox from 'components/input/InputCheckBox';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import InputDatePicker from 'components/input/InputDatePicker';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
 
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -37,31 +34,22 @@ import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import InputOnChange from 'components/input/InputOnChange';
 
-
-const DetailIcons = [
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-]
-
 const Audiometry = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
-    const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
-    const [openTemplate, setOpenTemplate] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [documento, setDocumento] = useState('');
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
-
-    const [lsInterpretacion, setLsInterpretacion] = useState([]);
+    const [lsEmpresaParacli, setLsEmpresaParacli] = useState([]);
 
     const [lsCargo, setLsCargo] = useState([]);
     const [lsProteccionAuditiva, setLsProteccionAuditiva] = useState([]);
@@ -75,7 +63,7 @@ const Audiometry = () => {
     const [lsDx1, setLsDx1] = useState([]);
 
     const methods = useForm();
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, reset } = methods;
 
     const handleDx1 = async (event) => {
         try {
@@ -147,19 +135,19 @@ const Audiometry = () => {
 
     async function getAll() {
         try {
+            const lsServerEmpresas = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Empresas_Paraclinicos);
+            var resultEmpresas = lsServerEmpresas.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsEmpresaParacli(resultEmpresas);
+
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsMotivo(resultMotivo);
-
-            const lsServerInterpretacion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_Interpretacion);
-            var resultInterpretacion = lsServerInterpretacion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsInterpretacion(resultInterpretacion);
 
             const lsServerCargo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RosterPosition);
             var resultCargo = lsServerCargo.data.entities.map((item) => ({
@@ -218,6 +206,8 @@ const Audiometry = () => {
 
     const handleClick = async (datos) => {
         try {
+            var savePdf = filePdf === null ? "" : filePdf;
+
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_AUDIOMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 datos.idProveedor, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL,
@@ -232,30 +222,22 @@ const Audiometry = () => {
                 datos.observacionAOP, datos.idEmpresaAO, datos.idCargoAO, datos.tiempoExpoAO, datos.idProteccionAuditivaAO,
                 datos.idSuministradaPorAO, datos.idUsoA, datos.idOdcaeAUDIO, datos.idOdmtAUDIO, datos.idOicaeAUDIO, datos.idOimtAUDIO,
                 datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
-                filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                savePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            
 
             if (Object.keys(datos.length !== 0)) {
-                if (filePdf) {
-                    const result = await InsertParaclinics(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                        setDocumento('');
-                        setLsEmployee([]);
-                        reset();
-                        setFilePdf(null);
-                        setButtonReport(true);
-                    }
-
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Por favor ingresar el Nro. de Documento');
+                const result = await InsertParaclinics(DataToInsert);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                    setDocumento('');
+                    setLsEmployee([]);
+                    reset();
+                    setFilePdf(null);
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -273,7 +255,6 @@ const Audiometry = () => {
                 >
                     <ControllerListen />
                 </ControlModal>
-
 
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -304,10 +285,8 @@ const Audiometry = () => {
                                         <InputSelect
                                             name="idMotivo"
                                             label="Motivo"
-                                            defaultValue=""
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -317,16 +296,11 @@ const Audiometry = () => {
                                         <InputSelect
                                             name="idProveedor"
                                             label="Proveedor"
-                                            defaultValue=""
                                             options={lsProveedor}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
-
-
-
                             </Grid>
                         </SubCard>
                     </Grid>
@@ -335,10 +309,7 @@ const Audiometry = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OTOLÓGICOS Y PERSONALES</Typography>}>
                             <Grid container spacing={2}>
-
-
-
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Otalgia"
@@ -349,9 +320,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-
-
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Otorrea"
@@ -362,8 +331,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Otitis"
@@ -375,7 +343,7 @@ const Audiometry = () => {
                                 </Grid>
 
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Acufenos"
@@ -386,7 +354,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Cirugía de Oídos"
@@ -397,7 +365,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Vértigo"
@@ -408,7 +376,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Farmacológicos"
@@ -419,7 +387,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Prurito"
@@ -430,7 +398,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Familiares"
@@ -441,7 +409,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Parálisis Facial"
@@ -452,7 +420,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="H.T.A."
@@ -463,7 +431,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Hipoacusia"
@@ -474,7 +442,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Diabetes"
@@ -485,7 +453,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Exp. A Ruido No Ind."
@@ -496,7 +464,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={6}>
+                                <Grid item xs={12} md={6} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Antecedentes Traumáticos"
@@ -507,192 +475,142 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-
-
-
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacionAOP"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
                                             rows={6}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-
-                                </Grid>
-
-
                             </Grid>
                         </SubCard>
                     </Grid>
-
 
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OCUPACIONALES</Typography>}>
                             <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
+                                        <InputSelect
                                             name="idEmpresaAO"
                                             label="Empresa"
+                                            options={lsEmpresaParacli}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-
-
-                                <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idCargoAO"
                                             label="Cargo"
-                                            defaultValue=""
                                             options={lsCargo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="tiempoExpoAO"
                                             label="Tiempo Exp."
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-
-                                <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idProteccionAuditivaAO"
                                             label="Protección Auditiva"
-                                            defaultValue=""
                                             options={lsProteccionAuditiva}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idSuministradaPorAO"
                                             label="Suministrada Por"
-                                            defaultValue=""
                                             options={lsSuministradopor}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idUsoA"
                                             label="Uso"
-                                            defaultValue=""
                                             options={lsUso}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
-
-
                             </Grid>
                         </SubCard>
                     </Grid>
 
-
-
-
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">AUDIOGRAMA</Typography>}>
                             <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idOdcaeAUDIO"
                                             label="OD CAE"
-                                            defaultValue=""
                                             options={lsAudiograma}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-
-
-                                <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idOdmtAUDIO"
                                             label="OD MT"
-                                            defaultValue=""
                                             options={lsAudiograma}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idOicaeAUDIO"
                                             label="OI CAE"
-                                            defaultValue=""
                                             options={lsAudiograma}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idOimtAUDIO"
                                             label="OI MT"
-                                            defaultValue=""
                                             options={lsAudiograma}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={8}>
+                                <Grid item xs={12} md={6} lg={8}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Reposo Auditivo"
@@ -703,7 +621,7 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <InputOnChange
                                         label="Dx "
                                         onKeyDown={handleDx1}
@@ -712,32 +630,29 @@ const Audiometry = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={1} lg={6}>
+                                <Grid item xs={12} md={6} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="dxAUDIO"
                                             label="Dx"
-                                            defaultValue=""
                                             options={lsDx1}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idConductaAUDIO"
                                             label="Conducta"
-                                            defaultValue=""
                                             options={lsConducta}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Cambio EPP"
@@ -751,24 +666,14 @@ const Audiometry = () => {
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacionAUDIO"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
                                             rows={6}
-                                            bug={errors}
                                         />
                                     </FormProvider>
-                                </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
                                 </Grid>
                             </Grid>
                         </SubCard>
@@ -804,7 +709,7 @@ const Audiometry = () => {
 
                             <Grid item xs={12} sx={{ pt: 4 }}>
                                 <Grid container spacing={2} >
-                                    <Grid item xs={6}>
+                                    <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                                 {TitleButton.Guardar}
@@ -812,7 +717,7 @@ const Audiometry = () => {
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={6}>
+                                    <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/audiometry/list")}>
                                                 {TitleButton.Cancelar}

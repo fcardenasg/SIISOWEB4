@@ -242,7 +242,7 @@ const UpdateVisiometrics = () => {
                 setLsDx3(lsdxDiagnostico);
 
 
-                
+
 
                 setDocumento(serverData.data.documento);
                 setLsVisiometrics(serverData.data);
@@ -258,7 +258,7 @@ const UpdateVisiometrics = () => {
             }));
             setLsMotivo(resultMotivo);
 
-       
+
 
 
             const lsServerLectura = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_LECTURAADD);
@@ -297,19 +297,21 @@ const UpdateVisiometrics = () => {
 
     const handleClick = async (datos) => {
         try {
+            var savePdf = filePdf === null ? "" : filePdf;
+
             const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_VISIOMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, datos.DxDerecho, datos.ojoIzquierdo, datos.DxIzquierdo, datos.add1,
-             datos.idLecturaAdd, datos.idControl, datos.remitidoOftalmo,
-                datos.requiereLentes,datos.DxDiagnostico, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBA, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
+                datos.idLecturaAdd, datos.idControl, datos.remitidoOftalmo,
+                datos.requiereLentes, datos.DxDiagnostico, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBA, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
                 false, false, false, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,'',
-                DefaultValue.SINREGISTRO_GLOBAL, false, '', filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
+                DefaultValue.SINREGISTRO_GLOBAL, false, '', savePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
 
@@ -323,7 +325,7 @@ const UpdateVisiometrics = () => {
 
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 

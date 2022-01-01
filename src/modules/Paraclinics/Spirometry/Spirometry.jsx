@@ -7,28 +7,16 @@ import {
     Typography,
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import InputCheckBox from 'components/input/InputCheckBox';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import InputDatePicker from 'components/input/InputDatePicker';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
-import { SNACKBAR_OPEN } from 'store/actions';
+
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
@@ -43,31 +31,17 @@ import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 
-import InputMultiSelects from 'components/input/InputMultiSelects';
-
-
-const DetailIcons = [
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-]
-
 const Spirometry = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
-    const [diagnosticoArray1, setDiagnosticoArray1] = useState([]);
-    const [diagnosticoArray2, setDiagnosticoArray2] = useState([]);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
-    const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
-    const [openTemplate, setOpenTemplate] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [documento, setDocumento] = useState('');
     const [lsMotivo, setLsMotivo] = useState([]);
@@ -75,13 +49,7 @@ const Spirometry = () => {
     const [lsTipoEPP, setLsTipoEPP] = useState([]);
     const [lsResultado, setLsResultado] = useState([]);
 
-    const [lsConclusion, setLsConclusion] = useState([]);
-    const [lsLectura, setLsLectura] = useState([]);
-    const [lsConducta, setLsConducta] = useState([]);
-    const [lsControl, setLsControl] = useState([]);
-
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
     const { handleSubmit, errors, reset } = methods;
 
     const allowedFiles = ['application/pdf'];
@@ -103,9 +71,6 @@ const Spirometry = () => {
             }
         }
     }
-
-
-
 
     const handleDocumento = async (event) => {
         try {
@@ -131,29 +96,12 @@ const Spirometry = () => {
 
     async function GetAll() {
         try {
-
-          
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsMotivo(resultMotivo);
-
-            const lsServerConducta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
-            var resultConducta = lsServerConducta.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConducta(resultConducta);
-
-            const lsServerConclusion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
-            var resultConclusion = lsServerConclusion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConclusion(resultConclusion);
-
 
             const lsServerTipoEPP = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_TIPOEPP);
             var resultTipoEPP = lsServerTipoEPP.data.entities.map((item) => ({
@@ -162,8 +110,6 @@ const Spirometry = () => {
             }));
             setLsTipoEPP(resultTipoEPP);
 
-       
-
             const lsServerResultado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_RESULTADO);
             var resultResultado = lsServerResultado.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -171,22 +117,13 @@ const Spirometry = () => {
             }));
             setLsResultado(resultResultado);
 
-
-     
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
-
-
-
-
-
-        } catch (error) {
-            
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -195,42 +132,36 @@ const Spirometry = () => {
 
     const handleClick = async (datos) => {
         try {
+            var savePdf = filePdf === null ? "" : filePdf;
+
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_ESPIROMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
-                false, '', datos.idTipoEPP, datos.fvc,datos.feV1,datos.fevfvc, datos.feV2575,datos.pef, datos.resultado, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
+                false, '', datos.idTipoEPP, datos.fvc, datos.feV1, datos.fevfvc, datos.feV2575, datos.pef, datos.resultado, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
                 false, false, false, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,'',
-                DefaultValue.SINREGISTRO_GLOBAL, false, '', filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
-
-                
-
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
+                DefaultValue.SINREGISTRO_GLOBAL, false, '', savePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
-                if (filePdf) {
-                    const result = await InsertParaclinics(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                        setDocumento('');
-                        setLsEmployee([]);
-                        reset();
-                        setFilePdf(null);
-                        setButtonReport(true);
-                    }
 
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Por favor ingresar el Nro. de Documento');
+                const result = await InsertParaclinics(DataToInsert);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                    setDocumento('');
+                    setLsEmployee([]);
+                    reset();
+                    setFilePdf(null);
                 }
+
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -249,7 +180,6 @@ const Spirometry = () => {
                     <ControllerListen />
                 </ControlModal>
 
-
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
@@ -264,7 +194,7 @@ const Spirometry = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle>
                             <Grid container spacing={1}>
-                                <Grid item xs={3.0}>
+                                <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
                                             label="Fecha"
@@ -274,7 +204,7 @@ const Spirometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={3.0}>
+                                <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idMotivo"
@@ -287,7 +217,7 @@ const Spirometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={3.0}>
+                                <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idProveedor"
@@ -300,7 +230,7 @@ const Spirometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={3.0}>
+                                <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idTipoEPP"
@@ -312,18 +242,14 @@ const Spirometry = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-
                             </Grid>
                         </SubCard>
                     </Grid>
 
-
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
                             <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
@@ -335,8 +261,8 @@ const Spirometry = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                              
-                                <Grid item xs={12} md={1} lg={2}>
+
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
@@ -349,7 +275,7 @@ const Spirometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
@@ -362,7 +288,7 @@ const Spirometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
@@ -375,7 +301,7 @@ const Spirometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
@@ -388,7 +314,7 @@ const Spirometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="resultado"
@@ -400,12 +326,9 @@ const Spirometry = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-                               
                             </Grid>
                         </SubCard>
                     </Grid>
-
 
                     <Grid item xs={12}>
                         <SubCard darkTitle>
@@ -424,21 +347,10 @@ const Spirometry = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-
-                                </Grid>
-
                             </Grid>
+
                             <Grid item xs={12} sx={{ pt: 2 }}>
                                 <MainCard title="Resultados">
-
                                     <Grid container spacing={12}>
                                         <Grid textAlign="center" item xs={12}>
                                             <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
@@ -458,13 +370,12 @@ const Spirometry = () => {
                                             />
                                         )}
                                     </Grid>
-
                                 </MainCard>
                             </Grid>
 
                             <Grid item xs={12} sx={{ pt: 4 }}>
                                 <Grid container spacing={2} >
-                                    <Grid item xs={6}>
+                                    <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                                 {TitleButton.Guardar}
@@ -472,9 +383,7 @@ const Spirometry = () => {
                                         </AnimateButton>
                                     </Grid>
 
-
-
-                                    <Grid item xs={6}>
+                                    <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/spirometry/list")}>
                                                 {TitleButton.Cancelar}
@@ -485,11 +394,6 @@ const Spirometry = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
-
-
-
-
-
                 </Grid>
             </Fragment>
         </MainCard>

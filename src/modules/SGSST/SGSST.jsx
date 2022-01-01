@@ -16,7 +16,7 @@ import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import { InsertSGSST } from 'api/clients/SGSST';
 import InputText from 'components/input/InputText';
-import { TitleButton } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostSGSST } from 'formatdata/SGSST';
@@ -79,7 +79,7 @@ const SGSST = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 

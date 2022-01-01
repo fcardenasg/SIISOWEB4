@@ -27,6 +27,7 @@ export const CodCatalogo = {
     EP_EMO_SintomasRespiratorios: 201,
 
     AtencionEMO: 138,
+    Empresas_Paraclinicos: 202,
 
     CONCEPTO_ESPACIOCONFINADO: 179,
     TIPO_EXAMEN_PARACLINICOS: 68,

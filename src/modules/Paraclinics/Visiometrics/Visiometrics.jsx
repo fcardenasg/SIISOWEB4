@@ -7,27 +7,18 @@ import {
     Typography,
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import InputCheckBox from 'components/input/InputCheckBox';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+
 import InputDatePicker from 'components/input/InputDatePicker';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
-import { SNACKBAR_OPEN } from 'store/actions';
+
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
@@ -43,49 +34,33 @@ import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import InputOnChange from 'components/input/InputOnChange';
-import InputMultiSelects from 'components/input/InputMultiSelects';
-
-
-const DetailIcons = [
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-]
 
 const Visiometrics = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
-    const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
-    const [openTemplate, setOpenTemplate] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [documento, setDocumento] = useState('');
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
-    const [lsConclusion, setLsConclusion] = useState([]);
     const [lsLectura, setLsLectura] = useState([]);
-    const [lsConducta, setLsConducta] = useState([]);
     const [lsControl, setLsControl] = useState([]);
 
     const [textDx1, setTextDx1] = useState('');
     const [lsDx1, setLsDx1] = useState([]);
-
     const [textDx2, setTextDx2] = useState('');
     const [lsDx2, setLsDx2] = useState([]);
-
     const [textDx3, setTextDx3] = useState('');
     const [lsDx3, setLsDx3] = useState([]);
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
     const { handleSubmit, errors, reset } = methods;
 
     const handleDx1 = async (event) => {
@@ -140,7 +115,6 @@ const Visiometrics = () => {
         }
     }
 
-
     const handleDx3 = async (event) => {
         try {
             setTextDx3(event.target.value);
@@ -187,9 +161,6 @@ const Visiometrics = () => {
         }
     }
 
-
-
-
     const handleDocumento = async (event) => {
         try {
             setDocumento(event?.target.value);
@@ -214,10 +185,6 @@ const Visiometrics = () => {
 
     async function GetAll() {
         try {
-
-      
-
-
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -225,29 +192,12 @@ const Visiometrics = () => {
             }));
             setLsMotivo(resultMotivo);
 
-            const lsServerConducta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
-            var resultConducta = lsServerConducta.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConducta(resultConducta);
-
-            const lsServerConclusion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
-            var resultConclusion = lsServerConclusion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConclusion(resultConclusion);
-
-
             const lsServerLectura = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_LECTURAADD);
             var resultLectura = lsServerLectura.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsLectura(resultLectura);
-
-       
 
             const lsServerControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONTROLV);
             var resultControl = lsServerControl.data.entities.map((item) => ({
@@ -262,12 +212,7 @@ const Visiometrics = () => {
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
-
-
-
-
-        } catch (error) {
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -276,19 +221,21 @@ const Visiometrics = () => {
 
     const handleClick = async (datos) => {
         try {
+            var savePdf = filePdf === null ? "" : filePdf;
+
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_VISIOMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, datos.DxDerecho, datos.ojoIzquierdo, datos.DxIzquierdo, datos.add1,
-             datos.idLecturaAdd, datos.idControl, datos.remitidoOftalmo,
-                datos.requiereLentes,datos.DxDiagnostico, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBA, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
+                datos.idLecturaAdd, datos.idControl, datos.remitidoOftalmo,
+                datos.requiereLentes, datos.DxDiagnostico, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBA, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
                 false, false, false, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,'',
-                DefaultValue.SINREGISTRO_GLOBAL, false, '', filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
+                DefaultValue.SINREGISTRO_GLOBAL, false, '', savePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
 
             if (Object.keys(datos.length !== 0)) {
@@ -300,7 +247,6 @@ const Visiometrics = () => {
                         setLsEmployee([]);
                         reset();
                         setFilePdf(null);
-                        setButtonReport(true);
                     }
 
                 } else {
@@ -310,7 +256,7 @@ const Visiometrics = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -438,7 +384,7 @@ const Visiometrics = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                      
+
                                 <Grid item xs={12} md={1} lg={2}>
                                     <InputOnChange
                                         label="Dx Izquierdo"
@@ -543,9 +489,9 @@ const Visiometrics = () => {
 
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">IMPRESIÓN DIAGNÓSTICA</Typography>}>
-                        <Grid container spacing={2}>
+                            <Grid container spacing={2}>
 
-                            <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={1} lg={4}>
                                     <InputOnChange
                                         label="Dx"
                                         onKeyDown={handleDx3}
@@ -565,7 +511,7 @@ const Visiometrics = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                                </Grid>
+                            </Grid>
 
                         </SubCard>
                     </Grid>
@@ -588,17 +534,6 @@ const Visiometrics = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-
-                                </Grid>
-
                             </Grid>
                             <Grid item xs={12} sx={{ pt: 2 }}>
                                 <MainCard title="Resultados">
