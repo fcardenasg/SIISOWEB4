@@ -35,7 +35,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { GetAllSegmentoAgrupado, GetAllBySegmentoAfectado } from 'api/clients/OthersClients';
+import { GetAllSegmentoAgrupado, GetAllBySubsegment } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { GetByIdAccidentRate, InsertAccidentRate } from 'api/clients/AccidentRateClient';
 import { PostAccidentRate } from 'formatdata/AccidentRateForm';
@@ -68,8 +68,8 @@ const AccidentRate = () => {
     const [dataPDF, setDataPDF] = useState(null);
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState(undefined);
-    const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
-    const [segmentoAfectado, setSegmentoAfectado] = useState(undefined);
+    const [lsRegion, setLsRegion] = useState([]);
+    const [subsegmento, setSubsegmento] = useState(undefined);
     /* const [subsegmento, setSubsegmento] = useState([]); */
 
     const [openReport, setOpenReport] = useState(false);
@@ -106,28 +106,28 @@ const AccidentRate = () => {
             setSubsegmento([]);
             setSegmentoAgrupado(event.target.value);
 
-            const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
-            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
+            const lsRegion = await GetAllBySegAgrupado(event.target.value, 0, 0);
+            var resultSegAfectado = lsRegion.data.entities.map((item) => ({
                 value: item.id,
                 label: item.nombre
             }));
-            setLsSegmentoAfectado(resultSegAfectado);
+            setLsRegion(resultSegAfectado);
 
         } catch (error) {
-            setLsSegmentoAfectado([]);
+            setLsRegion([]);
         }
     } */
 
     /* const handleChangeSegAfectado = async (event) => {
         try {
-            setSegmentoAfectado(event.target.value);
+            setSubsegmento(event.target.value);
 
             const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
-            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
+            var resultRegion = lsServerSubsegmento.data.entities.map((item) => ({
                 value: item.id,
                 label: item.nombre
             }));
-            setSubsegmento(resultSubsegmento);
+            setSubsegmento(resultRegion);
 
         } catch (error) {
             setSubsegmento([]);
@@ -236,12 +236,13 @@ const AccidentRate = () => {
             }));
             setLsSegmentoAgrupado(resultSegAgrupado);
 
-            const lsServerSegAfectado = await GetAllBySegmentoAfectado(0, 0);
-            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                value: item.id,
+            const lsServerRegion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_REGION);
+            var resultRegion = lsServerRegion.data.entities.map((item) => ({
+                value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsSegmentoAfectado(resultSegAfectado);
+            setLsRegion(resultRegion);
+
 
             const lsServerClase = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CLASE_AT);
             var resultClase = lsServerClase.data.entities.map((item) => ({
@@ -312,7 +313,7 @@ const AccidentRate = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostAccidentRate(FormatDate(datos.fecha), documento, datos.idClaseAT, datos.idCausaAT, segmentoAgrupado,
-                segmentoAfectado, 1, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
+                1, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
                 datos.diagnosticoFinal, datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
                 datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
@@ -329,8 +330,8 @@ const AccidentRate = () => {
                         setLsEmployee([]);
                   
 
-                        setLsSegmentoAfectado([]);
-                        setSegmentoAfectado('');
+                        setLsRegion([]);
+                        setSubsegmento('');
                         setSegmentoAgrupado('');
 
                         setTextDx1(''); setLsDx1([]);
@@ -440,28 +441,21 @@ const AccidentRate = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="segmentoAfectado"
-                                    label="Segmento Afectado"
-                                    options={lsSegmentoAfectado}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    value={segmentoAfectado}
-                                    onChange={(e) => setSegmentoAfectado(e.target.value)}
-                                />
-                            </Grid>
+                           
 
-                            {/* <Grid item xs={4}>
+                            <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idSubsegmento"
-                                        label="Subsegmento"
-                                        options={subsegmento}
+                                        label="Región"
+                                        options={lsRegion}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idSubsegmento}
+                                  
                                     />
                                 </FormProvider>
-                            </Grid> */}
+                            </Grid>
+
+
 
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -480,7 +474,7 @@ const AccidentRate = () => {
 
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
+                <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Inicial</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <InputOnChange

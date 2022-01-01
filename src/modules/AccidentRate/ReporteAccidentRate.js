@@ -161,7 +161,7 @@ doc.text('Empresa:', 120, 75);
 
  
     doc.text('Segmento Afectado:', 120, 112);
-    doc.text(`${lsDataReport.segmento}`, 150, 112);
+    doc.text(`${lsDataReport.nameRegion}`, 150, 112);
 
     doc.line(5, 116, marXR, 116); /* HORI 7 */
 
