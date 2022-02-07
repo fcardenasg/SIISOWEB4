@@ -43,7 +43,7 @@ export const FirebaseProvider = ({ children }) => {
                             user: {
                                 id: user.uid,
                                 email: user.email,
-                                name: user.displayName || 'Betty'
+                                name: user.displayName || 'Pacho'
                             }
                         }
                     });

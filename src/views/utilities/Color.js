@@ -21,7 +21,7 @@ const ColorBox = ({ bgcolor, title, data, dark }) => (
                     alignItems: 'center',
                     py: 4.5,
                     bgcolor,
-                    color: dark ? 'grey.800' : '#ffffff'
+                    color: dark ? 'grey.100' : '#FF1636'
                 }}
             >
                 {title && (

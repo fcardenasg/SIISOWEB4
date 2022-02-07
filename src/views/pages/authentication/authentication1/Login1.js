@@ -92,10 +92,10 @@ const Login = () => {
                                                 gutterBottom
                                                 variant={matchDownSM ? 'h3' : 'h2'}
                                             >
-                                                Hi, Welcome Back
+                                                Hola, Bienvenidos a SIISO 4.0
                                             </Typography>
                                             <Typography color="textPrimary" gutterBottom variant="h4">
-                                                Login in to your account
+                                               Acceder a su cuenta
                                             </Typography>
                                         </Stack>
                                     </Grid>
@@ -120,7 +120,8 @@ const Login = () => {
                                         variant="subtitle1"
                                         sx={{ textDecoration: 'none' }}
                                     >
-                                        Don&apos;t have an account?
+                                        ¿No&apos; tiene una cuenta?
+                                    
                                     </Typography>
                                 </Grid>
                             </Grid>
