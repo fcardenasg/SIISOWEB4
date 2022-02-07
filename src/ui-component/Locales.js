@@ -10,12 +10,12 @@ const loadLocaleData = (locale) => {
     switch (locale) {
         case 'fr':
             return import('utils/locales/fr.json');
-        case 'ro':
-            return import('utils/locales/ro.json');
+        case 'en':
+            return import('utils/locales/en.json');
         case 'zh':
             return import('utils/locales/zh.json');
         default:
-            return import('utils/locales/en.json');
+            return import('utils/locales/es.json');
     }
 };
 
@@ -34,7 +34,7 @@ const Locales = ({ children }) => {
     return (
         <>
             {messages && (
-                <IntlProvider locale={customization.locale} defaultLocale="en" messages={messages}>
+                <IntlProvider locale={customization.locale} defaultLocale="es" messages={messages}>
                     {children}
                 </IntlProvider>
             )}
