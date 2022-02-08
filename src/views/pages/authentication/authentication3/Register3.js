@@ -12,6 +12,17 @@ import AuthRegister from '../auth-forms/AuthRegister';
 import AuthFooter from 'ui-component/cards/AuthFooter';
 import useAuth from 'hooks/useAuth';
 
+import { createTheme } from '@mui/material/styles';
+
+const RedDrummond = createTheme({
+    palette: {
+        primary: {
+            main: '#E31937',
+        },
+    },
+});
+
+
 // assets
 
 // ===============================|| AUTH3 - REGISTER ||=============================== //
@@ -29,7 +40,7 @@ const Register = () => {
                         <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
                             <AuthCardWrapper>
                                 <Grid container spacing={2} alignItems="center" justifyContent="center">
-                                    <Grid item sx={{ mb: 3 }}>
+                                    <Grid item sx={{ mb: 0.5 }}>
                                         <Link to="#">
                                             <Logo />
                                         </Link>
@@ -44,18 +55,18 @@ const Register = () => {
                                             <Grid item>
                                                 <Stack alignItems="center" justifyContent="center" spacing={1}>
                                                     <Typography
-                                                        color={theme.palette.secondary.main}
+                                                        color={RedDrummond.palette.primary.main}
                                                         gutterBottom
                                                         variant={matchDownSM ? 'h3' : 'h2'}
                                                     >
-                                                        Sign up
+                                                        Registrarme
                                                     </Typography>
                                                     <Typography
                                                         variant="caption"
                                                         fontSize="16px"
                                                         textAlign={matchDownSM ? 'center' : 'inherit'}
                                                     >
-                                                        Enter your credentials to continue
+                                                        Ingrese sus credenciales para continuar
                                                     </Typography>
                                                 </Stack>
                                             </Grid>
@@ -75,7 +86,7 @@ const Register = () => {
                                                 variant="subtitle1"
                                                 sx={{ textDecoration: 'none' }}
                                             >
-                                                Already have an account?
+                                                ¿Ya tienes una cuenta?
                                             </Typography>
                                         </Grid>
                                     </Grid>

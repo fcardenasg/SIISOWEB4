@@ -12,6 +12,16 @@ import AuthForgotPassword from '../auth-forms/AuthForgotPassword';
 import AuthFooter from 'ui-component/cards/AuthFooter';
 import useAuth from 'hooks/useAuth';
 
+import { createTheme } from '@mui/material/styles';
+
+const RedDrummond = createTheme({
+    palette: {
+        primary: {
+            main: '#E31937',
+        },
+    },
+});
+
 // ============================|| AUTH3 - FORGOT PASSWORD ||============================ //
 
 const ForgotPassword = () => {
@@ -27,7 +37,7 @@ const ForgotPassword = () => {
                         <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
                             <AuthCardWrapper>
                                 <Grid container spacing={2} alignItems="center" justifyContent="center">
-                                    <Grid item sx={{ mb: 3 }}>
+                                    <Grid item sx={{ mb: 0.5 }}>
                                         <Link to="#">
                                             <Logo />
                                         </Link>
@@ -36,16 +46,16 @@ const ForgotPassword = () => {
                                         <Grid container alignItems="center" justifyContent="center" textAlign="center" spacing={2}>
                                             <Grid item xs={12}>
                                                 <Typography
-                                                    color={theme.palette.secondary.main}
+                                                    color={RedDrummond.palette.primary.main}
                                                     gutterBottom
                                                     variant={matchDownSM ? 'h3' : 'h2'}
                                                 >
-                                                    Forgot password?
+                                                    ¿Olvidaste tu Contraseña?
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Typography variant="caption" fontSize="16px" textAlign="center">
-                                                    Enter your email address below and we&apos;ll send you password reset OTP.
+                                                    Ingrese su dirección de correo electrónico a continuación y le enviaremos OTP de restablecimiento de contraseña.
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -64,7 +74,7 @@ const ForgotPassword = () => {
                                                 variant="subtitle1"
                                                 sx={{ textDecoration: 'none' }}
                                             >
-                                                Already have an account?
+                                                ¿Ya tienes una cuenta?
                                             </Typography>
                                         </Grid>
                                     </Grid>

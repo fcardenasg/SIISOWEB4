@@ -85,7 +85,7 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                             <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
                                 <img src={Google} alt="google" width={16} height={16} style={{ marginRight: matchDownSM ? 8 : 16 }} />
                             </Box>
-                            Sign in with Google
+                            Inicia Sesión Con Google
                         </Button>
                     </AnimateButton>
                 </Grid>
@@ -102,9 +102,9 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                             variant="outlined"
                             sx={{
                                 cursor: 'unset',
-                                m: 2,
+                                m: 0.5,
                                 py: 0.5,
-                                px: 7,
+                                px: 5,
                                 borderColor:
                                     theme.palette.mode === 'dark'
                                         ? `${theme.palette.dark.light + 20} !important`
@@ -116,7 +116,7 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                             disableRipple
                             disabled
                         >
-                            OR
+                            O
                         </Button>
 
                         <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
@@ -124,7 +124,7 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                 </Grid>
                 <Grid item xs={12} container alignItems="center" justifyContent="center">
                     <Box sx={{ mb: 2 }}>
-                        <Typography variant="subtitle1">Sign in with Email address</Typography>
+                        <Typography variant="subtitle1">Iniciar Sesión con Dirección de Correo Electrónico</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -229,10 +229,10 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                                         checked={checked}
                                         onChange={(event) => setChecked(event.target.checked)}
                                         name="checked"
-                                        color="primary"
+                                        sx={{ color: '#0072BC' }}
                                     />
                                 }
-                                label="Remember me"
+                                label="Recuérdame"
                             />
                             <Typography
                                 variant="subtitle1"
@@ -242,10 +242,9 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                                         ? `/pages/forgot-password/forgot-password${loginProp}`
                                         : '/pages/forgot-password/forgot-password3'
                                 }
-                                color="secondary"
-                                sx={{ textDecoration: 'none' }}
+                                sx={{ textDecoration: 'none', color: '#0072BC' }}
                             >
-                                Forgot Password?
+                                ¿Has olvidado tu contraseña?
                             </Typography>
                         </Stack>
                         {errors.submit && (
@@ -257,15 +256,16 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                         <Box sx={{ mt: 2 }}>
                             <AnimateButton>
                                 <Button
+                                    id='buttonlogin'
                                     disableElevation
                                     disabled={isSubmitting}
                                     fullWidth
                                     size="large"
                                     type="submit"
                                     variant="contained"
-                                    color="secondary"
+                                    sx={{ background: '#E31937' }}
                                 >
-                                    Sign in
+                                    INGRESAR
                                 </Button>
                             </AnimateButton>
                         </Box>
