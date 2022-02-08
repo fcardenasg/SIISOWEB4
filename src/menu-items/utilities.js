@@ -20,66 +20,34 @@ const utilities = {
     title: <FormattedMessage id="utilities" />,
     type: 'group',
     children: [
-        {
-            id: 'util-typography',
-            title: <FormattedMessage id="typography" />,
+     
+         {
+            id: 'chat',
+            title: <FormattedMessage id="chat" />,
             type: 'item',
-            url: '/utils/util-typography',
-            icon: icons.IconTypography,
-            breadcrumbs: false
+            icon: icons.IconMessages,
+            url: '/app/chat'
         },
         {
-            id: 'util-color',
-            title: <FormattedMessage id="color" />,
+            id: 'kanban',
+            title: 'Kanban',
             type: 'item',
-            url: '/utils/util-color',
-            icon: icons.IconPalette,
-            breadcrumbs: false
+            icon: icons.IconLayoutKanban,
+            url: '/app/kanban'
         },
         {
-            id: 'util-shadow',
-            title: <FormattedMessage id="shadow" />,
+            id: 'mail',
+            title: <FormattedMessage id="mail" />,
             type: 'item',
-            url: '/utils/util-shadow',
-            icon: icons.IconShadow,
-            breadcrumbs: false
+            icon: icons.IconMail,
+            url: '/app/mail'
         },
         {
-            id: 'icons',
-            title: <FormattedMessage id="icons" />,
-            type: 'collapse',
-            icon: icons.IconWindmill,
-            children: [
-                {
-                    id: 'tabler-icons',
-                    title: <FormattedMessage id="tabler-icons" />,
-                    type: 'item',
-                    url: '/icons/tabler-icons',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'material-icons',
-                    title: <FormattedMessage id="material-icons" />,
-                    type: 'item',
-                    url: '/icons/material-icons',
-                    breadcrumbs: false
-                }
-            ]
-        },
-        {
-            id: 'util-animation',
-            title: <FormattedMessage id="animation" />,
+            id: 'calendar',
+            title: <FormattedMessage id="calendar" />,
             type: 'item',
-            url: '/utils/util-animation',
-            icon: icons.IconBrandFramer,
-            breadcrumbs: false
-        },
-        {
-            id: 'util-grid',
-            title: <FormattedMessage id="grid" />,
-            type: 'item',
-            url: '/utils/util-grid',
-            icon: icons.IconLayoutGridAdd,
+            url: '/app/calendar',
+            icon: icons.IconCalendar,
             breadcrumbs: false
         }
     ]
