@@ -44,7 +44,7 @@ const AuthForgotPassword = ({ ...others }) => {
                         dispatch({
                             type: SNACKBAR_OPEN,
                             open: true,
-                            message: 'Check mail for reset password link',
+                            message: 'Verifique el correo para restablecer el enlace de contraseña',
                             variant: 'alert',
                             alertSeverity: 'success'
                         });
@@ -65,7 +65,7 @@ const AuthForgotPassword = ({ ...others }) => {
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                 <form noValidate onSubmit={handleSubmit} {...others}>
                     <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                        <InputLabel htmlFor="outlined-adornment-email-forgot">Email Address / Username</InputLabel>
+                        <InputLabel htmlFor="outlined-adornment-email-forgot">Dirección de Correo Electrónico / Usuario</InputLabel>
                         <OutlinedInput
                             id="outlined-adornment-email-forgot"
                             type="email"
@@ -73,7 +73,7 @@ const AuthForgotPassword = ({ ...others }) => {
                             name="email"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            label="Email Address / Username"
+                            label="Dirección de Correo Electrónico / Usuario"
                             inputProps={{}}
                         />
                         {touched.email && errors.email && (
@@ -100,7 +100,7 @@ const AuthForgotPassword = ({ ...others }) => {
                                 variant="contained"
                                 color="secondary"
                             >
-                                Send Mail
+                                Enviar Correo
                             </Button>
                         </AnimateButton>
                     </Box>

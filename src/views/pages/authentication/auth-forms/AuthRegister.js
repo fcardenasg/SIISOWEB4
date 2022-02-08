@@ -96,7 +96,7 @@ const FirebaseRegister = ({ ...others }) => {
                             <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
                                 <img src={Google} alt="google" width={16} height={16} style={{ marginRight: matchDownSM ? 8 : 16 }} />
                             </Box>
-                            Sign up with Google
+                            Registrarme con Google
                         </Button>
                     </AnimateButton>
                 </Grid>
@@ -107,9 +107,9 @@ const FirebaseRegister = ({ ...others }) => {
                             variant="outlined"
                             sx={{
                                 cursor: 'unset',
-                                m: 2,
+                                m: 0.5,
                                 py: 0.5,
-                                px: 7,
+                                px: 5,
                                 borderColor:
                                     theme.palette.mode === 'dark'
                                         ? `${theme.palette.dark.light + 20} !important`
@@ -121,14 +121,14 @@ const FirebaseRegister = ({ ...others }) => {
                             disableRipple
                             disabled
                         >
-                            OR
+                            O
                         </Button>
                         <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
                     </Box>
                 </Grid>
                 <Grid item xs={12} container alignItems="center" justifyContent="center">
                     <Box sx={{ mb: 2 }}>
-                        <Typography variant="subtitle1">Sign up with Email address</Typography>
+                        <Typography variant="subtitle1">Registrarme con la dirección de correo electrónico</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -176,7 +176,7 @@ const FirebaseRegister = ({ ...others }) => {
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
-                                    label="First Name"
+                                    label="Primer Nombre"
                                     margin="normal"
                                     name="fname"
                                     type="text"
@@ -187,7 +187,7 @@ const FirebaseRegister = ({ ...others }) => {
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
-                                    label="Last Name"
+                                    label="Apellido"
                                     margin="normal"
                                     name="lname"
                                     type="text"
@@ -197,7 +197,7 @@ const FirebaseRegister = ({ ...others }) => {
                             </Grid>
                         </Grid>
                         <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-email-register">Email Address / Username</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-email-register">Dirección de Correo Electrónico / Usuario</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-email-register"
                                 type="email"
@@ -219,13 +219,13 @@ const FirebaseRegister = ({ ...others }) => {
                             error={Boolean(touched.password && errors.password)}
                             sx={{ ...theme.typography.customInput }}
                         >
-                            <InputLabel htmlFor="outlined-adornment-password-register">Password</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password-register">Contraseña</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password-register"
                                 type={showPassword ? 'text' : 'password'}
                                 value={values.password}
                                 name="password"
-                                label="Password"
+                                label="Contraseña"
                                 onBlur={handleBlur}
                                 onChange={(e) => {
                                     handleChange(e);
@@ -286,9 +286,9 @@ const FirebaseRegister = ({ ...others }) => {
                                     }
                                     label={
                                         <Typography variant="subtitle1">
-                                            Agree with &nbsp;
+                                            Acepto los &nbsp;
                                             <Typography variant="subtitle1" component={Link} to="#">
-                                                Terms & Condition.
+                                                Terminos & Codiciones.
                                             </Typography>
                                         </Typography>
                                     }
@@ -310,9 +310,9 @@ const FirebaseRegister = ({ ...others }) => {
                                     size="large"
                                     type="submit"
                                     variant="contained"
-                                    color="secondary"
+                                    sx={{ background: '#E31937' }}
                                 >
-                                    Sign up
+                                    Registrarme
                                 </Button>
                             </AnimateButton>
                         </Box>
