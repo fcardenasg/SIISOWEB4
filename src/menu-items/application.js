@@ -2,7 +2,18 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { IconUserCheck, IconBasket, IconMessages, IconLayoutKanban, IconMail, IconCalendar, IconNfc } from '@tabler/icons';
+import {
+    IconUserCheck,
+    IconBasket,
+    IconMessages,
+    IconLayoutKanban,
+    IconMail,
+    IconCalendar,
+    IconNfc,
+    IconTool,
+} from '@tabler/icons';
+
+
 
 // constant
 const icons = {
@@ -12,7 +23,8 @@ const icons = {
     IconLayoutKanban,
     IconMail,
     IconCalendar,
-    IconNfc
+    IconNfc,
+    IconTool
 };
 
 // ==============================|| APPLICATION MENU ITEMS ||============================== //
@@ -180,43 +192,43 @@ const application = {
             ]
         },
         {
-                    id: 'user-card',
-                    title: <FormattedMessage id="cards" />,
-                    type: 'collapse',
-                    icon: icons.IconNfc,
-                    children: [
-                        {
-                            id: 'card1',
-                            title: (
-                                <>
-                                    <FormattedMessage id="style" /> 01
-                                </>
-                            ),
-                            type: 'item',
-                            url: '/user/card/card1'
-                        },
-                        {
-                            id: 'card2',
-                            title: (
-                                <>
-                                    <FormattedMessage id="style" /> 02
-                                </>
-                            ),
-                            type: 'item',
-                            url: '/user/card/card2'
-                        },
-                        {
-                            id: 'card3',
-                            title: (
-                                <>
-                                    <FormattedMessage id="style" /> 03
-                                </>
-                            ),
-                            type: 'item',
-                            url: '/user/card/card3'
-                        }
-                    ]
+            id: 'user-card',
+            title: <FormattedMessage id="cards" />,
+            type: 'collapse',
+            icon: icons.IconNfc,
+            children: [
+                {
+                    id: 'card1',
+                    title: (
+                        <>
+                            <FormattedMessage id="style" /> 01
+                        </>
+                    ),
+                    type: 'item',
+                    url: '/user/card/card1'
                 },
+                {
+                    id: 'card2',
+                    title: (
+                        <>
+                            <FormattedMessage id="style" /> 02
+                        </>
+                    ),
+                    type: 'item',
+                    url: '/user/card/card2'
+                },
+                {
+                    id: 'card3',
+                    title: (
+                        <>
+                            <FormattedMessage id="style" /> 03
+                        </>
+                    ),
+                    type: 'item',
+                    url: '/user/card/card3'
+                }
+            ]
+        },
         {
             id: 'contact',
             title: <FormattedMessage id="contact" />,
@@ -425,22 +437,20 @@ const application = {
                 }
             ]
         },
-      
+
 
         {
 
-
-            
             id: 'advance',
-            title: <FormattedMessage id="advance" />,
+            title: <FormattedMessage id="Parametrización" />,
             type: 'collapse',
-            icon: icons.IconPictureInPicture,
+            icon: icons.IconTool,
             children: [
                 {
                     id: 'alert',
-                    title: <FormattedMessage id="alert" />,
+                    title: <FormattedMessage id="Tipo Catalogo" />,
                     type: 'item',
-                    url: '/advance/alert',
+                    url: '/typecatalog/list',
                     breadcrumbs: false
                 },
                 {

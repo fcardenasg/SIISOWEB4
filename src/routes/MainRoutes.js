@@ -128,6 +128,11 @@ const UtilsGrid = Loadable(lazy(() => import('views/utilities/Grid')));
 // sample page routing
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
+
+//Nuestros import
+const ListTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/ListTypeCatalog')));
+
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -407,8 +412,8 @@ const MainRoutes = {
         },
 
         {
-            path: '/advance/alert',
-            element: <AdvanceUIAlert />
+            path: '/typecatalog/list',
+            element: <ListTypeCatalog />
         },
         {
             path: '/advance/dialog',
