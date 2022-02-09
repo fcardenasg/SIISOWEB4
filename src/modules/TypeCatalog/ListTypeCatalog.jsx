@@ -40,31 +40,31 @@ import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 
 // table data
-function createData(id, name, company, type, qty, date, status) {
-    return { id, name, company, type, qty, date, status };
+function createData(id, nombre) {
+    return { id, nombre };
 }
 
 const rowsInitial = [
-    createData('790841', 'Joseph William 1', 'Toronto', 'Credit Card', 2500, '12.07.2018', 3),
-    createData('790842', 'Anshan Handgun 2', 'Toronto', 'Paytm', 5000, '12.07.2018', 2),
-    createData('798699', 'Larry Doe 3', 'Toronto', 'Net Banking', 2500, '12.07.2018', 1),
-    createData('790752', 'Sara Soudan 4', 'Toronto', 'Upi', 5000, '12.07.2018', 1),
-    createData('790955', 'Joseph William 5', 'Toronto', 'Credit Card', 2500, '12.07.2018', 2),
-    createData('790785', 'Anshan Handgun 6', 'Toronto', 'Upi', 5000, '12.07.2018', 3),
-    createData('800837', 'Larry Doe 7', 'Toronto', 'Paytm', 2500, '12.07.2018', 3),
-    createData('810365', 'Sara Soudan 8', 'Toronto', 'Net Banking', 5000, '12.07.2018', 2),
-    createData('810814', 'Sara Soudan 20', 'Toronto', 'Upi', 2500, '12.07.2018', 1),
-    createData('820385', 'Joseph William 9', 'Toronto', 'Net Banking', 5000, '12.07.2018', 1),
-    createData('820885', 'Anshan Handgun 10', 'Toronto', 'Credit Card', 2500, '12.07.2018', 1),
-    createData('830390', 'Larry Doe 11', 'Toronto', 'Paytm', 5000, '12.07.2018', 2),
-    createData('830879', 'Sara Soudan 12', 'Toronto', 'Upi', 2500, '12.07.2018', 3),
-    createData('900111', 'Joseph William 13', 'Toronto', 'Upi', 5000, '12.07.2018', 3),
-    createData('900836', 'Anshan Handgun 14', 'Toronto', 'Credit Card', 2500, '12.07.2018', 2),
-    createData('900112', 'Larry Doe 15', 'Toronto', 'Paytm', 5000, '12.07.2018', 2),
-    createData('900871', 'Sara Soudan 16', 'Toronto', 'Upi', 2500, '12.07.2018', 1),
-    createData('910232', 'Joseph William 17', 'Toronto', 'Upi', 5000, '12.07.2018', 2),
-    createData('910886', 'Anshan Handgun 18', 'Toronto', 'Credit Card', 2500, '12.07.2018', 3),
-    createData('910232', 'Larry Doe 19', 'Toronto', 'Net Banking', 5000, '12.07.2018', 2)
+    createData('790841', 'Joseph William 1'),
+    createData('790842', 'Anshan Handgun 2'),
+    createData('798699', 'Larry Doe 3'),
+    createData('790752', 'Sara Soudan 4'),
+    createData('790955', 'Joseph William 5'),
+    createData('790785', 'Anshan Handgun 6'),
+    createData('800837', 'Larry Doe 7'),
+    createData('810365', 'Sara Soudan 8'),
+    createData('810814', 'Sara Soudan 20'),
+    createData('820385', 'Joseph William 9'),
+    createData('820885', 'Anshan Handgun 10'),
+    createData('830390', 'Larry Doe 11'),
+    createData('830879', 'Sara Soudan 12'),
+    createData('900111', 'Joseph William 13'),
+    createData('900836', 'Anshan Handgun 14'),
+    createData('900112', 'Larry Doe 15'),
+    createData('900871', 'Sara Soudan 16'),
+    createData('910232', 'Joseph William 17'),
+    createData('910886', 'Anshan Handgun 18'),
+    createData('910232', 'Larry Doe 19')
 ];
 
 // table sort
@@ -93,48 +93,19 @@ function stableSort(array, comparator) {
 
 // table header options
 
+/* Cabecera de  */
 const headCells = [
     {
         id: 'id',
-        numeric: true,
+        numeric: false,
         label: 'ID',
         align: 'center'
     },
     {
         id: 'name',
         numeric: false,
-        label: 'Customer Name',
+        label: 'Nombre',
         align: 'left'
-    },
-    {
-        id: 'company',
-        numeric: true,
-        label: 'Branch',
-        align: 'left'
-    },
-    {
-        id: 'type',
-        numeric: true,
-        label: 'Payment Type',
-        align: 'left'
-    },
-    {
-        id: 'qty',
-        numeric: true,
-        label: 'Quantity',
-        align: 'right'
-    },
-    {
-        id: 'date',
-        numeric: true,
-        label: 'Registered',
-        align: 'center'
-    },
-    {
-        id: 'status',
-        numeric: false,
-        label: 'Status',
-        align: 'center'
     }
 ];
 
@@ -189,7 +160,7 @@ function EnhancedTableHead({ onSelectAllClick, order, orderBy, numSelected, rowC
                 {numSelected <= 0 && (
                     <TableCell sortDirection={false} align="center" sx={{ pr: 3 }}>
                         <Typography variant="subtitle1" sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}>
-                            Action
+                            Acción
                         </Typography>
                     </TableCell>
                 )}
@@ -224,11 +195,11 @@ const EnhancedTableToolbar = ({ numSelected }) => (
     >
         {numSelected > 0 ? (
             <Typography color="inherit" variant="h4">
-                {numSelected} Selected
+                {numSelected} Seleccionadas
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrition
+                Nutrición
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -248,12 +219,7 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| ORDER LIST ||============================== //
 
-const TypeCatalogForm = [
-
-]
-
 const OrderList = () => {
-
 
     const [typeCatalog, setTypeCatalog] = useState([]);
     console.log("Ver = ", typeCatalog);
