@@ -420,8 +420,8 @@ const MainRoutes = {
             element: <BasicUITabs />
         },
         {
-            path: '/advance/dialog',
-            element: <AdvanceUIDialog />
+            path: '/catalog/list',
+            element: <ListCatalog />
         },
         {
             path: '/advance/pagination',

@@ -455,9 +455,9 @@ const application = {
                 },
                 {
                     id: 'dialog',
-                    title: <FormattedMessage id="dialog" />,
+                    title: <FormattedMessage id="Catalogo" />,
                     type: 'item',
-                    url: '/advance/dialog',
+                    url: '/catalog/list',
                     breadcrumbs: false
                 },
                 {
