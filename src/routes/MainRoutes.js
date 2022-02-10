@@ -132,6 +132,7 @@ const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 //Nuestros import
 const ListTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/ListTypeCatalog')));
 const TypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/TypeCatalog')));
+const ListCatalog = Loadable(lazy(() => import('../modules/Catalog/ListCatalog')));
 
 
 // ==============================|| MAIN ROUTING ||============================== //
