@@ -131,6 +131,7 @@ const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 //Nuestros import
 const ListTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/ListTypeCatalog')));
+const TypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/TypeCatalog')));
 
 
 // ==============================|| MAIN ROUTING ||============================== //
@@ -143,6 +144,14 @@ const MainRoutes = {
         </AuthGuard>
     ),
     children: [
+        {
+            path: '/typecatalog/list',
+            element: <ListTypeCatalog />
+        },
+        {
+            path: '/typecatalog/add',
+            element: <TypeCatalog />
+        },
         {
             path: '/widget/statistics',
             element: <WidgetStatistics />
@@ -409,11 +418,6 @@ const MainRoutes = {
         {
             path: '/basic/tabs',
             element: <BasicUITabs />
-        },
-
-        {
-            path: '/typecatalog/list',
-            element: <ListTypeCatalog />
         },
         {
             path: '/advance/dialog',
