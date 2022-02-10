@@ -1,79 +1,36 @@
-import PropTypes from 'prop-types';
-import axios from "axios"
-import { useNavigate } from 'react-router-dom';
-
-// material-ui
+// Import de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
-    FormHelperText,
     Grid,
-    TextField,
     useMediaQuery
 } from '@mui/material';
-import LinkIcon from '@mui/icons-material/Link';
 
-// third-party
+// Terceros
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// project imports
+// Import del Proyecto
+import { SNACKBAR_OPEN } from 'store/actions';
+import { InsertTypeCatalog } from 'api/clients/TypeCatalogClient';
+import InputText from 'components/input/InputText';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
-
-// ==============================|| COMMENT TEXTFIELD ||============================== //
-
-const FormInput = ({ bug, label, size, fullWidth = true, name, required, ...others }) => {
-    let isError = false;
-    let errorMessage = '';
-    if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
-        isError = true;
-        errorMessage = bug[name].message;
-    }
-
-    return (
-        <>
-            <Controller
-                as={TextField}
-                name={name}
-                defaultValue=""
-                label={label}
-                size={size}
-                fullWidth={fullWidth}
-                InputLabelProps={{
-                    className: required ? 'required-label' : '',
-                    required: required || false
-                }}
-                error={isError}
-                {...others}
-            />
-            {errorMessage && (
-                <Grid item xs={12}>
-                    <FormHelperText error>{errorMessage}</FormHelperText>
-                </Grid>
-            )}
-        </>
-    );
-};
-
-FormInput.propTypes = {
-    bug: PropTypes.object,
-    size: PropTypes.string,
-    label: PropTypes.string,
-    name: PropTypes.string,
-    required: PropTypes.bool,
-    fullWidth: PropTypes.bool
-};
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
+/* VALIDACIÓN CON YUP */
 const validationSchema = yup.object().shape({
     nombre: yup.string().required('Comment Field is Required')
 });
 
-const Post = () => {
+const TypeCatalog = () => {
+    /* ESTILO, HOOKS Y OTROS TEMAS */
+    const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -83,72 +40,68 @@ const Post = () => {
 
     const { handleSubmit, errors, reset } = methods;
 
-
-
-    async function postData(url = "", datas = {}) {
-        axios({
-            method: 'post',
-            url: url,
-            data: datas
-        }).then((res) => { console.log(res) }).catch((error) => { console.log(error) });
-    }
-
+    /* METODO DE INSERT  */
     const onSubmit = async (datos) => {
-        console.log("Datos = ", datos);
-
-        postData('https://localhost:44347/api/TipoCatalogo', datos);
-        reset();
+        if (Object.keys(datos.length !== 0)) {
+            const result = await InsertTypeCatalog(datos);
+            if (result.status === 200) {
+                dispatch({
+                    type: SNACKBAR_OPEN,
+                    open: true,
+                    message: `${Message.Guardar}`,
+                    variant: 'alert',
+                    alertSeverity: 'success',
+                    close: false,
+                    transition: 'SlideUp'
+                })
+                reset();
+            }
+        }
     };
 
     const navigate = useNavigate();
 
     return (
-        <MainCard
-            title="Registrar Tipo de Catalogo"
-            secondary={<SecondaryAction icon={<LinkIcon fontSize="small" />} />}
-        >
-            <Grid item xs={12} sx={{ pt: 2 }}>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <Grid container spacing={2} alignItems="flex-start">
-                        <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
-                            <Grid item xs zeroMinWidth sx={{ pb: 2 }}>
-                                <FormProvider {...methods}>
-                                    <FormInput
-                                        fullWidth
-                                        name="nombre"
-                                        label="Nombre"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
+        <MainCard title="Registrar Tipo de Catalogo">
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Grid container spacing={2}>
+                    <Grid item xs={8}>
+                        <Grid item xs zeroMinWidth sx={{ pb: 2 }}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="nombre"
+                                    label="Nombre"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
 
-                            <Grid item>
-                                <Grid item xs={12}>
-                                    <Grid container spacing={1}>
-                                        <Grid item xs={6}>
-                                            <AnimateButton>
-                                                <Button variant="contained" fullWidth type="submit">
-                                                    Guardar
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <AnimateButton>
-                                                <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
-                                                    Cancel
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
+                        <Grid item xs={12}>
+                            <Grid container spacing={1}>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth type="submit">
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
                                 </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </form>
-            </Grid>
+                </Grid>
+            </form>
         </MainCard>
     );
 };
 
-export default Post;
+export default TypeCatalog;

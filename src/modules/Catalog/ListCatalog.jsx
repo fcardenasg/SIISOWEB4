@@ -273,6 +273,7 @@ const ListCatalog = () => {
         })
     }
 
+
     useEffect(() => {
         GetAll();
     }, [])

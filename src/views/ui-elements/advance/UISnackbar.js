@@ -78,7 +78,7 @@ const UISnackbar = () => {
                                             message: 'This is Success',
                                             variant: 'alert',
                                             alertSeverity: 'success',
-                                            close: false
+                                            close: false,
                                         })
                                     }
                                 >

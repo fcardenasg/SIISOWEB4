@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
+import { useDispatch } from 'react-redux';
 
 // Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
@@ -10,7 +10,6 @@ import {
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -24,15 +23,19 @@ import {
     TextField,
     Toolbar,
     Tooltip,
-    Typography
+    Typography,
+    Button
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/AddTwoTone';
 import { visuallyHidden } from '@mui/utils';
 
 // Import de proyectos
+import { Message, TitleButton } from 'components/helpers/Enums';
+import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
+import { GetAllTypeCatalog, DeleteTypeCatalog } from 'api/clients/TypeCatalogClient';
 
 // Iconos y masss
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
@@ -41,7 +44,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 
-// Mesade Destino
+// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -65,7 +68,6 @@ function stableSort(array, comparator) {
     });
     return stabilizedThis.map((el) => el[0]);
 }
-
 
 /* Construcción de la cabecera de la Tabla */
 const headCells = [
@@ -175,7 +177,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     >
         {numSelected > 0 ? (
             <Typography color="inherit" variant="h4">
-                {numSelected} Seleccionadas
+                {numSelected} {TitleButton.Seleccionadas}
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
@@ -184,7 +186,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title="Delete" onClick={onClick}>
+            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
                 <IconButton size="large">
                     <DeleteIcon fontSize="small" />
                 </IconButton>
@@ -198,15 +200,14 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| LISTA FULL ORDENADA ||============================== //
+// ==============================|| RENDER DE LA LISTA ||============================== //
 
 const ListTypeCatalog = () => {
-
+    const dispatch = useDispatch();
     const [typeCatalog, setTypeCatalog] = useState([]);
-    console.log("Ver = ", typeCatalog);
 
+    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
-
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
     const [selected, setSelected] = useState([]);
@@ -215,22 +216,14 @@ const ListTypeCatalog = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
+    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        var page = 0;
-        var pageSize = 0;
-
-        await axios.get('https://localhost:44347/api/tipocatalogo', {
-            params: { page, pageSize }
-        }).then((respuesta) => {
-            setTypeCatalog(respuesta.data.entities);
-            setRows(respuesta.data.entities);
-
-            console.log("Estos son los datos => ", respuesta.data);
-        }).catch((error) => {
-            console.log(error);
-        })
+        const lsServer = await GetAllTypeCatalog(0, 0);
+        setTypeCatalog(lsServer.data.entities);
+        setRows(lsServer.data.entities);
     }
 
+    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
@@ -238,7 +231,6 @@ const ListTypeCatalog = () => {
     /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
-        console.log("Pulsacion = ", newString);
         setSearch(newString || '');
 
         if (newString) {
@@ -274,11 +266,9 @@ const ListTypeCatalog = () => {
 
     /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
-        console.log("handleSelectAllClick = ", event.target.checked)
 
         if (event.target.checked) {
             const newSelectedId = typeCatalog.map((n) => n.id);
-            console.log("newSelectedId = ", newSelectedId)
             setSelected(newSelectedId);
             return;
         }
@@ -287,8 +277,6 @@ const ListTypeCatalog = () => {
 
     /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
-        console.log("Evento = ", event.target.checked);
-        console.log("Seleccion traida = ", id);
         setIdCheck(id);
 
         const selectedIndex = selected.indexOf(id);
@@ -316,25 +304,24 @@ const ListTypeCatalog = () => {
         setPage(0);
     };
 
-    async function Delete(id = '') {
-        try {
-            await axios.delete(`https://localhost:44347/api/TipoCatalogo?idTipoCatalogo=${id}`)
-                .then((res) => { console.log(res) })
-                .catch((error) => { console.log(error) })
-                setSelected([]);
-            GetAll();
-        }
-        catch (error) {
-            // console.log(error.response.data);
-        }
-    }
-
     const [idCheck, setIdCheck] = useState('');
 
-    const handleDelete = () => {
-        console.log("id = ", idCheck);
-        Delete(idCheck);
-        console.log("El evento funciona... Eliminar");
+    /* FUNCION PARA ELIMINAR */
+    const handleDelete = async () => {
+        const result = await DeleteTypeCatalog(idCheck);
+        if (result.status === 200) {
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${Message.Eliminar}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
+        }
+        setSelected([]);
+        GetAll();
     }
 
     const navigate = useNavigate();
@@ -345,7 +332,7 @@ const ListTypeCatalog = () => {
     return (
         <MainCard title="Lista de Tipo Catalogo" content={false}>
 
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar */}
+            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -374,21 +361,12 @@ const ListTypeCatalog = () => {
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Filtrar">
-                            <IconButton size="large">
-                                <FilterListIcon />
-                            </IconButton>
-                        </Tooltip>
 
                         {/* product add & dialog */}
-                        <Fab
-                            color="primary"
-                            size="small"
-                            onClick={() => navigate("/typecatalog/add")}
-                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                        >
-                            <AddIcon fontSize="small" />
-                        </Fab>
+                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                            onClick={() => navigate("/typecatalog/add")}>
+                            {TitleButton.Agregar}
+                        </Button>
 
                     </Grid>
                 </Grid>
