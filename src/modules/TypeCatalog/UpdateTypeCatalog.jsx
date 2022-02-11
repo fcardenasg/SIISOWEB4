@@ -17,11 +17,12 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import { PutTypeCatalog } from 'formatdata/TypeCatalogForm';
 import { SNACKBAR_OPEN } from 'store/actions';
 import UpdateData from 'components/form/UpdateData';
 import { UpdateTypeCatalogs } from 'api/clients/TypeCatalogClient';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
@@ -29,7 +30,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 
 /* VALIDACIÓN CON YUP */
 const validationSchema = yup.object().shape({
-    nombre: yup.string().required('Comment Field is Required')
+    nombre: yup.string().required(`${ValidationMessage.Requerido}`)
 });
 
 const UpdateTypeCatalog = () => {
@@ -37,30 +38,27 @@ const UpdateTypeCatalog = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-
-
+    const navigate = useNavigate();
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
     });
 
+    const { handleSubmit, errors } = methods;
     const { id } = useParams();
 
-    const { handleSubmit, errors } = methods;
-
-    /* METODO DE INSERT  */
+    /* METODO DE UPDATE  */
     const onSubmit = async (datos) => {
-
-        const nombre = datos.nombre;
+        const DataToUpdate = PutTypeCatalog(id, datos.nombre);
 
         try {
             if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateTypeCatalogs({ id, nombre });
+                const result = await UpdateTypeCatalogs(DataToUpdate);
                 if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,
                         open: true,
-                        message: `${Message.Guardar}`,
+                        message: `${Message.Actualizar}`,
                         variant: 'alert',
                         alertSeverity: 'success',
                         close: false,
@@ -72,8 +70,6 @@ const UpdateTypeCatalog = () => {
             console.log(error);
         }
     };
-
-    const navigate = useNavigate();
 
     return (
         <MainCard title="Registrar Tipo de Catalogo">
@@ -102,7 +98,7 @@ const UpdateTypeCatalog = () => {
                                         <Grid item xs={6}>
                                             <AnimateButton>
                                                 <Button variant="contained" fullWidth type="submit">
-                                                    {TitleButton.Guardar}
+                                                    {TitleButton.Actualizar}
                                                 </Button>
                                             </AnimateButton>
                                         </Grid>

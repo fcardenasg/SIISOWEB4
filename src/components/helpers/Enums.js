@@ -15,16 +15,20 @@ export const enumObjeto = {
 
 export const TitleButton = {
     Guardar: 'Guardar',
-    Cancelar: 'Cancelar',
+    Cancelar: 'Cerrar',
     Actualizar: 'Actualizar',
     Eliminar: 'Eliminar',
     Agregar: 'Nuevo',
     Seleccionadas: 'Seleccionadas'
 }
 
+export const ValidationMessage = {
+    Requerido: 'Este campo es requerido'
+}
+
 export const Message = {
     Guardar: 'Registro guardado con éxito',
-    Actualizar: 'Registro actualizado',
+    Actualizar: 'Registro actualizado con éxito',
     Eliminar: 'Registro eliminado con éxito',
 
     Seleccionar: 'Debe seleccionar ',
