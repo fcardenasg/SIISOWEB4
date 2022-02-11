@@ -132,8 +132,9 @@ const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 //Nuestros import
 const ListTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/ListTypeCatalog')));
 const TypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/TypeCatalog')));
-const ListCatalog = Loadable(lazy(() => import('../modules/Catalog/ListCatalog')));
+const UpdateTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/UpdateTypeCatalog')));
 
+const ListCatalog = Loadable(lazy(() => import('../modules/Catalog/ListCatalog')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -145,6 +146,7 @@ const MainRoutes = {
         </AuthGuard>
     ),
     children: [
+        /* Render de Tipo Catalogo */
         {
             path: '/typecatalog/list',
             element: <ListTypeCatalog />
@@ -153,6 +155,13 @@ const MainRoutes = {
             path: '/typecatalog/add',
             element: <TypeCatalog />
         },
+        {
+            path: '/typecatalog/update/:id',
+            element: <UpdateTypeCatalog />
+        },
+
+
+
         {
             path: '/widget/statistics',
             element: <WidgetStatistics />

@@ -10,6 +10,7 @@ import {
     CardContent,
     Checkbox,
     Grid,
+    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -205,6 +206,7 @@ EnhancedTableToolbar.propTypes = {
 const ListTypeCatalog = () => {
     const dispatch = useDispatch();
     const [typeCatalog, setTypeCatalog] = useState([]);
+    console.log("Lista = ", typeCatalog);
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -449,9 +451,15 @@ const ListTypeCatalog = () => {
                                             <IconButton color="primary" size="large">
                                                 <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                             </IconButton>
-                                            <IconButton color="secondary" size="large">
-                                                <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                            </IconButton>
+                                            <Fab
+                                                size="small"
+                                                color="info"
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                onClick={() => navigate(`/typecatalog/update/${row.id}`)}>
+                                                <IconButton size="large">
+                                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                </IconButton>
+                                            </Fab>
                                         </TableCell>
                                     </TableRow>
                                 );

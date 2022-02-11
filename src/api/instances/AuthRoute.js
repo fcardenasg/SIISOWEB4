@@ -3,9 +3,10 @@ export const Url = {
 
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/idTipoCatalogo',
-    DeleteTipoCatalogo: 'api/TipoCatalogo?idTipoCatalogo=',
+
+    
     FilterTipoCatalogo: 'api/TipoCatalogo/FilterTipoCatalogo',
-    UpdateTipoCatalogo: 'api/TipoCatalogo',
+    
     Poliza: 'api/Poliza',
     ComTipoCatalogo: 'api/ComTipoCatalogo',
     Catalogo: 'api/Catalogo',

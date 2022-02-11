@@ -18,17 +18,20 @@ export async function postData(url = '', datos = {}) {
 }
 
 export async function getData(url = '', parametros = {}) {
+    const urlGet = new URL(`${Url.Base}${url}`)
+    Object.keys(parametros).forEach(key => urlGet.searchParams.append(key, parametros[key]))
 
-    return await axios.get(`${Url.Base}${url}`, {
-        params: { parametros }
-    }).then(respuesta => {
-        console.log(respuesta);
-        if (respuesta.status !== 200) throw Error(respuesta.status);
+    console.log(urlGet);
 
-        return respuesta;
-    }).catch((error) => {
-        console.log(error);
-    })
+    return await axios.get(urlGet)
+        .then(respuesta => {
+            console.log(respuesta);
+            if (respuesta.status !== 200) throw Error(respuesta.status);
+
+            return respuesta;
+        }).catch((error) => {
+            console.log(error);
+        })
 }
 
 export async function putData(url = '', datos = {}) {
