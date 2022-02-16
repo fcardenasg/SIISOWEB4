@@ -135,6 +135,8 @@ const TypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/TypeCatal
 const UpdateTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/UpdateTypeCatalog')));
 
 const ListCatalog = Loadable(lazy(() => import('../modules/Catalog/ListCatalog')));
+const Catalog = Loadable(lazy(() => import('../modules/Catalog/Catalog')));
+const UpdateCatalog = Loadable(lazy(() => import('../modules/Catalog/UpdateCatalog')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -158,6 +160,19 @@ const MainRoutes = {
         {
             path: '/typecatalog/update/:id',
             element: <UpdateTypeCatalog />
+        },
+        /* Render de Catalogo */
+        {
+            path: '/catalog/list',
+            element: <ListCatalog />
+        },
+        {
+            path: '/catalog/add',
+            element: <Catalog />
+        },
+        {
+            path: '/catalog/update/:id',
+            element: <UpdateCatalog />
         },
 
 
@@ -428,10 +443,6 @@ const MainRoutes = {
         {
             path: '/basic/tabs',
             element: <BasicUITabs />
-        },
-        {
-            path: '/catalog/list',
-            element: <ListCatalog />
         },
         {
             path: '/advance/pagination',

@@ -17,6 +17,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import { Url } from 'api/instances/AuthRoute';
 import { PutTypeCatalog } from 'formatdata/TypeCatalogForm';
 import { SNACKBAR_OPEN } from 'store/actions';
 import UpdateData from 'components/form/UpdateData';
@@ -72,8 +73,8 @@ const UpdateTypeCatalog = () => {
     };
 
     return (
-        <MainCard title="Registrar Tipo de Catalogo">
-            <UpdateData>
+        <MainCard title="Actualizar Tipo de Catalogo">
+            <UpdateData url={Url.TipoCatalogoId}>
                 {(TypeCatalog) => (
                     <form onSubmit={handleSubmit(onSubmit)}>
                         {console.log("Llegada de datos = ", TypeCatalog)}

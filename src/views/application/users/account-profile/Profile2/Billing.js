@@ -105,6 +105,7 @@ const Billing = () => {
                         </MenuItem>
                     ))}
                 </TextField>
+                {console.log("Seleccion = ", Country)}
             </Grid>
             <Grid item xs={12}>
                 <FormControlLabel

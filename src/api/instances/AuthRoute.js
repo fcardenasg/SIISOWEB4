@@ -2,15 +2,16 @@ export const Url = {
     Base: 'https://localhost:44347/',
 
     TipoCatalogo: 'api/TipoCatalogo',
-    TipoCatalogoId: 'api/TipoCatalogo/idTipoCatalogo',
+    TipoCatalogoId: 'api/TipoCatalogo/id',
+    
+    Catalogo: 'api/Catalogo',
+    CatalogoId: 'api/Catalogo/id',
 
     
     FilterTipoCatalogo: 'api/TipoCatalogo/FilterTipoCatalogo',
     
     Poliza: 'api/Poliza',
     ComTipoCatalogo: 'api/ComTipoCatalogo',
-    Catalogo: 'api/Catalogo',
-    CatalogoId: 'api/Catalogo/idCatalogo',
     CatalogoTipoCatalogo: 'api/Catalogo/GetAllByTipoCatalogo',
     ComCatalogoId: 'api/ComCatalogo/idCatalogo',
     ComCatalogo: 'api/ComCatalogo',

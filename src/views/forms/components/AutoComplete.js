@@ -13,13 +13,13 @@ import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone';
 
 // autocomplete options
 const top100Films = [
-    { label: 'The Dark Knight', id: 1 },
-    { label: 'Control with Control', id: 2 },
-    { label: 'Combo with Solo', id: 3 },
-    { label: 'The Dark', id: 4 },
-    { label: 'Fight Club', id: 5 },
-    { label: 'demo@company.com', id: 6 },
-    { label: 'Pulp Fiction', id: 7 }
+    { label: 'The Dark Knight', value: 1 },
+    { label: 'Control with Control', value: 2 },
+    { label: 'Combo with Solo', value: 3 },
+    { label: 'The Dark', value: 4 },
+    { label: 'Fight Club', value: 5 },
+    { label: 'demo@company.com', value: 6 },
+    { label: 'Pulp Fiction', value: 7 }
 ];
 
 // ==============================|| AUTOCOMPLETE ||============================== //
