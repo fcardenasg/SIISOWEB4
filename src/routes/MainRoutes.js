@@ -138,6 +138,15 @@ const ListCatalog = Loadable(lazy(() => import('../modules/Catalog/ListCatalog')
 const Catalog = Loadable(lazy(() => import('../modules/Catalog/Catalog')));
 const UpdateCatalog = Loadable(lazy(() => import('../modules/Catalog/UpdateCatalog')));
 
+const ListEmployee = Loadable(lazy(() => import('../modules/Employee/ListEmployee')));
+const Employee = Loadable(lazy(() => import('../modules/Employee/Employee')));
+const UpdateEmployee = Loadable(lazy(() => import('../modules/Employee/UpdateEmployee')));
+
+const ListSupplier = Loadable(lazy(() => import('../modules/Supplier/ListSupplier')));
+const Supplier = Loadable(lazy(() => import('../modules/Supplier/Supplier')));
+const UpdateSupplier = Loadable(lazy(() => import('../modules/Supplier/UpdateSupplier')));
+const ReportEmployee = Loadable(lazy(() => import('components/report/ReportEmployee')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -174,7 +183,36 @@ const MainRoutes = {
             path: '/catalog/update/:id',
             element: <UpdateCatalog />
         },
-
+        /* Render de Empleados */
+        {
+            path: '/employee/list',
+            element: <ListEmployee />
+        },
+        {
+            path: '/employee/add',
+            element: <Employee />
+        },
+        {
+            path: '/employee/update/:id',
+            element: <UpdateEmployee />
+        },
+        {
+            path: '/employee/report/:id',
+            element: <ReportEmployee />
+        },
+        /* Render de Proveedores */
+        {
+            path: '/supplier/list',
+            element: <ListSupplier />
+        },
+        {
+            path: '/supplier/add',
+            element: <Supplier />
+        },
+        {
+            path: '/supplier/update/:id',
+            element: <UpdateSupplier />
+        },
 
 
         {

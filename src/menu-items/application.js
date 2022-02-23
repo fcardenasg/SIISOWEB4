@@ -469,9 +469,9 @@ const application = {
                 },
                 {
                     id: 'progress',
-                    title: <FormattedMessage id="progress" />,
+                    title: <FormattedMessage id="Proveedor" />,
                     type: 'item',
-                    url: '/advance/progress',
+                    url: '/supplier/list',
                     breadcrumbs: false
                 },
                 {

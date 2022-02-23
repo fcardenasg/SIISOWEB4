@@ -2,12 +2,12 @@ import React from "react";
 import { Controller } from "react-hook-form";
 import PropTypes from 'prop-types';
 import {
-    MenuItem,
-    Select
+    Autocomplete,
+    TextField
 } from '@mui/material';
 import SelectRender from './SelectRender';
 
-const SelectInput = ({ bug, options, size, label, name, defaultValue }) => {
+const SelectOnChange = ({ bug, options, value, onChange, size, label, name, defaultValue }) => {
     let isError = false;
     let errorMessage = '';
     if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
@@ -18,21 +18,14 @@ const SelectInput = ({ bug, options, size, label, name, defaultValue }) => {
     return (
         <Controller
             as={
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label={label}
-                    fullWidth
-                    size={size}
-                >
-                    {options.map((option) => (
-                        <MenuItem value={option.value}>
-                            <span>
-                                {option.label}
-                            </span>
-                        </MenuItem>
-                    ))}
-                </Select>
+                <Autocomplete
+                    disableClearable
+                    options={options}
+                    inputValue={value}
+                    defaultValue={defaultValue}
+                    onChange={onChange}
+                    renderInput={(params) => <TextField {...params} label={label} />}
+                />
             }
             name={name}
             defaultValue={defaultValue}
@@ -40,13 +33,15 @@ const SelectInput = ({ bug, options, size, label, name, defaultValue }) => {
     );
 }
 
-export default SelectInput;
+export default SelectOnChange;
 
-SelectInput.propTypes = {
+SelectOnChange.propTypes = {
     bug: PropTypes.object,
+    onChange: PropTypes.func,
     defaultValue: PropTypes.string,
     name: PropTypes.string,
     label: PropTypes.string,
+    value: PropTypes.string,
     options: PropTypes.any,
     size: PropTypes.string
 };

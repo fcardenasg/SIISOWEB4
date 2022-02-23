@@ -17,7 +17,7 @@ const widget = {
             id: 'statistics',
             title: <FormattedMessage id="statistics" />,
             type: 'item',
-            url: '/widget/statistics',
+            url: '/employee/list',
             icon: icons.IconChartArcs
         },
         {

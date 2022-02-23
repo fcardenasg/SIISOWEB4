@@ -25,15 +25,20 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-    Button
+    Button,
+    Avatar,
+    Modal
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
 // Import de proyectos
+
+import BodyEmployee from './ViewEmployee';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
+import { GetAllEmployee, DeleteEmployee } from 'api/clients/EmployeeClient';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -44,6 +49,28 @@ import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+
+function getModalStyle() {
+    const top = 50;
+    const left = 50;
+
+    return {
+        top: `${top}%`,
+        margin: 'auto'
+    };
+}
 
 // Mesa de Destino
 function descendingComparator(a, b, orderBy) {
@@ -73,27 +100,45 @@ function stableSort(array, comparator) {
 /* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'idCatalogo',
+        id: 'id',
         numeric: false,
         label: 'ID',
         align: 'center'
     },
     {
-        id: 'nombre',
+        id: 'documento',
         numeric: false,
-        label: 'Nombre',
+        label: 'Documento',
         align: 'left'
     },
     {
-        id: 'codigo',
+        id: 'nombres',
         numeric: false,
-        label: 'Código',
+        label: 'Nombres',
         align: 'left'
     },
     {
-        id: 'nameTypeCatalog',
+        id: 'celular',
         numeric: false,
-        label: 'Tipo Catálogo',
+        label: 'Celular',
+        align: 'left'
+    },
+    {
+        id: 'email',
+        numeric: false,
+        label: 'Email',
+        align: 'left'
+    },
+    {
+        id: 'nameCompany',
+        numeric: false,
+        label: 'Empresa',
+        align: 'left'
+    },
+    {
+        id: 'nameSede',
+        numeric: false,
+        label: 'Sede',
         align: 'left'
     }
 ];
@@ -215,9 +260,10 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
-const ListCatalog = () => {
+const ListEmployee = () => {
     const dispatch = useDispatch();
-    const [catalog, setCatalog] = useState([]);
+    const [employee, setEmployee] = useState([]);
+    console.log("Lista = ", employee);
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -231,10 +277,26 @@ const ListCatalog = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        const lsServer = await GetAllCatalog(0, 0);
-        setCatalog(lsServer.data.entities);
+        const lsServer = await GetAllEmployee(0, 0);
+        setEmployee(lsServer.data.entities);
         setRows(lsServer.data.entities);
     }
+
+    const [modalStyle] = useState(getModalStyle);
+
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    /* Abrir Modal */
+    /*     const OpenModal = (idEmpleado) => {
+            return (<BodyEmployee IdEmployee={idEmpleado} openModal={true} />);
+        } */
 
     /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
@@ -250,7 +312,7 @@ const ListCatalog = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idCatalogo', 'nombre', 'codigo', 'nameTypeCatalog'];
+                const properties = ['id', 'documento', 'nombres', 'celular', 'email', 'nameSede', 'nameCompany'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -264,9 +326,9 @@ const ListCatalog = () => {
                 }
                 return matches;
             });
-            setCatalog(newRows);
+            setEmployee(newRows);
         } else {
-            setCatalog(rows);
+            setEmployee(rows);
         }
     };
 
@@ -281,7 +343,7 @@ const ListCatalog = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = catalog.map((n) => n.idCatalogo);
+            const newSelectedId = employee.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -321,7 +383,7 @@ const ListCatalog = () => {
 
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
-        const result = await DeleteCatalog(idCheck);
+        const result = await DeleteEmployee(idCheck);
         if (result.status === 200) {
             dispatch({
                 type: SNACKBAR_OPEN,
@@ -340,10 +402,10 @@ const ListCatalog = () => {
     const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - catalog.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employee.length) : 0;
 
     return (
-        <MainCard title="Lista de Catalogo" content={false}>
+        <MainCard title="Lista de Empleados" content={false}>
 
             {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
@@ -369,7 +431,8 @@ const ListCatalog = () => {
                                 <FileCopyIcon />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Impresión">
+
+                        <Tooltip title="Impresión" onClick={() => navigate(`/employee/report/${idCheck}`)}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -377,7 +440,7 @@ const ListCatalog = () => {
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/catalog/add")}>
+                            onClick={() => navigate("/employee/add")}>
                             {TitleButton.Agregar}
                         </Button>
 
@@ -394,19 +457,19 @@ const ListCatalog = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={catalog.length}
+                        rowCount={employee.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(catalog, getComparator(order, orderBy))
+                        {stableSort(employee, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.idCatalogo);
+                                const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -421,7 +484,7 @@ const ListCatalog = () => {
                                         {/* Desde aquí colocamos la llegada de los datos
                                         en cada columna, recordar solo cambiar el nombre y ya */}
 
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idCatalogo)}>
+                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -435,24 +498,18 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                #{row.idCatalogo}{' '}
-                                            </Typography>
+                                            <Avatar alt="Foto Empleado" src={row.imagenUrl} />
                                         </TableCell>
 
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -460,7 +517,7 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombre}{' '}
+                                                {row.documento}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -468,7 +525,7 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -476,7 +533,7 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.codigo}{' '}
+                                                {row.nombres}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -484,7 +541,7 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -492,25 +549,79 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameTypeCatalog}{' '}
+                                                {row.celular}{' '}
                                             </Typography>
                                         </TableCell>
 
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {' '}
+                                                {row.email}{' '}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {' '}
+                                                {row.nameCompany}{' '}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {' '}
+                                                {row.nameSede}{' '}
+                                            </Typography>
+                                        </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <IconButton color="primary" size="large">
-                                                <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                            </IconButton>
-                                            <Fab
-                                                size="small"
-                                                color="info"
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/catalog/update/${row.idCatalogo}`)}>
+                                            <Tooltip title="Detalles" onClick={handleOpen}>
+                                                <IconButton color="primary" size="large">
+                                                    <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                </IconButton>
+                                            </Tooltip>
+
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/employee/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
-                                            </Fab>
+                                            </Tooltip>
+                                            {console.log(row.id)}
                                         </TableCell>
+                                        {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
+                                        <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                            open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
+                                            aria-describedby="simple-modal-description"
+                                        >
+                                            <BodyEmployee IdEmployee={row.id} modalStyle={modalStyle} handleClose={handleClose} />
+                                        </Modal>
                                     </TableRow>
                                 );
                             })}
@@ -531,14 +642,16 @@ const ListCatalog = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={catalog.length}
+                count={employee.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
+
+
         </MainCard>
     );
 };
 
-export default ListCatalog;
+export default ListEmployee;
