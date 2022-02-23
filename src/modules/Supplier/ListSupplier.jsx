@@ -33,7 +33,7 @@ import { visuallyHidden } from '@mui/utils';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
+import { GetAllSupplier, DeleteSupplier } from 'api/clients/SupplierClient';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -73,27 +73,33 @@ function stableSort(array, comparator) {
 /* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'idCatalogo',
+        id: 'codiProv',
         numeric: false,
         label: 'ID',
         align: 'center'
     },
     {
-        id: 'nombre',
+        id: 'nombProv',
         numeric: false,
         label: 'Nombre',
         align: 'left'
     },
     {
-        id: 'codigo',
+        id: 'teleProv',
         numeric: false,
-        label: 'Código',
+        label: 'Teléfono',
         align: 'left'
     },
     {
-        id: 'nameTypeCatalog',
+        id: 'emaiProv',
         numeric: false,
-        label: 'Tipo Catálogo',
+        label: 'Correo Electronico',
+        align: 'left'
+    },
+    {
+        id: 'nameTypeSupplier',
+        numeric: false,
+        label: 'Tipo Proveedor',
         align: 'left'
     }
 ];
@@ -215,9 +221,9 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
-const ListCatalog = () => {
+const ListSupplier = () => {
     const dispatch = useDispatch();
-    const [catalog, setCatalog] = useState([]);
+    const [supplier, setSupplier] = useState([]);
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -231,8 +237,8 @@ const ListCatalog = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        const lsServer = await GetAllCatalog(0, 0);
-        setCatalog(lsServer.data.entities);
+        const lsServer = await GetAllSupplier(0, 0);
+        setSupplier(lsServer.data.entities);
         setRows(lsServer.data.entities);
     }
 
@@ -250,7 +256,7 @@ const ListCatalog = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idCatalogo', 'nombre', 'codigo', 'nameTypeCatalog'];
+                const properties = ['codiProv', 'nombProv', 'teleProv', 'emaiProv', 'nameTypeSupplier'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -264,9 +270,9 @@ const ListCatalog = () => {
                 }
                 return matches;
             });
-            setCatalog(newRows);
+            setSupplier(newRows);
         } else {
-            setCatalog(rows);
+            setSupplier(rows);
         }
     };
 
@@ -281,7 +287,7 @@ const ListCatalog = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = catalog.map((n) => n.idCatalogo);
+            const newSelectedId = supplier.map((n) => n.codiProv);
             setSelected(newSelectedId);
             return;
         }
@@ -321,7 +327,7 @@ const ListCatalog = () => {
 
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
-        const result = await DeleteCatalog(idCheck);
+        const result = await DeleteSupplier(idCheck);
         if (result.status === 200) {
             dispatch({
                 type: SNACKBAR_OPEN,
@@ -340,10 +346,10 @@ const ListCatalog = () => {
     const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - catalog.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - supplier.length) : 0;
 
     return (
-        <MainCard title="Lista de Catalogo" content={false}>
+        <MainCard title="Lista de Proveedores" content={false}>
 
             {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
@@ -377,7 +383,7 @@ const ListCatalog = () => {
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/catalog/add")}>
+                            onClick={() => navigate("/supplier/add")}>
                             {TitleButton.Agregar}
                         </Button>
 
@@ -394,19 +400,19 @@ const ListCatalog = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={catalog.length}
+                        rowCount={supplier.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(catalog, getComparator(order, orderBy))
+                        {stableSort(supplier, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.idCatalogo);
+                                const isItemSelected = isSelected(row.codiProv);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -421,7 +427,7 @@ const ListCatalog = () => {
                                         {/* Desde aquí colocamos la llegada de los datos
                                         en cada columna, recordar solo cambiar el nombre y ya */}
 
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idCatalogo)}>
+                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.codiProv)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -435,7 +441,7 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            onClick={(event) => handleClick(event, row.codiProv)}
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
@@ -444,7 +450,7 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                #{row.idCatalogo}{' '}
+                                                #{row.codiProv}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -452,7 +458,7 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            onClick={(event) => handleClick(event, row.codiProv)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -460,7 +466,7 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombre}{' '}
+                                                {row.nombProv}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -468,7 +474,7 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            onClick={(event) => handleClick(event, row.codiProv)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -476,7 +482,7 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.codigo}{' '}
+                                                {row.teleProv}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -484,7 +490,7 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            onClick={(event) => handleClick(event, row.codiProv)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -492,7 +498,23 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameTypeCatalog}{' '}
+                                                {row.emaiProv}{' '}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.codiProv)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {' '}
+                                                {row.nameTypeSupplier}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -505,7 +527,7 @@ const ListCatalog = () => {
                                                 size="small"
                                                 color="info"
                                                 sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/catalog/update/${row.idCatalogo}`)}>
+                                                onClick={() => navigate(`/supplier/update/${row.codiProv}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -531,7 +553,7 @@ const ListCatalog = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={catalog.length}
+                count={supplier.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -541,4 +563,4 @@ const ListCatalog = () => {
     );
 };
 
-export default ListCatalog;
+export default ListSupplier;

@@ -17,7 +17,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertTypeCatalog } from 'api/clients/TypeCatalogClient';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
@@ -25,7 +25,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 
 /* VALIDACIÓN CON YUP */
 const validationSchema = yup.object().shape({
-    nombre: yup.string().required('Comment Field is Required')
+    nombre: yup.string().required(`${ValidationMessage.Requerido}`)
 });
 
 const TypeCatalog = () => {

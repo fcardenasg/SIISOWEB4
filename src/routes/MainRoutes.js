@@ -135,11 +135,17 @@ const TypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/TypeCatal
 const UpdateTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/UpdateTypeCatalog')));
 
 const ListCatalog = Loadable(lazy(() => import('../modules/Catalog/ListCatalog')));
+const Catalog = Loadable(lazy(() => import('../modules/Catalog/Catalog')));
+const UpdateCatalog = Loadable(lazy(() => import('../modules/Catalog/UpdateCatalog')));
 
+const ListEmployee = Loadable(lazy(() => import('../modules/Employee/ListEmployee')));
+const Employee = Loadable(lazy(() => import('../modules/Employee/Employee')));
+const UpdateEmployee = Loadable(lazy(() => import('../modules/Employee/UpdateEmployee')));
 
-const ListCompany = Loadable(lazy(() => import('../modules/Company/ListCompany')));
-const Company = Loadable(lazy(() => import('../modules/Company/Company')));
-const UpdateCompany = Loadable(lazy(() => import('../modules/Company/UpdateCompany')));
+const ListSupplier = Loadable(lazy(() => import('../modules/Supplier/ListSupplier')));
+const Supplier = Loadable(lazy(() => import('../modules/Supplier/Supplier')));
+const UpdateSupplier = Loadable(lazy(() => import('../modules/Supplier/UpdateSupplier')));
+const ReportEmployee = Loadable(lazy(() => import('components/report/ReportEmployee')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -164,26 +170,55 @@ const MainRoutes = {
             path: '/typecatalog/update/:id',
             element: <UpdateTypeCatalog />
         },
+        /* Render de Catalogo */
+        {
+            path: '/catalog/list',
+            element: <ListCatalog />
+        },
+        {
+            path: '/catalog/add',
+            element: <Catalog />
+        },
+        {
+            path: '/catalog/update/:id',
+            element: <UpdateCatalog />
+        },
+        /* Render de Empleados */
+        {
+            path: '/employee/list',
+            element: <ListEmployee />
+        },
+        {
+            path: '/employee/add',
+            element: <Employee />
+        },
+        {
+            path: '/employee/update/:id',
+            element: <UpdateEmployee />
+        },
+        {
+            path: '/employee/report/:id',
+            element: <ReportEmployee />
+        },
+        /* Render de Proveedores */
+        {
+            path: '/supplier/list',
+            element: <ListSupplier />
+        },
+        {
+            path: '/supplier/add',
+            element: <Supplier />
+        },
+        {
+            path: '/supplier/update/:id',
+            element: <UpdateSupplier />
+        },
 
-        {
-            path: '/company/list',
-            element: <ListCompany />
-        },
-        {
-            path: '/company/add',
-            element: <Company />
-        },
-        {
-            path: '/company/update/:id',
-            element: <UpdateCompany />
-        },
 
         {
             path: '/widget/statistics',
             element: <WidgetStatistics />
         },
-
-        
         {
             path: '/widget/data',
             element: <WidgetData />
@@ -446,10 +481,6 @@ const MainRoutes = {
         {
             path: '/basic/tabs',
             element: <BasicUITabs />
-        },
-        {
-            path: '/catalog/list',
-            element: <ListCatalog />
         },
         {
             path: '/advance/pagination',

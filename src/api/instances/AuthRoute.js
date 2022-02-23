@@ -2,22 +2,19 @@ export const Url = {
     Base: 'https://localhost:44347/',
 
     TipoCatalogo: 'api/TipoCatalogo',
-    TipoCatalogoId: 'api/TipoCatalogo/idTipoCatalogo',
+    TipoCatalogoId: 'api/TipoCatalogo/id',
 
-    
-    FilterTipoCatalogo: 'api/TipoCatalogo/FilterTipoCatalogo',
-    
-    Poliza: 'api/Poliza',
-    ComTipoCatalogo: 'api/ComTipoCatalogo',
     Catalogo: 'api/Catalogo',
-    CatalogoId: 'api/Catalogo/idCatalogo',
-    CatalogoTipoCatalogo: 'api/Catalogo/GetAllByTipoCatalogo',
-    ComCatalogoId: 'api/ComCatalogo/idCatalogo',
-    ComCatalogo: 'api/ComCatalogo',
-    ComProveedor: 'api/ComProveedor',
-    Contrato: 'api/Contrato',
+    CatalogoId: 'api/Catalogo/id',
+    GetAllByTipoCatalogo: 'api/Catalogo/GetAllByTipoCatalogo',
+    GetAllBySubTipoCatalogo: 'api/Catalogo/GetAllBySubTipoCatalogo',
+
+    Empleado: 'api/Empleado',
+    EmpleadoId: 'api/Empleado/id',
+
     Empresa: 'api/Empresa',
-    EmpresaId: 'api/Empresa/idEmpresa',
+    EmpresaId: 'api/Empresa/id',
+
     Proveedor: 'api/Proveedor',
-    Objeto: 'api/Objeto',
+    ProveedorId: 'api/Proveedor/id',
 }

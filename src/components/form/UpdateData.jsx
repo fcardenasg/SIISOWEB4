@@ -1,19 +1,17 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { GetByIdTypeCatalog } from 'api/clients/TypeCatalogClient';
+import { GetById } from 'api/clients/OthersClients';
 import Cargando from 'components/Cargando';
 import PropTypes from 'prop-types';
 
-
-const UpdateData = ({ children }) => {
+const UpdateData = ({ children, url }) => {
 
     const { id } = useParams();
-    console.log("ID del parametro = ", id);
     const [entidad, setEntidad] = useState([]);
-    console.log(" Entidad = ", entidad);
 
     async function GetAll() {
-        const lsServer = await GetByIdTypeCatalog(id);
+        const lsServer = await GetById(url, id);
+        console.log("lsServer = ", lsServer);
         if (lsServer.status === 200) {
             setEntidad(lsServer.data);
         }
@@ -33,5 +31,6 @@ const UpdateData = ({ children }) => {
 export default UpdateData;
 
 UpdateData.propTypes = {
-    children: PropTypes.node
+    children: PropTypes.node,
+    url: PropTypes.string.isRequired
 };
