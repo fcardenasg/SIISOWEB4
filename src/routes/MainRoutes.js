@@ -136,6 +136,11 @@ const UpdateTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/Upd
 
 const ListCatalog = Loadable(lazy(() => import('../modules/Catalog/ListCatalog')));
 
+
+const ListCompany = Loadable(lazy(() => import('../modules/Company/ListCompany')));
+const Company = Loadable(lazy(() => import('../modules/Company/Company')));
+const UpdateCompany = Loadable(lazy(() => import('../modules/Company/UpdateCompany')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -160,12 +165,25 @@ const MainRoutes = {
             element: <UpdateTypeCatalog />
         },
 
-
+        {
+            path: '/company/list',
+            element: <ListCompany />
+        },
+        {
+            path: '/company/add',
+            element: <Company />
+        },
+        {
+            path: '/company/update/:id',
+            element: <UpdateCompany />
+        },
 
         {
             path: '/widget/statistics',
             element: <WidgetStatistics />
         },
+
+        
         {
             path: '/widget/data',
             element: <WidgetData />
