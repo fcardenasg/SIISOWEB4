@@ -326,6 +326,7 @@ const ListCompany = () => {
 
     const [idCheck, setIdCheck] = useState('');
 
+
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         const result = await DeleteCompany(idCheck);
@@ -376,11 +377,14 @@ const ListCompany = () => {
                                 <FileCopyIcon />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Impresión">
+                   
+                        <Tooltip title="Impresión" onClick={() => navigate('/company/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
+
+
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
@@ -444,7 +448,7 @@ const ListCompany = () => {
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
                                                 {' '}
                                                 #{row.codigo}{' '}
@@ -460,7 +464,7 @@ const ListCompany = () => {
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
                                                 {' '}
                                                 {row.descripcionSpa}{' '}
@@ -476,7 +480,7 @@ const ListCompany = () => {
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
                                                 {' '}
                                                 {row.email}{' '}
@@ -492,7 +496,7 @@ const ListCompany = () => {
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
                                                 {' '}
                                                 {row.celular}{' '}
@@ -508,7 +512,7 @@ const ListCompany = () => {
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
                                                 {' '}
                                                 {row.gerente}{' '}
