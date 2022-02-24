@@ -57,6 +57,7 @@ const Employee = () => {
     const [lsCodigoFilter, setCodigoFilter] = useState([]);
     const [valueSelect, setValues] = useState('');
     const [imgSrc, setImgSrc] = useState(null);
+    const [estado, setEstado] = useState(true);
 
     /* ESTADOS PARA LAS FECHAS */
     const [valueFechaNaci, setFechaNaci] = useState(null);
@@ -64,8 +65,6 @@ const Employee = () => {
     const [valueTermDate, setTermDate] = useState(null);
     const [valueFechaModificacion, setFechaModificacion] = useState(null);
     const [valueFechaCreacion, setFechaCreacion] = useState(null);
-
-
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
@@ -202,6 +201,7 @@ const Employee = () => {
                         RemoverImg={Remover}
                         ImgSrc={imgSrc}
                         WebCamRef={WebCamRef}
+                        EstadoImg={estado}
                     />
 
                     <Grid container spacing={2} sx={{ pb: 3 }}>
