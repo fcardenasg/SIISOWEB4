@@ -462,9 +462,9 @@ const application = {
                 },
                 {
                     id: 'pagination',
-                    title: <FormattedMessage id="pagination" />,
+                    title: <FormattedMessage id="Empresas" />,
                     type: 'item',
-                    url: '/advance/pagination',
+                    url: '/company/list',
                     breadcrumbs: false
                 },
                 {
