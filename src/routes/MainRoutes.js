@@ -138,14 +138,21 @@ const ListCatalog = Loadable(lazy(() => import('../modules/Catalog/ListCatalog')
 const Catalog = Loadable(lazy(() => import('../modules/Catalog/Catalog')));
 const UpdateCatalog = Loadable(lazy(() => import('../modules/Catalog/UpdateCatalog')));
 
+const ListCompany = Loadable(lazy(() => import('../modules/Company/ListCompany')));
+const Company = Loadable(lazy(() => import('../modules/Company/Company')));
+const UpdateCompany = Loadable(lazy(() => import('../modules/Company/UpdateCompany')));
+const ReportCompany = Loadable(lazy(() => import('components/report/ReportCompany')));
+
+
 const ListEmployee = Loadable(lazy(() => import('../modules/Employee/ListEmployee')));
 const Employee = Loadable(lazy(() => import('../modules/Employee/Employee')));
 const UpdateEmployee = Loadable(lazy(() => import('../modules/Employee/UpdateEmployee')));
+const ReportEmployee = Loadable(lazy(() => import('components/report/ReportEmployee')));
 
 const ListSupplier = Loadable(lazy(() => import('../modules/Supplier/ListSupplier')));
 const Supplier = Loadable(lazy(() => import('../modules/Supplier/Supplier')));
 const UpdateSupplier = Loadable(lazy(() => import('../modules/Supplier/UpdateSupplier')));
-const ReportEmployee = Loadable(lazy(() => import('components/report/ReportEmployee')));
+
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -183,6 +190,25 @@ const MainRoutes = {
             path: '/catalog/update/:id',
             element: <UpdateCatalog />
         },
+    /* Render de Empresas */
+        {
+            path: '/company/list',
+            element: <ListCompany />
+        },
+        {
+            path: '/company/add',
+            element: <Company />
+        },
+        {
+            path: '/company/update/:id',
+            element: <UpdateCompany />
+        },
+        {
+            path: '/company/report',
+            element: <ReportCompany />
+        },
+
+
         /* Render de Empleados */
         {
             path: '/employee/list',

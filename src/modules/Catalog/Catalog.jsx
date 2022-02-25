@@ -92,7 +92,7 @@ const Catalog = () => {
         <MainCard title="Registrar Catalogo">
             <Grid item xs={12} spacing={2} sx={{ pt: 3 }}>
                 <form onSubmit={handleSubmit(handleClick)}>
-                    <Grid container spacing={2} sx={{ pb: 3 }}>
+                <Grid container spacing={2} sx={{ pb: 3 }}>
                         <Grid item xs={12} sm={6}>
                             <FormProvider {...methods}>
                                 <InputSelect

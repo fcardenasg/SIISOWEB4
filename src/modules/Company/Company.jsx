@@ -52,7 +52,11 @@ const Company = () => {
 
     /* METODO DE INSERT  */
     const onSubmit = async (datos) => {
+     
+      
+
         if (Object.keys(datos.length !== 0)) {
+        
             const result = await InsertCompany(datos);
             if (result.status === 200) {
                 dispatch({
@@ -66,7 +70,12 @@ const Company = () => {
                 })
                 reset();
             }
+
+    
         }
+ 
+
+
     };
 
     const navigate = useNavigate();
@@ -75,6 +84,7 @@ const Company = () => {
         <MainCard title="Registrar Empresas">
             <Grid item xs={12} spacing={2} sx={{ pt: 3 }}>
                 <form onSubmit={handleSubmit(onSubmit)}>
+
 
                     <Grid container spacing={2} sx={{ pb: 3 }}>
                         <Grid item xs={4}>
@@ -138,6 +148,7 @@ const Company = () => {
                             </FormProvider>
                         </Grid>
                     </Grid>
+
 
                     <Grid item xs={12} sx={{ pb: 3 }}>
                         <Grid container spacing={1}>

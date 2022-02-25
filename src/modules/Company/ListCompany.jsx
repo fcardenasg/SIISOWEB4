@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
+
 // Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -35,15 +36,25 @@ import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllCompany, DeleteCompany } from 'api/clients/CompanyClient';
 
+
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
+
+
+import { IconFileExport } from '@tabler/icons';
+
 import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import ReactExport from "react-export-excel";
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 // Mesa de Destino
 function descendingComparator(a, b, orderBy) {
@@ -105,6 +116,10 @@ const headCells = [
 ];
 
 // ==============================|| TABLE HEADER ||============================== //
+
+
+
+
 
 /* RENDERIZADO DE LA CABECERA */
 
@@ -349,8 +364,12 @@ const ListCompany = () => {
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - company.length) : 0;
 
+
+
     return (
         <MainCard title="Lista de Empresas" content={false}>
+
+
 
             {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
@@ -371,16 +390,31 @@ const ListCompany = () => {
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <Tooltip title="Copiar">
-                            <IconButton size="large">
-                                <FileCopyIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Impresión">
+
+                        <ExcelFile element={
+                            <Tooltip title="Exportar">
+                                <IconButton size="large">
+                                    <IconFileExport />
+                                </IconButton>
+                            </Tooltip>
+                        } filename="Empresas">
+                            <ExcelSheet data={company} name="Empresas">
+                                <ExcelColumn label="Codigo" value="codigo" />
+                                <ExcelColumn label="Empresa" value="descripcionSpa" />
+                                <ExcelColumn label="Contacto" value="gerente" />
+                                <ExcelColumn label="Correo Electronico" value="email" />
+                                <ExcelColumn label="Celular" value="celular" />
+                            </ExcelSheet>
+                        </ExcelFile>
+
+
+                        <Tooltip title="Impresión" onClick={() => navigate('/company/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
+
+
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
@@ -444,7 +478,7 @@ const ListCompany = () => {
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
                                                 {' '}
                                                 #{row.codigo}{' '}
@@ -460,7 +494,7 @@ const ListCompany = () => {
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
                                                 {' '}
                                                 {row.descripcionSpa}{' '}
@@ -476,7 +510,7 @@ const ListCompany = () => {
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
                                                 {' '}
                                                 {row.email}{' '}
@@ -492,7 +526,7 @@ const ListCompany = () => {
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
                                                 {' '}
                                                 {row.celular}{' '}
@@ -508,7 +542,7 @@ const ListCompany = () => {
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
                                                 {' '}
                                                 {row.gerente}{' '}
@@ -520,18 +554,14 @@ const ListCompany = () => {
 
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <IconButton color="primary" size="large">
-                                                <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                            </IconButton>
-                                            <Fab
-                                                size="small"
-                                                color="info"
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/company/update/${row.codigo}`)}>
+
+
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/company/update/${row.codigo}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
-                                            </Fab>
+                                            </Tooltip>
+
                                         </TableCell>
                                     </TableRow>
                                 );
