@@ -5,14 +5,8 @@ import {
     Button,
     Grid,
     useMediaQuery,
-    Typography,
-    Modal,
-    CardContent,
-    IconButton,
-    Fade,
-    Backdrop
+    Typography
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 
 // Terceros
 import { useNavigate } from 'react-router-dom';
@@ -173,9 +167,6 @@ const Employee = () => {
 
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
-        console.log("dptoNacido = ", datos.dptoNacido);
-
-
         const FechaNaci = FormatDate(valueFechaNaci);
         const FechaContrato = FormatDate(valueFechaContrato);
         const TermDate = FormatDate(valueTermDate);
@@ -190,6 +181,8 @@ const Employee = () => {
             datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
             datos.bandera, datos.ges, datos.usuarioModifica, FechaModificacion, datos.usuarioCreacion,
             FechaCreacion, imgSrc);
+
+        console.log("fechaNaci = ", datos.fechaNaci);
 
         if (Object.keys(datos.length !== 0)) {
             const result = await InsertEmployee(DataToInsert);
@@ -329,7 +322,7 @@ const Employee = () => {
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputDate
-                                        defaultValue=""
+                                        defaultValue={null}
                                         name="fechaNaci"
                                         label="Fecha de Nacimiento"
                                         value={valueFechaNaci}

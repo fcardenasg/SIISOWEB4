@@ -10,7 +10,7 @@ import {
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { LocalizationProvider, DatePicker } from '@mui/lab';
 
-const InputDate = ({ bug, onChange, control, value, options, size, defaultValue, label, name, required, ...others }) => {
+const InputDate = ({ bug, defaultCalendarMonth, onChange, control, value, options, size, defaultValue, label, name, required, ...others }) => {
 
 
     let isError = false;
@@ -67,5 +67,6 @@ InputDate.propTypes = {
     defaultValue: PropTypes.any,
     name: PropTypes.string,
     required: PropTypes.bool,
-    control: PropTypes.any
+    control: PropTypes.any,
+    defaultCalendarMonth: PropTypes.any
 };

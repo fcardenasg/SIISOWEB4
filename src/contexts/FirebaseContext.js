@@ -4,6 +4,7 @@ import { createContext, useEffect, useReducer } from 'react';
 // third-party
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/firestore';
 
 // action - state management
 import { LOGIN, LOGOUT } from 'store/actions';
@@ -17,6 +18,8 @@ import config from 'config';
 if (!firebase.apps.length) {
     firebase.initializeApp(config.firebase);
 }
+
+/* export const firebaseApp = firebase.initializeApp(config.firebase); */
 
 // const
 const initialState = {
@@ -73,7 +76,7 @@ export const FirebaseProvider = ({ children }) => {
         await firebase.auth().sendPasswordResetEmail(email);
     };
 
-    const updateProfile = () => {};
+    const updateProfile = () => { };
     if (state.isInitialized !== undefined && !state.isInitialized) {
         return <Loader />;
     }
@@ -84,7 +87,7 @@ export const FirebaseProvider = ({ children }) => {
                 ...state,
                 firebaseRegister,
                 firebaseEmailPasswordSignIn,
-                login: () => {},
+                login: () => { },
                 firebaseGoogleSignIn,
                 logout,
                 resetPassword,
