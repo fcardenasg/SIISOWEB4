@@ -32,7 +32,13 @@ const ReportEmployee = () => {
     return (
         <Grid container justifyContent="center" spacing={gridSpacing}>
             <Grid item xs={12} md={10} lg={8} ref={componentRef}>
-                <SubCard darkTitle title="Invoice #125863478945" secondary={<Logo />}>
+                <SubCard darkTitle title={
+                    <>
+                        <Typography variant="subtitle1">Reporte de empresa</Typography>
+                        <Typography variant="subtitle1">Drummond</Typography>
+                        <Typography variant="subtitle1">LTD</Typography>
+                    </>
+                } secondary={<Logo />}>
                     <Grid container spacing={gridSpacing}>
                         <Grid item xs={12}>
                             <Grid container spacing={0}>
