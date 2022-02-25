@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -14,7 +14,7 @@ import { Button, Divider, Grid, Table, TableBody, TableCell, TableContainer, Tab
 import ReactToPrint from 'react-to-print';
 
 // project imports
-import {GetAllCompany} from 'api/clients/CompanyClient';
+import { GetAllCompany } from 'api/clients/CompanyClient';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import Chip from 'ui-component/extended/Chip';
@@ -36,23 +36,23 @@ const rows = [
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.primary.main,
-      color: theme.palette.common.white,
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
-      fontSize: 1,
+        fontSize: 12,
     },
-  }));
-  
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
+        backgroundColor: theme.palette.action.hover,
     },
     // hide last border
     '&:last-child td, &:last-child th': {
-      border: 1,
+        border: 1,
     },
-  }));
+}));
 
 
 const ReportCompany = () => {
@@ -71,19 +71,21 @@ const ReportCompany = () => {
         GetAll();
     }, [])
 
+    const navigate = useNavigate();
+
     return (
         <Grid container justifyContent="center" spacing={gridSpacing}>
             <Grid item xs={18} md={6} lg={12} ref={componentRef}>
                 <SubCard darkTitle title={
                     <>
-                     <Typography variant="subtitle1">DRUMMOND LTD</Typography>
-                     <Typography variant="subtitle1">DEPARTAMENTO DE SALUD E HIGIENE OCUPACIONAL</Typography>
-                     <Typography variant="subtitle1">LISTADO DE EMPRESAS</Typography>
+                        <Typography variant="subtitle1">DRUMMOND LTD</Typography>
+                        <Typography variant="subtitle1">DEPARTAMENTO DE SALUD E HIGIENE OCUPACIONAL</Typography>
+                        <Typography variant="subtitle1">LISTADO DE EMPRESAS</Typography>
                     </>
                 } secondary={<Logo />}>
                     <Grid container spacing={gridSpacing}>
-                
-                  
+
+
                         <Grid item xs={20}>
                             <TableContainer>
                                 <Table
@@ -98,15 +100,15 @@ const ReportCompany = () => {
                                             pl: { xs: 1, md: 5 }
                                         },
                                         '& th:last-child, & td:last-child': {
-                                            pr: { xs: 1, md: 5}
+                                            pr: { xs: 1, md: 5 }
                                         }
                                     }}
                                 >
 
-                                    
+
                                     <TableHead>
                                         <TableRow>
-                                   
+
                                             <StyledTableCell align="left">ID</StyledTableCell>
                                             <StyledTableCell align="left">EMPRESA</StyledTableCell>
                                             <StyledTableCell align="left">CONTACTO</StyledTableCell>
@@ -123,7 +125,7 @@ const ReportCompany = () => {
                                     <TableBody>
                                         {company.map((row, index) => (
                                             <TableRow key={index}>
-                                        
+
                                                 <TableCell align="left">{row.codigo}</TableCell>
                                                 <TableCell align="left">{row.descripcionSpa}</TableCell>
                                                 <TableCell align="left">{row.gerente}</TableCell>
@@ -138,9 +140,9 @@ const ReportCompany = () => {
                                 </Table>
                             </TableContainer>
                         </Grid>
-                       
-            
-                     
+
+
+
                     </Grid>
                 </SubCard>
             </Grid>
@@ -150,13 +152,13 @@ const ReportCompany = () => {
                     spacing={1}
                     justifyContent="center"
                     sx={{
-                        maxWidth: 950,
+                        maxWidth: 700,
                         mx: 'auto',
                         mt: 0,
-                        mb: 1.5,
+                        mb: 2.5,
                         '& > .MuiCardContent-root': {
                             py: { xs: 1.75, md: 1 },
-                            px: { xs: 1.5, md: 1 }
+                            px: { xs: 2.5, md: 1 }
                         }
                     }}
                 >
@@ -164,6 +166,14 @@ const ReportCompany = () => {
                         <AnimateButton>
                             <ReactToPrint trigger={() => <Button variant="contained">Imprimir</Button>} content={() => componentRef.current} />
                         </AnimateButton>
+
+                        <AnimateButton>
+                            <Button variant="contained" onClick={() => navigate('/company/list')}>
+                                Cerrar
+                            </Button>
+                        </AnimateButton>
+
+
                     </Grid>
                 </Grid>
             </Grid>

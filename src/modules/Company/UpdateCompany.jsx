@@ -84,6 +84,7 @@ const UpdateCompany = () => {
                                         <InputText
                                             defaultValue={Company.codigo}
                                             fullWidth
+                                            disabled
                                             name="codigo"
                                             label="Código"
                                             size={matchesXS ? 'small' : 'medium'}
