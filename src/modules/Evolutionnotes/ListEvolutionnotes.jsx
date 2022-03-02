@@ -434,7 +434,7 @@ const ListAssistance = () => {
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/assistance/report/${idCheck}`)}>
+                        <Tooltip title="Impresión" onClick={() => navigate(`/evolutionnotes/report/${idCheck}`)}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -442,7 +442,7 @@ const ListAssistance = () => {
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/assistance/add")}>
+                            onClick={() => navigate("/evolutionnotes/add")}>
                             {TitleButton.Agregar}
                         </Button>
 
@@ -610,7 +610,7 @@ const ListAssistance = () => {
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/employee/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/evolutionnotes/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>

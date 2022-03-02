@@ -284,7 +284,7 @@ const Assistance = () => {
 
 
     return (
-        <MainCard title="Registrar TRIAGE">
+        <MainCard title="">
             <Grid container xs={12} sx={{ pt: 0.5 }}>
                 <form onSubmit={handleSubmit(handleClick)}>
 

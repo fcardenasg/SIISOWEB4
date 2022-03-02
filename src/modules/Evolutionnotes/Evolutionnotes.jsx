@@ -67,7 +67,7 @@ mic.lang = 'es-ES'
 
 
 
-const Assistance = () => {
+const Evolutionnotes = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -284,7 +284,7 @@ const Assistance = () => {
 
 
     return (
-        <MainCard title="Registrar Notas de evolucíon">
+        <MainCard title="">
             <Grid container xs={12} sx={{ pt: 0.5 }}>
                 <form onSubmit={handleSubmit(handleClick)}>
                     <SubCard darkTitle title={
@@ -1519,5 +1519,5 @@ const Assistance = () => {
 
 
 
-export default Assistance;
+export default Evolutionnotes;
 
