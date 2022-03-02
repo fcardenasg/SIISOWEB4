@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -26,6 +27,7 @@ import {
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import firebase from 'firebase/app';
 
 // project imports
 import useAuth from 'hooks/useAuth';
@@ -46,8 +48,9 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const customization = useSelector((state) => state.customization);
     const [checked, setChecked] = useState(true);
+    const navigate = useNavigate();
 
-    const { firebaseEmailPasswordSignIn, firebaseGoogleSignIn } = useAuth();
+    const { firebaseEmailPasswordSignIn, firebaseGoogleSignIn, isLoggedIn } = useAuth();
     const googleHandler = async () => {
         try {
             await firebaseGoogleSignIn();
@@ -55,6 +58,7 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
             console.error(err);
         }
     };
+
 
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => {
@@ -131,7 +135,7 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
 
             <Formik
                 initialValues={{
-                    email: 'info@codedthemes.com',
+                    email: 'correovisitante@gmail.com',
                     password: '123456',
                     submit: null
                 }}
@@ -141,8 +145,9 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        await firebaseEmailPasswordSignIn(values.email, values.password).then(
-                            () => {
+                        const logueado = await firebaseEmailPasswordSignIn(values.email, values.password).then(
+                            (userFireBase) => {
+                                return userFireBase;
                                 // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
                                 // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
                                 // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
@@ -156,6 +161,32 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                                 }
                             }
                         );
+                        var docRef = firebase.firestore().doc(`Usuarios/${logueado.user.uid}`);
+
+                        const datosFin = await docRef.get().then((doc) => {
+                            if (doc.exists) {
+                                console.log("Documento datos:", doc.data());
+                                return doc.data();
+                            } else {
+                                // doc.data() will be undefined in this case
+                                console.log("No such document!");
+                            }
+                        }).catch((error) => {
+                            console.log("Error getting document:", error);
+                        });
+
+                        const userData = {
+                            uid: logueado.user.uid,
+                            email: logueado.user.email,
+                            rol: datosFin.rol
+                        }
+
+                        if (userData.rol === "visitante") {
+                            navigate("/dashboard/questionnaire");
+                        }
+
+                        console.log(userData);
+
                     } catch (err) {
                         console.error(err);
                         if (scriptedRef.current) {

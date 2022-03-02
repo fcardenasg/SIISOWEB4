@@ -29,7 +29,6 @@ const InputDate = ({ bug, defaultCalendarMonth, onChange, control, value, option
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
-                                    margin="none"
                                     fullWidth
                                 /* inputProps={{ style: { fontSize: 14 } }} */
                                 /* InputLabelProps={{ style: { fontSize: 14 } }} */

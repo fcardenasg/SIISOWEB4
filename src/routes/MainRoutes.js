@@ -190,7 +190,7 @@ const MainRoutes = {
             path: '/catalog/update/:id',
             element: <UpdateCatalog />
         },
-    /* Render de Empresas */
+        /* Render de Empresas */
         {
             path: '/company/list',
             element: <ListCompany />

@@ -26,7 +26,6 @@ import {
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import firebase from 'firebase/app';
-/* import { getFirestore } from 'firebase/firestore'; */
 
 // project imports
 import useAuth from 'hooks/useAuth';
@@ -167,15 +166,11 @@ const FirebaseRegister = ({ ...others }) => {
                             }
                         );
 
+                        const visitante = "visitante";
                         firebase.firestore().doc(`Usuarios/${infoUsuario.user.uid}`).set({
                             correo: values.email,
                             rol: visitante
                         });
-
-                        /* const docuRef = await doc(); */
-                        /* setDoc(docuRef, {}); */
-
-                        console.log("infoUsuario = ", infoUsuario);
                     } catch (err) {
                         console.error(err);
                         if (scriptedRef.current) {

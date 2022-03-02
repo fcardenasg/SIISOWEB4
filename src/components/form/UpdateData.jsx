@@ -10,10 +10,14 @@ const UpdateData = ({ children, url }) => {
     const [entidad, setEntidad] = useState([]);
 
     async function GetAll() {
-        const lsServer = await GetById(url, id);
-        console.log("lsServer = ", lsServer);
-        if (lsServer.status === 200) {
-            setEntidad(lsServer.data);
+        try {
+            const lsServer = await GetById(url, id);
+            console.log("lsServer = ", lsServer);
+            if (lsServer.status === 200) {
+                setEntidad(lsServer.data);
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
 

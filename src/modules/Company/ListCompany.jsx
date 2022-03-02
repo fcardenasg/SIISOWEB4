@@ -115,11 +115,6 @@ const headCells = [
     }
 ];
 
-// ==============================|| TABLE HEADER ||============================== //
-
-
-
-
 
 /* RENDERIZADO DE LA CABECERA */
 
@@ -253,9 +248,13 @@ const ListCompany = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        const lsServer = await GetAllCompany(0, 0);
-        setCompany(lsServer.data.entities);
-        setRows(lsServer.data.entities);
+        try {
+            const lsServer = await GetAllCompany(0, 0);
+            setCompany(lsServer.data.entities);
+            setRows(lsServer.data.entities);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     /* EL useEffect QUE LLENA LA LISTA */
@@ -343,20 +342,24 @@ const ListCompany = () => {
 
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
-        const result = await DeleteCompany(idCheck);
-        if (result.status === 200) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${Message.Eliminar}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+        try {
+            const result = await DeleteCompany(idCheck);
+            if (result.status === 200) {
+                dispatch({
+                    type: SNACKBAR_OPEN,
+                    open: true,
+                    message: `${Message.Eliminar}`,
+                    variant: 'alert',
+                    alertSeverity: 'error',
+                    close: false,
+                    transition: 'SlideUp'
+                })
+            }
+            setSelected([]);
+            GetAll();
+        } catch (error) {
+            console.log(error);
         }
-        setSelected([]);
-        GetAll();
     }
 
     const navigate = useNavigate();
@@ -364,13 +367,8 @@ const ListCompany = () => {
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - company.length) : 0;
 
-
-
     return (
         <MainCard title="Lista de Empresas" content={false}>
-
-
-
             {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -413,7 +411,6 @@ const ListCompany = () => {
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
-
 
 
                         {/* product add & dialog */}
@@ -549,19 +546,12 @@ const ListCompany = () => {
                                             </Typography>
                                         </TableCell>
 
-
-
-
-
                                         <TableCell align="center" sx={{ pr: 3 }}>
-
-
                                             <Tooltip title="Actualizar" onClick={() => navigate(`/company/update/${row.codigo}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-
                                         </TableCell>
                                     </TableRow>
                                 );

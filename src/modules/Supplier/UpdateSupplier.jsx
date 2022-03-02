@@ -49,12 +49,16 @@ const UpdateSupplier = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        const lsServer = await GetAllCatalog(0, 0);
-        var result = lsServer.data.entities.map((item) => ({
-            value: item.idCatalogo,
-            label: item.nombre
-        }));
-        setCatalog(result);
+        try {
+            const lsServer = await GetAllCatalog(0, 0);
+            var result = lsServer.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setCatalog(result);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     /* EL useEffect QUE LLENA LA LISTA */

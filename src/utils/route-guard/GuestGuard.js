@@ -14,7 +14,7 @@ import { useEffect } from 'react';
  */
 
 const GuestGuard = ({ children }) => {
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn, user } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {

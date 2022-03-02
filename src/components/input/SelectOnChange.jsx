@@ -5,7 +5,6 @@ import {
     Autocomplete,
     TextField
 } from '@mui/material';
-import SelectRender from './SelectRender';
 
 const SelectOnChange = ({ bug, options, value, onChange, size, label, name, defaultValue }) => {
     let isError = false;

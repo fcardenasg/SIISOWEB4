@@ -50,18 +50,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
-
 function getModalStyle() {
     const top = 50;
     const left = 50;
@@ -277,9 +265,13 @@ const ListEmployee = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        const lsServer = await GetAllEmployee(0, 0);
-        setEmployee(lsServer.data.entities);
-        setRows(lsServer.data.entities);
+        try {
+            const lsServer = await GetAllEmployee(0, 0);
+            setEmployee(lsServer.data.entities);
+            setRows(lsServer.data.entities);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const [modalStyle] = useState(getModalStyle);
@@ -383,20 +375,24 @@ const ListEmployee = () => {
 
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
-        const result = await DeleteEmployee(idCheck);
-        if (result.status === 200) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${Message.Eliminar}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+        try {
+            const result = await DeleteEmployee(idCheck);
+            if (result.status === 200) {
+                dispatch({
+                    type: SNACKBAR_OPEN,
+                    open: true,
+                    message: `${Message.Eliminar}`,
+                    variant: 'alert',
+                    alertSeverity: 'error',
+                    close: false,
+                    transition: 'SlideUp'
+                })
+            }
+            setSelected([]);
+            GetAll();
+        } catch (error) {
+            console.log(error);
         }
-        setSelected([]);
-        GetAll();
     }
 
     const navigate = useNavigate();

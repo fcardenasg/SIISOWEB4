@@ -43,8 +43,6 @@ const UpdateCompany = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
 
-   
-
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
 

@@ -220,9 +220,13 @@ const ListTypeCatalog = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        const lsServer = await GetAllTypeCatalog(0, 0);
-        setTypeCatalog(lsServer.data.entities);
-        setRows(lsServer.data.entities);
+        try {
+            const lsServer = await GetAllTypeCatalog(0, 0);
+            setTypeCatalog(lsServer.data.entities);
+            setRows(lsServer.data.entities);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     /* EL useEffect QUE LLENA LA LISTA */
@@ -310,20 +314,24 @@ const ListTypeCatalog = () => {
 
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
-        const result = await DeleteTypeCatalog(idCheck);
-        if (result.status === 200) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${Message.Eliminar}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+        try {
+            const result = await DeleteTypeCatalog(idCheck);
+            if (result.status === 200) {
+                dispatch({
+                    type: SNACKBAR_OPEN,
+                    open: true,
+                    message: `${Message.Eliminar}`,
+                    variant: 'alert',
+                    alertSeverity: 'error',
+                    close: false,
+                    transition: 'SlideUp'
+                })
+            }
+            setSelected([]);
+            GetAll();
+        } catch (error) {
+            console.log(error);
         }
-        setSelected([]);
-        GetAll();
     }
 
     const navigate = useNavigate();

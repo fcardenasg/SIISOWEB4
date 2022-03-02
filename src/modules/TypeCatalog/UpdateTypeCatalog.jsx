@@ -50,10 +50,9 @@ const UpdateTypeCatalog = () => {
 
     /* METODO DE UPDATE  */
     const onSubmit = async (datos) => {
-        const DataToUpdate = PutTypeCatalog(id, datos.nombre);
-
         try {
             if (Object.keys(datos.length !== 0)) {
+                const DataToUpdate = PutTypeCatalog(id, datos.nombre);
                 const result = await UpdateTypeCatalogs(DataToUpdate);
                 if (result.status === 200) {
                     dispatch({
@@ -117,7 +116,6 @@ const UpdateTypeCatalog = () => {
                     </form>
                 )}
             </UpdateData>
-
         </MainCard>
     );
 };

@@ -42,20 +42,24 @@ const TypeCatalog = () => {
 
     /* METODO DE INSERT  */
     const onSubmit = async (datos) => {
-        if (Object.keys(datos.length !== 0)) {
-            const result = await InsertTypeCatalog(datos);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Guardar}`,
-                    variant: 'alert',
-                    alertSeverity: 'success',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-                reset();
+        try {
+            if (Object.keys(datos.length !== 0)) {
+                const result = await InsertTypeCatalog(datos);
+                if (result.status === 200) {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: `${Message.Guardar}`,
+                        variant: 'alert',
+                        alertSeverity: 'success',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
+                    reset();
+                }
             }
+        } catch (error) {
+            console.log(error);
         }
     };
 

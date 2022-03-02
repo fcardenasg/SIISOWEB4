@@ -39,6 +39,7 @@ const AutoComplete = () => {
                                 <Autocomplete
                                     disableClearable
                                     options={top100Films}
+                                    onChange={(value) => { console.log(value) }}
                                     defaultValue={top100Films[0]}
                                     renderInput={(params) => <TextField {...params} label="" />}
                                 />

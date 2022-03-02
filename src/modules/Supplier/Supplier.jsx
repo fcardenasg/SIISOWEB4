@@ -22,7 +22,6 @@ import { GetAllCatalog } from 'api/clients/CatalogClient';
 import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import SelectInput from 'components/input/SelectOnChange';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -52,12 +51,16 @@ const Supplier = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        const lsServer = await GetAllCatalog(0, 0);
-        var result = lsServer.data.entities.map((item) => ({
-            value: item.idCatalogo,
-            label: item.nombre
-        }));
-        setCatalog(result);
+        try {
+            const lsServer = await GetAllCatalog(0, 0);
+            var result = lsServer.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setCatalog(result);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     /* EL useEffect QUE LLENA LA LISTA */
@@ -67,21 +70,24 @@ const Supplier = () => {
 
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
-
-        if (Object.keys(datos.length !== 0)) {
-            const result = await InsertSupplier(datos);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Guardar}`,
-                    variant: 'alert',
-                    alertSeverity: 'success',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-                reset();
+        try {
+            if (Object.keys(datos.length !== 0)) {
+                const result = await InsertSupplier(datos);
+                if (result.status === 200) {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: `${Message.Guardar}`,
+                        variant: 'alert',
+                        alertSeverity: 'success',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
+                    reset();
+                }
             }
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -91,7 +97,9 @@ const Supplier = () => {
         <MainCard title="Registrar Proveedor">
             <Grid item xs={12} spacing={2} sx={{ pt: 3 }}>
                 <form onSubmit={handleSubmit(handleClick)}>
+
                     <Grid container spacing={2} sx={{ pb: 3 }}>
+
                         <Grid item xs={12} sm={6}>
                             <FormProvider {...methods}>
                                 <InputText

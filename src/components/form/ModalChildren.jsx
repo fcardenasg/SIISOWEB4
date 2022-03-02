@@ -69,5 +69,4 @@ ModalChildren.propTypes = {
     onClose: PropTypes.func,
     title: PropTypes.string,
     children: PropTypes.node,
-
 };

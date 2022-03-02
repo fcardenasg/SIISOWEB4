@@ -25,17 +25,11 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 
 /* VALIDACIÓN CON YUP */
 const validationSchema = yup.object().shape({
-
     Codigo: yup.string().required('Comment Field is Required'),
-
     DescripcionSpa: yup.string().required('Comment Field is Required'),
-
     Email: yup.string().required('Comment Field is Required'),
-
     Celular: yup.string().required('Comment Field is Required'),
-
     Gerente: yup.string().required('Comment Field is Required')
-
 });
 
 const Company = () => {
@@ -52,30 +46,34 @@ const Company = () => {
 
     /* METODO DE INSERT  */
     const onSubmit = async (datos) => {
-     
-      
-
-        if (Object.keys(datos.length !== 0)) {
-        
-            const result = await InsertCompany(datos);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Guardar}`,
-                    variant: 'alert',
-                    alertSeverity: 'success',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-                reset();
+        try {
+            if (Object.keys(datos.length !== 0)) {
+                const result = await InsertCompany(datos);
+                if (result.status === 200) {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: `${Message.Guardar}`,
+                        variant: 'alert',
+                        alertSeverity: 'success',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
+                    reset();
+                }
             }
-
-    
+        } catch (error) {
+            console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${error}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
- 
-
-
     };
 
     const navigate = useNavigate();
@@ -152,7 +150,7 @@ const Company = () => {
 
                     <Grid item xs={12} sx={{ pb: 3 }}>
                         <Grid container spacing={1}>
-                        <Grid item xs={6}>
+                            <Grid item xs={6}>
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth type="submit">
                                         {TitleButton.Guardar}

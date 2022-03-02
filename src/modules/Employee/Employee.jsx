@@ -99,20 +99,22 @@ const Employee = () => {
 
     /* EVENTO DE FILTRAR COMBO DEPARTAMENTO */
     async function GetSubString(codigo) {
-        const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo);
-        var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
-            value: item.idCatalogo,
-            label: item.nombre
-        }));
-        console.log("resultMunicipio = ", resultMunicipio);
-        setMunicipio(resultMunicipio);
+        try {
+            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo);
+            var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            console.log("resultMunicipio = ", resultMunicipio);
+            setMunicipio(resultMunicipio);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-
     const handleChange = (event) => {
-
-        setValues(event.target?.value);
-        console.log("event.target.value = ", Number(event.target?.value));
+        setValues(event.target.value);
+        console.log(event.target.value);
 
         /* const eventCode = event.target.value;
         var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo == eventCode).map(code => code.codigo));
@@ -122,34 +124,38 @@ const Employee = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        const lsServerCatalog = await GetAllCatalog(0, 0);
-        var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
-            value: item.idCatalogo,
-            label: item.nombre
-        }));
-        setCatalog(resultCatalogo);
+        try {
+            const lsServerCatalog = await GetAllCatalog(0, 0);
+            var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setCatalog(resultCatalogo);
 
-        const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, 1077);
-        var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
-            value: item.idCatalogo,
-            label: item.nombre
-        }));
-        setDepartamento(resultDepartamento);
-        setCodigoFilter(lsServerDepartamento.data.entities);
+            const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, 1077);
+            var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setDepartamento(resultDepartamento);
+            setCodigoFilter(lsServerDepartamento.data.entities);
 
-        const lsServerEscolaridad = await GetAllByTipoCatalogo(0, 0, 1146);
-        var resultEscolaridad = lsServerEscolaridad.data.entities.map((item) => ({
-            value: item.idCatalogo,
-            label: item.nombre
-        }));
-        setEscolaridad(resultEscolaridad);
+            const lsServerEscolaridad = await GetAllByTipoCatalogo(0, 0, 1146);
+            var resultEscolaridad = lsServerEscolaridad.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setEscolaridad(resultEscolaridad);
 
-        const lsServerCompany = await GetAllCompany(0, 0);
-        var resultCompany = lsServerCompany.data.entities.map((item) => ({
-            value: item.codigo,
-            label: item.descripcionSpa
-        }));
-        setCompany(resultCompany);
+            const lsServerCompany = await GetAllCompany(0, 0);
+            var resultCompany = lsServerCompany.data.entities.map((item) => ({
+                value: item.codigo,
+                label: item.descripcionSpa
+            }));
+            setCompany(resultCompany);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     /* EL useEffect QUE LLENA LA LISTA */
@@ -167,38 +173,42 @@ const Employee = () => {
 
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
-        const FechaNaci = FormatDate(valueFechaNaci);
-        const FechaContrato = FormatDate(valueFechaContrato);
-        const TermDate = FormatDate(valueTermDate);
-        const FechaModificacion = FormatDate(valueFechaModificacion);
-        const FechaCreacion = FormatDate(valueFechaCreacion);
+        try {
+            const FechaNaci = FormatDate(valueFechaNaci);
+            const FechaContrato = FormatDate(valueFechaContrato);
+            const TermDate = FormatDate(valueTermDate);
+            const FechaModificacion = FormatDate(valueFechaModificacion);
+            const FechaCreacion = FormatDate(valueFechaCreacion);
 
-        const DataToInsert = PostEmployee(datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
-            datos.area, datos.subArea, datos.grupo, datos.municipioNacido, datos.dptoNacido, FechaContrato,
-            datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
-            datos.direccionResidencia, datos.municipioResidencia, datos.dptoResidencia, datos.celular, datos.eps,
-            datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
-            datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
-            datos.bandera, datos.ges, datos.usuarioModifica, FechaModificacion, datos.usuarioCreacion,
-            FechaCreacion, imgSrc);
+            const DataToInsert = PostEmployee(datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
+                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, datos.dptoNacido, FechaContrato,
+                datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
+                datos.direccionResidencia, datos.municipioResidencia, datos.dptoResidencia, datos.celular, datos.eps,
+                datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
+                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
+                datos.bandera, datos.ges, datos.usuarioModifica, FechaModificacion, datos.usuarioCreacion,
+                FechaCreacion, imgSrc);
 
-        console.log("fechaNaci = ", datos.fechaNaci);
+            console.log("fechaNaci = ", datos.fechaNaci);
 
-        if (Object.keys(datos.length !== 0)) {
-            const result = await InsertEmployee(DataToInsert);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Guardar}`,
-                    variant: 'alert',
-                    alertSeverity: 'success',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-                reset();
-                CleanCombo();
+            if (Object.keys(datos.length !== 0)) {
+                const result = await InsertEmployee(DataToInsert);
+                if (result.status === 200) {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: `${Message.Guardar}`,
+                        variant: 'alert',
+                        alertSeverity: 'success',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
+                    reset();
+                    CleanCombo();
+                }
             }
+        } catch (error) {
+            console.log(error);
         }
     };
 

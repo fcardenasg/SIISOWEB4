@@ -41,7 +41,7 @@ const SideIconCard = ({ iconPrimary, primary, secondary, secondarySub, color, bg
                         alignItems={matchDownXs ? 'center' : 'flex-start'}
                     >
                         <Grid item sm={12}>
-                            <Typography variant="h3" sx={{ color: bgcolor ? '#fff' : '', ml: 2 }}>
+                            <Typography variant="h3" sx={{ color: bgcolor ? '#000' : '', ml: 2 }}>
                                 {primary}
                             </Typography>
                         </Grid>

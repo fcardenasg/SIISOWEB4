@@ -59,19 +59,23 @@ const UpdateEmployee = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        const lsServerCatalog = await GetAllCatalog(0, 0);
-        var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
-            value: item.idCatalogo,
-            label: item.nombre
-        }));
-        setCatalog(resultCatalogo);
+        try {
+            const lsServerCatalog = await GetAllCatalog(0, 0);
+            var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setCatalog(resultCatalogo);
 
-        const lsServerCompany = await GetAllCompany(0, 0);
-        var resultCompany = lsServerCompany.data.entities.map((item) => ({
-            value: item.codigo,
-            label: item.descripcionSpa
-        }));
-        setCompany(resultCompany);
+            const lsServerCompany = await GetAllCompany(0, 0);
+            var resultCompany = lsServerCompany.data.entities.map((item) => ({
+                value: item.codigo,
+                label: item.descripcionSpa
+            }));
+            setCompany(resultCompany);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     /* EL useEffect QUE LLENA LA LISTA */
