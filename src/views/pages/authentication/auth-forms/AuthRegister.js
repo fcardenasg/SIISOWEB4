@@ -25,6 +25,8 @@ import {
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import firebase from 'firebase/app';
+/* import { getFirestore } from 'firebase/firestore'; */
 
 // project imports
 import useAuth from 'hooks/useAuth';
@@ -36,6 +38,7 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 
 // ===========================|| FIREBASE - REGISTER ||=========================== //
 
@@ -50,6 +53,8 @@ const FirebaseRegister = ({ ...others }) => {
     const [strength, setStrength] = useState(0);
     const [level, setLevel] = useState();
     const { firebaseRegister, firebaseGoogleSignIn } = useAuth();
+
+    /* const firestore = getFirestore(config.firebase); */
 
     const googleHandler = async () => {
         try {
@@ -145,8 +150,9 @@ const FirebaseRegister = ({ ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        await firebaseRegister(values.email, values.password).then(
-                            () => {
+                        const infoUsuario = await firebaseRegister(values.email, values.password).then(
+                            (userFireBase) => {
+                                return userFireBase;
                                 // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
                                 // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
                                 // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
@@ -160,6 +166,16 @@ const FirebaseRegister = ({ ...others }) => {
                                 }
                             }
                         );
+
+                        firebase.firestore().doc(`Usuarios/${infoUsuario.user.uid}`).set({
+                            correo: values.email,
+                            rol: visitante
+                        });
+
+                        /* const docuRef = await doc(); */
+                        /* setDoc(docuRef, {}); */
+
+                        console.log("infoUsuario = ", infoUsuario);
                     } catch (err) {
                         console.error(err);
                         if (scriptedRef.current) {
