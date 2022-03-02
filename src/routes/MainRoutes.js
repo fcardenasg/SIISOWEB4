@@ -169,6 +169,13 @@ const MedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/MedicalA
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
 
+
+const ListInfirmary = Loadable(lazy(() => import('../modules/Infirmary/ListInfirmary')));
+const Infirmary = Loadable(lazy(() => import('../modules/Infirmary/Infirmary')));
+const UpdateInfirmary = Loadable(lazy(() => import('../modules/Infirmary/UpdateInfirmary')));
+const ReportInfirmary = Loadable(lazy(() => import('components/report/ReportInfirmary')));
+
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -288,7 +295,27 @@ const MainRoutes = {
             path: '/medicaladvice/add',
             element: <MedicalAdvice />
         },
-        /* {
+
+ /* Render de NOTAS DE ENFERMERIA */
+ {
+    path: '/infirmary/list',
+    element: <ListInfirmary />
+},
+{
+    path: '/infirmary/add',
+    element: <Infirmary />
+},
+{
+    path: '/infirmary/update/:id',
+    element: <UpdateInfirmary />
+},
+{
+    path: '/infirmary/report/:id',
+    element: <ReportInfirmary />
+},
+
+
+    /* {
             path: '/medicaladvice/update/:id',
             element: <UpdateMedicalAdvice />
         }, */
