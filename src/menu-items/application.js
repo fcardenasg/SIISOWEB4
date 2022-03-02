@@ -42,10 +42,18 @@ const application = {
             children: [
                 {
                     id: 'posts',
-                    title: <FormattedMessage id="social-profile" />,
+                    title: <FormattedMessage id="Historia Clínica" />,
                     type: 'item',
-                    url: '/user/social-profile/posts'
+                    url: '/assistance/list'
                 },
+
+                {
+                    id: 'posts',
+                    title: <FormattedMessage id="Notas de Evolucíon" />,
+                    type: 'item',
+                    url: '/evolutionnotes/list'
+                },
+
                 {
                     id: 'account-profile',
                     title: <FormattedMessage id="account-profile" />,

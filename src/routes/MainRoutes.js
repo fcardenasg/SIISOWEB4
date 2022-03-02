@@ -153,6 +153,15 @@ const ListSupplier = Loadable(lazy(() => import('../modules/Supplier/ListSupplie
 const Supplier = Loadable(lazy(() => import('../modules/Supplier/Supplier')));
 const UpdateSupplier = Loadable(lazy(() => import('../modules/Supplier/UpdateSupplier')));
 
+const ListAssistance = Loadable(lazy(() => import('../modules/Assistance/ListAssistance')));
+const Assistance = Loadable(lazy(() => import('../modules/Assistance/Assistance')));
+const UpdateAssistance = Loadable(lazy(() => import('../modules/Assistance/UpdateAssistance')));
+const ReportAssistance = Loadable(lazy(() => import('components/report/ReportAssistance')));
+
+const ListEvolutionnotes = Loadable(lazy(() => import('../modules/Evolutionnotes/ListEvolutionnotes')));
+const Evolutionnotes = Loadable(lazy(() => import('../modules/Evolutionnotes/Evolutionnotes')));
+const UpdateEvolutionnotes = Loadable(lazy(() => import('../modules/Evolutionnotes/UpdateEvolutionnotes')));
+const ReportEvolutionnotes = Loadable(lazy(() => import('components/report/ReportEvolutionnotes')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -239,6 +248,35 @@ const MainRoutes = {
             path: '/supplier/update/:id',
             element: <UpdateSupplier />
         },
+
+
+   /* Render de HISTORIA */
+   {
+    path: '/assistance/list',
+    element: <ListAssistance />
+},
+ {
+    path: '/assistance/add',
+     element: <Assistance />
+ },
+ {
+     path: '/assistance/update/:id',
+     element: <UpdateAssistance />
+ }, 
+
+    /* Render de NOTAS DE EVOLUCION */
+    {
+        path: '/evolutionnotes/list',
+        element: <ListEvolutionnotes />
+    },
+     {
+        path: '/evolutionnotes/add',
+         element: <Evolutionnotes />
+     },
+     {
+         path: '/evolutionnotes/update/:id',
+         element: <UpdateEvolutionnotes />
+     }, 
 
 
         {

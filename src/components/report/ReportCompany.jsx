@@ -83,6 +83,8 @@ const ReportCompany = () => {
                         <Typography variant="subtitle1">LISTADO DE EMPRESAS</Typography>
                     </>
                 } secondary={<Logo />}>
+
+                    
                     <Grid container spacing={gridSpacing}>
 
 
