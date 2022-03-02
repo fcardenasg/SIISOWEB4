@@ -1,4 +1,6 @@
 {
+  "medicalAdvice": "Asesoria Médica",
+  "psychologicalCounseling": "Asesoría Psicológica",
   "dashboard": "Tablero de Mandos",
   "default": "Inicio",
   "questionnaire": "Cuestionario",
@@ -21,7 +23,7 @@
   "order-details": "Comanda Detalii",
   "product": "Produs",
   "product-review": "Revizuirea produsului",
-  "contact": "Asesorias",
+  "advisory": "Asesorias",
   "e-commerce": "Higiene",
   "products": "Produse",
   "product-details": "Detalii produs",
@@ -60,7 +62,6 @@
   "multi-column-forms": "Formulare cu mai multe coloane",
   "action-bar": "Bara de acțiune",
   "sticky-action-bar": "Bara de acțiune lipicioasă",
-  
   "advance": "Parametrización",
   "alert": "Alerta",
   "dialog": "Dialog",
@@ -72,7 +73,6 @@
   "timeline": "Cronologie",
   "toggle-button": "Buton de comutare",
   "treeview": "Vedere copac",
-  
   "pages": "Pagini",
   "pages-caption": "Pagini pre-construite",
   "authentication": "Administración",

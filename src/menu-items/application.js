@@ -41,19 +41,17 @@ const application = {
             icon: icons.IconUserCheck,
             children: [
                 {
-                    id: 'posts',
+                    id: 'assistance',
                     title: <FormattedMessage id="Historia Clínica" />,
                     type: 'item',
                     url: '/assistance/list'
                 },
-
                 {
-                    id: 'posts',
-                    title: <FormattedMessage id="Notas de Evolucíon" />,
+                    id: 'evolutionnotes',
+                    title: <FormattedMessage id="Notas de Evolución" />,
                     type: 'item',
                     url: '/evolutionnotes/list'
                 },
-
                 {
                     id: 'account-profile',
                     title: <FormattedMessage id="account-profile" />,
@@ -238,23 +236,23 @@ const application = {
             ]
         },
         {
-            id: 'contact',
-            title: <FormattedMessage id="contact" />,
+            id: 'advisory',
+            title: <FormattedMessage id="advisory" />,
             type: 'collapse',
             icon: icons.IconNfc,
             children: [
                 {
-                    id: 'c-card',
-                    title: <FormattedMessage id="cards" />,
+                    id: 'medicalAdvice',
+                    title: <FormattedMessage id="medicalAdvice" />,
                     type: 'item',
-                    url: '/app/contact/c-card',
+                    url: '/medicaladvice/list',
                     breadcrumbs: false
                 },
                 {
-                    id: 'c-list',
-                    title: <FormattedMessage id="list" />,
+                    id: 'psychologicalCounseling',
+                    title: <FormattedMessage id="psychologicalCounseling" />,
                     type: 'item',
-                    url: '/app/contact/c-list',
+                    url: '/psychologicalcounseling/list',
                     breadcrumbs: false
                 }
             ]

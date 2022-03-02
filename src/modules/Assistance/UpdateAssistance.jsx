@@ -55,19 +55,23 @@ const UpdateEmployee = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        const lsServerCatalog = await GetAllCatalog(0, 0);
-        var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
-            value: item.idCatalogo,
-            label: item.nombre
-        }));
-        setCatalog(resultCatalogo);
+        try {
+            const lsServerCatalog = await GetAllCatalog(0, 0);
+            var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setCatalog(resultCatalogo);
 
-        const lsServerCompany = await GetAllCompany(0, 0);
-        var resultCompany = lsServerCompany.data.entities.map((item) => ({
-            value: item.codigo,
-            label: item.descripcionSpa
-        }));
-        setCompany(resultCompany);
+            const lsServerCompany = await GetAllCompany(0, 0);
+            var resultCompany = lsServerCompany.data.entities.map((item) => ({
+                value: item.codigo,
+                label: item.descripcionSpa
+            }));
+            setCompany(resultCompany);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     /* EL useEffect QUE LLENA LA LISTA */
@@ -92,36 +96,39 @@ const UpdateEmployee = () => {
 
     /* METODO DE UPDATE  */
     const handleClick = async (datos) => {
-        const DataToUpdate = PutEmployee(id, datos.documento, datos.nombres, datos.fechaNaci, datos.type, datos.departamento,
-            datos.area, datos.subArea, datos.grupo, datos.municipioNacido, datos.dptoNacido, datos.fechaContrato,
-            datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
-            datos.direccionResidencia, datos.municipioResidencia, datos.dptoResidencia, datos.celular, datos.eps,
-            datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
-            datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, datos.termDate,
-            datos.bandera, datos.ges, datos.usuarioModifica, datos.fechaModificacion, datos.usuarioCreacion,
-            datos.fechaCreacion, datos.imagenUrl);
+        try {
+            const DataToUpdate = PutEmployee(id, datos.documento, datos.nombres, datos.fechaNaci, datos.type, datos.departamento,
+                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, datos.dptoNacido, datos.fechaContrato,
+                datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
+                datos.direccionResidencia, datos.municipioResidencia, datos.dptoResidencia, datos.celular, datos.eps,
+                datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
+                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, datos.termDate,
+                datos.bandera, datos.ges, datos.usuarioModifica, datos.fechaModificacion, datos.usuarioCreacion,
+                datos.fechaCreacion, datos.imagenUrl);
 
-        console.log("Fecha = ", datos.fechaNaci);
+            console.log("Fecha = ", datos.fechaNaci);
 
-
-        /* try {
-            if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateEmployees(DataToUpdate);
-                if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Actualizar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+            /* try {
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await UpdateEmployees(DataToUpdate);
+                    if (result.status === 200) {
+                        dispatch({
+                            type: SNACKBAR_OPEN,
+                            open: true,
+                            message: `${Message.Actualizar}`,
+                            variant: 'alert',
+                            alertSeverity: 'success',
+                            close: false,
+                            transition: 'SlideUp'
+                        })
+                    }
                 }
-            }
+            } catch (error) {
+                console.log(error);
+            } */
         } catch (error) {
             console.log(error);
-        } */
+        }
     };
 
     return (

@@ -287,9 +287,6 @@ const Assistance = () => {
         <MainCard title="Registrar Notas de evolucíon">
             <Grid container xs={12} sx={{ pt: 0.5 }}>
                 <form onSubmit={handleSubmit(handleClick)}>
-
-
-
                     <SubCard darkTitle title={
                         <><Typography variant="h4">DATOS DEL PACIENTE</Typography></>
 

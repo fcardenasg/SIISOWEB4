@@ -163,6 +163,12 @@ const Evolutionnotes = Loadable(lazy(() => import('../modules/Evolutionnotes/Evo
 const UpdateEvolutionnotes = Loadable(lazy(() => import('../modules/Evolutionnotes/UpdateEvolutionnotes')));
 const ReportEvolutionnotes = Loadable(lazy(() => import('components/report/ReportEvolutionnotes')));
 
+const ListMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/ListMedicalAdvice')));
+const MedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/MedicalAdvice')));
+
+const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
+const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -216,8 +222,6 @@ const MainRoutes = {
             path: '/company/report',
             element: <ReportCompany />
         },
-
-
         /* Render de Empleados */
         {
             path: '/employee/list',
@@ -248,35 +252,57 @@ const MainRoutes = {
             path: '/supplier/update/:id',
             element: <UpdateSupplier />
         },
+        /* Render de HISTORIA */
+        {
+            path: '/assistance/list',
+            element: <ListAssistance />
+        },
+        {
+            path: '/assistance/add',
+            element: <Assistance />
+        },
+        {
+            path: '/assistance/update/:id',
+            element: <UpdateAssistance />
+        },
+
+        /* Render de NOTAS DE EVOLUCION */
+        {
+            path: '/evolutionnotes/list',
+            element: <ListEvolutionnotes />
+        },
+        {
+            path: '/evolutionnotes/add',
+            element: <Evolutionnotes />
+        },
+        {
+            path: '/evolutionnotes/update/:id',
+            element: <UpdateEvolutionnotes />
+        },
+        /* Render de ASESORÍAS MÉDICA */
+        {
+            path: '/medicaladvice/list',
+            element: <ListMedicalAdvice />
+        },
+        {
+            path: '/medicaladvice/add',
+            element: <MedicalAdvice />
+        },
+        /* {
+            path: '/medicaladvice/update/:id',
+            element: <UpdateMedicalAdvice />
+        }, */
+        /* Render de ASESORÍAS PSICOLÓGICA */
+        {
+            path: '/psychologicalcounseling/list',
+            element: <ListPsychologicalCounseling />
+        },
+        {
+            path: '/psychologicalcounseling/add',
+            element: <PsychologicalCounseling />
+        },
 
 
-   /* Render de HISTORIA */
-   {
-    path: '/assistance/list',
-    element: <ListAssistance />
-},
- {
-    path: '/assistance/add',
-     element: <Assistance />
- },
- {
-     path: '/assistance/update/:id',
-     element: <UpdateAssistance />
- }, 
-
-    /* Render de NOTAS DE EVOLUCION */
-    {
-        path: '/evolutionnotes/list',
-        element: <ListEvolutionnotes />
-    },
-     {
-        path: '/evolutionnotes/add',
-         element: <Evolutionnotes />
-     },
-     {
-         path: '/evolutionnotes/update/:id',
-         element: <UpdateEvolutionnotes />
-     }, 
 
 
         {

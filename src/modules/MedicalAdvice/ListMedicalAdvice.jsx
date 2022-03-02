@@ -33,7 +33,7 @@ import { visuallyHidden } from '@mui/utils';
 
 // Import de proyectos
 
-import BodyEmployee from './ViewAssistance';
+import BodyMedicalAdvice from './ViewMedicalAdvice';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
@@ -250,10 +250,10 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
-const ListAssistance = () => {
+const ListMedicalAdvice = () => {
     const dispatch = useDispatch();
     const [assistance, setAssistance] = useState([]);
-    console.log("Lista = ", assistance);
+    console.table("Lista = ", assistance);
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -286,11 +286,6 @@ const ListAssistance = () => {
     const handleClose = () => {
         setOpen(false);
     };
-
-    /* Abrir Modal */
-    /*     const OpenModal = (idEmpleado) => {
-            return (<BodyEmployee IdEmployee={idEmpleado} openModal={true} />);
-        } */
 
     /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
@@ -404,7 +399,6 @@ const ListAssistance = () => {
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
-
             {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -438,7 +432,7 @@ const ListAssistance = () => {
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/assistance/add")}>
+                            onClick={() => navigate("/medicaladvice/add")}>
                             {TitleButton.Agregar}
                         </Button>
 
@@ -618,7 +612,7 @@ const ListAssistance = () => {
                                             open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
                                             aria-describedby="simple-modal-description"
                                         >
-                                            <BodyEmployee IdEmployee={row.id} modalStyle={modalStyle} handleClose={handleClose} />
+                                            <BodyMedicalAdvice IdEmployee={row.id} modalStyle={modalStyle} handleClose={handleClose} />
                                         </Modal>
                                     </TableRow>
                                 );
@@ -646,10 +640,8 @@ const ListAssistance = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-
-
         </MainCard>
     );
 };
 
-export default ListAssistance;
+export default ListMedicalAdvice;

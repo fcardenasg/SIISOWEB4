@@ -35,9 +35,13 @@ const DetailsEmployee = ({ id }) => {
     const [employee, setEmployee] = useState([]);
 
     async function GetById() {
-        const lsServer = await GetByIdEmployee(id);
-        if (lsServer.status === 200) {
-            setEmployee(lsServer.data);
+        try {
+            const lsServer = await GetByIdEmployee(id);
+            if (lsServer.status === 200) {
+                setEmployee(lsServer.data);
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -49,7 +53,6 @@ const DetailsEmployee = ({ id }) => {
         <>
             {
                 employee.length !== 0 ? (
-
                     <Grid container spacing={gridSpacing}>
                         <Grid item xs={12}>
                             <Grid container spacing={gridSpacing}>
@@ -130,8 +133,8 @@ const DetailsEmployee = ({ id }) => {
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>)
-                    : <Cargando />
+                    </Grid>
+                ) : <Cargando />
             }
         </>
     );
