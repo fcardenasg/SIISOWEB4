@@ -48,10 +48,21 @@ const application = {
                 },
                 {
                     id: 'evolutionnotes',
-                    title: <FormattedMessage id="Notas de Evolución" />,
+                    title: <FormattedMessage id="Nota de Evolución" />,
                     type: 'item',
                     url: '/evolutionnotes/list'
                 },
+               
+                {
+                    id: 'infirmary',
+                    title: <FormattedMessage id="Nota de Enfermería" />,
+                    type: 'item',
+                    url: '/infirmary/list'
+                },
+
+
+
+
                 {
                     id: 'account-profile',
                     title: <FormattedMessage id="account-profile" />,
@@ -197,44 +208,44 @@ const application = {
                 }
             ]
         },
-        {
-            id: 'user-card',
-            title: <FormattedMessage id="cards" />,
-            type: 'collapse',
-            icon: icons.IconNfc,
-            children: [
-                {
-                    id: 'card1',
-                    title: (
-                        <>
-                            <FormattedMessage id="style" /> 01
-                        </>
-                    ),
-                    type: 'item',
-                    url: '/user/card/card1'
-                },
-                {
-                    id: 'card2',
-                    title: (
-                        <>
-                            <FormattedMessage id="style" /> 02
-                        </>
-                    ),
-                    type: 'item',
-                    url: '/user/card/card2'
-                },
-                {
-                    id: 'card3',
-                    title: (
-                        <>
-                            <FormattedMessage id="style" /> 03
-                        </>
-                    ),
-                    type: 'item',
-                    url: '/user/card/card3'
-                }
-            ]
-        },
+        // {
+        //     id: 'user-card',
+        //     title: <FormattedMessage id="cards" />,
+        //     type: 'collapse',
+        //     icon: icons.IconNfc,
+        //     children: [
+        //         {
+        //             id: 'card1',
+        //             title: (
+        //                 <>
+        //                     <FormattedMessage id="style" /> 01
+        //                 </>
+        //             ),
+        //             type: 'item',
+        //             url: '/user/card/card1'
+        //         },
+        //         {
+        //             id: 'card2',
+        //             title: (
+        //                 <>
+        //                     <FormattedMessage id="style" /> 02
+        //                 </>
+        //             ),
+        //             type: 'item',
+        //             url: '/user/card/card2'
+        //         },
+        //         {
+        //             id: 'card3',
+        //             title: (
+        //                 <>
+        //                     <FormattedMessage id="style" /> 03
+        //                 </>
+        //             ),
+        //             type: 'item',
+        //             url: '/user/card/card3'
+        //         }
+        //     ]
+        // },
         {
             id: 'contact',
             title: <FormattedMessage id="contact" />,

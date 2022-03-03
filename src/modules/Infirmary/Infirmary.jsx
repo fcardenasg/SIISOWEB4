@@ -951,7 +951,7 @@ const Evolutionnotes = () => {
                                 <FormProvider {...methods}>
                                     <AnimateButton>
                                         <Button size="large" variant="contained" type="submit" fullWidth>
-                                            Notas de evolucíon
+                                            Notas de enfermeria
                                         </Button>
                                     </AnimateButton>
                                 </FormProvider>
@@ -962,109 +962,9 @@ const Evolutionnotes = () => {
                     </SubCard>
 
 
-
                     <SubCard darkTitle title={
                         <>
-                            <Typography variant="h4">NOTA</Typography>
-
-                        </>
-
-                    } >
-
-
-
-
-
-                        <Grid container spacing={2} sx={{ pb: 3 }}>
-
-                   
-                       
-                  
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={note}
-                                        defaultValue2={note}
-                                        value={note}
-                                        fullWidth
-                                        name="nota"
-                                        label="Descripción"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        multiline
-                                        rows={6}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                                <p>{note}</p>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => setIsListening(prevState => !prevState)}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-
-
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Ver Examen Paraclinico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-
-
-
-                                </Grid>
-                            </Grid>
-
-
-                        </Grid>
-                    </SubCard>
-
-
-                    <SubCard darkTitle title={
-                        <>
-                            <Typography variant="h4">IMPRESIÓN DIAGNÓSTICA</Typography>
+                            <Typography variant="h4">PROCEDIMIENTO </Typography>
 
                         </>
 
@@ -1086,118 +986,68 @@ const Evolutionnotes = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={note}
-                                        defaultValue2={note}
-                                        value={note}
-                                        fullWidth
-                                        name="plandemanejo"
-                                        label="Plan de Manejo"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        multiline
-                                        rows={6}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                                <p>{note}</p>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => setIsListening(prevState => !prevState)}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-\
-
-
-                                </Grid>
-                                </Grid>
-                        
-                    </SubCard>
-
-
-
-                    <SubCard darkTitle title={
-                        <>
-                            <Typography variant="h4">CONCEPTO DE APTITUD PSICOFÍSICA</Typography>
-
-                        </>
-
-                    } >
-
-
-
-
-                        <Grid container spacing={2} sx={{ pb: 3 }}>
-
-                                   <Grid item xs={6}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="conceptodeaptitudpsicofísica"
-                                        label="Concepto De Aptitud Psicofísica"
-                                        defaultValue=""
-                                        options={catalog}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="remitido"
-                                        label="Remitido"
-                                        defaultValue=""
-                                        options={catalog}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                           
-                         
-                        
-
-
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={note}
+                                    defaultValue2={note}
+                                    value={note}
+                                    fullWidth
+                                    name="nota"
+                                    label="Nota"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    multiline
+                                    rows={6}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                            <p>{note}</p>
                         </Grid>
+                        <Grid item xs={12}>
+                            <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
+                                <Grid item xs={2}>
+                                    <Tooltip title="Plantilla de texto">
+                                        <Fab
+                                            color="primary"
+                                            size="small"
+                                            onClick={handleClickFab}
+                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                        >
+                                            <ListAltSharpIcon fontSize="small" />
+                                        </Fab>
+                                    </Tooltip>
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <Tooltip title="Borrar texto">
+                                        <Fab
+                                            color="primary"
+                                            size="small"
+                                            onClick={handleClickFab}
+                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                        >
+                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                        </Fab>
+                                    </Tooltip>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <Tooltip title="Audio">
+                                        <Fab
+                                            color="primary"
+                                            size="small"
+                                            onClick={() => setIsListening(prevState => !prevState)}
+                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                        >
+                                            <SettingsVoiceIcon fontSize="small" />
+                                        </Fab>
+                                    </Tooltip>
+                                </Grid>
+                                \
+
+
+                            </Grid>
+                        </Grid>
+
                     </SubCard>
-
-
-
 
 
 

@@ -33,7 +33,7 @@ import { visuallyHidden } from '@mui/utils';
 
 // Import de proyectos
 
-import BodyEmployee from './ViewEvolutionnotes';
+import BodyEmployee from './Viewinfirmary';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
@@ -262,7 +262,7 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
-const ListEvolutionnotes = () => {
+const Listinfirmary = () => {
     const dispatch = useDispatch();
     const [assistance, setAssistance] = useState([]);
     console.log("Lista = ", assistance);
@@ -434,7 +434,7 @@ const ListEvolutionnotes = () => {
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/evolutionnotes/report/${idCheck}`)}>
+                        <Tooltip title="Impresión" onClick={() => navigate(`/infirmary/report/${idCheck}`)}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -442,7 +442,7 @@ const ListEvolutionnotes = () => {
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/evolutionnotes/add")}>
+                            onClick={() => navigate("/infirmary/add")}>
                             {TitleButton.Agregar}
                         </Button>
 
@@ -610,7 +610,7 @@ const ListEvolutionnotes = () => {
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/evolutionnotes/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/infirmary/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -656,4 +656,4 @@ const ListEvolutionnotes = () => {
     );
 };
 
-export default ListEvolutionnotes;
+export default Listinfirmary;
