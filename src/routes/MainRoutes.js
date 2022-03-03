@@ -176,6 +176,12 @@ const UpdateInfirmary = Loadable(lazy(() => import('../modules/Infirmary/UpdateI
 const ReportInfirmary = Loadable(lazy(() => import('components/report/ReportInfirmary')));
 
 
+const ListMedicalformula = Loadable(lazy(() => import('modules/Medicalformula/ListMedicalformula')));
+const Medicalformula = Loadable(lazy(() => import('modules/Medicalformula/Medicalformula')));
+
+
+
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -313,6 +319,19 @@ const MainRoutes = {
     path: '/infirmary/report/:id',
     element: <ReportInfirmary />
 },
+
+
+ /* Render de FORMULAS MEDICAS */
+ {
+    path: '/medicalformula/list',
+    element: <ListMedicalformula />
+},
+{
+    path: '/medicalformula/add',
+    element: <Medicalformula />
+},
+
+
 
 
     /* {

@@ -60,7 +60,12 @@ const application = {
                     url: '/infirmary/list'
                 },
 
-
+                {
+                    id: 'medicalformula',
+                    title: <FormattedMessage id="Recetario" />,
+                    type: 'item',
+                    url: '/medicalformula/list'
+                },
 
 
                 {

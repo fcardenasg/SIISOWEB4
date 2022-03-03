@@ -1501,7 +1501,7 @@ const Assistance = () => {
                             </Grid>
                             <Grid item xs={6}>
                                 <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/employee/list")}>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/Assistance/list")}>
                                         {TitleButton.Cancelar}
                                     </Button>
                                 </AnimateButton>
