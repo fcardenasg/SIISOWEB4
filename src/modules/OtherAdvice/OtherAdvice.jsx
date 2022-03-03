@@ -10,7 +10,6 @@ import {
     Tooltip,
     Fab
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/AddTwoTone';
 
 // Terceros
 import { useNavigate } from 'react-router-dom';
@@ -38,18 +37,12 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import { PostEmployee } from 'formatdata/EmployeeForm';
-import SelectOnChange from 'components/input/SelectOnChange';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 //  ACORDEON 
 
-import PropTypes from 'prop-types';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import FaceTwoToneIcon from '@mui/icons-material/FaceTwoTone';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 
 // Audio
@@ -60,7 +53,7 @@ mic.continuous = true;
 mic.interimResults = true;
 mic.lang = 'es-ES';
 
-const PsychologicalCounseling = () => {
+const OtherAdvice = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -277,7 +270,7 @@ const PsychologicalCounseling = () => {
     const navigate = useNavigate();
 
     return (
-        <MainCard title="Registrar Asesoría Psicológica">
+        <MainCard title="Registrar Otras Asesorías">
             <Grid container xs={12} sx={{ pt: 0.5 }}>
                 <form onSubmit={handleSubmit(handleClick)}>
                     <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
@@ -720,11 +713,11 @@ const PsychologicalCounseling = () => {
                     <Grid sx={{ pt: 2 }}>
                         <SubCard darkTitle title={<><Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography></>}>
                             <Grid container container justifyContent="center" alignItems="center" spacing={2} sx={{ pb: 3 }}>
-                                <Grid item xs={2.4}>
+                                <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputDate
                                             defaultValue=""
-                                            name="fechaatencion"
+                                            name="fechaAtencion"
                                             label="Fecha"
                                             value={valueFechaNaci}
                                             onChange={(newValue) => {
@@ -733,11 +726,12 @@ const PsychologicalCounseling = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={2.4}>
+
+                                <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="motivo"
-                                            label="Motivo"
+                                            name="atencion"
+                                            label="Atención"
                                             defaultValue=""
                                             options={catalog}
                                             size={matchesXS ? 'small' : 'medium'}
@@ -745,11 +739,12 @@ const PsychologicalCounseling = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={2.4}>
+
+                                <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="causaAsesoria"
-                                            label="Causa de Asesoría"
+                                            name="contingencia"
+                                            label="Contingencia"
                                             defaultValue=""
                                             options={catalog}
                                             size={matchesXS ? 'small' : 'medium'}
@@ -757,11 +752,12 @@ const PsychologicalCounseling = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={2.4}>
+
+                                <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="tipoAsesoria"
-                                            label="Tipo Asesoría"
+                                            name="turno"
+                                            label="Turno"
                                             defaultValue=""
                                             options={catalog}
                                             size={matchesXS ? 'small' : 'medium'}
@@ -769,7 +765,21 @@ const PsychologicalCounseling = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={2.4}>
+
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="diaturno"
+                                            label="Día del Turno"
+                                            defaultValue=""
+                                            options={catalog}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={4}>
                                     <AnimateButton>
                                         <Button size="large" variant="contained" type="submit" fullWidth>
                                             Atender
@@ -782,14 +792,14 @@ const PsychologicalCounseling = () => {
 
                     <Grid sx={{ pt: 2 }}>
                         <SubCard darkTitle title={<><Typography variant="h4">NOTA</Typography></>}>
-                            <Grid container spacing={2} sx={{ pb: 2 }}>
+                            <Grid container spacing={2} /* sx={{ pb: 3 }} */>
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="motivoConsulta"
-                                            label="Motivo de consulta"
+                                            name="observaciones"
+                                            label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
                                             rows={6}
@@ -797,6 +807,7 @@ const PsychologicalCounseling = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
+                                {note}
                                 {/* Iconos de opciones */}
                                 <Grid item xs={12} sx={{ pt: 2 }}>
                                     <Grid spacing={2} container xs={12}>
@@ -825,149 +836,20 @@ const PsychologicalCounseling = () => {
                                             </Tooltip>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={handleClickFab}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
+                                            <AnimateButton>
+                                                <Tooltip title="Audio">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => setIsListening(prevState => !prevState)}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <SettingsVoiceIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
                                         </Grid>
                                     </Grid>
-                                </Grid>
-                            </Grid>
-
-                            <Grid container spacing={2} sx={{ pb: 2 }}>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="concepto"
-                                            label="Concepto"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            multiline
-                                            rows={6}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                {/* Iconos de opciones */}
-                                <Grid item xs={12} sx={{ pt: 2 }}>
-                                    <Grid spacing={2} container xs={12}>
-                                        <Grid item xs={2}>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={handleClickFab}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={handleClickFab}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={handleClickFab}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
-                            <Grid container spacing={2} sx={{ pb: 4 }}>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="pautaSeguir"
-                                            label="Pautas a Seguir"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            multiline
-                                            rows={6}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                {/* Iconos de opciones */}
-                                <Grid item xs={12} sx={{ pt: 2 }}>
-                                    <Grid spacing={2} container xs={12}>
-                                        <Grid item xs={2}>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={handleClickFab}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={handleClickFab}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={handleClickFab}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
-                            <Grid xs={12} container spacing={2}>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="estado"
-                                            label="Estado"
-                                            defaultValue=""
-                                            options={catalog}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
                                 </Grid>
                             </Grid>
                         </SubCard>
@@ -984,7 +866,7 @@ const PsychologicalCounseling = () => {
                             </Grid>
                             <Grid item xs={6}>
                                 <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/otheradvice/list")}>
                                         {TitleButton.Cancelar}
                                     </Button>
                                 </AnimateButton>
@@ -998,4 +880,4 @@ const PsychologicalCounseling = () => {
 
 };
 
-export default PsychologicalCounseling;
+export default OtherAdvice;

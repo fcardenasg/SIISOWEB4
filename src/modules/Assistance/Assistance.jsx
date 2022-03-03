@@ -1343,9 +1343,6 @@ const Assistance = () => {
                                             </Fab>
                                         </Tooltip>
                                     </Grid>
-
-
-
                                 </Grid>
                             </Grid>
 
@@ -1433,7 +1430,6 @@ const Assistance = () => {
                                         </Fab>
                                     </Tooltip>
                                 </Grid>
-                                \
 
 
                             </Grid>

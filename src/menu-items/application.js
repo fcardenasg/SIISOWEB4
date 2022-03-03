@@ -236,24 +236,28 @@ const application = {
             ]
         },
         {
-            id: 'advisory',
-            title: <FormattedMessage id="advisory" />,
+            id: 'contact',
+            title: <FormattedMessage id="contact" />,
             type: 'collapse',
             icon: icons.IconNfc,
             children: [
                 {
                     id: 'medicalAdvice',
-                    title: <FormattedMessage id="medicalAdvice" />,
+                    title: <FormattedMessage id="Asesoría Médica" />,
                     type: 'item',
-                    url: '/medicaladvice/list',
-                    breadcrumbs: false
+                    url: '/medicaladvice/list'
                 },
                 {
                     id: 'psychologicalCounseling',
-                    title: <FormattedMessage id="psychologicalCounseling" />,
+                    title: <FormattedMessage id="Asesoría Psicológica" />,
                     type: 'item',
-                    url: '/psychologicalcounseling/list',
-                    breadcrumbs: false
+                    url: '/psychologicalcounseling/list'
+                },
+                {
+                    id: 'otheradvice',
+                    title: <FormattedMessage id="Otras Asesorías" />,
+                    type: 'item',
+                    url: '/otheradvice/list'
                 }
             ]
         },

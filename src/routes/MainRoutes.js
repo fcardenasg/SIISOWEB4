@@ -169,6 +169,8 @@ const MedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/MedicalA
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
 
+const ListOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/ListOtherAdvice')));
+const OtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/OtherAdvice')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -300,6 +302,15 @@ const MainRoutes = {
         {
             path: '/psychologicalcounseling/add',
             element: <PsychologicalCounseling />
+        },
+        /* Render de OTRAS ASESORÍAS */
+        {
+            path: '/otheradvice/list',
+            element: <ListOtherAdvice />
+        },
+        {
+            path: '/otheradvice/add',
+            element: <OtherAdvice />
         },
 
 
