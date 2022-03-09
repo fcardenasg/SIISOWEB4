@@ -730,7 +730,7 @@ const Medicalformula = () => {
                     <Divider />
                     <Grid sx={{ pt: 2 }}>
                         <SubCard darkTitle title={<><Typography variant="h4">GENERAR ORDEN</Typography></>}>
-                            <Grid container container justifyContent="center" alignItems="center" spacing={2} sx={{ pb: 3 }}>
+                            <Grid container justifyContent="center" alignItems="center" spacing={2} sx={{ pb: 3 }}>
                                 <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputDate

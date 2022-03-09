@@ -719,7 +719,7 @@ const PsychologicalCounseling = () => {
                     <Divider />
                     <Grid sx={{ pt: 2 }}>
                         <SubCard darkTitle title={<><Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography></>}>
-                            <Grid container container justifyContent="center" alignItems="center" spacing={2} sx={{ pb: 3 }}>
+                            <Grid container justifyContent="center" alignItems="center" spacing={2} sx={{ pb: 3 }}>
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputDate

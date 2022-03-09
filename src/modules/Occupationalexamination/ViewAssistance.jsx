@@ -30,7 +30,10 @@ function getModalStyle() {
 const BodyEmployee = forwardRef(({ modalStyle, IdEmployee, handleClose }, ref) => (
 
     <div ref={ref} tabIndex={-1}>
-     
+        {/**
+         * style={modalStyle}
+         * Property 'style' does not exist on type 'IntrinsicAttributes & MainCardProps & RefAttributes<HTMLDivElement>
+         */}
         <MainCard
             style={modalStyle}
             sx={{
@@ -63,3 +66,38 @@ BodyEmployee.propTypes = {
     handleClose: PropTypes.func,
     IdEmployee: PropTypes.string
 };
+
+// ==============================|| SIMPLE MODAL ||============================== //
+
+/* export default function ViewEmployee({ IdEmployee, openModal }) {
+    // getModalStyle is not a pure function, we roll the style only on the first render
+    const [modalStyle] = useState(getModalStyle);
+
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    return (
+        <Grid container justifyContent="flex-end">
+            <Button variant="contained" type="button" onClick={handleOpen}>
+                Open Modal
+            </Button>
+            <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                <BodyEmployee IdEmployee={IdEmployee} modalStyle={style} handleClose={handleClose} />
+            </Modal>
+        </Grid>
+    );
+}
+
+ViewEmployee.propTypes = {
+    IdEmployee: PropTypes.any,
+    openModal: PropTypes.bool
+}; */

@@ -178,10 +178,10 @@ const application = {
             icon: icons.IconBasket,
             children: [
                 {
-                    id: 'customer-list',
-                    title: <FormattedMessage id="customer-list" />,
+                    id: 'occupationalexamination',
+                    title: <FormattedMessage id="Historia clínica ocupacional" />,
                     type: 'item',
-                    url: '/customer/customer-list',
+                    url: '/occupationalexamination/list',
                     breadcrumbs: false
                 },
                 {

@@ -98,7 +98,7 @@ const UICards = () => {
                         <SubCard title="Basic Card Style 2">
                             <UserProfileCard {...userProfile} />
                         </SubCard>
-                    </Grid>
+                    </Grid>f
                 </Grid>
             </MainCard>
 

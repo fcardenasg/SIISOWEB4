@@ -180,6 +180,10 @@ const ListMedicalformula = Loadable(lazy(() => import('modules/Medicalformula/Li
 const Medicalformula = Loadable(lazy(() => import('modules/Medicalformula/Medicalformula')));
 
 
+const Turner = Loadable(lazy(() => import('modules/Turner/Turner')));
+
+const ListOccupationalexamination = Loadable(lazy(() => import('modules/Occupationalexamination/ListOccupationalexamination')));
+const Occupationalexamination = Loadable(lazy(() => import('modules/Occupationalexamination/Occupationalexamination')));
 
 
 // ==============================|| MAIN ROUTING ||============================== //
@@ -332,8 +336,46 @@ const MainRoutes = {
 },
 
 
+ /* Render de Turner */
+  {
+   path: '/turner/add',
+    element: <Turner />
+ },
 
+/* Render de HCO */
 
+{
+    path: '/occupationalexamination/list',
+     element: <ListOccupationalexamination />
+  },
+{
+    path: '/occupationalexamination/add',
+     element: <Occupationalexamination/>
+  },
+  {
+    path: '/occupationalexamination/addA',
+     element: <Occupationalexamination/>
+  },
+  {
+    path: '/occupationalexamination/addREF',
+     element: <Occupationalexamination/>
+  },
+  {
+    path: '/occupationalexamination/addP',
+     element: <Occupationalexamination/>
+  },
+  {
+    path: '/occupationalexamination/addT',
+     element: <Occupationalexamination/>
+  },
+  {
+    path: '/occupationalexamination/addF',
+     element: <Occupationalexamination/>
+  },
+
+  
+
+ 
     /* {
             path: '/medicaladvice/update/:id',
             element: <UpdateMedicalAdvice />
@@ -403,7 +445,7 @@ const MainRoutes = {
         },
 
         {
-            path: '/customer/customer-list',
+            path: '/customer/ListOccupationalexamination',
             element: <AppCustomerList />
         },
         {

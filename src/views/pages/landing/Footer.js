@@ -55,7 +55,7 @@ const FooterPage = () => {
         <>
             <FooterWrapper>
                 <Container>
-                    <Grid container alignItems="center" spacing={gridSpacing}>
+                    {/* <Grid container alignItems="center" spacing={gridSpacing}>
                         <Grid item xs={12} sm={4}>
                             <img src={logoDark} alt="Berry" width="100" />
                         </Grid>
@@ -86,13 +86,13 @@ const FooterPage = () => {
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
+                    </Grid> */}
                 </Container>
             </FooterWrapper>
             <FooterSubWrapper>
                 <Container>
                     <Typography variant="subtitle2" component="div" color="inherit">
-                        &#169; CodedThemes
+                        &#169; SIISO
                     </Typography>
                 </Container>
             </FooterSubWrapper>

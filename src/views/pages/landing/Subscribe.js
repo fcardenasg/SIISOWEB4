@@ -64,7 +64,7 @@ const Subscribe = () => {
         <SubscribeWrapper>
             <Container>
                 <Grid container alignItems="center" spacing={gridSpacing}>
-                    <Grid
+                    {/* <Grid
                         item
                         xs={12}
                         md={5}
@@ -75,8 +75,8 @@ const Subscribe = () => {
                         }}
                     >
                         <SubscribeImage src={imgMail} alt="Berry" />
-                    </Grid>
-                    <Grid item xs={12} md={7}>
+                    </Grid> */}
+                    {/* <Grid item xs={12} md={7}>
                         <SubscribeCard>
                             <Grid container spacing={gridSpacing} sx={{ mb: '1rem' }}>
                                 <Grid item sm={12}>
@@ -92,13 +92,15 @@ const Subscribe = () => {
                                     <Typography variant="body2">
                                         Subscribe for the latest news &#38; updates of Berry admin template. We never send spam newsletters.
                                     </Typography>
+
+                             
                                 </Grid>
                                 <Grid item sm={12}>
                                     <MailerSubscriber />
                                 </Grid>
                             </Grid>
                         </SubscribeCard>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </Container>
         </SubscribeWrapper>

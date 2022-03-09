@@ -31,7 +31,7 @@ const widget = {
             id: 'chart',
             title: <FormattedMessage id="chart" />,
             type: 'item',
-            url: '/widget/chart',
+            url: '/turner/add',
             icon: icons.IconChartInfographic
         }
     ]

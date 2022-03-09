@@ -130,7 +130,7 @@ const LayoutsPage = () => {
 
     return (
         <Container>
-            <Grid container spacing={gridSpacing}>
+            {/* <Grid container spacing={gridSpacing}>
                 <Grid item xs={12} sx={{ display: { xs: 'block', md: 'none' } }}>
                     <Slider />
                 </Grid>
@@ -224,7 +224,7 @@ const LayoutsPage = () => {
                         </Grid>
                     </Grid>
                 </Box>
-            </Grid>
+            </Grid> */}
         </Container>
     );
 };

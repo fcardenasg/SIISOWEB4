@@ -24,7 +24,7 @@ const DemosPage = () => (
     <Container>
         <Grid container spacing={gridSpacing}>
             <Grid item xs={12} lg={5} md={10}>
-                <Grid container spacing={2} sx={{ mb: 2 }}>
+                {/* <Grid container spacing={2} sx={{ mb: 2 }}>
                     <Grid item xs={12}>
                         <Grid container spacing={1}>
                             <Grid item>
@@ -44,10 +44,10 @@ const DemosPage = () => (
                             Berry has customized pages with Material-UI components, Apps, Forms and lots more to explore.
                         </Typography>
                     </Grid>
-                </Grid>
+                </Grid> */}
             </Grid>
             <Grid item xs={12}>
-                <Grid container justifyContent="center" spacing={gridSpacing} sx={{ textAlign: 'center' }}>
+                {/* <Grid container justifyContent="center" spacing={gridSpacing} sx={{ textAlign: 'center' }}>
                     <Grid item md={4} sm={6}>
                         <FadeInWhenVisible>
                             <ButtonBase component={Link} to="/dashboard/default" target="_blank">
@@ -69,15 +69,15 @@ const DemosPage = () => (
                             </ButtonBase>
                         </FadeInWhenVisible>
                     </Grid>
-                </Grid>
+                </Grid> */}
             </Grid>
-            <Grid item xs={12} sx={{ textAlign: 'center', mt: 3 }}>
+            {/* <Grid item xs={12} sx={{ textAlign: 'center', mt: 3 }}>
                 <AnimateButton>
                     <Button component={Link} to="/components/autocomplete" target="_blank" variant="outlined" size="large">
                         Explore Components
                     </Button>
                 </AnimateButton>
-            </Grid>
+            </Grid> */}
         </Grid>
     </Container>
 );

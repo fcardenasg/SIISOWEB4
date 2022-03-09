@@ -21,7 +21,7 @@ const FeaturePage = () => {
     return (
         <Container>
             <Grid container spacing={gridSpacing}>
-                <Grid item xs={12} lg={5} md={10}>
+                {/* <Grid item xs={12} lg={5} md={10}>
                     <Grid container spacing={2} sx={{ mb: 2 }}>
                         <Grid item xs={12}>
                             <Grid container spacing={1}>
@@ -43,10 +43,10 @@ const FeaturePage = () => {
                             </Typography>
                         </Grid>
                     </Grid>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" spacing={gridSpacing} sx={{ textAlign: 'center' }}>
-                        <Grid item md={4} sm={6}>
+                        {/* <Grid item md={4} sm={6}>
                             <FadeInWhenVisible>
                                 <SubCard>
                                     <Grid container justifyContent="center" spacing={2}>
@@ -77,9 +77,9 @@ const FeaturePage = () => {
                                     </Grid>
                                 </SubCard>
                             </FadeInWhenVisible>
-                        </Grid>
+                        </Grid> */}
                         <Grid item md={4} sm={6}>
-                            <FadeInWhenVisible>
+                            {/* <FadeInWhenVisible>
                                 <SubCard>
                                     <Grid container justifyContent="center" spacing={2}>
                                         <Grid item>
@@ -108,10 +108,10 @@ const FeaturePage = () => {
                                         </Grid>
                                     </Grid>
                                 </SubCard>
-                            </FadeInWhenVisible>
+                            </FadeInWhenVisible> */}
                         </Grid>
                         <Grid item md={4} sm={6}>
-                            <FadeInWhenVisible>
+                            {/* <FadeInWhenVisible>
                                 <SubCard>
                                     <Grid container justifyContent="center" spacing={2}>
                                         <Grid item>
@@ -139,7 +139,7 @@ const FeaturePage = () => {
                                         </Grid>
                                     </Grid>
                                 </SubCard>
-                            </FadeInWhenVisible>
+                            </FadeInWhenVisible> */}
                         </Grid>
                     </Grid>
                 </Grid>

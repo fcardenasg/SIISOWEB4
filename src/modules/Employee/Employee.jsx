@@ -215,7 +215,7 @@ const Employee = () => {
     const navigate = useNavigate();
 
     return (
-        <MainCard title="Registrar Empleado">
+        <MainCard title="">
             <Grid container xs={12} sx={{ pt: 3 }}>
                 <form onSubmit={handleSubmit(handleClick)}>
 

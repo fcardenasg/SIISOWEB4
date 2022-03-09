@@ -160,7 +160,7 @@ const ComingSoon1 = () => {
                             transform: 'rotate(145deg)'
                         }}
                     />
-                    {theme.palette.mode === 'light' && <img src={logo} alt="Berry" width="100" />}
+                    {theme.palette.mode === 'light' && <img src={logo} alt="SIISO" width="100" />}
                     {theme.palette.mode === 'dark' && <img src={logoDark} alt="Berry" width="100" />}
                 </CardContent>
                 <Grid container spacing={gridSpacing}>
@@ -191,20 +191,19 @@ const ComingSoon1 = () => {
                             <Grid container spacing={gridSpacing}>
                                 <Grid item xs={12}>
                                     <Typography variant="h2" component="div" color="primary">
-                                        Coming Soon
+                                     
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
                                             <Typography variant="h1" component="div">
-                                                Berry - The React Admin Template
+                                                SIISO - Drummond LTD
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Typography sx={{ fontSize: '1.125rem' }}>
-                                                Presenting Material-UI based React Dashboard Template to build performance centric websites
-                                                and applications.
+                                           
                                             </Typography>
                                         </Grid>
                                     </Grid>
@@ -230,7 +229,7 @@ const ComingSoon1 = () => {
                                                 sx={{ display: 'flex', alignItems: 'center' }}
                                             >
                                                 <FiberManualRecordTwoToneIcon sx={{ mr: 0.625, fontSize: '1rem' }} />
-                                                Material UI
+                                              
                                             </Typography>
                                         </Grid>
                                         <Grid item>
@@ -241,7 +240,7 @@ const ComingSoon1 = () => {
                                                 sx={{ display: 'flex', alignItems: 'center' }}
                                             >
                                                 <FiberManualRecordTwoToneIcon sx={{ mr: 0.625, fontSize: '1rem' }} />
-                                                Javascript / Typescript
+                                               
                                             </Typography>
                                         </Grid>
                                     </Grid>
@@ -281,7 +280,7 @@ const ComingSoon1 = () => {
                                             <Grid container justifyContent="space-between" spacing={gridSpacing}>
                                                 <Grid item xs={12}>
                                                     <Grid container justifyContent="flex-end" spacing={1}>
-                                                        <Grid item>
+                                                        {/* <Grid item>
                                                             <ButtonBase
                                                                 component={Link}
                                                                 href="https://blog.berrydashboard.io/"
@@ -304,8 +303,8 @@ const ComingSoon1 = () => {
                                                                     <BookIcon />
                                                                 </Avatar>
                                                             </ButtonBase>
-                                                        </Grid>
-                                                        <Grid item>
+                                                        </Grid> */}
+                                                        {/* <Grid item>
                                                             <ButtonBase
                                                                 component={Link}
                                                                 href="https://www.facebook.com/codedthemes"
@@ -328,7 +327,7 @@ const ComingSoon1 = () => {
                                                                     <FacebookIcon />
                                                                 </Avatar>
                                                             </ButtonBase>
-                                                        </Grid>
+                                                        </Grid> */}
                                                         <Grid item>
                                                             <ButtonBase
                                                                 component={Link}
