@@ -44,6 +44,12 @@ import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import ReactExport from "react-export-excel";
+import { IconFileExport } from '@tabler/icons';
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 // Mesa de Destino
 function descendingComparator(a, b, orderBy) {
@@ -351,8 +357,7 @@ const ListCatalog = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - catalog.length) : 0;
 
     return (
-        <MainCard title="Lista de Catalogo" content={false}>
-
+        <MainCard title="Lista de Catálogo" content={false}>
             {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -372,12 +377,22 @@ const ListCatalog = () => {
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <Tooltip title="Copiar">
-                            <IconButton size="large">
-                                <FileCopyIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Impresión">
+                        <ExcelFile element={
+                            <Tooltip title="Exportar">
+                                <IconButton size="large">
+                                    <IconFileExport />
+                                </IconButton>
+                            </Tooltip>
+                        } filename="Cátalogo">
+                            <ExcelSheet data={catalog} name="Cátalogo">
+                                <ExcelColumn label="Id" value="idCatalogo" />
+                                <ExcelColumn label="Nombre" value="nombre" />
+                                <ExcelColumn label="Código" value="codigo" />
+                                <ExcelColumn label="Tipo Cátalogo" value="nameTypeCatalog" />
+                            </ExcelSheet>
+                        </ExcelFile>
+
+                        <Tooltip title="Impresión" onClick={() => navigate('/catalog/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>

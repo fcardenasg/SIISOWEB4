@@ -88,12 +88,20 @@ const UpdateCatalog = () => {
                 }
             }
         } catch (error) {
-            console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: 'Este cátalogo ya existe',
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     };
 
     return (
-        <MainCard title="Actualizar Catalogo">
+        <MainCard title="Actualizar Catálogo">
             <UpdateData url={Url.CatalogoId}>
                 {(Catalog) => (
                     <form onSubmit={handleSubmit(onSubmit)}>

@@ -31,7 +31,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 const validationSchema = yup.object().shape({
     nombre: yup.string().required(`${ValidationMessage.Requerido}`),
     codigo: yup.string().required(`${ValidationMessage.Requerido}`),
-    idTipoCatalogo: yup.number().required(`${ValidationMessage.Requerido}`),
+    idTipoCatalogo: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
 const Catalog = () => {
@@ -52,12 +52,16 @@ const Catalog = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        const lsServer = await GetAllTypeCatalog(0, 0);
-        var result = lsServer.data.entities.map((item) => ({
-            value: item.id,
-            label: item.nombre
-        }));
-        setTypeCatalog(result);
+        try {
+            const lsServer = await GetAllTypeCatalog(0, 0);
+            var result = lsServer.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setTypeCatalog(result);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     /* EL useEffect QUE LLENA LA LISTA */
@@ -67,32 +71,43 @@ const Catalog = () => {
 
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
-        const DataToInsert = PostCatalog(datos.nombre, datos.codigo, datos.idTipoCatalogo);
-
-        if (Object.keys(datos.length !== 0)) {
-            const result = await InsertCatalog(DataToInsert);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Guardar}`,
-                    variant: 'alert',
-                    alertSeverity: 'success',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-                reset();
+        try {
+            const DataToInsert = PostCatalog(datos.nombre, datos.codigo, datos.idTipoCatalogo);
+            if (Object.keys(datos.length !== 0)) {
+                const result = await InsertCatalog(DataToInsert);
+                if (result.status === 200) {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: `${Message.Guardar}`,
+                        variant: 'alert',
+                        alertSeverity: 'success',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
+                    reset();
+                }
             }
+        } catch (error) {
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: 'Este cátalogo ya existe',
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     };
 
     const navigate = useNavigate();
 
     return (
-        <MainCard title="Registrar Catalogo">
+        <MainCard title="Registrar Catálogo">
             <Grid item xs={12} spacing={2} sx={{ pt: 3 }}>
                 <form onSubmit={handleSubmit(handleClick)}>
-                <Grid container spacing={2} sx={{ pb: 3 }}>
+                    <Grid container spacing={2} sx={{ pb: 3 }}>
                         <Grid item xs={12} sm={6}>
                             <FormProvider {...methods}>
                                 <InputSelect

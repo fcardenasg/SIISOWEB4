@@ -1,32 +1,22 @@
 import { useRef, useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 
-
-
-import { Button, Divider, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 // third-party
 import ReactToPrint from 'react-to-print';
 
 // project imports
-import { GetAllCompany } from 'api/clients/CompanyClient';
+import { GetAllSupplier } from 'api/clients/SupplierClient';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
-import Chip from 'ui-component/extended/Chip';
 import Logo from 'ui-component/Logo';
 import { gridSpacing } from 'store/constant';
-
-
-// table data
-function createData(product, description, quantity, amount, total) {
-    return { product, description, quantity, amount, total };
-}
-
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -38,27 +28,16 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-        border: 1,
-    },
-}));
-
-
-const ReportCompany = () => {
+const ReportSupplier = () => {
     const theme = useTheme();
     const componentRef = useRef(null);
 
-    const [company, setCompany] = useState([]);
+    const [supplier, setSupplier] = useState([]);
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllCompany(0, 0);
-            if (lsServer.status === 200) setCompany(lsServer.data.entities);
+            const lsServer = await GetAllSupplier(0, 0);
+            if (lsServer.status === 200) setSupplier(lsServer.data.entities);
         } catch (error) {
             console.log(error);
         }
@@ -81,10 +60,8 @@ const ReportCompany = () => {
                         <Typography variant="subtitle1">LISTADO DE EMPRESAS</Typography>
                     </>
                 } secondary={<Logo />}>
-
-
                     <Grid container spacing={gridSpacing}>
-                        <Grid item xs={20}>
+                        <Grid item xs={12}>
                             <TableContainer>
                                 <Table
                                     sx={{
@@ -104,23 +81,21 @@ const ReportCompany = () => {
                                 >
                                     <TableHead>
                                         <TableRow>
-
-                                            <StyledTableCell align="left">ID</StyledTableCell>
-                                            <StyledTableCell align="left">EMPRESA</StyledTableCell>
-                                            <StyledTableCell align="left">CONTACTO</StyledTableCell>
+                                            <StyledTableCell align="left">CÓDIGO</StyledTableCell>
+                                            <StyledTableCell align="left">NOMBRE</StyledTableCell>
+                                            <StyledTableCell align="left">TELÉFONO</StyledTableCell>
                                             <StyledTableCell align="left">CORREO ELECTRÓNICO</StyledTableCell>
-                                            <StyledTableCell align="left">CELULAR</StyledTableCell>
+                                            <StyledTableCell align="left">TIPO PROVEEDOR</StyledTableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {company.map((row, index) => (
+                                        {supplier.map((row, index) => (
                                             <TableRow key={index}>
-
-                                                <TableCell align="left">{row.codigo}</TableCell>
-                                                <TableCell align="left">{row.descripcionSpa}</TableCell>
-                                                <TableCell align="left">{row.gerente}</TableCell>
-                                                <TableCell align="left">{row.email}</TableCell>
-                                                <TableCell align="left">{row.celular}</TableCell>
+                                                <TableCell align="left">{row.codiProv}</TableCell>
+                                                <TableCell align="left">{row.nombProv}</TableCell>
+                                                <TableCell align="left">{row.teleProv}</TableCell>
+                                                <TableCell align="left">{row.emaiProv}</TableCell>
+                                                <TableCell align="left">{row.nameTypeSupplier}</TableCell>
                                                 {/* <TableCell align="left" sx={{ pr: 3 }}>
                                                     {row.legt}
                                                 </TableCell> */}
@@ -130,9 +105,6 @@ const ReportCompany = () => {
                                 </Table>
                             </TableContainer>
                         </Grid>
-
-
-
                     </Grid>
                 </SubCard>
             </Grid>
@@ -146,7 +118,7 @@ const ReportCompany = () => {
                     </Grid>
                     <Grid xs={6} item>
                         <AnimateButton>
-                            <Button variant="contained" onClick={() => navigate('/company/list')}>
+                            <Button variant="contained" onClick={() => navigate('/supplier/list')}>
                                 Cerrar
                             </Button>
                         </AnimateButton>
@@ -157,4 +129,4 @@ const ReportCompany = () => {
     );
 };
 
-export default ReportCompany;
+export default ReportSupplier;

@@ -131,18 +131,19 @@ const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 //Nuestros import
 const ListTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/ListTypeCatalog')));
+const ReportTypeCatolog = Loadable(lazy(() => import('components/report/ReportTypeCatolog')));
 const TypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/TypeCatalog')));
 const UpdateTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/UpdateTypeCatalog')));
 
 const ListCatalog = Loadable(lazy(() => import('../modules/Catalog/ListCatalog')));
 const Catalog = Loadable(lazy(() => import('../modules/Catalog/Catalog')));
+const ReportCatalog = Loadable(lazy(() => import('components/report/ReportCatalog')));
 const UpdateCatalog = Loadable(lazy(() => import('../modules/Catalog/UpdateCatalog')));
 
 const ListCompany = Loadable(lazy(() => import('../modules/Company/ListCompany')));
 const Company = Loadable(lazy(() => import('../modules/Company/Company')));
 const UpdateCompany = Loadable(lazy(() => import('../modules/Company/UpdateCompany')));
 const ReportCompany = Loadable(lazy(() => import('components/report/ReportCompany')));
-
 
 const ListEmployee = Loadable(lazy(() => import('../modules/Employee/ListEmployee')));
 const Employee = Loadable(lazy(() => import('../modules/Employee/Employee')));
@@ -151,6 +152,7 @@ const ReportEmployee = Loadable(lazy(() => import('components/report/ReportEmplo
 
 const ListSupplier = Loadable(lazy(() => import('../modules/Supplier/ListSupplier')));
 const Supplier = Loadable(lazy(() => import('../modules/Supplier/Supplier')));
+const ReportSupplier = Loadable(lazy(() => import('components/report/ReportSupplier')));
 const UpdateSupplier = Loadable(lazy(() => import('../modules/Supplier/UpdateSupplier')));
 
 const ListAssistance = Loadable(lazy(() => import('../modules/Assistance/ListAssistance')));
@@ -206,6 +208,10 @@ const MainRoutes = {
             element: <TypeCatalog />
         },
         {
+            path: '/typecatalog/report',
+            element: <ReportTypeCatolog />
+        },
+        {
             path: '/typecatalog/update/:id',
             element: <UpdateTypeCatalog />
         },
@@ -217,6 +223,10 @@ const MainRoutes = {
         {
             path: '/catalog/add',
             element: <Catalog />
+        },
+        {
+            path: '/catalog/report',
+            element: <ReportCatalog />
         },
         {
             path: '/catalog/update/:id',
@@ -266,6 +276,10 @@ const MainRoutes = {
             element: <Supplier />
         },
         {
+            path: '/supplier/report',
+            element: <ReportSupplier />
+        },
+        {
             path: '/supplier/update/:id',
             element: <UpdateSupplier />
         },
@@ -306,80 +320,76 @@ const MainRoutes = {
             element: <MedicalAdvice />
         },
 
- /* Render de NOTAS DE ENFERMERIA */
- {
-    path: '/infirmary/list',
-    element: <ListInfirmary />
-},
-{
-    path: '/infirmary/add',
-    element: <Infirmary />
-},
-{
-    path: '/infirmary/update/:id',
-    element: <UpdateInfirmary />
-},
-{
-    path: '/infirmary/report/:id',
-    element: <ReportInfirmary />
-},
+        /* Render de NOTAS DE ENFERMERIA */
+        {
+            path: '/infirmary/list',
+            element: <ListInfirmary />
+        },
+        {
+            path: '/infirmary/add',
+            element: <Infirmary />
+        },
+        {
+            path: '/infirmary/update/:id',
+            element: <UpdateInfirmary />
+        },
+        {
+            path: '/infirmary/report/:id',
+            element: <ReportInfirmary />
+        },
+        /* Render de FORMULAS MEDICAS */
+        {
+            path: '/medicalformula/list',
+            element: <ListMedicalformula />
+        },
+        {
+            path: '/medicalformula/add',
+            element: <Medicalformula />
+        },
+        /* Render de Turner */
+        {
+            path: '/turner/add',
+            element: <Turner />
+        },
 
 
- /* Render de FORMULAS MEDICAS */
- {
-    path: '/medicalformula/list',
-    element: <ListMedicalformula />
-},
-{
-    path: '/medicalformula/add',
-    element: <Medicalformula />
-},
+        /* Render de HCO */
+        {
+            path: '/occupationalexamination/list',
+            element: <ListOccupationalexamination />
+        },
+        {
+            path: '/occupationalexamination/add',
+            element: <Occupationalexamination />
+        },
+        {
+            path: '/occupationalexamination/addA',
+            element: <Occupationalexamination />
+        },
+        {
+            path: '/occupationalexamination/addREF',
+            element: <Occupationalexamination />
+        },
+        {
+            path: '/occupationalexamination/addP',
+            element: <Occupationalexamination />
+        },
+        {
+            path: '/occupationalexamination/addT',
+            element: <Occupationalexamination />
+        },
+        {
+            path: '/occupationalexamination/addF',
+            element: <Occupationalexamination />
+        },
 
 
- /* Render de Turner */
-  {
-   path: '/turner/add',
-    element: <Turner />
- },
 
-/* Render de HCO */
 
-{
-    path: '/occupationalexamination/list',
-     element: <ListOccupationalexamination />
-  },
-{
-    path: '/occupationalexamination/add',
-     element: <Occupationalexamination/>
-  },
-  {
-    path: '/occupationalexamination/addA',
-     element: <Occupationalexamination/>
-  },
-  {
-    path: '/occupationalexamination/addREF',
-     element: <Occupationalexamination/>
-  },
-  {
-    path: '/occupationalexamination/addP',
-     element: <Occupationalexamination/>
-  },
-  {
-    path: '/occupationalexamination/addT',
-     element: <Occupationalexamination/>
-  },
-  {
-    path: '/occupationalexamination/addF',
-     element: <Occupationalexamination/>
-  },
-
-  
-
- 
-    /* {
-            path: '/medicaladvice/update/:id',
-            element: <UpdateMedicalAdvice />
-        }, */
+        /* {
+                path: '/medicaladvice/update/:id',
+                element: <UpdateMedicalAdvice />
+            }, */
         /* Render de ASESORÍAS PSICOLÓGICA */
         {
             path: '/psychologicalcounseling/list',

@@ -11,9 +11,10 @@ import {
     IconCalendar,
     IconNfc,
     IconTool,
+    IconHeartbeat,
+    IconMessageReport,
+    IconVirus
 } from '@tabler/icons';
-
-
 
 // constant
 const icons = {
@@ -24,7 +25,10 @@ const icons = {
     IconMail,
     IconCalendar,
     IconNfc,
-    IconTool
+    IconTool,
+    IconHeartbeat,
+    IconMessageReport,
+    IconVirus
 };
 
 // ==============================|| APPLICATION MENU ITEMS ||============================== //
@@ -52,7 +56,7 @@ const application = {
                     type: 'item',
                     url: '/evolutionnotes/list'
                 },
-               
+
                 {
                     id: 'infirmary',
                     title: <FormattedMessage id="Nota de Enfermería" />,
@@ -213,44 +217,6 @@ const application = {
                 }
             ]
         },
-        // {
-        //     id: 'user-card',
-        //     title: <FormattedMessage id="cards" />,
-        //     type: 'collapse',
-        //     icon: icons.IconNfc,
-        //     children: [
-        //         {
-        //             id: 'card1',
-        //             title: (
-        //                 <>
-        //                     <FormattedMessage id="style" /> 01
-        //                 </>
-        //             ),
-        //             type: 'item',
-        //             url: '/user/card/card1'
-        //         },
-        //         {
-        //             id: 'card2',
-        //             title: (
-        //                 <>
-        //                     <FormattedMessage id="style" /> 02
-        //                 </>
-        //             ),
-        //             type: 'item',
-        //             url: '/user/card/card2'
-        //         },
-        //         {
-        //             id: 'card3',
-        //             title: (
-        //                 <>
-        //                     <FormattedMessage id="style" /> 03
-        //                 </>
-        //             ),
-        //             type: 'item',
-        //             url: '/user/card/card3'
-        //         }
-        //     ]
-        // },
         {
             id: 'contact',
             title: <FormattedMessage id="contact" />,
@@ -315,7 +281,7 @@ const application = {
             id: 'components',
             title: <FormattedMessage id="components" />,
             type: 'collapse',
-            icon: icons.IconPictureInPicture,
+            icon: icons.IconHeartbeat,
             children: [
                 {
                     id: 'autocomplete',
@@ -379,7 +345,7 @@ const application = {
             id: 'plugins',
             title: <FormattedMessage id="plugins" />,
             type: 'collapse',
-            icon: icons.IconForms,
+            icon: icons.IconMessageReport,
             children: [
                 {
                     id: 'frm-autocomplete',
@@ -435,7 +401,7 @@ const application = {
             id: 'layouts',
             title: 'Pandemias',
             type: 'collapse',
-            icon: icons.IconPictureInPicture,
+            icon: icons.IconVirus,
             children: [
                 {
                     id: 'frm-layouts',
@@ -474,14 +440,14 @@ const application = {
             children: [
                 {
                     id: 'alert',
-                    title: <FormattedMessage id="Tipo Catalogo" />,
+                    title: <FormattedMessage id="Tipo Catálogo" />,
                     type: 'item',
                     url: '/typecatalog/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'dialog',
-                    title: <FormattedMessage id="Catalogo" />,
+                    title: <FormattedMessage id="Catálogo" />,
                     type: 'item',
                     url: '/catalog/list',
                     breadcrumbs: false

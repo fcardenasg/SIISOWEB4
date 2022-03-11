@@ -17,7 +17,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
@@ -25,11 +25,11 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 
 /* VALIDACIÓN CON YUP */
 const validationSchema = yup.object().shape({
-    Codigo: yup.string().required('Comment Field is Required'),
-    DescripcionSpa: yup.string().required('Comment Field is Required'),
-    Email: yup.string().required('Comment Field is Required'),
-    Celular: yup.string().required('Comment Field is Required'),
-    Gerente: yup.string().required('Comment Field is Required')
+    Codigo: yup.string().required(`${ValidationMessage.Requerido}`),
+    DescripcionSpa: yup.string().required(`${ValidationMessage.Requerido}`),
+    Email: yup.string().required(`${ValidationMessage.Requerido}`),
+    Celular: yup.string().required(`${ValidationMessage.Requerido}`),
+    Gerente: yup.string().required(`${ValidationMessage.Requerido}`)
 });
 
 const Company = () => {
@@ -67,7 +67,7 @@ const Company = () => {
             dispatch({
                 type: SNACKBAR_OPEN,
                 open: true,
-                message: `${error}`,
+                message: 'Esta Empresa ya existe',
                 variant: 'alert',
                 alertSeverity: 'error',
                 close: false,
@@ -82,8 +82,6 @@ const Company = () => {
         <MainCard title="Registrar Empresas">
             <Grid item xs={12} spacing={2} sx={{ pt: 3 }}>
                 <form onSubmit={handleSubmit(onSubmit)}>
-
-
                     <Grid container spacing={2} sx={{ pb: 3 }}>
                         <Grid item xs={4}>
                             <FormProvider {...methods}>
@@ -146,7 +144,6 @@ const Company = () => {
                             </FormProvider>
                         </Grid>
                     </Grid>
-
 
                     <Grid item xs={12} sx={{ pb: 3 }}>
                         <Grid container spacing={1}>

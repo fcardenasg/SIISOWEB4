@@ -89,12 +89,21 @@ const UpdateSupplier = () => {
                 }
             }
         } catch (error) {
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: 'Este Proveedor ya existe',
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
             console.log(error);
         }
     };
 
     return (
-        <MainCard title="Actualizar Catalogo">
+        <MainCard title="Actualizar Proveedor">
             <UpdateData url={Url.ProveedorId}>
                 {(Supplier) => (
                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -105,6 +114,7 @@ const UpdateSupplier = () => {
                                         <InputText
                                             defaultValue={Supplier.codiProv}
                                             fullWidth
+                                            disabled
                                             name="codiProv"
                                             label="Código"
                                             size={matchesXS ? 'small' : 'medium'}

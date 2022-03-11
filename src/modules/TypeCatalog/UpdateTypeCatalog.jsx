@@ -67,16 +67,23 @@ const UpdateTypeCatalog = () => {
                 }
             }
         } catch (error) {
-            console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: 'Este tipo de cátalogo ya existe',
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     };
 
     return (
-        <MainCard title="Actualizar Tipo de Catalogo">
+        <MainCard title="Actualizar Tipo de Catálogo">
             <UpdateData url={Url.TipoCatalogoId}>
                 {(TypeCatalog) => (
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        {console.log("Llegada de datos = ", TypeCatalog)}
                         <Grid container spacing={2}>
                             <Grid item xs={8}>
                                 <Grid item xs zeroMinWidth sx={{ pb: 2 }}>

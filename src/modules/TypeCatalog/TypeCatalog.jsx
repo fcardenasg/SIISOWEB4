@@ -59,6 +59,15 @@ const TypeCatalog = () => {
                 }
             }
         } catch (error) {
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: 'Este tipo de catálogo ya existe',
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
             console.log(error);
         }
     };
@@ -66,7 +75,7 @@ const TypeCatalog = () => {
     const navigate = useNavigate();
 
     return (
-        <MainCard title="Registrar Tipo de Catalogo">
+        <MainCard title="Registrar Tipo de Catálogo">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={2}>
                     <Grid item xs={8}>

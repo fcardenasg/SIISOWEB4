@@ -28,6 +28,7 @@ import {
     Button
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
+import { IconFileExport } from '@tabler/icons';
 
 // Import de proyectos
 import { Message, TitleButton } from 'components/helpers/Enums';
@@ -44,6 +45,11 @@ import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import ReactExport from "react-export-excel";
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 // Mesa de Destino
 function descendingComparator(a, b, orderBy) {
@@ -75,7 +81,7 @@ const headCells = [
     {
         id: 'codiProv',
         numeric: false,
-        label: 'ID',
+        label: 'Código',
         align: 'center'
     },
     {
@@ -97,7 +103,7 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nameTypeSupplier',
+        id: 'tipoProv',
         numeric: false,
         label: 'Tipo Proveedor',
         align: 'left'
@@ -260,7 +266,7 @@ const ListSupplier = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codiProv', 'nombProv', 'teleProv', 'emaiProv', 'nameTypeSupplier'];
+                const properties = ['codiProv', 'nombProv', 'teleProv', 'emaiProv', 'tipoProv'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -378,12 +384,23 @@ const ListSupplier = () => {
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <Tooltip title="Copiar">
-                            <IconButton size="large">
-                                <FileCopyIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Impresión">
+                        <ExcelFile element={
+                            <Tooltip title="Exportar">
+                                <IconButton size="large">
+                                    <IconFileExport />
+                                </IconButton>
+                            </Tooltip>
+                        } filename="Empresas">
+                            <ExcelSheet data={supplier} name="Empresas">
+                                <ExcelColumn label="Código" value="codiProv" />
+                                <ExcelColumn label="Nombre" value="nombProv" />
+                                <ExcelColumn label="Teléfono" value="teleProv" />
+                                <ExcelColumn label="Correo Electronico" value="emaiProv" />
+                                <ExcelColumn label="Tipo de Proveedor" value="nameTypeSupplier" />
+                            </ExcelSheet>
+                        </ExcelFile>
+
+                        <Tooltip title="Impresión" onClick={() => navigate('/supplier/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -522,7 +539,7 @@ const ListSupplier = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameTypeSupplier}{' '}
+                                                {row.tipoProv}{' '}
                                             </Typography>
                                         </TableCell>
 

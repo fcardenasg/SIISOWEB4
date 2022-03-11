@@ -36,5 +36,4 @@ InputMultiselect.propTypes = {
     name: PropTypes.string,
     required: PropTypes.bool,
     options: PropTypes.any,
-
 };

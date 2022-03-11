@@ -43,12 +43,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 
-
 import { IconFileExport } from '@tabler/icons';
 
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 
@@ -388,7 +385,6 @@ const ListCompany = () => {
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-
                         <ExcelFile element={
                             <Tooltip title="Exportar">
                                 <IconButton size="large">
@@ -405,13 +401,11 @@ const ListCompany = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-
                         <Tooltip title="Impresión" onClick={() => navigate('/company/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
-
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}

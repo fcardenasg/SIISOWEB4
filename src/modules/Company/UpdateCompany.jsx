@@ -67,6 +67,15 @@ const UpdateCompany = () => {
             }
         } catch (error) {
             console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: 'Esta Empresa ya existe',
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     };
 
@@ -138,7 +147,7 @@ const UpdateCompany = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                            
+
                             </Grid>
 
                             <Grid item xs={12} sx={{ pb: 3 }}>

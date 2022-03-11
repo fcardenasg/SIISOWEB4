@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import ReactExport from "react-export-excel";
 
 // Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
@@ -28,6 +29,7 @@ import {
     Button
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
+import { IconFileExport } from '@tabler/icons';
 
 // Import de proyectos
 import { Message, TitleButton } from 'components/helpers/Enums';
@@ -203,10 +205,13 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+
 const ListTypeCatalog = () => {
     const dispatch = useDispatch();
     const [typeCatalog, setTypeCatalog] = useState([]);
-    console.log("Lista = ", typeCatalog);
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -340,7 +345,7 @@ const ListTypeCatalog = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - typeCatalog.length) : 0;
 
     return (
-        <MainCard title="Lista de Tipo Catalogo" content={false}>
+        <MainCard title="Lista de Tipo Catálogo" content={false}>
 
             {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
@@ -361,12 +366,20 @@ const ListTypeCatalog = () => {
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <Tooltip title="Copiar">
-                            <IconButton size="large">
-                                <FileCopyIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Impresión">
+                        <ExcelFile element={
+                            <Tooltip title="Exportar">
+                                <IconButton size="large">
+                                    <IconFileExport />
+                                </IconButton>
+                            </Tooltip>
+                        } filename="Tipo Catatalogo">
+                            <ExcelSheet data={typeCatalog} name="Tipo Catálogo">
+                                <ExcelColumn label="Id" value="id" />
+                                <ExcelColumn label="Nombre" value="nombre" />
+                            </ExcelSheet>
+                        </ExcelFile>
+
+                        <Tooltip title="Impresión" onClick={() => navigate('/typecatalog/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
