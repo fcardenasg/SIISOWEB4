@@ -164,6 +164,7 @@ const Catalog = () => {
                             </Grid>
                         </Grid>
                     </Grid>
+
                 </form>
             </Grid>
         </MainCard>
