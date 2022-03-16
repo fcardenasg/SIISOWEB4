@@ -135,6 +135,16 @@ const headCells = [
 
 // ==============================|| TABLE HEADER ||============================== //
 
+// Audio
+const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition
+const mic = new SpeechRecognition()
+
+mic.continuous = true
+mic.interimResults = true
+mic.lang = 'es-ES'
+
+
 /* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
