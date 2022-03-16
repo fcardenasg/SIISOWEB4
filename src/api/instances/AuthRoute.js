@@ -20,4 +20,7 @@ export const Url = {
 
     RegistroAtencion: 'api/RegistroAtencion',
     RegistroAtencionId: 'api/RegistroAtencion/id',
+
+    Cuestionario: 'api/CuestionarioPrevencion',
+    CuestionarioId: 'api/CuestionarioPrevencion/id',
 }
