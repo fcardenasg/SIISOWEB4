@@ -17,23 +17,23 @@ const InputText = ({ bug, onChange, value, control, rows, defaultValue, multilin
     return (
         <>
             <Controller
-                as={TextField}
                 name={name}
-                control={control}
                 defaultValue={defaultValue}
-                label={label}
-                value={value}
-                onChange={onChange}
-                size={size}
-                rows={rows}
-                fullWidth={fullWidth}
-                multiline={multiline}
-                InputLabelProps={{
-                    className: required ? 'required-label' : '',
-                    required: required || false
-                }}
-                error={isError}
-                {...others}
+                render={({ field }) => (
+                    <TextField
+                        {...field}
+                        /*   onChange={onChangeInput} */
+                        label={label}
+                        size={size}
+                        InputLabelProps={{
+                            className: required ? 'required-label' : '',
+                            required: required || false
+                        }}
+                        error={isError}
+                        fullWidth={fullWidth}
+                        multiline={multiline}
+                    />
+                )}
             />
             {errorMessage && (
                 <Grid item xs={12}>

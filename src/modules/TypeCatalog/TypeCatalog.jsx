@@ -9,7 +9,7 @@ import {
 // Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import * as yup from 'yup';
+import * as Yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -24,9 +24,9 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
 /* VALIDACIÓN CON YUP */
-const validationSchema = yup.object().shape({
-    nombre: yup.string().required(`${ValidationMessage.Requerido}`)
-});
+const validationSchema = Yup.object().shape({
+    nombre: Yup.string().required(`${ValidationMessage.Requerido}`),
+}).required();
 
 const TypeCatalog = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
@@ -35,7 +35,7 @@ const TypeCatalog = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const methods = useForm({
-        resolver: yupResolver(validationSchema)
+        resolver: yupResolver(validationSchema),
     });
 
     const { handleSubmit, errors, reset } = methods;

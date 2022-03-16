@@ -1859,10 +1859,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@hookform/resolvers@1.3.5":
-  "integrity" "sha512-R+bX8y2uk9buIhFrngmRRQMtpGjqZNDnCbANIbV1kIgAu5D6o+frFKCrewmicYKB2kowGyRJEx50Mu/nUdAeaA=="
-  "resolved" "https://registry.npmjs.org/@hookform/resolvers/-/resolvers-1.3.5.tgz"
-  "version" "1.3.5"
+"@hookform/resolvers@^2.8.1":
+  "integrity" "sha512-U5lgaCkvD+0e5X8iQmCHiF+jOqjTX6OHUA7zPdeIHI6xdAOoi3rH9MKNuwMwv5Hly2LL6XtDgDkS/k+YG9hOew=="
+  "resolved" "https://registry.npmjs.org/@hookform/resolvers/-/resolvers-2.8.1.tgz"
+  "version" "2.8.1"
 
 "@humanwhocodes/config-array@^0.5.0":
   "integrity" "sha512-FagtKFz74XrTl7y6HCzQpwDfXP0yhxe9lHLD1UZxjvZIcbyRz8zTFF/yYNfSfzU414eDwZ1SrO0Qvtyf+wFMQg=="
@@ -11405,10 +11405,10 @@
     "prop-types" "^15.5.0"
     "react-async-script" "^1.1.1"
 
-"react-hook-form@^6.15.5", "react-hook-form@>=6.6.0":
-  "integrity" "sha512-prq82ofMbnRyj5wqDe8hsTRcdR25jQ+B8KtCS7BLCzjFHAwNuCjRwzPuP4eYLsEBjEIeYd6try+pdLdw0kPkpg=="
-  "resolved" "https://registry.npmjs.org/react-hook-form/-/react-hook-form-6.15.8.tgz"
-  "version" "6.15.8"
+"react-hook-form@^7.0.0", "react-hook-form@^7.22.5":
+  "integrity" "sha512-mmLpT86BkMGPr0r6ca8zxV0WH4Y1FW5MKs7Rq1+uHLVeeg5pSWbF5Z/qLCnM5vPVblHNM6lRBRRotnfEAf0ALA=="
+  "resolved" "https://registry.npmjs.org/react-hook-form/-/react-hook-form-7.28.0.tgz"
+  "version" "7.28.0"
 
 "react-images@^1.2.0-beta.6":
   "integrity" "sha512-/ewkPwkwJDqTmc0HMPccFPE5H4A6JVRCfMahBc2j9DTBPmdANSXAglTlYLgZC8Q7iZQjGFado3OxixSrog/02w=="

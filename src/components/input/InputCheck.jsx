@@ -4,23 +4,35 @@ import {
     FormControlLabel
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { Controller } from 'react-hook-form';
 
-const InputCheck = ({ onChange, label, size }) => {
+const InputCheck = ({ onChange, checked, name, defaultValue, label, size }) => {
     const theme = useTheme();
     return (
         <>
-            <FormControlLabel control={
-                <Checkbox
-                    onChange={onChange}
-                    sx={{
-                        color: theme.palette.error.main,
-                        '&.Mui-checked': {
-                            color: theme.palette.error.main
+            <Controller
+                name={name}
+                defaultValue={defaultValue}
+                render={({ field }) => (
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                {...field}
+                                onChange={onChange}
+                                checked={checked}
+                                sx={{
+                                    color: theme.palette.error.main,
+                                    '&.Mui-checked': {
+                                        color: theme.palette.error.main
+                                    },
+                                    '& .MuiSvgIcon-root': { fontSize: size }
+                                }}
+                            />
                         }
-                    }}
-                    sx={{ '& .MuiSvgIcon-root': { fontSize: size } }}
-                />
-            } label={label} />
+                        label={label}
+                    />
+                )}
+            />
         </>
     );
 
@@ -29,6 +41,9 @@ const InputCheck = ({ onChange, label, size }) => {
 export default InputCheck;
 
 InputCheck.propTypes = {
+    name: PropTypes.string,
+    checked: PropTypes.bool,
+    defaultValue: PropTypes.string,
     onClick: PropTypes.func,
     size: PropTypes.string,
     label: PropTypes.string

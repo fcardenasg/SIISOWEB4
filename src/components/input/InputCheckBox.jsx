@@ -23,14 +23,17 @@ const InputCheckBox = ({ bug, control, label, name, size, defaultValue, ...other
             <FormControl error={isError}>
                 <Controller
                     name={name}
-                    control={control}
                     defaultValue={defaultValue}
                     render={({ field }) => (
-                        <Checkbox
-                            {...field}
+                        <FormControlLabel
+                            control={
+                                <Checkbox {...field} />
+                            }
+                            label={label}
                         />
                     )}
                 />
+
                 {errorMessage && (
                     <Grid item xs={12}>
                         <FormHelperText error>{errorMessage}</FormHelperText>
@@ -48,7 +51,7 @@ InputCheckBox.propTypes = {
     bug: PropTypes.object,
     name: PropTypes.string,
     defaultValue: PropTypes.string,
-    onClick: PropTypes.func,
+    onChange: PropTypes.func,
     size: PropTypes.string,
     label: PropTypes.string,
     control: PropTypes.any,
