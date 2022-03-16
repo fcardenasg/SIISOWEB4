@@ -66,7 +66,6 @@ mic.interimResults = true
 mic.lang = 'es-ES'
 
 
-
 const Assistance = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();

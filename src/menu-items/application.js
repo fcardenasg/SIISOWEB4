@@ -70,8 +70,7 @@ const application = {
                     type: 'item',
                     url: '/medicalformula/list'
                 },
-
-
+           
                 {
                     id: 'account-profile',
                     title: <FormattedMessage id="account-profile" />,
@@ -186,7 +185,7 @@ const application = {
                     title: <FormattedMessage id="Historia clínica ocupacional" />,
                     type: 'item',
                     url: '/occupationalexamination/list',
-                    breadcrumbs: false
+                    breadcrumbs: true
                 },
                 {
                     id: 'order-list',

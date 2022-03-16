@@ -188,6 +188,9 @@ const ListOccupationalexamination = Loadable(lazy(() => import('modules/Occupati
 const Occupationalexamination = Loadable(lazy(() => import('modules/Occupationalexamination/Occupationalexamination')));
 
 
+
+
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -362,27 +365,7 @@ const MainRoutes = {
             path: '/occupationalexamination/add',
             element: <Occupationalexamination />
         },
-        {
-            path: '/occupationalexamination/addA',
-            element: <Occupationalexamination />
-        },
-        {
-            path: '/occupationalexamination/addREF',
-            element: <Occupationalexamination />
-        },
-        {
-            path: '/occupationalexamination/addP',
-            element: <Occupationalexamination />
-        },
-        {
-            path: '/occupationalexamination/addT',
-            element: <Occupationalexamination />
-        },
-        {
-            path: '/occupationalexamination/addF',
-            element: <Occupationalexamination />
-        },
-
+      
 
 
 
