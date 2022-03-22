@@ -6,7 +6,7 @@ import {
     MenuItem
 } from '@mui/material';
 
-const SelectOnChange = ({ bug, options, value, onChange, size, label, name }) => {
+const SelectOnChange = ({ bug, disabled, options, value, onChange, size, label, name }) => {
     let isError = false;
     let errorMessage = '';
     if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
@@ -28,6 +28,7 @@ const SelectOnChange = ({ bug, options, value, onChange, size, label, name }) =>
                     value={value}
                     fullWidth
                     size={size}
+                    disabled={disabled}
                 >
                     {options.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -46,6 +47,7 @@ SelectOnChange.propTypes = {
     bug: PropTypes.object,
     onChange: PropTypes.func,
     name: PropTypes.string,
+    disabled: PropTypes.string,
     label: PropTypes.string,
     value: PropTypes.string,
     options: PropTypes.any,
