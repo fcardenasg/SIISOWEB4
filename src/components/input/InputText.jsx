@@ -6,7 +6,7 @@ import {
     TextField,
 } from '@mui/material';
 
-const InputText = ({ bug, onChange, value, control, rows, defaultValue, multiline, label, size, fullWidth = true, name, required, ...others }) => {
+const InputText = ({ bug, disabled, onChange, value, control, rows, defaultValue, multiline, label, size, fullWidth = true, name, required, ...others }) => {
     let isError = false;
     let errorMessage = '';
     if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
@@ -26,6 +26,7 @@ const InputText = ({ bug, onChange, value, control, rows, defaultValue, multilin
                         label={label}
                         size={size}
                         value={value}
+                        disabled={disabled}
                         InputLabelProps={{
                             className: required ? 'required-label' : '',
                             required: required || false
@@ -54,6 +55,7 @@ InputText.propTypes = {
     size: PropTypes.string,
     rows: PropTypes.string,
     label: PropTypes.string,
+    disabled: PropTypes.string,
     value: PropTypes.any,
     defaultValue: PropTypes.any,
     name: PropTypes.string,

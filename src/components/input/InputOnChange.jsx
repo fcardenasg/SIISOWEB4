@@ -1,7 +1,7 @@
 import { TextField } from '@mui/material';
 import PropTypes from 'prop-types';
 
-const InputOnChange = ({ label, value, onChange, onKeyDown, size, required }) => {
+const InputOnChange = ({ label, value, disabled, onChange, onKeyDown, size, required }) => {
     return (
         <>
             <TextField
@@ -9,6 +9,7 @@ const InputOnChange = ({ label, value, onChange, onKeyDown, size, required }) =>
                 fullWidth
                 value={value}
                 onChange={onChange}
+                disabled={disabled}
                 size={size}
                 onKeyDown={onKeyDown}
                 InputLabelProps={{
@@ -25,6 +26,7 @@ export default InputOnChange;
 InputOnChange.propTypes = {
     onChange: PropTypes.func,
     size: PropTypes.string,
+    disabled: PropTypes.string,
     label: PropTypes.string,
     value: PropTypes.any,
     onKeyDown: PropTypes.any,

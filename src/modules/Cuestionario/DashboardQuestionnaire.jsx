@@ -19,11 +19,12 @@ import { IconReportMedical } from '@tabler/icons';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 // Import del Proyecto
+import SelectOnChange from 'components/input/SelectOnChange';
 import { FormatDate } from 'components/helpers/Format';
 import InputCheckBox from 'components/input/InputCheckBox';
 import SubCard from 'ui-component/cards/SubCard';
 import { SNACKBAR_OPEN } from 'store/actions';
-import { SaveQuestionnaire } from 'api/clients/QuestionnaireClient';
+import { InsertQuestionnaire, UpdateQuestionnaires } from 'api/clients/QuestionnaireClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import { GetAllCatalog } from 'api/clients/CatalogClient';
 import { GetAllQuestionnaire } from 'api/clients/QuestionnaireClient';
@@ -87,6 +88,7 @@ const DashboardQuestionnaire = () => {
     const [company, setCompany] = useState([]);
     const [catalog, setCatalog] = useState([]);
     const [lsQuestionnaire, setLsQuestionnaire] = useState([]);
+    console.log("lsQuestionnaire = ", lsQuestionnaire);
 
     /* Estados de controles al llegar datos */
     const [nombre, setNombre] = useState('');
@@ -146,8 +148,13 @@ const DashboardQuestionnaire = () => {
                     console.log(event?.target.value);
 
                     var lsQuestionnaire = await GetByIdQuestionnaire(documento);
-                    setLsQuestionnaire(lsQuestionnaire.data);
+
+                    if (lsQuestionnaire.status === 200) setLsQuestionnaire(lsQuestionnaire.data);
+
                     setNombre(lsQuestionnaire.data.nombre);
+                    setEmpresa(lsQuestionnaire.data.empresa);
+                    setTelefono(lsQuestionnaire.data.telefono);
+                    setEmail(lsQuestionnaire.data.email);
                 } else {
                     alert("Campo Vacio");
                 }
@@ -169,44 +176,78 @@ const DashboardQuestionnaire = () => {
 
     const handleClickSubmit = async (datos) => {
         try {
-            /* const date = FormatDate(new Date());
-            const documento = datos.documento != "" ? datos.documento : document;
-            const InsertToData = PostQuestionnaire(documento, datos.nombre, datos.telefono, datos.email, datos.empresa, noSymptoms,
+            const date = FormatDate(new Date());
+            const name = datos.nombre != "" ? datos.nombre : nombre;
+            const phone = datos.telefono != "" ? datos.telefono : telefono;
+            const mail = datos.email != "" ? datos.nombre : email;
+            const company = datos.empresa != "" ? datos.empresa : empresa;
+
+            const InsertToData = PostQuestionnaire(document, name, phone, mail, company, noSymptoms,
                 datos.fiebre, datos.congestionNasal, datos.dolorGarganta, datos.dificultadRespiratoria, datos.malestarGeneral,
                 datos.escalofrios, datos.vomito, datos.tos, datos.otrosSintomas, closeContact, datos.contactoSinTapabocas,
                 datos.contactoPocaDistancia, datos.contactoTiempo, datos.contactoMano, datos.consultaEps, datos.cumplirTiempoAislamiento,
                 vacuna, 73, 73, date, 73, 73, date, 73, 73, date, noSymptoms, date, ordenAislamiento, livePerson,
-                datos.censoProfesion, datos.censoContactoCon,
-                datos.censoViveAdultoM, datos.censoObservacion); */
+                datos.censoProfesion, datos.censoContactoCon, datos.censoViveAdultoM, datos.censoObservacion);
             console.log("Insert = ", datos);
 
-            /* if (Object.keys(datos.length !== 0)) {
-                const result = await SaveQuestionnaire(InsertToData);
-                if (result.status === 200) {
-                    setBtnReport(false);
-                    setDocument('');
+            if (lsQuestionnaire.length !== 0) {
+
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await UpdateQuestionnaires(InsertToData);
+                    if (result.status === 200) {
+                        setBtnReport(false);
+                        setDocument('');
+                        dispatch({
+                            type: SNACKBAR_OPEN,
+                            open: true,
+                            message: `${Message.Guardar}`,
+                            variant: 'alert',
+                            alertSeverity: 'success',
+                            close: false,
+                            transition: 'SlideUp'
+                        })
+                        reset();
+                    }
+                } else {
                     dispatch({
                         type: SNACKBAR_OPEN,
                         open: true,
-                        message: `${Message.Guardar}`,
+                        message: 'Hubo un error al guardar los Datos',
                         variant: 'alert',
-                        alertSeverity: 'success',
+                        alertSeverity: 'error',
                         close: false,
                         transition: 'SlideUp'
                     })
-                    reset();
                 }
             } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Hubo un error al guardar los Datos',
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            } */
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await InsertQuestionnaire(InsertToData);
+                    if (result.status === 200) {
+                        setBtnReport(false);
+                        setDocument('');
+                        dispatch({
+                            type: SNACKBAR_OPEN,
+                            open: true,
+                            message: `${Message.Guardar}`,
+                            variant: 'alert',
+                            alertSeverity: 'success',
+                            close: false,
+                            transition: 'SlideUp'
+                        })
+                        reset();
+                    }
+                } else {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: 'Hubo un error al guardar los Datos',
+                        variant: 'alert',
+                        alertSeverity: 'error',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
+                }
+            }
 
         } catch (error) {
             dispatch({
@@ -226,9 +267,10 @@ const DashboardQuestionnaire = () => {
     return (
         <MainCard title="Cuestionario De Salud">
             <Grid xs={12} sx={{ pt: 3 }}>
-                <form onSubmit={handleClickSubmit}>
+                <form onSubmit={handleSubmit(handleClickSubmit)}>
                     {/* Controles del Form */}
                     <Grid container spacing={2} sx={{ pb: 4 }}>
+
                         <Grid item xs={2.4}>
                             <InputOnChange
                                 label="N° Documento"
@@ -238,28 +280,24 @@ const DashboardQuestionnaire = () => {
                             />
                         </Grid>
 
-                        {lsQuestionnaire.length != 0 ? (
+                        {lsQuestionnaire.length === 0 ? (
                             <>
                                 <Grid item xs={2.4}>
-                                    {/* <InputText
-                                        value={lsQuestionnaire.nombre}
-                                        fullWidth
-                                        name="nombre"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    /> */}
-                                    <InputOnChange
-                                        label="Apellidos y Nombres"
-                                        onChange={(e) => setNombre(e?.target.value)}
-                                        value={nombre}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        required={true}
-                                    />
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="nombre"
+                                            label="Apellidos y Nombres"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
                                 </Grid>
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            value={lsQuestionnaire.telefono}
+                                            defaultValue=""
                                             fullWidth
                                             name="telefono"
                                             label="Teléfono"
@@ -271,20 +309,13 @@ const DashboardQuestionnaire = () => {
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            value={lsQuestionnaire.email}
+                                            defaultValue=""
                                             fullWidth
                                             name="email"
                                             label="Email"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
-                                        {/* <SelectOnChange
-                                        options
-                                        value
-                                        onChange
-                                        size
-                                        label
-                                        name /> */}
                                     </FormProvider>
                                 </Grid>
                                 <Grid item xs={2.4}>
@@ -292,7 +323,7 @@ const DashboardQuestionnaire = () => {
                                         <InputSelect
                                             name="empresa"
                                             label="Empresa"
-                                            defaultValue={lsQuestionnaire.empresa}
+                                            defaultValue=""
                                             options={company}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -300,56 +331,57 @@ const DashboardQuestionnaire = () => {
                                     </FormProvider>
                                 </Grid>
                             </>
-                        ) : <>
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="nombre"
+                        ) : (
+                            <>
+                                <Grid item xs={2.4}>
+                                    <InputOnChange
                                         label="Apellidos y Nombres"
+                                        onChange={(e) => setNombre(e?.target.value)}
+                                        value={nombre}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        required={true}
+                                        disabled
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="telefono"
-                                        label="Teléfono"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="email"
-                                        label="Email"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="empresa"
-                                        label="Empresa"
-                                        defaultValue=""
-                                        options={company}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                        </>}
+                                </Grid>
+                                <Grid item xs={2.4}>
+                                    <FormProvider {...methods}>
+                                        <InputOnChange
+                                            label="Teléfono"
+                                            onChange={(e) => setTelefono(e?.target.value)}
+                                            value={telefono}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            required={true}
+                                            disabled
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid item xs={2.4}>
+                                    <FormProvider {...methods}>
+                                        <InputOnChange
+                                            label="Email"
+                                            onChange={(e) => setEmail(e?.target.value)}
+                                            value={email}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            required={true}
+                                            disabled
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid item xs={2.4}>
+                                    <FormProvider {...methods}>
+                                        <SelectOnChange
+                                            name="empresa"
+                                            label="Empresa"
+                                            value={empresa}
+                                            options={company}
+                                            onChange={(e) => setEmpresa(e?.target.value)}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            disabled
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                            </>
+                        )}
                     </Grid>
 
                     <Divider />
