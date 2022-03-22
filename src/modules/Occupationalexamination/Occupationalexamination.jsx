@@ -7,6 +7,7 @@ import { useTheme } from '@mui/material/styles';
 import {
     Box, Tab, Tabs, Button,
     Grid,
+    TextField,
     useMediaQuery,
     Typography,
     Divider,
@@ -37,7 +38,7 @@ import MailTwoToneIcon from '@mui/icons-material/MailTwoTone';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 
-
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 
 // Import de Material-ui
 
@@ -50,7 +51,8 @@ import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Import del Proyectot 
+// Import del Proyectot
+import { FormatDate } from 'components/helpers/Format';
 import User from 'assets/img/user.png'
 import Accordion from 'components/accordion/Accordion';
 import InputMultiselect from 'components/input/InputMultiselect';
@@ -68,7 +70,6 @@ import InputDate from 'components/input/InputDate';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { FormatDate } from 'components/helpers/Format';
 import { PostEmployee } from 'formatdata/EmployeeForm';
 import SelectOnChange from 'components/input/SelectOnChange';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -206,6 +207,20 @@ const Occupationalexamination = () => {
         setNote('')
     }
 
+    const [employee, setEmployee] = useState([]);
+
+    const idEmpleado = 34;
+    async function GetById() {
+        try {
+            const lsServer = await GetByIdEmployee(idEmpleado);
+            if (lsServer.status === 200) {
+                setEmployee(lsServer.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     /* ESTADOS PARA LAS FECHAS */
     const [valueFechaNaci, setFechaNaci] = useState(null);
@@ -297,6 +312,7 @@ const Occupationalexamination = () => {
     useEffect(() => {
         GetAll();
         handleListen();
+        GetById();
     }, [isListening])
 
     const CleanCombo = () => {
@@ -363,44 +379,35 @@ const Occupationalexamination = () => {
                 <form onSubmit={handleSubmit(handleClick)}>
                     {/* <Grid container spacing={gridSpacing}> */}
 
-                    <SubCard darkTitle title={
-                        <><Typography variant="h4">DATOS DEL PACIENTE</Typography></>
-
-                    } >
-
-
+                    <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
                         <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
 
                             <Grid item xs={3}>
-                                <Avatar sx={{ width: 80, height: 80 }} src={User} />
+                                <Grid container xs={12}>
+                                    <Grid item xs={6}>
+                                        <Avatar sx={{ width: 80, height: 80 }} src={User} />
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <TextField fullWidth id="standard-basic" label="Documento" variant="standard" />
+                                    </Grid>
+                                </Grid>
                             </Grid>
 
 
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="documento"
-                                        label="Documento"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
+                            <Grid item xs={5}>
+                                <Typography variant="h2" component="div">
+                                    {employee.nombres}
+                                </Typography>
+                                <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+                                    <Typography variant="h6">{employee.nameGenero} - </Typography>
+                                    <Typography variant="h6"> {employee.fechaNaci}</Typography>
+                                </Grid>
+
                             </Grid>
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="nombres"
-                                        label="Nombres"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={3}>
+
+
+                            {/* <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
@@ -423,7 +430,7 @@ const Occupationalexamination = () => {
                                         bug={errors}
                                     />
                                 </FormProvider>
-                            </Grid>
+                            </Grid> */}
 
 
 
