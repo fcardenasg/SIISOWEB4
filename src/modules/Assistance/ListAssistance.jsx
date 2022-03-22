@@ -37,10 +37,8 @@ import BodyEmployee from './ViewAssistance';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
-import { GetAllEmployee, DeleteEmployee } from 'api/clients/EmployeeClient';
 
-import { GetAllAssistance, DeleteAssistance } from 'api/clients/AssistanceClient';
+import { GetAllAdvice, DeleteAdvice } from 'api/clients/AdviceClient';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -102,33 +100,33 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nombres',
+        id: 'fecha',
         numeric: false,
-        label: 'Nombres',
+        label: 'Fecha',
         align: 'left'
     },
     {
-        id: 'celular',
+        id: 'usuario',
         numeric: false,
-        label: 'Celular',
+        label: 'Usuario',
         align: 'left'
     },
     {
-        id: 'email',
+        id: 'motivo',
         numeric: false,
-        label: 'Email',
+        label: 'Motivo',
         align: 'left'
     },
     {
-        id: 'nameCompany',
+        id: 'idTipoAtencion',
         numeric: false,
-        label: 'Empresa',
+        label: 'Tipo Atencion',
         align: 'left'
     },
     {
-        id: 'nameSede',
+        id: 'idEstadoCaso',
         numeric: false,
-        label: 'Sede',
+        label: 'Estado Caso',
         align: 'left'
     }
 ];
@@ -268,7 +266,7 @@ const ListAssistance = () => {
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
-            const lsServer = await GetAllAssistance(0, 0);
+            const lsServer = await GetAllAdvice(0, 0);
             setAssistance(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
@@ -287,11 +285,6 @@ const ListAssistance = () => {
         setOpen(false);
     };
 
-    /* Abrir Modal */
-    /*     const OpenModal = (idEmpleado) => {
-            return (<BodyEmployee IdEmployee={idEmpleado} openModal={true} />);
-        } */
-
     /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
@@ -306,7 +299,7 @@ const ListAssistance = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nombres', 'celular', 'email', 'nameSede', 'nameCompany'];
+                const properties = ['id', 'documento', 'fecha', 'usuario', 'motivo', 'idTipoAtencion', 'idEstadoCaso'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -378,7 +371,7 @@ const ListAssistance = () => {
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
-            const result = await DeleteAssistance(idCheck);
+            const result = await DeleteAdvice(idCheck);
             if (result.status === 200) {
                 dispatch({
                     type: SNACKBAR_OPEN,
@@ -500,7 +493,8 @@ const ListAssistance = () => {
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
-                                            <Avatar alt="Foto Empleado" src={row.imagenUrl} />
+                                            {' '}
+                                            {row.id}{' '}
                                         </TableCell>
 
                                         <TableCell
@@ -531,7 +525,7 @@ const ListAssistance = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombres}{' '}
+                                                {row.fecha}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -646,8 +640,6 @@ const ListAssistance = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-
-
         </MainCard>
     );
 };

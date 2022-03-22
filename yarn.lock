@@ -1860,9 +1860,9 @@
     "@hapi/hoek" "^8.3.0"
 
 "@hookform/resolvers@^2.8.1":
-  "integrity" "sha512-U5lgaCkvD+0e5X8iQmCHiF+jOqjTX6OHUA7zPdeIHI6xdAOoi3rH9MKNuwMwv5Hly2LL6XtDgDkS/k+YG9hOew=="
-  "resolved" "https://registry.npmjs.org/@hookform/resolvers/-/resolvers-2.8.1.tgz"
-  "version" "2.8.1"
+  "integrity" "sha512-meAEDur1IJBfKyTo9yPYAuzjIfrxA7m9Ov+1nxaW/YupsqMeseWifoUjWK03+hz/RJizsVQAaUjVxFEkyu0GWg=="
+  "resolved" "https://registry.npmjs.org/@hookform/resolvers/-/resolvers-2.8.8.tgz"
+  "version" "2.8.8"
 
 "@humanwhocodes/config-array@^0.5.0":
   "integrity" "sha512-FagtKFz74XrTl7y6HCzQpwDfXP0yhxe9lHLD1UZxjvZIcbyRz8zTFF/yYNfSfzU414eDwZ1SrO0Qvtyf+wFMQg=="
@@ -6592,19 +6592,6 @@
   "integrity" "sha512-hlq4+BU0hlPmwsFjwGGzZ+OZ9N/wq9Ljg/sq3pX+2CD7hrJsX9tJgWWK/wiNTFM212CLHWhicOoqwXyZGGetJg=="
   "resolved" "https://registry.npmjs.org/fscreen/-/fscreen-1.2.0.tgz"
   "version" "1.2.0"
-
-"fsevents@^1.2.7":
-  "integrity" "sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw=="
-  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz"
-  "version" "1.2.13"
-  dependencies:
-    "bindings" "^1.5.0"
-    "nan" "^2.12.1"
-
-"fsevents@^2.1.2", "fsevents@^2.1.3", "fsevents@~2.3.2":
-  "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
-  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
-  "version" "2.3.2"
 
 "function-bind@^1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="

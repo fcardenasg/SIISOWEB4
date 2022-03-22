@@ -20,37 +20,28 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import { FormatDate } from 'components/helpers/Format'
 import InputArea from 'components/input/InputArea';
 import Accordion from 'components/accordion/Accordion';
-import InputMultiselect from 'components/input/InputMultiselect';
 import ModalChildren from 'components/form/ModalChildren';
 import WebCamCapture from 'components/form/WebCam';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
-import { InsertEmployee } from 'api/clients/EmployeeClient';
+import { InsertAdvice } from 'api/clients/AdviceClient';
 import { GetAllCatalog, GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
-import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import InputDate from 'components/input/InputDate';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { FormatDate } from 'components/helpers/Format';
-import { PostEmployee } from 'formatdata/EmployeeForm';
-import SelectOnChange from 'components/input/SelectOnChange';
+import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
-//  ACORDEON 
 
-import PropTypes from 'prop-types';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import FaceTwoToneIcon from '@mui/icons-material/FaceTwoTone';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 
 // Audio
@@ -82,8 +73,6 @@ const MedicalAdvice = () => {
     /* ESTADOS PARA EL CONTROL DE VOZ */
     const [isListening, setIsListening] = useState(false);
     const [note, setNote] = useState(null);
-    console.log(note);
-    const [savedNotes, setSavedNotes] = useState([]);
 
     const handleListen = () => {
         if (isListening) {
@@ -112,11 +101,6 @@ const MedicalAdvice = () => {
                 console.log(event.error)
             }
         }
-    }
-
-    const handleSaveNote = () => {
-        setSavedNotes([...savedNotes, note])
-        setNote('')
     }
 
     /* ESTADOS PARA LAS FECHAS */
@@ -155,31 +139,6 @@ const MedicalAdvice = () => {
         setImgSrc(null);
     }
 
-    /* EVENTO DE FILTRAR COMBO DEPARTAMENTO */
-    async function GetSubString(codigo) {
-        try {
-            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo);
-            var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
-                label: item.nombre,
-                value: item.idCatalogo
-            }));
-            console.log("resultMunicipio = ", resultMunicipio);
-            setMunicipio(resultMunicipio);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const handleChange = (event) => {
-
-        setValues(event.target?.value);
-        console.log("event.target.value = ", Number(event.target?.value));
-
-        /* const eventCode = event.target.value;
-        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo == eventCode).map(code => code.codigo));
-        console.log("lsResulCode = ", lsResulCode);
-        GetSubString(lsResulCode); */
-    };
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
@@ -189,7 +148,6 @@ const MedicalAdvice = () => {
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            console.table(resultCatalogo);
             setCatalog(resultCatalogo);
 
             const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, 1077);
@@ -235,25 +193,18 @@ const MedicalAdvice = () => {
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
         try {
-            console.log("dptoNacido = ", datos.dptoNacido);
+            const fecha = FormatDate(datos.fecha);
+            const resto = "Sin Registro";
+            const usuario = "Manuel Vásquez";
+            const dateNow = FormatDate(new Date());
+            const DataToInsert = PostMedicalAdvice(datos.documento, fecha, 73, 73, datos.idContingencia,
+                73, datos.idTurno, datos.idDiaTurno, 73, datos.idMotivo, 73, note, resto, resto, 73, usuario,
+                dateNow, usuario, dateNow);
 
-            const FechaNaci = FormatDate(valueFechaNaci);
-            const FechaContrato = FormatDate(valueFechaContrato);
-            const TermDate = FormatDate(valueTermDate);
-            const FechaModificacion = FormatDate(valueFechaModificacion);
-            const FechaCreacion = FormatDate(valueFechaCreacion);
-
-            const DataToInsert = PostEmployee(datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, datos.dptoNacido, FechaContrato,
-                datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
-                datos.direccionResidencia, datos.municipioResidencia, datos.dptoResidencia, datos.celular, datos.eps,
-                datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
-                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
-                datos.bandera, datos.ges, datos.usuarioModifica, FechaModificacion, datos.usuarioCreacion,
-                FechaCreacion, imgSrc);
+            console.log(DataToInsert);
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertEmployee(DataToInsert);
+                const result = await InsertAdvice(DataToInsert);
                 if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,
@@ -269,7 +220,15 @@ const MedicalAdvice = () => {
                 }
             }
         } catch (error) {
-            console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${error}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     };
 
@@ -279,10 +238,6 @@ const MedicalAdvice = () => {
 
     const handleOpenObservation = () => {
         console.log("Sirve");
-    }
-
-    const handleClickAttend = () => {
-        setClickAttend(true);
     }
 
     const navigate = useNavigate();
@@ -404,10 +359,7 @@ const MedicalAdvice = () => {
                                             defaultValue=""
                                             name="fechaNaci"
                                             label="Fecha de Nacimiento"
-                                            value={valueFechaNaci}
-                                            onChange={(newValue) => {
-                                                setFechaNaci(newValue);
-                                            }}
+                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -735,12 +687,9 @@ const MedicalAdvice = () => {
                                     <FormProvider {...methods}>
                                         <InputDate
                                             defaultValue=""
-                                            name="fechaatencion"
+                                            name="fecha"
                                             label="Fecha"
-                                            value={valueFechaNaci}
-                                            onChange={(newValue) => {
-                                                setFechaNaci(newValue);
-                                            }}
+                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -748,7 +697,7 @@ const MedicalAdvice = () => {
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="contingencia"
+                                            name="idContingencia"
                                             label="Contingencia"
                                             defaultValue=""
                                             options={catalog}
@@ -761,7 +710,7 @@ const MedicalAdvice = () => {
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="turno"
+                                            name="idTurno"
                                             label="Turno"
                                             defaultValue=""
                                             options={catalog}
@@ -774,7 +723,7 @@ const MedicalAdvice = () => {
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="diaturno"
+                                            name="idDiaTurno"
                                             label="Día del Turno"
                                             defaultValue=""
                                             options={catalog}
@@ -787,7 +736,7 @@ const MedicalAdvice = () => {
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="motivo"
+                                            name="idMotivo"
                                             label="Motivo"
                                             defaultValue=""
                                             options={catalog}
@@ -799,7 +748,7 @@ const MedicalAdvice = () => {
 
                                 <Grid item xs={4}>
                                     <AnimateButton>
-                                        <Button size="large" variant="contained" onClick={handleClickAttend} fullWidth>
+                                        <Button size="large" variant="contained" onClick={() => setClickAttend(true)} fullWidth>
                                             Atender
                                         </Button>
                                     </AnimateButton>

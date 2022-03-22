@@ -23,9 +23,10 @@ import { FormatDate } from 'components/helpers/Format';
 import InputCheckBox from 'components/input/InputCheckBox';
 import SubCard from 'ui-component/cards/SubCard';
 import { SNACKBAR_OPEN } from 'store/actions';
-import { InsertQuestionnaire } from 'api/clients/QuestionnaireClient';
+import { SaveQuestionnaire } from 'api/clients/QuestionnaireClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import { GetAllCatalog } from 'api/clients/CatalogClient';
+import { GetAllQuestionnaire } from 'api/clients/QuestionnaireClient';
 import { PostQuestionnaire } from 'formatdata/QuestionnaireForm';
 import { GetByIdQuestionnaire } from 'api/clients/QuestionnaireClient';
 import InputText from 'components/input/InputText';
@@ -36,19 +37,19 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import SideIconCard from 'ui-component/cards/SideIconCard';
 import InputCheck from 'components/input/InputCheck';
 import InputOnChange from 'components/input/InputOnChange';
+import Cargando from 'components/Cargando';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
 /* VALIDACIÓN CON YUP */
-const validationSchema = yup.object().shape({
+/* const validationSchema = yup.object().shape({
     nombre: yup.string().required(`${ValidationMessage.Requerido}`),
     telefono: yup.string().required(`${ValidationMessage.Requerido}`),
     email: yup.string().required(`${ValidationMessage.Requerido}`),
     empresa: yup.string().required(`${ValidationMessage.Requerido}`),
-});
+}); */
 
 const defaultValues = {
-    sintomasNoSi: false,
     fiebre: false,
     congestionNasal: false,
     dolorGarganta: false,
@@ -73,7 +74,7 @@ const defaultValues = {
 
     censoProfesion: 73,
     censoContactoCon: 73,
-    censoObservacion: "NA",
+    censoObservacion: "Sin Registro",
 };
 
 const DashboardQuestionnaire = () => {
@@ -85,17 +86,24 @@ const DashboardQuestionnaire = () => {
     /* NUESTROS USESTATE */
     const [company, setCompany] = useState([]);
     const [catalog, setCatalog] = useState([]);
-    const [questionnaire, setQuestionnaire] = useState([]);
+    const [lsQuestionnaire, setLsQuestionnaire] = useState([]);
+
+    /* Estados de controles al llegar datos */
+    const [nombre, setNombre] = useState('');
+    const [telefono, setTelefono] = useState('');
+    const [email, setEmail] = useState('');
+    const [empresa, setEmpresa] = useState('');
+
     const [document, setDocument] = useState('');
     const [btnReport, setBtnReport] = useState(false);
     const [noSymptoms, setNoSymptoms] = useState(false);
     const [closeContact, setCloseContact] = useState(false);
     const [vacuna, setVacuna] = useState(false);
     const [livePerson, setLivePerson] = useState(false);
-    const [autorizarTurno, setAutorizarTurno] = useState(false);
 
     const methods = useForm(
-        { resolver: yupResolver(validationSchema), defaultValues }
+        { defaultValues }
+        /* resolver: yupResolver(validationSchema), */
     );
 
     const { handleSubmit, errors, reset } = methods;
@@ -104,18 +112,18 @@ const DashboardQuestionnaire = () => {
     async function GetAll() {
         try {
             const lsServerCompany = await GetAllCompany(0, 0);
-            var result = lsServerCompany.data.entities.map((item) => ({
+            var resultCompany = lsServerCompany.data.entities.map((item) => ({
                 value: item.codigo,
                 label: item.descripcionSpa
             }));
-            setCompany(result);
+            setCompany(resultCompany);
 
             const lsServerCatalog = await GetAllCatalog(0, 0);
-            var result = lsServerCatalog.data.entities.map((item) => ({
+            var resultCatalog = lsServerCatalog.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setCatalog(result);
+            setCatalog(resultCatalog);
         } catch (error) {
             console.log(error);
         }
@@ -126,61 +134,57 @@ const DashboardQuestionnaire = () => {
         GetAll();
     }, [])
 
-    const handleLivePerson = (event) => {
-        setLivePerson(event.target.checked);
-    }
-
     const handleDocument = async (event) => {
-        setDocument(event?.target.value);
-        if (event.key === 'Enter') {
-            if (event?.target.value != "") {
-                const documento = event?.target.value;
-                console.log(event?.target.value);
-
-                var lsQuestionnaire = await GetByIdQuestionnaire(documento);
-
-                setQuestionnaire(lsQuestionnaire.data);
-                console.log("Datos = ", questionnaire);
-            } else {
-                alert("Campo Vacio");
-            }
-        }
-    }
-
-    const handleClick = () => {
         try {
-            if (document != "") {
-                setBtnReport(true);
-            } else alert("El campo de documento es requerido");
+            setDocument(event?.target.value);
+
+            console.log(event?.target.value, document);
+
+            if (event.key === 'Enter') {
+                if (event?.target.value != "") {
+                    const documento = event?.target.value;
+                    console.log(event?.target.value);
+
+                    var lsQuestionnaire = await GetByIdQuestionnaire(documento);
+                    setLsQuestionnaire(lsQuestionnaire.data);
+                    setNombre(lsQuestionnaire.data.nombre);
+                } else {
+                    alert("Campo Vacio");
+                }
+            }
         } catch (error) {
             console.log(error);
         }
     }
 
-    const ordenAislamiento = autorizarTurno ? false : true;
+    const handleClick = () => {
+        try {
+            setBtnReport(true);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const ordenAislamiento = noSymptoms ? false : true;
 
     const handleClickSubmit = async (datos) => {
         try {
-            if (document != "") {
-                setBtnReport(true);
-            } else alert("El campo de documento es requerido");
-            console.log(document, datos);
-
-            const date = FormatDate(new Date());
-            const InsertToData = PostQuestionnaire(document, datos.nombre, datos.telefono, datos.email, datos.empresa, datos.SintomasNoSi,
+            /* const date = FormatDate(new Date());
+            const documento = datos.documento != "" ? datos.documento : document;
+            const InsertToData = PostQuestionnaire(documento, datos.nombre, datos.telefono, datos.email, datos.empresa, noSymptoms,
                 datos.fiebre, datos.congestionNasal, datos.dolorGarganta, datos.dificultadRespiratoria, datos.malestarGeneral,
-                datos.escalofrios, datos.vomito, datos.tos, datos.otrosSintomas, datos.contactoEstrecho, datos.contactoSinTapabocas,
+                datos.escalofrios, datos.vomito, datos.tos, datos.otrosSintomas, closeContact, datos.contactoSinTapabocas,
                 datos.contactoPocaDistancia, datos.contactoTiempo, datos.contactoMano, datos.consultaEps, datos.cumplirTiempoAislamiento,
-                vacuna, 73, 73, date, 73, 73,
-                date, 73, 73, date, autorizarTurno,
-                date, ordenAislamiento, datos.censoViveServicioSalud, datos.censoProfesion, datos.censoContactoCon,
-                datos.censoViveAdultoM, datos.censoObservacion);
-            console.log("Insert = ", InsertToData);
+                vacuna, 73, 73, date, 73, 73, date, 73, 73, date, noSymptoms, date, ordenAislamiento, livePerson,
+                datos.censoProfesion, datos.censoContactoCon,
+                datos.censoViveAdultoM, datos.censoObservacion); */
+            console.log("Insert = ", datos);
 
-
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertQuestionnaire(InsertToData);
+            /* if (Object.keys(datos.length !== 0)) {
+                const result = await SaveQuestionnaire(InsertToData);
                 if (result.status === 200) {
+                    setBtnReport(false);
+                    setDocument('');
                     dispatch({
                         type: SNACKBAR_OPEN,
                         open: true,
@@ -202,7 +206,7 @@ const DashboardQuestionnaire = () => {
                     close: false,
                     transition: 'SlideUp'
                 })
-            }
+            } */
 
         } catch (error) {
             dispatch({
@@ -222,10 +226,9 @@ const DashboardQuestionnaire = () => {
     return (
         <MainCard title="Cuestionario De Salud">
             <Grid xs={12} sx={{ pt: 3 }}>
-                <form onSubmit={handleSubmit(handleClickSubmit)}>
+                <form onSubmit={handleClickSubmit}>
                     {/* Controles del Form */}
                     <Grid container spacing={2} sx={{ pb: 4 }}>
-
                         <Grid item xs={2.4}>
                             <InputOnChange
                                 label="N° Documento"
@@ -235,24 +238,28 @@ const DashboardQuestionnaire = () => {
                             />
                         </Grid>
 
-                        {questionnaire.length !== 0 ? (
+                        {lsQuestionnaire.length != 0 ? (
                             <>
                                 <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue={questionnaire.nombre}
-                                            fullWidth
-                                            name="nombre"
-                                            label="Apellidos y Nombres"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    {/* <InputText
+                                        value={lsQuestionnaire.nombre}
+                                        fullWidth
+                                        name="nombre"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    /> */}
+                                    <InputOnChange
+                                        label="Apellidos y Nombres"
+                                        onChange={(e) => setNombre(e?.target.value)}
+                                        value={nombre}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        required={true}
+                                    />
                                 </Grid>
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={questionnaire.telefono}
+                                            value={lsQuestionnaire.telefono}
                                             fullWidth
                                             name="telefono"
                                             label="Teléfono"
@@ -264,13 +271,20 @@ const DashboardQuestionnaire = () => {
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={questionnaire.email}
+                                            value={lsQuestionnaire.email}
                                             fullWidth
                                             name="email"
                                             label="Email"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
+                                        {/* <SelectOnChange
+                                        options
+                                        value
+                                        onChange
+                                        size
+                                        label
+                                        name /> */}
                                     </FormProvider>
                                 </Grid>
                                 <Grid item xs={2.4}>
@@ -278,7 +292,7 @@ const DashboardQuestionnaire = () => {
                                         <InputSelect
                                             name="empresa"
                                             label="Empresa"
-                                            defaultValue={questionnaire.essmpresa}
+                                            defaultValue={lsQuestionnaire.empresa}
                                             options={company}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -286,59 +300,56 @@ const DashboardQuestionnaire = () => {
                                     </FormProvider>
                                 </Grid>
                             </>
-                        ) : (
-                            <>
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="nombre"
-                                            label="Apellidos y Nombres"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="telefono"
-                                            label="Teléfono"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="email"
-                                            label="Email"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="empresa"
-                                            label="Empresa"
-                                            defaultValue=""
-                                            options={company}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </>
-                        )}
-
+                        ) : <>
+                            <Grid item xs={2.4}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="nombre"
+                                        label="Apellidos y Nombres"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                            <Grid item xs={2.4}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="telefono"
+                                        label="Teléfono"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                            <Grid item xs={2.4}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="email"
+                                        label="Email"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                            <Grid item xs={2.4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="empresa"
+                                        label="Empresa"
+                                        defaultValue=""
+                                        options={company}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                        </>}
                     </Grid>
 
                     <Divider />
@@ -487,7 +498,7 @@ const DashboardQuestionnaire = () => {
                                                     </Grid>
                                                     <Grid item xs={6}>
                                                         <AnimateButton>
-                                                            <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
+                                                            <Button variant="outlined" fullWidth onClick={() => { setBtnReport(false); setDocument('') }}>
                                                                 {TitleButton.Cancelar}
                                                             </Button>
                                                         </AnimateButton>
@@ -749,7 +760,7 @@ const DashboardQuestionnaire = () => {
                                                     </Grid>
                                                     <Grid item xs={6}>
                                                         <AnimateButton>
-                                                            <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
+                                                            <Button variant="outlined" fullWidth onClick={() => { setBtnReport(false); setDocument('') }}>
                                                                 {TitleButton.Cancelar}
                                                             </Button>
                                                         </AnimateButton>

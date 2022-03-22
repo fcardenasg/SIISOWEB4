@@ -10,8 +10,7 @@ import {
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { LocalizationProvider, DatePicker } from '@mui/lab';
 
-const InputDate = ({ bug, defaultCalendarMonth, onChange, control, value, options, size, defaultValue, label, name, required, ...others }) => {
-
+const InputDate = ({ bug, defaultValue, label, name, required, ...others }) => {
 
     let isError = false;
     let errorMessage = '';
@@ -23,29 +22,28 @@ const InputDate = ({ bug, defaultCalendarMonth, onChange, control, value, option
     return (
         <>
             <Controller
-                as={
+                name={name}
+                defaultValue={defaultValue}
+                {...others}
+                render={({ field }) => (
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DatePicker
+                            {...field}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
                                     fullWidth
-                                /* inputProps={{ style: { fontSize: 14 } }} */
-                                /* InputLabelProps={{ style: { fontSize: 14 } }} */
                                 />
                             )}
                             mask="____/__/__"
                             label={label}
-                            value={value}
                             inputFormat="yyyy/MM/dd"
-                            onChange={onChange}
                         />
                     </LocalizationProvider>
-                }
-                name={name}
-                defaultValue={defaultValue}
-                {...others}
+                )}
             />
+
+
             {errorMessage && (
                 <Grid item xs={12}>
                     <FormHelperText error>{errorMessage}</FormHelperText>
@@ -60,8 +58,6 @@ export default InputDate;
 InputDate.propTypes = {
     bug: PropTypes.object,
     onChange: PropTypes.func,
-    size: PropTypes.string,
-    value: PropTypes.string,
     label: PropTypes.string,
     defaultValue: PropTypes.any,
     name: PropTypes.string,

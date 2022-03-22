@@ -187,9 +187,8 @@ const Turner = Loadable(lazy(() => import('modules/Turner/Turner')));
 const ListOccupationalexamination = Loadable(lazy(() => import('modules/Occupationalexamination/ListOccupationalexamination')));
 const Occupationalexamination = Loadable(lazy(() => import('modules/Occupationalexamination/Occupationalexamination')));
 
-
-
-
+const ListOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/ListOtherAdvice')));
+const OtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/OtherAdvice')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -365,7 +364,17 @@ const MainRoutes = {
             path: '/occupationalexamination/add',
             element: <Occupationalexamination />
         },
-      
+
+        /* Render de Otras Asesorias */
+        {
+            path: '/otheradvice/list',
+            element: <ListOtherAdvice />
+        },
+        {
+            path: '/otheradvice/add',
+            element: <OtherAdvice />
+        },
+
 
 
 

@@ -32,15 +32,13 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 // Import de proyectos
-
-import BodyPsychologicalCounseling from './ViewPsychologicalCounseling';
+import BodyMedicalAdvice from './ViewMedicalAdvice';
+import { FormatDate } from 'components/helpers/Format';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
-import { GetAllEmployee, DeleteEmployee } from 'api/clients/EmployeeClient';
 
-import { GetAllAssistance, DeleteAssistance } from 'api/clients/AssistanceClient';
+import { GetAllAdvice, DeleteAdvice } from 'api/clients/AdviceClient';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -51,6 +49,12 @@ import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import ReactExport from "react-export-excel";
+import { IconFileExport } from '@tabler/icons';
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function getModalStyle() {
     const top = 50;
@@ -102,33 +106,33 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nombres',
+        id: 'fecha',
         numeric: false,
-        label: 'Nombres',
+        label: 'Fecha',
         align: 'left'
     },
     {
-        id: 'celular',
+        id: 'usuario',
         numeric: false,
-        label: 'Celular',
+        label: 'Usuario',
         align: 'left'
     },
     {
-        id: 'email',
+        id: 'motivo',
         numeric: false,
-        label: 'Email',
+        label: 'Motivo',
         align: 'left'
     },
     {
-        id: 'nameCompany',
+        id: 'idTipoAtencion',
         numeric: false,
-        label: 'Empresa',
+        label: 'Tipo Atencion',
         align: 'left'
     },
     {
-        id: 'nameSede',
+        id: 'idEstadoCaso',
         numeric: false,
-        label: 'Sede',
+        label: 'Estado Caso',
         align: 'left'
     }
 ];
@@ -251,8 +255,7 @@ EnhancedTableToolbar.propTypes = {
 
 const ListPsychologicalCounseling = () => {
     const dispatch = useDispatch();
-    const [assistance, setAssistance] = useState([]);
-    console.table("Lista = ", assistance);
+    const [medicalAdvice, setMedicalAdvice] = useState([]);
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -267,8 +270,8 @@ const ListPsychologicalCounseling = () => {
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
-            const lsServer = await GetAllAssistance(0, 0);
-            setAssistance(lsServer.data.entities);
+            const lsServer = await GetAllAdvice(0, 0);
+            setMedicalAdvice(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
@@ -300,7 +303,7 @@ const ListPsychologicalCounseling = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nombres', 'celular', 'email', 'nameSede', 'nameCompany'];
+                const properties = ['id', 'documento', 'fecha', 'usuario', 'motivo', 'idTipoAtencion', 'idEstadoCaso'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -314,9 +317,9 @@ const ListPsychologicalCounseling = () => {
                 }
                 return matches;
             });
-            setAssistance(newRows);
+            setMedicalAdvice(newRows);
         } else {
-            setAssistance(rows);
+            setMedicalAdvice(rows);
         }
     };
 
@@ -331,7 +334,7 @@ const ListPsychologicalCounseling = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = assistance.map((n) => n.id);
+            const newSelectedId = medicalAdvice.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -372,7 +375,7 @@ const ListPsychologicalCounseling = () => {
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
-            const result = await DeleteAssistance(idCheck);
+            const result = await DeleteAdvice(idCheck);
             if (result.status === 200) {
                 dispatch({
                     type: SNACKBAR_OPEN,
@@ -394,7 +397,7 @@ const ListPsychologicalCounseling = () => {
     const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - assistance.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medicalAdvice.length) : 0;
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
@@ -417,13 +420,38 @@ const ListPsychologicalCounseling = () => {
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <Tooltip title="Copiar">
-                            <IconButton size="large">
-                                <FileCopyIcon />
-                            </IconButton>
-                        </Tooltip>
+                        <ExcelFile element={
+                            <Tooltip title="Exportar">
+                                <IconButton size="large">
+                                    <IconFileExport />
+                                </IconButton>
+                            </Tooltip>
+                        } filename="Asesoría Médica">
+                            <ExcelSheet data={medicalAdvice} name="Asesoría Médica">
+                                <ExcelColumn label="Id" value="id" />
+                                <ExcelColumn label="Documento" value="documento" />
+                                <ExcelColumn label="Fecha" value="fecha" />
+                                <ExcelColumn label="Tipo Atención" value="idTipoAtencion" />
+                                <ExcelColumn label="Sede" value="idSede" />
+                                <ExcelColumn label="Contingencia" value="idContingencia" />
+                                <ExcelColumn label="Estado del Caso" value="idEstadoCaso" />
+                                <ExcelColumn label="Turno" value="idTurno" />
+                                <ExcelColumn label="Día del Turno" value="idDiaTurno" />
+                                <ExcelColumn label="Tipo Asesoría" value="idTipoAsesoria" />
+                                <ExcelColumn label="Motivo" value="idMotivo" />
+                                <ExcelColumn label="Causa" value="idCausa" />
+                                <ExcelColumn label="Descripción" value="motivo" />
+                                <ExcelColumn label="Recomendaciones" value="recomdaciones" />
+                                <ExcelColumn label="Pautas" value="pautas" />
+                                <ExcelColumn label="Estado Asesoría" value="idEstadoAsesoria" />
+                                <ExcelColumn label="Usuario" value="usuario" />
+                                <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
+                                <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
+                                <ExcelColumn label="Fecha de Actualización" value="fechaActualizacion" />
+                            </ExcelSheet>
+                        </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/assistance/report/${idCheck}`)}>
+                        <Tooltip title="Impresión" onClick={() => navigate('/psychologicalcounseling/report/')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -448,13 +476,13 @@ const ListPsychologicalCounseling = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={assistance.length}
+                        rowCount={medicalAdvice.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(assistance, getComparator(order, orderBy))
+                        {stableSort(medicalAdvice, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
@@ -493,7 +521,8 @@ const ListPsychologicalCounseling = () => {
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
-                                            <Avatar alt="Foto Empleado" src={row.imagenUrl} />
+                                            {' '}
+                                            {row.id}{' '}
                                         </TableCell>
 
                                         <TableCell
@@ -524,7 +553,7 @@ const ListPsychologicalCounseling = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombres}{' '}
+                                                {FormatDate(row.fecha)}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -540,7 +569,7 @@ const ListPsychologicalCounseling = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.celular}{' '}
+                                                {row.usuario}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -556,7 +585,7 @@ const ListPsychologicalCounseling = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.email}{' '}
+                                                {row.motivo}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -572,7 +601,7 @@ const ListPsychologicalCounseling = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameCompany}{' '}
+                                                {row.idTipoAtencion}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -588,7 +617,7 @@ const ListPsychologicalCounseling = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameSede}{' '}
+                                                {row.idEstadoCaso}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -599,19 +628,18 @@ const ListPsychologicalCounseling = () => {
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/employee/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/psychologicalcounseling/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                            {console.log(row.id)}
                                         </TableCell>
                                         {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
                                         <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                             open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
                                             aria-describedby="simple-modal-description"
                                         >
-                                            <BodyPsychologicalCounseling IdEmployee={row.id} modalStyle={modalStyle} handleClose={handleClose} />
+                                            <BodyMedicalAdvice IdEmployee={row.id} modalStyle={modalStyle} handleClose={handleClose} />
                                         </Modal>
                                     </TableRow>
                                 );
@@ -633,7 +661,7 @@ const ListPsychologicalCounseling = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={assistance.length}
+                count={medicalAdvice.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

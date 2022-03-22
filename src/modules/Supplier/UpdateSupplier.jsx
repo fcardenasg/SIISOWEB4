@@ -17,17 +17,18 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
-import { Url } from 'api/instances/AuthRoute';
+import Cargando from 'components/Cargando';
 import { PutCatalog } from 'formatdata/CatalogForm';
 import { SNACKBAR_OPEN } from 'store/actions';
 import UpdateData from 'components/form/UpdateData';
-import { UpdateSuppliers } from 'api/clients/SupplierClient';
+import { UpdateSuppliers, GetByIdSupplier } from 'api/clients/SupplierClient';
 import { GetAllCatalog } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import InputMultiSelectCheck from 'components/input/InputMultiSelectCheck';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
@@ -43,9 +44,13 @@ const UpdateSupplier = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
+    const { id } = useParams();
 
     /* NUESTROS USESTATE */
     const [catalog, setCatalog] = useState([]);
+    const [supplier, setSupplier] = useState([]);
+    const [personName, setPersonName] = useState([]);
+    console.log("personName = ", personName);
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
@@ -56,6 +61,10 @@ const UpdateSupplier = () => {
                 label: item.nombre
             }));
             setCatalog(result);
+
+            const lsServerSupplier = await GetByIdSupplier(id);
+            setSupplier(lsServerSupplier.data);
+            setPersonName(JSON.parse(lsServerSupplier.data.tipoProv));
         } catch (error) {
             console.log(error);
         }
@@ -65,6 +74,19 @@ const UpdateSupplier = () => {
     useEffect(() => {
         GetAll();
     }, [])
+
+
+    console.log("personName = ", personName);
+
+    const handleChange = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setPersonName(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
@@ -104,15 +126,15 @@ const UpdateSupplier = () => {
 
     return (
         <MainCard title="Actualizar Proveedor">
-            <UpdateData url={Url.ProveedorId}>
-                {(Supplier) => (
+            {supplier.length != 0 ? (
+                <>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Grid item xs={12} spacing={2} sx={{ pt: 3 }}>
                             <Grid container spacing={2} sx={{ pb: 3 }}>
                                 <Grid item xs={12} sm={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={Supplier.codiProv}
+                                            defaultValue="{supplier.codiProv}"
                                             fullWidth
                                             disabled
                                             name="codiProv"
@@ -125,7 +147,7 @@ const UpdateSupplier = () => {
                                 <Grid item xs={12} sm={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={Supplier.nombProv}
+                                            defaultValue={supplier.nombProv}
                                             fullWidth
                                             name="nombProv"
                                             label="Nombre"
@@ -137,7 +159,7 @@ const UpdateSupplier = () => {
                                 <Grid item xs={12} sm={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={Supplier.teleProv}
+                                            defaultValue={supplier.teleProv}
                                             fullWidth
                                             name="teleProv"
                                             label="Teléfono"
@@ -149,7 +171,7 @@ const UpdateSupplier = () => {
                                 <Grid item xs={12} sm={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={Supplier.emaiProv}
+                                            defaultValue={supplier.emaiProv}
                                             fullWidth
                                             name="emaiProv"
                                             label="Email"
@@ -161,7 +183,7 @@ const UpdateSupplier = () => {
                                 <Grid item xs={12} sm={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={Supplier.contaProv}
+                                            defaultValue={supplier.contaProv}
                                             fullWidth
                                             name="contaProv"
                                             label="Contacto"
@@ -175,7 +197,7 @@ const UpdateSupplier = () => {
                                         <InputSelect
                                             name="ciudProv"
                                             label="Ciudad"
-                                            defaultValue={Supplier.ciudProv}
+                                            defaultValue={supplier.ciudProv}
                                             options={catalog}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -184,20 +206,27 @@ const UpdateSupplier = () => {
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <FormProvider {...methods}>
-                                        <InputSelect
+                                        {/* <InputSelect
                                             name="tipoProv"
                                             label="Tipo Proveedor"
-                                            defaultValue={Supplier.tipoProv}
+                                            defaultValue={supplier.tipoProv}
                                             options={catalog}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
+                                        /> */}
+                                        <InputMultiSelectCheck
+                                            fullWidth
+                                            onChange={handleChange}
+                                            value={personName}
+                                            label="Tipo Proveedor"
+                                            options={catalog}
                                         />
                                     </FormProvider>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={Supplier.direProv}
+                                            defaultValue={supplier.direProv}
                                             fullWidth
                                             name="direProv"
                                             label="Dirrección"
@@ -228,9 +257,8 @@ const UpdateSupplier = () => {
                             </Grid>
                         </Grid>
                     </form>
-                )}
-            </UpdateData>
-
+                </>
+            ) : (<Cargando />)}
         </MainCard>
     );
 };

@@ -73,19 +73,6 @@ import { PostEmployee } from 'formatdata/EmployeeForm';
 import SelectOnChange from 'components/input/SelectOnChange';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
-//  ACORDEON 
-
-
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import FaceTwoToneIcon from '@mui/icons-material/FaceTwoTone';
-import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
-import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-
-// assets
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 // Audio
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition

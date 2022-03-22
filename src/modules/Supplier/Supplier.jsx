@@ -86,17 +86,7 @@ const Supplier = () => {
     }, [])
 
     const [personName, setPersonName] = useState([]);
-    const [personNameString, setPersonNameString] = useState('');
-
-    const handleEvent = (dato) => {
-        for (var i = 0; i < dato.length; i++) {
-            var finalresult = `${dato}`;
-            console.log("finalresult ", finalresult);
-            setPersonNameString(finalresult);
-        }
-    }
-
-    console.log("personName", personName);
+    console.log("personName = ", personName);
 
     const handleChange = (event) => {
         const {
@@ -106,30 +96,31 @@ const Supplier = () => {
             // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
-        handleEvent(personName);
     };
 
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
-        /* try { */
-        const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
-            datos.contaProv, datos.ciudProv, personNameString, datos.direProv);
-        if (Object.keys(datos.length !== 0)) {
-            const result = await InsertSupplier(DataToInsert);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Guardar}`,
-                    variant: 'alert',
-                    alertSeverity: 'success',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-                reset();
+        try {
+            const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
+                datos.contaProv, datos.ciudProv, JSON.stringify(personName), datos.direProv);
+            console.log("DataToInsert = ", DataToInsert);
+
+            if (Object.keys(datos.length !== 0)) {
+                const result = await InsertSupplier(DataToInsert);
+                if (result.status === 200) {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: `${Message.Guardar}`,
+                        variant: 'alert',
+                        alertSeverity: 'success',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
+                    reset();
+                }
             }
-        }
-        /* } catch (error) {
+        } catch (error) {
             dispatch({
                 type: SNACKBAR_OPEN,
                 open: true,
@@ -139,7 +130,7 @@ const Supplier = () => {
                 close: false,
                 transition: 'SlideUp'
             })
-        } */
+        }
     };
 
     const navigate = useNavigate();

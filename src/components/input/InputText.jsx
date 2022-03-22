@@ -25,6 +25,7 @@ const InputText = ({ bug, onChange, value, control, rows, defaultValue, multilin
                         /*   onChange={onChangeInput} */
                         label={label}
                         size={size}
+                        value={value}
                         InputLabelProps={{
                             className: required ? 'required-label' : '',
                             required: required || false
