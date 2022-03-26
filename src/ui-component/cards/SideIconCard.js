@@ -46,7 +46,7 @@ const SideIconCard = ({ iconPrimary, primary, secondary, secondarySub, color, bg
                             </Typography>
                         </Grid>
                         <Grid item sm={12}>
-                            <Typography variant="body2" align="left" sx={{ color: bgcolor ? '#fff' : 'grey.700', ml: 2 }}>
+                            <Typography variant="h6" align="left" sx={{ color: bgcolor ? '#000' : '', ml: 2 }}>
                                 {secondary} <span style={{ color }}>{secondarySub}</span>{' '}
                             </Typography>
                         </Grid>

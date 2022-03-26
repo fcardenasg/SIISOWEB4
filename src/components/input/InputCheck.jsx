@@ -6,32 +6,25 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { Controller } from 'react-hook-form';
 
-const InputCheck = ({ onChange, checked, name, defaultValue, label, size }) => {
+const InputCheck = ({ onChange, checked, label, size }) => {
     const theme = useTheme();
     return (
         <>
-            <Controller
-                name={name}
-                defaultValue={defaultValue}
-                render={({ field }) => (
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                {...field}
-                                onChange={onChange}
-                                checked={checked}
-                                sx={{
-                                    color: theme.palette.error.main,
-                                    '&.Mui-checked': {
-                                        color: theme.palette.error.main
-                                    },
-                                    '& .MuiSvgIcon-root': { fontSize: size }
-                                }}
-                            />
-                        }
-                        label={label}
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        onChange={onChange}
+                        checked={checked}
+                        sx={{
+                            color: theme.palette.error.main,
+                            '&.Mui-checked': {
+                                color: theme.palette.error.main
+                            },
+                            '& .MuiSvgIcon-root': { fontSize: size }
+                        }}
                     />
-                )}
+                }
+                label={label}
             />
         </>
     );

@@ -20,6 +20,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 // Import del Proyecto
 import SelectOnChange from 'components/input/SelectOnChange';
+import InputDate from 'components/input/InputDate';
 import { FormatDate } from 'components/helpers/Format';
 import InputCheckBox from 'components/input/InputCheckBox';
 import SubCard from 'ui-component/cards/SubCard';
@@ -27,7 +28,7 @@ import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertQuestionnaire, UpdateQuestionnaires } from 'api/clients/QuestionnaireClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import { GetAllCatalog } from 'api/clients/CatalogClient';
-import { GetAllQuestionnaire } from 'api/clients/QuestionnaireClient';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import { PostQuestionnaire } from 'formatdata/QuestionnaireForm';
 import { GetByIdQuestionnaire } from 'api/clients/QuestionnaireClient';
 import InputText from 'components/input/InputText';
@@ -38,7 +39,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import SideIconCard from 'ui-component/cards/SideIconCard';
 import InputCheck from 'components/input/InputCheck';
 import InputOnChange from 'components/input/InputOnChange';
-import Cargando from 'components/Cargando';
+import InputDatePick from 'components/input/InputDatePick';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
@@ -72,10 +73,19 @@ const defaultValues = {
     censoViveServicioSalud: false,
     censoViveAdultoM: false,
     contactoPocaDistancia: false,
-
     censoProfesion: 73,
     censoContactoCon: 73,
     censoObservacion: "Sin Registro",
+
+    laboratorioPrimera: 73,
+    dosisPrimera: 73,
+    fechaPrimera: FormatDate(new Date()),
+    laboratorioSegunda: 73,
+    dosisSegunda: 73,
+    fechaSegunda: FormatDate(new Date()),
+    laboratorioTercera: 73,
+    dosisTercera: 73,
+    fechaTercera: FormatDate(new Date()),
 };
 
 const DashboardQuestionnaire = () => {
@@ -88,20 +98,159 @@ const DashboardQuestionnaire = () => {
     const [company, setCompany] = useState([]);
     const [catalog, setCatalog] = useState([]);
     const [lsQuestionnaire, setLsQuestionnaire] = useState([]);
-    console.log("lsQuestionnaire = ", lsQuestionnaire);
 
     /* Estados de controles al llegar datos */
     const [nombre, setNombre] = useState('');
     const [telefono, setTelefono] = useState('');
     const [email, setEmail] = useState('');
-    const [empresa, setEmpresa] = useState('');
-
+    const [empresa, setEmpresa] = useState(73);
     const [document, setDocument] = useState('');
     const [btnReport, setBtnReport] = useState(false);
+
+    /* Estados para llenar datos de los check */
     const [noSymptoms, setNoSymptoms] = useState(false);
-    const [closeContact, setCloseContact] = useState(false);
+    const [contactoEstrecho, setContactoEstrecho] = useState(false);
     const [vacuna, setVacuna] = useState(false);
     const [livePerson, setLivePerson] = useState(false);
+    const [contactoSinTapabocas, setContactoSinTapabocas] = useState(false);
+    const [contactoPocaDistancia, setContactoPocaDistancia] = useState(false);
+    const [contactoTiempo, setContactoTiempo] = useState(false);
+    const [contactoMano, setContactoMano] = useState(false);
+    const [consultaEps, setConsultaEps] = useState(false);
+    const [cumplirTiempoAislamiento, setCumplirTiempoAislamiento] = useState(false);
+    const [censoViveAdultoM, setCensoViveAdultoM] = useState(false);
+    const [fiebre, setFiebre] = useState(false);
+    const [dificultadRespiratoria, setDificultadRespiratoria] = useState(false);
+    const [vomito, setVomito] = useState(false);
+    const [congestionNasal, setCongestionNasal] = useState(false);
+    const [malestarGeneral, setMalestarGeneral] = useState(false);
+    const [tos, setTos] = useState(false);
+    const [dolorGarganta, setDolorGarganta] = useState(false);
+    const [escalofrios, setEscalofrios] = useState(false);
+    const [otrosSintomas, setOtrosSintomas] = useState(false);
+    const [censoObservacion, setObservacion] = useState('');
+
+    const [laboratorioPrimera, setLaboratorioPrimera] = useState(73);
+    const [dosisPrimera, setDosisPrimera] = useState(73);
+    const [laboratorioSegunda, setLaboratorioSegunda] = useState(73);
+    const [dosisSegunda, setDosisSegunda] = useState(73);
+    const [laboratorioTercera, setLaboratorioTercera] = useState(73);
+    const [dosisTercera, setDosisTercera] = useState(73);
+    const [censoProfesion, setCensoProfesion] = useState(73);
+    const [censoContactoCon, setCensoContactoCon] = useState(73);
+
+    const [fechaPrimera, setFechaPrimera] = useState(new Date());
+    const [fechaSegunda, setFechaSegunda] = useState(new Date());
+    const [fechaTercera, setFechaTercera] = useState(new Date());
+
+    const handleDocument = async (event) => {
+        try {
+            setDocument(event?.target.value);
+            if (event.key === 'Enter') {
+                if (event?.target.value != "") {
+                    const documento = event?.target.value;
+                    console.log(event?.target.value);
+
+                    var lsQuestionnaire = await GetByIdQuestionnaire(documento);
+
+                    if (lsQuestionnaire.status === 200) {
+                        setLsQuestionnaire(lsQuestionnaire.data);
+                        setDocument(lsQuestionnaire.data.documento)
+                        setNombre(lsQuestionnaire.data.nombre);
+                        setTelefono(lsQuestionnaire.data.telefono);
+                        setEmail(lsQuestionnaire.data.email);
+                        setEmpresa(lsQuestionnaire.data.empresa);
+                        setNoSymptoms(lsQuestionnaire.data.sintomasNoSi);
+                        setFiebre(lsQuestionnaire.data.fiebre);
+                        setCongestionNasal(lsQuestionnaire.data.congestionNasal);
+                        setDolorGarganta(lsQuestionnaire.data.dolorGarganta);
+                        setDificultadRespiratoria(lsQuestionnaire.data.dificultadRespiratoria);
+                        setMalestarGeneral(lsQuestionnaire.data.malestarGeneral);
+                        setEscalofrios(lsQuestionnaire.data.escalofrios);
+                        setVomito(lsQuestionnaire.data.vomito);
+                        setTos(lsQuestionnaire.data.tos);
+                        setOtrosSintomas(lsQuestionnaire.data.otrosSintomas);
+                        setContactoEstrecho(lsQuestionnaire.data.contactoEstrecho);
+                        setContactoSinTapabocas(lsQuestionnaire.data.contactoSinTapabocas);
+                        setContactoPocaDistancia(lsQuestionnaire.data.contactoPocaDistancia);
+                        setContactoTiempo(lsQuestionnaire.data.contactoTiempo);
+                        setContactoMano(lsQuestionnaire.data.contactoMano);
+                        setConsultaEps(lsQuestionnaire.data.consultaEps);
+                        setCumplirTiempoAislamiento(lsQuestionnaire.data.cumplirTiempoAislamiento);
+                        setVacuna(lsQuestionnaire.data.vacunado);
+                        setLivePerson(lsQuestionnaire.data.censoViveServicioSalud);
+                        setCensoViveAdultoM(lsQuestionnaire.data.censoViveAdultoM);
+                        setObservacion(lsQuestionnaire.data.censoObservacion);
+                        setLaboratorioPrimera(lsQuestionnaire.data.laboratorioPrimera);
+                        setDosisPrimera(lsQuestionnaire.data.dosisPrimera);
+                        setLaboratorioSegunda(lsQuestionnaire.data.laboratorioSegunda);
+                        setDosisSegunda(lsQuestionnaire.data.dosisSegunda);
+                        setLaboratorioTercera(lsQuestionnaire.data.laboratorioTercera);
+                        setDosisTercera(lsQuestionnaire.data.dosisTercera);
+                        setCensoContactoCon(lsQuestionnaire.data.censoContactoCon);
+                        setCensoProfesion(lsQuestionnaire.data.censoProfesion);
+                        setFechaPrimera(new Date(lsQuestionnaire.data.fechaPrimera));
+                        setFechaSegunda(new Date(lsQuestionnaire.data.fechaSegunda));
+                        setFechaTercera(new Date(lsQuestionnaire.data.fechaTercera));
+                    }
+                } else {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: 'Por favor, ingrese su número de documento',
+                        variant: 'alert',
+                        alertSeverity: 'error',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleClearController = () => {
+        setNombre('');
+        setTelefono('');
+        setEmail('');
+        setDocument(null);
+        setEmpresa(73);
+        setBtnReport(false);
+        setNoSymptoms(false);
+        setContactoEstrecho(false);
+        setVacuna(false);
+        setLivePerson(false);
+        setContactoSinTapabocas(false);
+        setContactoPocaDistancia(false);
+        setContactoTiempo(false);
+        setContactoMano(false);
+        setConsultaEps(false);
+        setCumplirTiempoAislamiento(false);
+        setCensoViveAdultoM(73);
+        setFiebre(false);
+        setDificultadRespiratoria(false);
+        setVomito(false);
+        setCongestionNasal(false);
+        setMalestarGeneral(false);
+        setTos(false);
+        setDolorGarganta(false);
+        setEscalofrios(false);
+        setOtrosSintomas(false);
+        setObservacion('');
+        setLaboratorioPrimera(73);
+        setDosisPrimera(73);
+        setLaboratorioSegunda(73);
+        setDosisSegunda(73);
+        setLaboratorioTercera(73);
+        setDosisTercera(73);
+        setCensoProfesion(73);
+        setCensoContactoCon(73);
+        setFechaPrimera(new Date());
+        setFechaSegunda(new Date());
+        setFechaTercera(new Date());
+        setLsQuestionnaire([]);
+    }
 
     const methods = useForm(
         { defaultValues }
@@ -136,39 +285,24 @@ const DashboardQuestionnaire = () => {
         GetAll();
     }, [])
 
-    const handleDocument = async (event) => {
-        try {
-            setDocument(event?.target.value);
-
-            console.log(event?.target.value, document);
-
-            if (event.key === 'Enter') {
-                if (event?.target.value != "") {
-                    const documento = event?.target.value;
-                    console.log(event?.target.value);
-
-                    var lsQuestionnaire = await GetByIdQuestionnaire(documento);
-
-                    if (lsQuestionnaire.status === 200) setLsQuestionnaire(lsQuestionnaire.data);
-
-                    setNombre(lsQuestionnaire.data.nombre);
-                    setEmpresa(lsQuestionnaire.data.empresa);
-                    setTelefono(lsQuestionnaire.data.telefono);
-                    setEmail(lsQuestionnaire.data.email);
-                } else {
-                    alert("Campo Vacio");
-                }
-            }
-        } catch (error) {
-            console.log(error);
-        }
+    const handleClick = () => {
+        if (document == "") {
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: 'Por favor, ingrese su número de documento',
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
+        } else setBtnReport(true);
     }
 
-    const handleClick = () => {
-        try {
-            setBtnReport(true);
-        } catch (error) {
-            console.log(error);
+    const handleNoSymptoms = (event) => {
+        setNoSymptoms(event.target.checked)
+        if (event.target.checked) {
+
         }
     }
 
@@ -183,20 +317,20 @@ const DashboardQuestionnaire = () => {
             const company = datos.empresa != "" ? datos.empresa : empresa;
 
             const InsertToData = PostQuestionnaire(document, name, phone, mail, company, noSymptoms,
-                datos.fiebre, datos.congestionNasal, datos.dolorGarganta, datos.dificultadRespiratoria, datos.malestarGeneral,
-                datos.escalofrios, datos.vomito, datos.tos, datos.otrosSintomas, closeContact, datos.contactoSinTapabocas,
-                datos.contactoPocaDistancia, datos.contactoTiempo, datos.contactoMano, datos.consultaEps, datos.cumplirTiempoAislamiento,
-                vacuna, 73, 73, date, 73, 73, date, 73, 73, date, noSymptoms, date, ordenAislamiento, livePerson,
-                datos.censoProfesion, datos.censoContactoCon, datos.censoViveAdultoM, datos.censoObservacion);
-            console.log("Insert = ", datos);
+                fiebre, congestionNasal, dolorGarganta, dificultadRespiratoria, malestarGeneral,
+                escalofrios, vomito, tos, otrosSintomas, contactoEstrecho, contactoSinTapabocas,
+                contactoPocaDistancia, contactoTiempo, contactoMano, consultaEps, cumplirTiempoAislamiento, vacuna,
+                laboratorioPrimera, dosisPrimera, FormatDate(fechaPrimera),
+                laboratorioSegunda, dosisSegunda, FormatDate(fechaSegunda),
+                laboratorioTercera, dosisTercera, FormatDate(fechaTercera),
+                noSymptoms, date, ordenAislamiento, livePerson, censoProfesion,
+                censoContactoCon, censoViveAdultoM, censoObservacion);
 
             if (lsQuestionnaire.length !== 0) {
 
                 if (Object.keys(datos.length !== 0)) {
                     const result = await UpdateQuestionnaires(InsertToData);
                     if (result.status === 200) {
-                        setBtnReport(false);
-                        setDocument('');
                         dispatch({
                             type: SNACKBAR_OPEN,
                             open: true,
@@ -207,6 +341,7 @@ const DashboardQuestionnaire = () => {
                             transition: 'SlideUp'
                         })
                         reset();
+                        handleClearController();
                     }
                 } else {
                     dispatch({
@@ -223,8 +358,6 @@ const DashboardQuestionnaire = () => {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await InsertQuestionnaire(InsertToData);
                     if (result.status === 200) {
-                        setBtnReport(false);
-                        setDocument('');
                         dispatch({
                             type: SNACKBAR_OPEN,
                             open: true,
@@ -235,6 +368,7 @@ const DashboardQuestionnaire = () => {
                             transition: 'SlideUp'
                         })
                         reset();
+                        handleClearController();
                     }
                 } else {
                     dispatch({
@@ -275,8 +409,11 @@ const DashboardQuestionnaire = () => {
                             <InputOnChange
                                 label="N° Documento"
                                 onKeyDown={handleDocument}
+                                onChange={(e) => setDocument(e?.target.value)}
+                                value={document}
                                 size={matchesXS ? 'small' : 'medium'}
                                 required={true}
+                                helperText="Por favor, dar Enter"
                             />
                         </Grid>
 
@@ -344,41 +481,35 @@ const DashboardQuestionnaire = () => {
                                     />
                                 </Grid>
                                 <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputOnChange
-                                            label="Teléfono"
-                                            onChange={(e) => setTelefono(e?.target.value)}
-                                            value={telefono}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            required={true}
-                                            disabled
-                                        />
-                                    </FormProvider>
+                                    <InputOnChange
+                                        label="Teléfono"
+                                        onChange={(e) => setTelefono(e?.target.value)}
+                                        value={telefono}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        required={true}
+                                        disabled
+                                    />
                                 </Grid>
                                 <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputOnChange
-                                            label="Email"
-                                            onChange={(e) => setEmail(e?.target.value)}
-                                            value={email}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            required={true}
-                                            disabled
-                                        />
-                                    </FormProvider>
+                                    <InputOnChange
+                                        label="Email"
+                                        onChange={(e) => setEmail(e?.target.value)}
+                                        value={email}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        required={true}
+                                        disabled
+                                    />
                                 </Grid>
                                 <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <SelectOnChange
-                                            name="empresa"
-                                            label="Empresa"
-                                            value={empresa}
-                                            options={company}
-                                            onChange={(e) => setEmpresa(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            disabled
-                                        />
-                                    </FormProvider>
+                                    <SelectOnChange
+                                        name="empresa"
+                                        label="Empresa"
+                                        value={empresa}
+                                        options={company}
+                                        onChange={(e) => setEmpresa(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        disabled
+                                    />
                                 </Grid>
                             </>
                         )}
@@ -415,25 +546,21 @@ const DashboardQuestionnaire = () => {
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputCheck
-                                            name="sintomasNoSi"
-                                            defaultValue=""
                                             label="No presenta ningún síntoma"
                                             size={40}
-                                            onChange={(event) => setNoSymptoms(event.target.checked)}
+                                            checked={noSymptoms}
+                                            onChange={handleNoSymptoms}
                                         />
                                     </FormProvider>
                                 </Grid>
                                 <Grid item xs={4}>
                                     <Grid container>
-                                        <FormProvider {...methods}>
-                                            <InputCheck
-                                                name="contactoEstrecho"
-                                                defaultValue=""
-                                                label="Contacto estrecho"
-                                                size={40}
-                                                onChange={(event) => setCloseContact(event.target.checked)}
-                                            />
-                                        </FormProvider>
+                                        <InputCheck
+                                            label="Contacto estrecho"
+                                            size={40}
+                                            checked={contactoEstrecho}
+                                            onChange={(event) => setContactoEstrecho(event.target.checked)}
+                                        />
                                         <Typography align="letf" variant="caption">
                                             En los últimos 14 días ha tenido contacto con alguna
                                             persona con síntomas o que haya sido declarada enferma o
@@ -442,79 +569,198 @@ const DashboardQuestionnaire = () => {
                                     </Grid>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputCheck
-                                            name="vacunado"
-                                            defaultValue=""
-                                            label="Vacunado"
-                                            onChange={(event) => setVacuna(event.target.checked)}
-                                            size={40}
-                                        />
-                                    </FormProvider>
+                                    <InputCheck
+                                        label="Vacunado"
+                                        size={40}
+                                        checked={vacuna}
+                                        onChange={(event) => setVacuna(event.target.checked)}
+                                    />
                                 </Grid>
+
                                 {
                                     noSymptoms ? (
                                         <>
-                                            <Grid sx={{ pt: 3 }} container direction="row"
-                                                justifyContent="flex-end"
+                                            <Grid sx={{ pt: 2, pb: 2 }} container spacing={2} direction="row"
+                                                justifyContent="space-evenly"
                                                 alignItems="center" xs={12}>
                                                 <Grid item xs={4}>
                                                     <SideIconCard
                                                         iconPrimary={ThumbUpOffAltIcon}
                                                         primary="APTO"
+                                                        secondary="Se autoriza el ingreso al turno"
                                                         color={theme.palette.success.dark}
+                                                        bgcolor={theme.palette.grey[200]}
+                                                    />
+                                                </Grid>
+                                                <Divider />
+                                                <Grid item xs={4}>
+                                                    <SideIconCard
+                                                        iconPrimary={LocalHospitalIcon}
+                                                        primary="NO"
+                                                        secondary="No se ordena iniciar aislamiento y consultar a la EPS"
+                                                        color={theme.palette.error.dark}
                                                         bgcolor={theme.palette.grey[200]}
                                                     />
                                                 </Grid>
                                             </Grid>
 
-                                            {closeContact ? (
+                                            {contactoEstrecho ? (
                                                 <>
                                                     <Grid item xs={12}>
-                                                        <SubCard title="CONTACTO ESTRECHO">
-
+                                                        <SubCard title="SI LA RESPUESTA ES SÍ, RESPONDA LAS SIGUIENTES:">
                                                             <Grid container justifyContent="left" alignItems="center">
-                                                                <FormProvider {...methods}>
-                                                                    <InputCheckBox
-                                                                        name="contactoSinTapabocas"
-                                                                        defaultValue=""
-                                                                        label="Alguno de los dos estaba sin protección respiratoria (tapabocas)"
-                                                                        size={25}
-                                                                    />
-                                                                </FormProvider>
+                                                                <InputCheck
+                                                                    label="Alguno de los dos estaba sin protección respiratoria (tapabocas)"
+                                                                    size={25}
+                                                                    checked={contactoSinTapabocas}
+                                                                    onChange={(event) => setContactoSinTapabocas(event.target.checked)}
+                                                                />
                                                             </Grid>
                                                             <Grid container justifyContent="left" alignItems="center">
-                                                                <FormProvider {...methods}>
-                                                                    <InputCheckBox
-                                                                        name="contactoPocaDistancia"
-                                                                        defaultValue=""
-                                                                        label="Estaban a una distancia menor de 2 metros"
-                                                                        size={25}
-                                                                    />
-                                                                </FormProvider>
+                                                                <InputCheck
+                                                                    label="Estaban a una distancia menor de 2 metros"
+                                                                    size={25}
+                                                                    checked={contactoPocaDistancia}
+                                                                    onChange={(event) => setContactoPocaDistancia(event.target.checked)}
+                                                                />
                                                             </Grid>
                                                             <Grid container justifyContent="left" alignItems="center">
-                                                                <FormProvider {...methods}>
-                                                                    <InputCheckBox
-                                                                        name="contactoTiempo"
-                                                                        defaultValue=""
-                                                                        label="Por más de 15 minutos"
-                                                                        size={25}
-                                                                    />
-                                                                </FormProvider>
+                                                                <InputCheck
+                                                                    label="Por más de 15 minutos"
+                                                                    size={25}
+                                                                    checked={contactoTiempo}
+                                                                    onChange={(event) => setContactoTiempo(event.target.checked)}
+                                                                />
                                                             </Grid>
                                                             <Grid container justifyContent="left" alignItems="center">
-                                                                <FormProvider {...methods}>
-                                                                    <InputCheckBox
-                                                                        name="contactoMano"
-                                                                        defaultValue=""
-                                                                        label="Sin haberse lavado las manos minuciosamente después"
-                                                                        size={25}
-                                                                    />
-                                                                </FormProvider>
+                                                                <InputCheck
+                                                                    label="Sin haberse lavado las manos minuciosamente después"
+                                                                    size={25}
+                                                                    checked={contactoMano}
+                                                                    onChange={(event) => setContactoMano(event.target.checked)}
+                                                                />
                                                             </Grid>
                                                         </SubCard>
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <SubCard title="PREGUNTAS SOLO PARA CASOS CON RESPUESTAS POSITIVAS">
+                                                            <Grid container justifyContent="left" alignItems="center">
+                                                                <InputCheck
+                                                                    label="Ha consultado a su EPS por los síntomas o por los contactos positivos"
+                                                                    size={25}
+                                                                    checked={consultaEps}
+                                                                    onChange={(event) => setConsultaEps(event.target.checked)}
+                                                                />
+                                                            </Grid>
+                                                            <Grid container justifyContent="left" alignItems="center">
+                                                                <InputCheck
+                                                                    label="Ha cumplido el tiempo de aislamiento requerido para contactos o síntomas"
+                                                                    size={25}
+                                                                    checked={cumplirTiempoAislamiento}
+                                                                    onChange={(event) => setCumplirTiempoAislamiento(event.target.checked)}
+                                                                />
+                                                            </Grid>
+                                                        </SubCard>
+                                                    </Grid>
+                                                </>
+                                            ) : (<></>)}
 
+                                            {vacuna ? (
+                                                <>
+                                                    <Grid item xs={12}>
+                                                        <SubCard title="SECCIÓN DE VACUNACIÓN">
+                                                            <Grid container>
+                                                                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="laboratorioPrimera"
+                                                                            label="Laboratorio"
+                                                                            value={laboratorioPrimera}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setLaboratorioPrimera(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="dosisPrimera"
+                                                                            label="Dosis"
+                                                                            value={dosisPrimera}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setDosisPrimera(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <InputDatePick
+                                                                            label="Fecha 1era dosis"
+                                                                            value={fechaPrimera}
+                                                                            onChange={(e) => setFechaPrimera(e)}
+                                                                        />
+                                                                    </Grid>
+                                                                </Grid>
+
+                                                                <Grid container xs={12} spacing={2} sx={{ pb: 3 }}>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="laboratorioSegunda"
+                                                                            label="Laboratorio"
+                                                                            value={laboratorioSegunda}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setLaboratorioSegunda(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="dosisSegunda"
+                                                                            label="Dosis"
+                                                                            value={dosisSegunda}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setDosisSegunda(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <InputDatePick
+                                                                            label="Fecha 2era dosis"
+                                                                            value={fechaSegunda}
+                                                                            onChange={(e) => setFechaSegunda(e)}
+                                                                        />
+                                                                    </Grid>
+                                                                </Grid>
+
+                                                                <Grid container xs={12} spacing={2} sx={{ pb: 3 }}>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="laboratorioTercera"
+                                                                            label="Laboratorio"
+                                                                            value={laboratorioTercera}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setLaboratorioTercera(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="dosisTercera"
+                                                                            label="Dosis"
+                                                                            value={dosisTercera}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setDosisTercera(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <InputDatePick
+                                                                            label="Fecha 3era dosis"
+                                                                            value={fechaTercera}
+                                                                            onChange={(e) => setFechaTercera(e)}
+                                                                        />
+                                                                    </Grid>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </SubCard>
                                                     </Grid>
                                                 </>
                                             ) : (<></>)}
@@ -540,62 +786,61 @@ const DashboardQuestionnaire = () => {
                                         </>
                                     ) : (
                                         <>
-                                            <Grid item xs={12}>
+                                            <Divider />
+                                            <Grid sx={{ pt: 2 }} item xs={12}>
                                                 <SubCard title="CENSO">
                                                     <Grid spacing={2} container>
                                                         <Grid item xs={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheck
-                                                                    name="censoViveServicioSalud"
-                                                                    defaultValue=""
-                                                                    label="¿Vive con personas que presten servicios de salud?"
-                                                                    size={25}
-                                                                    onChange={(event) => setLivePerson(event.target.checked)}
-                                                                />
-                                                            </FormProvider>
+                                                            <InputCheck
+                                                                checked={livePerson}
+                                                                label="¿Vive con personas que presten servicios de salud?"
+                                                                size={25}
+                                                                onChange={(event) => setLivePerson(event.target.checked)}
+                                                            />
                                                         </Grid>
 
                                                         {livePerson ? (
                                                             <>
                                                                 <Grid item xs={4}>
-                                                                    <FormProvider {...methods}>
-                                                                        <InputSelect
-                                                                            name="censoProfesion"
-                                                                            label="Profesión"
-                                                                            defaultValue=""
-                                                                            options={catalog}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                            bug={errors}
-                                                                        />
-                                                                    </FormProvider>
+                                                                    <SelectOnChange
+                                                                        name="censoProfesion"
+                                                                        label="Profesión"
+                                                                        value={censoProfesion}
+                                                                        options={catalog}
+                                                                        onChange={(e) => setCensoProfesion(e?.target.value)}
+                                                                        size={matchesXS ? 'small' : 'medium'}
+                                                                    />
                                                                 </Grid>
                                                                 <Grid item xs={4}>
-                                                                    <FormProvider {...methods}>
-                                                                        <InputSelect
-                                                                            name="censoContactoCon"
-                                                                            label="Contacto Con"
-                                                                            defaultValue=""
-                                                                            options={catalog}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                            bug={errors}
-                                                                        />
-                                                                    </FormProvider>
+                                                                    <SelectOnChange
+                                                                        name="censoContactoCon"
+                                                                        label="Contacto Con:"
+                                                                        value={censoContactoCon}
+                                                                        options={catalog}
+                                                                        onChange={(e) => setCensoContactoCon(e?.target.value)}
+                                                                        size={matchesXS ? 'small' : 'medium'}
+                                                                    />
                                                                 </Grid>
                                                             </>
                                                         ) : (<><Grid item xs={8}></Grid></>)}
 
                                                         <Grid item xs={6}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    name="censoViveAdultoM"
-                                                                    defaultValue=""
-                                                                    label="¿Vive con adultos mayores de 65 años, o personas con enfermedades preexistentes?"
-                                                                    size={25}
-                                                                />
-                                                            </FormProvider>
+                                                            <InputCheck
+                                                                checked={censoViveAdultoM}
+                                                                label="¿Vive con adultos mayores de 65 años, o personas con enfermedades preexistentes?"
+                                                                size={25}
+                                                                onChange={(event) => setCensoViveAdultoM(event.target.checked)}
+                                                            />
                                                         </Grid>
                                                         <Grid item xs={6}>
-                                                            <FormProvider {...methods}>
+                                                            <InputOnChange
+                                                                label="Observación"
+                                                                onChange={(e) => setObservacion(e?.target.value)}
+                                                                value={censoObservacion}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                                required={true}
+                                                            />
+                                                            {/* <FormProvider {...methods}>
                                                                 <InputText
                                                                     defaultValue=""
                                                                     fullWidth
@@ -604,182 +849,279 @@ const DashboardQuestionnaire = () => {
                                                                     size={matchesXS ? 'small' : 'medium'}
                                                                     bug={errors}
                                                                 />
-                                                            </FormProvider>
+                                                            </FormProvider> */}
                                                         </Grid>
                                                     </Grid>
                                                 </SubCard>
                                             </Grid>
 
-                                            {closeContact ? (
+                                            <Grid item xs={12}>
+                                                <SubCard title="SINTOMAS ACTUALES">
+                                                    <Grid container>
+                                                        <Grid item xs={4}>
+                                                            <InputCheck
+                                                                checked={fiebre}
+                                                                label="Fiebre"
+                                                                size={25}
+                                                                onChange={(event) => setFiebre(event.target.checked)}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <InputCheck
+                                                                checked={dificultadRespiratoria}
+                                                                label="Dificultad respiratoria"
+                                                                size={25}
+                                                                onChange={(event) => setDificultadRespiratoria(event.target.checked)}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <InputCheck
+                                                                checked={vomito}
+                                                                label="Vomito"
+                                                                size={25}
+                                                                onChange={(event) => setVomito(event.target.checked)}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <InputCheck
+                                                                checked={congestionNasal}
+                                                                label="Congestion Nasal"
+                                                                size={25}
+                                                                onChange={(event) => setCongestionNasal(event.target.checked)}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <InputCheck
+                                                                checked={malestarGeneral}
+                                                                label="Malestar general"
+                                                                size={25}
+                                                                onChange={(event) => setMalestarGeneral(event.target.checked)}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <InputCheck
+                                                                checked={tos}
+                                                                label="Tos"
+                                                                size={25}
+                                                                onChange={(event) => setTos(event.target.checked)}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <InputCheck
+                                                                checked={dolorGarganta}
+                                                                label="Dolor de garganta"
+                                                                size={25}
+                                                                onChange={(event) => setDolorGarganta(event.target.checked)}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <InputCheck
+                                                                checked={escalofrios}
+                                                                label="Escalofríos"
+                                                                size={25}
+                                                                onChange={(event) => setEscalofrios(event.target.checked)}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <InputCheck
+                                                                checked={otrosSintomas}
+                                                                label="Otros síntomas:"
+                                                                size={25}
+                                                                onChange={(event) => setOtrosSintomas(event.target.checked)}
+                                                            />
+                                                        </Grid>
+                                                    </Grid>
+                                                </SubCard>
+                                            </Grid>
+
+                                            {contactoEstrecho ? (
                                                 <>
                                                     <Grid item xs={12}>
-                                                        <SubCard title="CONTACTO ESTRECHO">
+                                                        <SubCard title="SI LA RESPUESTA ES SÍ, RESPONDA LAS SIGUIENTES:">
                                                             <Grid container justifyContent="left" alignItems="center">
-                                                                <FormProvider {...methods}>
-                                                                    <InputCheckBox
-                                                                        name="contactoSinTapabocas"
-                                                                        defaultValue=""
-                                                                        label="Alguno de los dos estaba sin protección respiratoria (tapabocas)"
-                                                                        size={25}
-                                                                    />
-                                                                </FormProvider>
+                                                                <InputCheck
+                                                                    checked={contactoSinTapabocas}
+                                                                    label="Alguno de los dos estaba sin protección respiratoria (tapabocas)"
+                                                                    size={25}
+                                                                    onChange={(event) => setContactoSinTapabocas(event.target.checked)}
+                                                                />
                                                             </Grid>
                                                             <Grid container justifyContent="left" alignItems="center">
-                                                                <FormProvider {...methods}>
-                                                                    <InputCheckBox
-                                                                        name="contactoPocaDistancia"
-                                                                        defaultValue=""
-                                                                        label="Estaban a una distancia menor de 2 metros"
-                                                                        size={25}
-                                                                    />
-                                                                </FormProvider>
+                                                                <InputCheck
+                                                                    checked={contactoPocaDistancia}
+                                                                    label="Alguno de los dos estaba sin protección respiratoria (tapabocas)"
+                                                                    size={25}
+                                                                    onChange={(event) => setContactoPocaDistancia(event.target.checked)}
+                                                                />
                                                             </Grid>
                                                             <Grid container justifyContent="left" alignItems="center">
-                                                                <FormProvider {...methods}>
-                                                                    <InputCheckBox
-                                                                        name="contactoTiempo"
-                                                                        defaultValue=""
-                                                                        label="Por más de 15 minutos"
-                                                                        size={25}
-                                                                    />
-                                                                </FormProvider>
+                                                                <InputCheck
+                                                                    checked={contactoTiempo}
+                                                                    label="Por más de 15 minutos"
+                                                                    size={25}
+                                                                    onChange={(event) => setContactoTiempo(event.target.checked)}
+                                                                />
                                                             </Grid>
                                                             <Grid container justifyContent="left" alignItems="center">
-                                                                <FormProvider {...methods}>
-                                                                    <InputCheckBox
-                                                                        name="contactoMano"
-                                                                        defaultValue=""
-                                                                        label="Sin haberse lavado las manos minuciosamente después"
-                                                                        size={25}
-                                                                    />
-                                                                </FormProvider>
+                                                                <InputCheck
+                                                                    checked={contactoMano}
+                                                                    label="Sin haberse lavado las manos minuciosamente después"
+                                                                    size={25}
+                                                                    onChange={(event) => setContactoMano(event.target.checked)}
+                                                                />
                                                             </Grid>
                                                         </SubCard>
-
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <SubCard title="PREGUNTAS SOLO PARA CASOS CON RESPUESTAS POSITIVAS">
+                                                            <Grid container justifyContent="left" alignItems="center">
+                                                                <InputCheck
+                                                                    checked={consultaEps}
+                                                                    label="Ha consultado a su EPS por los síntomas o por los contactos positivos"
+                                                                    size={25}
+                                                                    onChange={(event) => setConsultaEps(event.target.checked)}
+                                                                />
+                                                            </Grid>
+                                                            <Grid container justifyContent="left" alignItems="center">
+                                                                <InputCheck
+                                                                    checked={cumplirTiempoAislamiento}
+                                                                    label="Ha cumplido el tiempo de aislamiento requerido para contactos o síntomas"
+                                                                    size={25}
+                                                                    onChange={(event) => setCumplirTiempoAislamiento(event.target.checked)}
+                                                                />
+                                                            </Grid>
+                                                        </SubCard>
                                                     </Grid>
                                                 </>
                                             ) : (<></>)}
 
-                                            <Grid item xs={12}>
-                                                <SubCard title="1. SINTOMAS ACTUALES">
-                                                    <Grid container>
-                                                        <Grid item xs={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    name="fiebre"
-                                                                    defaultValue=""
-                                                                    label="Fiebre"
-                                                                    size={25}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    name="dificultadRespiratoria"
-                                                                    defaultValue=""
-                                                                    label="Dificultad respiratoria"
-                                                                    size={25}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    name="vomito"
-                                                                    defaultValue=""
-                                                                    label="Vomito"
-                                                                    size={25}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    name="congestionNasal"
-                                                                    defaultValue=""
-                                                                    label="Congestion Nasal"
-                                                                    size={25}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    name="malestarGeneral"
-                                                                    defaultValue=""
-                                                                    label="Malestar general"
-                                                                    size={25}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    name="tos"
-                                                                    defaultValue=""
-                                                                    label="Tos"
-                                                                    size={25}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    name="dolorGarganta"
-                                                                    defaultValue=""
-                                                                    label="Dolor de garganta"
-                                                                    size={25}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    name="escalofrios"
-                                                                    defaultValue=""
-                                                                    label="Escalofríos"
-                                                                    size={25}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    name="otrosSintomas"
-                                                                    defaultValue=""
-                                                                    label="Otros síntomas:"
-                                                                    size={25}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
+                                            {vacuna ? (
+                                                <>
+                                                    <Grid item xs={12}>
+                                                        <SubCard title="SECCIÓN DE VACUNACIÓN">
+                                                            <Grid container>
+                                                                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="laboratorioPrimera"
+                                                                            label="Laboratorio"
+                                                                            value={laboratorioPrimera}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setLaboratorioPrimera(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="dosisPrimera"
+                                                                            label="Dosis"
+                                                                            value={dosisPrimera}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setDosisPrimera(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <InputDatePick
+                                                                            label="Fecha 1era dosis"
+                                                                            value={fechaPrimera}
+                                                                            onChange={(e) => setFechaPrimera(e)}
+                                                                        />
+                                                                    </Grid>
+                                                                </Grid>
+
+                                                                <Grid container xs={12} spacing={2} sx={{ pb: 3 }}>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="laboratorioSegunda"
+                                                                            label="Laboratorio"
+                                                                            value={laboratorioSegunda}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setLaboratorioSegunda(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="dosisSegunda"
+                                                                            label="Dosis"
+                                                                            value={dosisSegunda}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setDosisSegunda(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <InputDatePick
+                                                                            label="Fecha 2era dosis"
+                                                                            value={fechaSegunda}
+                                                                            onChange={(e) => setFechaSegunda(e)}
+                                                                        />
+                                                                    </Grid>
+                                                                </Grid>
+
+                                                                <Grid container xs={12} spacing={2} sx={{ pb: 3 }}>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="laboratorioTercera"
+                                                                            label="Laboratorio"
+                                                                            value={laboratorioTercera}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setLaboratorioTercera(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <SelectOnChange
+                                                                            name="dosisTercera"
+                                                                            label="Dosis"
+                                                                            value={dosisTercera}
+                                                                            options={catalog}
+                                                                            onChange={(e) => setDosisTercera(e?.target.value)}
+                                                                            size={matchesXS ? 'small' : 'medium'}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <InputDatePick
+                                                                            label="Fecha 3era dosis"
+                                                                            value={fechaTercera}
+                                                                            onChange={(e) => setFechaTercera(e)}
+                                                                        />
+                                                                    </Grid>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </SubCard>
                                                     </Grid>
-                                                </SubCard>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <SubCard title="2. PREGUNTAS SOLO PARA CASOS CON RESPUESTAS POSITIVAS">
-                                                    <Grid container justifyContent="left" alignItems="center">
-                                                        <FormProvider {...methods}>
-                                                            <InputCheckBox
-                                                                name="consultaEps"
-                                                                defaultValue=""
-                                                                label="Ha consultado a su EPS por los síntomas o por los contactos positivos"
-                                                                size={25}
+                                                </>
+                                            ) : (<></>)}
+
+
+                                            {fiebre || congestionNasal || dolorGarganta || dificultadRespiratoria ||
+                                                malestarGeneral || escalofrios || vomito || tos || otrosSintomas ? (
+                                                <>
+                                                    <Grid sx={{ pt: 2, pb: 2 }} container spacing={2} direction="row"
+                                                        justifyContent="space-evenly"
+                                                        alignItems="center" xs={12}>
+                                                        <Grid item xs={4}>
+                                                            <SideIconCard
+                                                                iconPrimary={ThumbUpOffAltIcon}
+                                                                primary="NO APTO"
+                                                                secondary="No se autoriza el ingreso al turno"
+                                                                color={theme.palette.error.dark}
+                                                                bgcolor={theme.palette.grey[200]}
                                                             />
-                                                        </FormProvider>
-                                                    </Grid>
-                                                    <Grid container justifyContent="left" alignItems="center">
-                                                        <FormProvider {...methods}>
-                                                            <InputCheckBox
-                                                                name="cumplirTiempoAislamiento"
-                                                                defaultValue=""
-                                                                label="Ha cumplido el tiempo de aislamiento requerido para contactos o síntomas"
-                                                                size={25}
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <SideIconCard
+                                                                iconPrimary={LocalHospitalIcon}
+                                                                primary="SI"
+                                                                secondary="Se ordena iniciar aislamiento y consultar a la EPS"
+                                                                color={theme.palette.success.dark}
+                                                                bgcolor={theme.palette.grey[200]}
                                                             />
-                                                        </FormProvider>
+                                                        </Grid>
                                                     </Grid>
-                                                </SubCard>
-                                            </Grid>
+                                                </>) : (<></>)}
 
                                             <Grid item xs={12} sx={{ pb: 3, pt: 4 }}>
                                                 <Grid container spacing={1}>
