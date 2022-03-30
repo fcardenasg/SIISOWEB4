@@ -1,16 +1,9 @@
 export const CodCatalogo = {
-    TipoDocumento: '1',
-    Horario: '3',
-    TipoOficina: '4',
-    TipoInformacion: '5',
-    TipoOpcion: '10',
-    Menu: 16,
-    MenuAccion: 22
-}
-
-export const enumObjeto = {
-    Plantilla: '4',
-    InfoExterna: '5'
+    Departamento: 1077,
+    Sede: 2160,
+    Escolaridad: 1146,
+    Genero: 2161,
+    EstadoCivil: 2162
 }
 
 export const TitleButton = {

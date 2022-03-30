@@ -16,6 +16,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+
+import InputDatePick from 'components/input/InputDatePick';
 import ModalChildren from 'components/form/ModalChildren';
 import WebCamCapture from 'components/form/WebCam';
 import PhotoModel from 'components/form/PhotoModel';
@@ -23,25 +25,55 @@ import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertEmployee } from 'api/clients/EmployeeClient';
 import { GetAllCatalog, GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
-import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import InputDate from 'components/input/InputDate';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import SelectOnChange from 'components/input/SelectOnChange';
+import { Message, TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import { PostEmployee } from 'formatdata/EmployeeForm';
-import SelectOnChange from 'components/input/SelectOnChange';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
 /* VALIDACIÓN CON YUP */
-/* const validationSchema = yup.object().shape({
+const validationSchema = yup.object().shape({
+    documento: yup.string().required(`${ValidationMessage.Requerido}`),
     nombre: yup.string().required(`${ValidationMessage.Requerido}`),
-    codigo: yup.string().required(`${ValidationMessage.Requerido}`),
-    idTipoCatalogo: yup.number().required(`${ValidationMessage.Requerido}`),
-}); */
+    type: yup.string().required(`${ValidationMessage.Requerido}`),
+    departamento: yup.string().required(`${ValidationMessage.Requerido}`),
+    area: yup.string().required(`${ValidationMessage.Requerido}`),
+    subArea: yup.string().required(`${ValidationMessage.Requerido}`),
+    grupo: yup.string().required(`${ValidationMessage.Requerido}`),
+    municipioNacido: yup.string().required(`${ValidationMessage.Requerido}`),
+    dptoNacido: yup.string().required(`${ValidationMessage.Requerido}`),
+    rosterPosition: yup.string().required(`${ValidationMessage.Requerido}`),
+    tipoContrato: yup.string().required(`${ValidationMessage.Requerido}`),
+    generalPosition: yup.string().required(`${ValidationMessage.Requerido}`),
+    genero: yup.string().required(`${ValidationMessage.Requerido}`),
+    sede: yup.string().required(`${ValidationMessage.Requerido}`),
+    direccionResidencia: yup.string().required(`${ValidationMessage.Requerido}`),
+    municipioResidencia: yup.string().required(`${ValidationMessage.Requerido}`),
+    dptoResidencia: yup.string().required(`${ValidationMessage.Requerido}`),
+    celular: yup.string().required(`${ValidationMessage.Requerido}`),
+    eps: yup.string().required(`${ValidationMessage.Requerido}`),
+    afp: yup.string().required(`${ValidationMessage.Requerido}`),
+    turno: yup.string().required(`${ValidationMessage.Requerido}`),
+    email: yup.string().required(`${ValidationMessage.Requerido}`),
+    telefonoContacto: yup.string().required(`${ValidationMessage.Requerido}`),
+    estadoCivil: yup.string().required(`${ValidationMessage.Requerido}`),
+    empresa: yup.string().required(`${ValidationMessage.Requerido}`),
+    arl: yup.string().required(`${ValidationMessage.Requerido}`),
+    contacto: yup.string().required(`${ValidationMessage.Requerido}`),
+    escolaridad: yup.string().required(`${ValidationMessage.Requerido}`),
+    cesantias: yup.string().required(`${ValidationMessage.Requerido}`),
+    rotation: yup.string().required(`${ValidationMessage.Requerido}`),
+    payStatus: yup.string().required(`${ValidationMessage.Requerido}`),
+    bandera: yup.string().required(`${ValidationMessage.Requerido}`),
+    ges: yup.string().required(`${ValidationMessage.Requerido}`),
+    usuarioModifica: yup.string().required(`${ValidationMessage.Requerido}`),
+    usuarioCreacion: yup.string().required(`${ValidationMessage.Requerido}`)
+});
 
 const Employee = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
@@ -56,20 +88,24 @@ const Employee = () => {
     const [lsEscolaridad, setEscolaridad] = useState([]);
     const [lsMunicipio, setMunicipio] = useState([]);
     const [lsDepartamento, setDepartamento] = useState([]);
+    const [lsSede, setSede] = useState([]);
+    const [lsGenero, setGenero] = useState([]);
     const [lsCodigoFilter, setCodigoFilter] = useState([]);
-    const [valueSelect, setValues] = useState('');
+    const [lsEstadoCivil, setEstadoCivil] = useState([]);
+    const [dptoNacido, setDptoNacido] = useState('');
     const [imgSrc, setImgSrc] = useState(null);
     const [estado, setEstado] = useState(true);
 
     /* ESTADOS PARA LAS FECHAS */
-    const [valueFechaNaci, setFechaNaci] = useState(null);
-    const [valueFechaContrato, setFechaContrato] = useState(null);
-    const [valueTermDate, setTermDate] = useState(null);
-    const [valueFechaModificacion, setFechaModificacion] = useState(null);
-    const [valueFechaCreacion, setFechaCreacion] = useState(null);
+    const [valueFechaNaci, setFechaNaci] = useState(new Date());
+    const [valueFechaContrato, setFechaContrato] = useState(new Date());
+    const [valueTermDate, setTermDate] = useState(new Date());
+    const [valueFechaModificacion, setFechaModificacion] = useState(new Date());
+    const [valueFechaCreacion, setFechaCreacion] = useState(new Date());
 
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
+    const methods = useForm(
+        { resolver: yupResolver(validationSchema) }
+    );
 
     const { handleSubmit, errors, reset } = methods;
 
@@ -105,7 +141,6 @@ const Employee = () => {
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            console.log("resultMunicipio = ", resultMunicipio);
             setMunicipio(resultMunicipio);
         } catch (error) {
             console.log(error);
@@ -113,13 +148,11 @@ const Employee = () => {
     }
 
     const handleChange = (event) => {
-        setValues(event.target.value);
-        console.log(event.target.value);
+        setDptoNacido(event.target.value);
 
-        /* const eventCode = event.target.value;
-        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo == eventCode).map(code => code.codigo));
+        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
         console.log("lsResulCode = ", lsResulCode);
-        GetSubString(lsResulCode); */
+        GetSubString(lsResulCode);
     };
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
@@ -132,7 +165,7 @@ const Employee = () => {
             }));
             setCatalog(resultCatalogo);
 
-            const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, 1077);
+            const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
             var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -140,12 +173,33 @@ const Employee = () => {
             setDepartamento(resultDepartamento);
             setCodigoFilter(lsServerDepartamento.data.entities);
 
-            const lsServerEscolaridad = await GetAllByTipoCatalogo(0, 0, 1146);
+            const lsServerEscolaridad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Escolaridad);
             var resultEscolaridad = lsServerEscolaridad.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setEscolaridad(resultEscolaridad);
+
+            const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
+            var resultSede = lsServerSede.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setSede(resultSede);
+
+            const lsServerGenero = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Genero);
+            var resultGenero = lsServerGenero.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setGenero(resultGenero);
+
+            const lsServerEstadoCivil = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCivil);
+            var resultEstadoCivil = lsServerEstadoCivil.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setEstadoCivil(resultEstadoCivil);
 
             const lsServerCompany = await GetAllCompany(0, 0);
             var resultCompany = lsServerCompany.data.entities.map((item) => ({
@@ -164,11 +218,12 @@ const Employee = () => {
     }, [])
 
     const CleanCombo = () => {
-        setFechaNaci(null);
-        setFechaContrato(null);
-        setTermDate(null);
-        setFechaModificacion(null);
-        setFechaCreacion(null);
+        setFechaNaci(new Date());
+        setFechaContrato(new Date());
+        setTermDate(new Date());
+        setFechaModificacion(new Date());
+        setFechaCreacion(new Date());
+        setImgSrc(null);
     }
 
     /* METODO DE INSERT  */
@@ -181,15 +236,13 @@ const Employee = () => {
             const FechaCreacion = FormatDate(valueFechaCreacion);
 
             const DataToInsert = PostEmployee(datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, datos.dptoNacido, FechaContrato,
+                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido, FechaContrato,
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
                 datos.direccionResidencia, datos.municipioResidencia, datos.dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
                 datos.bandera, datos.ges, datos.usuarioModifica, FechaModificacion, datos.usuarioCreacion,
                 FechaCreacion, imgSrc);
-
-            console.log("fechaNaci = ", datos.fechaNaci);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertEmployee(DataToInsert);
@@ -323,24 +376,18 @@ const Employee = () => {
                                         name="sede"
                                         label="Sede"
                                         defaultValue=""
-                                        options={catalog}
+                                        options={lsSede}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputDate
-                                        defaultValue={null}
-                                        name="fechaNaci"
-                                        label="Fecha de Nacimiento"
-                                        value={valueFechaNaci}
-                                        onChange={(newValue) => {
-                                            setFechaNaci(newValue);
-                                        }}
-                                    />
-                                </FormProvider>
+                                <InputDatePick
+                                    label="Fecha de Nacimiento"
+                                    value={valueFechaNaci}
+                                    onChange={(e) => setFechaNaci(e)}
+                                />
                             </Grid>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -348,7 +395,7 @@ const Employee = () => {
                                         name="genero"
                                         label="Genero"
                                         defaultValue=""
-                                        options={catalog}
+                                        options={lsGenero}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -360,7 +407,7 @@ const Employee = () => {
                                         name="estadoCivil"
                                         label="Estado civil"
                                         defaultValue=""
-                                        options={catalog}
+                                        options={lsEstadoCivil}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -397,18 +444,11 @@ const Employee = () => {
 
                     <Grid container spacing={2} sx={{ pb: 3 }}>
                         <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputDate
-                                    defaultValue=""
-                                    fullWidth
-                                    name="fechaContrato"
-                                    label="Fecha de Contrato"
-                                    value={valueFechaContrato}
-                                    onChange={(newValue) => {
-                                        setFechaContrato(newValue);
-                                    }}
-                                />
-                            </FormProvider>
+                            <InputDatePick
+                                label="Fecha de Contrato"
+                                value={valueFechaContrato}
+                                onChange={(e) => setFechaContrato(e)}
+                            />
                         </Grid>
                         <Grid item xs={3}>
                             <FormProvider {...methods}>
@@ -548,26 +588,14 @@ const Employee = () => {
 
                     <Grid container spacing={2} sx={{ pb: 3 }}>
                         <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                {/* <SelectOnChange
-                                    name="dptoNacido"
-                                    label="Departamento de Nacimiento"
-                                    options={lsDepartamento}
-                                    onChange={handleChange}
-                                /> */}
-
-
-                                <InputSelect
-                                    name="dptoNacido"
-                                    label="Departamento de Nacimiento"
-                                    defaultValue=""
-                                    options={lsDepartamento}
-                                    onChange={handleChange}
-                                    valueSelect={valueSelect}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                            <SelectOnChange
+                                name="dptoNacido"
+                                label="Departamento de Nacimiento"
+                                value={dptoNacido}
+                                options={lsDepartamento}
+                                onChange={handleChange}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
                         </Grid>
                         <Grid item xs={4}>
                             <FormProvider {...methods}>
@@ -575,7 +603,7 @@ const Employee = () => {
                                     name="municipioNacido"
                                     label="Municipio de Nacimiento"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsMunicipio}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -676,26 +704,11 @@ const Employee = () => {
 
                     <Grid container spacing={2} sx={{ pb: 4 }}>
                         <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                {/* <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="termDate"
-                                    label="Fecha de Terminación"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                /> */}
-                                <InputDate
-                                    defaultValue=""
-                                    fullWidth
-                                    name="termDate"
-                                    label="Fecha de Terminación"
-                                    value={valueTermDate}
-                                    onChange={(newValue) => {
-                                        setTermDate(newValue);
-                                    }}
-                                />
-                            </FormProvider>
+                            <InputDatePick
+                                label="Fecha de Terminación"
+                                value={valueTermDate}
+                                onChange={(e) => setTermDate(e)}
+                            />
                         </Grid>
                         <Grid item xs={3}>
                             <FormProvider {...methods}>
@@ -734,27 +747,11 @@ const Employee = () => {
                             </FormProvider>
                         </Grid>
                         <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                {/* <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="fechaModificacion"
-                                    label="Fecha de Modificación"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                /> */}
-
-                                <InputDate
-                                    defaultValue=""
-                                    fullWidth
-                                    name="fechaModificacion"
-                                    label="Fecha de Modificación"
-                                    value={valueFechaModificacion}
-                                    onChange={(newValue) => {
-                                        setFechaModificacion(newValue);
-                                    }}
-                                />
-                            </FormProvider>
+                            <InputDatePick
+                                label="Fecha de Modificación"
+                                value={valueFechaModificacion}
+                                onChange={(e) => setFechaModificacion(e)}
+                            />
                         </Grid>
                         <Grid item xs={3}>
                             <FormProvider {...methods}>
@@ -769,27 +766,11 @@ const Employee = () => {
                             </FormProvider>
                         </Grid>
                         <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputDate
-                                    defaultValue=""
-                                    fullWidth
-                                    name="fechaCreacion"
-                                    label="Fecha de Creación"
-                                    value={valueFechaCreacion}
-                                    onChange={(newValue) => {
-                                        setFechaCreacion(newValue);
-                                    }}
-                                />
-
-                                {/* <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="fechaCreacion"
-                                    label="Fecha de Creación"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                /> */}
-                            </FormProvider>
+                            <InputDatePick
+                                label="Fecha de Creación"
+                                value={valueFechaCreacion}
+                                onChange={(e) => setFechaCreacion(e)}
+                            />
                         </Grid>
                     </Grid>
 

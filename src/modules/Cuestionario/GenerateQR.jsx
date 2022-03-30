@@ -1,6 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import QRCode from 'qrcode';
-import QrReader from 'react-qr-reader';
 import { useDispatch } from 'react-redux';
 
 import MainCard from 'ui-component/cards/MainCard';
@@ -11,7 +10,6 @@ import {
     Button,
     TextField
 } from '@mui/material';
-import { FormProvider, useForm } from 'react-hook-form';
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { SNACKBAR_OPEN } from 'store/actions';
@@ -24,18 +22,11 @@ const GenerateQR = () => {
 
     const [text, setText] = useState('');
     const [imageUrl, setImageUrl] = useState('');
-    const [scanResultFile, setScanResultFile] = useState('');
-    const [scanResultWebCam, setScanResultWebCam] = useState('');
-    const qrRef = useRef(null);
-
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-
-    const { handleSubmit, errors, reset } = methods;
 
     const handleGenerateQrCode = async () => {
         try {
             const response = await QRCode.toDataURL(text);
+            console.log("response = ", response);
             setImageUrl(response);
         } catch (error) {
             if (error == "Error: No input text") {
