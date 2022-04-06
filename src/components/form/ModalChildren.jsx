@@ -8,7 +8,6 @@ import {
     Backdrop
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-
 import MainCard from 'ui-component/cards/MainCard';
 
 function getModalStyle() {

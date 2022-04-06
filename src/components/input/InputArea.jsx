@@ -1,7 +1,7 @@
 import { TextField, InputAdornment } from '@mui/material';
 import PropTypes from 'prop-types';
 
-const InputArea = ({ size, rows, label, defaultValue, name, placeholder }) => {
+const InputArea = ({ size, onChange, rows, label, value, name, placeholder }) => {
     return (
         <>
             <TextField
@@ -13,7 +13,8 @@ const InputArea = ({ size, rows, label, defaultValue, name, placeholder }) => {
                 label={label}
                 name={name}
                 size={size}
-                defaultValue={defaultValue}
+                value={value}
+                onChange={onChange}
                 InputProps={{
                     startAdornment: <InputAdornment position="start"></InputAdornment>,
                 }}
@@ -26,11 +27,12 @@ export default InputArea;
 
 InputArea.propTypes = {
     size: PropTypes.string,
+    onChange: PropTypes.func,
     rows: PropTypes.string,
     label: PropTypes.string,
     name: PropTypes.string,
     placeholder: PropTypes.string,
-    defaultValue: PropTypes.any,
+    value: PropTypes.any,
     name: PropTypes.string,
     fullWidth: PropTypes.bool
 };

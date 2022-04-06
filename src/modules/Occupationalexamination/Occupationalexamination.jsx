@@ -209,7 +209,7 @@ const Occupationalexamination = () => {
 
     const [employee, setEmployee] = useState([]);
 
-    const idEmpleado = 34;
+    const idEmpleado = 40;
     async function GetById() {
         try {
             const lsServer = await GetByIdEmployee(idEmpleado);

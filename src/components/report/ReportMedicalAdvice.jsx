@@ -5,14 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
-
 import { Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 // third-party
 import ReactToPrint from 'react-to-print';
 
 // project imports
-import { GetAllCompany } from 'api/clients/CompanyClient';
+import { GetAllAdvice } from 'api/clients/AdviceClient';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import Logo from 'ui-component/Logo';
@@ -28,15 +27,15 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
 }));
 
-const ReportCompany = () => {
+const ReportMedicalAdvice = () => {
     const componentRef = useRef(null);
 
-    const [company, setCompany] = useState([]);
+    const [medicalAdvice, setMedicalAdvice] = useState([]);
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllCompany(0, 0);
-            if (lsServer.status === 200) setCompany(lsServer.data.entities);
+            const lsServer = await GetAllAdvice(0, 0);
+            if (lsServer.status === 200) setMedicalAdvice(lsServer.data.entities);
         } catch (error) {
             console.log(error);
         }
@@ -56,7 +55,7 @@ const ReportCompany = () => {
                     <>
                         <Typography variant="subtitle1">DRUMMOND LTD</Typography>
                         <Typography variant="subtitle1">DEPARTAMENTO DE SALUD E HIGIENE OCUPACIONAL</Typography>
-                        <Typography variant="subtitle1">LISTADO DE EMPRESAS</Typography>
+                        <Typography variant="subtitle1">LISTADO DE ASESORÍAS MÉDICAS</Typography>
                     </>
                 } secondary={<Logo />}>
 
@@ -82,23 +81,22 @@ const ReportCompany = () => {
                                 >
                                     <TableHead>
                                         <TableRow>
-
-                                            <StyledTableCell align="left">ID</StyledTableCell>
-                                            <StyledTableCell align="left">EMPRESA</StyledTableCell>
-                                            <StyledTableCell align="left">CONTACTO</StyledTableCell>
-                                            <StyledTableCell align="left">CORREO ELECTRÓNICO</StyledTableCell>
-                                            <StyledTableCell align="left">CELULAR</StyledTableCell>
+                                            <StyledTableCell align="left">DOCUMENTO</StyledTableCell>
+                                            <StyledTableCell align="left">FECHA</StyledTableCell>
+                                            <StyledTableCell align="left">MOTIVO</StyledTableCell>
+                                            <StyledTableCell align="left">USUARIO</StyledTableCell>
+                                            <StyledTableCell align="left">ESTADO DEL CASO</StyledTableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {company.map((row, index) => (
+                                        {medicalAdvice.map((row, index) => (
                                             <TableRow key={index}>
 
-                                                <TableCell align="left">{row.codigo}</TableCell>
-                                                <TableCell align="left">{row.descripcionSpa}</TableCell>
-                                                <TableCell align="left">{row.gerente}</TableCell>
-                                                <TableCell align="left">{row.email}</TableCell>
-                                                <TableCell align="left">{row.celular}</TableCell>
+                                                <TableCell align="left">{row.documento}</TableCell>
+                                                <TableCell align="left">{row.fecha}</TableCell>
+                                                <TableCell align="left">{row.motivo}</TableCell>
+                                                <TableCell align="left">{row.usuario}</TableCell>
+                                                <TableCell align="left">{row.idEstadoCaso}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -118,7 +116,7 @@ const ReportCompany = () => {
                     </Grid>
                     <Grid xs={6} item>
                         <AnimateButton>
-                            <Button variant="contained" onClick={() => navigate('/company/list')}>
+                            <Button variant="contained" onClick={() => navigate('/medicalAdvice/list')}>
                                 Cerrar
                             </Button>
                         </AnimateButton>
@@ -129,4 +127,4 @@ const ReportCompany = () => {
     );
 };
 
-export default ReportCompany;
+export default ReportMedicalAdvice;

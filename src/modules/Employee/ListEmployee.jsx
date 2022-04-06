@@ -49,6 +49,12 @@ import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import ReactExport from "react-export-excel";
+import { IconFileExport } from '@tabler/icons';
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function getModalStyle() {
     const top = 50;
@@ -90,7 +96,7 @@ const headCells = [
     {
         id: 'id',
         numeric: false,
-        label: 'ID',
+        label: 'Foto',
         align: 'center'
     },
     {
@@ -251,7 +257,6 @@ EnhancedTableToolbar.propTypes = {
 const ListEmployee = () => {
     const dispatch = useDispatch();
     const [employee, setEmployee] = useState([]);
-    console.log("Lista = ", employee);
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -285,11 +290,6 @@ const ListEmployee = () => {
         setOpen(false);
     };
 
-    /* Abrir Modal */
-    /*     const OpenModal = (idEmpleado) => {
-            return (<BodyEmployee IdEmployee={idEmpleado} openModal={true} />);
-        } */
-
     /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
@@ -304,7 +304,7 @@ const ListEmployee = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nombres', 'celular', 'email', 'nameSede', 'nameCompany'];
+                const properties = ['documento', 'nombres', 'celular', 'email', 'nameSede', 'nameCompany'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -335,7 +335,7 @@ const ListEmployee = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = employee.map((n) => n.id);
+            const newSelectedId = employee.map((n) => n.documento);
             setSelected(newSelectedId);
             return;
         }
@@ -389,6 +389,7 @@ const ListEmployee = () => {
                 })
             }
             setSelected([]);
+            setSearch('');
             GetAll();
         } catch (error) {
             console.log(error);
@@ -422,13 +423,59 @@ const ListEmployee = () => {
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <Tooltip title="Copiar">
-                            <IconButton size="large">
-                                <FileCopyIcon />
-                            </IconButton>
-                        </Tooltip>
+                        <ExcelFile element={
+                            <Tooltip title="Exportar">
+                                <IconButton size="large">
+                                    <IconFileExport />
+                                </IconButton>
+                            </Tooltip>
+                        } filename="Empleado">
+                            <ExcelSheet data={employee} name="Empleado">
+                                <ExcelColumn label="Documento" value="documento" />
+                                <ExcelColumn label="Nombres" value="nombres" />
+                                <ExcelColumn label="Fecha de Nacimiento" value="fechaNaci" />
+                                <ExcelColumn label="Type" value="type" />
+                                <ExcelColumn label="Departamento" value="departamento" />
+                                <ExcelColumn label="Area" value="area" />
+                                <ExcelColumn label="Subarea" value="subarea" />
+                                <ExcelColumn label="Grupo" value="grupo" />
+                                <ExcelColumn label="Municipio de Nacimiento" value="municipioNacido" />
+                                <ExcelColumn label="Departamento de Nacimiento" value="dptoNacido" />
+                                <ExcelColumn label="Fecha de Contrato" value="fechaContrato" />
+                                <ExcelColumn label="Roster Position" value="rosterPosition" />
+                                <ExcelColumn label="Tipo de Contrato" value="tipoContrato" />
+                                <ExcelColumn label="General Position" value="generalPosition" />
+                                <ExcelColumn label="Genero" value="genero" />
+                                <ExcelColumn label="Sede" value="sede" />
+                                <ExcelColumn label="Dirección de Residencia" value="direccionResidencia" />
+                                <ExcelColumn label="Municipio de Residencia" value="municipioResidencia" />
+                                <ExcelColumn label="Departamento de Residencia" value="dptoResidencia" />
+                                <ExcelColumn label="celular" value="celular" />
+                                <ExcelColumn label="Eps" value="eps" />
+                                <ExcelColumn label="Afp" value="afp" />
+                                <ExcelColumn label="Turno" value="turno" />
+                                <ExcelColumn label="Email" value="email" />
+                                <ExcelColumn label="Teléfono de Contacto" value="telefonoContacto" />
+                                <ExcelColumn label="Estado Civil" value="estadoCivil" />
+                                <ExcelColumn label="Empresa" value="empresa" />
+                                <ExcelColumn label="Arl" value="arl" />
+                                <ExcelColumn label="Contacto" value="contacto" />
+                                <ExcelColumn label="Escolaridad" value="escolaridad" />
+                                <ExcelColumn label="Cesantias" value="cesantias" />
+                                <ExcelColumn label="Rotation" value="rotation" />
+                                <ExcelColumn label="PayStatus" value="payStatus" />
+                                <ExcelColumn label="PayStatus" value="payStatus" />
+                                <ExcelColumn label="Fecha de terminación" value="termDate" />
+                                <ExcelColumn label="Bandera" value="bandera" />
+                                <ExcelColumn label="Ges" value="ges" />
+                                <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
+                                <ExcelColumn label="Fecha de Modificación" value="fechaModificacion" />
+                                <ExcelColumn label="Usuario Creación" value="usuarioCreacion" />
+                                <ExcelColumn label="Fecha de Creación" value="fechaCreacion" />
+                            </ExcelSheet>
+                        </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/employee/report/${idCheck}`)}>
+                        <Tooltip title="Impresión" onClick={() => navigate('/employee/report/')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -465,7 +512,7 @@ const ListEmployee = () => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.id);
+                                const isItemSelected = isSelected(row.documento);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -480,7 +527,7 @@ const ListEmployee = () => {
                                         {/* Desde aquí colocamos la llegada de los datos
                                         en cada columna, recordar solo cambiar el nombre y ya */}
 
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.documento)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -494,7 +541,7 @@ const ListEmployee = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.documento)}
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
@@ -505,7 +552,7 @@ const ListEmployee = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.documento)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -521,7 +568,7 @@ const ListEmployee = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.documento)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -537,7 +584,7 @@ const ListEmployee = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.documento)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -553,7 +600,7 @@ const ListEmployee = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.documento)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -569,7 +616,7 @@ const ListEmployee = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.documento)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -585,7 +632,7 @@ const ListEmployee = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.documento)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -604,19 +651,19 @@ const ListEmployee = () => {
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/employee/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/employee/update/${row.documento}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                            {console.log(row.id)}
+                                            {console.log(row.documento)}
                                         </TableCell>
                                         {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
                                         <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                             open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
                                             aria-describedby="simple-modal-description"
                                         >
-                                            <BodyEmployee IdEmployee={row.id} modalStyle={modalStyle} handleClose={handleClose} />
+                                            <BodyEmployee IdEmployee={row.documento} modalStyle={modalStyle} handleClose={handleClose} />
                                         </Modal>
                                     </TableRow>
                                 );

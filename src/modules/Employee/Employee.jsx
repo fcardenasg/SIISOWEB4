@@ -34,10 +34,8 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import { PostEmployee } from 'formatdata/EmployeeForm';
 
-// ==============================|| SOCIAL PROFILE - POST ||============================== //
-
 /* VALIDACIÓN CON YUP */
-const validationSchema = yup.object().shape({
+/* const validationSchema = yup.object().shape({
     documento: yup.string().required(`${ValidationMessage.Requerido}`),
     nombre: yup.string().required(`${ValidationMessage.Requerido}`),
     type: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -46,7 +44,7 @@ const validationSchema = yup.object().shape({
     subArea: yup.string().required(`${ValidationMessage.Requerido}`),
     grupo: yup.string().required(`${ValidationMessage.Requerido}`),
     municipioNacido: yup.string().required(`${ValidationMessage.Requerido}`),
-    dptoNacido: yup.string().required(`${ValidationMessage.Requerido}`),
+
     rosterPosition: yup.string().required(`${ValidationMessage.Requerido}`),
     tipoContrato: yup.string().required(`${ValidationMessage.Requerido}`),
     generalPosition: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -54,7 +52,7 @@ const validationSchema = yup.object().shape({
     sede: yup.string().required(`${ValidationMessage.Requerido}`),
     direccionResidencia: yup.string().required(`${ValidationMessage.Requerido}`),
     municipioResidencia: yup.string().required(`${ValidationMessage.Requerido}`),
-    dptoResidencia: yup.string().required(`${ValidationMessage.Requerido}`),
+
     celular: yup.string().required(`${ValidationMessage.Requerido}`),
     eps: yup.string().required(`${ValidationMessage.Requerido}`),
     afp: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -73,7 +71,7 @@ const validationSchema = yup.object().shape({
     ges: yup.string().required(`${ValidationMessage.Requerido}`),
     usuarioModifica: yup.string().required(`${ValidationMessage.Requerido}`),
     usuarioCreacion: yup.string().required(`${ValidationMessage.Requerido}`)
-});
+}); */
 
 const Employee = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
@@ -82,44 +80,46 @@ const Employee = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     /* NUESTROS ESTADOS PARA LOS COMBOS */
-
     const [catalog, setCatalog] = useState([]);
     const [company, setCompany] = useState([]);
     const [lsEscolaridad, setEscolaridad] = useState([]);
-    const [lsMunicipio, setMunicipio] = useState([]);
+    const [lsMunicipioN, setMunicipioN] = useState([]);
+    const [lsMunicipioR, setMunicipioR] = useState([]);
     const [lsDepartamento, setDepartamento] = useState([]);
     const [lsSede, setSede] = useState([]);
     const [lsGenero, setGenero] = useState([]);
-    const [lsCodigoFilter, setCodigoFilter] = useState([]);
+    const [lsCodigoFilterDpto, setCodigoFilterDpto] = useState([]);
+    const [lsCodigoFilterArea, setCodigoFilterArea] = useState([]);
     const [lsEstadoCivil, setEstadoCivil] = useState([]);
+    const [lsTipoContrato, setTipoContrato] = useState([]);
+    const [lsRol, setRol] = useState([]);
+    const [lsRosterPosition, setRosterPosition] = useState([]);
+    const [lsArea, setArea] = useState([]);
+    const [lsGrupo, setGrupo] = useState([]);
+    const [lsTurno, setTurno] = useState([]);
+    const [lsEstado, setLsEstado] = useState([]);
+    const [lsEps, setEps] = useState([]);
+    const [lsAfp, setAfp] = useState([]);
+    const [lsArl, setArl] = useState([]);
+    const [lsCesantias, setCesantias] = useState([]);
     const [dptoNacido, setDptoNacido] = useState('');
+    const [dptoResidencia, setDptoResidencia] = useState('');
+    const [eventArea, setEventArea] = useState('');
+    const [lsSubArea, setSubArea] = useState([]);
     const [imgSrc, setImgSrc] = useState(null);
-    const [estado, setEstado] = useState(true);
+    const [open, setOpen] = useState(false);
 
     /* ESTADOS PARA LAS FECHAS */
-    const [valueFechaNaci, setFechaNaci] = useState(new Date());
-    const [valueFechaContrato, setFechaContrato] = useState(new Date());
-    const [valueTermDate, setTermDate] = useState(new Date());
-    const [valueFechaModificacion, setFechaModificacion] = useState(new Date());
-    const [valueFechaCreacion, setFechaCreacion] = useState(new Date());
+    const [valueFechaNaci, setFechaNaci] = useState(null);
+    const [valueFechaContrato, setFechaContrato] = useState(null);
+    const [valueTermDate, setTermDate] = useState(null);
+    const [valueFechaModificacion, setFechaModificacion] = useState(null);
+    const [valueFechaCreacion, setFechaCreacion] = useState(null);
 
-    const methods = useForm(
-        { resolver: yupResolver(validationSchema) }
-    );
+    const methods = useForm();
+    /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors, reset } = methods;
-
-    /* MANEJO DE MODAL */
-
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => {
-        setOpen(true);
-        setEstado(false);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     /* MANEJO DE WEBCAM */
     const WebCamRef = useRef(null);
@@ -129,30 +129,62 @@ const Employee = () => {
         setImgSrc(imageSrc);
     }, [WebCamRef, setImgSrc]);
 
-    const Remover = () => {
-        setImgSrc(null);
-    }
-
     /* EVENTO DE FILTRAR COMBO DEPARTAMENTO */
     async function GetSubString(codigo) {
         try {
             const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo);
-            var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setMunicipio(resultMunicipio);
+            if (lsServerCatalog.status === 200) {
+                var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                return resultMunicipio;
+            } else {
+                dispatch({
+                    type: SNACKBAR_OPEN,
+                    open: true,
+                    message: 'Problemas al traer los datos de combo',
+                    variant: 'alert',
+                    alertSeverity: 'error',
+                    close: false,
+                    transition: 'SlideUp'
+                })
+            }
         } catch (error) {
-            console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${error}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     }
 
-    const handleChange = (event) => {
+    const handleChangeDptoResidencia = async (event) => {
+        setDptoResidencia(event.target.value);
+
+        var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+        var resultMunicipioNacimiento = await GetSubString(lsResulCode);
+        setMunicipioR(resultMunicipioNacimiento);
+    };
+
+    const handleChangeDptoNacido = async (event) => {
         setDptoNacido(event.target.value);
 
-        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
-        console.log("lsResulCode = ", lsResulCode);
-        GetSubString(lsResulCode);
+        var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+        var resultMunicipioNacimiento = await GetSubString(lsResulCode);
+        setMunicipioN(resultMunicipioNacimiento);
+    };
+
+    const handleChangeArea = async (event) => {
+        setEventArea(event.target.value);
+
+        var lsResulCode = String(lsCodigoFilterArea.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+        var resultSubArea = await GetSubString(lsResulCode);
+        setSubArea(resultSubArea);
     };
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
@@ -171,7 +203,7 @@ const Employee = () => {
                 label: item.nombre
             }));
             setDepartamento(resultDepartamento);
-            setCodigoFilter(lsServerDepartamento.data.entities);
+            setCodigoFilterDpto(lsServerDepartamento.data.entities);
 
             const lsServerEscolaridad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Escolaridad);
             var resultEscolaridad = lsServerEscolaridad.data.entities.map((item) => ({
@@ -201,6 +233,84 @@ const Employee = () => {
             }));
             setEstadoCivil(resultEstadoCivil);
 
+            const lsServerTipoContrato = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoContrato);
+            var resultTipoContrato = lsServerTipoContrato.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setTipoContrato(resultTipoContrato);
+
+            const lsServerRol = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Rol);
+            var resultRol = lsServerRol.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setRol(resultRol);
+
+            const lsServerRosterPosition = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RosterPosition);
+            var resultRosterPosition = lsServerRosterPosition.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setRosterPosition(resultRosterPosition);
+
+            const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Area);
+            var resultArea = lsServerArea.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setArea(resultArea);
+            setCodigoFilterArea(lsServerArea.data.entities);
+
+            const lsServerGrupo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Grupo);
+            var resultGrupo = lsServerGrupo.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setGrupo(resultGrupo);
+
+            const lsServerTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Turno);
+            var resultTurno = lsServerTurno.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setTurno(resultTurno);
+
+            const lsServerEstado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Estado);
+            var resultEstado = lsServerEstado.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsEstado(resultEstado);
+
+            const lsServerEps = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Eps);
+            var resultEps = lsServerEps.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setEps(resultEps);
+
+            const lsServerAfp = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Afp);
+            var resultAfp = lsServerAfp.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setAfp(resultAfp);
+
+            const lsServerArl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Arl);
+            var resultArl = lsServerArl.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setArl(resultArl);
+
+            const lsServerCesantias = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Cesantias);
+            var resultCesantias = lsServerCesantias.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setCesantias(resultCesantias);
+
             const lsServerCompany = await GetAllCompany(0, 0);
             var resultCompany = lsServerCompany.data.entities.map((item) => ({
                 value: item.codigo,
@@ -208,7 +318,15 @@ const Employee = () => {
             }));
             setCompany(resultCompany);
         } catch (error) {
-            console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${error}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     }
 
@@ -218,12 +336,14 @@ const Employee = () => {
     }, [])
 
     const CleanCombo = () => {
-        setFechaNaci(new Date());
-        setFechaContrato(new Date());
-        setTermDate(new Date());
-        setFechaModificacion(new Date());
-        setFechaCreacion(new Date());
+        setFechaNaci(null);
+        setFechaContrato(null);
+        setTermDate(null);
+        setFechaModificacion(null);
+        setFechaCreacion(null);
         setImgSrc(null);
+        setDptoResidencia('');
+        setDptoNacido('');
     }
 
     /* METODO DE INSERT  */
@@ -236,32 +356,63 @@ const Employee = () => {
             const FechaCreacion = FormatDate(valueFechaCreacion);
 
             const DataToInsert = PostEmployee(datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido, FechaContrato,
+                eventArea, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido, FechaContrato,
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
-                datos.direccionResidencia, datos.municipioResidencia, datos.dptoResidencia, datos.celular, datos.eps,
+                datos.direccionResidencia, datos.municipioResidencia, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
                 datos.bandera, datos.ges, datos.usuarioModifica, FechaModificacion, datos.usuarioCreacion,
                 FechaCreacion, imgSrc);
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertEmployee(DataToInsert);
-                if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Guardar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
-                    reset();
-                    CleanCombo();
+            if (FechaNaci != null && FechaContrato != null && TermDate != null && FechaModificacion != null
+                && FechaCreacion != null && imgSrc != null) {
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await InsertEmployee(DataToInsert);
+                    if (result.status === 200) {
+                        dispatch({
+                            type: SNACKBAR_OPEN,
+                            open: true,
+                            message: `${Message.Guardar}`,
+                            variant: 'alert',
+                            alertSeverity: 'success',
+                            close: false,
+                            transition: 'SlideUp'
+                        })
+                        reset();
+                        CleanCombo();
+                    } else {
+                        dispatch({
+                            type: SNACKBAR_OPEN,
+                            open: true,
+                            message: 'Hubo un problemas al guardo los datos',
+                            variant: 'alert',
+                            alertSeverity: 'error',
+                            close: false,
+                            transition: 'SlideUp'
+                        })
+                    }
                 }
+            } else {
+                dispatch({
+                    type: SNACKBAR_OPEN,
+                    open: true,
+                    message: 'Exiten campos vacios aún',
+                    variant: 'alert',
+                    alertSeverity: 'warning',
+                    close: false,
+                    transition: 'SlideUp'
+                })
             }
         } catch (error) {
-            console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: 'Error al consumir el servicio de POST',
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     };
 
@@ -276,12 +427,12 @@ const Employee = () => {
 
                     <ModalChildren
                         open={open}
-                        onClose={handleClose}
+                        onClose={() => setOpen(false)}
                         title="Tomar Fotografía"
                     >
                         <WebCamCapture
                             CaptureImg={CapturePhoto}
-                            RemoverImg={Remover}
+                            RemoverImg={() => setImgSrc(null)}
                             ImgSrc={imgSrc}
                             WebCamRef={WebCamRef}
                         />
@@ -291,9 +442,9 @@ const Employee = () => {
                     <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
                         <Grid item xs={3}>
                             <PhotoModel
-                                OpenModal={handleOpen}
+                                OpenModal={() => setOpen(true)}
                                 EstadoImg={imgSrc}
-                                RemoverImg={Remover}
+                                RemoverImg={() => setImgSrc(null)}
                             />
                         </Grid>
 
@@ -306,7 +457,7 @@ const Employee = () => {
                                         name="documento"
                                         label="Documento"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={!!errors?.documento}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -318,7 +469,7 @@ const Employee = () => {
                                         name="nombres"
                                         label="Nombres"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={!!errors?.nombres}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -456,7 +607,7 @@ const Employee = () => {
                                     name="tipoContrato"
                                     label="Tipo de Contrato"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsTipoContrato}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -468,7 +619,7 @@ const Employee = () => {
                                     name="type"
                                     label="Rol"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsRol}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -480,7 +631,7 @@ const Employee = () => {
                                     name="rosterPosition"
                                     label="Roster Position"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsRosterPosition}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -511,16 +662,14 @@ const Employee = () => {
                             </FormProvider>
                         </Grid>
                         <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="area"
-                                    label="Area"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                            <SelectOnChange
+                                name="area"
+                                label="Area"
+                                value={eventArea}
+                                options={lsArea}
+                                onChange={handleChangeArea}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
                         </Grid>
                         <Grid item xs={3}>
                             <FormProvider {...methods}>
@@ -528,7 +677,7 @@ const Employee = () => {
                                     name="subArea"
                                     label="Subarea"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsSubArea}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -540,7 +689,7 @@ const Employee = () => {
                                     name="grupo"
                                     label="Grupo"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsGrupo}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -552,7 +701,7 @@ const Employee = () => {
                                     name="turno"
                                     label="Turno"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsTurno}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -576,7 +725,7 @@ const Employee = () => {
                                     name="payStatus"
                                     label="Estado"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsEstado}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -593,7 +742,7 @@ const Employee = () => {
                                 label="Departamento de Nacimiento"
                                 value={dptoNacido}
                                 options={lsDepartamento}
-                                onChange={handleChange}
+                                onChange={handleChangeDptoNacido}
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
@@ -603,23 +752,21 @@ const Employee = () => {
                                     name="municipioNacido"
                                     label="Municipio de Nacimiento"
                                     defaultValue=""
-                                    options={lsMunicipio}
+                                    options={lsMunicipioN}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
                         <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="dptoResidencia"
-                                    label="Departamento de Residencia"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                            <SelectOnChange
+                                name="dptoResidencia"
+                                label="Departamento de Residencia"
+                                options={lsDepartamento}
+                                size={matchesXS ? 'small' : 'medium'}
+                                value={dptoResidencia}
+                                onChange={handleChangeDptoResidencia}
+                            />
                         </Grid>
                         <Grid item xs={4}>
                             <FormProvider {...methods}>
@@ -627,7 +774,7 @@ const Employee = () => {
                                     name="municipioResidencia"
                                     label="Municipio de Residencia"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsMunicipioR}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -656,7 +803,7 @@ const Employee = () => {
                                     name="eps"
                                     label="EPS"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsEps}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -668,7 +815,7 @@ const Employee = () => {
                                     name="afp"
                                     label="AFP"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsAfp}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -680,7 +827,7 @@ const Employee = () => {
                                     name="arl"
                                     label="ARL"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsArl}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -692,7 +839,7 @@ const Employee = () => {
                                     name="cesantias"
                                     label="Cesantias"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsCesantias}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />

@@ -10,16 +10,19 @@ import {
     Tooltip,
     Fab
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/AddTwoTone';
 
 // Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import SelectOnChange from 'components/input/SelectOnChange';
+import InputOnChange from 'components/input/InputOnChange';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import InputDatePick from 'components/input/InputDatePick';
 import InputArea from 'components/input/InputArea';
 import Accordion from 'components/accordion/Accordion';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
@@ -28,13 +31,10 @@ import WebCamCapture from 'components/form/WebCam';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertAdvice } from 'api/clients/AdviceClient';
-import { GetAllCatalog, GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
-import { PostCatalog } from 'formatdata/CatalogForm';
-import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import InputDate from 'components/input/InputDate';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultData } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
@@ -57,18 +57,61 @@ const PsychologicalCounseling = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const theme = useTheme();
+    const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     /* NUESTROS ESTADOS PARA LOS COMBOS */
     const [catalog, setCatalog] = useState([]);
+    const [psychological, setPsychological] = useState([]);
+    const [document, setDocument] = useState('');
     const [company, setCompany] = useState([]);
-    const [lsEscolaridad, setEscolaridad] = useState([]);
-    const [lsMunicipio, setMunicipio] = useState([]);
-    const [lsDepartamento, setDepartamento] = useState([]);
-    const [lsCodigoFilter, setCodigoFilter] = useState([]);
-    const [valueSelect, setValues] = useState('');
+    const [lsMotivo, setLsMotivo] = useState([]);
+    const [lsTurno, setLsTurno] = useState([]);
+    const [diaTurno, setDiaTurno] = useState([]);
+    const [estadoCaso, setEstadoCaso] = useState([]);
+    const [estadoAsesoria, setEstadoAsesoria] = useState([]);
+    const [contingencia, setContingencia] = useState([]);
+    const [tipoAsesoria, setTipoAsesoria] = useState([]);
+    const [causaAsesoria, setCausaAsesoria] = useState([]);
+
     const [imgSrc, setImgSrc] = useState(null);
-    const [estado, setEstado] = useState(true);
+    const [clickAttend, setClickAttend] = useState(false);
+    const [fecha, setFecha] = useState(new Date());
+    const [open, setOpen] = useState(false);
+
+    /* MIL Y UN ESTADOS */
+    const [nombres, setNombres] = useState('');
+    const [email, setEmail] = useState('');
+    const [celular, setCelular] = useState('');
+    const [escolaridad, setEscolaridad] = useState('');
+    const [empresa, setEmpresa] = useState('');
+    const [sede, setSede] = useState('');
+    const [fechaNaci, setFechaNaci] = useState(null);
+    const [genero, setGenero] = useState('');
+    const [estadoCivil, setEstadoCivil] = useState('');
+    const [contacto, setContacto] = useState('');
+    const [telefonoContacto, setTelefonoContacto] = useState('');
+    const [fechaContrato, setFechaContrato] = useState(null);
+    const [tipoContrato, setTipoContrato] = useState('');
+    const [payStatus, setPayStatus] = useState('');
+    const [type, setType] = useState('');
+    const [rosterPosition, setRosterPosition] = useState('');
+    const [generalPosition, setGeneralPosition] = useState('');
+    const [departamento, setDepartamento] = useState('');
+    const [area, setArea] = useState('');
+    const [subArea, setSubArea] = useState('');
+    const [grupo, setGrupo] = useState('');
+    const [turno, setTurno] = useState('');
+    const [direccionResidencia, setDireccionResidencia] = useState('');
+    const [dptoResidencia, setDptoResidencia] = useState('');
+    const [municipioResidencia, setMunicipioResidencia] = useState('');
+    const [municipioNacido, setMunicipioNacido] = useState('');
+    const [dptoNacido, setDptoNacido] = useState('');
+    const [eps, setEps] = useState('');
+    const [afp, setAfp] = useState('');
+    const [note1, setNote1] = useState('');
+    const [note2, setNote2] = useState('');
+    const [note3, setNote3] = useState('');
 
     /* ESTADOS PARA EL CONTROL DE VOZ */
     const [isListeningMotivoConsulta, setIsListeningMotivoConsulta] = useState(false)
@@ -176,29 +219,10 @@ const PsychologicalCounseling = () => {
         handleListenPautasSeguir();
     }, [isListeningMotivoConsulta, isListeningConcepto, isListeningPautasSeguir])
 
-    /* ESTADOS PARA LAS FECHAS */
-    const [valueFechaNaci, setFechaNaci] = useState(null);
-    const [valueFechaContrato, setFechaContrato] = useState(null);
-    const [valueTermDate, setTermDate] = useState(null);
-    const [valueFechaModificacion, setFechaModificacion] = useState(null);
-    const [valueFechaCreacion, setFechaCreacion] = useState(null);
-
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors, reset } = methods;
-
-    /* MANEJO DE MODAL */
-
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => {
-        setOpen(true);
-        setEstado(false);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     /* MANEJO DE WEBCAM */
     const WebCamRef = useRef(null);
@@ -208,8 +232,72 @@ const PsychologicalCounseling = () => {
         setImgSrc(imageSrc);
     }, [WebCamRef, setImgSrc]);
 
-    const Remover = () => {
-        setImgSrc(null);
+    /* METODO PADRE DE TRAER DATOS */
+    const handleDocument = async (event) => {
+        try {
+            setDocument(event?.target.value);
+            if (event.key === 'Enter') {
+                if (event?.target.value != "") {
+
+                    var lsQuestionnaire = await GetByIdEmployee(event?.target.value);
+
+                    if (lsQuestionnaire.status === 200) {
+                        setImgSrc(lsQuestionnaire.data.imagenUrl);
+                        setPsychological(lsQuestionnaire.data);
+                        setNombres(lsQuestionnaire.data.nombres);
+                        setEmail(lsQuestionnaire.data.email);
+                        setCelular(lsQuestionnaire.data.celular);
+                        setEscolaridad(lsQuestionnaire.data.escolaridad);
+                        setEmpresa(lsQuestionnaire.data.empresa);
+                        setSede(lsQuestionnaire.data.sede);
+                        setFechaNaci(lsQuestionnaire.data.fechaNaci);
+                        setGenero(lsQuestionnaire.data.genero);
+                        setEstadoCivil(lsQuestionnaire.data.estadoCivil);
+                        setContacto(lsQuestionnaire.data.contacto);
+                        setTelefonoContacto(lsQuestionnaire.data.telefonoContacto);
+                        setFechaContrato(lsQuestionnaire.data.fechaContrato);
+                        setTipoContrato(lsQuestionnaire.data.tipoContrato);
+                        setPayStatus(lsQuestionnaire.data.payStatus);
+                        setType(lsQuestionnaire.data.type);
+                        setRosterPosition(lsQuestionnaire.data.rosterPosition);
+                        setGeneralPosition(lsQuestionnaire.data.generalPosition);
+                        setDepartamento(lsQuestionnaire.data.departamento);
+                        setArea(lsQuestionnaire.data.area);
+                        setSubArea(lsQuestionnaire.data.subArea);
+                        setGrupo(lsQuestionnaire.data.grupo);
+                        setTurno(lsQuestionnaire.data.turno);
+                        setDireccionResidencia(lsQuestionnaire.data.direccionResidencia);
+                        setDptoResidencia(lsQuestionnaire.data.dptoResidencia);
+                        setMunicipioResidencia(lsQuestionnaire.data.municipioResidencia);
+                        setMunicipioNacido(lsQuestionnaire.data.municipioNacido);
+                        setDptoNacido(lsQuestionnaire.data.dptoNacido);
+                        setEps(lsQuestionnaire.data.eps);
+                        setAfp(lsQuestionnaire.data.afp);
+                    }
+                } else {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: `${Message.ErrorDocumento}`,
+                        variant: 'alert',
+                        alertSeverity: 'error',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
+                }
+            }
+        } catch (error) {
+            CleanCombo();
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${Message.ErrorDeDatos}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
+        }
     }
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
@@ -222,20 +310,61 @@ const PsychologicalCounseling = () => {
             }));
             setCatalog(resultCatalogo);
 
-            const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, 1077);
-            var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
+            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AsesoriaMotivo);
+            var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setDepartamento(resultDepartamento);
-            setCodigoFilter(lsServerDepartamento.data.entities);
+            setLsMotivo(resultMotivo);
 
-            const lsServerEscolaridad = await GetAllByTipoCatalogo(0, 0, 1146);
-            var resultEscolaridad = lsServerEscolaridad.data.entities.map((item) => ({
+            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
+            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setEscolaridad(resultEscolaridad);
+            setContingencia(resultContingencia);
+
+            const lsServerTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Turno);
+            var resultTurno = lsServerTurno.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsTurno(resultTurno);
+
+            const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCaso);
+            var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setEstadoCaso(resultEstadoCaso);
+
+            const lsServerDiaTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DiaTurno);
+            var resultDiaTurno = lsServerDiaTurno.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setDiaTurno(resultDiaTurno);
+
+            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAsesoria);
+            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setTipoAsesoria(resultTipoAsesoria);
+
+            const lsServerEstadoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoAsesoria);
+            var resultEstadoAsesoria = lsServerEstadoAsesoria.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setEstadoAsesoria(resultEstadoAsesoria);
+
+            const lsServerCausaAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CausaAsesoria);
+            var resultCausaAsesoria = lsServerCausaAsesoria.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setCausaAsesoria(resultCausaAsesoria);
 
             const lsServerCompany = await GetAllCompany(0, 0);
             var resultCompany = lsServerCompany.data.entities.map((item) => ({
@@ -249,25 +378,77 @@ const PsychologicalCounseling = () => {
     }
 
     const CleanCombo = () => {
+        setClickAttend(false);
+        setImgSrc(null);
+        setFecha(new Date());
+        setDocument('');
+        setNombres('');
+        setEmail('');
+        setCelular('');
+        setEscolaridad('');
+        setEmpresa('');
+        setSede('');
         setFechaNaci(null);
+        setGenero('');
+        setEstadoCivil('');
+        setContacto('');
+        setTelefonoContacto('');
         setFechaContrato(null);
-        setTermDate(null);
-        setFechaModificacion(null);
-        setFechaCreacion(null);
+        setTipoContrato('');
+        setPayStatus('');
+        setType('');
+        setRosterPosition('');
+        setGeneralPosition('');
+        setDepartamento('');
+        setArea('');
+        setSubArea('');
+        setGrupo('');
+        setTurno('');
+        setDireccionResidencia('');
+        setDptoResidencia('');
+        setMunicipioResidencia('');
+        setMunicipioNacido('');
+        setDptoNacido('');
+        setEps('');
+        setAfp('');
+    }
+
+    const handleAtender = () => {
+        if (document === '') {
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${Message.ErrorDocumento}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
+        } else if (psychological.length === 0) {
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${Message.ErrorNoHayDatos}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
+        } else
+            setClickAttend(true);
     }
 
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
         try {
-            const fecha = FormatDate(datos.fecha);
+            const fechaData = FormatDate(fecha);
             const resto = "Sin Registro";
             const usuario = "Manuel Vásquez";
             const dateNow = FormatDate(new Date());
-            const DataToInsert = PostMedicalAdvice(datos.documento, fecha, 73, 73, 73,
-                datos.idEstadoCaso, 73, 73, datos.idTipoAsesoria, datos.idMotivo, datos.idCausa,
-                resto, resto, isListeningPautasSeguir, 73, usuario, dateNow, usuario, dateNow);
-
-            console.log(DataToInsert);
+            const DataToInsert = PostMedicalAdvice(document, fechaData, DefaultData.AsesoriaPsicologica, sede,
+                datos.idContingencia, datos.idEstadoCaso, datos.idTurno, datos.idDiaTurno, datos.idTipoAsesoria,
+                datos.idMotivo, datos.idCausa, noteMotivoConsulta, noteConcepto, notePautasSeguir,
+                datos.idEstadoAsesoria, usuario, dateNow, usuario, dateNow);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertAdvice(DataToInsert);
@@ -298,12 +479,6 @@ const PsychologicalCounseling = () => {
         }
     };
 
-    const handleClickFab = () => {
-        console.log("Eventos");
-    }
-
-    const navigate = useNavigate();
-
     return (
         <MainCard title="">
             <Grid container xs={12} sx={{ pt: 0.5 }}>
@@ -311,12 +486,12 @@ const PsychologicalCounseling = () => {
                     <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
                         <ModalChildren
                             open={open}
-                            onClose={handleClose}
+                            onClose={() => setOpen(false)}
                             title="Fotografía"
                         >
                             <WebCamCapture
                                 CaptureImg={CapturePhoto}
-                                RemoverImg={Remover}
+                                RemoverImg={() => setImgSrc(null)}
                                 ImgSrc={imgSrc}
                                 WebCamRef={WebCamRef}
                             />
@@ -325,156 +500,136 @@ const PsychologicalCounseling = () => {
                         <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
                             <Grid item xs={3}>
                                 <PhotoModel
-                                    OpenModal={handleOpen}
+                                    disabledCapture
+                                    disabledDelete
+                                    OpenModal={() => setOpen(true)}
                                     EstadoImg={imgSrc}
-                                    RemoverImg={Remover}
+                                    RemoverImg={() => setImgSrc(null)}
                                 />
                             </Grid>
                             <Grid container spacing={2} item xs={9}>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="documento"
-                                            label="Documento"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    <InputOnChange
+                                        label="N° Documento"
+                                        onKeyDown={handleDocument}
+                                        onChange={(e) => setDocument(e?.target.value)}
+                                        value={document}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        required={true}
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="nombres"
-                                            label="Nombres"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    <InputOnChange
+                                        label="Nombres"
+                                        value={nombres}
+                                        onChange={(e) => setNombres(e?.target.value)}
+                                        disabled
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        required={true}
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="email"
-                                            label="Email"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    <InputOnChange
+                                        label="Email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e?.target.value)}
+                                        disabled
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        required={true}
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="celular"
-                                            label="Celular"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    <InputOnChange
+                                        label="Celular"
+                                        value={celular}
+                                        onChange={(e) => setCelular(e?.target.value)}
+                                        disabled
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        required={true}
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="escolaridad"
-                                            label="Escolaridad"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    <SelectOnChange
+                                        name="escolaridad"
+                                        label="Escolaridad"
+                                        disabled
+                                        options={catalog}
+                                        value={escolaridad}
+                                        onChange={(e) => setEscolaridad(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="empresa"
-                                            label="Empresa"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    <SelectOnChange
+                                        name="empresa"
+                                        label="Empresa"
+                                        disabled
+                                        options={company}
+                                        value={empresa}
+                                        onChange={(e) => setEmpresa(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="sede"
-                                            label="Sede"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    <SelectOnChange
+                                        name="sede"
+                                        label="Sede"
+                                        disabled
+                                        options={catalog}
+                                        value={sede}
+                                        onChange={(e) => setSede(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputDate
-                                            defaultValue=""
-                                            name="fechaNaci"
-                                            label="Fecha de Nacimiento"
-                                            value={valueFechaNaci}
-                                            onChange={(newValue) => {
-                                                setFechaNaci(newValue);
-                                            }}
-                                        />
-                                    </FormProvider>
+                                    <InputDatePick
+                                        label="Fecha de Nacimiento"
+                                        value={fechaNaci}
+                                        disabled
+                                        onChange={(e) => setFechaNaci(e)}
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="genero"
-                                            label="Genero"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    <SelectOnChange
+                                        name="genero"
+                                        label="Genero"
+                                        disabled
+                                        options={catalog}
+                                        value={genero}
+                                        onChange={(e) => setGenero(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="estadoCivil"
-                                            label="Estado civil"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    <SelectOnChange
+                                        name="estadoCivil"
+                                        label="Estado Civil"
+                                        disabled
+                                        options={catalog}
+                                        value={estadoCivil}
+                                        onChange={(e) => setEstadoCivil(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="contacto"
-                                            label="Contacto"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    <InputOnChange
+                                        label="Contacto"
+                                        value={contacto}
+                                        onChange={(e) => setContacto(e?.target.value)}
+                                        disabled
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        required={true}
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="telefonoContacto"
-                                            label="Teléfono Contacto"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                    <InputOnChange
+                                        label="Teléfono de Contacto"
+                                        value={telefonoContacto}
+                                        onChange={(e) => setTelefonoContacto(e?.target.value)}
+                                        disabled
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        required={true}
+                                    />
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -484,259 +639,235 @@ const PsychologicalCounseling = () => {
                         <Typography variant="subtitle1" color="inherit">Ver mas...</Typography></>}>
                         <SubCard darkTitle title={<><Typography variant="h4"></Typography></>}>
                             <Grid item xs={12} sx={{ pb: 3 }}>
-                                <Grid container spacing={1}>
+                                <Grid container spacing={2}>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputDate
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="fechaContrato"
-                                                    label="Fecha de Contrato"
-                                                    value={valueFechaContrato}
-                                                    onChange={(newValue) => {
-                                                        setFechaContrato(newValue);
-                                                    }}
-                                                />
-                                            </FormProvider>
+                                            <InputDatePick
+                                                label="Fecha de Contrato"
+                                                value={fechaContrato}
+                                                disabled
+                                                onChange={(e) => setFechaContrato(e)}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="tipoContrato"
-                                                    label="Tipo de Contrato"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="tipoContrato"
+                                                label="Tipo de Contrato"
+                                                disabled
+                                                options={catalog}
+                                                value={tipoContrato}
+                                                onChange={(e) => setTipoContrato(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="payStatus"
-                                                    label="Estado"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="estado"
+                                                label="Estado"
+                                                disabled
+                                                options={catalog}
+                                                value={payStatus}
+                                                onChange={(e) => setPayStatus(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="type"
-                                                    label="Rol"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="Rol"
+                                                label="Rol"
+                                                disabled
+                                                options={catalog}
+                                                value={type}
+                                                onChange={(e) => setType(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="rosterPosition"
-                                                    label="Roster Position"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="rosterPosition"
+                                                label="Roster Position"
+                                                disabled
+                                                options={catalog}
+                                                value={rosterPosition}
+                                                onChange={(e) => setRosterPosition(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="generalPosition"
-                                                    label="General Position"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="generalPosition"
+                                                label="General Position"
+                                                disabled
+                                                options={catalog}
+                                                value={generalPosition}
+                                                onChange={(e) => setGeneralPosition(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="departamento"
-                                                    label="Departamento"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="Departamento"
+                                                label="Departamento"
+                                                disabled
+                                                options={catalog}
+                                                value={departamento}
+                                                onChange={(e) => setDepartamento(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="area"
-                                                    label="Area"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="Area"
+                                                label="Area"
+                                                disabled
+                                                options={catalog}
+                                                value={area}
+                                                onChange={(e) => setArea(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="subArea"
-                                                    label="Subarea"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="Subarea"
+                                                label="Subarea"
+                                                disabled
+                                                options={catalog}
+                                                value={subArea}
+                                                onChange={(e) => setSubArea(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="grupo"
-                                                    label="Grupo"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="Grupo"
+                                                label="Grupo"
+                                                disabled
+                                                options={catalog}
+                                                value={grupo}
+                                                onChange={(e) => setGrupo(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="turno"
-                                                    label="Turno"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="Turno"
+                                                label="Turno"
+                                                disabled
+                                                options={catalog}
+                                                value={turno}
+                                                onChange={(e) => setTurno(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="direccionResidencia"
-                                                    label="Dirección de Residencia"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <InputOnChange
+                                                label="Dirección de Residencia"
+                                                value={direccionResidencia}
+                                                onChange={(e) => setDireccionResidencia(e?.target.value)}
+                                                disabled
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                required={true}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="dptoResidencia"
-                                                    label="Departamento de Residencia"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="dptoResidencia"
+                                                label="Departamento de Residencia"
+                                                disabled
+                                                options={catalog}
+                                                value={dptoResidencia}
+                                                onChange={(e) => setDptoResidencia(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="municipioResidencia"
-                                                    label="Municipio de Residencia"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="municipioResidencia"
+                                                label="Municipio de Residencia"
+                                                disabled
+                                                options={catalog}
+                                                value={municipioResidencia}
+                                                onChange={(e) => setMunicipioResidencia(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="municipioNacido"
-                                                    label="Municipio de Nacimiento"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="municipioNacido"
+                                                label="Municipio de Nacimiento"
+                                                disabled
+                                                options={catalog}
+                                                value={municipioNacido}
+                                                onChange={(e) => setMunicipioNacido(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="dptoNacido"
-                                                    label="Departamento de Nacimiento"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="dptoNacido"
+                                                label="Departamento de Nacimiento"
+                                                disabled
+                                                options={catalog}
+                                                value={dptoNacido}
+                                                onChange={(e) => setDptoNacido(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="eps"
-                                                    label="EPS"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="EPS"
+                                                label="EPS"
+                                                disabled
+                                                options={catalog}
+                                                value={eps}
+                                                onChange={(e) => setEps(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="afp"
-                                                    label="AFP"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="AFP"
+                                                label="AFP"
+                                                disabled
+                                                options={catalog}
+                                                value={afp}
+                                                onChange={(e) => setAfp(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </AnimateButton>
                                     </Grid>
                                 </Grid>
@@ -747,56 +878,101 @@ const PsychologicalCounseling = () => {
                     <Divider />
                     <Grid sx={{ pt: 2 }}>
                         <SubCard darkTitle title={<><Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography></>}>
-                            <Grid container justifyContent="center" alignItems="center" spacing={2} sx={{ pb: 3 }}>
+                            <Grid container justifyContent="center" alignItems="center" spacing={2} sx={{ pt: 2, pb: 2 }}>
+                                <Grid item xs={2.4}>
+                                    <InputDatePick
+                                        label="Fecha"
+                                        value={fecha}
+                                        onChange={(e) => setFecha(e)}
+                                    />
+                                </Grid>
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
-                                        <InputDate
+                                        <InputSelect
+                                            name="idContingencia"
+                                            label="Contingencia"
                                             defaultValue=""
-                                            name="fecha"
-                                            label="Fecha"
+                                            options={contingencia}
+                                            size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
                                 <Grid item xs={2.4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idEstadoCaso"
+                                            label="Estado del Caso"
+                                            defaultValue=""
+                                            options={estadoCaso}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid item xs={2.4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idTurno"
+                                            label="Turno"
+                                            defaultValue=""
+                                            options={lsTurno}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid item xs={2.4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idDiaTurno"
+                                            label="Día Turno"
+                                            defaultValue=""
+                                            options={diaTurno}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idMotivo"
                                             label="Motivo"
                                             defaultValue=""
-                                            options={catalog}
+                                            options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={2.4}>
+                                <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idCausa"
                                             label="Causa de Asesoría"
                                             defaultValue=""
-                                            options={catalog}
+                                            options={causaAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={2.4}>
+                                <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idTipoAsesoria"
                                             label="Tipo Asesoría"
                                             defaultValue=""
-                                            options={catalog}
+                                            options={tipoAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={2.4}>
+                                <Grid item xs={3}>
                                     <AnimateButton>
-                                        <Button size="large" variant="contained" fullWidth>
+                                        <Button size="large" variant="contained" onClick={handleAtender} fullWidth>
                                             Atender
                                         </Button>
                                     </AnimateButton>
@@ -805,241 +981,254 @@ const PsychologicalCounseling = () => {
                         </SubCard>
                     </Grid>
 
-                    <Grid sx={{ pt: 2 }}>
-                        <SubCard darkTitle title={<><Typography variant="h4">NOTA</Typography></>}>
-                            <Grid container spacing={2} sx={{ pb: 2 }}>
-                                <Grid item xs={12}>
-                                    <InputArea
-                                        rows={4}
-                                        label="Motivo de consulta"
-                                        placeholder="Esperando dictado..."
-                                        name="inputArea"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        defaultValue={noteMotivoConsulta}
-                                    />
-                                </Grid>
-                                {/* Iconos de opciones */}
-                                <Grid item xs={12} sx={{ pt: 2 }}>
-                                    <Grid justifyContent="left" alignItems="center" container xs={12}>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Plantilla de texto">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={handleClickFab}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <ListAltSharpIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
-                                            </Grid>
+                    {clickAttend ? (
+                        <>
+                            <Grid sx={{ pt: 2 }}>
+                                <SubCard darkTitle title={<><Typography variant="h4">NOTA</Typography></>}>
+                                    <Grid container spacing={2} sx={{ pb: 2 }}>
+                                        <Grid item xs={12}>
+                                            <InputArea
+                                                rows={4}
+                                                label="Motivo de consulta"
+                                                placeholder="Esperando dictado..."
+                                                name="inputArea"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                onChange={(e) => setNoteMotivoConsulta(e?.target.value)}
+                                                value={noteMotivoConsulta}
+                                            />
                                         </Grid>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Borrar texto">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={() => setNoteMotivoConsulta('')}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Audio">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={() => setIsListeningMotivoConsulta(prevState => !prevState)}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <SettingsVoiceIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
-                            <Grid container spacing={2} sx={{ pb: 2 }}>
-                                <Grid item xs={12}>
-                                    <InputArea
-                                        rows={4}
-                                        label="Concepto"
-                                        placeholder="Esperando dictado..."
-                                        name="inputArea"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        defaultValue={noteConcepto}
-                                    />
-                                </Grid>
-                                {/* Iconos de opciones */}
-                                <Grid item xs={12} sx={{ pt: 2 }}>
-                                    <Grid justifyContent="left" alignItems="center" container xs={12}>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Plantilla de texto">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={handleClickFab}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <ListAltSharpIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Borrar texto">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={() => setNoteConcepto('')}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Audio">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={() => setIsListeningConcepto(prevState => !prevState)}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <SettingsVoiceIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
+                                        {/* Iconos de opciones */}
+                                        <Grid item xs={12} sx={{ pt: 2 }}>
+                                            <Grid justifyContent="left" alignItems="center" container xs={12}>
+                                                <Grid item xs={2}>
+                                                    <Grid justifyContent="center" alignItems="center" container>
+                                                        <AnimateButton>
+                                                            <Tooltip title="Plantilla de texto">
+                                                                <Fab
+                                                                    color="primary"
+                                                                    size="small"
+                                                                    onClick={() => console.log("Funcionan")}
+                                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                                >
+                                                                    <ListAltSharpIcon fontSize="small" />
+                                                                </Fab>
+                                                            </Tooltip>
+                                                        </AnimateButton>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <Grid justifyContent="center" alignItems="center" container>
+                                                        <AnimateButton>
+                                                            <Tooltip title="Borrar texto">
+                                                                <Fab
+                                                                    color="primary"
+                                                                    size="small"
+                                                                    onClick={() => setNoteMotivoConsulta('')}
+                                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                                >
+                                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                                                </Fab>
+                                                            </Tooltip>
+                                                        </AnimateButton>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <Grid justifyContent="center" alignItems="center" container>
+                                                        <AnimateButton>
+                                                            <Tooltip title="Audio">
+                                                                <Fab
+                                                                    color="primary"
+                                                                    size="small"
+                                                                    onClick={() => setIsListeningMotivoConsulta(prevState1 => !prevState1)}
+                                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                                >
+                                                                    <SettingsVoiceIcon fontSize="small" />
+                                                                </Fab>
+                                                            </Tooltip>
+                                                        </AnimateButton>
+                                                    </Grid>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
                                     </Grid>
-                                </Grid>
-                            </Grid>
 
-                            <Grid container spacing={2} sx={{ pb: 2 }}>
-                                <Grid item xs={12}>
-                                    <InputArea
-                                        rows={4}
-                                        label="Pautas a Seguir"
-                                        placeholder="Esperando dictado..."
-                                        name="inputArea"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        defaultValue={notePautasSeguir}
-                                    />
-                                </Grid>
-                                {/* Iconos de opciones */}
-                                <Grid item xs={12} sx={{ pt: 2 }}>
-                                    <Grid justifyContent="left" alignItems="center" container xs={12}>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Plantilla de texto">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={handleClickFab}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <ListAltSharpIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
-                                            </Grid>
+                                    <Grid container spacing={2} sx={{ pb: 2 }}>
+                                        <Grid item xs={12}>
+                                            <InputArea
+                                                rows={4}
+                                                label="Concepto"
+                                                placeholder="Esperando dictado..."
+                                                name="inputArea"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                onChange={(e) => setNoteConcepto(e?.target.value)}
+                                                value={noteConcepto}
+                                            />
                                         </Grid>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Borrar texto">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={() => setNotePautasSeguir('')}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Audio">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={() => setIsListeningPautasSeguir(prevState => !prevState)}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <SettingsVoiceIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
+                                        {/* Iconos de opciones */}
+                                        <Grid item xs={12} sx={{ pt: 2 }}>
+                                            <Grid justifyContent="left" alignItems="center" container xs={12}>
+                                                <Grid item xs={2}>
+                                                    <Grid justifyContent="center" alignItems="center" container>
+                                                        <AnimateButton>
+                                                            <Tooltip title="Plantilla de texto">
+                                                                <Fab
+                                                                    color="primary"
+                                                                    size="small"
+                                                                    onClick={() => console.log("Funcionan")}
+                                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                                >
+                                                                    <ListAltSharpIcon fontSize="small" />
+                                                                </Fab>
+                                                            </Tooltip>
+                                                        </AnimateButton>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <Grid justifyContent="center" alignItems="center" container>
+                                                        <AnimateButton>
+                                                            <Tooltip title="Borrar texto">
+                                                                <Fab
+                                                                    color="primary"
+                                                                    size="small"
+                                                                    onClick={() => setNoteConcepto('')}
+                                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                                >
+                                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                                                </Fab>
+                                                            </Tooltip>
+                                                        </AnimateButton>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <Grid justifyContent="center" alignItems="center" container>
+                                                        <AnimateButton>
+                                                            <Tooltip title="Audio">
+                                                                <Fab
+                                                                    color="primary"
+                                                                    size="small"
+                                                                    onClick={() => setIsListeningConcepto(prevState2 => !prevState2)}
+                                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                                >
+                                                                    <SettingsVoiceIcon fontSize="small" />
+                                                                </Fab>
+                                                            </Tooltip>
+                                                        </AnimateButton>
+                                                    </Grid>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
                                     </Grid>
+
+                                    <Grid container spacing={2} sx={{ pb: 2 }}>
+                                        <Grid item xs={12}>
+                                            <InputArea
+                                                rows={4}
+                                                label="Pautas a Seguir"
+                                                placeholder="Esperando dictado..."
+                                                name="inputArea"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                onChange={(e) => setNotePautasSeguir(e?.target.value)}
+                                                value={notePautasSeguir}
+                                            />
+                                        </Grid>
+                                        {/* Iconos de opciones */}
+                                        <Grid item xs={12} sx={{ pt: 2 }}>
+                                            <Grid justifyContent="left" alignItems="center" container xs={12}>
+                                                <Grid item xs={2}>
+                                                    <Grid justifyContent="center" alignItems="center" container>
+                                                        <AnimateButton>
+                                                            <Tooltip title="Plantilla de texto">
+                                                                <Fab
+                                                                    color="primary"
+                                                                    size="small"
+                                                                    onClick={() => console.log("Funcionan")}
+                                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                                >
+                                                                    <ListAltSharpIcon fontSize="small" />
+                                                                </Fab>
+                                                            </Tooltip>
+                                                        </AnimateButton>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <Grid justifyContent="center" alignItems="center" container>
+                                                        <AnimateButton>
+                                                            <Tooltip title="Borrar texto">
+                                                                <Fab
+                                                                    color="primary"
+                                                                    size="small"
+                                                                    onClick={() => setNotePautasSeguir('')}
+                                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                                >
+                                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                                                </Fab>
+                                                            </Tooltip>
+                                                        </AnimateButton>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <Grid justifyContent="center" alignItems="center" container>
+                                                        <AnimateButton>
+                                                            <Tooltip title="Audio">
+                                                                <Fab
+                                                                    color="primary"
+                                                                    size="small"
+                                                                    onClick={() => setIsListeningPautasSeguir(prevState3 => !prevState3)}
+                                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                                >
+                                                                    <SettingsVoiceIcon fontSize="small" />
+                                                                </Fab>
+                                                            </Tooltip>
+                                                        </AnimateButton>
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid xs={12} container spacing={2}>
+                                        <Grid item xs={4}>
+                                            <FormProvider {...methods}>
+                                                <InputSelect
+                                                    name="idEstadoAsesoria"
+                                                    label="Estado"
+                                                    defaultValue=""
+                                                    options={estadoAsesoria}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+                                    </Grid>
+                                </SubCard>
+                            </Grid>
+                            <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={6}>
+                                        <AnimateButton>
+                                            <Button variant="contained" type="submit" fullWidth>
+                                                {TitleButton.Guardar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/psychologicalcounseling/list")}>
+                                                {TitleButton.Cancelar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-
-                            <Grid xs={12} container spacing={2}>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idEstadoCaso"
-                                            label="Estado"
-                                            defaultValue=""
-                                            options={catalog}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-                    <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={6}>
-                                <AnimateButton>
-                                    <Button variant="contained" type="submit" fullWidth>
-                                        {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/psychologicalcounseling/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
+                        </>
+                    ) : (<>
+                        <Grid sx={{ pt: 3 }} item xs={12}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/psychologicalcounseling/list")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </AnimateButton>
                         </Grid>
-                    </Grid>
+                    </>)}
                 </form>
             </Grid>
         </MainCard>

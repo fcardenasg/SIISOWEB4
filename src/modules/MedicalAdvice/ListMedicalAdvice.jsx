@@ -449,7 +449,7 @@ const ListMedicalAdvice = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/medicaladvice/report/')}>
+                        <Tooltip title="Impresión" onClick={() => navigate('/medicaladvice/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>

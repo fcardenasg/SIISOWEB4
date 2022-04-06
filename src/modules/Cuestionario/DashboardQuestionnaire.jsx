@@ -39,53 +39,6 @@ import InputCheck from 'components/input/InputCheck';
 import InputOnChange from 'components/input/InputOnChange';
 import InputDatePick from 'components/input/InputDatePick';
 
-// ==============================|| SOCIAL PROFILE - POST ||============================== //
-
-/* VALIDACIÓN CON YUP */
-/* const validationSchema = yup.object().shape({
-    nombre: yup.string().required(`${ValidationMessage.Requerido}`),
-    telefono: yup.string().required(`${ValidationMessage.Requerido}`),
-    email: yup.string().required(`${ValidationMessage.Requerido}`),
-    empresa: yup.string().required(`${ValidationMessage.Requerido}`),
-}); */
-
-const defaultValues = {
-    fiebre: false,
-    congestionNasal: false,
-    dolorGarganta: false,
-    dificultadRespiratoria: false,
-    malestarGeneral: false,
-    escalofrios: false,
-    vomito: false,
-    tos: false,
-    otrosSintomas: false,
-    contactoEstrecho: false,
-    contactoSinTapabocas: false,
-    contactoTiempo: false,
-    contactoMano: false,
-    consultaEps: false,
-    cumplirTiempoAislamiento: false,
-    vacunado: false,
-    autorizarTurno: false,
-    ordenAislamiento: false,
-    censoViveServicioSalud: false,
-    censoViveAdultoM: false,
-    contactoPocaDistancia: false,
-    censoProfesion: 73,
-    censoContactoCon: 73,
-    censoObservacion: "Sin Registro",
-
-    laboratorioPrimera: 73,
-    dosisPrimera: 73,
-    fechaPrimera: FormatDate(new Date()),
-    laboratorioSegunda: 73,
-    dosisSegunda: 73,
-    fechaSegunda: FormatDate(new Date()),
-    laboratorioTercera: 73,
-    dosisTercera: 73,
-    fechaTercera: FormatDate(new Date()),
-};
-
 const DashboardQuestionnaire = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
@@ -212,7 +165,7 @@ const DashboardQuestionnaire = () => {
         setNombre('');
         setTelefono('');
         setEmail('');
-        setDocument(null);
+        setDocument('');
         setEmpresa(73);
         setBtnReport(false);
         setNoSymptoms(false);
@@ -270,10 +223,8 @@ const DashboardQuestionnaire = () => {
         }
     }
 
-    const methods = useForm(
-        { defaultValues }
-        /* resolver: yupResolver(validationSchema), */
-    );
+    const methods = useForm();
+    /* resolver: yupResolver(validationSchema), */
 
     const { handleSubmit, errors, reset } = methods;
 
@@ -442,6 +393,7 @@ const DashboardQuestionnaire = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                                 required={true}
                                 helperText="Por favor, dar Enter"
+                                autoFocus
                             />
                         </Grid>
 

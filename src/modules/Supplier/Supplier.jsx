@@ -19,14 +19,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertSupplier } from 'api/clients/SupplierClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { GetAllCatalog } from 'api/clients/CatalogClient';
-import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import InputMultiSelectCheck from 'components/input/InputMultiSelectCheck';
+import InputMultiSelects from 'components/input/InputMultiSelects';
 import { PostSupplier } from 'formatdata/SupplierForm';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
@@ -39,7 +37,6 @@ const validationSchema = yup.object().shape({
     emaiProv: yup.string().required(`${ValidationMessage.Requerido}`),
     contaProv: yup.string().required(`${ValidationMessage.Requerido}`),
     ciudProv: yup.string().required(`${ValidationMessage.Requerido}`),
-    /* tipoProv: yup.string().required(`${ValidationMessage.Requerido}`), */
     direProv: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
@@ -50,8 +47,10 @@ const Supplier = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     /* NUESTROS USESTATE */
-    const [catalog, setCatalog] = useState([]);
+    const [lsSupplier, setSupplier] = useState([]);
     const [lsPais, setPais] = useState([]);
+    const [supplierArray, setSupplierArray] = useState([]);
+    console.log("supplierArray = ", supplierArray);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema)
@@ -62,14 +61,13 @@ const Supplier = () => {
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
-            const lsServer = await GetAllCatalog(0, 0);
-            var result = lsServer.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
+            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Proveedor);
+            var resultSupplier = lsServerSupplier.data.entities.map((item) => ({
+                nombre: item.nombre
             }));
-            setCatalog(result);
+            setSupplier(resultSupplier);
 
-            const lsServerPais = await GetAllByTipoCatalogo(0, 0, 1153);
+            const lsServerPais = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Pais);
             var resultPais = lsServerPais.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -85,40 +83,39 @@ const Supplier = () => {
         GetAll();
     }, [])
 
-    const [personName, setPersonName] = useState([]);
-    console.log("personName = ", personName);
-
-    const handleChange = (event) => {
-        const {
-            target: { value },
-        } = event;
-        setPersonName(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value,
-        );
-    };
-
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
-                datos.contaProv, datos.ciudProv, JSON.stringify(personName), datos.direProv);
-            console.log("DataToInsert = ", DataToInsert);
+                datos.contaProv, datos.ciudProv, JSON.stringify(supplierArray), datos.direProv);
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertSupplier(DataToInsert);
-                if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Guardar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
-                    reset();
+            if (supplierArray.length != 0) {
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await InsertSupplier(DataToInsert);
+                    if (result.status === 200) {
+                        dispatch({
+                            type: SNACKBAR_OPEN,
+                            open: true,
+                            message: `${Message.Guardar}`,
+                            variant: 'alert',
+                            alertSeverity: 'success',
+                            close: false,
+                            transition: 'SlideUp'
+                        })
+                        reset();
+                        setSupplierArray([]);
+                    }
                 }
+            } else {
+                dispatch({
+                    type: SNACKBAR_OPEN,
+                    open: true,
+                    message: 'Por favor, seleccione por lo menos un proveedor',
+                    variant: 'alert',
+                    alertSeverity: 'warning',
+                    close: false,
+                    transition: 'SlideUp'
+                })
             }
         } catch (error) {
             dispatch({
@@ -213,22 +210,13 @@ const Supplier = () => {
                             </FormProvider>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <InputMultiSelectCheck
+                            <InputMultiSelects
                                 fullWidth
-                                onChange={handleChange}
-                                value={personName}
+                                onChange={(event, value) => setSupplierArray(value)}
+                                value={supplierArray}
                                 label="Tipo Proveedor"
-                                options={catalog}
+                                options={lsSupplier}
                             />
-                            {/* <FormProvider {...methods}></FormProvider> */}
-                            {/* <InputSelect
-                                name="tipoProv"
-                                label="Tipo Proveedor"
-                                defaultValue=""
-                                options={catalog}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            /> */}
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <FormProvider {...methods}>

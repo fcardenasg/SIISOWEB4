@@ -167,9 +167,13 @@ const ReportEvolutionnotes = Loadable(lazy(() => import('components/report/Repor
 
 const ListMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/ListMedicalAdvice')));
 const MedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/MedicalAdvice')));
+const UpdateMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/UpdateMedicalAdvice')));
+const ReportMedicalAdvice = Loadable(lazy(() => import('components/report/ReportMedicalAdvice')));
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
+const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/UpdatePsychologicalCounseling')));
+const ReportPsychologicalCounseling = Loadable(lazy(() => import('components/report/ReportPsychologicalCounseling')));
 
 
 const ListInfirmary = Loadable(lazy(() => import('../modules/Infirmary/ListInfirmary')));
@@ -189,6 +193,8 @@ const Occupationalexamination = Loadable(lazy(() => import('modules/Occupational
 
 const ListOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/ListOtherAdvice')));
 const OtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/OtherAdvice')));
+const UpdateOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/UpdateOtherAdvice')));
+const ReportOtherAdvice = Loadable(lazy(() => import('components/report/ReportOtherAdvice')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -265,7 +271,7 @@ const MainRoutes = {
             element: <UpdateEmployee />
         },
         {
-            path: '/employee/report/:id',
+            path: '/employee/report/',
             element: <ReportEmployee />
         },
         /* Render de Proveedores */
@@ -314,12 +320,20 @@ const MainRoutes = {
         },
         /* Render de ASESORÍAS MÉDICA */
         {
+            path: '/medicaladvice/report',
+            element: <ReportMedicalAdvice />
+        },
+        {
             path: '/medicaladvice/list',
             element: <ListMedicalAdvice />
         },
         {
             path: '/medicaladvice/add',
             element: <MedicalAdvice />
+        },
+        {
+            path: '/medicaladvice/update/:id',
+            element: <UpdateMedicalAdvice />
         },
 
         /* Render de NOTAS DE ENFERMERIA */
@@ -374,14 +388,16 @@ const MainRoutes = {
             path: '/otheradvice/add',
             element: <OtherAdvice />
         },
+        {
+            path: '/otheradvice/update/:id',
+            element: <UpdateOtherAdvice />
+        },
+        {
+            path: '/otheradvice/report',
+            element: <ReportOtherAdvice />
+        },
 
 
-
-
-        /* {
-                path: '/medicaladvice/update/:id',
-                element: <UpdateMedicalAdvice />
-            }, */
         /* Render de ASESORÍAS PSICOLÓGICA */
         {
             path: '/psychologicalcounseling/list',
@@ -391,7 +407,14 @@ const MainRoutes = {
             path: '/psychologicalcounseling/add',
             element: <PsychologicalCounseling />
         },
-
+        {
+            path: '/psychologicalcounseling/update/:id',
+            element: <UpdatePsychologicalCounseling />
+        },
+        {
+            path: '/psychologicalcounseling/report',
+            element: <ReportPsychologicalCounseling />
+        },
 
 
 

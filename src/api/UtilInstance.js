@@ -26,8 +26,6 @@ export async function getData(url = '', parametros = {}) {
         const urlGet = new URL(`${Url.Base}${url}`)
         Object.keys(parametros).forEach(key => urlGet.searchParams.append(key, parametros[key]))
 
-        console.log(urlGet);
-
         return await axios.get(urlGet)
             .then(respuesta => {
                 console.log(respuesta);

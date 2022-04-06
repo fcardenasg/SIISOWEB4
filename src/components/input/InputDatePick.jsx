@@ -8,18 +8,10 @@ import { LocalizationProvider, MobileDatePicker } from "@mui/lab";
 
 const InputDatePick = ({ bug, disabled, value, label, onChange, name, required, ...others }) => {
 
-    let isError = false;
-    let errorMessage = '';
-    if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
-        isError = true;
-        errorMessage = bug[name].message;
-    }
-
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <MobileDatePicker
-                    id="date-picker-dialog"
                     label={label}
                     inputFormat="yyyy/MM/dd"
                     value={value}
@@ -29,6 +21,7 @@ const InputDatePick = ({ bug, disabled, value, label, onChange, name, required, 
                     KeyboardButtonProps={{
                         "aria-label": "change date"
                     }}
+                    {...others}
                 />
             </LocalizationProvider>
         </>

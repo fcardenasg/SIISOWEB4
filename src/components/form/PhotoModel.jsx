@@ -6,7 +6,7 @@ import {
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import user from 'assets/img/user.png';
 
-const PhotoModel = ({ OpenModal, EstadoImg, RemoverImg }) => {
+const PhotoModel = ({ OpenModal, disabledCapture, disabledDelete, EstadoImg, RemoverImg }) => {
 
     return (
         <>
@@ -17,7 +17,7 @@ const PhotoModel = ({ OpenModal, EstadoImg, RemoverImg }) => {
                     </Grid>
                     <Grid xs={12} sx={{ pb: 2 }}>
                         <AnimateButton>
-                            <Button variant="outlined" fullWidth onClick={RemoverImg}>
+                            <Button disabled={disabledDelete} variant="outlined" fullWidth onClick={RemoverImg}>
                                 Eliminar
                             </Button>
                         </AnimateButton>
@@ -31,7 +31,7 @@ const PhotoModel = ({ OpenModal, EstadoImg, RemoverImg }) => {
                     </Grid>
                     <Grid xs={12} sx={{ pb: 2 }}>
                         <AnimateButton>
-                            <Button variant="contained" fullWidth onClick={OpenModal}>
+                            <Button disabled={disabledCapture} variant="contained" fullWidth onClick={OpenModal}>
                                 Capturar
                             </Button>
                         </AnimateButton>
@@ -47,6 +47,8 @@ export default PhotoModel;
 
 PhotoModel.propTypes = {
     EstadoImg: PropTypes.any,
+    disabledCapture: PropTypes.bool,
+    disabledDelete: PropTypes.bool,
     OpenModal: PropTypes.func,
     RemoverImg: PropTypes.func
 };

@@ -451,7 +451,7 @@ const ListPsychologicalCounseling = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/psychologicalcounseling/report/')}>
+                        <Tooltip title="Impresión" onClick={() => navigate('/psychologicalcounseling/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>

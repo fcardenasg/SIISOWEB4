@@ -449,7 +449,7 @@ const ListOtherAdvice = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/medicaladvice/report/')}>
+                        <Tooltip title="Impresión" onClick={() => navigate('/otheradvice/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -457,7 +457,7 @@ const ListOtherAdvice = () => {
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/medicaladvice/add")}>
+                            onClick={() => navigate("/otheradvice/add")}>
                             {TitleButton.Agregar}
                         </Button>
 
@@ -626,7 +626,7 @@ const ListOtherAdvice = () => {
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/medicaladvice/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/otheradvice/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
