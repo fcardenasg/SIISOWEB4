@@ -70,7 +70,7 @@ const application = {
                     type: 'item',
                     url: '/medicalformula/list'
                 },
-           
+
                 {
                     id: 'account-profile',
                     title: <FormattedMessage id="account-profile" />,
@@ -428,10 +428,7 @@ const application = {
                 }
             ]
         },
-
-
         {
-
             id: 'advance',
             title: <FormattedMessage id="Parametrización" />,
             type: 'collapse',
@@ -467,16 +464,16 @@ const application = {
                 },
                 {
                     id: 'rating',
-                    title: <FormattedMessage id="rating" />,
+                    title: <FormattedMessage id="CIE11" />,
                     type: 'item',
-                    url: '/advance/rating',
+                    url: '/cie11/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'snackbar',
-                    title: <FormattedMessage id="snackbar" />,
+                    title: <FormattedMessage id="Plantilla" />,
                     type: 'item',
-                    url: '/advance/snackbar',
+                    url: '/template/list',
                     breadcrumbs: false
                 },
                 {

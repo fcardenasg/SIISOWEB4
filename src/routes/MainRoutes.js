@@ -196,6 +196,14 @@ const OtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/OtherAdvice'
 const UpdateOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/UpdateOtherAdvice')));
 const ReportOtherAdvice = Loadable(lazy(() => import('components/report/ReportOtherAdvice')));
 
+const ListCIE11 = Loadable(lazy(() => import('modules/CIE11/ListCIE11')));
+const CIE11 = Loadable(lazy(() => import('modules/CIE11/CIE11')));
+const UpdateCIE11 = Loadable(lazy(() => import('modules/CIE11/UpdateCIE11')));
+
+const ListTemplate = Loadable(lazy(() => import('modules/Template/ListTemplate')));
+const Template = Loadable(lazy(() => import('modules/Template/Template')));
+const UpdateTemplate = Loadable(lazy(() => import('modules/Template/UpdateTemplate')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -415,7 +423,40 @@ const MainRoutes = {
             path: '/psychologicalcounseling/report',
             element: <ReportPsychologicalCounseling />
         },
-
+        /* Render de CIE11 */
+        {
+            path: '/cie11/list',
+            element: <ListCIE11 />
+        },
+        {
+            path: '/cie11/add',
+            element: <CIE11 />
+        },
+        {
+            path: '/cie11/update/:id',
+            element: <UpdateCIE11 />
+        },
+        {
+            path: '/cie11/report',
+            element: <ReportPsychologicalCounseling />
+        },
+        /* Render de TEMPLATE */
+        {
+            path: '/template/list',
+            element: <ListTemplate />
+        },
+        {
+            path: '/template/add',
+            element: <Template />
+        },
+        {
+            path: '/template/update/:id',
+            element: <UpdateTemplate />
+        },
+        {
+            path: '/template/report',
+            element: <ReportPsychologicalCounseling />
+        },
 
 
         {

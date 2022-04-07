@@ -9,13 +9,13 @@ import {
 // Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import * as Yup from "yup";
+import * as yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
 import { SNACKBAR_OPEN } from 'store/actions';
-import { InsertTypeCatalog } from 'api/clients/TypeCatalogClient';
+import { InsertCIE11 } from 'api/clients/CIE11Client';
 import InputText from 'components/input/InputText';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
@@ -24,14 +24,16 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
 /* VALIDACIÓN CON YUP */
-const validationSchema = Yup.object().shape({
-    nombre: Yup.string().required(`${ValidationMessage.Requerido}`),
+const validationSchema = yup.object().shape({
+    id: yup.string().required(`${ValidationMessage.Requerido}`),
+    dx: yup.string().required(`${ValidationMessage.Requerido}`)
 }).required();
 
-const TypeCatalog = () => {
+const CIE11 = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const theme = useTheme();
+    const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const methods = useForm({
@@ -44,7 +46,7 @@ const TypeCatalog = () => {
     const onSubmit = async (datos) => {
         try {
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertTypeCatalog(datos);
+                const result = await InsertCIE11(datos);
                 if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,
@@ -62,7 +64,7 @@ const TypeCatalog = () => {
             dispatch({
                 type: SNACKBAR_OPEN,
                 open: true,
-                message: 'Este tipo de catálogo ya existe',
+                message: 'Este CIE11 ya existe',
                 variant: 'alert',
                 alertSeverity: 'error',
                 close: false,
@@ -71,10 +73,8 @@ const TypeCatalog = () => {
         }
     };
 
-    const navigate = useNavigate();
-
     return (
-        <MainCard title="Registrar Tipo de Catálogo">
+        <MainCard title="Registrar CIE11">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={2}>
                     <Grid item xs={8}>
@@ -83,7 +83,20 @@ const TypeCatalog = () => {
                                 <InputText
                                     defaultValue=""
                                     fullWidth
-                                    name="nombre"
+                                    name="id"
+                                    label="ID"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs zeroMinWidth sx={{ pb: 2 }}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="dx"
                                     label="Nombre"
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
@@ -102,7 +115,7 @@ const TypeCatalog = () => {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/cie11/list")}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -116,4 +129,4 @@ const TypeCatalog = () => {
     );
 };
 
-export default TypeCatalog;
+export default CIE11;

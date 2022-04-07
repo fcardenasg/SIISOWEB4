@@ -25,6 +25,9 @@ export const CodCatalogo = {
     EstadoAsesoria: 3181,
     EstadoCaso: 3182,
     TipoAtencion: 3183,
+    PLAN_TipoAtencion: 3184,
+    PLAN_Atencion: 3185,
+    PLAN_Items: 3186,
 }
 
 export const DefaultData = {

@@ -24,6 +24,12 @@ export const Url = {
     Asesorias: 'api/Asesorias',
     AsesoriasId: 'api/Asesorias/id',
 
+    CIE11: 'api/CIE11',
+    CIE11Id: 'api/CIE11/id',
+
+    Plantilla: 'api/Plantilla',
+    PlantillaId: 'api/Plantilla/id',
+
     Cuestionario: 'api/CuestionarioPrevencion',
     CuestionarioSave: 'api/CuestionarioPrevencion/Save',
     CuestionarioId: 'api/CuestionarioPrevencion/id',

@@ -21,7 +21,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import PhotoModel from 'components/form/PhotoModel';
 import ModalChildren from 'components/form/ModalChildren';
 import WebCamCapture from 'components/form/WebCam';
-import { Url } from 'api/instances/AuthRoute';
 import { PutEmployee } from 'formatdata/EmployeeForm';
 import { SNACKBAR_OPEN } from 'store/actions';
 import UpdateData from 'components/form/UpdateData';
@@ -351,11 +350,14 @@ const UpdateEmployee = () => {
             const TermDate = FormatDate(valueTermDate);
             const FechaModificacion = FormatDate(valueFechaModificacion);
             const FechaCreacion = FormatDate(valueFechaCreacion);
+            const municipioResidencia_DATA = datos.municipioResidencia != '' ? datos.municipioResidencia : municipioResidencia;
+            const municipioNacido_DATA = datos.municipioNacido != '' ? datos.municipioNacido : municipioNacido;
+            const subArea_DATA = datos.subArea != '' ? datos.subArea : eventSubArea;
 
             const DataToUpdate = PutEmployee(id, datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
-                eventArea, eventSubArea, datos.grupo, municipioNacido, dptoNacido, FechaContrato,
+                eventArea, subArea_DATA, datos.grupo, municipioNacido_DATA, dptoNacido, FechaContrato,
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
-                datos.direccionResidencia, municipioResidencia, dptoResidencia, datos.celular, datos.eps,
+                datos.direccionResidencia, municipioResidencia_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
                 datos.bandera, datos.ges, datos.usuarioModifica, FechaModificacion, datos.usuarioCreacion,
