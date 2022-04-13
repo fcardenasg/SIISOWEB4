@@ -204,6 +204,10 @@ const ListTemplate = Loadable(lazy(() => import('modules/Template/ListTemplate')
 const Template = Loadable(lazy(() => import('modules/Template/Template')));
 const UpdateTemplate = Loadable(lazy(() => import('modules/Template/UpdateTemplate')));
 
+const ListOccupationalHealth = Loadable(lazy(() => import('modules/OccupationalHealth/ListOccupationalHealth')));
+const OccupationalHealth = Loadable(lazy(() => import('modules/OccupationalHealth/OccupationalHealth')));
+const UpdateOccupationalHealth = Loadable(lazy(() => import('modules/OccupationalHealth/UpdateOccupationalHealth')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -456,6 +460,19 @@ const MainRoutes = {
         {
             path: '/template/report',
             element: <ReportPsychologicalCounseling />
+        },
+        /* Render de OCCUPATIONAL HEALTH */
+        {
+            path: '/occupational-health/list',
+            element: <ListOccupationalHealth />
+        },
+        {
+            path: '/occupational-health/add',
+            element: <OccupationalHealth />
+        },
+        {
+            path: '/occupational-health/update/:id',
+            element: <UpdateOccupationalHealth />
         },
 
 

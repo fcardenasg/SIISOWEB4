@@ -188,17 +188,18 @@ const application = {
                     breadcrumbs: true
                 },
                 {
-                    id: 'order-list',
-                    title: <FormattedMessage id="order-list" />,
+                    id: 'work-absenteeism',
+                    title: <FormattedMessage id="Ausentismo Laboral" />,
                     type: 'item',
-                    url: '/customer/order-list',
-                    breadcrumbs: false
+                    url: '/work-absenteeism/list',
+                    breadcrumbs: true
                 },
                 {
-                    id: 'order-details',
-                    title: <FormattedMessage id="order-details" />,
+                    id: 'occupational-health',
+                    title: <FormattedMessage id="Salud Ocupacional" />,
                     type: 'item',
-                    url: '/customer/order-details'
+                    url: '/occupational-health/list',
+                    breadcrumbs: true
                 },
                 {
                     id: 'product',

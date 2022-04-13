@@ -43,7 +43,6 @@ import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import ChildrenTemplate from 'components/components/ChildrenTemplate';
 import Supplier from 'modules/Supplier/Supplier';
 
 // Audio
@@ -67,8 +66,7 @@ const MedicalAdvice = () => {
     const [catalog, setCatalog] = useState([]);
     const [company, setCompany] = useState([]);
     const [lsMotivo, setLsMotivo] = useState([]);
-    const [tipoAsesoria, setTipoAsesoria] = useState([]);
-    const [contingencia, setContingencia] = useState([]);
+    const [atencion, setAtencion] = useState([]);
     const [medicalAdvice, setMedicalAdvice] = useState([]);
 
     const [imgSrc, setImgSrc] = useState(null);
@@ -142,14 +140,7 @@ const MedicalAdvice = () => {
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
-
     const { handleSubmit, errors, reset } = methods;
-
-    const CapturePhoto = useCallback(() => {
-        const imageSrc = WebCamRef.current.getScreenshot();
-        setImgSrc(imageSrc);
-    }, [WebCamRef, setImgSrc]);
-
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
@@ -161,21 +152,14 @@ const MedicalAdvice = () => {
             }));
             setCatalog(resultCatalogo);
 
-            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
-            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
+            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SaludOcupacional_Atencion);
+            var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setContingencia(resultContingencia);
+            setAtencion(resultAtencion);
 
-            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAsesoria);
-            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setTipoAsesoria(resultTipoAsesoria);
-
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AsesoriaMotivo);
+            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SaludOcupacional_Motivo);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -765,7 +749,7 @@ const MedicalAdvice = () => {
                     <Grid sx={{ pt: 2 }}>
                         <SubCard darkTitle title={<><Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography></>}>
                             <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pt: 2, pb: 2 }}>
-                                <Grid item xs={2.4}>
+                                <Grid item xs={3}>
                                     <InputDatePick
                                         label="Fecha"
                                         value={fecha}
@@ -773,20 +757,20 @@ const MedicalAdvice = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={2.4}>
+                                <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idContingencia"
-                                            label="Contingencia"
+                                            name="atencion"
+                                            label="Atención"
                                             defaultValue=""
-                                            options={contingencia}
+                                            options={atencion}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2.4}>
+                                <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idMotivo"
@@ -799,20 +783,7 @@ const MedicalAdvice = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idTipoAsesoria"
-                                            label="Tipo de Asesoría"
-                                            defaultValue=""
-                                            options={tipoAsesoria}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={2.4}>
+                                <Grid item xs={3}>
                                     <AnimateButton>
                                         <Button size="large" variant="contained" onClick={handleAtender} fullWidth>
                                             Atender

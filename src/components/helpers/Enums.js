@@ -28,6 +28,8 @@ export const CodCatalogo = {
     PLAN_TipoAtencion: 3184,
     PLAN_Atencion: 3185,
     PLAN_Items: 3186,
+    SaludOcupacional_Atencion: 4175,
+    SaludOcupacional_Motivo: 4176,
 }
 
 export const DefaultData = {

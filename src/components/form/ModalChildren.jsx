@@ -16,6 +16,7 @@ function getModalStyle() {
 
     return {
         top: `${top}%`,
+        left: `${left}%`,
         margin: 'auto'
     };
 }
