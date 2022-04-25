@@ -1,7 +1,15 @@
-export function PostTemplate(id, dx, tipoAtencion, atencion, items, descripcion) {
-    return { id, dx, tipoAtencion, atencion, items, descripcion };
+export function PostTemplate(idSegmentoAgrupado, idSegmentoAfectado, idSubsegmento,
+    idCIE11, usuario, idTipoAtencion, idAtencion, descripcion) {
+    return {
+        idSegmentoAgrupado, idSegmentoAfectado, idSubsegmento,
+        idCIE11, usuario, idTipoAtencion, idAtencion, descripcion
+    };
 }
 
-export function PutTemplate(id, dx, tipoAtencion, atencion, items, descripcion) {
-    return { id, dx, tipoAtencion, atencion, items, descripcion };
+export function PutTemplate(id, idSegmentoAgrupado, idSegmentoAfectado, idSubsegmento,
+    idCIE11, usuario, idTipoAtencion, idAtencion, descripcion) {
+    return {
+        id, idSegmentoAgrupado, idSegmentoAfectado, idSubsegmento,
+        idCIE11, usuario, idTipoAtencion, idAtencion, descripcion
+    };
 }

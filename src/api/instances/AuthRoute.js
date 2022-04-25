@@ -30,6 +30,14 @@ export const Url = {
     Plantilla: 'api/Plantilla',
     PlantillaId: 'api/Plantilla/id',
 
+    SegmentoAgrupado: 'api/SegmentoAgrupado',
+    SegmentoAfectado: 'api/SegmentoAfectado/GetAllBySegAgrupado',
+    Subsegmento: 'api/Subsegmento/GetAllBySegAfectado',
+    MetodoCie11: 'api/CIE11/GetAllBySubsegmento',
+
+    SegAfectado: 'api/SegmentoAfectado',
+    Subsegment: 'api/Subsegmento',
+
     Cuestionario: 'api/CuestionarioPrevencion',
     CuestionarioSave: 'api/CuestionarioPrevencion/Save',
     CuestionarioId: 'api/CuestionarioPrevencion/id',

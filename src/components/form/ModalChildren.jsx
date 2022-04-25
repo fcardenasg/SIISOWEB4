@@ -38,7 +38,6 @@ const ModalChildren = ({ open, onClose, title, children }) => {
         >
             <Fade in={open}>
                 <MainCard
-                    style={modalStyle}
                     sx={{
                         position: 'absolute',
                         top: '50%',

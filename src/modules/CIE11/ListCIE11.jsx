@@ -81,7 +81,13 @@ const headCells = [
     {
         id: 'dx',
         numeric: false,
-        label: 'Nombre',
+        label: 'Descripción',
+        align: 'left'
+    },
+    {
+        id: 'nameSubsegmento',
+        numeric: false,
+        label: 'Subsegmento',
         align: 'left'
     }
 ];
@@ -246,7 +252,7 @@ const ListCIE11 = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'dx'];
+                const properties = ['id', 'dx', 'nameSubsegmento'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -374,6 +380,9 @@ const ListCIE11 = () => {
                             <ExcelSheet data={cie11} name="CIE11">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Nombre" value="dx" />
+                                <ExcelColumn label="Segmento Agrupado" value="idSegmentoAgrupado" />
+                                <ExcelColumn label="Segmento Afectado" value="idSegmentoAfectado" />
+                                <ExcelColumn label="Subsegmento" value="idSubsegmento" />
                             </ExcelSheet>
                         </ExcelFile>
 
@@ -463,6 +472,21 @@ const ListCIE11 = () => {
                                             >
                                                 {' '}
                                                 {row.dx}{' '}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {' '}
+                                                {row.nameSubsegmento}{' '}
                                             </Typography>
                                         </TableCell>
                                         <TableCell align="center" sx={{ pr: 3 }}>

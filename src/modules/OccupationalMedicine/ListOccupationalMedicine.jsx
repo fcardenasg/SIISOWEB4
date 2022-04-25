@@ -79,33 +79,51 @@ function stableSort(array, comparator) {
 /* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'documento',
+        id: 'id',
         numeric: false,
-        label: 'Documento',
+        label: 'ID',
         align: 'center'
     },
     {
-        id: 'Fecha',
+        id: 'cedula',
         numeric: false,
-        label: 'fecha',
+        label: 'Cédula',
         align: 'left'
     },
     {
-        id: 'atencion',
+        id: 'nombre',
         numeric: false,
-        label: 'Atención',
+        label: 'Nombre',
         align: 'left'
     },
     {
-        id: 'motivo',
+        id: 'situacionEmpleado',
         numeric: false,
-        label: 'Motivo',
+        label: 'Situacion Empleado',
         align: 'left'
     },
     {
-        id: 'tipoProv',
+        id: 'situacionContractual',
         numeric: false,
-        label: 'Tipo Proveedor',
+        label: 'Situacion Contractual',
+        align: 'left'
+    },
+    {
+        id: 'dx',
+        numeric: false,
+        label: 'DX',
+        align: 'left'
+    },
+    {
+        id: 'fecha',
+        numeric: false,
+        label: 'Fecha',
+        align: 'left'
+    },
+    {
+        id: 'usuario',
+        numeric: false,
+        label: 'Usuario',
         align: 'left'
     }
 ];
@@ -227,7 +245,7 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
-const ListSupplier = () => {
+const ListOccupationalMedicine = () => {
     const dispatch = useDispatch();
     const [supplier, setSupplier] = useState([]);
 
@@ -266,7 +284,7 @@ const ListSupplier = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codiProv', 'nombProv', 'teleProv', 'emaiProv', 'tipoProv'];
+                const properties = ['id', 'cedula', 'nombre', 'situacionEmpleado', 'situacionContractual', 'dx', 'fecha', 'usuario'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -297,7 +315,7 @@ const ListSupplier = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = supplier.map((n) => n.codiProv);
+            const newSelectedId = supplier.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -363,8 +381,7 @@ const ListSupplier = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - supplier.length) : 0;
 
     return (
-        <MainCard title="Lista de Proveedores" content={false}>
-
+        <MainCard title="Lista de Medicina Laboral" content={false}>
             {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -392,7 +409,7 @@ const ListSupplier = () => {
                             </Tooltip>
                         } filename="Empresas">
                             <ExcelSheet data={supplier} name="Empresas">
-                                <ExcelColumn label="Código" value="codiProv" />
+                                <ExcelColumn label="Código" value="id" />
                                 <ExcelColumn label="Nombre" value="nombProv" />
                                 <ExcelColumn label="Teléfono" value="teleProv" />
                                 <ExcelColumn label="Correo Electronico" value="emaiProv" />
@@ -400,7 +417,7 @@ const ListSupplier = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/occupational-health/report')}>
+                        <Tooltip title="Impresión" onClick={() => navigate('/occupationalmedicine/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -408,7 +425,7 @@ const ListSupplier = () => {
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/occupational-health/add")}>
+                            onClick={() => navigate("/occupationalmedicine/add")}>
                             {TitleButton.Agregar}
                         </Button>
 
@@ -437,7 +454,7 @@ const ListSupplier = () => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.codiProv);
+                                const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -452,7 +469,7 @@ const ListSupplier = () => {
                                         {/* Desde aquí colocamos la llegada de los datos
                                         en cada columna, recordar solo cambiar el nombre y ya */}
 
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.codiProv)}>
+                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -466,7 +483,7 @@ const ListSupplier = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.codiProv)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
@@ -475,7 +492,7 @@ const ListSupplier = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                #{row.codiProv}{' '}
+                                                #{row.id}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -483,7 +500,7 @@ const ListSupplier = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.codiProv)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -491,7 +508,7 @@ const ListSupplier = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombProv}{' '}
+                                                {row.cedula}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -499,7 +516,7 @@ const ListSupplier = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.codiProv)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -507,7 +524,7 @@ const ListSupplier = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.teleProv}{' '}
+                                                {row.nombre}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -515,7 +532,7 @@ const ListSupplier = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.codiProv)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -523,7 +540,7 @@ const ListSupplier = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.emaiProv}{' '}
+                                                {row.situacionEmpleado}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -531,7 +548,7 @@ const ListSupplier = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.codiProv)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -539,7 +556,55 @@ const ListSupplier = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.tipoProv}{' '}
+                                                {row.situacionContractual}{' '}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {' '}
+                                                {row.dx}{' '}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {' '}
+                                                {row.fecha}{' '}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {' '}
+                                                {row.usuario}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -552,7 +617,7 @@ const ListSupplier = () => {
                                                 size="small"
                                                 color="info"
                                                 sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/occupational-health/update/${row.codiProv}`)}>
+                                                onClick={() => navigate(`/occupationalmedicine/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -588,4 +653,4 @@ const ListSupplier = () => {
     );
 };
 
-export default ListSupplier;
+export default ListOccupationalMedicine;

@@ -208,6 +208,14 @@ const ListOccupationalHealth = Loadable(lazy(() => import('modules/OccupationalH
 const OccupationalHealth = Loadable(lazy(() => import('modules/OccupationalHealth/OccupationalHealth')));
 const UpdateOccupationalHealth = Loadable(lazy(() => import('modules/OccupationalHealth/UpdateOccupationalHealth')));
 
+const ListOccupationalMedicine = Loadable(lazy(() => import('modules/OccupationalMedicine/ListOccupationalMedicine')));
+const OccupationalMedicine = Loadable(lazy(() => import('modules/OccupationalMedicine/OccupationalMedicine')));
+const UpdateOccupationalMedicine = Loadable(lazy(() => import('modules/OccupationalMedicine/UpdateOccupationalMedicine')));
+
+const ListWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/ListWorkAbsenteeism')));
+const WorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/WorkAbsenteeism')));
+const UpdateWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/UpdateWorkAbsenteeism')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -473,6 +481,32 @@ const MainRoutes = {
         {
             path: '/occupational-health/update/:id',
             element: <UpdateOccupationalHealth />
+        },
+        /* Render de Occupational Medicine */
+        {
+            path: '/occupationalmedicine/list',
+            element: <ListOccupationalMedicine />
+        },
+        {
+            path: '/occupationalmedicine/add',
+            element: <OccupationalMedicine />
+        },
+        {
+            path: '/occupationalmedicine/update/:id',
+            element: <UpdateOccupationalMedicine />
+        },
+        /* Render de Work Absenteeism */
+        {
+            path: '/work-absenteeism/list',
+            element: <ListWorkAbsenteeism />
+        },
+        {
+            path: '/work-absenteeism/add',
+            element: <WorkAbsenteeism />
+        },
+        {
+            path: '/work-absenteeism/update/:id',
+            element: <UpdateWorkAbsenteeism />
         },
 
 

@@ -5,7 +5,7 @@ import {
     Grid
 } from '@mui/material';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import user from 'assets/img/user.png';
+import Cargando from 'components/Cargando';
 
 const videoConstraints = {
     width: 360,
@@ -16,7 +16,6 @@ const videoConstraints = {
 const WebCamCapture = ({ CaptureImg, RemoverImg, ImgSrc, WebCamRef }) => {
 
     return (
-
         <Grid item xs={12}>
             {ImgSrc === null ? (
                 <>

@@ -1,5 +1,5 @@
 // Import de Material-ui
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -7,8 +7,7 @@ import {
     useMediaQuery,
     Typography,
     Divider,
-    Tooltip,
-    Fab
+    Box, Tab, Tabs
 } from '@mui/material';
 
 // Terceros
@@ -21,32 +20,28 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // Import del Proyecto
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
-import { FormatDate } from 'components/helpers/Format'
-import InputArea from 'components/input/InputArea';
+import { FormatDate } from 'components/helpers/Format';
 import Accordion from 'components/accordion/Accordion';
 import ModalChildren from 'components/form/ModalChildren';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertAdvice } from 'api/clients/AdviceClient';
-import { GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
+import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
+import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo, DefaultData } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import InputOnChange from 'components/input/InputOnChange';
 
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
-import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import ChildrenTemplate from 'components/components/ChildrenTemplate';
-import ModalChildren2 from 'components/form/Dialog';
-import DialogoExample from 'components/form/DialogoExample';
-import ListCatalog from './ListCatalog';
+import RadioButtonCheckedTwoToneIcon from '@mui/icons-material/RadioButtonCheckedTwoTone';
+import UserCountCard from 'ui-component/cards/UserCountCard';
+import AccountCircleTwoTone from '@mui/icons-material/AccountCircleTwoTone';
 
 // Audio
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -67,9 +62,17 @@ const MedicalAdvice = () => {
     const [document, setDocument] = useState('');
     const [catalog, setCatalog] = useState([]);
     const [company, setCompany] = useState([]);
+
+    const [lsDeparta, setLsDeparta] = useState([]);
+    const [departa, setDeparta] = useState('');
+    const [lsMunicipio, setMunicipioE] = useState([]);
+
+    const [departaMedico, setDepartaMedico] = useState('');
+    const [lsMunicipioMedico, setMunicipioMedico] = useState([]);
+
+    const [lsCodigoFilterDpto, setCodigoFilterDpto] = useState([]);
     const [lsMotivo, setLsMotivo] = useState([]);
-    const [tipoAsesoria, setTipoAsesoria] = useState([]);
-    const [contingencia, setContingencia] = useState([]);
+    const [atencion, setAtencion] = useState([]);
     const [medicalAdvice, setMedicalAdvice] = useState([]);
 
     const [imgSrc, setImgSrc] = useState(null);
@@ -143,7 +146,6 @@ const MedicalAdvice = () => {
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
-
     const { handleSubmit, errors, reset } = methods;
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
@@ -156,21 +158,22 @@ const MedicalAdvice = () => {
             }));
             setCatalog(resultCatalogo);
 
-            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
-            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
+            const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
+            var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setContingencia(resultContingencia);
+            setLsDeparta(resultDepartamento);
+            setCodigoFilterDpto(lsServerDepartamento.data.entities);
 
-            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAsesoria);
-            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
+            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SaludOcupacional_Atencion);
+            var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setTipoAsesoria(resultTipoAsesoria);
+            setAtencion(resultAtencion);
 
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AsesoriaMotivo);
+            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SaludOcupacional_Motivo);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -265,6 +268,42 @@ const MedicalAdvice = () => {
             })
         }
     }
+
+    /* METODO PARA FILTRAR DEPARTAMENTO Datos de Incapacidad o Licencia */
+    const handleChangeDepartamentoIncapa = async (event) => {
+        try {
+            setDeparta(event.target.value);
+
+            var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+            var lsServerDepartamento = await GetAllBySubTipoCatalogo(0, 0, lsResulCode);
+
+            var resultMunicipio = lsServerDepartamento.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setMunicipioE(resultMunicipio);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    /* METODO PARA FILTRAR DEPARTAMENTO Datos del Medico o IPS Prestadora del Servicio */
+    const handleChangeDepartamentoMedico = async (event) => {
+        try {
+            setDepartaMedico(event.target.value);
+
+            var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+            var lsServerDepartamento = await GetAllBySubTipoCatalogo(0, 0, lsResulCode);
+
+            var resultMunicipio = lsServerDepartamento.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setMunicipioMedico(resultMunicipio);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
@@ -373,6 +412,8 @@ const MedicalAdvice = () => {
             })
         }
     };
+
+    const dias = 200;
 
     return (
         <MainCard title="">
@@ -516,9 +557,9 @@ const MedicalAdvice = () => {
                         </Grid>
                     </SubCard>
 
-                    <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+                    <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" sx={{ mr: 0.5 }} />
                         <Typography variant="subtitle1" color="inherit">Ver mas...</Typography></>}>
-                        <Grid item xs={12} sx={{ pt: 1, pb: 1 }}>
+                        <Grid item xs={12} sx={{ pt: 2, pb: 2 }}>
                             <Grid container spacing={2}>
                                 <Grid item xs={3}>
                                     <AnimateButton>
@@ -753,187 +794,436 @@ const MedicalAdvice = () => {
                             </Grid>
                         </Grid>
                     </Accordion>
-
                     <Divider />
-                    <Grid sx={{ pt: 2 }}>
-                        <SubCard darkTitle title={<><Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography></>}>
-                            <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pt: 2, pb: 2 }}>
-                                <Grid item xs={2.4}>
-                                    <InputDatePick
-                                        label="Fecha"
-                                        value={fecha}
-                                        onChange={(e) => setFecha(e)}
-                                    />
-                                </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idContingencia"
-                                            label="Contingencia"
-                                            defaultValue=""
-                                            options={contingencia}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
+                    <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DE LA EMPRESA QUE EXPIDE</Typography>
 
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idMotivo"
-                                            label="Motivo"
-                                            defaultValue=""
-                                            options={lsMotivo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idTipoAsesoria"
-                                            label="Tipo de Asesoría"
-                                            defaultValue=""
-                                            options={tipoAsesoria}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={2.4}>
-                                    <AnimateButton>
-                                        <Button size="large" variant="contained" onClick={handleAtender} fullWidth>
-                                            Atender
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
+                    <Grid container spacing={2} sx={{ pb: 2 }}>
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="incapacidad"
+                                    label="Incapacidad"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="nroIncapacidad"
+                                    label="Nro. de Incapacidad"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="fechaExpedición"
+                                    label="Fecha de Expedición"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <SelectOnChange
+                                name="departamento"
+                                label="Departamento"
+                                options={lsDeparta}
+                                size={matchesXS ? 'small' : 'medium'}
+                                value={departa}
+                                onChange={handleChangeDepartamentoIncapa}
+                            />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="ciudadExpedicion"
+                                    label="Ciudad de Expedición"
+                                    defaultValue=""
+                                    options={lsMunicipio}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
                     </Grid>
 
-                    {!clickAttend ? (<>
-                        <Grid sx={{ pt: 2 }}>
-                            <SubCard darkTitle title={<><Typography variant="h4">NOTA</Typography></>}>
-                                <Grid item xs={12}>
-                                    <InputArea
-                                        rows={4}
-                                        label="Observaciones"
-                                        placeholder="Esperando dictado..."
-                                        name="inputArea"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        value={note}
-                                        onChange={(e) => setNote(e?.target.value)}
-                                    />
-                                </Grid>
-                                {/* Iconos de opciones */}
-                                <Grid item xs={12} sx={{ pt: 2 }}>
-                                    <Grid justifyContent="left" alignItems="center" container xs={12}>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Plantilla de texto">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={() => setOpen(true)}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <ListAltSharpIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Borrar texto">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={() => setNote('')}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Grid justifyContent="center" alignItems="center" container>
-                                                <AnimateButton>
-                                                    <Tooltip title="Audio">
-                                                        <Fab
-                                                            color="primary"
-                                                            size="small"
-                                                            onClick={() => setIsListening(prevState => !prevState)}
-                                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                        >
-                                                            <SettingsVoiceIcon fontSize="small" />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </AnimateButton>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </SubCard>
-                        </Grid>
+                    <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DE INCAPACIDAD O LICENCIA</Typography>
 
-                        <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={6}>
-                                    <AnimateButton>
-                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                            {TitleButton.Guardar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
+                    <Grid container spacing={2} sx={{ pb: 2 }}>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="tipoIncapacidad"
+                                    label="Tipo de Incapacidad"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="contingencia"
+                                    label="Contingencia"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="fechaInicio"
+                                    label="Fecha de Inicio"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="fechaFin"
+                                    label="Fecha Fin"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="diasIncapacidad"
+                                    label="Días de Incapacidad"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="codigoDx"
+                                    label="Código Dx"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={9.6}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="diagnostico"
+                                    label="Diagnóstico"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="estadoCaso"
+                                    label="Estado de Caso"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="segmentoAgrupado"
+                                    label="Segmento Agrupado"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="segmento"
+                                    label="Segmento"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="tipoSoporte"
+                                    label="Tipo de Soporte"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="Categoria"
+                                    label="categoria"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                    </Grid>
+
+                    <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DEL MÉDICO O IPS PRESTADORA DEL SERVICIO</Typography>
+
+                    <Grid container spacing={2} sx={{ pb: 2 }}>
+                        <Grid item xs={4.8}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="proveedor"
+                                    label="Proveedor"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <SelectOnChange
+                                name="departamento"
+                                label="Departamento"
+                                options={lsDeparta}
+                                size={matchesXS ? 'small' : 'medium'}
+                                value={departaMedico}
+                                onChange={handleChangeDepartamentoMedico}
+                            />
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="ciudad"
+                                    label="Ciudad"
+                                    defaultValue=""
+                                    options={lsMunicipioMedico}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="nombreProfesional"
+                                    label="Nombre de Profesional"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="profesionEspecialidad"
+                                    label="Profesión/Especialidad"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="regProfesional"
+                                    label="Reg. Profesional"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="tipoAtencion"
+                                    label="Tipo de Atención"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="cumplimientoRequisito"
+                                    label="Cumplimiento Requisito"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={2.4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="redExpide"
+                                    label="Red que expide"
+                                    defaultValue=""
+                                    options={catalog}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="observacionCumplimiento"
+                                    label="Observacion Cumplimiento"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                    multiline
+                                    rows={4}
+                                />
+                            </FormProvider>
+                        </Grid>
+                    </Grid>
+
+                    <Typography sx={{ pb: 2, pt: 3 }} variant="h4">OBSERVACIÓN/DESCRIPCIÓN DE LA NOVEDAD</Typography>
+
+                    <Grid container spacing={2} sx={{ pb: 2 }}>
+                        <Grid item xs={12}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="observacionDescripcion"
+                                    label="Observación/Descripción"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                    multiline
+                                    rows={4}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="usuarioModifica"
+                                    label="Usuario Modifica"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="fechaModifica"
+                                    label="Fecha Modifica"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                    </Grid>
+
+                    <Typography sx={{ pb: 2, pt: 3 }} variant="h4">MONITOR DE EVENTOS</Typography>
+
+                    <Grid container spacing={2} sx={{ pb: 2, pl: 4 }}>
+                        <Grid item xs={2}>
+                            <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.warning.main }} />
+                            <Typography variant="h6">De 75 a 90 Días</Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.warning.dark }} />
+                            <Typography variant="h6">De 90 a 180 Días</Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <RadioButtonCheckedTwoToneIcon color='error' />
+                            <Typography variant="h6">{'> 180 Días'}</Typography>
+                        </Grid>
+                    </Grid>
+
+                    <Grid container spacing={2} sx={{ pb: 2, pt: 3, pl: 4 }}>
+                        <Grid item xs={6}>
+                            <UserCountCard
+                                primary="TOTAL DÍAS ACUMULADO EN INCAPACIDAD"
+                                secondary="0"
+                                iconPrimary={AccountCircleTwoTone}
+                                color={dias <= 90 ? theme.palette.warning.main : dias <= 180 ? theme.palette.warning.dark : theme.palette.error.main}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
+                        <Grid container spacing={1}>
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                        {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
                             </Grid>
                         </Grid>
-                    </>) : (<>
-                        <Grid item sx={{ pt: 3 }} xs={12}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                    </>)}
-                    <ModalChildren2
-                        open={open}
-                        maxWidth="xl"
-                        fullWidth
-                        onClose={() => setOpen(false)}
-                    >
-                        <ListCatalog />
-                    </ModalChildren2>
-
-                    <DialogoExample>
-                        <ListCatalog />
-                    </DialogoExample>
+                    </Grid>
                 </form>
-                {/* <ModalChildren
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    title="Información"
-                >
-                    <ListSupplier />
-                </ModalChildren> */}
-            </Grid >
+            </Grid>
         </MainCard >
     );
 };

@@ -203,10 +203,10 @@ const application = {
                 },
                 {
                     id: 'product',
-                    title: <FormattedMessage id="product" />,
+                    title: <FormattedMessage id="Medicina Laboral" />,
                     type: 'item',
-                    url: '/customer/product',
-                    breadcrumbs: false
+                    url: '/occupationalmedicine/list',
+                    breadcrumbs: true
                 },
                 {
                     id: 'product-review',

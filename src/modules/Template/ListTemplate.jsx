@@ -83,33 +83,21 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'dx',
+        id: 'nameCIE11',
         numeric: false,
-        label: 'Nombre',
+        label: 'CIE11',
         align: 'left'
     },
     {
-        id: 'tipoAtencion',
+        id: 'nameTipoAtencion',
         numeric: false,
         label: 'Tipo de Atención',
         align: 'left'
     },
     {
-        id: 'atencion',
+        id: 'idAtencion',
         numeric: false,
         label: 'Atención',
-        align: 'left'
-    },
-    {
-        id: 'items',
-        numeric: false,
-        label: 'Items',
-        align: 'left'
-    },
-    {
-        id: 'descripcion',
-        numeric: false,
-        label: 'Descripción',
         align: 'left'
     }
 ];
@@ -231,7 +219,7 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
-const ListCatalog = () => {
+const ListTemplate = () => {
     const dispatch = useDispatch();
     const [lsTemplate, setLsTemplate] = useState([]);
 
@@ -270,7 +258,7 @@ const ListCatalog = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'dx', 'tipoAtencion', 'atencion', 'items', 'descripcion'];
+                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'idAtencion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -398,7 +386,7 @@ const ListCatalog = () => {
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Nombre" value="dx" />
                                 <ExcelColumn label="Tipo de Atención" value="tipoAtencion" />
-                                <ExcelColumn label="Atención" value="atencion" />
+                                <ExcelColumn label="Atención" value="idAtencion" />
                                 <ExcelColumn label="Items" value="items" />
                                 <ExcelColumn label="Descripción" value="descripcion" />
                             </ExcelSheet>
@@ -527,39 +515,7 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.atencion}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.items}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.descripcion}{' '}
+                                                {row.idAtencion}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -607,4 +563,4 @@ const ListCatalog = () => {
     );
 };
 
-export default ListCatalog;
+export default ListTemplate;
