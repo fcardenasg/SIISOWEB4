@@ -50,7 +50,6 @@ const Supplier = () => {
     const [lsSupplier, setSupplier] = useState([]);
     const [lsPais, setPais] = useState([]);
     const [supplierArray, setSupplierArray] = useState([]);
-    console.log("supplierArray = ", supplierArray);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema)

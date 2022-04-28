@@ -524,15 +524,11 @@ const ListCatalog = () => {
                                             <IconButton color="primary" size="large">
                                                 <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                             </IconButton>
-                                            <Fab
-                                                size="small"
-                                                color="info"
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/catalog/update/${row.idCatalogo}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/catalog/update/${row.idCatalogo}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
-                                            </Fab>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );

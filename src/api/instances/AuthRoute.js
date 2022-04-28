@@ -30,6 +30,10 @@ export const Url = {
     Plantilla: 'api/Plantilla',
     PlantillaId: 'api/Plantilla/id',
 
+    Items: 'api/Item',
+    ItemsId: 'api/Item/id',
+    ItemsGetAllByAtencion: 'api/Item/GetAllByAtencion',
+
     SegmentoAgrupado: 'api/SegmentoAgrupado',
     SegmentoAfectado: 'api/SegmentoAfectado/GetAllBySegAgrupado',
     Subsegmento: 'api/Subsegmento/GetAllBySegAfectado',
@@ -37,6 +41,13 @@ export const Url = {
 
     SegAfectado: 'api/SegmentoAfectado',
     Subsegment: 'api/Subsegmento',
+
+    HistoriaClinica: 'api/HistoriaClinica',
+    HistoriaClinicaId: 'api/HistoriaClinica/id',
+
+    TipoAtencion: 'api/TipoAtencion',
+    AtencionGetAllByTipoAtencion: 'api/Atencion/GetAllByTipoAtencion',
+    Atencion: 'api/Atencion',
 
     Cuestionario: 'api/CuestionarioPrevencion',
     CuestionarioSave: 'api/CuestionarioPrevencion/Save',

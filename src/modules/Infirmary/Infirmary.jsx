@@ -32,7 +32,7 @@ import { GetAllCompany } from 'api/clients/CompanyClient';
 import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import InputDate from 'components/input/InputDate';
+import InputDatePick from 'components/input/InputDatePick';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -163,7 +163,7 @@ const Evolutionnotes = () => {
 
     /* EVENTO DE FILTRAR COMBO DEPARTAMENTO */
     async function GetSubString(codigo) {
-        const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo);
+        const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 2);
         var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
             label: item.nombre,
             value: item.idCatalogo
@@ -405,7 +405,7 @@ const Evolutionnotes = () => {
 
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
-                                        <InputDate
+                                        <InputDatePick
                                             defaultValue=""
                                             name="fechaNaci"
                                             label="Fecha de Nacimiento"
@@ -509,7 +509,7 @@ const Evolutionnotes = () => {
                                     <Grid item xs={3}>
                                         <AnimateButton>
                                             <FormProvider {...methods}>
-                                                <InputDate
+                                                <InputDatePick
                                                     defaultValue=""
                                                     fullWidth
                                                     name="fechaContrato"
@@ -886,7 +886,7 @@ const Evolutionnotes = () => {
 
                             <Grid item xs={2}>
                                 <FormProvider {...methods}>
-                                    <InputDate
+                                    <InputDatePick
                                         defaultValue=""
                                         name="fechaatencion"
                                         label="Fecha"

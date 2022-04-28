@@ -275,7 +275,7 @@ const MedicalAdvice = () => {
             setDeparta(event.target.value);
 
             var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
-            var lsServerDepartamento = await GetAllBySubTipoCatalogo(0, 0, lsResulCode);
+            var lsServerDepartamento = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 2);
 
             var resultMunicipio = lsServerDepartamento.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -293,7 +293,7 @@ const MedicalAdvice = () => {
             setDepartaMedico(event.target.value);
 
             var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
-            var lsServerDepartamento = await GetAllBySubTipoCatalogo(0, 0, lsResulCode);
+            var lsServerDepartamento = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 2);
 
             var resultMunicipio = lsServerDepartamento.data.entities.map((item) => ({
                 value: item.idCatalogo,

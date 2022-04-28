@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 
 // Terceros
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -21,8 +21,6 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 
 // Import del Proyecto
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -44,8 +42,9 @@ import InputOnChange from 'components/input/InputOnChange';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
-import { PostAssistance } from 'formatdata/AssistanceForm';
-import { InsertMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import { PutAssistance } from 'formatdata/AssistanceForm';
+import { UpdateMedicalHistorys, GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import Cargando from 'components/Cargando';
 import FullScreenDialogs from 'components/form/FullScreenDialogs';
 import ListAssistance from './ListAssistance';
 
@@ -59,7 +58,7 @@ mic.interimResults = true
 mic.lang = 'es-ES'
 
 
-const Assistance = () => {
+const ViewUpdateAssistance = (props) => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -67,11 +66,12 @@ const Assistance = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     /* ESTADOS PARA EL CONTROL DE VOZ */
-    const [isListening, setIsListening] = useState(false);
     const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
-    const [note, setNote] = useState(null);
+    const [isListening, setIsListening] = useState(false)
+    const [note, setNote] = useState(null)
     const [diagnosticoArray, setDiagnosticoArray] = useState([]);
+    const [lsAssistance, setLsAssistance] = useState([]);
 
     /* NUESTROS ESTADOS PARA LOS DIFERENTES USOS */
     const [document, setDocument] = useState('');
@@ -84,10 +84,10 @@ const Assistance = () => {
     const [lsContingencia, setLsContingencia] = useState([]);
     const [lsRemitido, setLsRemitido] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
+    const [fecha, setFecha] = useState(new Date());
 
     /* MIL Y UN ESTADOS */
     const [imgSrc, setImgSrc] = useState(null);
-    const [fecha, setFecha] = useState(new Date());
     const [nombres, setNombres] = useState('');
     const [email, setEmail] = useState('');
     const [celular, setCelular] = useState('');
@@ -153,107 +153,43 @@ const Assistance = () => {
         }
     }
 
-    const CleanCombo = () => {
-        setDiagnosticoArray([]);
-        setImgSrc(null);
-        setNote('');
-        setFecha(new Date());
-        setDocument('');
-        setNombres('');
-        setEmail('');
-        setCelular('');
-        setEscolaridad('');
-        setEmpresa('');
-        setSede('');
-        setFechaNaci(null);
-        setGenero('');
-        setEstadoCivil('');
-        setContacto('');
-        setTelefonoContacto('');
-        setFechaContrato(null);
-        setTipoContrato('');
-        setPayStatus('');
-        setType('');
-        setRosterPosition('');
-        setGeneralPosition('');
-        setDepartamento('');
-        setArea('');
-        setSubArea('');
-        setGrupo('');
-        setTurno('');
-        setDireccionResidencia('');
-        setDptoResidencia('');
-        setMunicipioResidencia('');
-        setMunicipioNacido('');
-        setDptoNacido('');
-        setEps('');
-        setAfp('');
-    }
-
-    const handleDocument = async (event) => {
+    const handleLoadingDocument = async (idEmployee) => {
         try {
-            setDocument(event?.target.value);
-            if (event.key === 'Enter') {
-                if (event?.target.value != "") {
-                    var lsQuestionnaire = await GetByIdEmployee(event?.target.value);
-
-                    if (lsQuestionnaire.status === 200) {
-                        setImgSrc(lsQuestionnaire.data.imagenUrl);
-                        setNombres(lsQuestionnaire.data.nombres);
-                        setEmail(lsQuestionnaire.data.email);
-                        setCelular(lsQuestionnaire.data.celular);
-                        setEscolaridad(lsQuestionnaire.data.escolaridad);
-                        setEmpresa(lsQuestionnaire.data.empresa);
-                        setSede(lsQuestionnaire.data.sede);
-                        setFechaNaci(lsQuestionnaire.data.fechaNaci);
-                        setGenero(lsQuestionnaire.data.genero);
-                        setEstadoCivil(lsQuestionnaire.data.estadoCivil);
-                        setContacto(lsQuestionnaire.data.contacto);
-                        setTelefonoContacto(lsQuestionnaire.data.telefonoContacto);
-                        setFechaContrato(lsQuestionnaire.data.fechaContrato);
-                        setTipoContrato(lsQuestionnaire.data.tipoContrato);
-                        setPayStatus(lsQuestionnaire.data.payStatus);
-                        setType(lsQuestionnaire.data.type);
-                        setRosterPosition(lsQuestionnaire.data.rosterPosition);
-                        setGeneralPosition(lsQuestionnaire.data.generalPosition);
-                        setDepartamento(lsQuestionnaire.data.departamento);
-                        setArea(lsQuestionnaire.data.area);
-                        setSubArea(lsQuestionnaire.data.subArea);
-                        setGrupo(lsQuestionnaire.data.grupo);
-                        setTurno(lsQuestionnaire.data.turno);
-                        setDireccionResidencia(lsQuestionnaire.data.direccionResidencia);
-                        setDptoResidencia(lsQuestionnaire.data.dptoResidencia);
-                        setMunicipioResidencia(lsQuestionnaire.data.municipioResidencia);
-                        setMunicipioNacido(lsQuestionnaire.data.municipioNacido);
-                        setDptoNacido(lsQuestionnaire.data.dptoNacido);
-                        setEps(lsQuestionnaire.data.eps);
-                        setAfp(lsQuestionnaire.data.afp);
-                    } else {
-                        CleanCombo();
-                        dispatch({
-                            type: SNACKBAR_OPEN,
-                            open: true,
-                            message: `${Message.ErrorDeDatos}`,
-                            variant: 'alert',
-                            alertSeverity: 'error',
-                            close: false,
-                            transition: 'SlideUp'
-                        })
-                    }
-                } else {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.ErrorDocumento}`,
-                        variant: 'alert',
-                        alertSeverity: 'error',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
-                }
+            var lsQuestionnaire = await GetByIdEmployee(idEmployee);
+            if (lsQuestionnaire.status === 200) {
+                setImgSrc(lsQuestionnaire.data.imagenUrl);
+                setDocument(lsQuestionnaire.data.documento);
+                setNombres(lsQuestionnaire.data.nombres);
+                setEmail(lsQuestionnaire.data.email);
+                setCelular(lsQuestionnaire.data.celular);
+                setEscolaridad(lsQuestionnaire.data.escolaridad);
+                setEmpresa(lsQuestionnaire.data.empresa);
+                setSede(lsQuestionnaire.data.sede);
+                setFechaNaci(lsQuestionnaire.data.fechaNaci);
+                setGenero(lsQuestionnaire.data.genero);
+                setEstadoCivil(lsQuestionnaire.data.estadoCivil);
+                setContacto(lsQuestionnaire.data.contacto);
+                setTelefonoContacto(lsQuestionnaire.data.telefonoContacto);
+                setFechaContrato(lsQuestionnaire.data.fechaContrato);
+                setTipoContrato(lsQuestionnaire.data.tipoContrato);
+                setPayStatus(lsQuestionnaire.data.payStatus);
+                setType(lsQuestionnaire.data.type);
+                setRosterPosition(lsQuestionnaire.data.rosterPosition);
+                setGeneralPosition(lsQuestionnaire.data.generalPosition);
+                setDepartamento(lsQuestionnaire.data.departamento);
+                setArea(lsQuestionnaire.data.area);
+                setSubArea(lsQuestionnaire.data.subArea);
+                setGrupo(lsQuestionnaire.data.grupo);
+                setTurno(lsQuestionnaire.data.turno);
+                setDireccionResidencia(lsQuestionnaire.data.direccionResidencia);
+                setDptoResidencia(lsQuestionnaire.data.dptoResidencia);
+                setMunicipioResidencia(lsQuestionnaire.data.municipioResidencia);
+                setMunicipioNacido(lsQuestionnaire.data.municipioNacido);
+                setDptoNacido(lsQuestionnaire.data.dptoNacido);
+                setEps(lsQuestionnaire.data.eps);
+                setAfp(lsQuestionnaire.data.afp);
             }
         } catch (error) {
-            CleanCombo();
             dispatch({
                 type: SNACKBAR_OPEN,
                 open: true,
@@ -269,6 +205,14 @@ const Assistance = () => {
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
+            const serverData = await GetByIdMedicalHistory(props.idAssistance);
+            if (serverData.status === 200) {
+                setDiagnosticoArray(JSON.parse(serverData.data.diagnostico));
+                setFecha(serverData.data.fecha);
+                setLsAssistance(serverData.data);
+                handleLoadingDocument(serverData.data.documento);
+            }
+
             const lsServerCatalog = await GetAllCatalog(0, 0);
             var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -347,26 +291,24 @@ const Assistance = () => {
         try {
             const fechaFormat = FormatDate(fecha);
             const fechaSistemas = FormatDate(new Date());
-
-            const DataToInsert = PostAssistance(document, fechaFormat, datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
+            const id = 1;
+            const DataToUpdate = PutAssistance(id, document, fechaFormat, datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
                 datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico, datos.examenParaclinico,
-                JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, datos.idRemitido, "UsuarioCreacion", fechaSistemas,
-                "UsuarioModifica", fechaSistemas);
+                JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, datos.idRemitido, "Usuario que Creacion", fechaSistemas,
+                "Usuario que Modifica", fechaSistemas);
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertMedicalHistory(DataToInsert);
+                const result = await UpdateMedicalHistorys(DataToUpdate);
                 if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,
                         open: true,
-                        message: `${Message.Guardar}`,
+                        message: `${Message.Actualizar}`,
                         variant: 'alert',
                         alertSeverity: 'success',
                         close: false,
                         transition: 'SlideUp'
                     })
-                    reset();
-                    CleanCombo();
                     setButtonReport(true);
                 }
             }
@@ -385,7 +327,7 @@ const Assistance = () => {
     };
 
     return (
-        <MainCard>
+        <Grid sx={{ p: 4 }} container justifyContent="center" alignItems="center" spacing={2}>{lsAssistance.length != 0 ?
             <form>
                 <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
                     <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
@@ -400,12 +342,11 @@ const Assistance = () => {
                             <Grid item xs={4}>
                                 <InputOnChange
                                     label="N° Documento"
-                                    onKeyDown={handleDocument}
                                     onChange={(e) => setDocument(e?.target.value)}
                                     value={document}
+                                    disabled
                                     size={matchesXS ? 'small' : 'medium'}
                                     required={true}
-                                    autoFocus
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -780,7 +721,7 @@ const Assistance = () => {
                                     <InputSelect
                                         name="idAtencion"
                                         label="Atención"
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.idAtencion}
                                         options={lsAtencion}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -793,7 +734,7 @@ const Assistance = () => {
                                     <InputSelect
                                         name="idContingencia"
                                         label="Contingencia"
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.idContingencia}
                                         options={lsContingencia}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -806,7 +747,7 @@ const Assistance = () => {
                                     <InputSelect
                                         name="idTurno"
                                         label="Turno"
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.idTurno}
                                         options={lsTurno}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -819,7 +760,7 @@ const Assistance = () => {
                                     <InputSelect
                                         name="idDiaTurno"
                                         label="Día del Turno"
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.idDiaTurno}
                                         options={lsDiaTurno}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -836,7 +777,7 @@ const Assistance = () => {
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.motivoConsulta}
                                         fullWidth
                                         name="motivoConsulta"
                                         label="Motivo de Consulta"
@@ -905,7 +846,7 @@ const Assistance = () => {
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.enfermedadActual}
                                         fullWidth
                                         name="enfermedadActual"
                                         label="Enfermedad Actual"
@@ -974,7 +915,7 @@ const Assistance = () => {
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.antecedentes}
                                         fullWidth
                                         name="antecedentes"
                                         label="Antecedentes"
@@ -1043,7 +984,7 @@ const Assistance = () => {
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.revisionSistema}
                                         fullWidth
                                         name="revisionSistema"
                                         label="Revisión Por Sistemas"
@@ -1112,7 +1053,7 @@ const Assistance = () => {
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.examenFisico}
                                         fullWidth
                                         name="examenFisico"
                                         label="Examen Fisico"
@@ -1175,30 +1116,13 @@ const Assistance = () => {
                                             </AnimateButton>
                                         </Grid>
                                     </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Ver Examen Fisico">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => setOpen(true)}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <DirectionsRunIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
                                 </Grid>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.examenParaclinico}
                                         fullWidth
                                         name="examenParaclinico"
                                         label="Examenes Paraclínicos"
@@ -1208,6 +1132,7 @@ const Assistance = () => {
                                         bug={errors}
                                     />
                                 </FormProvider>
+                                <p>{note}</p>
                             </Grid>
                             <Grid item xs={12}>
                                 <Grid container justifyContent="left" alignItems="center" spacing={2}>
@@ -1261,23 +1186,6 @@ const Assistance = () => {
                                             </AnimateButton>
                                         </Grid>
                                     </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Ver Examen Paraclínico">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => setOpen(true)}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <AddBoxIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -1298,10 +1206,10 @@ const Assistance = () => {
                             </Grid>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item sx={{ pb: 2 }} xs={12}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue=""
+                                    defaultValue={lsAssistance.planManejo}
                                     fullWidth
                                     name="planManejo"
                                     label="Plan de Manejo"
@@ -1311,7 +1219,6 @@ const Assistance = () => {
                                     bug={errors}
                                 />
                             </FormProvider>
-                            <p>{note}</p>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -1379,7 +1286,7 @@ const Assistance = () => {
                                     <InputSelect
                                         name="idConceptoActitud"
                                         label="Concepto De Aptitud Psicofísica"
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.idConceptoActitud}
                                         options={lsConceptoAptitud}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -1391,7 +1298,7 @@ const Assistance = () => {
                                     <InputSelect
                                         name="idRemitido"
                                         label="Remitido"
-                                        defaultValue=""
+                                        defaultValue={lsAssistance.idRemitido}
                                         options={lsRemitido}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -1401,44 +1308,10 @@ const Assistance = () => {
                         </Grid>
                     </SubCard>
                 </Grid>
-
-                <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={buttonReport ? 4 : 6}>
-                            <AnimateButton>
-                                <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                        {buttonReport ?
-                            <Grid item xs={buttonReport ? 4 : 6}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={() => setOpen(true)}>
-                                        Imprimir
-                                    </Button>
-                                </AnimateButton>
-                            </Grid> : <></>}
-                        <Grid item xs={buttonReport ? 4 : 6}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/assistance/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                    </Grid>
-                </Grid>
-
-                <FullScreenDialogs
-                    open={open}
-                    title="LISTADO DE EXAMENES DE PARACLÍNICOS"
-                    handleClose={() => setOpen(false)}
-                >
-                    <ListAssistance />
-                </FullScreenDialogs>
             </form>
-        </MainCard>
+            : <Cargando />
+        }</Grid>
     );
 };
 
-export default Assistance;
+export default ViewUpdateAssistance;

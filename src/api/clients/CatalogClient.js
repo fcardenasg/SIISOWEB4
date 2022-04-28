@@ -7,4 +7,4 @@ export const InsertCatalog = async (catalogo) => await postData(Url.Catalogo, ca
 export const UpdateCatalogs = async (catalogo) => await putData(Url.Catalogo, catalogo);
 export const DeleteCatalog = async (idCatalogo) => await deleteData(Url.Catalogo, { idCatalogo });
 export const GetAllByTipoCatalogo = async (page, pageSize, idTipoCatalogo) => await getData(Url.GetAllByTipoCatalogo, { page, pageSize, idTipoCatalogo });
-export const GetAllBySubTipoCatalogo = async (page, pageSize, codigo) => await getData(Url.GetAllBySubTipoCatalogo, { page, pageSize, codigo });
+export const GetAllBySubTipoCatalogo = async (page, pageSize, codigo, substring) => await getData(Url.GetAllBySubTipoCatalogo, { page, pageSize, codigo, substring });

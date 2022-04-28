@@ -471,17 +471,17 @@ const application = {
                     breadcrumbs: false
                 },
                 {
+                    id: 'skeleton',
+                    title: <FormattedMessage id="Items" />,
+                    type: 'item',
+                    url: '/item/list',
+                    breadcrumbs: false
+                },
+                {
                     id: 'snackbar',
                     title: <FormattedMessage id="Plantilla" />,
                     type: 'item',
                     url: '/template/list',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'skeleton',
-                    title: <FormattedMessage id="skeleton" />,
-                    type: 'item',
-                    url: '/advance/skeleton',
                     breadcrumbs: false
                 },
                 {

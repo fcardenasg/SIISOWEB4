@@ -66,7 +66,7 @@ import { GetAllCompany } from 'api/clients/CompanyClient';
 import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import InputDate from 'components/input/InputDate';
+import InputDatePick from 'components/input/InputDatePick';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -257,19 +257,6 @@ const Occupationalexamination = () => {
     const Remover = () => {
         setImgSrc(null);
     }
-
-    /* EVENTO DE FILTRAR COMBO DEPARTAMENTO */
-    async function GetSubString(codigo) {
-        const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo);
-        var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
-            label: item.nombre,
-            value: item.idCatalogo
-        }));
-        console.log("resultMunicipio = ", resultMunicipio);
-        setMunicipio(resultMunicipio);
-    }
-
-
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
@@ -465,7 +452,7 @@ const Occupationalexamination = () => {
 
                             <Grid item xs={2}>
                                 <FormProvider {...methods}>
-                                    <InputDate
+                                    <InputDatePick
                                         defaultValue=""
                                         name="fechaatencion"
                                         label="Fecha"

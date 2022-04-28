@@ -17,7 +17,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // Import del Proyecto
 import { PostTemplate } from 'formatdata/TemplateForm';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado, GetAllBySubsegmento } from 'api/clients/OthersClients';
+import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado, GetAllBySubsegmento, GetAllAtencion, GetAllTipoAtencion, GetAllByTipoAtencion } from 'api/clients/OthersClients';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertTemplate } from 'api/clients/TemplateClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -26,6 +26,7 @@ import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import { GetAllByAtencion } from 'api/clients/ItemsClient';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
@@ -33,8 +34,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 const validationSchema = yup.object().shape({
     descripcion: yup.string().required(`${ValidationMessage.Requerido}`),
     idCIE11: yup.string().required(`${ValidationMessage.Requerido}`),
-    idTipoAtencion: yup.string().required(`${ValidationMessage.Requerido}`),
-    idAtencion: yup.string().required(`${ValidationMessage.Requerido}`),
+    idItems: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
 const Template = () => {
@@ -54,10 +54,15 @@ const Template = () => {
     const [lsSubsegmento, setLsSubsegmento] = useState([]);
     const [subsegmento, setSubsegmento] = useState('');
 
-    const [lsCie11, setCie11] = useState([]);
+    const [lsCie11, setLsCie11] = useState([]);
 
-    const [tipoAtencion, setTipoAtencion] = useState([]);
-    const [atencion, setAtencion] = useState([]);
+    const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
+    const [tipoAtencion, setTipoAtencion] = useState('');
+
+    const [lsAtencion, setLsAtencion] = useState([]);
+    const [atencion, setAtencion] = useState('');
+
+    const [lsItems, setLsItems] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -67,7 +72,7 @@ const Template = () => {
 
     const handleChangeSegAgrupado = async (event) => {
         try {
-            setSubsegmento([]); setCie11([]);
+            setLsSegmentoAfectado([]); setLsSubsegmento([]); setLsCie11([]); setSegmentoAfectado('');
             setSegmentoAgrupado(event.target.value);
 
             const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
@@ -86,6 +91,7 @@ const Template = () => {
 
     const handleChangeSegAfectado = async (event) => {
         try {
+            setLsSubsegmento([]); setLsCie11([]); setSubsegmento('');
             setSegmentoAfectado(event.target.value);
 
             const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
@@ -111,12 +117,45 @@ const Template = () => {
                 value: item.id,
                 label: item.dx
             }));
-            setCie11(resultCie11);
+            setLsCie11(resultCie11);
 
             console.log(event.target.value);
         } catch (error) {
             console.log(error);
-            setCie11([]);
+            setLsCie11([]);
+        }
+    }
+
+    const handleChangeTipoAtencion = async (event) => {
+        try {
+            setLsAtencion([]); setLsItems([]); setAtencion('');
+            setTipoAtencion(event.target.value);
+
+            const lsServerTipoAtencion = await GetAllByTipoAtencion(0, 0, event.target.value);
+            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setLsAtencion(resultTipoAtencion);
+        } catch (error) {
+            console.log(error);
+            setLsAtencion([]);
+        }
+    }
+
+    const handleChangeAtencion = async (event) => {
+        try {
+            setAtencion(event.target.value);
+
+            const lsServerAtencion = await GetAllByAtencion(0, 0, event.target.value);
+            var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
+                value: item.id,
+                label: item.descripcion
+            }));
+            setLsItems(resultAtencion);
+        } catch (error) {
+            console.log(error);
+            setLsItems([]);
         }
     }
 
@@ -130,19 +169,12 @@ const Template = () => {
             }));
             setLsSegmentoAgrupado(resultSegAgrupado);
 
-            const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PLAN_TipoAtencion);
+            const lsServerTipoAtencion = await GetAllTipoAtencion(0, 0);
             var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                value: item.idCatalogo,
+                value: item.id,
                 label: item.nombre
             }));
-            setTipoAtencion(resultTipoAtencion);
-
-            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PLAN_Atencion);
-            var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setAtencion(resultAtencion);
+            setLsTipoAtencion(resultTipoAtencion);
         } catch (error) {
             console.log(error);
         }
@@ -153,11 +185,28 @@ const Template = () => {
         GetAll();
     }, [])
 
+    const CleanData = () => {
+        setSegmentoAgrupado('');
+        setLsSegmentoAfectado([]);
+        setSegmentoAfectado('');
+        setLsSubsegmento([]);
+        setSubsegmento('');
+        setLsCie11([]);
+
+        setTipoAtencion('');
+        setLsAtencion([]);
+        setAtencion('');
+        setLsItems([]);
+
+        reset();
+    }
+
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostTemplate(segmentoAgrupado, segmentoAfectado, subsegmento,
-                datos.idCIE11, "Usuario", datos.idTipoAtencion, datos.idAtencion, datos.descripcion);
+                datos.idCIE11, "Usuario", tipoAtencion, atencion, datos.idItems, datos.descripcion);
+
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertTemplate(DataToInsert);
                 if (result.status === 200) {
@@ -170,10 +219,7 @@ const Template = () => {
                         close: false,
                         transition: 'SlideUp'
                     })
-                    setSubsegmento([]);
-                    setSegmentoAfectado([]);
-                    setSegmentoAgrupado([]);
-                    reset();
+                    CleanData();
                 }
             }
         } catch (error) {
@@ -239,26 +285,37 @@ const Template = () => {
                         </FormProvider>
                     </Grid>
                     <Grid item xs={6}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idTipoAtencion"
-                                label="Tipo de Atención"
-                                defaultValue=""
-                                options={tipoAtencion}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
+                        <SelectOnChange
+                            name="idTipoAtencion"
+                            label="Tipo de Atención"
+                            options={lsTipoAtencion}
+                            size={matchesXS ? 'small' : 'medium'}
+                            value={tipoAtencion}
+                            onChange={handleChangeTipoAtencion}
+                            disabled={lsTipoAtencion.length != 0 ? false : true}
+                        />
                     </Grid>
                     <Grid item xs={6}>
+                        <SelectOnChange
+                            name="idAtencion"
+                            label="Atención"
+                            options={lsAtencion}
+                            size={matchesXS ? 'small' : 'medium'}
+                            value={atencion}
+                            onChange={handleChangeAtencion}
+                            disabled={lsAtencion.length != 0 ? false : true}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
                         <FormProvider {...methods}>
                             <InputSelect
-                                name="idAtencion"
-                                label="Atención"
+                                name="idItems"
+                                label="Items"
                                 defaultValue=""
-                                options={atencion}
+                                options={lsItems}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
+                                disabled={lsItems.length != 0 ? false : true}
                             />
                         </FormProvider>
                     </Grid>

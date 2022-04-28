@@ -132,7 +132,7 @@ const Employee = () => {
     /* EVENTO DE FILTRAR COMBO DEPARTAMENTO */
     async function GetSubString(codigo) {
         try {
-            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo);
+            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 2);
             if (lsServerCatalog.status === 200) {
                 var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
                     value: item.idCatalogo,

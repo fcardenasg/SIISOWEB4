@@ -76,6 +76,7 @@ const UpdateMedicalAdvice = () => {
     const [imgSrc, setImgSrc] = useState(null);
     const [clickAttend, setClickAttend] = useState(false);
     const [fecha, setFecha] = useState(null);
+    const [timeWait, setTimeWait] = useState(false);
 
     /* MIL Y UN ESTADOS */
     const [nombres, setNombres] = useState('');
@@ -304,9 +305,15 @@ const UpdateMedicalAdvice = () => {
         }
     };
 
+    setTimeout(() => {
+        if (medicalAdvice.length != 0) {
+            setTimeWait(true);
+        }
+    }, 2500);
+
     return (
         <MainCard title="">
-            {medicalAdvice.length !== 0 ? (
+            {timeWait ? (
                 <Grid container xs={12} sx={{ pt: 0.5 }}>
                     <form onSubmit={handleSubmit(handleClick)}>
                         <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
@@ -463,242 +470,240 @@ const UpdateMedicalAdvice = () => {
 
                         <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" sx={{ mr: 0.5 }} />
                             <Typography variant="subtitle1" color="inherit">Ver mas...</Typography></>}>
-                            <SubCard darkTitle title={<><Typography variant="h4"></Typography></>}>
-                                <Grid item xs={12} sx={{ pb: 3 }}>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <InputDatePick
-                                                    label="Fecha de Contrato"
-                                                    value={fechaContrato}
-                                                    disabled
-                                                    onChange={(e) => setFechaContrato(e)}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="tipoContrato"
-                                                    label="Tipo de Contrato"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={tipoContrato}
-                                                    onChange={(e) => setTipoContrato(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="estado"
-                                                    label="Estado"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={payStatus}
-                                                    onChange={(e) => setPayStatus(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="Rol"
-                                                    label="Rol"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={type}
-                                                    onChange={(e) => setType(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="rosterPosition"
-                                                    label="Roster Position"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={rosterPosition}
-                                                    onChange={(e) => setRosterPosition(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="generalPosition"
-                                                    label="General Position"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={generalPosition}
-                                                    onChange={(e) => setGeneralPosition(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="Departamento"
-                                                    label="Departamento"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={departamento}
-                                                    onChange={(e) => setDepartamento(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="Area"
-                                                    label="Area"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={area}
-                                                    onChange={(e) => setArea(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="Subarea"
-                                                    label="Subarea"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={subArea}
-                                                    onChange={(e) => setSubArea(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="Grupo"
-                                                    label="Grupo"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={grupo}
-                                                    onChange={(e) => setGrupo(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="Turno"
-                                                    label="Turno"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={turno}
-                                                    onChange={(e) => setTurno(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <InputOnChange
-                                                    label="Dirección de Residencia"
-                                                    value={direccionResidencia}
-                                                    onChange={(e) => setDireccionResidencia(e?.target.value)}
-                                                    disabled
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    required={true}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="dptoResidencia"
-                                                    label="Departamento de Residencia"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={dptoResidencia}
-                                                    onChange={(e) => setDptoResidencia(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="municipioResidencia"
-                                                    label="Municipio de Residencia"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={municipioResidencia}
-                                                    onChange={(e) => setMunicipioResidencia(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="municipioNacido"
-                                                    label="Municipio de Nacimiento"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={municipioNacido}
-                                                    onChange={(e) => setMunicipioNacido(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="dptoNacido"
-                                                    label="Departamento de Nacimiento"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={dptoNacido}
-                                                    onChange={(e) => setDptoNacido(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="EPS"
-                                                    label="EPS"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={eps}
-                                                    onChange={(e) => setEps(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <AnimateButton>
-                                                <SelectOnChange
-                                                    name="AFP"
-                                                    label="AFP"
-                                                    disabled
-                                                    options={catalog}
-                                                    value={afp}
-                                                    onChange={(e) => setAfp(e?.target.value)}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </AnimateButton>
-                                        </Grid>
+                            <Grid item xs={12} sx={{ pb: 3 }}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <InputDatePick
+                                                label="Fecha de Contrato"
+                                                value={fechaContrato}
+                                                disabled
+                                                onChange={(e) => setFechaContrato(e)}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="tipoContrato"
+                                                label="Tipo de Contrato"
+                                                disabled
+                                                options={catalog}
+                                                value={tipoContrato}
+                                                onChange={(e) => setTipoContrato(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="estado"
+                                                label="Estado"
+                                                disabled
+                                                options={catalog}
+                                                value={payStatus}
+                                                onChange={(e) => setPayStatus(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="Rol"
+                                                label="Rol"
+                                                disabled
+                                                options={catalog}
+                                                value={type}
+                                                onChange={(e) => setType(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="rosterPosition"
+                                                label="Roster Position"
+                                                disabled
+                                                options={catalog}
+                                                value={rosterPosition}
+                                                onChange={(e) => setRosterPosition(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="generalPosition"
+                                                label="General Position"
+                                                disabled
+                                                options={catalog}
+                                                value={generalPosition}
+                                                onChange={(e) => setGeneralPosition(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="Departamento"
+                                                label="Departamento"
+                                                disabled
+                                                options={catalog}
+                                                value={departamento}
+                                                onChange={(e) => setDepartamento(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="Area"
+                                                label="Area"
+                                                disabled
+                                                options={catalog}
+                                                value={area}
+                                                onChange={(e) => setArea(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="Subarea"
+                                                label="Subarea"
+                                                disabled
+                                                options={catalog}
+                                                value={subArea}
+                                                onChange={(e) => setSubArea(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="Grupo"
+                                                label="Grupo"
+                                                disabled
+                                                options={catalog}
+                                                value={grupo}
+                                                onChange={(e) => setGrupo(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="Turno"
+                                                label="Turno"
+                                                disabled
+                                                options={catalog}
+                                                value={turno}
+                                                onChange={(e) => setTurno(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <InputOnChange
+                                                label="Dirección de Residencia"
+                                                value={direccionResidencia}
+                                                onChange={(e) => setDireccionResidencia(e?.target.value)}
+                                                disabled
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                required={true}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="dptoResidencia"
+                                                label="Departamento de Residencia"
+                                                disabled
+                                                options={catalog}
+                                                value={dptoResidencia}
+                                                onChange={(e) => setDptoResidencia(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="municipioResidencia"
+                                                label="Municipio de Residencia"
+                                                disabled
+                                                options={catalog}
+                                                value={municipioResidencia}
+                                                onChange={(e) => setMunicipioResidencia(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="municipioNacido"
+                                                label="Municipio de Nacimiento"
+                                                disabled
+                                                options={catalog}
+                                                value={municipioNacido}
+                                                onChange={(e) => setMunicipioNacido(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="dptoNacido"
+                                                label="Departamento de Nacimiento"
+                                                disabled
+                                                options={catalog}
+                                                value={dptoNacido}
+                                                onChange={(e) => setDptoNacido(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="EPS"
+                                                label="EPS"
+                                                disabled
+                                                options={catalog}
+                                                value={eps}
+                                                onChange={(e) => setEps(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <SelectOnChange
+                                                name="AFP"
+                                                label="AFP"
+                                                disabled
+                                                options={catalog}
+                                                value={afp}
+                                                onChange={(e) => setAfp(e?.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </AnimateButton>
                                     </Grid>
                                 </Grid>
-                            </SubCard>
+                            </Grid>
                         </Accordion>
 
                         <Divider />
@@ -830,7 +835,7 @@ const UpdateMedicalAdvice = () => {
                                     <Grid item xs={6}>
                                         <AnimateButton>
                                             <Button variant="contained" type="submit" fullWidth>
-                                                {TitleButton.Guardar}
+                                                {TitleButton.Actualizar}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>

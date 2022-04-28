@@ -8,7 +8,6 @@ import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
-    Checkbox,
     Grid,
     Fab,
     IconButton,
@@ -22,34 +21,21 @@ import {
     TableRow,
     TableSortLabel,
     TextField,
-    Toolbar,
     Tooltip,
     Typography,
-    Button
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
 // Import de proyectos
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
-import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
+import { GetAllTemplate, DeleteTemplate } from 'api/clients/TemplateClient';
 
 // Iconos y masss
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
-import { IconFileExport } from '@tabler/icons';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 // Mesa de Destino
 function descendingComparator(a, b, orderBy) {
@@ -79,27 +65,27 @@ function stableSort(array, comparator) {
 /* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'idCatalogo',
+        id: 'id',
         numeric: false,
         label: 'ID',
         align: 'center'
     },
     {
-        id: 'nombre',
+        id: 'nameCIE11',
         numeric: false,
-        label: 'Nombre',
+        label: 'CIE11',
         align: 'left'
     },
     {
-        id: 'codigo',
+        id: 'nameTipoAtencion',
         numeric: false,
-        label: 'Código',
+        label: 'Tipo de Atención',
         align: 'left'
     },
     {
-        id: 'nameTypeCatalog',
+        id: 'nameAtencion',
         numeric: false,
-        label: 'Tipo Catálogo',
+        label: 'Atención',
         align: 'left'
     }
 ];
@@ -108,7 +94,7 @@ const headCells = [
 
 /* RENDERIZADO DE LA CABECERA */
 
-function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
+function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -116,22 +102,6 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox" sx={{ pl: 3 }}>
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts'
-                        }}
-                    />
-                </TableCell>
-                {numSelected > 0 && (
-                    <TableCell padding="none" colSpan={8}>
-                        <EnhancedTableToolbar numSelected={selected.length} onClick={onClick} />
-                    </TableCell>
-                )}
                 {numSelected <= 0 &&
                     headCells.map((headCell) => (
                         <TableCell
@@ -168,62 +138,17 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
 
 EnhancedTableHead.propTypes = {
     theme: PropTypes.object,
-    selected: PropTypes.array,
-    onClick: PropTypes.func.isRequired,
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.oneOf(['asc', 'desc']).isRequired,
     orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired
-};
-
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
-const EnhancedTableToolbar = ({ numSelected, onClick }) => (
-    <Toolbar
-        sx={{
-            p: 0,
-            pl: 1,
-            pr: 1,
-            ...(numSelected > 0 && {
-                color: (theme) => theme.palette.secondary.main
-            })
-        }}
-    >
-        {numSelected > 0 ? (
-            <Typography color="inherit" variant="h4">
-                {numSelected} {TitleButton.Seleccionadas}
-            </Typography>
-        ) : (
-            <Typography variant="h6" id="tableTitle">
-                Nutrición
-            </Typography>
-        )}
-        <Box sx={{ flexGrow: 1 }} />
-        {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
-        )}
-    </Toolbar>
-);
-
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onClick: PropTypes.func
 };
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
 const ListCatalog = () => {
     const dispatch = useDispatch();
-    const [catalog, setCatalog] = useState([]);
+    const [lsTemplate, setLsTemplate] = useState([]);
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -238,8 +163,8 @@ const ListCatalog = () => {
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
-            const lsServer = await GetAllCatalog(0, 0);
-            setCatalog(lsServer.data.entities);
+            const lsServer = await GetAllTemplate(0, 0);
+            setLsTemplate(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
@@ -260,7 +185,7 @@ const ListCatalog = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idCatalogo', 'nombre', 'codigo', 'nameTypeCatalog'];
+                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -274,9 +199,9 @@ const ListCatalog = () => {
                 }
                 return matches;
             });
-            setCatalog(newRows);
+            setLsTemplate(newRows);
         } else {
-            setCatalog(rows);
+            setLsTemplate(rows);
         }
     };
 
@@ -285,37 +210,6 @@ const ListCatalog = () => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
-    const handleSelectAllClick = (event) => {
-
-        if (event.target.checked) {
-            const newSelectedId = catalog.map((n) => n.idCatalogo);
-            setSelected(newSelectedId);
-            return;
-        }
-        setSelected([]);
-    };
-
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
-    const handleClick = (event, id) => {
-        setIdCheck(id);
-
-        const selectedIndex = selected.indexOf(id);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-        }
-
-        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -327,34 +221,7 @@ const ListCatalog = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
-
-    /* FUNCION PARA ELIMINAR */
-    const handleDelete = async () => {
-        try {
-            const result = await DeleteCatalog(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const navigate = useNavigate();
-
-    const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - catalog.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
 
     return (
         <>
@@ -386,50 +253,35 @@ const ListCatalog = () => {
                         numSelected={selected.length}
                         order={order}
                         orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
+                        /* onSelectAllClick={handleSelectAllClick} */
                         onRequestSort={handleRequestSort}
-                        rowCount={catalog.length}
+                        rowCount={lsTemplate.length}
                         theme={theme}
                         selected={selected}
-                        onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(catalog, getComparator(order, orderBy))
+                        {stableSort(lsTemplate, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.idCatalogo);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
                                     <TableRow
                                         hover
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
                                         tabIndex={-1}
                                         key={index}
-                                        selected={isItemSelected}
                                     >
                                         {/* Desde aquí colocamos la llegada de los datos
                                         en cada columna, recordar solo cambiar el nombre y ya */}
-
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idCatalogo)}>
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
-                                                }}
-                                            />
-                                        </TableCell>
 
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            /* onClick={(event) => handleClick(event, row.idCatalogo)} */
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
@@ -438,7 +290,7 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                #{row.idCatalogo}{' '}
+                                                #{row.id}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -446,7 +298,7 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            /* onClick={(event) => handleClick(event, row.idCatalogo)} */
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -454,7 +306,7 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombre}{' '}
+                                                {row.nameCIE11}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -462,7 +314,7 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            /* onClick={(event) => handleClick(event, row.idCatalogo)} */
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -470,7 +322,7 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.codigo}{' '}
+                                                {row.nameTipoAtencion}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -478,7 +330,7 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
+                                            /* onClick={(event) => handleClick(event, row.idCatalogo)} */
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -486,24 +338,33 @@ const ListCatalog = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameTypeCatalog}{' '}
+                                                {row.nameAtencion}{' '}
                                             </Typography>
                                         </TableCell>
 
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <IconButton color="primary" size="large">
-                                                <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                            </IconButton>
-                                            <Fab
-                                                size="small"
-                                                color="info"
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/catalog/update/${row.idCatalogo}`)}>
-                                                <IconButton size="large">
-                                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Fab>
+                                            <CopyToClipboard
+                                                text={row.descripcion}
+                                                onCopy={() =>
+                                                    dispatch({
+                                                        type: SNACKBAR_OPEN,
+                                                        anchorOrigin: { vertical: 'top', horizontal: 'right' },
+                                                        transition: 'SlideLeft',
+                                                        open: true,
+                                                        message: 'Texto Copiado',
+                                                        variant: 'alert',
+                                                        alertSeverity: 'success',
+                                                        close: false
+                                                    })
+                                                }
+                                            >
+                                                <Tooltip title="Copiar">
+                                                    <IconButton size="large">
+                                                        <ContentCopyIcon sx={{ fontSize: '1.3rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </CopyToClipboard>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -525,7 +386,7 @@ const ListCatalog = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={catalog.length}
+                count={lsTemplate.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

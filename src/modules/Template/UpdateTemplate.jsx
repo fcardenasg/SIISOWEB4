@@ -19,7 +19,7 @@ import Cargando from 'components/Cargando';
 import { PutTemplate } from 'formatdata/TemplateForm';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { GetByIdTemplate } from 'api/clients/TemplateClient';
-import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado, GetAllBySubsegmento } from 'api/clients/OthersClients';
+import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado, GetAllBySubsegmento, GetAllByTipoAtencion, GetAllTipoAtencion } from 'api/clients/OthersClients';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { UpdateTemplates } from 'api/clients/TemplateClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -28,6 +28,7 @@ import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import { GetAllByAtencion } from 'api/clients/ItemsClient';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
@@ -35,8 +36,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 const validationSchema = yup.object().shape({
     descripcion: yup.string().required(`${ValidationMessage.Requerido}`),
     idCIE11: yup.string().required(`${ValidationMessage.Requerido}`),
-    idTipoAtencion: yup.string().required(`${ValidationMessage.Requerido}`),
-    idAtencion: yup.string().required(`${ValidationMessage.Requerido}`),
+    idItems: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
 const UpdateTemplate = () => {
@@ -49,6 +49,7 @@ const UpdateTemplate = () => {
 
     /* NUESTROS USESTATE */
     const [lsTemplate, setLsTemplate] = useState([]);
+
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState('');
 
@@ -58,20 +59,25 @@ const UpdateTemplate = () => {
     const [lsSubsegmento, setLsSubsegmento] = useState([]);
     const [subsegmento, setSubsegmento] = useState('');
 
-    const [lsCie11, setCie11] = useState([]);
+    const [lsCie11, setLsCie11] = useState([]);
 
-    const [tipoAtencion, setTipoAtencion] = useState([]);
-    const [atencion, setAtencion] = useState([]);
+    const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
+    const [tipoAtencion, setTipoAtencion] = useState('');
+
+    const [lsAtencion, setLsAtencion] = useState([]);
+    const [atencion, setAtencion] = useState('');
+
+    const [lsItems, setLsItems] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, errors } = methods;
 
     const handleChangeSegAgrupado = async (event) => {
         try {
-            setSubsegmento([]); setCie11([]);
+            setLsSegmentoAfectado([]); setLsSubsegmento([]); setLsCie11([]); setSegmentoAfectado('');
             setSegmentoAgrupado(event.target.value);
 
             const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
@@ -90,6 +96,7 @@ const UpdateTemplate = () => {
 
     const handleChangeSegAfectado = async (event) => {
         try {
+            setLsSubsegmento([]); setLsCie11([]); setSubsegmento('');
             setSegmentoAfectado(event.target.value);
 
             const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
@@ -115,12 +122,45 @@ const UpdateTemplate = () => {
                 value: item.id,
                 label: item.dx
             }));
-            setCie11(resultCie11);
+            setLsCie11(resultCie11);
 
             console.log(event.target.value);
         } catch (error) {
             console.log(error);
-            setCie11([]);
+            setLsCie11([]);
+        }
+    }
+
+    const handleChangeTipoAtencion = async (event) => {
+        try {
+            setLsAtencion([]); setLsItems([]); setAtencion('');
+            setTipoAtencion(event.target.value);
+
+            const lsServerTipoAtencion = await GetAllByTipoAtencion(0, 0, event.target.value);
+            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setLsAtencion(resultTipoAtencion);
+        } catch (error) {
+            console.log(error);
+            setLsAtencion([]);
+        }
+    }
+
+    const handleChangeAtencion = async (event) => {
+        try {
+            setAtencion(event.target.value);
+
+            const lsServerAtencion = await GetAllByAtencion(0, 0, event.target.value);
+            var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
+                value: item.id,
+                label: item.descripcion
+            }));
+            setLsItems(resultAtencion);
+        } catch (error) {
+            console.log(error);
+            setLsItems([]);
         }
     }
 
@@ -132,6 +172,8 @@ const UpdateTemplate = () => {
                 setSegmentoAgrupado(serverData.data.idSegmentoAgrupado);
                 setSegmentoAfectado(serverData.data.idSegmentoAfectado);
                 setSubsegmento(serverData.data.idSubsegmento);
+                setTipoAtencion(serverData.data.idTipoAtencion);
+                setAtencion(serverData.data.idAtencion);
                 setLsTemplate(serverData.data);
 
                 const lsServerSegAfectado = await GetAllBySegAgrupado(serverData.data.idSegmentoAgrupado, 0, 0);
@@ -153,8 +195,29 @@ const UpdateTemplate = () => {
                     value: item.id,
                     label: item.dx
                 }));
-                setCie11(resultCie11);
+                setLsCie11(resultCie11);
+
+                const lsServerTipoAtencion = await GetAllByTipoAtencion(0, 0, serverData.data.idTipoAtencion);
+                var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
+                setLsAtencion(resultTipoAtencion);
+
+                const lsServerAtencion = await GetAllByAtencion(0, 0, serverData.data.idAtencion);
+                var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.descripcion
+                }));
+                setLsItems(resultAtencion);
             }
+
+            const lsServerTipoAtencion = await GetAllTipoAtencion(0, 0);
+            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setLsTipoAtencion(resultTipoAtencion);
 
             const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
             var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
@@ -162,20 +225,6 @@ const UpdateTemplate = () => {
                 label: item.nombre
             }));
             setLsSegmentoAgrupado(resultSegAgrupado);
-
-            const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PLAN_TipoAtencion);
-            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setTipoAtencion(resultTipoAtencion);
-
-            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PLAN_Atencion);
-            var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setAtencion(resultAtencion);
         } catch (error) {
             console.log(error);
         }
@@ -190,7 +239,7 @@ const UpdateTemplate = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PutTemplate(id, segmentoAgrupado, segmentoAfectado, subsegmento,
-                datos.idCIE11, "Usuario", datos.idTipoAtencion, datos.idAtencion, datos.descripcion);
+                datos.idCIE11, "Usuario", tipoAtencion, atencion, datos.idItems, datos.descripcion);
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateTemplates(DataToUpdate);
                 if (result.status === 200) {
@@ -233,7 +282,6 @@ const UpdateTemplate = () => {
                                 onChange={handleChangeSegAgrupado}
                             />
                         </Grid>
-
                         <Grid item xs={6}>
                             <SelectOnChange
                                 name="segmentoAfectado"
@@ -242,9 +290,9 @@ const UpdateTemplate = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                                 value={segmentoAfectado}
                                 onChange={handleChangeSegAfectado}
+                                disabled={lsSegmentoAfectado.length != 0 ? false : true}
                             />
                         </Grid>
-
                         <Grid item xs={6}>
                             <SelectOnChange
                                 name="idSubsegmento"
@@ -253,9 +301,9 @@ const UpdateTemplate = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                                 value={subsegmento}
                                 onChange={handleChangeSubsegmento}
+                                disabled={lsSubsegmento.length != 0 ? false : true}
                             />
                         </Grid>
-
                         <Grid item xs={6}>
                             <FormProvider {...methods}>
                                 <InputSelect
@@ -263,32 +311,44 @@ const UpdateTemplate = () => {
                                     label="CIE11"
                                     defaultValue={lsTemplate.idCIE11}
                                     options={lsCie11}
+                                    disabled={lsCie11.length != 0 ? false : true}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
                         <Grid item xs={6}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="idTipoAtencion"
-                                    label="Tipo de Atención"
-                                    defaultValue={lsTemplate.idTipoAtencion}
-                                    options={tipoAtencion}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                            <SelectOnChange
+                                name="idTipoAtencion"
+                                label="Tipo de Atención"
+                                options={lsTipoAtencion}
+                                size={matchesXS ? 'small' : 'medium'}
+                                value={tipoAtencion}
+                                onChange={handleChangeTipoAtencion}
+                                disabled={lsTipoAtencion.length != 0 ? false : true}
+                            />
                         </Grid>
                         <Grid item xs={6}>
+                            <SelectOnChange
+                                name="idAtencion"
+                                label="Atención"
+                                options={lsAtencion}
+                                size={matchesXS ? 'small' : 'medium'}
+                                value={atencion}
+                                onChange={handleChangeAtencion}
+                                disabled={lsAtencion.length != 0 ? false : true}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputSelect
-                                    name="idAtencion"
-                                    label="Atención"
-                                    defaultValue={lsTemplate.idAtencion}
-                                    options={atencion}
+                                    name="idItems"
+                                    label="Items"
+                                    defaultValue={lsTemplate.idItems}
+                                    options={lsItems}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
+                                    disabled={lsItems.length != 0 ? false : true}
                                 />
                             </FormProvider>
                         </Grid>
@@ -298,7 +358,7 @@ const UpdateTemplate = () => {
                                     defaultValue={lsTemplate.descripcion}
                                     fullWidth
                                     multiline
-                                    rows={6}
+                                    rows={4}
                                     name="descripcion"
                                     label="Descripción"
                                     size={matchesXS ? 'small' : 'medium'}

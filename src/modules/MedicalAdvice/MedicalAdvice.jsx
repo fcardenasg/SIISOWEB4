@@ -24,7 +24,6 @@ import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format'
 import InputArea from 'components/input/InputArea';
 import Accordion from 'components/accordion/Accordion';
-import ModalChildren from 'components/form/ModalChildren';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertAdvice } from 'api/clients/AdviceClient';
@@ -43,10 +42,8 @@ import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import ChildrenTemplate from 'components/components/ChildrenTemplate';
-import ModalChildren2 from 'components/form/Dialog';
-import DialogoExample from 'components/form/DialogoExample';
-import ListCatalog from './ListCatalog';
+import FullScreenDialogs from 'components/form/FullScreenDialogs';
+import ListMedicalAdviceTemplate from 'components/ListTemplate/ListMedicalAdviceTemplate';
 
 // Audio
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -275,7 +272,7 @@ const MedicalAdvice = () => {
     const CleanCombo = () => {
         setClickAttend(false);
         setImgSrc(null);
-        setNote(null);
+        setNote('');
         setFecha(new Date());
         setDocument('');
         setNombres('');
@@ -849,6 +846,7 @@ const MedicalAdvice = () => {
                                                 </AnimateButton>
                                             </Grid>
                                         </Grid>
+
                                         <Grid item xs={2}>
                                             <Grid justifyContent="center" alignItems="center" container>
                                                 <AnimateButton>
@@ -913,26 +911,15 @@ const MedicalAdvice = () => {
                             </AnimateButton>
                         </Grid>
                     </>)}
-                    <ModalChildren2
-                        open={open}
-                        maxWidth="xl"
-                        fullWidth
-                        onClose={() => setOpen(false)}
-                    >
-                        <ListCatalog />
-                    </ModalChildren2>
 
-                    <DialogoExample>
-                        <ListCatalog />
-                    </DialogoExample>
+                    <FullScreenDialogs
+                        open={open}
+                        title="LISTADO DE PLANTILLA"
+                        handleClose={() => setOpen(false)}
+                    >
+                        <ListMedicalAdviceTemplate />
+                    </FullScreenDialogs>
                 </form>
-                {/* <ModalChildren
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    title="Información"
-                >
-                    <ListSupplier />
-                </ModalChildren> */}
             </Grid >
         </MainCard >
     );

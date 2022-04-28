@@ -656,7 +656,6 @@ const ListEmployee = () => {
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                            {console.log(row.documento)}
                                         </TableCell>
                                         {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
                                         <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}

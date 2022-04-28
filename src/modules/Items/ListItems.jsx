@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import ReactExport from "react-export-excel";
 
 // Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
@@ -28,12 +29,13 @@ import {
     Button
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
+import { IconFileExport } from '@tabler/icons';
 
 // Import de proyectos
+import { GetAllItems, DeleteItems } from 'api/clients/ItemsClient';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllTemplate, DeleteTemplate } from 'api/clients/TemplateClient';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -42,8 +44,6 @@ import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
-import { IconFileExport } from '@tabler/icons';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -83,9 +83,9 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'nameCIE11',
+        id: 'descripcion',
         numeric: false,
-        label: 'CIE11',
+        label: 'Descripción',
         align: 'left'
     },
     {
@@ -219,9 +219,9 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
-const ListTemplate = () => {
+const ListItems = () => {
     const dispatch = useDispatch();
-    const [lsTemplate, setLsTemplate] = useState([]);
+    const [items, setItems] = useState([]);
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -236,11 +236,9 @@ const ListTemplate = () => {
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
-            const lsServer = await GetAllTemplate(0, 0);
-            if (lsServer.status === 200) {
-                setLsTemplate(lsServer.data.entities);
-                setRows(lsServer.data.entities);
-            }
+            const lsServer = await GetAllItems(0, 0);
+            setItems(lsServer.data.entities);
+            setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
         }
@@ -260,7 +258,7 @@ const ListTemplate = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion'];
+                const properties = ['id', 'descripcion', 'nameTipoAtencion', 'nameAtencion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -274,9 +272,9 @@ const ListTemplate = () => {
                 }
                 return matches;
             });
-            setLsTemplate(newRows);
+            setItems(newRows);
         } else {
-            setLsTemplate(rows);
+            setItems(rows);
         }
     };
 
@@ -291,7 +289,7 @@ const ListTemplate = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = lsTemplate.map((n) => n.id);
+            const newSelectedId = items.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -332,7 +330,7 @@ const ListTemplate = () => {
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
-            const result = await DeleteTemplate(idCheck);
+            const result = await DeleteItems(idCheck);
             if (result.status === 200) {
                 dispatch({
                     type: SNACKBAR_OPEN,
@@ -354,10 +352,11 @@ const ListTemplate = () => {
     const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - items.length) : 0;
 
     return (
-        <MainCard title="Lista de Plantilla" content={false}>
+        <MainCard title="Lista de Items" content={false}>
+
             {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -383,18 +382,16 @@ const ListTemplate = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Plantilla">
-                            <ExcelSheet data={lsTemplate} name="Plantilla">
+                        } filename="Items">
+                            <ExcelSheet data={items} name="Items">
                                 <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Nombre" value="dx" />
-                                <ExcelColumn label="Tipo de Atención" value="tipoAtencion" />
-                                <ExcelColumn label="Atención" value="idAtencion" />
-                                <ExcelColumn label="Items" value="items" />
                                 <ExcelColumn label="Descripción" value="descripcion" />
+                                <ExcelColumn label="Tipo Atención" value="idTipoAtencion" />
+                                <ExcelColumn label="Atención" value="idAtencion" />
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/template/report')}>
+                        <Tooltip title="Impresión" onClick={() => navigate('/item/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -402,10 +399,9 @@ const ListTemplate = () => {
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/template/add")}>
+                            onClick={() => navigate("/item/add")}>
                             {TitleButton.Agregar}
                         </Button>
-
                     </Grid>
                 </Grid>
             </CardContent>
@@ -419,17 +415,17 @@ const ListTemplate = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsTemplate.length}
+                        rowCount={items.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(lsTemplate, getComparator(order, orderBy))
+                        {stableSort(items, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
-                                if (typeof row === 'string') return null;
+                                if (typeof row === 'number') return null;
 
                                 const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
@@ -443,9 +439,6 @@ const ListTemplate = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
-
                                         <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                             <Checkbox
                                                 color="primary"
@@ -455,7 +448,6 @@ const ListTemplate = () => {
                                                 }}
                                             />
                                         </TableCell>
-
                                         <TableCell
                                             component="th"
                                             id={labelId}
@@ -472,7 +464,6 @@ const ListTemplate = () => {
                                                 #{row.id}{' '}
                                             </Typography>
                                         </TableCell>
-
                                         <TableCell
                                             component="th"
                                             id={labelId}
@@ -485,10 +476,9 @@ const ListTemplate = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameCIE11}{' '}
+                                                {row.descripcion}{' '}
                                             </Typography>
                                         </TableCell>
-
                                         <TableCell
                                             component="th"
                                             id={labelId}
@@ -504,7 +494,6 @@ const ListTemplate = () => {
                                                 {row.nameTipoAtencion}{' '}
                                             </Typography>
                                         </TableCell>
-
                                         <TableCell
                                             component="th"
                                             id={labelId}
@@ -529,7 +518,7 @@ const ListTemplate = () => {
                                                 size="small"
                                                 color="info"
                                                 sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/template/update/${row.id}`)}>
+                                                onClick={() => navigate(`/item/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -555,7 +544,7 @@ const ListTemplate = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsTemplate.length}
+                count={items.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -565,4 +554,4 @@ const ListTemplate = () => {
     );
 };
 
-export default ListTemplate;
+export default ListItems;

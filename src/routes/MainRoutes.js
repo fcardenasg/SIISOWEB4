@@ -216,6 +216,10 @@ const ListWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/
 const WorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/WorkAbsenteeism')));
 const UpdateWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/UpdateWorkAbsenteeism')));
 
+const ListItems = Loadable(lazy(() => import('modules/Items/ListItems')));
+const Items = Loadable(lazy(() => import('modules/Items/Items')));
+const UpdateItems = Loadable(lazy(() => import('modules/Items/UpdateItems')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -311,7 +315,7 @@ const MainRoutes = {
             path: '/supplier/update/:id',
             element: <UpdateSupplier />
         },
-        /* Render de HISTORIA */
+        /* Render de HISTORIA CLÍNICA */
         {
             path: '/assistance/list',
             element: <ListAssistance />
@@ -324,7 +328,6 @@ const MainRoutes = {
             path: '/assistance/update/:id',
             element: <UpdateAssistance />
         },
-
         /* Render de NOTAS DE EVOLUCION */
         {
             path: '/evolutionnotes/list',
@@ -355,7 +358,6 @@ const MainRoutes = {
             path: '/medicaladvice/update/:id',
             element: <UpdateMedicalAdvice />
         },
-
         /* Render de NOTAS DE ENFERMERIA */
         {
             path: '/infirmary/list',
@@ -387,8 +389,6 @@ const MainRoutes = {
             path: '/turner/add',
             element: <Turner />
         },
-
-
         /* Render de HCO */
         {
             path: '/occupationalexamination/list',
@@ -398,7 +398,6 @@ const MainRoutes = {
             path: '/occupationalexamination/add',
             element: <Occupationalexamination />
         },
-
         /* Render de Otras Asesorias */
         {
             path: '/otheradvice/list',
@@ -416,8 +415,6 @@ const MainRoutes = {
             path: '/otheradvice/report',
             element: <ReportOtherAdvice />
         },
-
-
         /* Render de ASESORÍAS PSICOLÓGICA */
         {
             path: '/psychologicalcounseling/list',
@@ -507,6 +504,19 @@ const MainRoutes = {
         {
             path: '/work-absenteeism/update/:id',
             element: <UpdateWorkAbsenteeism />
+        },
+        /* Render de Items */
+        {
+            path: '/item/list',
+            element: <ListItems />
+        },
+        {
+            path: '/item/add',
+            element: <Items />
+        },
+        {
+            path: '/item/update/:id',
+            element: <UpdateItems />
         },
 
 

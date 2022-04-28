@@ -25,11 +25,15 @@ export const CodCatalogo = {
     EstadoAsesoria: 3181,
     EstadoCaso: 3182,
     TipoAtencion: 3183,
-    PLAN_TipoAtencion: 3184,
-    PLAN_Atencion: 3185,
-    PLAN_Items: 3186,
+    Desocupado_EraDe_Plantilla1: 3184,
+    Desocupado_EraDe_Plantilla2: 3185,
+    Desocupado_EraDe_Plantilla3: 3186,
     SaludOcupacional_Atencion: 4175,
     SaludOcupacional_Motivo: 4176,
+    TipoAtencion_Item: 3184,
+    Atencion_HistoriaClinica: 4177,
+    Opciones_SINO: 4184,
+    ConceptoAptitud_HistoriaClinica: 4185,
 }
 
 export const DefaultData = {
@@ -40,6 +44,7 @@ export const DefaultData = {
 
 export const TitleButton = {
     Guardar: 'Guardar',
+    Imprimir: 'Imprimir',
     Cancelar: 'Cerrar',
     Actualizar: 'Actualizar',
     Eliminar: 'Eliminar',
