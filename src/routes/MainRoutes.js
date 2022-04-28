@@ -167,9 +167,13 @@ const ReportEvolutionnotes = Loadable(lazy(() => import('components/report/Repor
 
 const ListMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/ListMedicalAdvice')));
 const MedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/MedicalAdvice')));
+const UpdateMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/UpdateMedicalAdvice')));
+const ReportMedicalAdvice = Loadable(lazy(() => import('components/report/ReportMedicalAdvice')));
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
+const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/UpdatePsychologicalCounseling')));
+const ReportPsychologicalCounseling = Loadable(lazy(() => import('components/report/ReportPsychologicalCounseling')));
 
 
 const ListInfirmary = Loadable(lazy(() => import('../modules/Infirmary/ListInfirmary')));
@@ -189,6 +193,32 @@ const Occupationalexamination = Loadable(lazy(() => import('modules/Occupational
 
 const ListOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/ListOtherAdvice')));
 const OtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/OtherAdvice')));
+const UpdateOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/UpdateOtherAdvice')));
+const ReportOtherAdvice = Loadable(lazy(() => import('components/report/ReportOtherAdvice')));
+
+const ListCIE11 = Loadable(lazy(() => import('modules/CIE11/ListCIE11')));
+const CIE11 = Loadable(lazy(() => import('modules/CIE11/CIE11')));
+const UpdateCIE11 = Loadable(lazy(() => import('modules/CIE11/UpdateCIE11')));
+
+const ListTemplate = Loadable(lazy(() => import('modules/Template/ListTemplate')));
+const Template = Loadable(lazy(() => import('modules/Template/Template')));
+const UpdateTemplate = Loadable(lazy(() => import('modules/Template/UpdateTemplate')));
+
+const ListOccupationalHealth = Loadable(lazy(() => import('modules/OccupationalHealth/ListOccupationalHealth')));
+const OccupationalHealth = Loadable(lazy(() => import('modules/OccupationalHealth/OccupationalHealth')));
+const UpdateOccupationalHealth = Loadable(lazy(() => import('modules/OccupationalHealth/UpdateOccupationalHealth')));
+
+const ListOccupationalMedicine = Loadable(lazy(() => import('modules/OccupationalMedicine/ListOccupationalMedicine')));
+const OccupationalMedicine = Loadable(lazy(() => import('modules/OccupationalMedicine/OccupationalMedicine')));
+const UpdateOccupationalMedicine = Loadable(lazy(() => import('modules/OccupationalMedicine/UpdateOccupationalMedicine')));
+
+const ListWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/ListWorkAbsenteeism')));
+const WorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/WorkAbsenteeism')));
+const UpdateWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/UpdateWorkAbsenteeism')));
+
+const ListItems = Loadable(lazy(() => import('modules/Items/ListItems')));
+const Items = Loadable(lazy(() => import('modules/Items/Items')));
+const UpdateItems = Loadable(lazy(() => import('modules/Items/UpdateItems')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -265,7 +295,7 @@ const MainRoutes = {
             element: <UpdateEmployee />
         },
         {
-            path: '/employee/report/:id',
+            path: '/employee/report/',
             element: <ReportEmployee />
         },
         /* Render de Proveedores */
@@ -285,7 +315,7 @@ const MainRoutes = {
             path: '/supplier/update/:id',
             element: <UpdateSupplier />
         },
-        /* Render de HISTORIA */
+        /* Render de HISTORIA CLÍNICA */
         {
             path: '/assistance/list',
             element: <ListAssistance />
@@ -298,7 +328,6 @@ const MainRoutes = {
             path: '/assistance/update/:id',
             element: <UpdateAssistance />
         },
-
         /* Render de NOTAS DE EVOLUCION */
         {
             path: '/evolutionnotes/list',
@@ -314,6 +343,10 @@ const MainRoutes = {
         },
         /* Render de ASESORÍAS MÉDICA */
         {
+            path: '/medicaladvice/report',
+            element: <ReportMedicalAdvice />
+        },
+        {
             path: '/medicaladvice/list',
             element: <ListMedicalAdvice />
         },
@@ -321,7 +354,10 @@ const MainRoutes = {
             path: '/medicaladvice/add',
             element: <MedicalAdvice />
         },
-
+        {
+            path: '/medicaladvice/update/:id',
+            element: <UpdateMedicalAdvice />
+        },
         /* Render de NOTAS DE ENFERMERIA */
         {
             path: '/infirmary/list',
@@ -353,8 +389,6 @@ const MainRoutes = {
             path: '/turner/add',
             element: <Turner />
         },
-
-
         /* Render de HCO */
         {
             path: '/occupationalexamination/list',
@@ -364,7 +398,6 @@ const MainRoutes = {
             path: '/occupationalexamination/add',
             element: <Occupationalexamination />
         },
-
         /* Render de Otras Asesorias */
         {
             path: '/otheradvice/list',
@@ -374,14 +407,14 @@ const MainRoutes = {
             path: '/otheradvice/add',
             element: <OtherAdvice />
         },
-
-
-
-
-        /* {
-                path: '/medicaladvice/update/:id',
-                element: <UpdateMedicalAdvice />
-            }, */
+        {
+            path: '/otheradvice/update/:id',
+            element: <UpdateOtherAdvice />
+        },
+        {
+            path: '/otheradvice/report',
+            element: <ReportOtherAdvice />
+        },
         /* Render de ASESORÍAS PSICOLÓGICA */
         {
             path: '/psychologicalcounseling/list',
@@ -391,8 +424,100 @@ const MainRoutes = {
             path: '/psychologicalcounseling/add',
             element: <PsychologicalCounseling />
         },
-
-
+        {
+            path: '/psychologicalcounseling/update/:id',
+            element: <UpdatePsychologicalCounseling />
+        },
+        {
+            path: '/psychologicalcounseling/report',
+            element: <ReportPsychologicalCounseling />
+        },
+        /* Render de CIE11 */
+        {
+            path: '/cie11/list',
+            element: <ListCIE11 />
+        },
+        {
+            path: '/cie11/add',
+            element: <CIE11 />
+        },
+        {
+            path: '/cie11/update/:id',
+            element: <UpdateCIE11 />
+        },
+        {
+            path: '/cie11/report',
+            element: <ReportPsychologicalCounseling />
+        },
+        /* Render de TEMPLATE */
+        {
+            path: '/template/list',
+            element: <ListTemplate />
+        },
+        {
+            path: '/template/add',
+            element: <Template />
+        },
+        {
+            path: '/template/update/:id',
+            element: <UpdateTemplate />
+        },
+        {
+            path: '/template/report',
+            element: <ReportPsychologicalCounseling />
+        },
+        /* Render de OCCUPATIONAL HEALTH */
+        {
+            path: '/occupational-health/list',
+            element: <ListOccupationalHealth />
+        },
+        {
+            path: '/occupational-health/add',
+            element: <OccupationalHealth />
+        },
+        {
+            path: '/occupational-health/update/:id',
+            element: <UpdateOccupationalHealth />
+        },
+        /* Render de Occupational Medicine */
+        {
+            path: '/occupationalmedicine/list',
+            element: <ListOccupationalMedicine />
+        },
+        {
+            path: '/occupationalmedicine/add',
+            element: <OccupationalMedicine />
+        },
+        {
+            path: '/occupationalmedicine/update/:id',
+            element: <UpdateOccupationalMedicine />
+        },
+        /* Render de Work Absenteeism */
+        {
+            path: '/work-absenteeism/list',
+            element: <ListWorkAbsenteeism />
+        },
+        {
+            path: '/work-absenteeism/add',
+            element: <WorkAbsenteeism />
+        },
+        {
+            path: '/work-absenteeism/update/:id',
+            element: <UpdateWorkAbsenteeism />
+        },
+        /* Render de Items */
+        {
+            path: '/item/list',
+            element: <ListItems />
+        },
+        {
+            path: '/item/add',
+            element: <Items />
+        },
+        {
+            path: '/item/update/:id',
+            element: <UpdateItems />
+        },
 
 
         {

@@ -33,7 +33,7 @@ import { GetAllCompany } from 'api/clients/CompanyClient';
 import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import InputDate from 'components/input/InputDate';
+import InputDatePick from 'components/input/InputDatePick';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -400,7 +400,7 @@ const Medicalformula = () => {
                                 </Grid>
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
-                                        <InputDate
+                                        <InputDatePick
                                             defaultValue=""
                                             name="fechaNaci"
                                             label="Fecha de Nacimiento"
@@ -471,7 +471,7 @@ const Medicalformula = () => {
                                     <Grid item xs={3}>
                                         <AnimateButton>
                                             <FormProvider {...methods}>
-                                                <InputDate
+                                                <InputDatePick
                                                     defaultValue=""
                                                     fullWidth
                                                     name="fechaContrato"
@@ -733,7 +733,7 @@ const Medicalformula = () => {
                             <Grid container justifyContent="center" alignItems="center" spacing={2} sx={{ pb: 3 }}>
                                 <Grid item xs={3}>
                                     <FormProvider {...methods}>
-                                        <InputDate
+                                        <InputDatePick
                                             defaultValue=""
                                             name="fechaatencion"
                                             label="Fecha"

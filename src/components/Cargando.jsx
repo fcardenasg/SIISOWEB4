@@ -1,5 +1,11 @@
+import { CircularProgress, Grid } from '@mui/material';
+
 export default function Cargando() {
-    return <img src="https://media3.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e47uz06nfdowxn0wvey36z5wxqxw36vanplm24i46fi&rid=giphy.gif"
-        alt="loading gif"
-    />
+    return (
+        <>
+            <Grid container justifyContent="center">
+                <CircularProgress color="success" size={250} />
+            </Grid>
+        </>
+    )
 }

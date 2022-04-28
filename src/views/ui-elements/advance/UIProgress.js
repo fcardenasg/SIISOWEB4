@@ -93,7 +93,7 @@ const UIProgress = () => {
     const [progress, setProgress] = useState(0);
     const [buffer, setBuffer] = useState(10);
 
-    const progressRef = useRef(() => {});
+    const progressRef = useRef(() => { });
     useEffect(() => {
         progressRef.current = () => {
             if (progress > 100) {

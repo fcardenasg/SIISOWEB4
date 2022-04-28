@@ -8,7 +8,6 @@ import {
     Backdrop
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-
 import MainCard from 'ui-component/cards/MainCard';
 
 function getModalStyle() {
@@ -17,6 +16,7 @@ function getModalStyle() {
 
     return {
         top: `${top}%`,
+        left: `${left}%`,
         margin: 'auto'
     };
 }
@@ -38,7 +38,6 @@ const ModalChildren = ({ open, onClose, title, children }) => {
         >
             <Fade in={open}>
                 <MainCard
-                    style={modalStyle}
                     sx={{
                         position: 'absolute',
                         top: '50%',

@@ -20,9 +20,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 // Import del Proyecto
 import SelectOnChange from 'components/input/SelectOnChange';
-import InputDate from 'components/input/InputDate';
 import { FormatDate } from 'components/helpers/Format';
-import InputCheckBox from 'components/input/InputCheckBox';
 import SubCard from 'ui-component/cards/SubCard';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertQuestionnaire, UpdateQuestionnaires } from 'api/clients/QuestionnaireClient';
@@ -40,53 +38,6 @@ import SideIconCard from 'ui-component/cards/SideIconCard';
 import InputCheck from 'components/input/InputCheck';
 import InputOnChange from 'components/input/InputOnChange';
 import InputDatePick from 'components/input/InputDatePick';
-
-// ==============================|| SOCIAL PROFILE - POST ||============================== //
-
-/* VALIDACIÓN CON YUP */
-/* const validationSchema = yup.object().shape({
-    nombre: yup.string().required(`${ValidationMessage.Requerido}`),
-    telefono: yup.string().required(`${ValidationMessage.Requerido}`),
-    email: yup.string().required(`${ValidationMessage.Requerido}`),
-    empresa: yup.string().required(`${ValidationMessage.Requerido}`),
-}); */
-
-const defaultValues = {
-    fiebre: false,
-    congestionNasal: false,
-    dolorGarganta: false,
-    dificultadRespiratoria: false,
-    malestarGeneral: false,
-    escalofrios: false,
-    vomito: false,
-    tos: false,
-    otrosSintomas: false,
-    contactoEstrecho: false,
-    contactoSinTapabocas: false,
-    contactoTiempo: false,
-    contactoMano: false,
-    consultaEps: false,
-    cumplirTiempoAislamiento: false,
-    vacunado: false,
-    autorizarTurno: false,
-    ordenAislamiento: false,
-    censoViveServicioSalud: false,
-    censoViveAdultoM: false,
-    contactoPocaDistancia: false,
-    censoProfesion: 73,
-    censoContactoCon: 73,
-    censoObservacion: "Sin Registro",
-
-    laboratorioPrimera: 73,
-    dosisPrimera: 73,
-    fechaPrimera: FormatDate(new Date()),
-    laboratorioSegunda: 73,
-    dosisSegunda: 73,
-    fechaSegunda: FormatDate(new Date()),
-    laboratorioTercera: 73,
-    dosisTercera: 73,
-    fechaTercera: FormatDate(new Date()),
-};
 
 const DashboardQuestionnaire = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
@@ -129,6 +80,8 @@ const DashboardQuestionnaire = () => {
     const [escalofrios, setEscalofrios] = useState(false);
     const [otrosSintomas, setOtrosSintomas] = useState(false);
     const [censoObservacion, setObservacion] = useState('');
+    const [censoProfesion, setCensoProfesion] = useState(73);
+    const [censoContactoCon, setCensoContactoCon] = useState(73);
 
     const [laboratorioPrimera, setLaboratorioPrimera] = useState(73);
     const [dosisPrimera, setDosisPrimera] = useState(73);
@@ -136,8 +89,6 @@ const DashboardQuestionnaire = () => {
     const [dosisSegunda, setDosisSegunda] = useState(73);
     const [laboratorioTercera, setLaboratorioTercera] = useState(73);
     const [dosisTercera, setDosisTercera] = useState(73);
-    const [censoProfesion, setCensoProfesion] = useState(73);
-    const [censoContactoCon, setCensoContactoCon] = useState(73);
 
     const [fechaPrimera, setFechaPrimera] = useState(new Date());
     const [fechaSegunda, setFechaSegunda] = useState(new Date());
@@ -214,7 +165,7 @@ const DashboardQuestionnaire = () => {
         setNombre('');
         setTelefono('');
         setEmail('');
-        setDocument(null);
+        setDocument('');
         setEmpresa(73);
         setBtnReport(false);
         setNoSymptoms(false);
@@ -227,7 +178,7 @@ const DashboardQuestionnaire = () => {
         setContactoMano(false);
         setConsultaEps(false);
         setCumplirTiempoAislamiento(false);
-        setCensoViveAdultoM(73);
+        setCensoViveAdultoM(false);
         setFiebre(false);
         setDificultadRespiratoria(false);
         setVomito(false);
@@ -252,10 +203,28 @@ const DashboardQuestionnaire = () => {
         setLsQuestionnaire([]);
     }
 
-    const methods = useForm(
-        { defaultValues }
-        /* resolver: yupResolver(validationSchema), */
-    );
+    const handleNoSymptoms = (event) => {
+        setNoSymptoms(event.target.checked)
+        if (event.target.checked) {
+            setLivePerson(false);
+            setCensoProfesion(73);
+            setCensoContactoCon(73);
+            setCensoViveAdultoM(false);
+            setObservacion('');
+            setFiebre(false);
+            setCongestionNasal(false);
+            setDolorGarganta(false);
+            setDificultadRespiratoria(false);
+            setMalestarGeneral(false);
+            setEscalofrios(false);
+            setVomito(false);
+            setTos(false);
+            setOtrosSintomas(false);
+        }
+    }
+
+    const methods = useForm();
+    /* resolver: yupResolver(validationSchema), */
 
     const { handleSubmit, errors, reset } = methods;
 
@@ -296,17 +265,17 @@ const DashboardQuestionnaire = () => {
                 close: false,
                 transition: 'SlideUp'
             })
-        } else setBtnReport(true);
+        } else { setBtnReport(true); }
     }
 
-    const handleNoSymptoms = (event) => {
-        setNoSymptoms(event.target.checked)
-        if (event.target.checked) {
-
-        }
-    }
-
+    const ocultarBoton = btnReport ? true : false;
     const ordenAislamiento = noSymptoms ? false : true;
+    const marcarSintoma = noSymptoms || fiebre || congestionNasal || dolorGarganta || dificultadRespiratoria ||
+        malestarGeneral || escalofrios || vomito || tos || otrosSintomas ? true : false;
+    const mensajeMarcoSintoma = marcarSintoma ? <></> :
+        <Grid item xs={12}><Typography sx={{ color: 'error.main' }} align="justify" variant="caption">
+            Si no presenta sintomar, marcar esta opción*
+        </Typography></Grid>;
 
     const handleClickSubmit = async (datos) => {
         try {
@@ -326,63 +295,73 @@ const DashboardQuestionnaire = () => {
                 noSymptoms, date, ordenAislamiento, livePerson, censoProfesion,
                 censoContactoCon, censoViveAdultoM, censoObservacion);
 
-            if (lsQuestionnaire.length !== 0) {
-
-                if (Object.keys(datos.length !== 0)) {
-                    const result = await UpdateQuestionnaires(InsertToData);
-                    if (result.status === 200) {
+            if (marcarSintoma) {
+                if (lsQuestionnaire.length !== 0) {
+                    if (Object.keys(datos.length !== 0)) {
+                        const result = await UpdateQuestionnaires(InsertToData);
+                        if (result.status === 200) {
+                            dispatch({
+                                type: SNACKBAR_OPEN,
+                                open: true,
+                                message: `${Message.Guardar}`,
+                                variant: 'alert',
+                                alertSeverity: 'success',
+                                close: false,
+                                transition: 'SlideUp'
+                            })
+                            reset();
+                            handleClearController();
+                        }
+                    } else {
                         dispatch({
                             type: SNACKBAR_OPEN,
                             open: true,
-                            message: `${Message.Guardar}`,
+                            message: 'Hubo un error al guardar los Datos',
                             variant: 'alert',
-                            alertSeverity: 'success',
+                            alertSeverity: 'error',
                             close: false,
                             transition: 'SlideUp'
                         })
-                        reset();
-                        handleClearController();
                     }
                 } else {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: 'Hubo un error al guardar los Datos',
-                        variant: 'alert',
-                        alertSeverity: 'error',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+                    if (Object.keys(datos.length !== 0)) {
+                        const result = await InsertQuestionnaire(InsertToData);
+                        if (result.status === 200) {
+                            dispatch({
+                                type: SNACKBAR_OPEN,
+                                open: true,
+                                message: `${Message.Guardar}`,
+                                variant: 'alert',
+                                alertSeverity: 'success',
+                                close: false,
+                                transition: 'SlideUp'
+                            })
+                            reset();
+                            handleClearController();
+                        }
+                    } else {
+                        dispatch({
+                            type: SNACKBAR_OPEN,
+                            open: true,
+                            message: 'Hubo un error al guardar los Datos',
+                            variant: 'alert',
+                            alertSeverity: 'error',
+                            close: false,
+                            transition: 'SlideUp'
+                        })
+                    }
                 }
             } else {
-                if (Object.keys(datos.length !== 0)) {
-                    const result = await InsertQuestionnaire(InsertToData);
-                    if (result.status === 200) {
-                        dispatch({
-                            type: SNACKBAR_OPEN,
-                            open: true,
-                            message: `${Message.Guardar}`,
-                            variant: 'alert',
-                            alertSeverity: 'success',
-                            close: false,
-                            transition: 'SlideUp'
-                        })
-                        reset();
-                        handleClearController();
-                    }
-                } else {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: 'Hubo un error al guardar los Datos',
-                        variant: 'alert',
-                        alertSeverity: 'error',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
-                }
+                dispatch({
+                    type: SNACKBAR_OPEN,
+                    open: true,
+                    message: 'Por favor, debe seleccionar algún síntoma',
+                    variant: 'alert',
+                    alertSeverity: 'warning',
+                    close: false,
+                    transition: 'SlideUp'
+                })
             }
-
         } catch (error) {
             dispatch({
                 type: SNACKBAR_OPEN,
@@ -414,6 +393,7 @@ const DashboardQuestionnaire = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                                 required={true}
                                 helperText="Por favor, dar Enter"
+                                autoFocus
                             />
                         </Grid>
 
@@ -528,30 +508,30 @@ const DashboardQuestionnaire = () => {
                         Nos interesa saber cómo te sientes, por favor recuerda reportar tu estado de salud todos los días
                     </Typography>
 
-                    <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
-                        <Grid container justifyContent="center" alignItems="center" spacing={1}>
-                            <Grid item xs={6}>
-                                <AnimateButton>
-                                    <Button variant="contained" onClick={handleClick} fullWidth>
-                                        Reportar
-                                    </Button>
-                                </AnimateButton>
+                    {ocultarBoton ? (<></>) : (
+                        <Grid item xs={12} sx={{ pb: 3, pt: 5 }}>
+                            <Grid container justifyContent="center" alignItems="center" spacing={1}>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="contained" onClick={handleClick} fullWidth>
+                                            Reportar
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Grid>
+                        </Grid>)}
 
                     {btnReport ?
                         (
-                            <Grid container justifyContent="left" alignItems="flex-start" spacing={2}>
+                            <Grid container sx={{ pt: 5 }} justifyContent="left" alignItems="flex-start" spacing={2}>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputCheck
-                                            label="No presenta ningún síntoma"
-                                            size={40}
-                                            checked={noSymptoms}
-                                            onChange={handleNoSymptoms}
-                                        />
-                                    </FormProvider>
+                                    <InputCheck
+                                        label="No presenta ningún síntoma"
+                                        size={40}
+                                        checked={noSymptoms}
+                                        onChange={handleNoSymptoms}
+                                    />
+                                    {mensajeMarcoSintoma}
                                 </Grid>
                                 <Grid item xs={4}>
                                     <Grid container>
@@ -561,7 +541,7 @@ const DashboardQuestionnaire = () => {
                                             checked={contactoEstrecho}
                                             onChange={(event) => setContactoEstrecho(event.target.checked)}
                                         />
-                                        <Typography align="letf" variant="caption">
+                                        <Typography align="justify" variant="caption">
                                             En los últimos 14 días ha tenido contacto con alguna
                                             persona con síntomas o que haya sido declarada enferma o
                                             sospechosa para COVID-19, en las siguientes condiciones:
@@ -577,36 +557,42 @@ const DashboardQuestionnaire = () => {
                                     />
                                 </Grid>
 
+                                <Grid container xs={12} sx={{ pb: 5 }}></Grid>
+
                                 {
                                     noSymptoms ? (
                                         <>
-                                            <Grid sx={{ pt: 2, pb: 2 }} container spacing={2} direction="row"
-                                                justifyContent="space-evenly"
-                                                alignItems="center" xs={12}>
-                                                <Grid item xs={4}>
-                                                    <SideIconCard
-                                                        iconPrimary={ThumbUpOffAltIcon}
-                                                        primary="APTO"
-                                                        secondary="Se autoriza el ingreso al turno"
-                                                        color={theme.palette.success.dark}
-                                                        bgcolor={theme.palette.grey[200]}
-                                                    />
-                                                </Grid>
-                                                <Divider />
-                                                <Grid item xs={4}>
-                                                    <SideIconCard
-                                                        iconPrimary={LocalHospitalIcon}
-                                                        primary="NO"
-                                                        secondary="No se ordena iniciar aislamiento y consultar a la EPS"
-                                                        color={theme.palette.error.dark}
-                                                        bgcolor={theme.palette.grey[200]}
-                                                    />
-                                                </Grid>
+                                            <Grid sx={{ pb: 5 }} item xs={12}>
+                                                <SubCard title="AUTORIZACIÓN DE INGRESO">
+                                                    <Grid container spacing={2} direction="row"
+                                                        justifyContent="space-evenly"
+                                                        alignItems="center" xs={12}>
+                                                        <Grid item xs={4}>
+                                                            <SideIconCard
+                                                                iconPrimary={ThumbUpOffAltIcon}
+                                                                primary="APTO"
+                                                                secondary="Se autoriza el ingreso al turno"
+                                                                color={theme.palette.success.dark}
+                                                                bgcolor={theme.palette.grey[200]}
+                                                            />
+                                                        </Grid>
+                                                        <Divider />
+                                                        <Grid item xs={4}>
+                                                            <SideIconCard
+                                                                iconPrimary={LocalHospitalIcon}
+                                                                primary="NO"
+                                                                secondary="No se ordena iniciar aislamiento y consultar a la EPS"
+                                                                color={theme.palette.error.dark}
+                                                                bgcolor={theme.palette.grey[200]}
+                                                            />
+                                                        </Grid>
+                                                    </Grid>
+                                                </SubCard>
                                             </Grid>
 
                                             {contactoEstrecho ? (
                                                 <>
-                                                    <Grid item xs={12}>
+                                                    <Grid sx={{ pb: 5 }} item xs={12}>
                                                         <SubCard title="SI LA RESPUESTA ES SÍ, RESPONDA LAS SIGUIENTES:">
                                                             <Grid container justifyContent="left" alignItems="center">
                                                                 <InputCheck
@@ -642,7 +628,7 @@ const DashboardQuestionnaire = () => {
                                                             </Grid>
                                                         </SubCard>
                                                     </Grid>
-                                                    <Grid item xs={12}>
+                                                    <Grid sx={{ pb: 5 }} item xs={12}>
                                                         <SubCard title="PREGUNTAS SOLO PARA CASOS CON RESPUESTAS POSITIVAS">
                                                             <Grid container justifyContent="left" alignItems="center">
                                                                 <InputCheck
@@ -667,7 +653,7 @@ const DashboardQuestionnaire = () => {
 
                                             {vacuna ? (
                                                 <>
-                                                    <Grid item xs={12}>
+                                                    <Grid sx={{ pb: 5 }} item xs={12}>
                                                         <SubCard title="SECCIÓN DE VACUNACIÓN">
                                                             <Grid container>
                                                                 <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
@@ -786,8 +772,7 @@ const DashboardQuestionnaire = () => {
                                         </>
                                     ) : (
                                         <>
-                                            <Divider />
-                                            <Grid sx={{ pt: 2 }} item xs={12}>
+                                            <Grid sx={{ pb: 5, pt: 5 }} item xs={12}>
                                                 <SubCard title="CENSO">
                                                     <Grid spacing={2} container>
                                                         <Grid item xs={4}>
@@ -840,23 +825,13 @@ const DashboardQuestionnaire = () => {
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 required={true}
                                                             />
-                                                            {/* <FormProvider {...methods}>
-                                                                <InputText
-                                                                    defaultValue=""
-                                                                    fullWidth
-                                                                    name="censoObservacion"
-                                                                    label="Observación"
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider> */}
                                                         </Grid>
                                                     </Grid>
                                                 </SubCard>
                                             </Grid>
 
-                                            <Grid item xs={12}>
-                                                <SubCard title="SINTOMAS ACTUALES">
+                                            <Grid sx={{ pb: 5 }} item xs={12}>
+                                                <SubCard title="SÍNTOMAS ACTUALES">
                                                     <Grid container>
                                                         <Grid item xs={4}>
                                                             <InputCheck
@@ -885,7 +860,7 @@ const DashboardQuestionnaire = () => {
                                                         <Grid item xs={4}>
                                                             <InputCheck
                                                                 checked={congestionNasal}
-                                                                label="Congestion Nasal"
+                                                                label="Congestión Nasal"
                                                                 size={25}
                                                                 onChange={(event) => setCongestionNasal(event.target.checked)}
                                                             />
@@ -936,7 +911,7 @@ const DashboardQuestionnaire = () => {
 
                                             {contactoEstrecho ? (
                                                 <>
-                                                    <Grid item xs={12}>
+                                                    <Grid sx={{ pb: 5 }} item xs={12}>
                                                         <SubCard title="SI LA RESPUESTA ES SÍ, RESPONDA LAS SIGUIENTES:">
                                                             <Grid container justifyContent="left" alignItems="center">
                                                                 <InputCheck
@@ -972,7 +947,7 @@ const DashboardQuestionnaire = () => {
                                                             </Grid>
                                                         </SubCard>
                                                     </Grid>
-                                                    <Grid item xs={12}>
+                                                    <Grid sx={{ pb: 5 }} item xs={12}>
                                                         <SubCard title="PREGUNTAS SOLO PARA CASOS CON RESPUESTAS POSITIVAS">
                                                             <Grid container justifyContent="left" alignItems="center">
                                                                 <InputCheck
@@ -997,7 +972,7 @@ const DashboardQuestionnaire = () => {
 
                                             {vacuna ? (
                                                 <>
-                                                    <Grid item xs={12}>
+                                                    <Grid sx={{ pb: 5 }} item xs={12}>
                                                         <SubCard title="SECCIÓN DE VACUNACIÓN">
                                                             <Grid container>
                                                                 <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
@@ -1099,27 +1074,31 @@ const DashboardQuestionnaire = () => {
                                             {fiebre || congestionNasal || dolorGarganta || dificultadRespiratoria ||
                                                 malestarGeneral || escalofrios || vomito || tos || otrosSintomas ? (
                                                 <>
-                                                    <Grid sx={{ pt: 2, pb: 2 }} container spacing={2} direction="row"
-                                                        justifyContent="space-evenly"
-                                                        alignItems="center" xs={12}>
-                                                        <Grid item xs={4}>
-                                                            <SideIconCard
-                                                                iconPrimary={ThumbUpOffAltIcon}
-                                                                primary="NO APTO"
-                                                                secondary="No se autoriza el ingreso al turno"
-                                                                color={theme.palette.error.dark}
-                                                                bgcolor={theme.palette.grey[200]}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <SideIconCard
-                                                                iconPrimary={LocalHospitalIcon}
-                                                                primary="SI"
-                                                                secondary="Se ordena iniciar aislamiento y consultar a la EPS"
-                                                                color={theme.palette.success.dark}
-                                                                bgcolor={theme.palette.grey[200]}
-                                                            />
-                                                        </Grid>
+                                                    <Grid sx={{ pb: 5 }} item xs={12}>
+                                                        <SubCard title="AUTORIZACIÓN DE INGRESO">
+                                                            <Grid sx={{ pt: 2, pb: 2 }} container spacing={2} direction="row"
+                                                                justifyContent="space-evenly"
+                                                                alignItems="center" xs={12}>
+                                                                <Grid item xs={4}>
+                                                                    <SideIconCard
+                                                                        iconPrimary={ThumbUpOffAltIcon}
+                                                                        primary="NO APTO"
+                                                                        secondary="No se autoriza el ingreso al turno"
+                                                                        color={theme.palette.error.dark}
+                                                                        bgcolor={theme.palette.grey[200]}
+                                                                    />
+                                                                </Grid>
+                                                                <Grid item xs={4}>
+                                                                    <SideIconCard
+                                                                        iconPrimary={LocalHospitalIcon}
+                                                                        primary="SI"
+                                                                        secondary="Se ordena iniciar aislamiento y consultar a la EPS"
+                                                                        color={theme.palette.success.dark}
+                                                                        bgcolor={theme.palette.grey[200]}
+                                                                    />
+                                                                </Grid>
+                                                            </Grid>
+                                                        </SubCard>
                                                     </Grid>
                                                 </>) : (<></>)}
 

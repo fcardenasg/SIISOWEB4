@@ -66,7 +66,7 @@ import { GetAllCompany } from 'api/clients/CompanyClient';
 import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import InputDate from 'components/input/InputDate';
+import InputDatePick from 'components/input/InputDatePick';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -136,6 +136,8 @@ const tabsOption = [
         label: 'Framingham',
         icon: <MonitorHeartIcon sx={{ fontSize: '1.3rem' }} />
     }
+
+
 ];
 
 
@@ -156,7 +158,6 @@ const Occupationalexamination = () => {
 
     /* NUESTROS ESTADOS PARA LOS COMBOS */
     const [catalog, setCatalog] = useState([]);
-    const [employee, setEmployee] = useState([]);
     const [company, setCompany] = useState([]);
     const [lsEscolaridad, setEscolaridad] = useState([]);
     const [lsMunicipio, setMunicipio] = useState([]);
@@ -206,6 +207,21 @@ const Occupationalexamination = () => {
         setNote('')
     }
 
+    const [employee, setEmployee] = useState([]);
+
+    const idEmpleado = 40;
+    async function GetById() {
+        try {
+            const lsServer = await GetByIdEmployee(idEmpleado);
+            if (lsServer.status === 200) {
+                setEmployee(lsServer.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
     /* ESTADOS PARA LAS FECHAS */
     const [valueFechaNaci, setFechaNaci] = useState(null);
     const [valueFechaContrato, setFechaContrato] = useState(null);
@@ -242,19 +258,6 @@ const Occupationalexamination = () => {
         setImgSrc(null);
     }
 
-    /* EVENTO DE FILTRAR COMBO DEPARTAMENTO */
-    async function GetSubString(codigo) {
-        const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo);
-        var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
-            label: item.nombre,
-            value: item.idCatalogo
-        }));
-        console.log("resultMunicipio = ", resultMunicipio);
-        setMunicipio(resultMunicipio);
-    }
-
-
-
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
@@ -287,10 +290,6 @@ const Occupationalexamination = () => {
                 label: item.descripcionSpa
             }));
             setCompany(resultCompany);
-
-            const lsServer = await GetByIdEmployee(29);
-            if (lsServer.status === 200)
-                setEmployee(lsServer.data);
         } catch (error) {
             console.log(error);
         }
@@ -300,6 +299,7 @@ const Occupationalexamination = () => {
     useEffect(() => {
         GetAll();
         handleListen();
+        GetById();
     }, [isListening])
 
     const CleanCombo = () => {
@@ -450,9 +450,9 @@ const Occupationalexamination = () => {
 
                         <Grid container spacing={4} sx={{ pb: 6 }}>
 
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <FormProvider {...methods}>
-                                    <InputDate
+                                    <InputDatePick
                                         defaultValue=""
                                         name="fechaatencion"
                                         label="Fecha"
@@ -463,7 +463,7 @@ const Occupationalexamination = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="atencion"
@@ -475,7 +475,7 @@ const Occupationalexamination = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="contingencia"
@@ -487,7 +487,7 @@ const Occupationalexamination = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="turno"
@@ -500,7 +500,7 @@ const Occupationalexamination = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="diaturno"
@@ -513,60 +513,7 @@ const Occupationalexamination = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="nombres"
-                                        label="Peso(Kilos)"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="nombres"
-                                        label="Talla(Metros)"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="nombres"
-                                        label="IMC"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="nombres"
-                                        label="Clasificación"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <FormProvider {...methods}>
                                     <AnimateButton>
                                         <Button size="large" variant="contained" type="submit" fullWidth>

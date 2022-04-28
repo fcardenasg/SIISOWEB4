@@ -9,7 +9,6 @@ export async function postData(url = '', datos = {}) {
             url: `${Url.Base}${url}`,
             data: datos
         }).then(respuesta => {
-            console.log(respuesta);
             if (respuesta.status !== 200) throw Error(respuesta.status);
 
             return respuesta;
@@ -26,11 +25,8 @@ export async function getData(url = '', parametros = {}) {
         const urlGet = new URL(`${Url.Base}${url}`)
         Object.keys(parametros).forEach(key => urlGet.searchParams.append(key, parametros[key]))
 
-        console.log(urlGet);
-
         return await axios.get(urlGet)
             .then(respuesta => {
-                console.log(respuesta);
                 if (respuesta.status !== 200) throw Error(respuesta.status);
 
                 return respuesta;
@@ -49,7 +45,6 @@ export async function putData(url = '', datos = {}) {
             url: `${Url.Base}${url}`,
             data: datos
         }).then(respuesta => {
-            console.log(respuesta);
             if (respuesta.status !== 200) throw Error(respuesta.status);
 
             return respuesta;
@@ -68,7 +63,6 @@ export async function deleteData(url = '', parametros = {}) {
 
         return await axios.delete(urlDelete)
             .then(respuesta => {
-                console.log(respuesta);
                 if (respuesta.status !== 200) throw Error(respuesta.status);
 
                 return respuesta;

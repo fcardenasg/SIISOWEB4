@@ -6,28 +6,22 @@ import {
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { LocalizationProvider, MobileDatePicker } from "@mui/lab";
 
-const InputDatePick = ({ bug, value, label, onChange, name, required, ...others }) => {
-
-    let isError = false;
-    let errorMessage = '';
-    if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
-        isError = true;
-        errorMessage = bug[name].message;
-    }
+const InputDatePick = ({ bug, disabled, value, label, onChange, name, required, ...others }) => {
 
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <MobileDatePicker
-                    id="date-picker-dialog"
                     label={label}
                     inputFormat="yyyy/MM/dd"
                     value={value}
+                    disabled={disabled}
                     onChange={onChange}
                     renderInput={(params) => <TextField {...params} fullWidth />}
                     KeyboardButtonProps={{
                         "aria-label": "change date"
                     }}
+                    {...others}
                 />
             </LocalizationProvider>
         </>
@@ -41,5 +35,6 @@ InputDatePick.propTypes = {
     onChange: PropTypes.func,
     label: PropTypes.string,
     value: PropTypes.any,
+    disabled: PropTypes.any,
     name: PropTypes.string
 };

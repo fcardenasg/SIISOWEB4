@@ -68,7 +68,6 @@ const TypeCatalog = () => {
                 close: false,
                 transition: 'SlideUp'
             })
-            console.log(error);
         }
     };
 

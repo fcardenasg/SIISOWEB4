@@ -70,7 +70,7 @@ const application = {
                     type: 'item',
                     url: '/medicalformula/list'
                 },
-           
+
                 {
                     id: 'account-profile',
                     title: <FormattedMessage id="account-profile" />,
@@ -188,24 +188,25 @@ const application = {
                     breadcrumbs: true
                 },
                 {
-                    id: 'order-list',
-                    title: <FormattedMessage id="order-list" />,
+                    id: 'work-absenteeism',
+                    title: <FormattedMessage id="Ausentismo Laboral" />,
                     type: 'item',
-                    url: '/customer/order-list',
-                    breadcrumbs: false
+                    url: '/work-absenteeism/list',
+                    breadcrumbs: true
                 },
                 {
-                    id: 'order-details',
-                    title: <FormattedMessage id="order-details" />,
+                    id: 'occupational-health',
+                    title: <FormattedMessage id="Salud Ocupacional" />,
                     type: 'item',
-                    url: '/customer/order-details'
+                    url: '/occupational-health/list',
+                    breadcrumbs: true
                 },
                 {
                     id: 'product',
-                    title: <FormattedMessage id="product" />,
+                    title: <FormattedMessage id="Medicina Laboral" />,
                     type: 'item',
-                    url: '/customer/product',
-                    breadcrumbs: false
+                    url: '/occupationalmedicine/list',
+                    breadcrumbs: true
                 },
                 {
                     id: 'product-review',
@@ -428,10 +429,7 @@ const application = {
                 }
             ]
         },
-
-
         {
-
             id: 'advance',
             title: <FormattedMessage id="Parametrización" />,
             type: 'collapse',
@@ -467,23 +465,23 @@ const application = {
                 },
                 {
                     id: 'rating',
-                    title: <FormattedMessage id="rating" />,
+                    title: <FormattedMessage id="CIE11" />,
                     type: 'item',
-                    url: '/advance/rating',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'snackbar',
-                    title: <FormattedMessage id="snackbar" />,
-                    type: 'item',
-                    url: '/advance/snackbar',
+                    url: '/cie11/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'skeleton',
-                    title: <FormattedMessage id="skeleton" />,
+                    title: <FormattedMessage id="Items" />,
                     type: 'item',
-                    url: '/advance/skeleton',
+                    url: '/item/list',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'snackbar',
+                    title: <FormattedMessage id="Plantilla" />,
+                    type: 'item',
+                    url: '/template/list',
                     breadcrumbs: false
                 },
                 {

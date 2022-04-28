@@ -1,14 +1,12 @@
 import { useRef, useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 
-
-
-import { Button, Divider, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 // third-party
 import ReactToPrint from 'react-to-print';
@@ -17,16 +15,8 @@ import ReactToPrint from 'react-to-print';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
-import Chip from 'ui-component/extended/Chip';
 import Logo from 'ui-component/Logo';
 import { gridSpacing } from 'store/constant';
-
-
-// table data
-function createData(product, description, quantity, amount, total) {
-    return { product, description, quantity, amount, total };
-}
-
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -38,19 +28,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-        border: 1,
-    },
-}));
-
-
 const ReportCompany = () => {
-    const theme = useTheme();
     const componentRef = useRef(null);
 
     const [company, setCompany] = useState([]);
@@ -121,18 +99,12 @@ const ReportCompany = () => {
                                                 <TableCell align="left">{row.gerente}</TableCell>
                                                 <TableCell align="left">{row.email}</TableCell>
                                                 <TableCell align="left">{row.celular}</TableCell>
-                                                {/* <TableCell align="left" sx={{ pr: 3 }}>
-                                                    {row.legt}
-                                                </TableCell> */}
                                             </TableRow>
                                         ))}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
                         </Grid>
-
-
-
                     </Grid>
                 </SubCard>
             </Grid>

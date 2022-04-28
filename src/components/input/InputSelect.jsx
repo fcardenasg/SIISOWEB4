@@ -9,7 +9,7 @@ import {
     Select,
 } from '@mui/material';
 
-const InputSelect = ({ bug, onChange, value, options, size, defaultValue, label, name, ...others }) => {
+const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others }) => {
     let isError = false;
     let errorMessage = '';
     if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
@@ -32,6 +32,7 @@ const InputSelect = ({ bug, onChange, value, options, size, defaultValue, label,
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label={label}
+                            {...others}
                             fullWidth
                             size={size}
                         >
@@ -58,9 +59,7 @@ export default InputSelect;
 
 InputSelect.propTypes = {
     bug: PropTypes.object,
-    onChange: PropTypes.func,
     size: PropTypes.string,
-    value: PropTypes.any,
     label: PropTypes.string,
     defaultValue: PropTypes.any,
     name: PropTypes.string,

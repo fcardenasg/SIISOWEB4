@@ -24,6 +24,31 @@ export const Url = {
     Asesorias: 'api/Asesorias',
     AsesoriasId: 'api/Asesorias/id',
 
+    CIE11: 'api/CIE11',
+    CIE11Id: 'api/CIE11/id',
+
+    Plantilla: 'api/Plantilla',
+    PlantillaId: 'api/Plantilla/id',
+
+    Items: 'api/Item',
+    ItemsId: 'api/Item/id',
+    ItemsGetAllByAtencion: 'api/Item/GetAllByAtencion',
+
+    SegmentoAgrupado: 'api/SegmentoAgrupado',
+    SegmentoAfectado: 'api/SegmentoAfectado/GetAllBySegAgrupado',
+    Subsegmento: 'api/Subsegmento/GetAllBySegAfectado',
+    MetodoCie11: 'api/CIE11/GetAllBySubsegmento',
+
+    SegAfectado: 'api/SegmentoAfectado',
+    Subsegment: 'api/Subsegmento',
+
+    HistoriaClinica: 'api/HistoriaClinica',
+    HistoriaClinicaId: 'api/HistoriaClinica/id',
+
+    TipoAtencion: 'api/TipoAtencion',
+    AtencionGetAllByTipoAtencion: 'api/Atencion/GetAllByTipoAtencion',
+    Atencion: 'api/Atencion',
+
     Cuestionario: 'api/CuestionarioPrevencion',
     CuestionarioSave: 'api/CuestionarioPrevencion/Save',
     CuestionarioId: 'api/CuestionarioPrevencion/id',

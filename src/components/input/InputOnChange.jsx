@@ -1,7 +1,7 @@
-import { TextField } from '@mui/material';
+import { TextField, InputAdornment } from '@mui/material';
 import PropTypes from 'prop-types';
 
-const InputOnChange = ({ label, helperText, value, disabled, onChange, onKeyDown, size, required }) => {
+const InputOnChange = ({ label, value, startAdornment = false, onChange, onKeyDown, size, required, ...others }) => {
     return (
         <>
             <TextField
@@ -9,14 +9,16 @@ const InputOnChange = ({ label, helperText, value, disabled, onChange, onKeyDown
                 fullWidth
                 value={value}
                 onChange={onChange}
-                disabled={disabled}
                 size={size}
-                helperText={helperText}
                 onKeyDown={onKeyDown}
                 InputLabelProps={{
                     className: required ? 'required-label' : '',
                     required: required || false
                 }}
+                InputProps={{
+                    startAdornment: startAdornment ? <InputAdornment position="start"></InputAdornment> : '',
+                }}
+                {...others}
             />
         </>
     );
@@ -26,9 +28,8 @@ export default InputOnChange;
 
 InputOnChange.propTypes = {
     onChange: PropTypes.func,
+    startAdornment: PropTypes.bool,
     size: PropTypes.string,
-    disabled: PropTypes.string,
-    helperText: PropTypes.string,
     label: PropTypes.string,
     value: PropTypes.any,
     onKeyDown: PropTypes.any,

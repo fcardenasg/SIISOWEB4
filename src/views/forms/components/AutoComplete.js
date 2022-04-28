@@ -11,6 +11,8 @@ import { gridSpacing } from 'store/constant';
 // assets
 import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone';
 
+import { useState } from 'react';
+
 // autocomplete options
 const top100Films = [
     { label: 'The Dark Knight', value: 1 },
@@ -25,6 +27,9 @@ const top100Films = [
 // ==============================|| AUTOCOMPLETE ||============================== //
 
 const AutoComplete = () => {
+    const [selected, setSelected] = useState([]);
+    console.log("selected = ", selected);
+
     const theme = useTheme();
     return (
         <MainCard
@@ -105,10 +110,10 @@ const AutoComplete = () => {
                             <Grid item>
                                 <Autocomplete
                                     multiple
+                                    onChange={(event, value) => setSelected(value)}
                                     options={top100Films}
                                     getOptionLabel={(option) => option.label}
-                                    defaultValue={[top100Films[0], top100Films[4]]}
-                                    renderInput={(params) => <TextField {...params} />}
+                                    renderInput={(params) => <TextField {...params} label="Proveedores" />}
                                 />
                             </Grid>
                         </Grid>

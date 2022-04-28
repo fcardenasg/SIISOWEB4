@@ -1,5 +1,5 @@
 // Import de Material-ui
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -10,51 +10,44 @@ import {
     Tooltip,
     Fab
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/AddTwoTone';
 
 // Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
+import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 
 // Import del Proyecto
+import SelectOnChange from 'components/input/SelectOnChange';
+import InputDatePick from 'components/input/InputDatePick';
+import { FormatDate } from 'components/helpers/Format'
+import InputMultiSelects from 'components/input/InputMultiSelects';
+import InputText from 'components/input/InputText';
 import Accordion from 'components/accordion/Accordion';
-import InputMultiselect from 'components/input/InputMultiselect';
-import ModalChildren from 'components/form/ModalChildren';
-import WebCamCapture from 'components/form/WebCam';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
-import { InsertEmployee } from 'api/clients/EmployeeClient';
-import { GetAllCatalog, GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
-import { PostCatalog } from 'formatdata/CatalogForm';
-import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import InputDate from 'components/input/InputDate';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { FormatDate } from 'components/helpers/Format';
-import { PostEmployee } from 'formatdata/EmployeeForm';
-import SelectOnChange from 'components/input/SelectOnChange';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
-//  ACORDEON 
+import InputOnChange from 'components/input/InputOnChange';
 
-import PropTypes from 'prop-types';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import FaceTwoToneIcon from '@mui/icons-material/FaceTwoTone';
-import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
-import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-
-// assets
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import { PostAssistance } from 'formatdata/AssistanceForm';
+import { InsertMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import FullScreenDialogs from 'components/form/FullScreenDialogs';
+import ListAssistance from './ListAssistance';
 
 // Audio
 const SpeechRecognition =
@@ -69,24 +62,66 @@ mic.lang = 'es-ES'
 const Assistance = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* NUESTROS ESTADOS PARA LOS COMBOS */
-    const [catalog, setCatalog] = useState([]);
-    const [company, setCompany] = useState([]);
-    const [lsEscolaridad, setEscolaridad] = useState([]);
-    const [lsMunicipio, setMunicipio] = useState([]);
-    const [lsDepartamento, setDepartamento] = useState([]);
-    const [lsCodigoFilter, setCodigoFilter] = useState([]);
-    const [valueSelect, setValues] = useState('');
-    const [imgSrc, setImgSrc] = useState(null);
-    const [estado, setEstado] = useState(true);
-
     /* ESTADOS PARA EL CONTROL DE VOZ */
-    const [isListening, setIsListening] = useState(false)
-    const [note, setNote] = useState(null)
-    const [savedNotes, setSavedNotes] = useState([])
+    const [isListening, setIsListening] = useState(false);
+    const [buttonReport, setButtonReport] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [note, setNote] = useState(null);
+    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
+
+    /* NUESTROS ESTADOS PARA LOS DIFERENTES USOS */
+    const [document, setDocument] = useState('');
+    const [catalog, setCatalog] = useState([]);
+    const [lsCie11, setLsCie11] = useState([]);
+    const [company, setCompany] = useState([]);
+    const [lsAtencion, setLsAtencion] = useState([]);
+    const [lsDiaTurno, setLsDiaTurno] = useState([]);
+    const [lsTurno, setLsTurno] = useState([]);
+    const [lsContingencia, setLsContingencia] = useState([]);
+    const [lsRemitido, setLsRemitido] = useState([]);
+    const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
+
+    /* MIL Y UN ESTADOS */
+    const [imgSrc, setImgSrc] = useState(null);
+    const [fecha, setFecha] = useState(new Date());
+    const [nombres, setNombres] = useState('');
+    const [email, setEmail] = useState('');
+    const [celular, setCelular] = useState('');
+    const [escolaridad, setEscolaridad] = useState('');
+    const [empresa, setEmpresa] = useState('');
+    const [sede, setSede] = useState('');
+    const [fechaNaci, setFechaNaci] = useState(null);
+    const [genero, setGenero] = useState('');
+    const [estadoCivil, setEstadoCivil] = useState('');
+    const [contacto, setContacto] = useState('');
+    const [telefonoContacto, setTelefonoContacto] = useState('');
+    const [fechaContrato, setFechaContrato] = useState(null);
+    const [tipoContrato, setTipoContrato] = useState('');
+    const [payStatus, setPayStatus] = useState('');
+    const [type, setType] = useState('');
+    const [rosterPosition, setRosterPosition] = useState('');
+    const [generalPosition, setGeneralPosition] = useState('');
+    const [departamento, setDepartamento] = useState('');
+    const [area, setArea] = useState('');
+    const [subArea, setSubArea] = useState('');
+    const [grupo, setGrupo] = useState('');
+    const [turno, setTurno] = useState('');
+    const [direccionResidencia, setDireccionResidencia] = useState('');
+    const [dptoResidencia, setDptoResidencia] = useState('');
+    const [municipioResidencia, setMunicipioResidencia] = useState('');
+    const [municipioNacido, setMunicipioNacido] = useState('');
+    const [dptoNacido, setDptoNacido] = useState('');
+    const [eps, setEps] = useState('');
+    const [afp, setAfp] = useState('');
+
+    const methods = useForm();
+    /* { resolver: yupResolver(validationSchema) } */
+
+    const { handleSubmit, errors, reset } = methods;
 
     const handleListen = () => {
         if (isListening) {
@@ -118,69 +153,118 @@ const Assistance = () => {
         }
     }
 
-    const handleSaveNote = () => {
-        setSavedNotes([...savedNotes, note])
-        setNote('')
-    }
-
-
-    /* ESTADOS PARA LAS FECHAS */
-    const [valueFechaNaci, setFechaNaci] = useState(null);
-    const [valueFechaContrato, setFechaContrato] = useState(null);
-    const [valueTermDate, setTermDate] = useState(null);
-    const [valueFechaModificacion, setFechaModificacion] = useState(null);
-    const [valueFechaCreacion, setFechaCreacion] = useState(null);
-
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-
-    const { handleSubmit, errors, reset } = methods;
-
-    /* MANEJO DE MODAL */
-
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => {
-        setOpen(true);
-        setEstado(false);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    /* MANEJO DE WEBCAM */
-    const WebCamRef = useRef(null);
-
-    const CapturePhoto = useCallback(() => {
-        const imageSrc = WebCamRef.current.getScreenshot();
-        setImgSrc(imageSrc);
-    }, [WebCamRef, setImgSrc]);
-
-    const Remover = () => {
+    const CleanCombo = () => {
+        setDiagnosticoArray([]);
         setImgSrc(null);
+        setNote('');
+        setFecha(new Date());
+        setDocument('');
+        setNombres('');
+        setEmail('');
+        setCelular('');
+        setEscolaridad('');
+        setEmpresa('');
+        setSede('');
+        setFechaNaci(null);
+        setGenero('');
+        setEstadoCivil('');
+        setContacto('');
+        setTelefonoContacto('');
+        setFechaContrato(null);
+        setTipoContrato('');
+        setPayStatus('');
+        setType('');
+        setRosterPosition('');
+        setGeneralPosition('');
+        setDepartamento('');
+        setArea('');
+        setSubArea('');
+        setGrupo('');
+        setTurno('');
+        setDireccionResidencia('');
+        setDptoResidencia('');
+        setMunicipioResidencia('');
+        setMunicipioNacido('');
+        setDptoNacido('');
+        setEps('');
+        setAfp('');
     }
 
-    /* EVENTO DE FILTRAR COMBO DEPARTAMENTO */
-    async function GetSubString(codigo) {
-        const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo);
-        var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
-            label: item.nombre,
-            value: item.idCatalogo
-        }));
-        console.log("resultMunicipio = ", resultMunicipio);
-        setMunicipio(resultMunicipio);
+    const handleDocument = async (event) => {
+        try {
+            setDocument(event?.target.value);
+            if (event.key === 'Enter') {
+                if (event?.target.value != "") {
+                    var lsQuestionnaire = await GetByIdEmployee(event?.target.value);
+
+                    if (lsQuestionnaire.status === 200) {
+                        setImgSrc(lsQuestionnaire.data.imagenUrl);
+                        setNombres(lsQuestionnaire.data.nombres);
+                        setEmail(lsQuestionnaire.data.email);
+                        setCelular(lsQuestionnaire.data.celular);
+                        setEscolaridad(lsQuestionnaire.data.escolaridad);
+                        setEmpresa(lsQuestionnaire.data.empresa);
+                        setSede(lsQuestionnaire.data.sede);
+                        setFechaNaci(lsQuestionnaire.data.fechaNaci);
+                        setGenero(lsQuestionnaire.data.genero);
+                        setEstadoCivil(lsQuestionnaire.data.estadoCivil);
+                        setContacto(lsQuestionnaire.data.contacto);
+                        setTelefonoContacto(lsQuestionnaire.data.telefonoContacto);
+                        setFechaContrato(lsQuestionnaire.data.fechaContrato);
+                        setTipoContrato(lsQuestionnaire.data.tipoContrato);
+                        setPayStatus(lsQuestionnaire.data.payStatus);
+                        setType(lsQuestionnaire.data.type);
+                        setRosterPosition(lsQuestionnaire.data.rosterPosition);
+                        setGeneralPosition(lsQuestionnaire.data.generalPosition);
+                        setDepartamento(lsQuestionnaire.data.departamento);
+                        setArea(lsQuestionnaire.data.area);
+                        setSubArea(lsQuestionnaire.data.subArea);
+                        setGrupo(lsQuestionnaire.data.grupo);
+                        setTurno(lsQuestionnaire.data.turno);
+                        setDireccionResidencia(lsQuestionnaire.data.direccionResidencia);
+                        setDptoResidencia(lsQuestionnaire.data.dptoResidencia);
+                        setMunicipioResidencia(lsQuestionnaire.data.municipioResidencia);
+                        setMunicipioNacido(lsQuestionnaire.data.municipioNacido);
+                        setDptoNacido(lsQuestionnaire.data.dptoNacido);
+                        setEps(lsQuestionnaire.data.eps);
+                        setAfp(lsQuestionnaire.data.afp);
+                    } else {
+                        CleanCombo();
+                        dispatch({
+                            type: SNACKBAR_OPEN,
+                            open: true,
+                            message: `${Message.ErrorDeDatos}`,
+                            variant: 'alert',
+                            alertSeverity: 'error',
+                            close: false,
+                            transition: 'SlideUp'
+                        })
+                    }
+                } else {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: `${Message.ErrorDocumento}`,
+                        variant: 'alert',
+                        alertSeverity: 'error',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
+                }
+            }
+        } catch (error) {
+            CleanCombo();
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${Message.ErrorDeDatos}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
+        }
     }
-
-    const handleChange = (event) => {
-
-        setValues(event.target?.value);
-        console.log("event.target.value = ", Number(event.target?.value));
-
-        /* const eventCode = event.target.value;
-        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo == eventCode).map(code => code.codigo));
-        console.log("lsResulCode = ", lsResulCode);
-        GetSubString(lsResulCode); */
-    };
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
@@ -190,23 +274,56 @@ const Assistance = () => {
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            console.table(resultCatalogo);
             setCatalog(resultCatalogo);
 
-            const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, 1077);
-            var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
+            const lsServerCie11 = await GetAllCIE11(0, 0);
+            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                value: item.id,
+                nombre: item.dx
             }));
-            setDepartamento(resultDepartamento);
-            setCodigoFilter(lsServerDepartamento.data.entities);
+            setLsCie11(resultCie11);
 
-            const lsServerEscolaridad = await GetAllByTipoCatalogo(0, 0, 1146);
-            var resultEscolaridad = lsServerEscolaridad.data.entities.map((item) => ({
+            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Atencion_HistoriaClinica);
+            var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setEscolaridad(resultEscolaridad);
+            setLsAtencion(resultAtencion);
+
+            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
+            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsContingencia(resultContingencia);
+
+            const lsServerTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Turno);
+            var resultTurno = lsServerTurno.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsTurno(resultTurno);
+
+            const lsServerDiaTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DiaTurno);
+            var resultDiaTurno = lsServerDiaTurno.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsDiaTurno(resultDiaTurno);
+
+            const lsServerRemitido = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
+            var resultRemitido = lsServerRemitido.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsRemitido(resultRemitido);
+
+            const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ConceptoAptitud_HistoriaClinica);
+            var resultConceptoAptitud = lsServerConceptoAptitud.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsConceptoAptitud(resultConceptoAptitud);
 
             const lsServerCompany = await GetAllCompany(0, 0);
             var resultCompany = lsServerCompany.data.entities.map((item) => ({
@@ -225,37 +342,19 @@ const Assistance = () => {
         handleListen();
     }, [isListening])
 
-    const CleanCombo = () => {
-        setFechaNaci(null);
-        setFechaContrato(null);
-        setTermDate(null);
-        setFechaModificacion(null);
-        setFechaCreacion(null);
-    }
-
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
         try {
-            console.log("dptoNacido = ", datos.dptoNacido);
+            const fechaFormat = FormatDate(fecha);
+            const fechaSistemas = FormatDate(new Date());
 
-
-            const FechaNaci = FormatDate(valueFechaNaci);
-            const FechaContrato = FormatDate(valueFechaContrato);
-            const TermDate = FormatDate(valueTermDate);
-            const FechaModificacion = FormatDate(valueFechaModificacion);
-            const FechaCreacion = FormatDate(valueFechaCreacion);
-
-            const DataToInsert = PostEmployee(datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, datos.dptoNacido, FechaContrato,
-                datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
-                datos.direccionResidencia, datos.municipioResidencia, datos.dptoResidencia, datos.celular, datos.eps,
-                datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
-                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
-                datos.bandera, datos.ges, datos.usuarioModifica, FechaModificacion, datos.usuarioCreacion,
-                FechaCreacion, imgSrc);
+            const DataToInsert = PostAssistance(document, fechaFormat, datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
+                datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico, datos.examenParaclinico,
+                JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, datos.idRemitido, "UsuarioCreacion", fechaSistemas,
+                "UsuarioModifica", fechaSistemas);
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertEmployee(DataToInsert);
+                const result = await InsertMedicalHistory(DataToInsert);
                 if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,
@@ -268,723 +367,478 @@ const Assistance = () => {
                     })
                     reset();
                     CleanCombo();
+                    setButtonReport(true);
                 }
             }
         } catch (error) {
             console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${error}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     };
 
-    const handleClickFab = () => {
-        console.log("Eventos");
-    }
-
-    const navigate = useNavigate();
-
-
     return (
-        <MainCard title="">
-            <Grid container xs={12} sx={{ pt: 0.5 }}>
-                <form onSubmit={handleSubmit(handleClick)}>
-
-
-
-                    <SubCard darkTitle title={
-                        <><Typography variant="h4">DATOS DEL PACIENTE</Typography></>
-
-                    } >
-
-                        <ModalChildren
-                            open={open}
-                            onClose={handleClose}
-                            title="Fotografía"
-                        >
-                            <WebCamCapture
-                                CaptureImg={CapturePhoto}
-                                RemoverImg={Remover}
-                                ImgSrc={imgSrc}
-                                WebCamRef={WebCamRef}
+        <MainCard>
+            <form>
+                <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
+                    <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
+                        <Grid item xs={3}>
+                            <PhotoModel
+                                disabledCapture
+                                disabledDelete
+                                EstadoImg={imgSrc}
                             />
-                        </ModalChildren>
+                        </Grid>
+                        <Grid container spacing={2} item xs={9}>
+                            <Grid item xs={4}>
+                                <InputOnChange
+                                    label="N° Documento"
+                                    onKeyDown={handleDocument}
+                                    onChange={(e) => setDocument(e?.target.value)}
+                                    value={document}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    required={true}
+                                    autoFocus
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <InputOnChange
+                                    label="Nombres"
+                                    value={nombres}
+                                    onChange={(e) => setNombres(e?.target.value)}
+                                    disabled
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    required={true}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <InputOnChange
+                                    label="Email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e?.target.value)}
+                                    disabled
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    required={true}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <InputOnChange
+                                    label="Celular"
+                                    value={celular}
+                                    onChange={(e) => setCelular(e?.target.value)}
+                                    disabled
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    required={true}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <SelectOnChange
+                                    name="escolaridad"
+                                    label="Escolaridad"
+                                    disabled
+                                    options={catalog}
+                                    value={escolaridad}
+                                    onChange={(e) => setEscolaridad(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <SelectOnChange
+                                    name="empresa"
+                                    label="Empresa"
+                                    disabled
+                                    options={company}
+                                    value={empresa}
+                                    onChange={(e) => setEmpresa(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <SelectOnChange
+                                    name="sede"
+                                    label="Sede"
+                                    disabled
+                                    options={catalog}
+                                    value={sede}
+                                    onChange={(e) => setSede(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <InputDatePick
+                                    label="Fecha de Nacimiento"
+                                    value={fechaNaci}
+                                    disabled
+                                    onChange={(e) => setFechaNaci(e)}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <SelectOnChange
+                                    name="genero"
+                                    label="Genero"
+                                    disabled
+                                    options={catalog}
+                                    value={genero}
+                                    onChange={(e) => setGenero(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <SelectOnChange
+                                    name="estadoCivil"
+                                    label="Estado Civil"
+                                    disabled
+                                    options={catalog}
+                                    value={estadoCivil}
+                                    onChange={(e) => setEstadoCivil(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <InputOnChange
+                                    label="Contacto"
+                                    value={contacto}
+                                    onChange={(e) => setContacto(e?.target.value)}
+                                    disabled
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    required={true}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <InputOnChange
+                                    label="Teléfono de Contacto"
+                                    value={telefonoContacto}
+                                    onChange={(e) => setTelefonoContacto(e?.target.value)}
+                                    disabled
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    required={true}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </SubCard>
 
-
-
-
-                        <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
+                <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+                    <Typography variant="subtitle1" color="inherit">Ver mas...</Typography></>}>
+                    <Grid item xs={12} sx={{ pt: 1, pb: 1 }}>
+                        <Grid container spacing={2}>
                             <Grid item xs={3}>
-                                <PhotoModel
-                                    OpenModal={handleOpen}
-                                    EstadoImg={imgSrc}
-                                    RemoverImg={Remover}
+                                <AnimateButton>
+                                    <InputDatePick
+                                        label="Fecha de Contrato"
+                                        value={fechaContrato}
+                                        disabled
+                                        onChange={(e) => setFechaContrato(e)}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="tipoContrato"
+                                        label="Tipo de Contrato"
+                                        disabled
+                                        options={catalog}
+                                        value={tipoContrato}
+                                        onChange={(e) => setTipoContrato(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="estado"
+                                        label="Estado"
+                                        disabled
+                                        options={catalog}
+                                        value={payStatus}
+                                        onChange={(e) => setPayStatus(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="Rol"
+                                        label="Rol"
+                                        disabled
+                                        options={catalog}
+                                        value={type}
+                                        onChange={(e) => setType(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="rosterPosition"
+                                        label="Roster Position"
+                                        disabled
+                                        options={catalog}
+                                        value={rosterPosition}
+                                        onChange={(e) => setRosterPosition(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="generalPosition"
+                                        label="General Position"
+                                        disabled
+                                        options={catalog}
+                                        value={generalPosition}
+                                        onChange={(e) => setGeneralPosition(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="Departamento"
+                                        label="Departamento"
+                                        disabled
+                                        options={catalog}
+                                        value={departamento}
+                                        onChange={(e) => setDepartamento(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="Area"
+                                        label="Area"
+                                        disabled
+                                        options={catalog}
+                                        value={area}
+                                        onChange={(e) => setArea(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="Subarea"
+                                        label="Subarea"
+                                        disabled
+                                        options={catalog}
+                                        value={subArea}
+                                        onChange={(e) => setSubArea(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="Grupo"
+                                        label="Grupo"
+                                        disabled
+                                        options={catalog}
+                                        value={grupo}
+                                        onChange={(e) => setGrupo(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="Turno"
+                                        label="Turno"
+                                        disabled
+                                        options={catalog}
+                                        value={turno}
+                                        onChange={(e) => setTurno(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <InputOnChange
+                                        label="Dirección de Residencia"
+                                        value={direccionResidencia}
+                                        onChange={(e) => setDireccionResidencia(e?.target.value)}
+                                        disabled
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        required={true}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="dptoResidencia"
+                                        label="Departamento de Residencia"
+                                        disabled
+                                        options={catalog}
+                                        value={dptoResidencia}
+                                        onChange={(e) => setDptoResidencia(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="municipioResidencia"
+                                        label="Municipio de Residencia"
+                                        disabled
+                                        options={catalog}
+                                        value={municipioResidencia}
+                                        onChange={(e) => setMunicipioResidencia(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="municipioNacido"
+                                        label="Municipio de Nacimiento"
+                                        disabled
+                                        options={catalog}
+                                        value={municipioNacido}
+                                        onChange={(e) => setMunicipioNacido(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="dptoNacido"
+                                        label="Departamento de Nacimiento"
+                                        disabled
+                                        options={catalog}
+                                        value={dptoNacido}
+                                        onChange={(e) => setDptoNacido(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="EPS"
+                                        label="EPS"
+                                        disabled
+                                        options={catalog}
+                                        value={eps}
+                                        onChange={(e) => setEps(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AnimateButton>
+                                    <SelectOnChange
+                                        name="AFP"
+                                        label="AFP"
+                                        disabled
+                                        options={catalog}
+                                        value={afp}
+                                        onChange={(e) => setAfp(e?.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </AnimateButton>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Accordion>
+
+                <Divider />
+                <Grid sx={{ pt: 2 }}>
+                    <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2.4}>
+                                <InputDatePick
+                                    label="Fecha"
+                                    value={fecha}
+                                    onChange={(e) => setFecha(e)}
                                 />
                             </Grid>
 
-                            <Grid container spacing={2} item xs={9}>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="documento"
-                                            label="Documento"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="nombres"
-                                            label="Nombres"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="email"
-                                            label="Email"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="celular"
-                                            label="Celular"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="escolaridad"
-                                            label="Escolaridad"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="empresa"
-                                            label="Empresa"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="sede"
-                                            label="Sede"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputDate
-                                            defaultValue=""
-                                            name="fechaNaci"
-                                            label="Fecha de Nacimiento"
-                                            value={valueFechaNaci}
-                                            onChange={(newValue) => {
-                                                setFechaNaci(newValue);
-                                            }}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-
-
-
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="genero"
-                                            label="Genero"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-
-
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-
-
-
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="estadoCivil"
-                                            label="Estado civil"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-
-
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="contacto"
-                                            label="Contacto"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="telefonoContacto"
-                                            label="Teléfono Contacto"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-
-                        </Grid>
-
-
-                    </SubCard>
-
-
-                    <Accordion
-
-                        title={
-                            <>
-                                <DomainTwoToneIcon fontSize="small" color="primary" sx={{ mr: 0.5 }} />
-                                <Typography variant="subtitle1" color="inherit" >
-                                    Ver mas...
-                                </Typography>
-                            </>
-                        }
-
-
-                    >
-
-                        <SubCard darkTitle title={
-                            <>
-                                <Typography variant="h4"></Typography>
-
-                            </>
-
-                        } >
-
-                            <Grid item xs={12} sx={{ pb: 3 }}>
-                                <Grid container spacing={1}>
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputDate
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="fechaContrato"
-                                                    label="Fecha de Contrato"
-                                                    value={valueFechaContrato}
-                                                    onChange={(newValue) => {
-                                                        setFechaContrato(newValue);
-                                                    }}
-                                                />
-                                            </FormProvider>
-                                        </AnimateButton>
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="tipoContrato"
-                                                    label="Tipo de Contrato"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="payStatus"
-                                                    label="Estado"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="type"
-                                                    label="Rol"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-
-
-
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="rosterPosition"
-                                                    label="Roster Position"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-
-
-
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="generalPosition"
-                                                    label="General Position"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="departamento"
-                                                    label="Departamento"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="area"
-                                                    label="Area"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="subArea"
-                                                    label="Subarea"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="grupo"
-                                                    label="Grupo"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="turno"
-                                                    label="Turno"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="direccionResidencia"
-                                                    label="Dirección de Residencia"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="dptoResidencia"
-                                                    label="Departamento de Residencia"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-
-
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="municipioResidencia"
-                                                    label="Municipio de Residencia"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="municipioNacido"
-                                                    label="Municipio de Nacimiento"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="dptoNacido"
-                                                    label="Departamento de Nacimiento"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="eps"
-                                                    label="EPS"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <AnimateButton>
-                                            <FormProvider {...methods}>
-
-
-
-                                                <InputText
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="afp"
-                                                    label="AFP"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-
-                                            </FormProvider>
-                                        </AnimateButton>
-
-                                    </Grid>
-
-
-
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Accordion>
-                    <Divider />
-
-
-
-                    <SubCard darkTitle title={
-                        <>
-                            <Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>
-
-                        </>
-
-                    } >
-
-
-
-
-                        <Grid container spacing={2} sx={{ pb: 3 }}>
-
-                            <Grid item xs={2}>
-                                <FormProvider {...methods}>
-                                    <InputDate
-                                        defaultValue=""
-                                        name="fechaatencion"
-                                        label="Fecha"
-                                        value={valueFechaNaci}
-                                        onChange={(newValue) => {
-                                            setFechaNaci(newValue);
-                                        }}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={2}>
+                            <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="atencion"
+                                        name="idAtencion"
                                         label="Atención"
                                         defaultValue=""
-                                        options={catalog}
+                                        options={lsAtencion}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={2}>
+
+                            <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="contingencia"
+                                        name="idContingencia"
                                         label="Contingencia"
                                         defaultValue=""
-                                        options={catalog}
+                                        options={lsContingencia}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={2}>
+
+                            <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="turno"
+                                        name="idTurno"
                                         label="Turno"
                                         defaultValue=""
-                                        options={catalog}
+                                        options={lsTurno}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="diaturno"
+                                        name="idDiaTurno"
                                         label="Día del Turno"
                                         defaultValue=""
-                                        options={catalog}
+                                        options={lsDiaTurno}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
-
-                            <Grid item xs={2}>
-                                <FormProvider {...methods}>
-                                    <AnimateButton>
-                                        <Button size="large" variant="contained" type="submit" fullWidth>
-                                            Historia clinica
-                                        </Button>
-                                    </AnimateButton>
-                                </FormProvider>
-                            </Grid>
-
-
                         </Grid>
                     </SubCard>
+                </Grid>
 
-
-
-                    <SubCard darkTitle title={
-                        <>
-                            <Typography variant="h4">HISTORIA</Typography>
-
-                        </>
-
-                    } >
-
-
-
-
-
-                        <Grid container spacing={2} sx={{ pb: 3 }}>
-
+                <Grid item sx={{ pt: 2 }}>
+                    <SubCard darkTitle title={<Typography variant="h4">HISTORIA</Typography>}>
+                        <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
                                         fullWidth
-                                        name="motivodeconsulta"
+                                        name="motivoConsulta"
                                         label="Motivo de Consulta"
                                         size={matchesXS ? 'small' : 'medium'}
                                         multiline
@@ -994,52 +848,66 @@ const Assistance = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
+                                <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2}>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Plantilla de texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <ListAltSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Borrar texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Audio">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <SettingsVoiceIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
+
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
                                         fullWidth
-                                        name="enfermedadactual"
+                                        name="enfermedadActual"
                                         label="Enfermedad Actual"
                                         size={matchesXS ? 'small' : 'medium'}
                                         multiline
@@ -1049,46 +917,60 @@ const Assistance = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
+                                <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2}>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Plantilla de texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <ListAltSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Borrar texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Audio">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <SettingsVoiceIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
+
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
@@ -1104,52 +986,66 @@ const Assistance = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
+                                <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2}>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Plantilla de texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <ListAltSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Borrar texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Audio">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <SettingsVoiceIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
+
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
                                         fullWidth
-                                        name="revisiónporsistemas"
+                                        name="revisionSistema"
                                         label="Revisión Por Sistemas"
                                         size={matchesXS ? 'small' : 'medium'}
                                         multiline
@@ -1159,55 +1055,66 @@ const Assistance = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
+                                <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2}>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Plantilla de texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <ListAltSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Borrar texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Audio">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <SettingsVoiceIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
-
-
 
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
                                         fullWidth
-                                        name="examenfisico"
+                                        name="examenFisico"
                                         label="Examen Fisico"
                                         size={matchesXS ? 'small' : 'medium'}
                                         multiline
@@ -1217,170 +1124,186 @@ const Assistance = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
+                                <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2}>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Plantilla de texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <ListAltSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Borrar texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <Tooltip title="Ver Examen Fisico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <DirectionsRunIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Audio">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <SettingsVoiceIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
 
+                                    <Grid item xs={2}>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Ver Examen Fisico">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => setOpen(true)}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <DirectionsRunIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue={note}
-                                        defaultValue2={note}
-                                        value={note}
+                                        defaultValue=""
                                         fullWidth
-                                        name="examenesparaclinicos"
-                                        label="Examenes Paraclinicos"
+                                        name="examenParaclinico"
+                                        label="Examenes Paraclínicos"
                                         size={matchesXS ? 'small' : 'medium'}
                                         multiline
                                         rows={6}
                                         bug={errors}
                                     />
                                 </FormProvider>
-                                <p>{note}</p>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
+                                <Grid container justifyContent="left" alignItems="center" spacing={2}>
                                     <Grid item xs={2}>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Plantilla de texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <ListAltSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => setIsListening(prevState => !prevState)}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Borrar texto">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
 
+                                    <Grid item xs={2}>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Audio">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => console.log("Todo Bien")}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <SettingsVoiceIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
 
                                     <Grid item xs={2}>
-                                        <Tooltip title="Ver Examen Paraclinico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={handleClickFab}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
+                                        <Grid justifyContent="center" alignItems="center" container>
+                                            <AnimateButton>
+                                                <Tooltip title="Ver Examen Paraclínico">
+                                                    <Fab
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => setOpen(true)}
+                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                    >
+                                                        <AddBoxIcon fontSize="small" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
-
-
                         </Grid>
                     </SubCard>
+                </Grid>
 
-
-                    <SubCard darkTitle title={
-                        <>
-                            <Typography variant="h4">DIAGNOSTICOS</Typography>
-
-                        </>
-
-                    } >
-
-
-
-                        <Grid container spacing={2} sx={{ pb: 3 }}>
-
+                <Grid sx={{ pt: 2 }}>
+                    <SubCard darkTitle title={<Typography variant="h4">DIAGNOSTICOS</Typography>}>
+                        <Grid container spacing={2} sx={{ pb: 2 }}>
                             <Grid item xs={12}>
-
-                                {catalog.length != 0 ? (<>
-                                    <FormProvider {...methods}>
-                                        <InputMultiselect
-                                            options={catalog}
-                                        />
-                                    </FormProvider></>) : (<></>)}
+                                <InputMultiSelects
+                                    fullWidth
+                                    onChange={(event, value) => setDiagnosticoArray(value)}
+                                    value={diagnosticoArray}
+                                    label="Diagnósticos"
+                                    options={lsCie11}
+                                />
                             </Grid>
                         </Grid>
 
                         <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue={note}
-                                    defaultValue2={note}
-                                    value={note}
+                                    defaultValue=""
                                     fullWidth
-                                    name="plandemanejo"
+                                    name="planManejo"
                                     label="Plan de Manejo"
                                     size={matchesXS ? 'small' : 'medium'}
                                     multiline
@@ -1390,74 +1313,74 @@ const Assistance = () => {
                             </FormProvider>
                             <p>{note}</p>
                         </Grid>
+
                         <Grid item xs={12}>
-                            <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
+                            <Grid container justifyContent="left" alignItems="center" spacing={2}>
                                 <Grid item xs={2}>
-                                    <Tooltip title="Plantilla de texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={handleClickFab}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <ListAltSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <Tooltip title="Borrar texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={handleClickFab}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
+                                    <Grid justifyContent="center" alignItems="center" container>
+                                        <AnimateButton>
+                                            <Tooltip title="Plantilla de texto">
+                                                <Fab
+                                                    color="primary"
+                                                    size="small"
+                                                    onClick={() => console.log("Todo Bien")}
+                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                >
+                                                    <ListAltSharpIcon fontSize="small" />
+                                                </Fab>
+                                            </Tooltip>
+                                        </AnimateButton>
+                                    </Grid>
                                 </Grid>
 
                                 <Grid item xs={2}>
-                                    <Tooltip title="Audio">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => setIsListening(prevState => !prevState)}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <SettingsVoiceIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
+                                    <Grid justifyContent="center" alignItems="center" container>
+                                        <AnimateButton>
+                                            <Tooltip title="Borrar texto">
+                                                <Fab
+                                                    color="primary"
+                                                    size="small"
+                                                    onClick={() => console.log("Todo Bien")}
+                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                >
+                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                                </Fab>
+                                            </Tooltip>
+                                        </AnimateButton>
+                                    </Grid>
                                 </Grid>
 
-
+                                <Grid item xs={2}>
+                                    <Grid justifyContent="center" alignItems="center" container>
+                                        <AnimateButton>
+                                            <Tooltip title="Audio">
+                                                <Fab
+                                                    color="primary"
+                                                    size="small"
+                                                    onClick={() => console.log("Todo Bien")}
+                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                                >
+                                                    <SettingsVoiceIcon fontSize="small" />
+                                                </Fab>
+                                            </Tooltip>
+                                        </AnimateButton>
+                                    </Grid>
+                                </Grid>
                             </Grid>
                         </Grid>
-
                     </SubCard>
+                </Grid>
 
-
-
-                    <SubCard darkTitle title={
-                        <>
-                            <Typography variant="h4">CONCEPTO DE APTITUD PSICOFÍSICA</Typography>
-
-                        </>
-
-                    } >
-
-
-
-
-                        <Grid container spacing={2} sx={{ pb: 3 }}>
-
+                <Grid sx={{ pt: 2 }}>
+                    <SubCard darkTitle title={<Typography variant="h4">CONCEPTO DE APTITUD PSICOFÍSICA</Typography>}>
+                        <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="conceptodeaptitudpsicofísica"
+                                        name="idConceptoActitud"
                                         label="Concepto De Aptitud Psicofísica"
                                         defaultValue=""
-                                        options={catalog}
+                                        options={lsConceptoAptitud}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -1466,56 +1389,56 @@ const Assistance = () => {
                             <Grid item xs={6}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="remitido"
+                                        name="idRemitido"
                                         label="Remitido"
                                         defaultValue=""
-                                        options={catalog}
+                                        options={lsRemitido}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
-
-
-
-
-
                         </Grid>
                     </SubCard>
+                </Grid>
 
-
-
-
-
-
-
-                    <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={6}>
+                <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
+                    <Grid container spacing={1}>
+                        <Grid item xs={buttonReport ? 4 : 6}>
+                            <AnimateButton>
+                                <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                    {TitleButton.Guardar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+                        {buttonReport ?
+                            <Grid item xs={buttonReport ? 4 : 6}>
                                 <AnimateButton>
-                                    <Button variant="contained" type="submit" fullWidth>
-                                        {TitleButton.Guardar}
+                                    <Button variant="contained" fullWidth onClick={() => setOpen(true)}>
+                                        Imprimir
                                     </Button>
                                 </AnimateButton>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/Assistance/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
+                            </Grid> : <></>}
+                        <Grid item xs={buttonReport ? 4 : 6}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/assistance/list")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </AnimateButton>
                         </Grid>
                     </Grid>
-                </form>
-            </Grid>
+                </Grid>
+
+                <FullScreenDialogs
+                    open={open}
+                    title="LISTADO DE EXAMENES DE PARACLÍNICOS"
+                    handleClose={() => setOpen(false)}
+                >
+                    <ListAssistance />
+                </FullScreenDialogs>
+            </form>
         </MainCard>
     );
-
 };
 
-
-
-
 export default Assistance;
-

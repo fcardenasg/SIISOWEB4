@@ -30,7 +30,7 @@ import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import InputDate from 'components/input/InputDate';
+import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate, DateFormat } from 'components/helpers/Format';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
@@ -240,7 +240,7 @@ const UpdateEmployee = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     /> */}
-                                    <InputDate
+                                    <InputDatePick
                                         fullWidth
                                         name="fechaNaci"
                                         label="Fecha de Nacimiento"

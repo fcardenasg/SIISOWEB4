@@ -10,7 +10,6 @@ import {
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -26,7 +25,6 @@ import {
     Tooltip,
     Typography,
     Button,
-    Avatar,
     Modal
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
@@ -38,17 +36,24 @@ import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 
-import { GetAllAdvice, DeleteAdvice } from 'api/clients/AdviceClient';
-
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import { DeleteMedicalHistory, GetAllMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import { FormatDate } from 'components/helpers/Format';
+import ReactExport from "react-export-excel";
+import { IconFileExport } from '@tabler/icons';
+import FullScreenDialogs from 'components/form/FullScreenDialogs';
+import Assistance from './Assistance';
+import ViewUpdateAssistance from './ViewUpdateAssistance';
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function getModalStyle() {
     const top = 50;
@@ -88,15 +93,21 @@ function stableSort(array, comparator) {
 /* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'id',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
+        align: 'center'
+    },
+    {
+        id: 'idContingencia',
+        numeric: false,
+        label: 'Contingencia',
+        align: 'left'
+    },
+    {
+        id: 'idAtencion',
+        numeric: false,
+        label: 'Atencion',
         align: 'left'
     },
     {
@@ -106,27 +117,9 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'usuario',
+        id: 'usuarioCreacion',
         numeric: false,
-        label: 'Usuario',
-        align: 'left'
-    },
-    {
-        id: 'motivo',
-        numeric: false,
-        label: 'Motivo',
-        align: 'left'
-    },
-    {
-        id: 'idTipoAtencion',
-        numeric: false,
-        label: 'Tipo Atencion',
-        align: 'left'
-    },
-    {
-        id: 'idEstadoCaso',
-        numeric: false,
-        label: 'Estado Caso',
+        label: 'Usuario Que Atiende',
         align: 'left'
     }
 ];
@@ -250,8 +243,10 @@ EnhancedTableToolbar.propTypes = {
 
 const ListAssistance = () => {
     const dispatch = useDispatch();
+    const [idCheck, setIdCheck] = useState('');
+    const [openUpdate, setOpenUpdate] = useState(false);
     const [assistance, setAssistance] = useState([]);
-    console.log("Lista = ", assistance);
+    const navigate = useNavigate();
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -266,7 +261,7 @@ const ListAssistance = () => {
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
-            const lsServer = await GetAllAdvice(0, 0);
+            const lsServer = await GetAllMedicalHistory(0, 0);
             setAssistance(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
@@ -299,7 +294,7 @@ const ListAssistance = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'fecha', 'usuario', 'motivo', 'idTipoAtencion', 'idEstadoCaso'];
+                const properties = ['documento', 'idContingencia', 'idAtencion', 'fecha', 'usuarioCreacion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -347,6 +342,7 @@ const ListAssistance = () => {
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, id);
         } else if (selectedIndex === 0) {
+            setIdCheck('');
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
             newSelected = newSelected.concat(selected.slice(0, -1));
@@ -366,12 +362,11 @@ const ListAssistance = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
 
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
-            const result = await DeleteAdvice(idCheck);
+            const result = await DeleteMedicalHistory(idCheck);
             if (result.status === 200) {
                 dispatch({
                     type: SNACKBAR_OPEN,
@@ -389,8 +384,6 @@ const ListAssistance = () => {
             console.log(error);
         }
     }
-
-    const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - assistance.length) : 0;
@@ -416,15 +409,42 @@ const ListAssistance = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <Tooltip title="Copiar">
-                            <IconButton size="large">
-                                <FileCopyIcon />
-                            </IconButton>
-                        </Tooltip>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/assistance/report/${idCheck}`)}>
-                            <IconButton size="large">
+                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
+                        <ExcelFile element={
+                            <Tooltip title="Exportar">
+                                <IconButton size="large">
+                                    <IconFileExport />
+                                </IconButton>
+                            </Tooltip>
+                        } filename="Historia Clínica">
+                            <ExcelSheet data={assistance} name="Historia Clínica">
+                                <ExcelColumn label="Id" value="id" />
+                                <ExcelColumn label="Documento" value="documento" />
+                                <ExcelColumn label="Fecha" value="fecha" />
+                                <ExcelColumn label="Atención" value="idAtencion" />
+                                <ExcelColumn label="Contingencia" value="idContingencia" />
+                                <ExcelColumn label="Turno" value="idTurno" />
+                                <ExcelColumn label="Día del Turno" value="idDiaTurno" />
+                                <ExcelColumn label="Motivo de Consulta" value="motivoConsulta" />
+                                <ExcelColumn label="Enfermedad Actual" value="enfermedadActual" />
+                                <ExcelColumn label="Antecedentes" value="antecedentes" />
+                                <ExcelColumn label="Revision por Sistema" value="revisionSistema" />
+                                <ExcelColumn label="Examen Físico" value="examenFisico" />
+                                <ExcelColumn label="Examen Paraclínico" value="examenParaclinico" />
+                                <ExcelColumn label="Diagnostico" value="diagnostico" />
+                                <ExcelColumn label="Plan de Manejo" value="planManejo" />
+                                <ExcelColumn label="Concepto de Actitud" value="idConceptoActitud" />
+                                <ExcelColumn label="Remitido" value="idRemitido" />
+                                <ExcelColumn label="Usuario de Creación" value="usuarioCreacion" />
+                                <ExcelColumn label="Fecha de Creacion" value="fechaCreacion" />
+                                <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
+                                <ExcelColumn label="Fecha de Modificación" value="fechaModifica" />
+                            </ExcelSheet>
+                        </ExcelFile>
+
+                        <Tooltip title="Impresión" onClick={() => setOpen(true)}>
+                            <IconButton disabled={idCheck === '' ? true : false} size="large">
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
@@ -434,7 +454,6 @@ const ListAssistance = () => {
                             onClick={() => navigate("/assistance/add")}>
                             {TitleButton.Agregar}
                         </Button>
-
                     </Grid>
                 </Grid>
             </CardContent>
@@ -494,7 +513,7 @@ const ListAssistance = () => {
                                             align="center"
                                         >
                                             {' '}
-                                            {row.id}{' '}
+                                            {row.documento}{' '}
                                         </TableCell>
 
                                         <TableCell
@@ -509,7 +528,7 @@ const ListAssistance = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.documento}{' '}
+                                                {row.idContingencia}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -525,7 +544,7 @@ const ListAssistance = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.fecha}{' '}
+                                                {row.idAtencion}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -541,7 +560,7 @@ const ListAssistance = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.celular}{' '}
+                                                {FormatDate(row.fecha)}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -557,63 +576,24 @@ const ListAssistance = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.email}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.nameCompany}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.nameSede}{' '}
+                                                {row.usuarioCreacion}{' '}
                                             </Typography>
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Detalles" onClick={handleOpen}>
-                                                <IconButton color="primary" size="large">
+                                            <Tooltip title="Detalles" onClick={() => setOpenUpdate(true)}>
+                                                <IconButton disabled={idCheck === '' ? true : false} color="primary" size="large">
                                                     <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/employee/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/assistance/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                            {console.log(row.id)}
                                         </TableCell>
                                         {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
-                                        <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                            open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
-                                            aria-describedby="simple-modal-description"
-                                        >
-                                            <BodyEmployee IdEmployee={row.id} modalStyle={modalStyle} handleClose={handleClose} />
-                                        </Modal>
                                     </TableRow>
                                 );
                             })}
@@ -629,6 +609,22 @@ const ListAssistance = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <FullScreenDialogs
+                open={open}
+                title="IMPRIMIR HISTORIA CLÍNICA"
+                handleClose={() => setOpen(false)}
+            >
+                <Assistance />
+            </FullScreenDialogs>
+
+            <FullScreenDialogs
+                open={openUpdate}
+                title="Vista de Actualizar"
+                handleClose={() => setOpenUpdate(false)}
+            >
+                <ViewUpdateAssistance idAssistance={idCheck} />
+            </FullScreenDialogs>
 
             {/* Paginación de la Tabla */}
             <TablePagination

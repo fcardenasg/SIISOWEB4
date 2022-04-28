@@ -17,7 +17,6 @@ const InputSwitch = ({ label, onChange }) => {
                     }}
                 />
             } label={label} />
-
         </>
     );
 }

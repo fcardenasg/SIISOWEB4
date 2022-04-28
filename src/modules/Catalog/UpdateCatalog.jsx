@@ -91,7 +91,7 @@ const UpdateCatalog = () => {
             dispatch({
                 type: SNACKBAR_OPEN,
                 open: true,
-                message: 'Este cátalogo ya existe',
+                message: 'Este código ya existe',
                 variant: 'alert',
                 alertSeverity: 'error',
                 close: false,
