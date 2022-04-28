@@ -183,7 +183,6 @@ const ProductAdd = ({ open, handleCloseDialog }) => {
                             value={currency}
                             fullWidth
                             onChange={handleSelectChange}
-                            helperText="Please select Category"
                         >
                             {categories.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>

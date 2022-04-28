@@ -1,359 +1,313 @@
-import { useState } from 'react';
-
+import React, { useEffect, useState } from 'react';
 // material-ui
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-import { Button, Divider, FormControlLabel, Grid, IconButton, MenuItem, Switch, TextField, Typography } from '@mui/material';
+import {
+    Button, Grid, MenuItem, TextField, Divider,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    FormHelperText,
+    Select,
+    Stack,
+    Box, Tab, Tabs,
+    useMediaQuery,
+    Typography,
+    Tooltip,
+    Fab,
+    Avatar,
+    Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Modal
+
+} from '@mui/material';
+
+
+
+// Terceros
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
+import { yupResolver } from '@hookform/resolvers/yup';
+
+// project imports
+import UserDetailsCard from 'ui-component/cards/UserDetailsCard';
+import UserProfileCard from 'ui-component/cards/UserProfileCard';
+import UserSimpleCard from 'ui-component/cards/UserSimpleCard';
+import FollowerCard from 'ui-component/cards/FollowerCard';
+import FriendsCard from 'ui-component/cards/FriendsCard';
+
+import MainCard from 'ui-component/cards/MainCard';
+import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
+
 
 // project imports
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
+import InputText from 'components/input/InputText';
+import * as yup from 'yup';
+import ProductsPageA from './ProductsPageA';
+import ProductsPageEP from './ProductsPageEP';
+import TotalCardA from './TotalCardA';
+import { useFormik } from 'formik';
+import { FormProvider, useForm } from 'react-hook-form';
+import AddItemPageA from './AddItemPageA';
+import AddItemPageEP from './AddItemPageEP';
+
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 
 // assets
-import DesktopWindowsTwoToneIcon from '@mui/icons-material/DesktopWindowsTwoTone';
-import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import SmartphoneTwoToneIcon from '@mui/icons-material/SmartphoneTwoTone';
-import PhoneIphoneTwoToneIcon from '@mui/icons-material/PhoneIphoneTwoTone';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
-const deviceStateSX = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    '& >svg': {
-        width: 12,
-        height: 12,
-        mr: 0.5
-    }
-};
 
-// select options
-const currencies = [
+
+const initialProducsData = [
     {
-        value: 'Washington',
-        label: 'Washington'
+        id: 1,
+        product: 'Logo Design',
+        description: 'lorem ipsum dolor sit amat, connecter adieu siccing eliot',
+        cargo: 'Gerente',
+        quantity: 6,
+        amount: 200.0,
+
     },
     {
-        value: 'India',
-        label: 'India'
+        id: 2,
+        product: 'Landing Page',
+        description: 'lorem ipsum dolor sit amat, connecter adieu siccing eliot',
+        cargo: 'Ingeniero de sistemas',
+        quantity: 7,
+        amount: 100.0,
+
     },
     {
-        value: 'Africa',
-        label: 'Africa'
-    },
-    {
-        value: 'New-York',
-        label: 'New York'
-    },
-    {
-        value: 'Malaysia',
-        label: 'Malaysia'
+        id: 3,
+        product: 'Admin Template',
+        description: 'lorem ipsum dolor sit amat, connecter adieu siccing eliot',
+        cargo: 'Supervisor',
+        quantity: 5,
+        amount: 150.0,
+
     }
 ];
 
-const experiences = [
+const initialProducsDataEP = [
     {
-        value: 'Startup',
-        label: 'Startup'
+        id: 1,
+        product: 'Logo Design',
+        description: 'lorem ipsum dolor sit amat, connecter adieu siccing eliot',
+        cargo: 'Gerente',
+        quantity: 6,
+        amount: 200.0,
+
     },
     {
-        value: '2-year',
-        label: '2 year'
+        id: 2,
+        product: 'Landing Page',
+        description: 'lorem ipsum dolor sit amat, connecter adieu siccing eliot',
+        cargo: 'Ingeniero de sistemas',
+        quantity: 7,
+        amount: 100.0,
+
     },
     {
-        value: '3-year',
-        label: '3 year'
-    },
-    {
-        value: '4-year',
-        label: '4 year'
-    },
-    {
-        value: '5-year',
-        label: '5 year'
+        id: 3,
+        product: 'Admin Template',
+        description: 'lorem ipsum dolor sit amat, connecter adieu siccing eliot',
+        cargo: 'Supervisor',
+        quantity: 5,
+        amount: 150.0,
+
     }
 ];
 
-// ==============================|| PROFILE 1 - MY ACCOUNT ||============================== //
+// ==============================|| PROFILE 1 - PROFILE ACCOUNT ||============================== //
 
 const Antecedents = () => {
-    const theme = useTheme();
 
+    const theme = useTheme();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const [open, setOpen] = useState(false);
     const [currency, setCurrency] = useState('Washington');
     const handleChange1 = (event) => {
         setCurrency(event.target.value);
     };
+
+    const [productsData, setProductsData] = useState(initialProducsData);
+    const [productsDataEP, setProductsDataEP] = useState(initialProducsDataEP);
+    const [valueBasic, setValueBasic] = React.useState(new Date());
+    const [addItemClicked, setAddItemClicked] = useState(false);
+
 
     const [experience, setExperience] = useState('Startup');
     const handleChange2 = (event) => {
         setExperience(event.target.value);
     };
 
-    const [state1, setState1] = useState({
-        checkedB: false
+
+    const methods = useForm();
+
+    const { handleSubmit, errors, reset } = methods;
+
+    // array of products
+
+    const [allAmounts, setAllAmounts] = useState({
+        subTotal: 0,
+        appliedTaxValue: 0.1,
+        appliedDiscountValue: 0.05,
+        taxesAmount: 0,
+        discountAmount: 0,
+        totalAmount: 0
     });
-    const [state2, setState2] = useState({
-        checkedB: false
-    });
-    const [state3, setState3] = useState({
-        checkedB: true
-    });
-    const handleSwitchChange1 = (event) => {
-        setState1({ ...state1, [event.target.name]: event.target.checked });
+
+    // for calculating cost of all orders
+    const getTotalAmounts = () => {
+        const amounts = {
+            subTotal: 0,
+            appliedTaxValue: 0.1,
+            appliedDiscountValue: 0.05,
+            taxesAmount: 0,
+            discountAmount: 0,
+            totalAmount: 0
+        };
+        productsData.forEach((item) => {
+            amounts.subTotal += item.total;
+        });
+
+
+
+        amounts.taxesAmount = amounts.subTotal * amounts.appliedTaxValue;
+        amounts.discountAmount = (amounts.subTotal + amounts.taxesAmount) * amounts.appliedDiscountValue;
+        amounts.totalAmount = amounts.subTotal + amounts.taxesAmount - amounts.discountAmount;
+        setAllAmounts(amounts);
     };
-    const handleSwitchChange2 = (event) => {
-        setState2({ ...state2, [event.target.name]: event.target.checked });
+
+    // calculates costs when order-details change
+    useEffect(() => {
+        getTotalAmounts();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [productsData]);
+
+    // to delete row in order details
+    const deleteProductHandler = (id) => {
+        setProductsData(productsData.filter((item) => item.id !== id));
     };
-    const handleSwitchChange3 = (event) => {
-        setState3({ ...state3, [event.target.name]: event.target.checked });
+
+    const deleteProductHandlerEP = (id) => {
+        setProductsDataEP(productsDataEP.filter((item) => item.id !== id));
     };
+
+
+    // Dialog Handler
+    const handleDialogOk = () => {
+        setOpen(false);
+
+    };
+
+    // add item handler
+    const handleAddItem = (addingData) => {
+        setProductsData([
+            ...productsData,
+            {
+                id: addingData.id,
+                product: addingData.name,
+                description: addingData.desc,
+                cargo: addingData.label,
+                quantity: addingData.selectedQuantity,
+                amount: addingData.amount,
+
+            }
+        ]);
+
+        setAddItemClicked(false);
+    };
+
+
+
+
+
 
     return (
         <Grid container spacing={gridSpacing}>
-            <Grid item xs={12}>
-                <SubCard title="General Settings">
+            <Grid item xs={12} md={12}>
+                <SubCard title=" Antecedentes Patológicos">
                     <form noValidate autoComplete="off">
                         <Grid container spacing={gridSpacing}>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    id="outlined-basic5"
-                                    fullWidth
-                                    label="Username"
-                                    helperText="Your Profile URL: https://pc.com/Ashoka_Tano_16"
-                                    defaultValue="Asoka_Tana_16"
-                                />
+
+                            <ProductsPageA productsData={productsData} deleteProductHandler={deleteProductHandler} />
+
+                            {addItemClicked ? (
+                                <Grid item xs={12}>
+                                    <AddItemPageA handleAddItem={handleAddItem} setAddItemClicked={setAddItemClicked} />
+                                </Grid>
+                            ) : (
+                                <Grid item>
+                                    <Button variant="text" onClick={() => setAddItemClicked(true)}>
+                                        + Add Item
+                                    </Button>
+                                </Grid>
+                            )}
+                            <Grid item xs={12}>
+                                <Divider />
                             </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField id="outlined-basic6" fullWidth label="Account Email" defaultValue="demo@sample.com" />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    id="outlined-select-language"
-                                    select
-                                    fullWidth
-                                    label="Language"
-                                    value={currency}
-                                    onChange={handleChange1}
-                                >
-                                    {currencies.map((option) => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    id="outlined-select-experience1"
-                                    select
-                                    fullWidth
-                                    label="Signing Using"
-                                    value={experience}
-                                    onChange={handleChange2}
-                                >
-                                    {experiences.map((option) => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Grid>
+
+
                         </Grid>
                     </form>
                 </SubCard>
+
+          
+
+
+
             </Grid>
-            <Grid item xs={12}>
-                <SubCard title="Advance Settings">
-                    <Grid container direction="column" spacing={3}>
-                        <Grid item xs={12}>
-                            <Typography variant="subtitle1" sx={{ textTransform: 'uppercase' }}>
-                                Secure Browsing
-                            </Typography>
-                            <FormControlLabel
-                                control={
-                                    <Switch checked={state1.checkedB} onChange={handleSwitchChange1} name="checkedB" color="primary" />
-                                }
-                                label="Browsing Securely ( https ) when it's necessary"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="subtitle1" sx={{ textTransform: 'uppercase' }}>
-                                Login Notifications
-                            </Typography>
-                            <FormControlLabel
-                                control={
-                                    <Switch checked={state2.checkedB} onChange={handleSwitchChange2} name="checkedB" color="primary" />
-                                }
-                                label="Notify when login attempted from other place"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="subtitle1" sx={{ textTransform: 'uppercase' }}>
-                                Login Approvals
-                            </Typography>
-                            <FormControlLabel
-                                control={
-                                    <Switch checked={state3.checkedB} onChange={handleSwitchChange3} name="checkedB" color="primary" />
-                                }
-                                label="Approvals is not required when login from unrecognized devices."
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="subtitle1" sx={{ textTransform: 'uppercase' }}>
-                                Recognized Devices
-                            </Typography>
-                            <Grid container direction="column">
+
+
+            <Grid item xs={12} md={12}>
+                <SubCard title=" Enfermedades Profesionales">
+                    <form noValidate autoComplete="off">
+                        <Grid container spacing={gridSpacing}>
+
+                            <ProductsPageEP productsData={productsData} deleteProductHandler={deleteProductHandler} />
+
+                            {addItemClicked ? (
                                 <Grid item xs={12}>
-                                    <Grid container alignItems="center" spacing={1}>
-                                        <Grid item>
-                                            <DesktopWindowsTwoToneIcon sx={{ fontSize: '1.15rem' }} />
-                                        </Grid>
-                                        <Grid item xs zeroMinWidth>
-                                            <Typography variant="subtitle1">
-                                                Cent Desktop{' '}
-                                                <Typography component="span" variant="caption">
-                                                    | 4351 Deans Lane, Chelmsford
-                                                </Typography>{' '}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography
-                                                sx={{ ...deviceStateSX, color: 'success.dark' }}
-                                                color="success"
-                                                variant="subtitle2"
-                                            >
-                                                <FiberManualRecordIcon />
-                                                Current Active
-                                                <IconButton size="large">
-                                                    <HighlightOffTwoToneIcon sx={{ fontSize: '1.15rem' }} />
-                                                </IconButton>
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
+                                    <AddItemPageEP handleAddItem={handleAddItem} setAddItemClicked={setAddItemClicked} />
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <Grid container alignItems="center" spacing={1}>
-                                        <Grid item>
-                                            <SmartphoneTwoToneIcon sx={{ fontSize: '1.15rem' }} />
-                                        </Grid>
-                                        <Grid item xs zeroMinWidth>
-                                            <Typography variant="subtitle1">
-                                                Imho Tablet{' '}
-                                                <Typography component="span" variant="caption">
-                                                    | 4185 Michigan Avenue
-                                                </Typography>{' '}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography sx={{ ...deviceStateSX, color: 'grey.400' }} variant="caption">
-                                                <FiberManualRecordIcon />
-                                                Active 5 days ago
-                                                <IconButton size="large">
-                                                    <HighlightOffTwoToneIcon sx={{ fontSize: '1.15rem' }} />
-                                                </IconButton>
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
+                            ) : (
+                                <Grid item>
+                                    <Button variant="text" onClick={() => setAddItemClicked(true)}>
+                                        + Add Item
+                                    </Button>
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <Grid container alignItems="center" spacing={1}>
-                                        <Grid item>
-                                            <PhoneIphoneTwoToneIcon sx={{ fontSize: '1.15rem' }} />
-                                        </Grid>
-                                        <Grid item xs zeroMinWidth>
-                                            <Typography variant="subtitle1">
-                                                Albs Mobile{' '}
-                                                <Typography component="span" variant="caption">
-                                                    | 3462 Fairfax Drive, Montcalm
-                                                </Typography>{' '}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography sx={{ ...deviceStateSX, color: 'grey.400' }} variant="subtitle2">
-                                                <FiberManualRecordIcon />
-                                                Active 1 month ago
-                                                <IconButton size="large">
-                                                    <HighlightOffTwoToneIcon sx={{ fontSize: '1.15rem' }} />
-                                                </IconButton>
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
+                            )}
+                            <Grid item xs={12}>
+                                <Divider />
                             </Grid>
+
+
                         </Grid>
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="subtitle1" sx={{ textTransform: 'uppercase' }}>
-                                Active Sessions
-                            </Typography>
-                            <Grid container direction="column">
-                                <Grid item xs={12}>
-                                    <Grid container alignItems="center" spacing={1}>
-                                        <Grid item>
-                                            <DesktopWindowsTwoToneIcon sx={{ fontSize: '1.15rem', color: 'success.dark' }} />
-                                        </Grid>
-                                        <Grid item xs zeroMinWidth>
-                                            <Typography variant="subtitle1">
-                                                Ceto Desktop{' '}
-                                                <Typography component="span" variant="caption">
-                                                    | 4351 Deans Lane, Chelmsford
-                                                </Typography>{' '}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Button variant="text" sx={{ color: theme.palette.error.main }}>
-                                                Logout
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Grid container alignItems="center" spacing={1}>
-                                        <Grid item>
-                                            <SmartphoneTwoToneIcon sx={{ fontSize: '1.15rem', color: 'success.dark' }} />
-                                            <SmartphoneTwoToneIcon sx={{ fontSize: '1.15rem', color: 'success.dark' }} />
-                                        </Grid>
-                                        <Grid item xs zeroMinWidth>
-                                            <Typography variant="subtitle1">
-                                                Moon Tablet{' '}
-                                                <Typography component="span" variant="caption">
-                                                    | 4185 Michigan Avenue
-                                                </Typography>{' '}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Button variant="text" sx={{ color: theme.palette.error.main }}>
-                                                Logout
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Divider sx={{ mt: 2 }} />
-                    </Grid>
-                    <Grid item xs={12} sx={{ mt: 3 }}>
-                        <Grid spacing={2} container justifyContent="flex-end">
-                            <Grid item>
-                                <AnimateButton>
-                                    <Button variant="contained">Update Profile</Button>
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item>
-                                <Button sx={{ color: theme.palette.error.main }}>Clear</Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                    </form>
                 </SubCard>
+
+          
+
+
+
             </Grid>
+
+
+
         </Grid>
+
+
+
     );
 };
 
 export default Antecedents;
+
+

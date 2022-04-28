@@ -136,8 +136,6 @@ const tabsOption = [
         label: 'Framingham',
         icon: <MonitorHeartIcon sx={{ fontSize: '1.3rem' }} />
     }
-
-
 ];
 
 
@@ -158,6 +156,7 @@ const Occupationalexamination = () => {
 
     /* NUESTROS ESTADOS PARA LOS COMBOS */
     const [catalog, setCatalog] = useState([]);
+    const [employee, setEmployee] = useState([]);
     const [company, setCompany] = useState([]);
     const [lsEscolaridad, setEscolaridad] = useState([]);
     const [lsMunicipio, setMunicipio] = useState([]);
@@ -206,21 +205,6 @@ const Occupationalexamination = () => {
         setSavedNotes([...savedNotes, note])
         setNote('')
     }
-
-    const [employee, setEmployee] = useState([]);
-
-    const idEmpleado = 34;
-    async function GetById() {
-        try {
-            const lsServer = await GetByIdEmployee(idEmpleado);
-            if (lsServer.status === 200) {
-                setEmployee(lsServer.data);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
 
     /* ESTADOS PARA LAS FECHAS */
     const [valueFechaNaci, setFechaNaci] = useState(null);
@@ -303,6 +287,10 @@ const Occupationalexamination = () => {
                 label: item.descripcionSpa
             }));
             setCompany(resultCompany);
+
+            const lsServer = await GetByIdEmployee(29);
+            if (lsServer.status === 200)
+                setEmployee(lsServer.data);
         } catch (error) {
             console.log(error);
         }
@@ -312,7 +300,6 @@ const Occupationalexamination = () => {
     useEffect(() => {
         GetAll();
         handleListen();
-        GetById();
     }, [isListening])
 
     const CleanCombo = () => {
@@ -463,7 +450,7 @@ const Occupationalexamination = () => {
 
                         <Grid container spacing={4} sx={{ pb: 6 }}>
 
-                            <Grid item xs={2}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputDate
                                         defaultValue=""
@@ -476,7 +463,7 @@ const Occupationalexamination = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={2}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="atencion"
@@ -488,7 +475,7 @@ const Occupationalexamination = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={2}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="contingencia"
@@ -500,7 +487,7 @@ const Occupationalexamination = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={2}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="turno"
@@ -513,7 +500,7 @@ const Occupationalexamination = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="diaturno"
@@ -526,7 +513,60 @@ const Occupationalexamination = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            <Grid item xs={3}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="nombres"
+                                        label="Peso(Kilos)"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={3}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="nombres"
+                                        label="Talla(Metros)"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={3}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="nombres"
+                                        label="IMC"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={3}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="nombres"
+                                        label="Clasificación"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <AnimateButton>
                                         <Button size="large" variant="contained" type="submit" fullWidth>
