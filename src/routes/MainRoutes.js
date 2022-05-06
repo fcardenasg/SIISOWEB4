@@ -160,10 +160,10 @@ const Assistance = Loadable(lazy(() => import('../modules/Assistance/Assistance'
 const UpdateAssistance = Loadable(lazy(() => import('../modules/Assistance/UpdateAssistance')));
 const ReportAssistance = Loadable(lazy(() => import('components/report/ReportAssistance')));
 
-const ListEvolutionnotes = Loadable(lazy(() => import('../modules/Evolutionnotes/ListEvolutionnotes')));
-const Evolutionnotes = Loadable(lazy(() => import('../modules/Evolutionnotes/Evolutionnotes')));
-const UpdateEvolutionnotes = Loadable(lazy(() => import('../modules/Evolutionnotes/UpdateEvolutionnotes')));
-const ReportEvolutionnotes = Loadable(lazy(() => import('components/report/ReportEvolutionnotes')));
+const ListEvolutionNote = Loadable(lazy(() => import('../modules/EvolutionNote/ListEvolutionNote')));
+const EvolutionNote = Loadable(lazy(() => import('../modules/EvolutionNote/EvolutionNote')));
+const UpdateEvolutionNote = Loadable(lazy(() => import('../modules/EvolutionNote/UpdateEvolutionNote')));
+const ReportEvolutionNote = Loadable(lazy(() => import('components/report/ReportEvolutionNote')));
 
 const ListMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/ListMedicalAdvice')));
 const MedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/MedicalAdvice')));
@@ -176,9 +176,9 @@ const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/Psycho
 const ReportPsychologicalCounseling = Loadable(lazy(() => import('components/report/ReportPsychologicalCounseling')));
 
 
-const ListInfirmary = Loadable(lazy(() => import('../modules/Infirmary/ListInfirmary')));
-const Infirmary = Loadable(lazy(() => import('../modules/Infirmary/Infirmary')));
-const UpdateInfirmary = Loadable(lazy(() => import('../modules/Infirmary/UpdateInfirmary')));
+const ListNoteInfirmary = Loadable(lazy(() => import('../modules/NoteInfirmary/ListNoteInfirmary')));
+const NoteInfirmary = Loadable(lazy(() => import('../modules/NoteInfirmary/NoteInfirmary')));
+const UpdateNoteInfirmary = Loadable(lazy(() => import('../modules/NoteInfirmary/UpdateNoteInfirmary')));
 const ReportInfirmary = Loadable(lazy(() => import('components/report/ReportInfirmary')));
 
 
@@ -330,16 +330,16 @@ const MainRoutes = {
         },
         /* Render de NOTAS DE EVOLUCION */
         {
-            path: '/evolutionnotes/list',
-            element: <ListEvolutionnotes />
+            path: '/evolution-note/list',
+            element: <ListEvolutionNote />
         },
         {
-            path: '/evolutionnotes/add',
-            element: <Evolutionnotes />
+            path: '/evolution-note/add',
+            element: <EvolutionNote />
         },
         {
-            path: '/evolutionnotes/update/:id',
-            element: <UpdateEvolutionnotes />
+            path: '/evolution-note/update/:id',
+            element: <UpdateEvolutionNote />
         },
         /* Render de ASESORÍAS MÉDICA */
         {
@@ -360,19 +360,19 @@ const MainRoutes = {
         },
         /* Render de NOTAS DE ENFERMERIA */
         {
-            path: '/infirmary/list',
-            element: <ListInfirmary />
+            path: '/note-infirmary/list',
+            element: <ListNoteInfirmary />
         },
         {
-            path: '/infirmary/add',
-            element: <Infirmary />
+            path: '/note-infirmary/add',
+            element: <NoteInfirmary />
         },
         {
-            path: '/infirmary/update/:id',
-            element: <UpdateInfirmary />
+            path: '/note-infirmary/update/:id',
+            element: <UpdateNoteInfirmary />
         },
         {
-            path: '/infirmary/report/:id',
+            path: '/note-infirmary/report/:id',
             element: <ReportInfirmary />
         },
         /* Render de FORMULAS MEDICAS */

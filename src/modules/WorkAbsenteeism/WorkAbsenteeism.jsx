@@ -7,7 +7,6 @@ import {
     useMediaQuery,
     Typography,
     Divider,
-    Box, Tab, Tabs
 } from '@mui/material';
 
 // Terceros
@@ -22,7 +21,6 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format';
 import Accordion from 'components/accordion/Accordion';
-import ModalChildren from 'components/form/ModalChildren';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertAdvice } from 'api/clients/AdviceClient';
@@ -42,6 +40,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import RadioButtonCheckedTwoToneIcon from '@mui/icons-material/RadioButtonCheckedTwoTone';
 import UserCountCard from 'ui-component/cards/UserCountCard';
 import AccountCircleTwoTone from '@mui/icons-material/AccountCircleTwoTone';
+import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 
 // Audio
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -52,34 +51,33 @@ mic.interimResults = true;
 mic.lang = 'es-ES';
 
 const MedicalAdvice = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* NUESTROS ESTADOS PARA LOS DIFERENTES USOS */
     const [document, setDocument] = useState('');
     const [catalog, setCatalog] = useState([]);
     const [company, setCompany] = useState([]);
 
-    const [lsDeparta, setLsDeparta] = useState([]);
     const [departa, setDeparta] = useState('');
-    const [lsMunicipio, setMunicipioE] = useState([]);
-
+    const [lsDeparta, setLsDeparta] = useState([]);
     const [departaMedico, setDepartaMedico] = useState('');
+    const [lsMunicipio, setMunicipioE] = useState([]);
     const [lsMunicipioMedico, setMunicipioMedico] = useState([]);
-
     const [lsCodigoFilterDpto, setCodigoFilterDpto] = useState([]);
-    const [lsMotivo, setLsMotivo] = useState([]);
-    const [atencion, setAtencion] = useState([]);
+
+    const [lsTipoInca, setLsTipoInca] = useState([]);
+    const [lsEstadoCaso, setLsEstadoCaso] = useState([]);
+    const [lsIncapacidad, setLsIncapacidad] = useState([]);
+    const [lsContingencia, setLsContingencia] = useState([]);
+    const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
+
     const [medicalAdvice, setMedicalAdvice] = useState([]);
 
     const [imgSrc, setImgSrc] = useState(null);
     const [clickAttend, setClickAttend] = useState(false);
-    const [open, setOpen] = useState(false);
 
-    /* MIL Y UN ESTADOS */
     const [fecha, setFecha] = useState(new Date());
     const [nombres, setNombres] = useState('');
     const [email, setEmail] = useState('');
@@ -111,7 +109,10 @@ const MedicalAdvice = () => {
     const [eps, setEps] = useState('');
     const [afp, setAfp] = useState('');
 
-    /* ESTADOS PARA EL CONTROL DE VOZ */
+    const [fechaExpedicion, setFechaExpedicion] = useState(new Date());
+    const [fechaInicio, setFechaInicio] = useState(null);
+    const [fechaFin, setFechaFin] = useState(null);
+
     const [isListening, setIsListening] = useState(false);
     const [note, setNote] = useState(null);
 
@@ -148,7 +149,6 @@ const MedicalAdvice = () => {
     /* { resolver: yupResolver(validationSchema) } */
     const { handleSubmit, errors, reset } = methods;
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServerCatalog = await GetAllCatalog(0, 0);
@@ -158,6 +158,13 @@ const MedicalAdvice = () => {
             }));
             setCatalog(resultCatalogo);
 
+            const lsServerSegmentoAgrupado = await GetAllSegmentoAgrupado(0, 0);
+            var resultSegmentoAgrupadoo = lsServerSegmentoAgrupado.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setLsSegmentoAgrupado(resultSegmentoAgrupadoo);
+
             const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
             var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -166,19 +173,33 @@ const MedicalAdvice = () => {
             setLsDeparta(resultDepartamento);
             setCodigoFilterDpto(lsServerDepartamento.data.entities);
 
-            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SaludOcupacional_Atencion);
-            var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
+            const lsServerIncapacidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_INC);
+            var resultIncapacidad = lsServerIncapacidad.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setAtencion(resultAtencion);
+            setLsIncapacidad(resultIncapacidad);
 
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SaludOcupacional_Motivo);
-            var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
+            const lsServerTipoInca = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOINCA);
+            var resultTipoInca = lsServerTipoInca.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsMotivo(resultMotivo);
+            setLsTipoInca(resultTipoInca);
+
+            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_CONT);
+            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsContingencia(resultContingencia);
+
+            const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_ESTCAS);
+            var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsEstadoCaso(resultEstadoCaso);
 
             const lsServerCompany = await GetAllCompany(0, 0);
             var resultCompany = lsServerCompany.data.entities.map((item) => ({
@@ -269,7 +290,6 @@ const MedicalAdvice = () => {
         }
     }
 
-    /* METODO PARA FILTRAR DEPARTAMENTO Datos de Incapacidad o Licencia */
     const handleChangeDepartamentoIncapa = async (event) => {
         try {
             setDeparta(event.target.value);
@@ -287,7 +307,6 @@ const MedicalAdvice = () => {
         }
     };
 
-    /* METODO PARA FILTRAR DEPARTAMENTO Datos del Medico o IPS Prestadora del Servicio */
     const handleChangeDepartamentoMedico = async (event) => {
         try {
             setDepartaMedico(event.target.value);
@@ -305,7 +324,6 @@ const MedicalAdvice = () => {
         }
     };
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
         handleListen();
@@ -348,32 +366,6 @@ const MedicalAdvice = () => {
         setAfp('');
     }
 
-    const handleAtender = () => {
-        if (document === '') {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${Message.ErrorDocumento}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
-        } else if (medicalAdvice.length === 0) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${Message.ErrorNoHayDatos}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
-        } else
-            setClickAttend(true);
-    }
-
-    /* METODO DE INSERT  */
     const handleClick = async (datos) => {
         try {
             const fechaData = FormatDate(fecha);
@@ -805,7 +797,7 @@ const MedicalAdvice = () => {
                                     name="incapacidad"
                                     label="Incapacidad"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsIncapacidad}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -824,16 +816,11 @@ const MedicalAdvice = () => {
                             </FormProvider>
                         </Grid>
                         <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="fechaExpedición"
-                                    label="Fecha de Expedición"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                            <InputDatePick
+                                label="Fecha de Expedición"
+                                value={fechaExpedicion}
+                                onChange={(e) => setFechaExpedicion(e)}
+                            />
                         </Grid>
                         <Grid item xs={4}>
                             <SelectOnChange
@@ -868,7 +855,7 @@ const MedicalAdvice = () => {
                                     name="tipoIncapacidad"
                                     label="Tipo de Incapacidad"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsTipoInca}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -880,35 +867,25 @@ const MedicalAdvice = () => {
                                     name="contingencia"
                                     label="Contingencia"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsContingencia}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
                         <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="fechaInicio"
-                                    label="Fecha de Inicio"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                            <InputDatePick
+                                label="Fecha de Inicio"
+                                value={fechaInicio}
+                                onChange={(e) => setFechaInicio(e)}
+                            />
                         </Grid>
                         <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="fechaFin"
-                                    label="Fecha Fin"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                            <InputDatePick
+                                label="Fecha Fin"
+                                value={fechaFin}
+                                onChange={(e) => setFechaFin(e)}
+                            />
                         </Grid>
                         <Grid item xs={2.4}>
                             <FormProvider {...methods}>
@@ -952,7 +929,7 @@ const MedicalAdvice = () => {
                                     name="estadoCaso"
                                     label="Estado de Caso"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsEstadoCaso}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -964,7 +941,7 @@ const MedicalAdvice = () => {
                                     name="segmentoAgrupado"
                                     label="Segmento Agrupado"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsSegmentoAgrupado}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />

@@ -1,5 +1,5 @@
 // Import de Material-ui
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -10,45 +10,45 @@ import {
     Tooltip,
     Fab
 } from '@mui/material';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import SubCard from 'ui-component/cards/SubCard';
+import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
+import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 
 // Terceros
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
-import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 
 // Import del Proyecto
-import SelectOnChange from 'components/input/SelectOnChange';
-import InputDatePick from 'components/input/InputDatePick';
-import { FormatDate } from 'components/helpers/Format'
-import InputMultiSelects from 'components/input/InputMultiSelects';
-import InputText from 'components/input/InputText';
+import Cargando from 'components/Cargando';
 import Accordion from 'components/accordion/Accordion';
+import InputOnChange from 'components/input/InputOnChange';
+import InputMultiSelects from 'components/input/InputMultiSelects';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
-import { GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
-import { GetAllCompany } from 'api/clients/CompanyClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import InputOnChange from 'components/input/InputOnChange';
-
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
-import { PutAssistance } from 'formatdata/AssistanceForm';
-import { UpdateMedicalHistorys, GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
-import Cargando from 'components/Cargando';
+import { GetAllCatalog, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllCompany } from 'api/clients/CompanyClient';
+import { CodCatalogo } from 'components/helpers/Enums';
+import InputText from 'components/input/InputText';
+import InputSelect from 'components/input/InputSelect';
+import InputDatePick from 'components/input/InputDatePick';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import MainCard from 'ui-component/cards/MainCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import SelectOnChange from 'components/input/SelectOnChange';
+import { PutEvolutionNote } from 'formatdata/EvolutionNoteForm';
+import { GetByIdEvolutionNote, UpdateEvolutionNotes } from 'api/clients/EvolutionNoteClient';
 import FullScreenDialogs from 'components/form/FullScreenDialogs';
-import ListAssistance from './ListAssistance';
+import ListEvolutionnotes from './ListEvolutionNote';
+import { FormatDate } from 'components/helpers/Format';
 
-// Audio
 const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition
 const mic = new SpeechRecognition()
@@ -57,25 +57,20 @@ mic.continuous = true
 mic.interimResults = true
 mic.lang = 'es-ES'
 
-
-const UpdateAssistance = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
+const UpdateEvolutionNote = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const theme = useTheme();
     const { id } = useParams();
+    const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* ESTADOS PARA EL CONTROL DE VOZ */
-    const [buttonReport, setButtonReport] = useState(false);
+    const [lsEvolutionNote, setLsEvolutionNote] = useState([]);
+    const [isListening, setIsListening] = useState(false);
     const [open, setOpen] = useState(false);
-    const [isListening, setIsListening] = useState(false)
-    const [note, setNote] = useState(null)
+    const [buttonReport, setButtonReport] = useState(false);
+    const [note, setNote] = useState(null);
     const [diagnosticoArray, setDiagnosticoArray] = useState([]);
-    const [lsAssistance, setLsAssistance] = useState([]);
 
-    /* NUESTROS ESTADOS PARA LOS DIFERENTES USOS */
-    const [document, setDocument] = useState('');
     const [catalog, setCatalog] = useState([]);
     const [lsCie11, setLsCie11] = useState([]);
     const [company, setCompany] = useState([]);
@@ -85,10 +80,10 @@ const UpdateAssistance = () => {
     const [lsContingencia, setLsContingencia] = useState([]);
     const [lsRemitido, setLsRemitido] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
-    const [fecha, setFecha] = useState(null);
 
-    /* MIL Y UN ESTADOS */
+    const [document, setDocument] = useState('');
     const [imgSrc, setImgSrc] = useState(null);
+    const [fecha, setFecha] = useState(null);
     const [nombres, setNombres] = useState('');
     const [email, setEmail] = useState('');
     const [celular, setCelular] = useState('');
@@ -118,11 +113,6 @@ const UpdateAssistance = () => {
     const [dptoNacido, setDptoNacido] = useState('');
     const [eps, setEps] = useState('');
     const [afp, setAfp] = useState('');
-
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-
-    const { handleSubmit, errors, reset } = methods;
 
     const handleListen = () => {
         if (isListening) {
@@ -203,14 +193,18 @@ const UpdateAssistance = () => {
         }
     }
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
+    const methods = useForm();
+    /* { resolver: yupResolver(validationSchema) } */
+
+    const { handleSubmit, errors, reset } = methods;
+
     async function GetAll() {
         try {
-            const serverData = await GetByIdMedicalHistory(id);
+            const serverData = await GetByIdEvolutionNote(id);
             if (serverData.status === 200) {
                 setDiagnosticoArray(JSON.parse(serverData.data.diagnostico));
                 setFecha(serverData.data.fecha);
-                setLsAssistance(serverData.data);
+                setLsEvolutionNote(serverData.data);
                 handleLoadingDocument(serverData.data.documento);
             }
 
@@ -281,30 +275,27 @@ const UpdateAssistance = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
         handleListen();
     }, [isListening])
 
-    /* METODO DE INSERT  */
     const handleClick = async (datos) => {
         try {
             const fechaFormat = FormatDate(fecha);
             const fechaSistemas = FormatDate(new Date());
 
-            const DataToUpdate = PutAssistance(id, document, fechaFormat, datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
-                datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico, datos.examenParaclinico,
-                JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, datos.idRemitido, "Usuario que Creacion", fechaSistemas,
-                "Usuario que Modifica", fechaSistemas);
+            const DataToUpdate = PutEvolutionNote(id, document, fechaFormat, datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
+                datos.nota, JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, datos.idRemitido, "Usuario Creacion",
+                fechaSistemas, "Usuario Modifica", fechaSistemas);
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateMedicalHistorys(DataToUpdate);
+                const result = await UpdateEvolutionNotes(DataToUpdate);
                 if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,
                         open: true,
-                        message: `${Message.Actualizar}`,
+                        message: `${Message.Guardar}`,
                         variant: 'alert',
                         alertSeverity: 'success',
                         close: false,
@@ -329,7 +320,7 @@ const UpdateAssistance = () => {
 
     return (
         <MainCard>
-            {lsAssistance.length != 0 ? <>
+            {lsEvolutionNote.length != 0 ? <>
                 <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
                     <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
                         <Grid item xs={3}>
@@ -704,8 +695,8 @@ const UpdateAssistance = () => {
                         </Grid>
                     </Grid>
                 </Accordion>
-
                 <Divider />
+
                 <Grid sx={{ pt: 2 }}>
                     <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
                         <Grid container spacing={2}>
@@ -716,52 +707,48 @@ const UpdateAssistance = () => {
                                     onChange={(e) => setFecha(e)}
                                 />
                             </Grid>
-
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idAtencion"
                                         label="Atención"
-                                        defaultValue={lsAssistance.idAtencion}
+                                        defaultValue={lsEvolutionNote.idAtencion}
                                         options={lsAtencion}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
-
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idContingencia"
                                         label="Contingencia"
-                                        defaultValue={lsAssistance.idContingencia}
+                                        defaultValue={lsEvolutionNote.idContingencia}
                                         options={lsContingencia}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
-
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idTurno"
                                         label="Turno"
-                                        defaultValue={lsAssistance.idTurno}
+                                        defaultValue={lsEvolutionNote.idTurno}
                                         options={lsTurno}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
-
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idDiaTurno"
                                         label="Día del Turno"
-                                        defaultValue={lsAssistance.idDiaTurno}
+                                        defaultValue={lsEvolutionNote.idDiaTurno}
                                         options={lsDiaTurno}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -772,16 +759,16 @@ const UpdateAssistance = () => {
                     </SubCard>
                 </Grid>
 
-                <Grid item sx={{ pt: 2 }}>
-                    <SubCard darkTitle title={<Typography variant="h4">HISTORIA</Typography>}>
+                <Grid sx={{ pt: 2 }}>
+                    <SubCard darkTitle title={<Typography variant="h4">NOTA</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue={lsAssistance.motivoConsulta}
+                                        defaultValue={lsEvolutionNote.nota}
                                         fullWidth
-                                        name="motivoConsulta"
-                                        label="Motivo de Consulta"
+                                        name="nota"
+                                        label="Nota"
                                         size={matchesXS ? 'small' : 'medium'}
                                         multiline
                                         rows={6}
@@ -790,402 +777,55 @@ const UpdateAssistance = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
+                                <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
                                     <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Plantilla de texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <ListAltSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
+                                        <Tooltip title="Plantilla de texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Funcion")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <ListAltSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <Tooltip title="Borrar texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Funcion")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Borrar texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
+                                        <Tooltip title="Audio">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => setIsListening(prevState => !prevState)}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <SettingsVoiceIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
                                     </Grid>
-
                                     <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Audio">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <SettingsVoiceIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={lsAssistance.enfermedadActual}
-                                        fullWidth
-                                        name="enfermedadActual"
-                                        label="Enfermedad Actual"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        multiline
-                                        rows={6}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Plantilla de texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <ListAltSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Borrar texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Audio">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <SettingsVoiceIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={lsAssistance.antecedentes}
-                                        fullWidth
-                                        name="antecedentes"
-                                        label="Antecedentes"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        multiline
-                                        rows={6}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Plantilla de texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <ListAltSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Borrar texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Audio">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <SettingsVoiceIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={lsAssistance.revisionSistema}
-                                        fullWidth
-                                        name="revisionSistema"
-                                        label="Revisión Por Sistemas"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        multiline
-                                        rows={6}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Plantilla de texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <ListAltSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Borrar texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Audio">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <SettingsVoiceIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={lsAssistance.examenFisico}
-                                        fullWidth
-                                        name="examenFisico"
-                                        label="Examen Fisico"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        multiline
-                                        rows={6}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Plantilla de texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <ListAltSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Borrar texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Audio">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <SettingsVoiceIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={lsAssistance.examenParaclinico}
-                                        fullWidth
-                                        name="examenParaclinico"
-                                        label="Examenes Paraclínicos"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        multiline
-                                        rows={6}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                                <p>{note}</p>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid container justifyContent="left" alignItems="center" spacing={2}>
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Plantilla de texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <ListAltSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Borrar texto">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <Grid justifyContent="center" alignItems="center" container>
-                                            <AnimateButton>
-                                                <Tooltip title="Audio">
-                                                    <Fab
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => console.log("Todo Bien")}
-                                                        sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    >
-                                                        <SettingsVoiceIcon fontSize="small" />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
+                                        <Tooltip title="Ver Examen Paraclinico">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Funcion")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <AddBoxIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -1194,7 +834,7 @@ const UpdateAssistance = () => {
                 </Grid>
 
                 <Grid sx={{ pt: 2 }}>
-                    <SubCard darkTitle title={<Typography variant="h4">DIAGNOSTICOS</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">IMPRESIÓN DIAGNÓSTICA</Typography>}>
                         <Grid container spacing={2} sx={{ pb: 2 }}>
                             <Grid item xs={12}>
                                 <InputMultiSelects
@@ -1207,10 +847,10 @@ const UpdateAssistance = () => {
                             </Grid>
                         </Grid>
 
-                        <Grid item sx={{ pb: 2 }} xs={12}>
+                        <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue={lsAssistance.planManejo}
+                                    defaultValue={lsEvolutionNote.planManejo}
                                     fullWidth
                                     name="planManejo"
                                     label="Plan de Manejo"
@@ -1221,58 +861,43 @@ const UpdateAssistance = () => {
                                 />
                             </FormProvider>
                         </Grid>
-
                         <Grid item xs={12}>
-                            <Grid container justifyContent="left" alignItems="center" spacing={2}>
+                            <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
                                 <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
+                                    <Tooltip title="Plantilla de texto">
+                                        <Fab
+                                            color="primary"
+                                            size="small"
+                                            onClick={() => console.log("Funcion")}
+                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                        >
+                                            <ListAltSharpIcon fontSize="small" />
+                                        </Fab>
+                                    </Tooltip>
                                 </Grid>
-
                                 <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
+                                    <Tooltip title="Borrar texto">
+                                        <Fab
+                                            color="primary"
+                                            size="small"
+                                            onClick={() => console.log("Funcion")}
+                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                        >
+                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                        </Fab>
+                                    </Tooltip>
                                 </Grid>
-
                                 <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
+                                    <Tooltip title="Audio">
+                                        <Fab
+                                            color="primary"
+                                            size="small"
+                                            onClick={() => setIsListening(prevState => !prevState)}
+                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                        >
+                                            <SettingsVoiceIcon fontSize="small" />
+                                        </Fab>
+                                    </Tooltip>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -1281,13 +906,13 @@ const UpdateAssistance = () => {
 
                 <Grid sx={{ pt: 2 }}>
                     <SubCard darkTitle title={<Typography variant="h4">CONCEPTO DE APTITUD PSICOFÍSICA</Typography>}>
-                        <Grid container spacing={2}>
+                        <Grid container spacing={2} sx={{ pb: 3 }}>
                             <Grid item xs={6}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idConceptoActitud"
                                         label="Concepto De Aptitud Psicofísica"
-                                        defaultValue={lsAssistance.idConceptoActitud}
+                                        defaultValue={lsEvolutionNote.idConceptoActitud}
                                         options={lsConceptoAptitud}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -1299,7 +924,7 @@ const UpdateAssistance = () => {
                                     <InputSelect
                                         name="idRemitido"
                                         label="Remitido"
-                                        defaultValue={lsAssistance.idRemitido}
+                                        defaultValue={lsEvolutionNote.idRemitido}
                                         options={lsRemitido}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -1315,7 +940,7 @@ const UpdateAssistance = () => {
                         <Grid item xs={buttonReport ? 4 : 6}>
                             <AnimateButton>
                                 <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                    {TitleButton.Actualizar}
+                                    {TitleButton.Guardar}
                                 </Button>
                             </AnimateButton>
                         </Grid>
@@ -1323,31 +948,30 @@ const UpdateAssistance = () => {
                             <Grid item xs={buttonReport ? 4 : 6}>
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={() => setOpen(true)}>
-                                        {TitleButton.Imprimir}
+                                        Imprimir
                                     </Button>
                                 </AnimateButton>
                             </Grid> : <></>}
                         <Grid item xs={buttonReport ? 4 : 6}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/assistance/list")}>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/evolution-note/list")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </AnimateButton>
                         </Grid>
                     </Grid>
-
-                    <FullScreenDialogs
-                        open={open}
-                        title="LISTADO DE EXAMENES DE PARACLÍNICOS"
-                        handleClose={() => setOpen(false)}
-                    >
-                        <ListAssistance />
-                    </FullScreenDialogs>
                 </Grid>
-            </> : <Cargando />}
 
+                <FullScreenDialogs
+                    open={open}
+                    title="LISTADO DE NOTAS DE EVOLUCIÓN"
+                    handleClose={() => setOpen(false)}
+                >
+                    <ListEvolutionnotes />
+                </FullScreenDialogs>
+            </> : <Cargando />}
         </MainCard >
     );
 };
 
-export default UpdateAssistance;
+export default UpdateEvolutionNote;

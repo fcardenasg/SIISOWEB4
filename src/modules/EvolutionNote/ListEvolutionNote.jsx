@@ -10,7 +10,6 @@ import {
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -26,26 +25,19 @@ import {
     Tooltip,
     Typography,
     Button,
-    Avatar,
-    Modal
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
 // Import de proyectos
-
-import BodyEmployee from './Viewinfirmary';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
-import { GetAllEmployee, DeleteEmployee } from 'api/clients/EmployeeClient';
-
-import { GetAllAssistance, DeleteAssistance } from 'api/clients/AssistanceClient';
+import { DeleteEvolutionNote, GetAllEvolutionNote } from 'api/clients/EvolutionNoteClient';
+import { FormatDate } from 'components/helpers/Format';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
@@ -102,45 +94,33 @@ function stableSort(array, comparator) {
 /* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'id',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
+        align: 'center'
+    },
+    {
+        id: 'idContingencia',
+        numeric: false,
+        label: 'Contingencia',
         align: 'left'
     },
     {
-        id: 'nombres',
+        id: 'idAtencion',
         numeric: false,
-        label: 'Nombres',
+        label: 'Atencion',
         align: 'left'
     },
     {
-        id: 'celular',
+        id: 'fecha',
         numeric: false,
-        label: 'Celular',
+        label: 'Fecha',
         align: 'left'
     },
     {
-        id: 'email',
+        id: 'usuarioCreacion',
         numeric: false,
-        label: 'Email',
-        align: 'left'
-    },
-    {
-        id: 'nameCompany',
-        numeric: false,
-        label: 'Empresa',
-        align: 'left'
-    },
-    {
-        id: 'nameSede',
-        numeric: false,
-        label: 'Sede',
+        label: 'Usuario Que Atiende',
         align: 'left'
     }
 ];
@@ -262,10 +242,9 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
-const Listinfirmary = () => {
+const ListEvolutionNote = () => {
     const dispatch = useDispatch();
-    const [assistance, setAssistance] = useState([]);
-    console.log("Lista = ", assistance);
+    const [evolutionNote, setEvolutionNote] = useState([]);
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -279,9 +258,13 @@ const Listinfirmary = () => {
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        // const lsServer = await GetAllAssistance(0, 0);
-        // setAssistance(lsServer.data.entities);
-        // setRows(lsServer.data.entities);
+        try {
+            const lsServer = await GetAllEvolutionNote(0, 0);
+            setEvolutionNote(lsServer.data.entities);
+            setRows(lsServer.data.entities);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const [modalStyle] = useState(getModalStyle);
@@ -294,11 +277,6 @@ const Listinfirmary = () => {
     const handleClose = () => {
         setOpen(false);
     };
-
-    /* Abrir Modal */
-    /*     const OpenModal = (idEmpleado) => {
-            return (<BodyEmployee IdEmployee={idEmpleado} openModal={true} />);
-        } */
 
     /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
@@ -328,9 +306,9 @@ const Listinfirmary = () => {
                 }
                 return matches;
             });
-            setAssistance(newRows);
+            setEvolutionNote(newRows);
         } else {
-            setAssistance(rows);
+            setEvolutionNote(rows);
         }
     };
 
@@ -345,7 +323,7 @@ const Listinfirmary = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = assistance.map((n) => n.id);
+            const newSelectedId = evolutionNote.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -385,7 +363,7 @@ const Listinfirmary = () => {
 
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
-        const result = await DeleteAssistance(idCheck);
+        const result = await DeleteEvolutionNote(idCheck);
         if (result.status === 200) {
             dispatch({
                 type: SNACKBAR_OPEN,
@@ -396,15 +374,15 @@ const Listinfirmary = () => {
                 close: false,
                 transition: 'SlideUp'
             })
+            setSelected([]);
+            GetAll();
         }
-        setSelected([]);
-        GetAll();
     }
 
     const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - assistance.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - evolutionNote.length) : 0;
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
@@ -434,7 +412,7 @@ const Listinfirmary = () => {
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/infirmary/report/${idCheck}`)}>
+                        <Tooltip title="Impresión" onClick={() => navigate(`/evolution-note/report/${idCheck}`)}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -442,7 +420,7 @@ const Listinfirmary = () => {
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/infirmary/add")}>
+                            onClick={() => navigate("/evolution-note/add")}>
                             {TitleButton.Agregar}
                         </Button>
 
@@ -459,13 +437,13 @@ const Listinfirmary = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={assistance.length}
+                        rowCount={evolutionNote.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(assistance, getComparator(order, orderBy))
+                        {stableSort(evolutionNote, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
@@ -504,7 +482,8 @@ const Listinfirmary = () => {
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
-                                            <Avatar alt="Foto Empleado" src={row.imagenUrl} />
+                                            {' '}
+                                            {row.documento}{' '}
                                         </TableCell>
 
                                         <TableCell
@@ -519,7 +498,7 @@ const Listinfirmary = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.documento}{' '}
+                                                {row.idContingencia}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -535,7 +514,7 @@ const Listinfirmary = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombres}{' '}
+                                                {row.idAtencion}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -551,7 +530,7 @@ const Listinfirmary = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.celular}{' '}
+                                                {FormatDate(row.fecha)}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -567,63 +546,24 @@ const Listinfirmary = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.email}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.nameCompany}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.nameSede}{' '}
+                                                {row.usuarioCreacion}{' '}
                                             </Typography>
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Detalles" onClick={handleOpen}>
-                                                <IconButton color="primary" size="large">
+                                            <Tooltip title="Detalles"/*  onClick={() => setOpenUpdate(true)} */>
+                                                <IconButton disabled={idCheck === '' ? true : false} color="primary" size="large">
                                                     <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/infirmary/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/evolution-note/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                            {console.log(row.id)}
                                         </TableCell>
                                         {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
-                                        <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                            open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
-                                            aria-describedby="simple-modal-description"
-                                        >
-                                            <BodyEmployee IdEmployee={row.id} modalStyle={modalStyle} handleClose={handleClose} />
-                                        </Modal>
                                     </TableRow>
                                 );
                             })}
@@ -644,7 +584,7 @@ const Listinfirmary = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={assistance.length}
+                count={evolutionNote.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -656,4 +596,4 @@ const Listinfirmary = () => {
     );
 };
 
-export default Listinfirmary;
+export default ListEvolutionNote;

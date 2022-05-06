@@ -10,7 +10,6 @@ import {
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -26,43 +25,24 @@ import {
     Tooltip,
     Typography,
     Button,
-    Avatar,
-    Modal
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
 // Import de proyectos
-
-import BodyEmployee from './ViewEvolutionnotes';
+import { FormatDate } from 'components/helpers/Format';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
-import { GetAllEmployee, DeleteEmployee } from 'api/clients/EmployeeClient';
-
-import { GetAllAssistance, DeleteAssistance } from 'api/clients/AssistanceClient';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
+import { DeleteNoteInfirmary, GetAllNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
 
 function getModalStyle() {
     const top = 50;
@@ -102,45 +82,33 @@ function stableSort(array, comparator) {
 /* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'id',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
+        align: 'center'
+    },
+    {
+        id: 'idContingencia',
+        numeric: false,
+        label: 'Contingencia',
         align: 'left'
     },
     {
-        id: 'nombres',
+        id: 'idAtencion',
         numeric: false,
-        label: 'Nombres',
+        label: 'Atencion',
         align: 'left'
     },
     {
-        id: 'celular',
+        id: 'fecha',
         numeric: false,
-        label: 'Celular',
+        label: 'Fecha',
         align: 'left'
     },
     {
-        id: 'email',
+        id: 'usuarioCreacion',
         numeric: false,
-        label: 'Email',
-        align: 'left'
-    },
-    {
-        id: 'nameCompany',
-        numeric: false,
-        label: 'Empresa',
-        align: 'left'
-    },
-    {
-        id: 'nameSede',
-        numeric: false,
-        label: 'Sede',
+        label: 'Usuario Que Atiende',
         align: 'left'
     }
 ];
@@ -262,12 +230,11 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
-const ListEvolutionnotes = () => {
+const ListNoteInfirmary = () => {
     const dispatch = useDispatch();
-    const [assistance, setAssistance] = useState([]);
-    console.log("Lista = ", assistance);
+    const navigate = useNavigate();
+    const [lsNoteInfirmary, setLsNoteInfirmary] = useState([]);
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -277,11 +244,14 @@ const ListEvolutionnotes = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
-        // const lsServer = await GetAllAssistance(0, 0);
-        // setAssistance(lsServer.data.entities);
-        // setRows(lsServer.data.entities);
+        try {
+            const lsServer = await GetAllNoteInfirmary(0, 0);
+            setLsNoteInfirmary(lsServer.data.entities);
+            setRows(lsServer.data.entities);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const [modalStyle] = useState(getModalStyle);
@@ -294,11 +264,6 @@ const ListEvolutionnotes = () => {
     const handleClose = () => {
         setOpen(false);
     };
-
-    /* Abrir Modal */
-    /*     const OpenModal = (idEmpleado) => {
-            return (<BodyEmployee IdEmployee={idEmpleado} openModal={true} />);
-        } */
 
     /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
@@ -328,9 +293,9 @@ const ListEvolutionnotes = () => {
                 }
                 return matches;
             });
-            setAssistance(newRows);
+            setLsNoteInfirmary(newRows);
         } else {
-            setAssistance(rows);
+            setLsNoteInfirmary(rows);
         }
     };
 
@@ -345,7 +310,7 @@ const ListEvolutionnotes = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = assistance.map((n) => n.id);
+            const newSelectedId = lsNoteInfirmary.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -385,7 +350,7 @@ const ListEvolutionnotes = () => {
 
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
-        const result = await DeleteAssistance(idCheck);
+        const result = await DeleteNoteInfirmary(idCheck);
         if (result.status === 200) {
             dispatch({
                 type: SNACKBAR_OPEN,
@@ -401,15 +366,11 @@ const ListEvolutionnotes = () => {
         GetAll();
     }
 
-    const navigate = useNavigate();
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - assistance.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsNoteInfirmary.length) : 0;
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
-
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -434,18 +395,16 @@ const ListEvolutionnotes = () => {
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/evolutionnotes/report/${idCheck}`)}>
+                        <Tooltip title="Impresión" onClick={() => navigate(`/note-infirmary/report/${idCheck}`)}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/evolutionnotes/add")}>
+                            onClick={() => navigate("/note-infirmary/add")}>
                             {TitleButton.Agregar}
                         </Button>
-
                     </Grid>
                 </Grid>
             </CardContent>
@@ -459,16 +418,15 @@ const ListEvolutionnotes = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={assistance.length}
+                        rowCount={lsNoteInfirmary.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(assistance, getComparator(order, orderBy))
+                        {stableSort(lsNoteInfirmary, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
                                 const isItemSelected = isSelected(row.id);
@@ -504,7 +462,8 @@ const ListEvolutionnotes = () => {
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
-                                            <Avatar alt="Foto Empleado" src={row.imagenUrl} />
+                                            {' '}
+                                            {row.documento}{' '}
                                         </TableCell>
 
                                         <TableCell
@@ -519,7 +478,7 @@ const ListEvolutionnotes = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.documento}{' '}
+                                                {row.idContingencia}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -535,7 +494,7 @@ const ListEvolutionnotes = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombres}{' '}
+                                                {row.idAtencion}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -551,7 +510,7 @@ const ListEvolutionnotes = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.celular}{' '}
+                                                {FormatDate(row.fecha)}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -567,63 +526,23 @@ const ListEvolutionnotes = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.email}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.nameCompany}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.nameSede}{' '}
+                                                {row.usuarioCreacion}{' '}
                                             </Typography>
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Detalles" onClick={handleOpen}>
-                                                <IconButton color="primary" size="large">
+                                            <Tooltip title="Detalles"/*  onClick={() => setOpenUpdate(true)} */>
+                                                <IconButton disabled={idCheck === '' ? true : false} color="primary" size="large">
                                                     <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/evolutionnotes/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/note-infirmary/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                            {console.log(row.id)}
                                         </TableCell>
-                                        {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
-                                        <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                            open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
-                                            aria-describedby="simple-modal-description"
-                                        >
-                                            <BodyEmployee IdEmployee={row.id} modalStyle={modalStyle} handleClose={handleClose} />
-                                        </Modal>
                                     </TableRow>
                                 );
                             })}
@@ -640,20 +559,17 @@ const ListEvolutionnotes = () => {
                 </Table>
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={assistance.length}
+                count={lsNoteInfirmary.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-
-
         </MainCard>
     );
 };
 
-export default ListEvolutionnotes;
+export default ListNoteInfirmary;

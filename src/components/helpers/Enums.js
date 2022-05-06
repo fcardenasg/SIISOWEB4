@@ -34,6 +34,15 @@ export const CodCatalogo = {
     Atencion_HistoriaClinica: 4177,
     Opciones_SINO: 4184,
     ConceptoAptitud_HistoriaClinica: 4185,
+    AUSLAB_INC: 4189,
+    AUSLAB_TIPOINCA: 4190,
+    AUSLAB_CONT: 4191,
+    AUSLAB_ESTCAS: 4192,
+    MEDLAB_RECASO: 4195,
+    MEDLAB_REGION: 4197,
+    MEDLAB_LATERA: 4198,
+    MEDLAB_ENMO_EN: 4199,
+    MEDLAB_ENDON_EN: 4200,
 }
 
 export const DefaultData = {
