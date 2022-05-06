@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 // material-ui
 import {
@@ -32,9 +33,13 @@ import { IconEdit } from '@tabler/icons';
 import PhonelinkRingTwoToneIcon from '@mui/icons-material/PhonelinkRingTwoTone';
 import PinDropTwoToneIcon from '@mui/icons-material/PinDropTwoTone';
 import MailTwoToneIcon from '@mui/icons-material/MailTwoTone';
-
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import Avatar3 from 'assets/images/users/avatar-3.png';
-
+import PeopleIcon from '@mui/icons-material/People';
+import AddIcCallIcon from '@mui/icons-material/AddIcCall';
+import BusinessIcon from '@mui/icons-material/Business';
+import ElderlyIcon from '@mui/icons-material/Elderly';
+import EngineeringIcon from '@mui/icons-material/Engineering';
 // progress
 function LinearProgressWithLabel({ value, ...other }) {
     return (
@@ -71,39 +76,97 @@ const rows = [
 
 // ==============================|| PROFILE 1 - PROFILE ||============================== //
 
-const Personaldata = () => (
+
+
+
+
+const Personaldata = () => {
+
+    const [employee, setEmployee] = useState([]);
+
+    const idEmpleado = 29;
+    async function GetById() {
+        try {
+            const lsServer = await GetByIdEmployee(idEmpleado);
+            if (lsServer.status === 200) {
+                setEmployee(lsServer.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+      /* EL useEffect QUE LLENA LA LISTA */
+      useEffect(() => {
+        GetById();
+    },)
+
+    return (
     <Grid container spacing={gridSpacing}>
-        <Grid item lg={4} xs={12}>
-            <SubCard
-                title={
+        <Grid item lg={6} xs={12}>
+        <SubCard
+                        title="Datos Personales"
+                        secondary={
+                            <Button>
+                                <IconEdit stroke={1.5} size="1.3rem" />
+                            </Button>
+                        }
+                    >
+    
+          
                     <Grid container spacing={2} alignItems="center">
+            
+                              
+                       
                         <Grid item>
                             <Avatar alt="User 1" src={Avatar3} />
                         </Grid>
+                     
+
+
+
                         <Grid item xs zeroMinWidth>
-                            <Typography align="left" variant="subtitle1">
-                                Suzan
-                            </Typography>
-                            <Typography align="left" variant="subtitle2">
-                                UI/UX Designer
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <Chip size="small" label="Pro" color="primary" />
-                        </Grid>
+                               <Typography align="left" variant="subtitle1">
+                                    {employee.nombres}
+                                </Typography>
+                                <Typography align="left" variant="subtitle2">
+                                    {employee.nameGenero} 
+                               
+                                    </Typography>
+                                    <Typography align="left" variant="subtitle2">
+                                    {employee.fechaNaci}
+                                    </Typography>
+                                    <Typography align="left" variant="subtitle2">
+                                    {employee.nameEstadocivil}
+                                    </Typography>
+                            </Grid>
+
+
                     </Grid>
-                }
-            >
+               
+            
+
+
+{/* const DataToInsert = PostEmployee(datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
+                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, datos.dptoNacido, FechaContrato,
+                datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
+                datos.direccionResidencia, datos.municipioResidencia, datos.dptoResidencia, datos.celular, datos.eps,
+                datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
+                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
+                datos.bandera, datos.ges, datos.usuarioModifica, FechaModificacion, datos.usuarioCreacion,
+                FechaCreacion, imgSrc); */}
+
                 <List component="nav" aria-label="main mailbox folders">
                     <ListItemButton>
                         <ListItemIcon>
                             <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                         </ListItemIcon>
-                        <ListItemText primary={<Typography variant="subtitle1">Email</Typography>} />
+                        <ListItemText primary={<Typography variant="subtitle1">Correo</Typography>} />
                         <ListItemSecondaryAction>
                             <Typography variant="subtitle2" align="right">
-                                demo@sample.com
-                            </Typography>
+                            {employee.email}
+                            </Typography>       
+
                         </ListItemSecondaryAction>
                     </ListItemButton>
                     <Divider />
@@ -111,10 +174,10 @@ const Personaldata = () => (
                         <ListItemIcon>
                             <PhonelinkRingTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                         </ListItemIcon>
-                        <ListItemText primary={<Typography variant="subtitle1">Phone</Typography>} />
+                        <ListItemText primary={<Typography variant="subtitle1">Celular</Typography>} />
                         <ListItemSecondaryAction>
                             <Typography variant="subtitle2" align="right">
-                                (+99) 9999 999 999
+                            {employee.celular}
                             </Typography>
                         </ListItemSecondaryAction>
                     </ListItemButton>
@@ -123,49 +186,100 @@ const Personaldata = () => (
                         <ListItemIcon>
                             <PinDropTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                         </ListItemIcon>
-                        <ListItemText primary={<Typography variant="subtitle1">Location</Typography>} />
+                        <ListItemText primary={<Typography variant="subtitle1">Dirección de residencia</Typography>} />
                         <ListItemSecondaryAction>
                             <Typography variant="subtitle2" align="right">
-                                Melbourne
+                            {employee.celular}
                             </Typography>
                         </ListItemSecondaryAction>
                     </ListItemButton>
+                    <Divider />
+
+
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <PinDropTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon>
+                        <ListItemText primary={<Typography variant="subtitle1">Municipio de residencia</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameMunicipioResidencia}
+                            </Typography>
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <PeopleIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon>
+                        <ListItemText primary={<Typography variant="subtitle1">Nombre contacto</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.contacto}
+                            </Typography>
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <AddIcCallIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon>
+                        <ListItemText primary={<Typography variant="subtitle1">Teléfono contacto</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.telefonoContacto}
+                            </Typography>
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <BusinessIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon>
+                        <ListItemText primary={<Typography variant="subtitle1">EPS</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.telefonoContacto}
+                            </Typography>
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <ElderlyIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon>
+                        <ListItemText primary={<Typography variant="subtitle1">AFP</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.telefonoContacto}
+                            </Typography>
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <EngineeringIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon>
+                        <ListItemText primary={<Typography variant="subtitle1">ARL</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.telefonoContacto}
+                            </Typography>
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+            
+
+
                 </List>
-                <CardContent>
-                    <Grid container spacing={0}>
-                        <Grid item xs={4}>
-                            <Typography align="center" variant="h3">
-                                37
-                            </Typography>
-                            <Typography align="center" variant="subtitle2">
-                                Mails
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Typography align="center" variant="h3">
-                                2749
-                            </Typography>
-                            <Typography align="center" variant="subtitle2">
-                                Followers
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Typography align="center" variant="h3">
-                                678
-                            </Typography>
-                            <Typography align="center" variant="subtitle2">
-                                Following
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </CardContent>
+            
             </SubCard>
         </Grid>
-        <Grid item lg={8} xs={12}>
+        <Grid item lg={6} xs={12}>
             <Grid container direction="column" spacing={gridSpacing}>
                 <Grid item xs={12}>
                     <SubCard
-                        title="About me"
+                        title="Información de la Empresa y Cargo"
                         secondary={
                             <Button>
                                 <IconEdit stroke={1.5} size="1.3rem" />
@@ -173,164 +287,147 @@ const Personaldata = () => (
                         }
                     >
                         <Grid container direction="column" spacing={2}>
-                            <Grid item xs={12}>
-                                <Typography variant="body2">
-                                    Hello,I’m Anshan Handgun Creative Graphic Designer & User Experience Designer based in Website, I create
-                                    digital Products a more Beautiful and usable place. Morbid accusant ipsum. Nam nec tellus at.
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant="subtitle1">Personal Details</Typography>
-                            </Grid>
-                            <Divider sx={{ pt: 1 }} />
-                            <Grid item xs={12}>
-                                <TableContainer>
-                                    <Table
-                                        sx={{
-                                            '& td': {
-                                                borderBottom: 'none'
-                                            }
-                                        }}
-                                        size="small"
-                                    >
-                                        <TableBody>
-                                            {rows.map((row) => (
-                                                <TableRow key={row.name}>
-                                                    <TableCell variant="head">{row.name}</TableCell>
-                                                    <TableCell>{row.calories}</TableCell>
-                                                    <TableCell>{row.fat}</TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </Grid>
+                         
+                        <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Sede de Trabajo</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Departamento</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+
+                    <Divider />
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Area</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Subarea</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Posición/Cargo</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Grupo</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Turno</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Tipo Contrato</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Fecha Contrato</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Antiguedad</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                         
                         </Grid>
                     </SubCard>
                 </Grid>
-                <Grid item xs={12}>
-                    <SubCard title="Education">
-                        <Grid container direction="column" spacing={1}>
-                            <Grid item xs={12}>
-                                <Grid container>
-                                    <Grid item xs={12} sm={4}>
-                                        <Typography variant="subtitle1">2014-2017</Typography>
-                                        <Typography variant="subtitle2">Master Degree</Typography>
-                                    </Grid>
-                                    <Grid item xs={12} sm={8}>
-                                        <Typography variant="subtitle1">Master Degree in Computer Application</Typography>
-                                        <Typography variant="subtitle2">University of Oxford, England</Typography>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-                            </Box>
-                            <Grid item xs={12}>
-                                <Grid container>
-                                    <Grid item xs={12} sm={4}>
-                                        <Typography variant="subtitle1">2011-2013</Typography>
-                                        <Typography variant="subtitle2">Bachelor</Typography>
-                                    </Grid>
-                                    <Grid item xs={12} sm={8}>
-                                        <Typography variant="subtitle1">Bachelor Degree in Computer Engineering</Typography>
-                                        <Typography variant="subtitle2">Imperial College London</Typography>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-                            </Box>
-                            <Grid item xs={12}>
-                                <Grid container>
-                                    <Grid item xs={12} sm={4}>
-                                        <Typography variant="subtitle1">2009-2011</Typography>
-                                        <Typography variant="subtitle2">School</Typography>
-                                    </Grid>
-                                    <Grid item xs={12} sm={8}>
-                                        <Typography variant="subtitle1">Higher Secondary Education</Typography>
-                                        <Typography variant="subtitle2">School of London, England</Typography>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
-                <Grid item xs={12}>
-                    <SubCard title="Employment">
-                        <Grid container direction="column" spacing={2}>
-                            <Grid item xs={12}>
-                                <Grid container>
-                                    <Grid item xs={12} sm={4}>
-                                        <Typography variant="subtitle1">Current</Typography>
-                                        <Typography variant="subtitle2">Senior</Typography>
-                                    </Grid>
-                                    <Grid item xs={12} sm={8}>
-                                        <Typography variant="subtitle1">Senior UI/UX designer</Typography>
-                                        <Typography variant="subtitle2">
-                                            Perform task related to project manager with the 100+ team under my observation. Team management
-                                            is key role in this company.
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-                            </Box>
-                            <Grid item xs={12}>
-                                <Grid container>
-                                    <Grid item xs={12} sm={4}>
-                                        <Typography variant="subtitle1">2017-2019</Typography>
-                                        <Typography variant="subtitle2">Junior</Typography>
-                                    </Grid>
-                                    <Grid item xs={12} sm={8}>
-                                        <Typography variant="subtitle1">Trainee cum Project Manager</Typography>
-                                        <Typography variant="subtitle2">Microsoft, TX, USA</Typography>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
-                <Grid item xs={12}>
-                    <SubCard title="Skills">
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6}>
-                                <Typography variant="body2">Junior</Typography>
-                                <LinearProgressWithLabel color="primary" variant="determinate" value={70} />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <Typography variant="body2">UX Researcher</Typography>
-                                <LinearProgressWithLabel color="primary" variant="determinate" value={80} />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <Typography variant="body2">Wordpress</Typography>
-                                <LinearProgressWithLabel color="secondary" variant="determinate" value={25} />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <Typography variant="body2">Graphic Designer</Typography>
-                                <LinearProgressWithLabel color="primary" variant="determinate" value={80} />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <Typography variant="body2">HTML</Typography>
-                                <LinearProgressWithLabel color="secondary" variant="determinate" value={45} />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <Typography variant="body2">PHP</Typography>
-                                <LinearProgressWithLabel color="primary" variant="determinate" value={65} />
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
+            
             </Grid>
         </Grid>
     </Grid>
-);
+    );
+};
 
 export default Personaldata;
