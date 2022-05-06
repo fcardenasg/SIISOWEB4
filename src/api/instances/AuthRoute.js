@@ -45,6 +45,12 @@ export const Url = {
     HistoriaClinica: 'api/HistoriaClinica',
     HistoriaClinicaId: 'api/HistoriaClinica/id',
 
+    NotaEvolucion: 'api/NotaEvolucion',
+    NotaEvolucionId: 'api/NotaEvolucion/id',
+
+    NotaEnfermeria: 'api/NotaEnfermeria',
+    NotaEnfermeriaId: 'api/NotaEnfermeria/id',
+
     TipoAtencion: 'api/TipoAtencion',
     AtencionGetAllByTipoAtencion: 'api/Atencion/GetAllByTipoAtencion',
     Atencion: 'api/Atencion',

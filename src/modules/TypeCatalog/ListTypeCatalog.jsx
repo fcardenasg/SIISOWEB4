@@ -331,9 +331,10 @@ const ListTypeCatalog = () => {
                     close: false,
                     transition: 'SlideUp'
                 })
+                setSearch('');
+                setSelected([]);
+                GetAll();
             }
-            setSelected([]);
-            GetAll();
         } catch (error) {
             console.log(error);
         }

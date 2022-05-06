@@ -114,15 +114,8 @@ const UpdateEmployee = () => {
                 setFechaCreacion(lsServerEmployeeId.data.fechaCreacion);
                 setDptoNacido(lsServerEmployeeId.data.dptoNacido);
                 setDptoResidencia(lsServerEmployeeId.data.dptoResidencia);
-                setMunicipioNacido(lsServerEmployeeId.data.municipioNacido);
                 setEventArea(lsServerEmployeeId.data.area);
             }
-
-            var resultlsMunicipioN = await GetSubString(dptoResidencia);
-            setMunicipioR(resultlsMunicipioN);
-
-            var resultlsMunicipioR = await GetSubString(dptoNacido);
-            setMunicipioN(resultlsMunicipioR);
 
             const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
             var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
@@ -257,11 +250,6 @@ const UpdateEmployee = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
-    /* useEffect(() => {
-        GetAll();
-    }, []) */
-
     useEffect(() => {
         GetAll();
     }, []);
@@ -350,9 +338,10 @@ const UpdateEmployee = () => {
             const TermDate = FormatDate(valueTermDate);
             const FechaModificacion = FormatDate(valueFechaModificacion);
             const FechaCreacion = FormatDate(valueFechaCreacion);
-            const municipioResidencia_DATA = datos.municipioResidencia != '' ? datos.municipioResidencia : municipioResidencia;
-            const municipioNacido_DATA = datos.municipioNacido != '' ? datos.municipioNacido : municipioNacido;
-            const subArea_DATA = datos.subArea != '' ? datos.subArea : eventSubArea;
+
+            const municipioResidencia_DATA = municipioResidencia == '' ? datos.municipioResidencia : municipioResidencia;
+            const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
+            const subArea_DATA = eventSubArea == '' ? datos.subArea : eventSubArea;
 
             const DataToUpdate = PutEmployee(id, datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
                 eventArea, subArea_DATA, datos.grupo, municipioNacido_DATA, dptoNacido, FechaContrato,

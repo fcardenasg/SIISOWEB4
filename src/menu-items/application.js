@@ -54,23 +54,20 @@ const application = {
                     id: 'evolutionnotes',
                     title: <FormattedMessage id="Nota de Evolución" />,
                     type: 'item',
-                    url: '/evolutionnotes/list'
+                    url: '/evolution-note/list'
                 },
-
                 {
                     id: 'infirmary',
                     title: <FormattedMessage id="Nota de Enfermería" />,
                     type: 'item',
-                    url: '/infirmary/list'
+                    url: '/note-infirmary/list'
                 },
-
                 {
                     id: 'medicalformula',
                     title: <FormattedMessage id="Recetario" />,
                     type: 'item',
                     url: '/medicalformula/list'
                 },
-
                 {
                     id: 'account-profile',
                     title: <FormattedMessage id="account-profile" />,
