@@ -10,7 +10,6 @@ import {
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -31,17 +30,15 @@ import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 
 // Import de proyectos
+import { DeleteOccupationalMedicine, GetAllOccupationalMedicine } from 'api/clients/OccupationalMedicineClient';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllSupplier, DeleteSupplier } from 'api/clients/SupplierClient';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
@@ -76,7 +73,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
         id: 'id',
@@ -91,33 +87,15 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nombre',
+        id: 'resumenCaso',
         numeric: false,
-        label: 'Nombre',
+        label: 'Resumen del Caso',
         align: 'left'
     },
     {
-        id: 'situacionEmpleado',
+        id: 'codDx',
         numeric: false,
-        label: 'Situacion Empleado',
-        align: 'left'
-    },
-    {
-        id: 'situacionContractual',
-        numeric: false,
-        label: 'Situacion Contractual',
-        align: 'left'
-    },
-    {
-        id: 'dx',
-        numeric: false,
-        label: 'DX',
-        align: 'left'
-    },
-    {
-        id: 'fecha',
-        numeric: false,
-        label: 'Fecha',
+        label: 'Dx',
         align: 'left'
     },
     {
@@ -128,7 +106,6 @@ const headCells = [
     }
 ];
 
-// ==============================|| TABLE HEADER ||============================== //
 
 /* RENDERIZADO DE LA CABECERA */
 
@@ -202,11 +179,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -243,13 +215,10 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
 const ListOccupationalMedicine = () => {
     const dispatch = useDispatch();
-    const [supplier, setSupplier] = useState([]);
+    const [occupationalMedicine, setOccupationalMedicine] = useState([]);
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -259,11 +228,10 @@ const ListOccupationalMedicine = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
-            const lsServer = await GetAllSupplier(0, 0);
-            setSupplier(lsServer.data.entities);
+            const lsServer = await GetAllOccupationalMedicine(0, 0);
+            setOccupationalMedicine(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
@@ -284,7 +252,7 @@ const ListOccupationalMedicine = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'cedula', 'nombre', 'situacionEmpleado', 'situacionContractual', 'dx', 'fecha', 'usuario'];
+                const properties = ['id', 'cedula', 'resumenCaso', 'codDx', 'usuario'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -298,9 +266,9 @@ const ListOccupationalMedicine = () => {
                 }
                 return matches;
             });
-            setSupplier(newRows);
+            setOccupationalMedicine(newRows);
         } else {
-            setSupplier(rows);
+            setOccupationalMedicine(rows);
         }
     };
 
@@ -315,7 +283,7 @@ const ListOccupationalMedicine = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = supplier.map((n) => n.id);
+            const newSelectedId = occupationalMedicine.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -356,7 +324,7 @@ const ListOccupationalMedicine = () => {
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
-            const result = await DeleteSupplier(idCheck);
+            const result = await DeleteOccupationalMedicine(idCheck);
             if (result.status === 200) {
                 dispatch({
                     type: SNACKBAR_OPEN,
@@ -378,7 +346,7 @@ const ListOccupationalMedicine = () => {
     const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - supplier.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - occupationalMedicine.length) : 0;
 
     return (
         <MainCard title="Lista de Medicina Laboral" content={false}>
@@ -407,13 +375,96 @@ const ListOccupationalMedicine = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Empresas">
-                            <ExcelSheet data={supplier} name="Empresas">
-                                <ExcelColumn label="Código" value="id" />
-                                <ExcelColumn label="Nombre" value="nombProv" />
-                                <ExcelColumn label="Teléfono" value="teleProv" />
-                                <ExcelColumn label="Correo Electronico" value="emaiProv" />
-                                <ExcelColumn label="Tipo de Proveedor" value="nameTypeSupplier" />
+                        } filename="Medicina Laboral">
+                            <ExcelSheet data={occupationalMedicine} name="Medicina Laboral">
+                                <ExcelColumn label="Id" value="id" />
+                                <ExcelColumn label="Cedula" value="cedula" />
+                                <ExcelColumn label="ResumenCaso" value="resumenCaso" />
+                                <ExcelColumn label="FechaRetiro" value="fechaRetiro" />
+                                <ExcelColumn label="Segmento Agrupado" value="segmentoAgrupado" />
+                                <ExcelColumn label="Segmento Afectado" value="segmentoAfectado" />
+                                <ExcelColumn label="Subsegmento" value="subsegmento" />
+                                <ExcelColumn label="CodDx" value="codDx" />
+                                <ExcelColumn label="Nro. Furel" value="nroFurel" />
+                                <ExcelColumn label="Región" value="regionInfoLaboral" />
+                                <ExcelColumn label="Lateralidad" value="lateralidad" />
+                                <ExcelColumn label="Entidad Que Motiva El Envio" value="entidadQueMotivaEnvio" />
+                                <ExcelColumn label="Entidad a Donde Envia" value="entidadDondeEnvia" />
+                                <ExcelColumn label="Fecha Entrega" value="fechaEntrega" />
+                                <ExcelColumn label="Fecha Envio" value="fechaEnvio" />
+                                <ExcelColumn label="Investigado" value="investigado" />
+                                <ExcelColumn label="Observaciones" value="observaciones" />
+
+                                <ExcelColumn label="Fecha Calificación" value="fechaCalificacionEps" />
+                                <ExcelColumn label="Origen" value="origenEps" />
+
+                                <ExcelColumn label="No. Solicitud" value="noSolicitudARL" />
+                                <ExcelColumn label="Fecha de Calificación Origen" value="fechaCalifiOrigenARL" />
+                                <ExcelColumn label="origen" value="origenARL" />
+                                <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclARL" />
+                                <ExcelColumn label="Pcl" value="pclARL" />
+                                <ExcelColumn label="Fecha Estructura" value="fechaEstructuraARL" />
+                                <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclARL" />
+                                <ExcelColumn label="Pcl Recalificada" value="pclRecalificadaARL" />
+                                <ExcelColumn label="Fecha Estructura Recalificada" value="fechaEstructuraRecalificadaARL" />
+
+                                <ExcelColumn label="Fecha Calificación Origen" value="fechaCalificaOrigenJRC" />
+                                <ExcelColumn label="Junta Calificación" value="juntaCalifica" />
+                                <ExcelColumn label="No. Dictamen" value="noDictamenJRC" />
+                                <ExcelColumn label="Origen" value="origenJRC" />
+                                <ExcelColumn label="Controversia" value="controversia" />
+                                <ExcelColumn label="Conclusion" value="conclusion" />
+                                <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclJRC" />
+                                <ExcelColumn label="No. Dictamen Pcl" value="noDictamenPclJRC" />
+                                <ExcelColumn label="Pcl" value="pclJRC" />
+                                <ExcelColumn label="Fecha Estructura Pcl" value="fechaEstructuraPclJRC" />
+                                <ExcelColumn label="No. Acta Recurso" value="noActaRecursoJRC" />
+                                <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclJRC" />
+                                <ExcelColumn label="No. Dictamen Recalificación" value="noDictamenRecalificacionJRC" />
+                                <ExcelColumn label="Junta ReCalificación" value="juntaReCalificacionJRC" />
+                                <ExcelColumn label="Pcl Recalificada" value="pclRecalificadaJRC" />
+                                <ExcelColumn label="Fecha Recalificación Est" value="fechaRecalificacionEstJRC" />
+
+                                <ExcelColumn label="Fecha Calificación Origen" value="fechaCalificaOrigenJNC" />
+                                <ExcelColumn label="No. Dictamen" value="noDictamenJNC" />
+                                <ExcelColumn label="Origen" value="origenJNC" />
+                                <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclJNC" />
+                                <ExcelColumn label="No. Dictamen Pcl" value="noDictamenPclJNC" />
+                                <ExcelColumn label="Pcl" value="pclJNC" />
+                                <ExcelColumn label="Fecha Estructura" value="fechaEstructuraJNC" />
+                                <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclJNC" />
+                                <ExcelColumn label="No. Dictamen Recalificación" value="noDictamenRecalificacionJNC" />
+                                <ExcelColumn label="Pcl Recalificación" value="pclRecalificacionJNC" />
+
+                                <ExcelColumn label="Origen" value="origenInstaFinal" />
+                                <ExcelColumn label="Fecha Estructuracion Origen" value="fechaEstructuracionOrigenInstaFinal" />
+                                <ExcelColumn label="Instancia Origen" value="instanciaOrigenInstaFinal" />
+                                <ExcelColumn label="Pcl Final" value="pclFinalInstaFinal" />
+                                <ExcelColumn label="Instancia Final" value="instanciaFinal" />
+                                <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclInstFinal" />
+                                <ExcelColumn label="Fecha Estructuración Pcl" value="fechaEstructuracionPclInstFinal" />
+                                <ExcelColumn label="Indemnizado" value="indemnizado" />
+                                <ExcelColumn label="EntregadoMin" value="entregadoMin" />
+                                <ExcelColumn label="FechaPago" value="fechaPagoInstaFinal" />
+                                <ExcelColumn label="Indemnizado Recalificado" value="indemnizadoRecalificado" />
+                                <ExcelColumn label="Fecha Pago Recalificado" value="fechaPagoRecalificadoInstaFinal" />
+
+                                <ExcelColumn label="EstadoRHT" value="estadoRHT" />
+                                <ExcelColumn label="Reintegro" value="reintegro" />
+                                <ExcelColumn label="Reubicado" value="reubicado" />
+                                <ExcelColumn label="Restringido" value="restringido" />
+                                <ExcelColumn label="JornadaLaboral" value="jornadaLaboral" />
+                                <ExcelColumn label="Indemnizacion" value="indemnizacion" />
+
+                                <ExcelColumn label="Sede" value="sede" />
+                                <ExcelColumn label="Usuario" value="usuario" />
+                                <ExcelColumn label="UsuarioReporte" value="usuarioReporte" />
+                                <ExcelColumn label="FechaSistema" value="fechaSistema" />
+                                <ExcelColumn label="FechaInforme" value="fechaInforme" />
+                                <ExcelColumn label="FechaReporte" value="fechaReporte" />
+                                <ExcelColumn label="FechaSistemaReporte" value="fechaSistemaReporte" />
+                                <ExcelColumn label="EdadCalificado" value="edadCalificado" />
+                                <ExcelColumn label="AntiguedadCalificado" value="antiguedadCalificado" />
                             </ExcelSheet>
                         </ExcelFile>
 
@@ -423,7 +474,6 @@ const ListOccupationalMedicine = () => {
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/occupationalmedicine/add")}>
                             {TitleButton.Agregar}
@@ -442,16 +492,15 @@ const ListOccupationalMedicine = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={supplier.length}
+                        rowCount={occupationalMedicine.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(supplier, getComparator(order, orderBy))
+                        {stableSort(occupationalMedicine, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
                                 const isItemSelected = isSelected(row.id);
@@ -466,9 +515,6 @@ const ListOccupationalMedicine = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
-
                                         <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                             <Checkbox
                                                 color="primary"
@@ -524,7 +570,7 @@ const ListOccupationalMedicine = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombre}{' '}
+                                                {row.resumenCaso}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -540,55 +586,7 @@ const ListOccupationalMedicine = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.situacionEmpleado}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.situacionContractual}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.dx}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.fecha}{' '}
+                                                {row.codDx}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -608,20 +606,15 @@ const ListOccupationalMedicine = () => {
                                             </Typography>
                                         </TableCell>
 
-
                                         <TableCell align="center" sx={{ pr: 3 }}>
                                             <IconButton color="primary" size="large">
                                                 <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                             </IconButton>
-                                            <Fab
-                                                size="small"
-                                                color="info"
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/occupationalmedicine/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/occupationalmedicine/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
-                                            </Fab>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -643,7 +636,7 @@ const ListOccupationalMedicine = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={supplier.length}
+                count={occupationalMedicine.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

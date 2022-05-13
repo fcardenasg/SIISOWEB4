@@ -330,7 +330,6 @@ const Employee = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
@@ -346,7 +345,6 @@ const Employee = () => {
         setDptoNacido('');
     }
 
-    /* METODO DE INSERT  */
     const handleClick = async (datos) => {
         try {
             const FechaNaci = FormatDate(valueFechaNaci);

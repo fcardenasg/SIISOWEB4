@@ -274,6 +274,7 @@ const EditItem = ({ item, profiles, userStory, columns, handleDrawerOpen }) => {
                             <Grid item xs={12} sm={4}>
                                 <Typography variant="subtitle1">Attachments:</Typography>
                             </Grid>
+
                             <Grid item xs={12} sm={8}>
                                 <Grid container alignItems="center" spacing={2}>
                                     <Grid item>

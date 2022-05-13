@@ -17,21 +17,22 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import { PostWorkAbsenteeism } from 'formatdata/WorkAbsenteeismForm';
+import { GetAllBySegAfectado, GetAllBySegAgrupado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format';
 import Accordion from 'components/accordion/Accordion';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
-import { InsertAdvice } from 'api/clients/AdviceClient';
+import { InsertWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultData } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import SubCard from 'ui-component/cards/SubCard';
 import InputOnChange from 'components/input/InputOnChange';
 
@@ -41,6 +42,7 @@ import RadioButtonCheckedTwoToneIcon from '@mui/icons-material/RadioButtonChecke
 import UserCountCard from 'ui-component/cards/UserCountCard';
 import AccountCircleTwoTone from '@mui/icons-material/AccountCircleTwoTone';
 import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
+import { GetByIdCIE11 } from 'api/clients/CIE11Client';
 
 // Audio
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -50,7 +52,7 @@ mic.continuous = true;
 mic.interimResults = true;
 mic.lang = 'es-ES';
 
-const MedicalAdvice = () => {
+const WorkAbsenteeism = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -60,9 +62,19 @@ const MedicalAdvice = () => {
     const [catalog, setCatalog] = useState([]);
     const [company, setCompany] = useState([]);
 
+    const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
+    const [segmentoAgrupado, setSegmentoAgrupado] = useState('');
+    const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
+    const [segmentoAfectado, setSegmentoAfectado] = useState('');
+    const [lsSubsegmento, setLsSubsegmento] = useState([]);
+
+    const [dx, setDx] = useState('');
+    const [lsCIE11, setLsCIE11] = useState([]);
+
+    const [diasSinLaborar, setDiasSinLaborar] = useState('');
     const [departa, setDeparta] = useState('');
     const [lsDeparta, setLsDeparta] = useState([]);
-    const [departaMedico, setDepartaMedico] = useState('');
+    const [departamentoIPS, setDepartaMedico] = useState('');
     const [lsMunicipio, setMunicipioE] = useState([]);
     const [lsMunicipioMedico, setMunicipioMedico] = useState([]);
     const [lsCodigoFilterDpto, setCodigoFilterDpto] = useState([]);
@@ -71,7 +83,11 @@ const MedicalAdvice = () => {
     const [lsEstadoCaso, setLsEstadoCaso] = useState([]);
     const [lsIncapacidad, setLsIncapacidad] = useState([]);
     const [lsContingencia, setLsContingencia] = useState([]);
-    const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
+    const [lsTipoSoporte, setLsTipoSoporte] = useState([]);
+    const [lsCategoria, setLsCategoria] = useState([]);
+    const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
+    const [lsRedExpide, setLsRedExpide] = useState([]);
+    const [lsCumplimientoRequisito, setLsCumplimientoRequisito] = useState([]);
 
     const [medicalAdvice, setMedicalAdvice] = useState([]);
 
@@ -112,6 +128,7 @@ const MedicalAdvice = () => {
     const [fechaExpedicion, setFechaExpedicion] = useState(new Date());
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
+    const [fechaModifica, setFechaModifica] = useState(new Date());
 
     const [isListening, setIsListening] = useState(false);
     const [note, setNote] = useState(null);
@@ -151,6 +168,13 @@ const MedicalAdvice = () => {
 
     async function GetAll() {
         try {
+            const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
+            var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setLsSegmentoAgrupado(resultSegAgrupado);
+
             const lsServerCatalog = await GetAllCatalog(0, 0);
             var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -179,6 +203,41 @@ const MedicalAdvice = () => {
                 label: item.nombre
             }));
             setLsIncapacidad(resultIncapacidad);
+
+            const lsServerTipoSoporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TISOPOR);
+            var resultTipoSoporte = lsServerTipoSoporte.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsTipoSoporte(resultTipoSoporte);
+
+            const lsServerCategoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_CATEGORIA);
+            var resultCategoria = lsServerCategoria.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCategoria(resultCategoria);
+
+            const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOATEN);
+            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsTipoAtencion(resultTipoAtencion);
+
+            const lsServerRedExpide = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_REDEXP);
+            var resultRedExpide = lsServerRedExpide.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsRedExpide(resultRedExpide);
+
+            const lsServerCumplimientoRequisito = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
+            var resultCumplimientoRequisito = lsServerCumplimientoRequisito.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCumplimientoRequisito(resultCumplimientoRequisito);
 
             const lsServerTipoInca = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOINCA);
             var resultTipoInca = lsServerTipoInca.data.entities.map((item) => ({
@@ -212,7 +271,6 @@ const MedicalAdvice = () => {
         }
     }
 
-    /* METODO PADRE DE TRAER DATOS */
     const handleDocument = async (event) => {
         try {
             setDocument(event?.target.value);
@@ -324,60 +382,102 @@ const MedicalAdvice = () => {
         }
     };
 
+    const handleChangeSegAgrupado = async (event) => {
+        try {
+            setLsSegmentoAfectado([]); setLsSubsegmento([]); setSegmentoAfectado('');
+            setSegmentoAfectado(''); setSegmentoAgrupado('');
+            setSegmentoAgrupado(event.target.value);
+
+            const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
+            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
+                value: item.id,
+                label: item.descripcion
+            }));
+            setLsSegmentoAfectado(resultSegAfectado);
+        } catch (error) {
+            console.log(error);
+            setLsSegmentoAfectado([]);
+        }
+    }
+
+    const handleChangeSegAfectado = async (event) => {
+        try {
+            setLsSubsegmento([]);
+            setSegmentoAfectado(event.target.value);
+
+            const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
+            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
+                value: item.id,
+                label: item.descripcion
+            }));
+            setLsSubsegmento(resultSubsegmento);
+        } catch (error) {
+            console.log(error);
+            setLsSubsegmento([]);
+        }
+    }
+
+    const handleChangeDx = async (event) => {
+        try {
+            setDx(event.target.value);
+
+            const lsServerCIE11 = await GetByIdCIE11(event.target.value);
+            if (lsServerCIE11.status === 200) {
+                var resultCIE11 = [{ value: lsServerCIE11.data.id, label: lsServerCIE11.data.dx }]
+                setLsCIE11(resultCIE11);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleFechaFin = (event) => {
+        setFechaFin(event);
+
+        let fechaIni = new Date(fechaInicio);
+        let fechaFinn = new Date(event);
+
+        let milisegundosDia = 24 * 60 * 60 * 1000;
+        let milisegundosTranscurridos = Math.abs(fechaIni.getTime() - fechaFinn.getTime());
+        let diasTranscurridos = Math.round(milisegundosTranscurridos / milisegundosDia);
+        setDiasSinLaborar(diasTranscurridos);
+    }
+
     useEffect(() => {
         GetAll();
         handleListen();
     }, [isListening])
 
     const CleanCombo = () => {
-        setClickAttend(false);
-        setImgSrc(null);
-        setNote(null);
-        setFecha(new Date());
-        setDocument('');
-        setNombres('');
-        setEmail('');
-        setCelular('');
-        setEscolaridad('');
-        setEmpresa('');
-        setSede('');
-        setFechaNaci(null);
-        setGenero('');
-        setEstadoCivil('');
-        setContacto('');
-        setTelefonoContacto('');
-        setFechaContrato(null);
-        setTipoContrato('');
-        setPayStatus('');
-        setType('');
-        setRosterPosition('');
-        setGeneralPosition('');
-        setDepartamento('');
-        setArea('');
-        setSubArea('');
-        setGrupo('');
-        setTurno('');
-        setDireccionResidencia('');
-        setDptoResidencia('');
-        setMunicipioResidencia('');
-        setMunicipioNacido('');
-        setDptoNacido('');
-        setEps('');
-        setAfp('');
+        setLsSegmentoAfectado([]); setSegmentoAfectado(''); setLsSubsegmento([]); setSegmentoAgrupado('');
+
+        setLsCIE11([]); setDeparta(''); setDx('');
+        setFechaExpedicion(new Date()); setFechaInicio(new Date()); setFechaFin(new Date()); setFechaModifica(new Date());
+
+        setClickAttend(false); setImgSrc(null); setNote(null); setFecha(new Date()); setDocument(''); setNombres('');
+        setEmail(''); setCelular(''); setEscolaridad(''); setEmpresa(''); setSede(''); setFechaNaci(null); setGenero('');
+        setEstadoCivil(''); setContacto(''); setTelefonoContacto(''); setFechaContrato(null); setTipoContrato('');
+        setPayStatus(''); setType(''); setRosterPosition(''); setGeneralPosition(''); setDepartamento(''); setArea('');
+        setSubArea(''); setGrupo(''); setTurno(''); setDireccionResidencia(''); setDptoResidencia(''); setMunicipioResidencia('');
+        setMunicipioNacido(''); setDptoNacido(''); setEps(''); setAfp('');
     }
 
     const handleClick = async (datos) => {
         try {
-            const fechaData = FormatDate(fecha);
-            const resto = "Sin Registro";
             const usuario = "Manuel Vásquez";
             const dateNow = FormatDate(new Date());
-            const DataToInsert = PostMedicalAdvice(document, fechaData, DefaultData.AsesoriaMedica, sede, datos.idContingencia,
-                DefaultData.SinRegistro, DefaultData.SinRegistro, DefaultData.SinRegistro, datos.idTipoAsesoria, datos.idMotivo,
-                DefaultData.SinRegistro, note, resto, resto, DefaultData.SinRegistro, usuario, dateNow, usuario, dateNow);
+
+            const DataToInsert = PostWorkAbsenteeism(document, datos.incapacidad, datos.nroIncapacidad, FormatDate(fechaExpedicion), departa,
+                datos.ciudadExpedicion, datos.tipoIncapacidad, datos.contingencia, FormatDate(fechaInicio), FormatDate(fechaFin), diasSinLaborar,
+                dx, datos.dxFinal, datos.estadoCaso, segmentoAgrupado, segmentoAfectado, datos.subsegmento, datos.idTipoSoporte, datos.idCategoria,
+
+                datos.proveedor, departamentoIPS, datos.ciudadIPS, datos.nombreProfesional, datos.especialidad, datos.registroProfesional, datos.tipoAtencion,
+                datos.cumplimientoRequisito, datos.expideInCapacidad, datos.observacionCumplimiento,
+
+                datos.observacion, usuario, FormatDate(fechaModifica), usuario, dateNow, tipoContrato, type, dateNow, usuario);
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertAdvice(DataToInsert);
+                const result = await InsertWorkAbsenteeism(DataToInsert);
                 if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,
@@ -408,801 +508,801 @@ const MedicalAdvice = () => {
     const dias = 200;
 
     return (
-        <MainCard title="">
-            <Grid container xs={12} sx={{ pt: 0.5 }}>
-                <form>
-                    <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
-                        <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
-                            <Grid item xs={3}>
-                                <PhotoModel
-                                    disabledCapture
-                                    disabledDelete
-                                    EstadoImg={imgSrc}
-                                />
-                            </Grid>
-                            <Grid container spacing={2} item xs={9}>
-                                <Grid item xs={4}>
-                                    <InputOnChange
-                                        label="N° Documento"
-                                        onKeyDown={handleDocument}
-                                        onChange={(e) => setDocument(e?.target.value)}
-                                        value={document}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        required={true}
-                                        autoFocus
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputOnChange
-                                        label="Nombres"
-                                        value={nombres}
-                                        onChange={(e) => setNombres(e?.target.value)}
-                                        disabled
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        required={true}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputOnChange
-                                        label="Email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e?.target.value)}
-                                        disabled
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        required={true}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputOnChange
-                                        label="Celular"
-                                        value={celular}
-                                        onChange={(e) => setCelular(e?.target.value)}
-                                        disabled
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        required={true}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <SelectOnChange
-                                        name="escolaridad"
-                                        label="Escolaridad"
-                                        disabled
-                                        options={catalog}
-                                        value={escolaridad}
-                                        onChange={(e) => setEscolaridad(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <SelectOnChange
-                                        name="empresa"
-                                        label="Empresa"
-                                        disabled
-                                        options={company}
-                                        value={empresa}
-                                        onChange={(e) => setEmpresa(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <SelectOnChange
-                                        name="sede"
-                                        label="Sede"
-                                        disabled
-                                        options={catalog}
-                                        value={sede}
-                                        onChange={(e) => setSede(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha de Nacimiento"
-                                        value={fechaNaci}
-                                        disabled
-                                        onChange={(e) => setFechaNaci(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <SelectOnChange
-                                        name="genero"
-                                        label="Genero"
-                                        disabled
-                                        options={catalog}
-                                        value={genero}
-                                        onChange={(e) => setGenero(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <SelectOnChange
-                                        name="estadoCivil"
-                                        label="Estado Civil"
-                                        disabled
-                                        options={catalog}
-                                        value={estadoCivil}
-                                        onChange={(e) => setEstadoCivil(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputOnChange
-                                        label="Contacto"
-                                        value={contacto}
-                                        onChange={(e) => setContacto(e?.target.value)}
-                                        disabled
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        required={true}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputOnChange
-                                        label="Teléfono de Contacto"
-                                        value={telefonoContacto}
-                                        onChange={(e) => setTelefonoContacto(e?.target.value)}
-                                        disabled
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        required={true}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-
-                    <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" sx={{ mr: 0.5 }} />
-                        <Typography variant="subtitle1" color="inherit">Ver mas...</Typography></>}>
-                        <Grid item xs={12} sx={{ pt: 2, pb: 2 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <InputDatePick
-                                            label="Fecha de Contrato"
-                                            value={fechaContrato}
-                                            disabled
-                                            onChange={(e) => setFechaContrato(e)}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="tipoContrato"
-                                            label="Tipo de Contrato"
-                                            disabled
-                                            options={catalog}
-                                            value={tipoContrato}
-                                            onChange={(e) => setTipoContrato(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="estado"
-                                            label="Estado"
-                                            disabled
-                                            options={catalog}
-                                            value={payStatus}
-                                            onChange={(e) => setPayStatus(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="Rol"
-                                            label="Rol"
-                                            disabled
-                                            options={catalog}
-                                            value={type}
-                                            onChange={(e) => setType(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="rosterPosition"
-                                            label="Roster Position"
-                                            disabled
-                                            options={catalog}
-                                            value={rosterPosition}
-                                            onChange={(e) => setRosterPosition(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="generalPosition"
-                                            label="General Position"
-                                            disabled
-                                            options={catalog}
-                                            value={generalPosition}
-                                            onChange={(e) => setGeneralPosition(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="Departamento"
-                                            label="Departamento"
-                                            disabled
-                                            options={catalog}
-                                            value={departamento}
-                                            onChange={(e) => setDepartamento(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="Area"
-                                            label="Area"
-                                            disabled
-                                            options={catalog}
-                                            value={area}
-                                            onChange={(e) => setArea(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="Subarea"
-                                            label="Subarea"
-                                            disabled
-                                            options={catalog}
-                                            value={subArea}
-                                            onChange={(e) => setSubArea(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="Grupo"
-                                            label="Grupo"
-                                            disabled
-                                            options={catalog}
-                                            value={grupo}
-                                            onChange={(e) => setGrupo(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="Turno"
-                                            label="Turno"
-                                            disabled
-                                            options={catalog}
-                                            value={turno}
-                                            onChange={(e) => setTurno(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <InputOnChange
-                                            label="Dirección de Residencia"
-                                            value={direccionResidencia}
-                                            onChange={(e) => setDireccionResidencia(e?.target.value)}
-                                            disabled
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            required={true}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="dptoResidencia"
-                                            label="Departamento de Residencia"
-                                            disabled
-                                            options={catalog}
-                                            value={dptoResidencia}
-                                            onChange={(e) => setDptoResidencia(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="municipioResidencia"
-                                            label="Municipio de Residencia"
-                                            disabled
-                                            options={catalog}
-                                            value={municipioResidencia}
-                                            onChange={(e) => setMunicipioResidencia(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="municipioNacido"
-                                            label="Municipio de Nacimiento"
-                                            disabled
-                                            options={catalog}
-                                            value={municipioNacido}
-                                            onChange={(e) => setMunicipioNacido(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="dptoNacido"
-                                            label="Departamento de Nacimiento"
-                                            disabled
-                                            options={catalog}
-                                            value={dptoNacido}
-                                            onChange={(e) => setDptoNacido(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="EPS"
-                                            label="EPS"
-                                            disabled
-                                            options={catalog}
-                                            value={eps}
-                                            onChange={(e) => setEps(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <AnimateButton>
-                                        <SelectOnChange
-                                            name="AFP"
-                                            label="AFP"
-                                            disabled
-                                            options={catalog}
-                                            value={afp}
-                                            onChange={(e) => setAfp(e?.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Accordion>
-                    <Divider />
-
-                    <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DE LA EMPRESA QUE EXPIDE</Typography>
-
-                    <Grid container spacing={2} sx={{ pb: 2 }}>
+        <MainCard>
+            <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
+                <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
+                    <Grid item xs={3}>
+                        <PhotoModel
+                            disabledCapture
+                            disabledDelete
+                            EstadoImg={imgSrc}
+                        />
+                    </Grid>
+                    <Grid container spacing={2} item xs={9}>
                         <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="incapacidad"
-                                    label="Incapacidad"
-                                    defaultValue=""
-                                    options={lsIncapacidad}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                            <InputOnChange
+                                label="N° Documento"
+                                onKeyDown={handleDocument}
+                                onChange={(e) => setDocument(e?.target.value)}
+                                value={document}
+                                size={matchesXS ? 'small' : 'medium'}
+                                required={true}
+                                autoFocus
+                            />
                         </Grid>
                         <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="nroIncapacidad"
-                                    label="Nro. de Incapacidad"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                            <InputOnChange
+                                label="Nombres"
+                                value={nombres}
+                                onChange={(e) => setNombres(e?.target.value)}
+                                disabled
+                                size={matchesXS ? 'small' : 'medium'}
+                                required={true}
+                            />
                         </Grid>
                         <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha de Expedición"
-                                value={fechaExpedicion}
-                                onChange={(e) => setFechaExpedicion(e)}
+                            <InputOnChange
+                                label="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e?.target.value)}
+                                disabled
+                                size={matchesXS ? 'small' : 'medium'}
+                                required={true}
+                            />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <InputOnChange
+                                label="Celular"
+                                value={celular}
+                                onChange={(e) => setCelular(e?.target.value)}
+                                disabled
+                                size={matchesXS ? 'small' : 'medium'}
+                                required={true}
                             />
                         </Grid>
                         <Grid item xs={4}>
                             <SelectOnChange
-                                name="departamento"
-                                label="Departamento"
-                                options={lsDeparta}
+                                name="escolaridad"
+                                label="Escolaridad"
+                                disabled
+                                options={catalog}
+                                value={escolaridad}
+                                onChange={(e) => setEscolaridad(e?.target.value)}
                                 size={matchesXS ? 'small' : 'medium'}
-                                value={departa}
-                                onChange={handleChangeDepartamentoIncapa}
                             />
                         </Grid>
                         <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="ciudadExpedicion"
-                                    label="Ciudad de Expedición"
-                                    defaultValue=""
-                                    options={lsMunicipio}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                    </Grid>
-
-                    <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DE INCAPACIDAD O LICENCIA</Typography>
-
-                    <Grid container spacing={2} sx={{ pb: 2 }}>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="tipoIncapacidad"
-                                    label="Tipo de Incapacidad"
-                                    defaultValue=""
-                                    options={lsTipoInca}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="contingencia"
-                                    label="Contingencia"
-                                    defaultValue=""
-                                    options={lsContingencia}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <InputDatePick
-                                label="Fecha de Inicio"
-                                value={fechaInicio}
-                                onChange={(e) => setFechaInicio(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <InputDatePick
-                                label="Fecha Fin"
-                                value={fechaFin}
-                                onChange={(e) => setFechaFin(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="diasIncapacidad"
-                                    label="Días de Incapacidad"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="codigoDx"
-                                    label="Código Dx"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={9.6}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="diagnostico"
-                                    label="Diagnóstico"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="estadoCaso"
-                                    label="Estado de Caso"
-                                    defaultValue=""
-                                    options={lsEstadoCaso}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="segmentoAgrupado"
-                                    label="Segmento Agrupado"
-                                    defaultValue=""
-                                    options={lsSegmentoAgrupado}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="segmento"
-                                    label="Segmento"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="tipoSoporte"
-                                    label="Tipo de Soporte"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="Categoria"
-                                    label="categoria"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                    </Grid>
-
-                    <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DEL MÉDICO O IPS PRESTADORA DEL SERVICIO</Typography>
-
-                    <Grid container spacing={2} sx={{ pb: 2 }}>
-                        <Grid item xs={4.8}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="proveedor"
-                                    label="Proveedor"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
                             <SelectOnChange
-                                name="departamento"
-                                label="Departamento"
-                                options={lsDeparta}
+                                name="empresa"
+                                label="Empresa"
+                                disabled
+                                options={company}
+                                value={empresa}
+                                onChange={(e) => setEmpresa(e?.target.value)}
                                 size={matchesXS ? 'small' : 'medium'}
-                                value={departaMedico}
-                                onChange={handleChangeDepartamentoMedico}
                             />
                         </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="ciudad"
-                                    label="Ciudad"
-                                    defaultValue=""
-                                    options={lsMunicipioMedico}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="nombreProfesional"
-                                    label="Nombre de Profesional"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="profesionEspecialidad"
-                                    label="Profesión/Especialidad"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="regProfesional"
-                                    label="Reg. Profesional"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="tipoAtencion"
-                                    label="Tipo de Atención"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="cumplimientoRequisito"
-                                    label="Cumplimiento Requisito"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="redExpide"
-                                    label="Red que expide"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="observacionCumplimiento"
-                                    label="Observacion Cumplimiento"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                    multiline
-                                    rows={4}
-                                />
-                            </FormProvider>
-                        </Grid>
-                    </Grid>
-
-                    <Typography sx={{ pb: 2, pt: 3 }} variant="h4">OBSERVACIÓN/DESCRIPCIÓN DE LA NOVEDAD</Typography>
-
-                    <Grid container spacing={2} sx={{ pb: 2 }}>
-                        <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="observacionDescripcion"
-                                    label="Observación/Descripción"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                    multiline
-                                    rows={4}
-                                />
-                            </FormProvider>
+                        <Grid item xs={4}>
+                            <SelectOnChange
+                                name="sede"
+                                label="Sede"
+                                disabled
+                                options={catalog}
+                                value={sede}
+                                onChange={(e) => setSede(e?.target.value)}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
                         </Grid>
                         <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="usuarioModifica"
-                                    label="Usuario Modifica"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                            <InputDatePick
+                                label="Fecha de Nacimiento"
+                                value={fechaNaci}
+                                disabled
+                                onChange={(e) => setFechaNaci(e)}
+                            />
                         </Grid>
                         <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="fechaModifica"
-                                    label="Fecha Modifica"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                            <SelectOnChange
+                                name="genero"
+                                label="Genero"
+                                disabled
+                                options={catalog}
+                                value={genero}
+                                onChange={(e) => setGenero(e?.target.value)}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
                         </Grid>
-                    </Grid>
-
-                    <Typography sx={{ pb: 2, pt: 3 }} variant="h4">MONITOR DE EVENTOS</Typography>
-
-                    <Grid container spacing={2} sx={{ pb: 2, pl: 4 }}>
-                        <Grid item xs={2}>
-                            <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.warning.main }} />
-                            <Typography variant="h6">De 75 a 90 Días</Typography>
+                        <Grid item xs={4}>
+                            <SelectOnChange
+                                name="estadoCivil"
+                                label="Estado Civil"
+                                disabled
+                                options={catalog}
+                                value={estadoCivil}
+                                onChange={(e) => setEstadoCivil(e?.target.value)}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
                         </Grid>
-                        <Grid item xs={2}>
-                            <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.warning.dark }} />
-                            <Typography variant="h6">De 90 a 180 Días</Typography>
+                        <Grid item xs={4}>
+                            <InputOnChange
+                                label="Contacto"
+                                value={contacto}
+                                onChange={(e) => setContacto(e?.target.value)}
+                                disabled
+                                size={matchesXS ? 'small' : 'medium'}
+                                required={true}
+                            />
                         </Grid>
-                        <Grid item xs={2}>
-                            <RadioButtonCheckedTwoToneIcon color='error' />
-                            <Typography variant="h6">{'> 180 Días'}</Typography>
-                        </Grid>
-                    </Grid>
-
-                    <Grid container spacing={2} sx={{ pb: 2, pt: 3, pl: 4 }}>
-                        <Grid item xs={6}>
-                            <UserCountCard
-                                primary="TOTAL DÍAS ACUMULADO EN INCAPACIDAD"
-                                secondary="0"
-                                iconPrimary={AccountCircleTwoTone}
-                                color={dias <= 90 ? theme.palette.warning.main : dias <= 180 ? theme.palette.warning.dark : theme.palette.error.main}
+                        <Grid item xs={4}>
+                            <InputOnChange
+                                label="Teléfono de Contacto"
+                                value={telefonoContacto}
+                                onChange={(e) => setTelefonoContacto(e?.target.value)}
+                                disabled
+                                size={matchesXS ? 'small' : 'medium'}
+                                required={true}
                             />
                         </Grid>
                     </Grid>
+                </Grid>
+            </SubCard>
 
-                    <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={6}>
-                                <AnimateButton>
-                                    <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                        {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
+            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" sx={{ mr: 0.5 }} />
+                <Typography variant="subtitle1" color="inherit">Ver mas...</Typography></>}>
+                <Grid item xs={12} sx={{ pt: 2, pb: 2 }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <InputDatePick
+                                    label="Fecha de Contrato"
+                                    value={fechaContrato}
+                                    disabled
+                                    onChange={(e) => setFechaContrato(e)}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="tipoContrato"
+                                    label="Tipo de Contrato"
+                                    disabled
+                                    options={catalog}
+                                    value={tipoContrato}
+                                    onChange={(e) => setTipoContrato(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="estado"
+                                    label="Estado"
+                                    disabled
+                                    options={catalog}
+                                    value={payStatus}
+                                    onChange={(e) => setPayStatus(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="Rol"
+                                    label="Rol"
+                                    disabled
+                                    options={catalog}
+                                    value={type}
+                                    onChange={(e) => setType(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="rosterPosition"
+                                    label="Roster Position"
+                                    disabled
+                                    options={catalog}
+                                    value={rosterPosition}
+                                    onChange={(e) => setRosterPosition(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="generalPosition"
+                                    label="General Position"
+                                    disabled
+                                    options={catalog}
+                                    value={generalPosition}
+                                    onChange={(e) => setGeneralPosition(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="Departamento"
+                                    label="Departamento"
+                                    disabled
+                                    options={catalog}
+                                    value={departamento}
+                                    onChange={(e) => setDepartamento(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="Area"
+                                    label="Area"
+                                    disabled
+                                    options={catalog}
+                                    value={area}
+                                    onChange={(e) => setArea(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="Subarea"
+                                    label="Subarea"
+                                    disabled
+                                    options={catalog}
+                                    value={subArea}
+                                    onChange={(e) => setSubArea(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="Grupo"
+                                    label="Grupo"
+                                    disabled
+                                    options={catalog}
+                                    value={grupo}
+                                    onChange={(e) => setGrupo(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="Turno"
+                                    label="Turno"
+                                    disabled
+                                    options={catalog}
+                                    value={turno}
+                                    onChange={(e) => setTurno(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <InputOnChange
+                                    label="Dirección de Residencia"
+                                    value={direccionResidencia}
+                                    onChange={(e) => setDireccionResidencia(e?.target.value)}
+                                    disabled
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    required={true}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="dptoResidencia"
+                                    label="Departamento de Residencia"
+                                    disabled
+                                    options={catalog}
+                                    value={dptoResidencia}
+                                    onChange={(e) => setDptoResidencia(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="municipioResidencia"
+                                    label="Municipio de Residencia"
+                                    disabled
+                                    options={catalog}
+                                    value={municipioResidencia}
+                                    onChange={(e) => setMunicipioResidencia(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="municipioNacido"
+                                    label="Municipio de Nacimiento"
+                                    disabled
+                                    options={catalog}
+                                    value={municipioNacido}
+                                    onChange={(e) => setMunicipioNacido(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="dptoNacido"
+                                    label="Departamento de Nacimiento"
+                                    disabled
+                                    options={catalog}
+                                    value={dptoNacido}
+                                    onChange={(e) => setDptoNacido(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="EPS"
+                                    label="EPS"
+                                    disabled
+                                    options={catalog}
+                                    value={eps}
+                                    onChange={(e) => setEps(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <AnimateButton>
+                                <SelectOnChange
+                                    name="AFP"
+                                    label="AFP"
+                                    disabled
+                                    options={catalog}
+                                    value={afp}
+                                    onChange={(e) => setAfp(e?.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </AnimateButton>
                         </Grid>
                     </Grid>
-                </form>
+                </Grid>
+            </Accordion>
+            <Divider />
+
+            <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DE LA EMPRESA QUE EXPIDE</Typography>
+
+            <Grid container spacing={2} sx={{ pb: 2 }}>
+                <Grid item xs={4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="incapacidad"
+                            label="Incapacidad"
+                            defaultValue=""
+                            options={lsIncapacidad}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={4}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            fullWidth
+                            name="nroIncapacidad"
+                            label="Nro. de Incapacidad"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={4}>
+                    <InputDatePick
+                        label="Fecha de Expedición"
+                        value={fechaExpedicion}
+                        onChange={(e) => setFechaExpedicion(e)}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <SelectOnChange
+                        name="departamento"
+                        label="Departamento"
+                        options={lsDeparta}
+                        size={matchesXS ? 'small' : 'medium'}
+                        value={departa}
+                        onChange={handleChangeDepartamentoIncapa}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="ciudadExpedicion"
+                            label="Ciudad de Expedición"
+                            defaultValue=""
+                            options={lsMunicipio}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+            </Grid>
+
+            <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DE INCAPACIDAD O LICENCIA</Typography>
+
+            <Grid container spacing={2} sx={{ pb: 2 }}>
+                <Grid item xs={2.4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="tipoIncapacidad"
+                            label="Tipo de Incapacidad"
+                            defaultValue=""
+                            options={lsTipoInca}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={2.4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="contingencia"
+                            label="Contingencia"
+                            defaultValue=""
+                            options={lsContingencia}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={2.4}>
+                    <InputDatePick
+                        label="Fecha de Inicio"
+                        value={fechaInicio}
+                        onChange={(e) => setFechaInicio(e)}
+                    />
+                </Grid>
+                <Grid item xs={2.4}>
+                    <InputDatePick
+                        label="Fecha Fin"
+                        value={fechaFin}
+                        onChange={handleFechaFin}
+                    />
+                </Grid>
+                <Grid item xs={2.4}>
+                    <InputOnChange
+                        defaultValue=""
+                        fullWidth
+                        disabled
+                        name="diasSinLaborar"
+                        label="Días de Incapacidad"
+                        onChange={(e) => setDiasSinLaborar(e.target.event)}
+                        value={diasSinLaborar}
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+                <Grid item xs={2.4}>
+                    <InputOnChange
+                        label="Código Dx"
+                        onChange={handleChangeDx}
+                        value={dx}
+                        size={matchesXS ? 'small' : 'medium'}
+                        required={true}
+                    />
+                </Grid>
+                <Grid item xs={9.6}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="dxFinal"
+                            label="Diagnóstico"
+                            defaultValue=""
+                            options={lsCIE11}
+                            disabled={lsCIE11.length != 0 ? false : true}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="estadoCaso"
+                            label="Estado de Caso"
+                            defaultValue=""
+                            options={lsEstadoCaso}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={4}>
+                    <SelectOnChange
+                        name="segmentoAgrupado"
+                        label="Segmento Agrupado"
+                        options={lsSegmentoAgrupado}
+                        size={matchesXS ? 'small' : 'medium'}
+                        value={segmentoAgrupado}
+                        onChange={handleChangeSegAgrupado}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <SelectOnChange
+                        name="segmentoAfectado"
+                        label="Segmento Afectado"
+                        options={lsSegmentoAfectado}
+                        size={matchesXS ? 'small' : 'medium'}
+                        value={segmentoAfectado}
+                        disabled={lsSegmentoAfectado.length != 0 ? false : true}
+                        onChange={handleChangeSegAfectado}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="subsegmento"
+                            label="Subsegmento"
+                            defaultValue=""
+                            options={lsSubsegmento}
+                            disabled={lsSubsegmento.length != 0 ? false : true}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="idTipoSoporte"
+                            label="Tipo de Soporte"
+                            defaultValue=""
+                            options={lsTipoSoporte}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="idCategoria"
+                            label="Categoria"
+                            defaultValue=""
+                            options={lsCategoria}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+            </Grid>
+
+            <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DEL MÉDICO O IPS PRESTADORA DEL SERVICIO</Typography>
+
+            <Grid container spacing={2} sx={{ pb: 2 }}>
+                <Grid item xs={4.8}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            fullWidth
+                            name="proveedor"
+                            label="Proveedor"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={2.4}>
+                    <SelectOnChange
+                        name="departamentoIPS"
+                        label="Departamento"
+                        options={lsDeparta}
+                        size={matchesXS ? 'small' : 'medium'}
+                        value={departamentoIPS}
+                        onChange={handleChangeDepartamentoMedico}
+                    />
+                </Grid>
+                <Grid item xs={2.4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="ciudadIPS"
+                            label="Ciudad"
+                            defaultValue=""
+                            options={lsMunicipioMedico}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={2.4}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            fullWidth
+                            name="nombreProfesional"
+                            label="Nombre de Profesional"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={2.4}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            fullWidth
+                            name="especialidad"
+                            label="Profesión/Especialidad"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={2.4}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            fullWidth
+                            name="registroProfesional"
+                            label="Reg. Profesional"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={2.4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="tipoAtencion"
+                            label="Tipo de Atención"
+                            defaultValue=""
+                            options={lsTipoAtencion}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={2.4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="cumplimientoRequisito"
+                            label="Cumplimiento Requisito"
+                            defaultValue=""
+                            options={lsCumplimientoRequisito}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={2.4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="expideInCapacidad"
+                            label="Red que expide"
+                            defaultValue=""
+                            options={lsRedExpide}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={12}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            fullWidth
+                            name="observacionCumplimiento"
+                            label="Observacion Cumplimiento"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                            multiline
+                            rows={4}
+                        />
+                    </FormProvider>
+                </Grid>
+            </Grid>
+
+            <Typography sx={{ pb: 2, pt: 3 }} variant="h4">OBSERVACIÓN/DESCRIPCIÓN DE LA NOVEDAD</Typography>
+
+            <Grid container spacing={2} sx={{ pb: 2 }}>
+                <Grid item xs={12}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            fullWidth
+                            name="observacion"
+                            label="Observación/Descripción"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                            multiline
+                            rows={4}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={4}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            fullWidth
+                            name="usuarioModificacion"
+                            label="Usuario Modifica"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+                <Grid item xs={4}>
+                    <InputDatePick
+                        label="Fecha de Modificicación"
+                        value={fechaModifica}
+                        disabled
+                        onChange={(e) => setFechaModifica(e)}
+                    />
+                </Grid>
+            </Grid>
+
+            <Typography sx={{ pb: 2, pt: 3 }} variant="h4">MONITOR DE EVENTOS</Typography>
+
+            <Grid container spacing={2} sx={{ pb: 2, pl: 4 }}>
+                <Grid item xs={2}>
+                    <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.warning.main }} />
+                    <Typography variant="h6">De 75 a 90 Días</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                    <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.warning.dark }} />
+                    <Typography variant="h6">De 90 a 180 Días</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                    <RadioButtonCheckedTwoToneIcon color='error' />
+                    <Typography variant="h6">{'> 180 Días'}</Typography>
+                </Grid>
+            </Grid>
+
+            <Grid container spacing={2} sx={{ pb: 2, pt: 3, pl: 4 }}>
+                <Grid item xs={6}>
+                    <UserCountCard
+                        primary="TOTAL DÍAS ACUMULADO EN INCAPACIDAD"
+                        secondary="0"
+                        iconPrimary={AccountCircleTwoTone}
+                        color={dias <= 90 ? theme.palette.warning.main : dias <= 180 ? theme.palette.warning.dark : theme.palette.error.main}
+                    />
+                </Grid>
+            </Grid>
+
+            <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
+                <Grid container spacing={1}>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                {TitleButton.Guardar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button variant="outlined" fullWidth onClick={() => navigate("/work-absenteeism/list")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                </Grid>
             </Grid>
         </MainCard >
     );
 };
 
-export default MedicalAdvice;
+export default WorkAbsenteeism;

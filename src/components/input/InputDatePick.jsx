@@ -6,7 +6,7 @@ import {
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { LocalizationProvider, MobileDatePicker } from "@mui/lab";
 
-const InputDatePick = ({ bug, disabled, value, label, onChange, name, required, ...others }) => {
+const InputDatePick = ({ bug, value, label, onChange, name, required, ...others }) => {
 
     return (
         <>
@@ -15,7 +15,6 @@ const InputDatePick = ({ bug, disabled, value, label, onChange, name, required, 
                     label={label}
                     inputFormat="yyyy/MM/dd"
                     value={value}
-                    disabled={disabled}
                     onChange={onChange}
                     renderInput={(params) => <TextField {...params} fullWidth />}
                     KeyboardButtonProps={{
@@ -35,6 +34,5 @@ InputDatePick.propTypes = {
     onChange: PropTypes.func,
     label: PropTypes.string,
     value: PropTypes.any,
-    disabled: PropTypes.any,
     name: PropTypes.string
 };

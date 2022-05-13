@@ -827,7 +827,7 @@ const MedicalAdvice = () => {
                                         onChange={(e) => setNote(e?.target.value)}
                                     />
                                 </Grid>
-                                {/* Iconos de opciones */}
+
                                 <Grid item xs={12} sx={{ pt: 2 }}>
                                     <Grid justifyContent="left" alignItems="center" container xs={12}>
                                         <Grid item xs={2}>

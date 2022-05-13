@@ -31,10 +31,10 @@ import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 
 // Import de proyectos
+import { GetAllWorkAbsenteeism, DeleteWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllSupplier, DeleteSupplier } from 'api/clients/SupplierClient';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -46,12 +46,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
+import { FormatDate } from 'components/helpers/Format';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -65,7 +65,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -76,12 +75,11 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'id',
+        id: 'id_Inc',
         numeric: false,
-        label: 'N° Consecutivo',
+        label: 'ID',
         align: 'center'
     },
     {
@@ -91,19 +89,7 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nombre',
-        numeric: false,
-        label: 'Nombre',
-        align: 'left'
-    },
-    {
-        id: 'situacionEmpleado',
-        numeric: false,
-        label: 'Dx Inicial',
-        align: 'left'
-    },
-    {
-        id: 'diasIncapacidad',
+        id: 'diasSinLaborar',
         numeric: false,
         label: 'Días de Incapacidad',
         align: 'left'
@@ -133,10 +119,6 @@ const headCells = [
         align: 'left'
     }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -208,11 +190,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -251,11 +228,10 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
-const ListOccupationalMedicine = () => {
+const ListWorkAbsenteeism = () => {
     const dispatch = useDispatch();
-    const [supplier, setSupplier] = useState([]);
+    const [lsWorkAbsenteeism, setLsWorkAbsenteeism] = useState([]);
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -265,23 +241,20 @@ const ListOccupationalMedicine = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
-            const lsServer = await GetAllSupplier(0, 0);
-            setSupplier(lsServer.data.entities);
+            const lsServer = await GetAllWorkAbsenteeism(0, 0);
+            setLsWorkAbsenteeism(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -290,7 +263,7 @@ const ListOccupationalMedicine = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'cedula', 'nombre', 'situacionEmpleado', 'situacionContractual', 'dx', 'fecha', 'usuario'];
+                const properties = ['id_Inc', 'cedula', 'diasSinLaborar', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -304,9 +277,9 @@ const ListOccupationalMedicine = () => {
                 }
                 return matches;
             });
-            setSupplier(newRows);
+            setLsWorkAbsenteeism(newRows);
         } else {
-            setSupplier(rows);
+            setLsWorkAbsenteeism(rows);
         }
     };
 
@@ -321,7 +294,7 @@ const ListOccupationalMedicine = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = supplier.map((n) => n.id);
+            const newSelectedId = lsWorkAbsenteeism.map((n) => n.id_Inc);
             setSelected(newSelectedId);
             return;
         }
@@ -359,10 +332,9 @@ const ListOccupationalMedicine = () => {
 
     const [idCheck, setIdCheck] = useState('');
 
-    /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
-            const result = await DeleteSupplier(idCheck);
+            const result = await DeleteWorkAbsenteeism(idCheck);
             if (result.status === 200) {
                 dispatch({
                     type: SNACKBAR_OPEN,
@@ -384,11 +356,10 @@ const ListOccupationalMedicine = () => {
     const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - supplier.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsWorkAbsenteeism.length) : 0;
 
     return (
-        <MainCard title="Lista de Medicina Laboral" content={false}>
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
+        <MainCard title="Lista de Ausentismo Laboral" content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -414,7 +385,7 @@ const ListOccupationalMedicine = () => {
                                 </IconButton>
                             </Tooltip>
                         } filename="Empresas">
-                            <ExcelSheet data={supplier} name="Empresas">
+                            <ExcelSheet data={lsWorkAbsenteeism} name="Empresas">
                                 <ExcelColumn label="Código" value="id" />
                                 <ExcelColumn label="Nombre" value="nombProv" />
                                 <ExcelColumn label="Teléfono" value="teleProv" />
@@ -439,7 +410,6 @@ const ListOccupationalMedicine = () => {
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -448,19 +418,19 @@ const ListOccupationalMedicine = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={supplier.length}
+                        rowCount={lsWorkAbsenteeism.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(supplier, getComparator(order, orderBy))
+                        {stableSort(lsWorkAbsenteeism, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.id);
+                                const isItemSelected = isSelected(row.id_Inc);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -472,10 +442,8 @@ const ListOccupationalMedicine = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
 
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id_Inc)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -489,16 +457,15 @@ const ListOccupationalMedicine = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.id_Inc)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                #{row.id}{' '}
+                                                {row.id_Inc}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -506,7 +473,7 @@ const ListOccupationalMedicine = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.id_Inc)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -522,7 +489,7 @@ const ListOccupationalMedicine = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.id_Inc)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -530,7 +497,7 @@ const ListOccupationalMedicine = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombre}{' '}
+                                                {row.diasSinLaborar}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -538,7 +505,7 @@ const ListOccupationalMedicine = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.id_Inc)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -546,7 +513,7 @@ const ListOccupationalMedicine = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.situacionEmpleado}{' '}
+                                                {FormatDate(row.fechaInicio)}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -554,7 +521,7 @@ const ListOccupationalMedicine = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.id_Inc)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -562,7 +529,7 @@ const ListOccupationalMedicine = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.situacionContractual}{' '}
+                                                {FormatDate(row.fechaFin)}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -570,7 +537,7 @@ const ListOccupationalMedicine = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.id_Inc)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -578,7 +545,7 @@ const ListOccupationalMedicine = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.dx}{' '}
+                                                {FormatDate(row.fechaRegistro)}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -586,7 +553,7 @@ const ListOccupationalMedicine = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.id_Inc)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -594,39 +561,7 @@ const ListOccupationalMedicine = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.fecha}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.usuario}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.usuario}{' '}
+                                                {row.usuarioRegistro}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -635,15 +570,11 @@ const ListOccupationalMedicine = () => {
                                             <IconButton color="primary" size="large">
                                                 <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                             </IconButton>
-                                            <Fab
-                                                size="small"
-                                                color="info"
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/work-absenteeism/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/work-absenteeism/update/${row.id_Inc}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
-                                            </Fab>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -665,7 +596,7 @@ const ListOccupationalMedicine = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={supplier.length}
+                count={lsWorkAbsenteeism.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -675,4 +606,4 @@ const ListOccupationalMedicine = () => {
     );
 };
 
-export default ListOccupationalMedicine;
+export default ListWorkAbsenteeism;

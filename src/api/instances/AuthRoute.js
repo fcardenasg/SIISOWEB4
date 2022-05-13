@@ -51,6 +51,12 @@ export const Url = {
     NotaEnfermeria: 'api/NotaEnfermeria',
     NotaEnfermeriaId: 'api/NotaEnfermeria/id',
 
+    MedicinaLaboral: 'api/MedicinaLaboralX',
+    MedicinaLaboralId: 'api/MedicinaLaboralX/id',
+
+    AusentismoLaboral: 'api/AusentismoLaboral',
+    AusentismoLaboralId: 'api/AusentismoLaboral/id',
+
     TipoAtencion: 'api/TipoAtencion',
     AtencionGetAllByTipoAtencion: 'api/Atencion/GetAllByTipoAtencion',
     Atencion: 'api/Atencion',
