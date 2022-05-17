@@ -20,6 +20,7 @@ import InputText from 'components/input/InputText';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import useAuth from 'hooks/useAuth';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
@@ -38,6 +39,8 @@ const TypeCatalog = () => {
         resolver: yupResolver(validationSchema),
     });
 
+    const { user } = useAuth();
+    console.log(user);
     const { handleSubmit, errors, reset } = methods;
 
     /* METODO DE INSERT  */

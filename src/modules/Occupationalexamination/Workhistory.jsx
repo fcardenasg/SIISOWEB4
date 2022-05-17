@@ -17,11 +17,28 @@ import {
     Typography,
     Tooltip,
     Fab,
+    Collapse,
+    IconButton,
     Avatar,
-    Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Modal
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Card, CardActions, CardContent, CardHeader, CardMedia, Modal
 
 } from '@mui/material';
 
+
+
+// project imports
+import MainCard from 'ui-component/cards/MainCard';
+import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
+
+// assets
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 
 // Terceros
@@ -35,10 +52,7 @@ import UserDetailsCard from 'ui-component/cards/UserDetailsCard';
 import UserProfileCard from 'ui-component/cards/UserProfileCard';
 import UserSimpleCard from 'ui-component/cards/UserSimpleCard';
 import FollowerCard from 'ui-component/cards/FollowerCard';
-import FriendsCard from 'ui-component/cards/FriendsCard';
 
-import MainCard from 'ui-component/cards/MainCard';
-import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 
 
 // project imports
@@ -47,11 +61,9 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 import InputText from 'components/input/InputText';
 import * as yup from 'yup';
-import ProductsPage from './ProductsPage';
-import TotalCard from './TotalCard';
 import { useFormik } from 'formik';
 import { FormProvider, useForm } from 'react-hook-form';
-import AddItemPage from './AddItemPage';
+
 
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 
@@ -61,35 +73,271 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
 
+// table data
+function createData(name, calories, fat, carbs, protein, price) {
+    return {
+        name,
+        calories,
+        fat,
+        carbs,
+        protein,
+        price,
+        history: [
+            { date: '1', customerId: 'MPI', amount: 3 },
+            { date: '2', customerId: 'MPO', amount: 1 }
+        ]
+    };
+}
 
-const initialProducsData = [
-    {
-        id: 1,
-        product: 'Logo Design',
-        description: 'lorem ipsum dolor sit amat, connecter adieu siccing eliot',
-        cargo: 'Gerente',
-        quantity: 6,
-        amount: 200.0,
+function Row({ row }) {
+    const theme = useTheme();
+    const [open, setOpen] = useState(false);
 
-    },
-    {
-        id: 2,
-        product: 'Landing Page',
-        description: 'lorem ipsum dolor sit amat, connecter adieu siccing eliot',
-        cargo: 'Ingeniero de sistemas',
-        quantity: 7,
-        amount: 100.0,
+    return (
+        <>
+            <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
+                <TableCell sx={{ pl: 3 }}>
+                    <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                    </IconButton>
+                </TableCell>
+                <TableCell component="th" scope="row">
+                    {row.name}
+                </TableCell>
+                <TableCell>{row.calories}</TableCell>
+                <TableCell >{row.fat}</TableCell>
+                <TableCell >{row.carbs}</TableCell>
+                <TableCell >{row.protein}</TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                        <Box
+                            sx={{
+                                margin: 1
+                            }}
+                        >
+                            <TableContainer>
+                                <SubCard
+                                    sx={{ bgcolor: theme.palette.mode === 'dark' ? 'dark.800' : 'grey.50', mb: 2 }}
+                                    title="Exposición Ocupacional > Tipo de Riesgo > Quimico"
+                                    content={false}
+                                >
+                                    <Table size="small" aria-label="purchases">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Consecutivo</TableCell>
+                                                <TableCell>Clase</TableCell>
+                                                <TableCell>Exposición</TableCell>
+                                                <TableCell >Año</TableCell>
+                                                <TableCell >Mes</TableCell>
+                                                <TableCell >GR sin EPP</TableCell>
+                                                <TableCell >GPR con EPP</TableCell>
+                                                <TableCell >Medidas de Control</TableCell>
 
-    },
-    {
-        id: 3,
-        product: 'Admin Template',
-        description: 'lorem ipsum dolor sit amat, connecter adieu siccing eliot',
-        cargo: 'Supervisor',
-        quantity: 5,
-        amount: 150.0,
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {row.history?.map((historyRow) => (
+                                                <TableRow hover key={historyRow.date}>
+                                                   <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+                                                    <TableCell >  {historyRow.amount} </TableCell>
+                                                    <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
 
-    }
+
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </SubCard>
+                            </TableContainer>
+
+                            <TableContainer>
+                                <SubCard
+                                    sx={{ bgcolor: theme.palette.mode === 'dark' ? 'dark.800' : 'grey.50', mb: 2 }}
+                                    title="Exposición Ocupacional > Tipo de Riesgo > Físico"
+                                    content={false}
+                                >
+                                    <Table size="small" aria-label="purchases">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Consecutivo</TableCell>
+                                                <TableCell>Clase</TableCell>
+                                                <TableCell>Exposición</TableCell>
+                                                <TableCell >Año</TableCell>
+                                                <TableCell >Mes</TableCell>
+                                                <TableCell >GR sin EPP</TableCell>
+                                                <TableCell >GPR con EPP</TableCell>
+                                                <TableCell >Medidas de Control</TableCell>
+
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {row.history?.map((historyRow) => (
+
+                                                
+                                                <TableRow hover key={historyRow.date}>
+                                                    
+                                                   <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+                                                    <TableCell >  {historyRow.amount} </TableCell>
+                                                    <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+
+
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </SubCard>
+                            </TableContainer>
+
+
+
+                            <TableContainer>
+                                <SubCard
+                                    sx={{ bgcolor: theme.palette.mode === 'dark' ? 'dark.800' : 'grey.50', mb: 2 }}
+                                    title="Exposición Ocupacional > Tipo de Riesgo > Psicosocial"
+                                    content={false}
+                                >
+                                    <Table size="small" aria-label="purchases">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Consecutivo</TableCell>
+                                                <TableCell>Clase</TableCell>
+                                                <TableCell>Exposición</TableCell>
+                                                <TableCell >Año</TableCell>
+                                                <TableCell >Mes</TableCell>
+                                                <TableCell >GR sin EPP</TableCell>
+                                                <TableCell >GPR con EPP</TableCell>
+                                                <TableCell >Medidas de Control</TableCell>
+
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {row.history?.map((historyRow) => (
+                                                <TableRow hover key={historyRow.date}>
+                                                   <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+                                                    <TableCell >  {historyRow.amount} </TableCell>
+                                                    <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+
+
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </SubCard>
+                            </TableContainer>
+
+
+
+                            <TableContainer>
+                                <SubCard
+                                    sx={{ bgcolor: theme.palette.mode === 'dark' ? 'dark.800' : 'grey.50', mb: 2 }}
+                                    title="Exposición Ocupacional > Tipo de Riesgo > Biológico"
+                                    content={false}
+                                >
+                                    <Table size="small" aria-label="purchases">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Consecutivo</TableCell>
+                                                <TableCell>Clase</TableCell>
+                                                <TableCell>Exposición</TableCell>
+                                                <TableCell >Año</TableCell>
+                                                <TableCell >Mes</TableCell>
+                                                <TableCell >GR sin EPP</TableCell>
+                                                <TableCell >GPR con EPP</TableCell>
+                                                <TableCell >Medidas de Control</TableCell>
+
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {row.history?.map((historyRow) => (
+                                                <TableRow hover key={historyRow.date}>
+                                                   <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+                                                    <TableCell >  {historyRow.amount} </TableCell>
+                                                    <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+
+
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </SubCard>
+                            </TableContainer>
+
+
+                            <TableContainer>
+                                <SubCard
+                                    sx={{ bgcolor: theme.palette.mode === 'dark' ? 'dark.800' : 'grey.50', mb: 2 }}
+                                    title="Exposición Ocupacional > Tipo de Riesgo > Ergonómico carga física"
+                                    content={false}
+                                >
+                                    <Table size="small" aria-label="purchases">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Consecutivo</TableCell>
+                                                <TableCell>Clase</TableCell>
+                                                <TableCell>Exposición</TableCell>
+                                                <TableCell >Año</TableCell>
+                                                <TableCell >Mes</TableCell>
+                                                <TableCell >GR sin EPP</TableCell>
+                                                <TableCell >GPR con EPP</TableCell>
+                                                <TableCell >Medidas de Control</TableCell>
+
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {row.history?.map((historyRow) => (
+                                                <TableRow hover key={historyRow.date}>
+                                                   <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+                                                    <TableCell >  {historyRow.amount} </TableCell>
+                                                    <TableCell>{historyRow.customerId}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+                                                    <TableCell >{historyRow.amount}</TableCell>
+
+
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </SubCard>
+                            </TableContainer>
+
+                        </Box>
+                    </Collapse>
+                </TableCell>
+            </TableRow>
+        </>
+    );
+}
+
+Row.propTypes = {
+    row: PropTypes.object
+};
+
+const rows = [
+    createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
+    createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
+    createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
+    createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
+    createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5)
 ];
 
 
@@ -106,7 +354,7 @@ const Workhistory = () => {
         setCurrency(event.target.value);
     };
 
-    const [productsData, setProductsData] = useState(initialProducsData);
+
     const [valueBasic, setValueBasic] = React.useState(new Date());
     const [addItemClicked, setAddItemClicked] = useState(false);
 
@@ -131,347 +379,90 @@ const Workhistory = () => {
         totalAmount: 0
     });
 
-    // for calculating cost of all orders
-    const getTotalAmounts = () => {
-        const amounts = {
-            subTotal: 0,
-            appliedTaxValue: 0.1,
-            appliedDiscountValue: 0.05,
-            taxesAmount: 0,
-            discountAmount: 0,
-            totalAmount: 0
-        };
-        productsData.forEach((item) => {
-            amounts.subTotal += item.total;
-        });
 
-
-
-        amounts.taxesAmount = amounts.subTotal * amounts.appliedTaxValue;
-        amounts.discountAmount = (amounts.subTotal + amounts.taxesAmount) * amounts.appliedDiscountValue;
-        amounts.totalAmount = amounts.subTotal + amounts.taxesAmount - amounts.discountAmount;
-        setAllAmounts(amounts);
-    };
-
-    // calculates costs when order-details change
-    useEffect(() => {
-        getTotalAmounts();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [productsData]);
-
-    // to delete row in order details
-    const deleteProductHandler = (id) => {
-        setProductsData(productsData.filter((item) => item.id !== id));
-    };
-
-    // Dialog Handler
-    const handleDialogOk = () => {
-        setOpen(false);
-
-    };
-
-    // add item handler
-    const handleAddItem = (addingData) => {
-        setProductsData([
-            ...productsData,
-            {
-                id: addingData.id,
-                product: addingData.name,
-                description: addingData.desc,
-                cargo: addingData.label,
-                quantity: addingData.selectedQuantity,
-                amount: addingData.amount,
-
-            }
-        ]);
-
-        setAddItemClicked(false);
-    };
 
 
 
     return (
+
+
+
         <Grid container spacing={gridSpacing}>
             <Grid item xs={12} md={12}>
-                <SubCard title="Historia Laboral otras empresas">
-                    <form noValidate autoComplete="off">
-                        <Grid container spacing={gridSpacing}>
 
-                            <ProductsPage productsData={productsData} deleteProductHandler={deleteProductHandler} />
-
-                            {addItemClicked ? (
-                                <Grid item xs={12}>
-                                    <AddItemPage handleAddItem={handleAddItem} setAddItemClicked={setAddItemClicked} />
-                                </Grid>
-                            ) : (
-                                <Grid item>
-                                    <Button variant="text" onClick={() => setAddItemClicked(true)}>
-                                        + Add Item
-                                    </Button>
-                                </Grid>
-                            )}
-                            <Grid item xs={12}>
-                                <Divider />
-                            </Grid>
-
-
-                        </Grid>
-                    </form>
-                </SubCard>
-
-                <SubCard title="Historia Laboral DLTD">
-                    <form noValidate autoComplete="off">
-                        <Grid container spacing={gridSpacing}>
-
-                            <ProductsPage productsData={productsData} deleteProductHandler={deleteProductHandler} />
-
-                            {addItemClicked ? (
-                                <Grid item xs={12}>
-                                    <AddItemPage handleAddItem={handleAddItem} setAddItemClicked={setAddItemClicked} />
-                                </Grid>
-                            ) : (
-                                <Grid item>
-                                    <Button variant="text" onClick={() => setAddItemClicked(true)}>
-                                        + Add Item
-                                    </Button>
-                                </Grid>
-                            )}
-                            <Grid item xs={12}>
-                                <Divider />
-                            </Grid>
-
-                           
-
-                            <Divider />
-
-                            <Grid item xs={12}>
-                                <SubCard title="Exposición Acumulada de Factores de Riesgo">
-                                    <Grid container spacing={gridSpacing}>
-                                        <Grid item xs={3}>
-                                            <Card sx={{ bgcolor: theme.palette.error.main, color: theme.palette.background.paper }}>
-                                                <CardHeader
-                                                    title={
-                                                        <Typography variant="h5" sx={{ color: theme.palette.background.paper }}>
-                                                            Total Ruido en DLTD.
-                                                        </Typography>
-                                                    }
-                                                />
-                                                <Divider />
-                                                <CardContent>
-                                              
-                                                        <Grid spacing={1} container justifyContent="center">
-                                                  
+                <MainCard
+                    content={false}
+                    title={<Typography variant="h4">HISTORIA LABORAL OTRAS EMPRESAS</Typography>}
+                    secondary={<SecondaryAction link="https://next.material-ui.com/components/tables/" />}
+                >
+                    {/* table */}
+                    <TableContainer>
+                        <Table aria-label="collapsible table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ pl: 3 }} />
+                                    <TableCell>Empresa</TableCell>
+                                    <TableCell>Cargo</TableCell>
+                                    <TableCell>Fecha</TableCell>
+                                    <TableCell>Años</TableCell>
+                                    <TableCell sx={{ pr: 3 }}>
+                                       Meses
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {rows.map((row) => (
+                                    <Row key={row.name} row={row} />
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </MainCard>
 
 
-                                                                <Grid item xs={6}>
-                                                                    <FormProvider {...methods}>
-                                                                        <InputText
-                                                                            defaultValue=""
-                                                                            fullWidth
-                                                                            name="anos"
-                                                                            label="Años"
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                            bug={errors}
-                                                                        />
-                                                                    </FormProvider>
-                                                                </Grid>
-
-                                                                <Grid item xs={6}>
-                                                                    <FormProvider {...methods}>
-                                                                        <InputText
-                                                                            defaultValue=""
-                                                                            fullWidth
-                                                                            name="meses"
-                                                                            label="Meses"
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                            bug={errors}
-                                                                        />
-                                                                    </FormProvider>
-                                                                </Grid>
-
-                                                        
-                                                        </Grid>
+            </Grid>
 
 
-                                      
+            <Grid item xs={12} md={12}>
 
-                                                </CardContent>
-                                            </Card>
-                                        </Grid>
-                                 
-
-                                        <Grid item xs={3}>
-                                            <Card sx={{ bgcolor: theme.palette.error.main, color: theme.palette.background.paper }}>
-                                                <CardHeader
-                                                    title={
-                                                        <Typography variant="h5" sx={{ color: theme.palette.background.paper }}>
-                                                       Total MPI en DLTD
-                                                        </Typography>
-                                                    }
-                                                />
-                                                <Divider />
-                                                <CardContent>
-                                              
-                                                        <Grid spacing={1} container justifyContent="center">
-                                                  
-
-
-                                                                <Grid item xs={6}>
-                                                                    <FormProvider {...methods}>
-                                                                        <InputText
-                                                                            defaultValue=""
-                                                                            fullWidth
-                                                                            name="anos"
-                                                                            label="Años"
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                            bug={errors}
-                                                                        />
-                                                                    </FormProvider>
-                                                                </Grid>
-
-                                                                <Grid item xs={6}>
-                                                                    <FormProvider {...methods}>
-                                                                        <InputText
-                                                                            defaultValue=""
-                                                                            fullWidth
-                                                                            name="meses"
-                                                                            label="Meses"
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                            bug={errors}
-                                                                        />
-                                                                    </FormProvider>
-                                                                </Grid>
-
-                                                        
-                                                        </Grid>
-
-
-                                      
-
-                                                </CardContent>
-                                            </Card>
-                                        </Grid>
-
-                                        <Grid item xs={3}>
-                                            <Card sx={{ bgcolor: theme.palette.primary.main, color: theme.palette.background.paper }}>
-                                                <CardHeader
-                                                    title={
-                                                        <Typography variant="h5" sx={{ color: theme.palette.background.paper }}>
-                                                           Total Ruido Otras Empresas
-                                                        </Typography>
-                                                    }
-                                                />
-                                                <Divider />
-                                                <CardContent>
-                                              
-                                                        <Grid spacing={1} container justifyContent="center">
-                                                  
-
-
-                                                                <Grid item xs={6}>
-                                                                    <FormProvider {...methods}>
-                                                                        <InputText
-                                                                            defaultValue=""
-                                                                            fullWidth
-                                                                            name="anos"
-                                                                            label="Años"
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                            bug={errors}
-                                                                        />
-                                                                    </FormProvider>
-                                                                </Grid>
-
-                                                                <Grid item xs={6}>
-                                                                    <FormProvider {...methods}>
-                                                                        <InputText
-                                                                            defaultValue=""
-                                                                            fullWidth
-                                                                            name="meses"
-                                                                            label="Meses"
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                            bug={errors}
-                                                                        />
-                                                                    </FormProvider>
-                                                                </Grid>
-
-                                                        
-                                                        </Grid>
-
-
-                                      
-
-                                                </CardContent>
-                                            </Card>
-                                        </Grid>
-
-                                        <Grid item xs={3}>
-                                            <Card sx={{ bgcolor: theme.palette.primary.main, color: theme.palette.background.paper }}>
-                                                <CardHeader
-                                                    title={
-                                                        <Typography variant="h5" sx={{ color: theme.palette.background.paper }}>
-                                                            Total MPI Otras Empresas
-                                                        </Typography>
-                                                    }
-                                                />
-                                                <Divider />
-                                                <CardContent>
-                                              
-                                                        <Grid spacing={1} container justifyContent="center">
-                                                  
-
-
-                                                                <Grid item xs={6}>
-                                                                    <FormProvider {...methods}>
-                                                                        <InputText
-                                                                            defaultValue=""
-                                                                            fullWidth
-                                                                            name="anos"
-                                                                            label="Años"
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                            bug={errors}
-                                                                        />
-                                                                    </FormProvider>
-                                                                </Grid>
-
-                                                                <Grid item xs={6}>
-                                                                    <FormProvider {...methods}>
-                                                                        <InputText
-                                                                            defaultValue=""
-                                                                            fullWidth
-                                                                            name="meses"
-                                                                            label="Meses"
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                            bug={errors}
-                                                                        />
-                                                                    </FormProvider>
-                                                                </Grid>
-
-                                                        
-                                                        </Grid>
-
-
-                                      
-
-                                                </CardContent>
-                                            </Card>
-                                        </Grid>
-
-
-                                    </Grid>
-                                </SubCard>
-                            </Grid>
-
-
-                        </Grid>
-                    </form>
-                </SubCard>
-
+                <MainCard
+                    content={false}
+                    title={<Typography variant="h4">HISTORIA LABORAL DLTD</Typography>}
+                    secondary={<SecondaryAction link="https://next.material-ui.com/components/tables/" />}
+                >
+                    {/* table */}
+                    <TableContainer>
+                        <Table aria-label="collapsible table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ pl: 3 }} />
+                                    <TableCell>Área</TableCell>
+                                    <TableCell >Cargo</TableCell>
+                                    <TableCell >Fecha</TableCell>
+                                    <TableCell >Año</TableCell>
+                                    <TableCell >Meses</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {rows.map((row) => (
+                                    <Row key={row.name} row={row} />
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </MainCard>
 
 
             </Grid>
 
 
         </Grid>
+
+
+
+
+
+
     );
 };
 

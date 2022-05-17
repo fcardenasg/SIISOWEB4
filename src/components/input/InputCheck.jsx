@@ -16,9 +16,9 @@ const InputCheck = ({ onChange, checked, label, size }) => {
                         onChange={onChange}
                         checked={checked}
                         sx={{
-                            color: theme.palette.error.main,
+                            color: theme.palette.primary,
                             '&.Mui-checked': {
-                                color: theme.palette.error.main
+                                color: theme.palette.primary
                             },
                             '& .MuiSvgIcon-root': { fontSize: size }
                         }}
