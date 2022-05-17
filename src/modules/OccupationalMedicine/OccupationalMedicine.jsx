@@ -1,24 +1,16 @@
 // Import de Material-ui
 import { useState, useEffect, useRef } from 'react';
-import { Document, Page } from 'react-pdf';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
-    CardMedia,
     Grid,
     useMediaQuery,
     Typography,
     Divider,
-    Box, Tab, Tabs
 } from '@mui/material';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-
 
 // Terceros
-/* import WebViewer from '@pdftron/pdfjs-express-viewer'; */
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -46,78 +38,10 @@ import SubCard from 'ui-component/cards/SubCard';
 import InputOnChange from 'components/input/InputOnChange';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-
-import PermIdentityIcon from '@mui/icons-material/PermIdentity';
-import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
-import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone';
-import LockTwoToneIcon from '@mui/icons-material/LockTwoTone';
-import MailTwoToneIcon from '@mui/icons-material/MailTwoTone';
 import { InsertOccupationalMedicine } from 'api/clients/OccupationalMedicineClient';
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const mic = new SpeechRecognition();
-
-mic.continuous = true;
-mic.interimResults = true;
-mic.lang = 'es-ES';
-
-// TAB DE LOS PANELES
-function TabPanel({ children, value, index, ...other }) {
-    return (
-        <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
-            {value === index && <Box sx={{ p: 0 }}>{children}</Box>}
-        </div>
-    );
-}
-
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.any.isRequired,
-    value: PropTypes.any.isRequired
-};
-
-function a11yProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`
-    };
-}
-
-// OPCIONES DEL TABS
-const tabsOption = [
-    {
-        label: 'Información Laboral',
-        icon: <PermIdentityIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Calificación EPS',
-        icon: <DescriptionTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Calificación ARL',
-        icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'JRC',
-        icon: <LockTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'JNC',
-        icon: <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Instancia Final',
-        icon: <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Estado ARL',
-        icon: <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Resultado Investigación Laboral',
-        icon: <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-    }
-];
 
 const OccupationalMedicine = () => {
     const dispatch = useDispatch();
@@ -151,7 +75,6 @@ const OccupationalMedicine = () => {
     const [lsCie11, setLsCie11] = useState([]);
 
     const [imgSrc, setImgSrc] = useState(null);
-    const [value, setValue] = useState(0);
     const [clickAttend, setClickAttend] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -473,6 +396,7 @@ const OccupationalMedicine = () => {
     const allowedFiles = ['application/pdf'];
     const handleFile = (e) => {
         let selectedFile = e.target.files[0];
+        setFileUpload(selectedFile);
         if (selectedFile) {
             if (selectedFile && allowedFiles.includes(selectedFile.type)) {
                 let reader = new FileReader();
@@ -531,7 +455,6 @@ const OccupationalMedicine = () => {
                 FormatDate(fechaCalificacionPclJRC),
                 datos.noDictamenPclJRC, datos.pclJRC, FormatDate(fechaEstructuraPclJRC),
                 datos.noActaRecursoJRC, FormatDate(fechaRecalificacionPclJRC), datos.noDictamenRecalificacionJRC, datos.juntaReCalificacionJRC, datos.pclRecalificadaJRC,
-                FormatDate(fechaRecalificacionEstJRC),
                 FormatDate(fechaCalificaOrigenJNC), datos.noDictamenJNC, datos.origenJNC, FormatDate(fechaCalificacionPclJNC), datos.noDictamenPclJNC,
                 datos.pclJNC, FormatDate(fechaEstructuraJNC),
                 FormatDate(fechaRecalificacionPclJNC),
@@ -561,7 +484,6 @@ const OccupationalMedicine = () => {
                     })
                     reset();
                     CleanCombo();
-                    setValue(0);
                 }
             }
         } catch (error) {
@@ -955,833 +877,797 @@ const OccupationalMedicine = () => {
                 </Grid>
             </Accordion>
             <Divider />
+            <Grid sx={{ pb: 2 }} />
 
-            <Grid items xs={12} sx={{ pt: 2, pb: 2 }}>
-                <Grid xs={12} container spacing={2}>
+            <SubCard darkTitle title={<><Typography variant="h4">INFORMACIÓN LABORAL</Typography></>}>
+                <Grid container spacing={2}>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="resumenCaso"
+                                label="Resumen Caso"
+                                defaultValue=""
+                                options={lsResumenCaso}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <InputDatePick
+                            label="Fecha Retiro"
+                            value={fechaRetiro}
+                            onChange={(e) => setFechaRetiro(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <SelectOnChange
+                            name="segmentoAgrupado"
+                            label="Segmento Agrupado"
+                            onChange={handleChangeSegAgrupado}
+                            value={segmentoAgrupado}
+                            options={lsSegmentoAgrupado}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <SelectOnChange
+                            name="segmentoAfectado"
+                            label="Segmento Afectado"
+                            onChange={handleChangeSegAfectado}
+                            value={segmentoAfectado}
+                            options={lsSegmentoAfectado}
+                            disabled={lsSegmentoAfectado.length != 0 ? false : true}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <SelectOnChange
+                            name="subsegmento"
+                            label="Subsegmento"
+                            onChange={handleChangeSubsegmento}
+                            value={subsegmento}
+                            options={lsSubsegmento}
+                            disabled={lsSubsegmento.length != 0 ? false : true}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="codDx"
+                                label="Diagnóstico"
+                                defaultValue=""
+                                options={lsCie11}
+                                disabled={lsCie11.length != 0 ? false : true}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="nroFurel"
+                                label="No. FUREL"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="regionInfoLaboral"
+                                label="Región"
+                                defaultValue=""
+                                options={lsRegion}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="lateralidad"
+                                label="Lateralidad"
+                                defaultValue=""
+                                options={lsLateralidad}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="entidadQueMotivaEnvio"
+                                label="Entidad que motiva el envio"
+                                defaultValue=""
+                                options={lsEntidadMotiEnvio}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="entidadDondeEnvia"
+                                label="Entidad Donde Envía"
+                                defaultValue=""
+                                options={lsEntidadDondeEnvia}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <InputDatePick
+                            label="Fecha de Entrega"
+                            value={fechaEntrega}
+                            onChange={(e) => setFechaEntrega(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <InputDatePick
+                            label="Fecha de Envio"
+                            value={fechaEnvio}
+                            onChange={(e) => setFechaEnvio(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="investigado"
+                                label="Investigado"
+                                defaultValue=""
+                                options={lsInvestigado}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
                     <Grid item xs={12}>
-                        <Tabs
-                            centered
-                            value={value}
-                            indicatorColor="primary"
-                            textColor="primary"
-                            onChange={(event, newValue) => setValue(newValue)}
-                            aria-label="simple tabs example"
-                            variant="scrollable"
-                            sx={{
-                                mb: 3,
-                                '& a': {
-                                    minHeight: 'auto',
-                                    minWidth: 10,
-                                    py: 1.5,
-                                    px: 1,
-                                    mr: 1,
-                                    color: theme.palette.grey[600],
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                },
-                                '& a.Mui-selected': {
-                                    color: theme.palette.primary.main
-                                },
-                                '& .MuiTabs-indicator': {
-                                    bottom: 2
-                                },
-                                '& a > svg': {
-                                    marginBottom: '0px !important',
-                                    mr: 1.25
-                                }
-                            }}
-                        >
-                            {tabsOption.map((tab, index) => (
-                                <Tab key={index} component={Link} to="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
-                            ))}
-                        </Tabs>
-
-                        <TabPanel value={value} index={0}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="resumenCaso"
-                                            label="Resumen Caso"
-                                            defaultValue=""
-                                            options={lsResumenCaso}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <InputDatePick
-                                        label="Fecha Retiro"
-                                        value={fechaRetiro}
-                                        onChange={(e) => setFechaRetiro(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <SelectOnChange
-                                        name="segmentoAgrupado"
-                                        label="Segmento Agrupado"
-                                        onChange={handleChangeSegAgrupado}
-                                        value={segmentoAgrupado}
-                                        options={lsSegmentoAgrupado}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <SelectOnChange
-                                        name="segmentoAfectado"
-                                        label="Segmento Afectado"
-                                        onChange={handleChangeSegAfectado}
-                                        value={segmentoAfectado}
-                                        options={lsSegmentoAfectado}
-                                        disabled={lsSegmentoAfectado.length != 0 ? false : true}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <SelectOnChange
-                                        name="subsegmento"
-                                        label="Subsegmento"
-                                        onChange={handleChangeSubsegmento}
-                                        value={subsegmento}
-                                        options={lsSubsegmento}
-                                        disabled={lsSubsegmento.length != 0 ? false : true}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="codDx"
-                                            label="Diagnóstico"
-                                            defaultValue=""
-                                            options={lsCie11}
-                                            disabled={lsCie11.length != 0 ? false : true}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="nroFurel"
-                                            label="No. FUREL"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="regionInfoLaboral"
-                                            label="Región"
-                                            defaultValue=""
-                                            options={lsRegion}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="lateralidad"
-                                            label="Lateralidad"
-                                            defaultValue=""
-                                            options={lsLateralidad}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="entidadQueMotivaEnvio"
-                                            label="Entidad que motiva el envio"
-                                            defaultValue=""
-                                            options={lsEntidadMotiEnvio}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="entidadDondeEnvia"
-                                            label="Entidad Donde Envía"
-                                            defaultValue=""
-                                            options={lsEntidadDondeEnvia}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <InputDatePick
-                                        label="Fecha de Entrega"
-                                        value={fechaEntrega}
-                                        onChange={(e) => setFechaEntrega(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <InputDatePick
-                                        label="Fecha de Envio"
-                                        value={fechaEnvio}
-                                        onChange={(e) => setFechaEnvio(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="investigado"
-                                            label="Investigado"
-                                            defaultValue=""
-                                            options={lsInvestigado}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            multiline
-                                            rows={4}
-                                            name="observaciones"
-                                            label="Observaciones"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-                        </TabPanel>
-
-                        <TabPanel value={value} index={1}>
-                            <Grid xs={12} sx={{ pb: 30 }} container spacing={2}>
-                                <Grid item xs={6}>
-                                    <InputDatePick
-                                        label="Fecha Calificación"
-                                        value={fechaCalificacionEps}
-                                        onChange={(e) => setFechaCalificacionEps(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="origenEps"
-                                            label="Orígenes"
-                                            defaultValue=""
-                                            options={lsOrigenEPS}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-                        </TabPanel>
-
-                        <TabPanel value={value} index={2}>
-                            <Grid xs={12} container spacing={2}>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="noSolicitudARL"
-                                            label="Nro. Solicitud"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Calificación Origen"
-                                        value={fechaCalifiOrigenARL}
-                                        onChange={(e) => setFechaCalifiOrigenARL(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="origenARL"
-                                            label="Origen"
-                                            defaultValue=""
-                                            options={lsOrigenARL}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Calificación PCL"
-                                        value={fechaCalificacionPclARL}
-                                        onChange={(e) => setFechaCalificacionPclARL(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="pclARL"
-                                            label="% PCL"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Estructura"
-                                        value={fechaEstructuraARL}
-                                        onChange={(e) => setFechaEstructuraARL(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha ReCalificación PCL"
-                                        value={fechaRecalificacionPclARL}
-                                        onChange={(e) => setFechaRecalificacionPclARL(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="pclRecalificadaARL"
-                                            label="% PCL Recalificada"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Estructura"
-                                        value={fechaEstructuraRecalificadaARL}
-                                        onChange={(e) => setFechaEstructuraRecalificadaARL(e)}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </TabPanel>
-
-                        <TabPanel value={value} index={3}>
-                            <Grid xs={12} container spacing={2}>
-                                <Grid item xs={3}>
-                                    <InputDatePick
-                                        label="Fecha Calificación Origen"
-                                        value={fechaCalificaOrigenJRC}
-                                        onChange={(e) => setFechaCalificaOrigenJRC(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="juntaCalifica"
-                                            label="Junta Califica"
-                                            defaultValue=""
-                                            options={lsJuntaCalificadaJRC}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="noDictamenJRC"
-                                            label="Nro. Dictamen"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="origenJRC"
-                                            label="Origen"
-                                            defaultValue=""
-                                            options={lsOrigenARL}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="controversia"
-                                            label="Controversia"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="conclusion"
-                                            label="Conclusión"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <InputDatePick
-                                        label="Fecha Calificación PCL"
-                                        value={fechaCalificacionPclJRC}
-                                        onChange={(e) => setFechaCalificacionPclJRC(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="noDictamenPclJRC"
-                                            label="Nro. Dictamen PCL"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="pclJRC"
-                                            label="PCL"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <InputDatePick
-                                        label="Fecha Estructura"
-                                        value={fechaEstructuraPclJRC}
-                                        onChange={(e) => setFechaEstructuraPclJRC(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="noActaRecursoJRC"
-                                            label="Nro. Acta Recurso"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <InputDatePick
-                                        label="Fecha ReCalificación PCL"
-                                        value={fechaRecalificacionPclJRC}
-                                        onChange={(e) => setFechaRecalificacionPclJRC(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="noDictamenRecalificacionJRC"
-                                            label="No Dictamen Recalificación"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="juntaReCalificacionJRC"
-                                            label="Junta Recalificación"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="pclRecalificadaJRC"
-                                            label="% PCL Recalificada"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <InputDatePick
-                                        label="Fecha Recalificación Est."
-                                        value={fechaRecalificacionEstJRC}
-                                        onChange={(e) => setFechaRecalificacionEstJRC(e)}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </TabPanel>
-
-                        <TabPanel value={value} index={4}>
-                            <Grid xs={12} container spacing={2}>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Calificación Origen"
-                                        value={fechaCalificaOrigenJNC}
-                                        onChange={(e) => setFechaCalificaOrigenJNC(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="noDictamenJNC"
-                                            label="Nro. Dictamen"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="origenJNC"
-                                            label="Origen"
-                                            defaultValue=""
-                                            options={lsOrigenARL}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Calificación Origen"
-                                        value={fechaCalificacionPclJNC}
-                                        onChange={(e) => setFechaCalificacionPclJNC(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="noDictamenPclJNC"
-                                            label="No. Dictamen"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="pclJNC"
-                                            label="% PCL"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Estructura"
-                                        value={fechaEstructuraJNC}
-                                        onChange={(e) => setFechaEstructuraJNC(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Calificación Origen"
-                                        value={fechaRecalificacionPclJNC}
-                                        onChange={(e) => setFechaRecalificacionPclJNC(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="noDictamenRecalificacionJNC"
-                                            label="No. Dictamen"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="pclRecalificacionJNC"
-                                            label="% PCL"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-                        </TabPanel>
-
-                        <TabPanel value={value} index={5}>
-                            <Grid xs={12} container spacing={2}>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="origenInstaFinal"
-                                            label="Origen"
-                                            defaultValue=""
-                                            options={lsOrigenARL}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Estructuración Origen"
-                                        value={fechaEstructuracionOrigenInstaFinal}
-                                        onChange={(e) => setFechaEstructuracionOrigenInstaFinal(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="instanciaOrigenInstaFinal"
-                                            label="Instancia Origen"
-                                            defaultValue=""
-                                            options={lsInstanciaOrigen}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="pclFinalInstaFinal"
-                                            label="% PCL Final"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="instanciaFinal"
-                                            label="Instancia Final"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Calificación PCL"
-                                        value={fechaCalificacionPclInstFinal}
-                                        onChange={(e) => setFechaCalificacionPclInstFinal(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Estructuracion PCL"
-                                        value={fechaEstructuracionPclInstFinal}
-                                        onChange={(e) => setFechaEstructuracionPclInstFinal(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="indemnizado"
-                                            label="Indemnizado"
-                                            defaultValue=""
-                                            options={lsInvestigado}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Pago"
-                                        value={fechaPagoInstaFinal}
-                                        onChange={(e) => setFechaPagoInstaFinal(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="entregadoMin"
-                                            label="Entregado al MIN"
-                                            defaultValue=""
-                                            options={lsInvestigado}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="indemnizadoRecalificado"
-                                            label="Indemnizado Recalificado"
-                                            defaultValue=""
-                                            options={lsInvestigado}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha Pago"
-                                        value={fechaPagoRecalificadoInstaFinal}
-                                        onChange={(e) => setFechaPagoRecalificadoInstaFinal(e)}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </TabPanel>
-
-                        <TabPanel value={value} index={6}>
-                            <Grid xs={12} container spacing={2}>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="estadoRHT"
-                                            label="Estado RHT"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                            rows={4}
-                                            multiline
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="reintegro"
-                                            label="Reintegro"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                            rows={4}
-                                            multiline
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="reubicado"
-                                            label="Reubicado"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                            rows={4}
-                                            multiline
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="restringido"
-                                            label="Restringido"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                            rows={4}
-                                            multiline
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="jornadaLaboral"
-                                            label="Jornada Laboral"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                            rows={4}
-                                            multiline
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="indemnizacion"
-                                            label="Indemnización"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                            rows={4}
-                                            multiline
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-                        </TabPanel>
-
-                        <TabPanel value={value} index={7}>
-                            <Grid xs={5} sx={{ pl: 4, pt: 4 }} container spacing={2}>
-                                <input type="file" onChange={(e) => setFileUpload(e.target.files[0])} />
-
-                                {/* <ViewPdf handleFile={handleFile} pdfFile={pdfFile} pdfError={pdfError} title="Visualizar PDF de Medicina Laboral" /> */}
-                            </Grid>
-                        </TabPanel>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                multiline
+                                rows={4}
+                                name="observaciones"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
                 </Grid>
-            </Grid>
+            </SubCard>
+            <Grid sx={{ pb: 2 }} />
+
+            <SubCard darkTitle title={<><Typography variant="h4">CALIFICACIÓN EPS</Typography></>}>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <InputDatePick
+                            label="Fecha Calificación"
+                            value={fechaCalificacionEps}
+                            onChange={(e) => setFechaCalificacionEps(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="origenEps"
+                                label="Orígenes"
+                                defaultValue=""
+                                options={lsOrigenEPS}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                </Grid>
+            </SubCard>
+            <Grid sx={{ pb: 2 }} />
+
+            <SubCard darkTitle title={<><Typography variant="h4">CALIFICACIÓN ARL</Typography></>}>
+                <Grid container spacing={2}>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="noSolicitudARL"
+                                label="Nro. Solicitud"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Calificación Origen"
+                            value={fechaCalifiOrigenARL}
+                            onChange={(e) => setFechaCalifiOrigenARL(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="origenARL"
+                                label="Origen"
+                                defaultValue=""
+                                options={lsOrigenARL}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Calificación PCL"
+                            value={fechaCalificacionPclARL}
+                            onChange={(e) => setFechaCalificacionPclARL(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="pclARL"
+                                label="% PCL"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Estructura"
+                            value={fechaEstructuraARL}
+                            onChange={(e) => setFechaEstructuraARL(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha ReCalificación PCL"
+                            value={fechaRecalificacionPclARL}
+                            onChange={(e) => setFechaRecalificacionPclARL(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="pclRecalificadaARL"
+                                label="% PCL Recalificada"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Estructura"
+                            value={fechaEstructuraRecalificadaARL}
+                            onChange={(e) => setFechaEstructuraRecalificadaARL(e)}
+                        />
+                    </Grid>
+                </Grid>
+            </SubCard>
+            <Grid sx={{ pb: 2 }} />
+
+            <SubCard darkTitle title={<><Typography variant="h4">JRC</Typography></>}>
+                <Grid container spacing={2}>
+                    <Grid item xs={3}>
+                        <InputDatePick
+                            label="Fecha Calificación Origen"
+                            value={fechaCalificaOrigenJRC}
+                            onChange={(e) => setFechaCalificaOrigenJRC(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="juntaCalifica"
+                                label="Junta Califica"
+                                defaultValue=""
+                                options={lsJuntaCalificadaJRC}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="noDictamenJRC"
+                                label="Nro. Dictamen"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="origenJRC"
+                                label="Origen"
+                                defaultValue=""
+                                options={lsOrigenARL}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="controversia"
+                                label="Controversia"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="conclusion"
+                                label="Conclusión"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <InputDatePick
+                            label="Fecha Calificación PCL"
+                            value={fechaCalificacionPclJRC}
+                            onChange={(e) => setFechaCalificacionPclJRC(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="noDictamenPclJRC"
+                                label="Nro. Dictamen PCL"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="pclJRC"
+                                label="PCL"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <InputDatePick
+                            label="Fecha Estructura"
+                            value={fechaEstructuraPclJRC}
+                            onChange={(e) => setFechaEstructuraPclJRC(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="noActaRecursoJRC"
+                                label="Nro. Acta Recurso"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <InputDatePick
+                            label="Fecha ReCalificación PCL"
+                            value={fechaRecalificacionPclJRC}
+                            onChange={(e) => setFechaRecalificacionPclJRC(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="noDictamenRecalificacionJRC"
+                                label="No Dictamen Recalificación"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="juntaReCalificacionJRC"
+                                label="Junta Recalificación"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="pclRecalificadaJRC"
+                                label="% PCL Recalificada"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <InputDatePick
+                            label="Fecha Recalificación Est."
+                            value={fechaRecalificacionEstJRC}
+                            onChange={(e) => setFechaRecalificacionEstJRC(e)}
+                        />
+                    </Grid>
+                </Grid>
+            </SubCard>
+            <Grid sx={{ pb: 2 }} />
+
+            <SubCard darkTitle title={<><Typography variant="h4">JNC</Typography></>}>
+                <Grid container spacing={2}>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Calificación Origen"
+                            value={fechaCalificaOrigenJNC}
+                            onChange={(e) => setFechaCalificaOrigenJNC(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="noDictamenJNC"
+                                label="Nro. Dictamen"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="origenJNC"
+                                label="Origen"
+                                defaultValue=""
+                                options={lsOrigenARL}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Calificación Origen"
+                            value={fechaCalificacionPclJNC}
+                            onChange={(e) => setFechaCalificacionPclJNC(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="noDictamenPclJNC"
+                                label="No. Dictamen"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="pclJNC"
+                                label="% PCL"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Estructura"
+                            value={fechaEstructuraJNC}
+                            onChange={(e) => setFechaEstructuraJNC(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Calificación Origen"
+                            value={fechaRecalificacionPclJNC}
+                            onChange={(e) => setFechaRecalificacionPclJNC(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="noDictamenRecalificacionJNC"
+                                label="No. Dictamen"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="pclRecalificacionJNC"
+                                label="% PCL"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                </Grid> 
+            </SubCard>
+            <Grid sx={{ pb: 2 }} />
+
+
+            <SubCard darkTitle title={<><Typography variant="h4">INSTANCIA FINAL</Typography></>}>
+                <Grid container spacing={2}>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="origenInstaFinal"
+                                label="Origen"
+                                defaultValue=""
+                                options={lsOrigenARL}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Estructuración Origen"
+                            value={fechaEstructuracionOrigenInstaFinal}
+                            onChange={(e) => setFechaEstructuracionOrigenInstaFinal(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="instanciaOrigenInstaFinal"
+                                label="Instancia Origen"
+                                defaultValue=""
+                                options={lsInstanciaOrigen}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="pclFinalInstaFinal"
+                                label="% PCL Final"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="instanciaFinal"
+                                label="Instancia Final"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Calificación PCL"
+                            value={fechaCalificacionPclInstFinal}
+                            onChange={(e) => setFechaCalificacionPclInstFinal(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Estructuracion PCL"
+                            value={fechaEstructuracionPclInstFinal}
+                            onChange={(e) => setFechaEstructuracionPclInstFinal(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="indemnizado"
+                                label="Indemnizado"
+                                defaultValue=""
+                                options={lsInvestigado}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Pago"
+                            value={fechaPagoInstaFinal}
+                            onChange={(e) => setFechaPagoInstaFinal(e)}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="entregadoMin"
+                                label="Entregado al MIN"
+                                defaultValue=""
+                                options={lsInvestigado}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="indemnizadoRecalificado"
+                                label="Indemnizado Recalificado"
+                                defaultValue=""
+                                options={lsInvestigado}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Pago"
+                            value={fechaPagoRecalificadoInstaFinal}
+                            onChange={(e) => setFechaPagoRecalificadoInstaFinal(e)}
+                        />
+                    </Grid>
+                </Grid>
+            </SubCard>
+            <Grid sx={{ pb: 2 }} />
+
+            <SubCard darkTitle title={<><Typography variant="h4">ESTADO ARL</Typography></>}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="estadoRHT"
+                                label="Estado RHT"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                                rows={4}
+                                multiline
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="reintegro"
+                                label="Reintegro"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                                rows={4}
+                                multiline
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="reubicado"
+                                label="Reubicado"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                                rows={4}
+                                multiline
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="restringido"
+                                label="Restringido"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                                rows={4}
+                                multiline
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="jornadaLaboral"
+                                label="Jornada Laboral"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                                rows={4}
+                                multiline
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="indemnizacion"
+                                label="Indemnización"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                                rows={4}
+                                multiline
+                            />
+                        </FormProvider>
+                    </Grid>
+                </Grid>
+            </SubCard>
+            <Grid sx={{ pb: 2 }} />
+
+            <SubCard darkTitle title={<><Typography variant="h4">RESULTADO INVESTIGACIÓN LABORAL</Typography></>}>
+                <Grid xs={12} sx={{ pl: 4, pt: 4 }} container spacing={2}>
+                    <input type="file" onChange={handleFile} />
+                </Grid>
+                <ViewPdf pdfFile={fileUpload} />
+            </SubCard>
+
 
             <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
                 <Grid container spacing={1}>

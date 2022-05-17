@@ -52,7 +52,7 @@ import ProductsPageEP from './ProductsPageEP';
 import TotalCardA from './TotalCardA';
 import { useFormik } from 'formik';
 import { FormProvider, useForm } from 'react-hook-form';
-import AddItemPageA from './AddItemPageA';
+import AddItemPage from './AddItemPage';
 import AddItemPageEP from './AddItemPageEP';
 
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
@@ -241,7 +241,7 @@ const Antecedents = () => {
 
                             {addItemClicked ? (
                                 <Grid item xs={12}>
-                                    <AddItemPageA handleAddItem={handleAddItem} setAddItemClicked={setAddItemClicked} />
+                                    <AddItemPage handleAddItem={handleAddItem} setAddItemClicked={setAddItemClicked} />
                                 </Grid>
                             ) : (
                                 <Grid item>

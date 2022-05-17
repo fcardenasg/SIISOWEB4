@@ -14,6 +14,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import { FormatDate } from 'components/helpers/Format';
+import { PostTypeCatalog } from 'formatdata/TypeCatalog';
 import useAuth from 'hooks/useAuth';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertTypeCatalog } from 'api/clients/TypeCatalogClient';
@@ -24,14 +26,13 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
-/* VALIDACIÓN CON YUP */
 const validationSchema = Yup.object().shape({
     nombre: Yup.string().required(`${ValidationMessage.Requerido}`),
 }).required();
 
 const TypeCatalog = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
     const { user } = useAuth();
+    console.log("user = ", user);
     const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -42,11 +43,13 @@ const TypeCatalog = () => {
 
     const { handleSubmit, errors, reset } = methods;
 
-    /* METODO DE INSERT  */
     const onSubmit = async (datos) => {
         try {
+            const DataToInsert = PostTypeCatalog(datos.nombre, user.id, FormatDate(new Date()),
+                '', FormatDate(new Date()));
+
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertTypeCatalog(datos);
+                const result = await InsertTypeCatalog(DataToInsert);
                 if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,

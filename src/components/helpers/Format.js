@@ -22,5 +22,4 @@ const DateFormat = (fecha) => {
 
 export {
     FormatDate,
-    DateFormat
 }

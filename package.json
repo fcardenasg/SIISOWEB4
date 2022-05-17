@@ -21,8 +21,8 @@
         "@mui/system": "^5.0.3",
         "@mui/utils": "^5.0.1",
         "@mui/x-data-grid": "^5.0.0-beta.3",
-        "@pdftron/pdfjs-express-viewer": "^8.4.0",
-        "@react-pdf-viewer/core": "^3.3.2",
+        "@react-pdf-viewer/core": "3.0.0",
+        "@react-pdf-viewer/default-layout": "3.0.0",
         "@tabler/icons": "^1.47",
         "apexcharts": "^3.26.1",
         "axios": "^0.21.1",
@@ -43,7 +43,8 @@
         "jwt-decode": "^3.1.2",
         "lodash": "^4.17.21",
         "material-ui-popup-state": "^1.8.0",
-        "pdfjs-dist": "^2.13.216",
+        "mgr-pdf-viewer-react": "^1.0.3",
+        "pdfjs-dist": "2.8.335",
         "prop-types": "^15.7.2",
         "qrcode": "^1.5.0",
         "react": "^17.0.2",
@@ -97,11 +98,6 @@
             "react-app"
         ]
     },
-    "babel": {
-        "presets": [
-            "@babel/preset-react"
-        ]
-    },
     "browserslist": {
         "production": [
             ">0.2%",
@@ -129,6 +125,7 @@
         "eslint-plugin-react": "^7.26.1",
         "eslint-plugin-react-hooks": "4.0.8",
         "prettier": "2.2.1",
+        "react-app-rewired": "^2.2.1",
         "sass": "^1.42.1"
     }
 }
