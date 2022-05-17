@@ -15,6 +15,9 @@ import LockIcon from '@mui/icons-material/Lock';
 
 const Auth0Login = ({ ...others }) => {
     const { login } = useAuth();
+    const loginData = useAuth();
+    console.log(loginData);
+
     const [error, setError] = useState(null);
     const scriptedRef = useScriptRef();
 

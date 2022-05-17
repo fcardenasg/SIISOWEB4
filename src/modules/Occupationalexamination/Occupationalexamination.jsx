@@ -19,7 +19,7 @@ import {
 // project imports
 import Personaldata from './Personaldata';
 import Workhistory from './Workhistory';
-import Antecedents from './Antecedents';
+import Emo from './Emo';
 import Physicalexamination from './Physicalexamination';
 import Paraclinicalfinal from './Paraclinicalfinal';
 import Workatheight from './Workatheight';
@@ -117,25 +117,10 @@ const tabsOption = [
         icon: <DescriptionTwoToneIcon sx={{ fontSize: '1.3rem' }} />
     },
     {
-        label: 'Antecedentes',
+        label: 'Historia Ocupacional',
         icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
     },
-    {
-        label: 'Revisión y Examen Físico',
-        icon: <MedicalInformationIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Paraclínicos y Dx Final',
-        icon: <VaccinesIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Trabajo en Altura',
-        icon: <TransferWithinAStationIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Framingham',
-        icon: <MonitorHeartIcon sx={{ fontSize: '1.3rem' }} />
-    }
+    
 
 
 ];
@@ -362,7 +347,8 @@ const Occupationalexamination = () => {
 
     return (
         <MainCard>
-            <Grid container xs={12} sx={{ pt: 0.5 }}>
+            <Grid container>
+            <Grid item xs={12}>
                 <form onSubmit={handleSubmit(handleClick)}>
                     {/* <Grid container spacing={gridSpacing}> */}
 
@@ -572,29 +558,13 @@ const Occupationalexamination = () => {
                             <Workhistory />
                         </TabPanel>
                         <TabPanel value={value} index={2}>
-                            <Antecedents />
+                            <Emo />
                         </TabPanel>
-                        <TabPanel value={value} index={3}>
-                            <Physicalexamination />
-                        </TabPanel>
-                        <TabPanel value={value} index={4}>
-                            <Paraclinicalfinal />
-                        </TabPanel>
-                        <TabPanel value={value} index={5}>
-                            <Workatheight />
-                        </TabPanel>
-                        <TabPanel value={value} index={6}>
-                            <Workatheight />
-                        </TabPanel>
-                        <TabPanel value={value} index={7}>
-                            <Workatheight />
-                        </TabPanel>
-                        <TabPanel value={value} index={8}>
-                            <Framingham />
-                        </TabPanel>
+                    
                     </Grid>
                     {/* </Grid> */}
                 </form>
+                </Grid>
             </Grid>
         </MainCard>
     );

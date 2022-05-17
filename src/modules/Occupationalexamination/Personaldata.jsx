@@ -103,7 +103,7 @@ const Personaldata = () => {
 
     return (
     <Grid container spacing={gridSpacing}>
-        <Grid item lg={6} xs={12}>
+        <Grid item lg={4} xs={12}>
         <SubCard
                         title="Datos Personales"
                         secondary={
@@ -275,7 +275,10 @@ const Personaldata = () => {
             
             </SubCard>
         </Grid>
-        <Grid item lg={6} xs={12}>
+
+
+
+        <Grid item lg={8} xs={12}>
             <Grid container direction="column" spacing={gridSpacing}>
                 <Grid item xs={12}>
                     <SubCard
@@ -293,6 +296,35 @@ const Personaldata = () => {
                             <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                         </ListItemIcon> */}
                         <ListItemText primary={<Typography variant="subtitle1">Sede de Trabajo</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+
+
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Dirección de residencia mientras trabaja</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+                    <Divider />
+
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">Municipio de residencia mientras trabaja</Typography>} />
                         <ListItemSecondaryAction>
                             <Typography variant="subtitle2" align="right">
                             {employee.nameSede}
@@ -329,18 +361,7 @@ const Personaldata = () => {
                         </ListItemSecondaryAction>
                     </ListItemButton>
                     <Divider />
-                    <ListItemButton>
-                        {/* <ListItemIcon>
-                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                        </ListItemIcon> */}
-                        <ListItemText primary={<Typography variant="subtitle1">Subarea</Typography>} />
-                        <ListItemSecondaryAction>
-                            <Typography variant="subtitle2" align="right">
-                            {employee.nameSede}
-                            </Typography>       
-
-                        </ListItemSecondaryAction>
-                    </ListItemButton>
+                  
                     <Divider />
                     <ListItemButton>
                         {/* <ListItemIcon>
@@ -420,6 +441,20 @@ const Personaldata = () => {
                         </ListItemSecondaryAction>
                     </ListItemButton>
                          
+                    <Divider />
+                    <ListItemButton>
+                        {/* <ListItemIcon>
+                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                        </ListItemIcon> */}
+                        <ListItemText primary={<Typography variant="subtitle1">GES</Typography>} />
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" align="right">
+                            {employee.nameSede}
+                            </Typography>       
+
+                        </ListItemSecondaryAction>
+                    </ListItemButton>
+
                         </Grid>
                     </SubCard>
                 </Grid>
