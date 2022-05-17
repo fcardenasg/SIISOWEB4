@@ -1,5 +1,5 @@
 // Import de Material-ui
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -10,7 +10,6 @@ import {
     Tooltip,
     Fab
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/AddTwoTone';
 
 // Terceros
 import { useNavigate } from 'react-router-dom';
@@ -25,8 +24,6 @@ import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format'
 import InputArea from 'components/input/InputArea';
 import Accordion from 'components/accordion/Accordion';
-import ModalChildren from 'components/form/ModalChildren';
-import WebCamCapture from 'components/form/WebCam';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { GetByIdAdvice, UpdateAdvices } from 'api/clients/AdviceClient';
@@ -57,14 +54,12 @@ mic.interimResults = true;
 mic.lang = 'es-ES';
 
 const UpdateMedicalAdvice = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const theme = useTheme();
     const { id } = useParams();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* NUESTROS ESTADOS PARA LOS COMBOS */
     const [document, setDocument] = useState('');
     const [catalog, setCatalog] = useState([]);
     const [company, setCompany] = useState([]);
@@ -78,7 +73,6 @@ const UpdateMedicalAdvice = () => {
     const [fecha, setFecha] = useState(null);
     const [timeWait, setTimeWait] = useState(false);
 
-    /* MIL Y UN ESTADOS */
     const [nombres, setNombres] = useState('');
     const [email, setEmail] = useState('');
     const [celular, setCelular] = useState('');
@@ -109,7 +103,6 @@ const UpdateMedicalAdvice = () => {
     const [eps, setEps] = useState('');
     const [afp, setAfp] = useState('');
 
-    /* ESTADOS PARA EL CONTROL DE VOZ */
     const [isListening, setIsListening] = useState(false);
     const [note, setNote] = useState(null);
 
@@ -147,20 +140,6 @@ const UpdateMedicalAdvice = () => {
 
     const { handleSubmit, errors } = methods;
 
-    /* MANEJO DE MODAL */
-
-    const [open, setOpen] = useState(false);
-
-    /* MANEJO DE WEBCAM */
-    const WebCamRef = useRef(null);
-
-    const CapturePhoto = useCallback(() => {
-        const imageSrc = WebCamRef.current.getScreenshot();
-        setImgSrc(imageSrc);
-    }, [WebCamRef, setImgSrc]);
-
-
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServerMedicalAdvice = await GetByIdAdvice(id);
@@ -211,7 +190,6 @@ const UpdateMedicalAdvice = () => {
         }
     }
 
-    /* METODO PADRE DE TRAER DATOS */
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsQuestionnaire = await GetByIdEmployee(idEmployee);
@@ -261,13 +239,11 @@ const UpdateMedicalAdvice = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
         handleListen();
     }, [isListening])
 
-    /* METODO DE UPDATE  */
     const handleClick = async (datos) => {
         try {
             const fechaData = FormatDate(fecha);
@@ -312,32 +288,17 @@ const UpdateMedicalAdvice = () => {
     }, 2500);
 
     return (
-        <MainCard title="">
+        <MainCard>
             {timeWait ? (
                 <Grid container xs={12} sx={{ pt: 0.5 }}>
                     <form onSubmit={handleSubmit(handleClick)}>
                         <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
-                            <ModalChildren
-                                open={open}
-                                onClose={() => setOpen(false)}
-                                title="Fotografía"
-                            >
-                                <WebCamCapture
-                                    CaptureImg={CapturePhoto}
-                                    RemoverImg={() => setImgSrc(null)}
-                                    ImgSrc={imgSrc}
-                                    WebCamRef={WebCamRef}
-                                />
-                            </ModalChildren>
-
                             <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
                                 <Grid item xs={3}>
                                     <PhotoModel
                                         disabledCapture
                                         disabledDelete
-                                        OpenModal={() => setOpen(true)}
                                         EstadoImg={imgSrc}
-                                        RemoverImg={() => setImgSrc(null)}
                                     />
                                 </Grid>
                                 <Grid container spacing={2} item xs={9}>

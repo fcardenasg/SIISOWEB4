@@ -14,6 +14,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import useAuth from 'hooks/useAuth';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertTypeCatalog } from 'api/clients/TypeCatalogClient';
 import InputText from 'components/input/InputText';
@@ -31,6 +32,7 @@ const validationSchema = Yup.object().shape({
 
 const TypeCatalog = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
