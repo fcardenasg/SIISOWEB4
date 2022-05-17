@@ -23,7 +23,6 @@ import InputText from 'components/input/InputText';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import useAuth from 'hooks/useAuth';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
@@ -33,7 +32,6 @@ const validationSchema = Yup.object().shape({
 
 const TypeCatalog = () => {
     const { user } = useAuth();
-    console.log("user = ", user);
     const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -42,8 +40,6 @@ const TypeCatalog = () => {
         resolver: yupResolver(validationSchema),
     });
 
-    const { user } = useAuth();
-    console.log(user);
     const { handleSubmit, errors, reset } = methods;
 
     const onSubmit = async (datos) => {
