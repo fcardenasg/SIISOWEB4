@@ -247,7 +247,7 @@ const Occupationalexamination = () => {
                                 </Typography>
                                 <Grid container spacing={1} direction="row" justifyContent="left" alignItems="center">
                                     <Grid item>
-                                        <Typography variant="h6">{lsEmployee.genero}</Typography>
+                                        <Typography variant="h6">{lsEmployee.nameGenero}</Typography>
                                     </Grid>
                                     <Grid item>
                                         <Typography variant="h6">{FormatDate(lsEmployee.fechaNaci)}</Typography>

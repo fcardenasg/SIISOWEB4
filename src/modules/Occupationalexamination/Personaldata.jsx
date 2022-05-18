@@ -22,6 +22,7 @@ import BusinessIcon from '@mui/icons-material/Business';
 import ElderlyIcon from '@mui/icons-material/Elderly';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import { ListDetailsAll, ListDetails } from 'components/components/ListDetails';
+import { handleBreakpoints } from '@mui/system';
 
 const DetailsViewOne = [
     {
@@ -68,28 +69,36 @@ const DetailsViewTwo = [
     { name: 'Turno', }, { name: 'Tipo Contrato', }, { name: 'Fecha Contrato', }, { name: 'Antiguedad', }, { name: 'GES', },
 ]
 
+const handleUpdateEmployee = (idEmployee) => {
+    return (
+        <>
+            HOLA MUNDO
+        </>
+    );
+}
+
 const PersonalData = ({ lsEmployee }) => {
     return (
         <Grid container spacing={gridSpacing}>
             <Grid item lg={6} xs={12}>
-                <SubCard title="Datos Personales" secondary={<Button><IconEdit stroke={1.5} size="1.3rem" /></Button>}>
+                <SubCard title="Datos Personales" secondary={<Button onClick={handleUpdateEmployee(lsEmployee.documento)}><IconEdit stroke={1.5} size="1.3rem" /></Button>}>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item>
                             <Avatar sx={{ width: 60, height: 60 }} alt="Foto del Empleado" src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
                         </Grid>
 
                         <Grid item xs zeroMinWidth>
-                            <Typography align="left" variant="subtitle1">
+                            <Typography align="left" variant="h4">
                                 {lsEmployee.nombres}
                             </Typography>
-                            <Typography align="left" variant="subtitle2">
-                                {lsEmployee.genero}
+                            <Typography align="left" variant="h7">
+                                {lsEmployee.nameGenero}
                             </Typography>
                             <Typography align="left" variant="subtitle2">
                                 {FormatDate(lsEmployee.fechaNaci)}
                             </Typography>
                             <Typography align="left" variant="subtitle2">
-                                {lsEmployee.estadoCivil}
+                                {lsEmployee.nameEstadoCivil}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -98,12 +107,12 @@ const PersonalData = ({ lsEmployee }) => {
                         <ListDetailsAll icons={DetailsViewOne[0].icons} name={DetailsViewOne[0].name} campoRender={lsEmployee.email} />
                         <ListDetailsAll icons={DetailsViewOne[1].icons} name={DetailsViewOne[1].name} campoRender={lsEmployee.celular} />
                         <ListDetailsAll icons={DetailsViewOne[2].icons} name={DetailsViewOne[2].name} campoRender={lsEmployee.direccionResidencia} />
-                        <ListDetailsAll icons={DetailsViewOne[3].icons} name={DetailsViewOne[3].name} campoRender={lsEmployee.municipioResidencia} />
+                        <ListDetailsAll icons={DetailsViewOne[3].icons} name={DetailsViewOne[3].name} campoRender={lsEmployee.nameMunicipioResidencia} />
                         <ListDetailsAll icons={DetailsViewOne[4].icons} name={DetailsViewOne[4].name} campoRender={lsEmployee.contacto} />
                         <ListDetailsAll icons={DetailsViewOne[5].icons} name={DetailsViewOne[5].name} campoRender={lsEmployee.telefonoContacto} />
-                        <ListDetailsAll icons={DetailsViewOne[6].icons} name={DetailsViewOne[6].name} campoRender={lsEmployee.eps} />
-                        <ListDetailsAll icons={DetailsViewOne[7].icons} name={DetailsViewOne[7].name} campoRender={lsEmployee.afp} />
-                        <ListDetailsAll icons={DetailsViewOne[8].icons} name={DetailsViewOne[8].name} campoRender={lsEmployee.arl} />
+                        <ListDetailsAll icons={DetailsViewOne[6].icons} name={DetailsViewOne[6].name} campoRender={lsEmployee.nameEps} />
+                        <ListDetailsAll icons={DetailsViewOne[7].icons} name={DetailsViewOne[7].name} campoRender={lsEmployee.nameAfp} />
+                        <ListDetailsAll icons={DetailsViewOne[8].icons} name={DetailsViewOne[8].name} campoRender={lsEmployee.nameArl} />
                     </List>
                 </SubCard>
             </Grid>
@@ -111,15 +120,15 @@ const PersonalData = ({ lsEmployee }) => {
             <Grid item lg={6} xs={12}>
                 <SubCard title="Información de la Empresa y Cargo" secondary={<Button><IconEdit stroke={1.5} /></Button>}>
                     <Grid container direction="column" spacing={2}>
-                        <ListDetails name={DetailsViewTwo[0].name} campoRender={lsEmployee.sede} />
+                        <ListDetails name={DetailsViewTwo[0].name} campoRender={lsEmployee.nameSede} />
                         <ListDetails name={DetailsViewTwo[1].name} campoRender={lsEmployee.direccionResidencia} />
-                        <ListDetails name={DetailsViewTwo[2].name} campoRender={lsEmployee.municipioResidencia} />
-                        <ListDetails name={DetailsViewTwo[3].name} campoRender={lsEmployee.departamento} />
-                        <ListDetails name={DetailsViewTwo[4].name} campoRender={lsEmployee.area} />
-                        <ListDetails name={DetailsViewTwo[5].name} campoRender={lsEmployee.rosterPosition} />
-                        <ListDetails name={DetailsViewTwo[6].name} campoRender={lsEmployee.grupo} />
-                        <ListDetails name={DetailsViewTwo[7].name} campoRender={lsEmployee.turno} />
-                        <ListDetails name={DetailsViewTwo[8].name} campoRender={lsEmployee.tipoContrato} />
+                        <ListDetails name={DetailsViewTwo[2].name} campoRender={lsEmployee.nameMunicipioResidencia} />
+                        <ListDetails name={DetailsViewTwo[3].name} campoRender={lsEmployee.nameDepartamento} />
+                        <ListDetails name={DetailsViewTwo[4].name} campoRender={lsEmployee.nameArea} />
+                        <ListDetails name={DetailsViewTwo[5].name} campoRender={lsEmployee.nameRosterPosition} />
+                        <ListDetails name={DetailsViewTwo[6].name} campoRender={lsEmployee.nameGrupo} />
+                        <ListDetails name={DetailsViewTwo[7].name} campoRender={lsEmployee.nameTurno} />
+                        <ListDetails name={DetailsViewTwo[8].name} campoRender={lsEmployee.nameTipoContrato} />
                         <ListDetails name={DetailsViewTwo[9].name} campoRender={FormatDate(lsEmployee.fechaContrato)} />
                         <ListDetails name={DetailsViewTwo[11].name} campoRender={lsEmployee.ges} />
                     </Grid>
