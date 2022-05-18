@@ -11,7 +11,6 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 // assets
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-// ==============================|| ACCORDION ||============================== //
 
 const Accordion = ({ defaultExpandedId = null, title, defaultExpand, id,  disabled, children, expandIcon, square, toggle }) => {
     const theme = useTheme();

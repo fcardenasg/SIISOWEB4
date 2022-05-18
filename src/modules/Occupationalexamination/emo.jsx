@@ -3,9 +3,10 @@ import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button, useMediaQuery,
-    Grid, Typography, Tooltip, Fab,
+    Grid, Typography, Tooltip, Fab, Divider
 } from '@mui/material';
 
+import Accordion from 'components/accordion/Accordion';
 import { FormProvider, useForm } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -22,6 +23,7 @@ import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { gridSpacing } from 'store/constant';
 import { CodCatalogo } from 'components/helpers/Enums';
+import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
@@ -3978,6 +3980,45 @@ const Emo = () => {
                     </Grid>
                 </Grid>
             </SubCard >
+            <Grid sx={{ pb: 2 }} />
+
+            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+                <Typography variant="h4" color="inherit">TRABAJO EN ALTURA</Typography></>}>
+                <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIONES</Typography>}>
+                    <Grid container xs={12} spacing={2}>
+                        <Grid item xs={12}>
+                            <InputMultiSelects
+                                fullWidth
+                                onChange={(event, value) => setDxID(value)}
+                                value={dxID}
+                                label="DX"
+                                options={lsSupplier}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <InputOnChange
+                                multiline
+                                rows={4}
+                                label="Observaciones"
+                                placeholder="Esperando dictado..."
+                                name="inputArea"
+                                size={matchesXS ? 'small' : 'medium'}
+                                value={observacionID}
+                                onChange={(e) => setObservacionID(e?.target.value)}
+                            />
+                        </Grid>
+                    </Grid>
+                </SubCard >
+            </Accordion>
+            <Divider />
+            <Grid sx={{ pb: 2 }} />
+
+            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+                <Typography align='right' variant="h4" color="inherit">FRAMINGHAM</Typography></>}>
+                Aqui Va Render
+            </Accordion>
+            <Divider />
         </Fragment >
     );
 };
