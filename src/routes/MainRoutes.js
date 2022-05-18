@@ -128,7 +128,6 @@ const UtilsGrid = Loadable(lazy(() => import('views/utilities/Grid')));
 // sample page routing
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
-
 //Nuestros import
 const ListTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/ListTypeCatalog')));
 const ReportTypeCatolog = Loadable(lazy(() => import('components/report/ReportTypeCatolog')));
@@ -572,7 +571,7 @@ const MainRoutes = {
         },
 
         {
-            path: '/customer/ListOccupationalexamination',
+            path: '/customer/listOccupational--examination',
             element: <AppCustomerList />
         },
         {
