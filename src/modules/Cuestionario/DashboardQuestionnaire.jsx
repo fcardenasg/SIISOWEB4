@@ -228,7 +228,6 @@ const DashboardQuestionnaire = () => {
 
     const { handleSubmit, errors, reset } = methods;
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServerCompany = await GetAllCompany(0, 0);

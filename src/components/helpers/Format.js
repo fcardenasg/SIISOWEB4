@@ -1,18 +1,22 @@
 const FormatDate = (date) => {
-    date = new Date(date);
-    const formato = new Intl.DateTimeFormat("en", {
-        year: 'numeric',
-        month: '2-digit',
-        day: "2-digit"
-    });
+    try {
+        date = new Date(date);
+        const formato = new Intl.DateTimeFormat("en", {
+            year: 'numeric',
+            month: '2-digit',
+            day: "2-digit"
+        });
 
-    const [
-        { value: month },,
-        { value: day },,
-        { value: year }
-    ] = formato.formatToParts(date);
+        const [
+            { value: month }, ,
+            { value: day }, ,
+            { value: year }
+        ] = formato.formatToParts(date);
 
-    return `${year}-${month}-${day}`;
+        return `${year}-${month}-${day}`;
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const DateFormat = (fecha) => {

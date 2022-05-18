@@ -1,16 +1,6 @@
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
-import { Container, Grid, Link, Typography } from '@mui/material';
-
-// project imports
-import { gridSpacing } from 'store/constant';
-
-// assets
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import InstagramIcon from '@mui/icons-material/Instagram';
-
-import logoDark from 'assets/images/logo-white.svg';
+import { Container, Link, Typography } from '@mui/material';
 
 // styles
 const FooterWrapper = styled('div')(({ theme }) => ({
@@ -21,21 +11,6 @@ const FooterWrapper = styled('div')(({ theme }) => ({
         textAlign: 'center'
     }
 }));
-
-const FooterLink = styled(Link)({
-    color: '#fff',
-    display: 'inline-flex',
-    alignItems: 'center',
-    textDecoration: 'none !important',
-    opacity: '0.8',
-    '& svg': {
-        fontsize: '1.125rem',
-        marginRight: 8
-    },
-    '&:hover': {
-        opacity: '1'
-    }
-});
 
 const FooterSubWrapper = styled('div')(({ theme }) => ({
     padding: '20px 0',
@@ -49,7 +24,6 @@ const FooterSubWrapper = styled('div')(({ theme }) => ({
 // ==============================|| LANDING - FOOTER PAGE ||============================== //
 
 const FooterPage = () => {
-    const theme = useTheme();
 
     return (
         <>

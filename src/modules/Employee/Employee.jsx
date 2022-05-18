@@ -74,12 +74,10 @@ import { PostEmployee } from 'formatdata/EmployeeForm';
 }); */
 
 const Employee = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* NUESTROS ESTADOS PARA LOS COMBOS */
     const [catalog, setCatalog] = useState([]);
     const [company, setCompany] = useState([]);
     const [lsEscolaridad, setEscolaridad] = useState([]);
@@ -94,6 +92,8 @@ const Employee = () => {
     const [lsTipoContrato, setTipoContrato] = useState([]);
     const [lsRol, setRol] = useState([]);
     const [lsRosterPosition, setRosterPosition] = useState([]);
+    const [lsGeneralPosition, setGeneralPosition] = useState([]);
+    const [lsDepartEmpresa, setDepartEmpresa] = useState([]);
     const [lsArea, setArea] = useState([]);
     const [lsGrupo, setGrupo] = useState([]);
     const [lsTurno, setTurno] = useState([]);
@@ -109,7 +109,6 @@ const Employee = () => {
     const [imgSrc, setImgSrc] = useState(null);
     const [open, setOpen] = useState(false);
 
-    /* ESTADOS PARA LAS FECHAS */
     const [valueFechaNaci, setFechaNaci] = useState(null);
     const [valueFechaContrato, setFechaContrato] = useState(null);
     const [valueTermDate, setTermDate] = useState(null);
@@ -121,7 +120,6 @@ const Employee = () => {
 
     const { handleSubmit, errors, reset } = methods;
 
-    /* MANEJO DE WEBCAM */
     const WebCamRef = useRef(null);
 
     const CapturePhoto = useCallback(() => {
@@ -129,10 +127,9 @@ const Employee = () => {
         setImgSrc(imageSrc);
     }, [WebCamRef, setImgSrc]);
 
-    /* EVENTO DE FILTRAR COMBO DEPARTAMENTO */
     async function GetSubString(codigo) {
         try {
-            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 2);
+            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 3);
             if (lsServerCatalog.status === 200) {
                 var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
                     value: item.idCatalogo,
@@ -187,7 +184,6 @@ const Employee = () => {
         setSubArea(resultSubArea);
     };
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServerCatalog = await GetAllCatalog(0, 0);
@@ -253,6 +249,20 @@ const Employee = () => {
                 label: item.nombre
             }));
             setRosterPosition(resultRosterPosition);
+
+            const lsServerGeneralPosition = await GetAllByTipoCatalogo(0, 0, CodCatalogo.GeneralPosition);
+            var resultGeneralPosition = lsServerGeneralPosition.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setGeneralPosition(resultGeneralPosition);
+
+            const lsServerDepartEmpresa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DepartEmpresa);
+            var resultDepartEmpresa = lsServerDepartEmpresa.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setDepartEmpresa(resultDepartEmpresa);
 
             const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Area);
             var resultArea = lsServerArea.data.entities.map((item) => ({
@@ -417,11 +427,11 @@ const Employee = () => {
     const navigate = useNavigate();
 
     return (
-        <MainCard title="">
+        <MainCard>
             <Grid container xs={12} sx={{ pt: 3 }}>
                 <form onSubmit={handleSubmit(handleClick)}>
 
-                    <Typography variant="h4">Datos Personales</Typography>
+                    <Typography variant="h4">DATOS PERSONALES</Typography>
 
                     <ModalChildren
                         open={open}
@@ -588,7 +598,7 @@ const Employee = () => {
                         </Grid>
                     </Grid>
 
-                    <Typography sx={{ pb: 2 }} variant="h4">Información Contractual</Typography>
+                    <Typography sx={{ pb: 2 }} variant="h4">INFORMACIÓN CONTRACTUAL</Typography>
 
                     <Grid container spacing={2} sx={{ pb: 3 }}>
                         <Grid item xs={3}>
@@ -640,7 +650,7 @@ const Employee = () => {
                                     name="generalPosition"
                                     label="General Position"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsGeneralPosition}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -652,7 +662,7 @@ const Employee = () => {
                                     name="departamento"
                                     label="Departamento"
                                     defaultValue=""
-                                    options={lsDepartamento}
+                                    options={lsDepartEmpresa}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -730,7 +740,7 @@ const Employee = () => {
                         </Grid>
                     </Grid>
 
-                    <Typography sx={{ pb: 2 }} variant="h4">Información Demografica</Typography>
+                    <Typography sx={{ pb: 2 }} variant="h4">INFORMACIÓN DEMOGRÁFICA</Typography>
 
                     <Grid container spacing={2} sx={{ pb: 3 }}>
                         <Grid item xs={4}>
@@ -791,7 +801,7 @@ const Employee = () => {
                         </Grid>
                     </Grid>
 
-                    <Typography sx={{ pb: 2 }} variant="h4">Seguridad Social</Typography>
+                    <Typography sx={{ pb: 2 }} variant="h4">SEGURIDAD SOCIAL</Typography>
 
                     <Grid container spacing={2} sx={{ pb: 3 }}>
                         <Grid item xs={3}>
@@ -844,7 +854,7 @@ const Employee = () => {
                         </Grid>
                     </Grid>
 
-                    <Typography sx={{ pb: 2 }} variant="h4">Datos Adicionales</Typography>
+                    <Typography sx={{ pb: 2 }} variant="h4">DATOS ADICIONALES</Typography>
 
                     <Grid container spacing={2} sx={{ pb: 4 }}>
                         <Grid item xs={3}>

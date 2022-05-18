@@ -275,7 +275,7 @@ const WorkAbsenteeism = () => {
         try {
             setDocument(event?.target.value);
             if (event.key === 'Enter') {
-                if (event?.target.value != "") {
+                if (event?.target.value !== "") {
                     var lsQuestionnaire = await GetByIdEmployee(event?.target.value);
 
                     if (lsQuestionnaire.status === 200) {

@@ -8,15 +8,9 @@ import { Box, Button, Container, Grid, Link, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 
 // project imports
-// project imports
-import Avatar from 'ui-component/extended/Avatar';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 
-// assets
-import dashboard from 'assets/images/landing/dashboard.png';
-import widget1 from 'assets/images/landing/widget-1.png';
-import widget2 from 'assets/images/landing/widget-2.png';
 
 // styles
 const HeaderImage = styled('img')(({ theme }) => ({
@@ -29,10 +23,6 @@ const HeaderImage = styled('img')(({ theme }) => ({
     }
 }));
 
-const HeaderAnimationImage = styled('img')({
-    maxWidth: '100%',
-    filter: 'drop-shadow(0px 0px 50px rgb(33 150 243 / 30%))'
-});
 
 // ==============================|| LANDING - HEADER PAGE ||============================== //
 

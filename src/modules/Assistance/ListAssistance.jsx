@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-// Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
@@ -29,14 +28,11 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-// Import de proyectos
-
 import BodyEmployee from './ViewAssistance';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 
-// Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
@@ -198,11 +194,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -239,8 +230,6 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
 const ListAssistance = () => {
     const dispatch = useDispatch();
     const [idCheck, setIdCheck] = useState('');
@@ -248,7 +237,6 @@ const ListAssistance = () => {
     const [assistance, setAssistance] = useState([]);
     const navigate = useNavigate();
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -258,7 +246,6 @@ const ListAssistance = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServer = await GetAllMedicalHistory(0, 0);
@@ -280,12 +267,10 @@ const ListAssistance = () => {
         setOpen(false);
     };
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -314,14 +299,12 @@ const ListAssistance = () => {
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
@@ -332,7 +315,6 @@ const ListAssistance = () => {
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
         setIdCheck(id);
 
@@ -362,8 +344,6 @@ const ListAssistance = () => {
         setPage(0);
     };
 
-
-    /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
             const result = await DeleteMedicalHistory(idCheck);
@@ -390,8 +370,6 @@ const ListAssistance = () => {
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
-
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -449,7 +427,6 @@ const ListAssistance = () => {
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/assistance/add")}>
                             {TitleButton.Agregar}
@@ -458,7 +435,6 @@ const ListAssistance = () => {
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -476,7 +452,6 @@ const ListAssistance = () => {
                         {stableSort(assistance, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
                                 const isItemSelected = isSelected(row.id);
@@ -491,9 +466,6 @@ const ListAssistance = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
-
                                         <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                             <Checkbox
                                                 color="primary"

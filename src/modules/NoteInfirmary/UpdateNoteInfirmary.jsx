@@ -19,8 +19,6 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
 import { FormatDate } from 'components/helpers/Format';

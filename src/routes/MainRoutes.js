@@ -188,8 +188,8 @@ const Medicalformula = Loadable(lazy(() => import('modules/Medicalformula/Medica
 
 const Turner = Loadable(lazy(() => import('modules/Turner/Turner')));
 
-const ListOccupationalexamination = Loadable(lazy(() => import('modules/Occupationalexamination/ListOccupationalexamination')));
-const Occupationalexamination = Loadable(lazy(() => import('modules/Occupationalexamination/Occupationalexamination')));
+const ListOccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/ListOccupationalExamination')));
+const OccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/OccupationalExamination')));
 
 const ListOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/ListOtherAdvice')));
 const OtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/OtherAdvice')));
@@ -391,12 +391,12 @@ const MainRoutes = {
         },
         /* Render de HCO */
         {
-            path: '/occupationalexamination/list',
-            element: <ListOccupationalexamination />
+            path: '/occupational-examination/list',
+            element: <ListOccupationalExamination />
         },
         {
-            path: '/occupationalexamination/add',
-            element: <Occupationalexamination />
+            path: '/occupational-examination/add',
+            element: <OccupationalExamination />
         },
         /* Render de Otras Asesorias */
         {

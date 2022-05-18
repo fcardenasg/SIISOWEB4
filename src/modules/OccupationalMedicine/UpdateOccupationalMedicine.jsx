@@ -1,7 +1,6 @@
 // Import de Material-ui
 import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { Link, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -9,7 +8,6 @@ import {
     useMediaQuery,
     Typography,
     Divider,
-    Box, Tab, Tabs
 } from '@mui/material';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 
@@ -18,8 +16,6 @@ import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
 import { GetAllBySegAfectado, GetAllBySegAgrupado, GetAllBySubsegmento, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
@@ -41,12 +37,6 @@ import SubCard from 'ui-component/cards/SubCard';
 import InputOnChange from 'components/input/InputOnChange';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-
-import PermIdentityIcon from '@mui/icons-material/PermIdentity';
-import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
-import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone';
-import LockTwoToneIcon from '@mui/icons-material/LockTwoTone';
-import MailTwoToneIcon from '@mui/icons-material/MailTwoTone';
 import { GetByIdOccupationalMedicine, UpdateOccupationalMedicines } from 'api/clients/OccupationalMedicineClient';
 import Cargando from 'components/Cargando';
 

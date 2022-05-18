@@ -16,10 +16,8 @@ import { gridSpacing } from 'store/constant';
 import { IconBrandDribbble } from '@tabler/icons';
 
 import FiberManualRecordTwoToneIcon from '@mui/icons-material/FiberManualRecordTwoTone';
-import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import BookIcon from '@mui/icons-material/Book';
 
 import logo from 'assets/images/logo.svg';
 import logoDark from 'assets/images/logo-dark.svg';

@@ -3,14 +3,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-// Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -31,21 +29,15 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-// Import de proyectos
-
 import BodyEmployee from './ViewAssistance';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
-import { GetAllEmployee, DeleteEmployee } from 'api/clients/EmployeeClient';
 
 import { GetAllAssistance, DeleteAssistance } from 'api/clients/AssistanceClient';
 
-// Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
@@ -62,7 +54,6 @@ function getModalStyle() {
     };
 }
 
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -76,7 +67,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -87,7 +77,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
         id: 'id',
@@ -132,20 +121,6 @@ const headCells = [
         align: 'left'
     }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-// Audio
-const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition
-const mic = new SpeechRecognition()
-
-mic.continuous = true
-mic.interimResults = true
-mic.lang = 'es-ES'
-
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -217,11 +192,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -260,7 +230,7 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
-const ListOccupationalexamination = () => {
+const ListOccupationalExamination = () => {
     const dispatch = useDispatch();
     const [assistance, setAssistance] = useState([]);
     console.log("Lista = ", assistance);
@@ -440,7 +410,7 @@ const ListOccupationalexamination = () => {
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/Occupationalexamination/report/${idCheck}`)}>
+                        <Tooltip title="Impresión" onClick={() => navigate(`/occupational-examination/report/${idCheck}`)}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -448,7 +418,7 @@ const ListOccupationalexamination = () => {
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/Occupationalexamination/add")}>
+                            onClick={() => navigate("/occupational-examination/add")}>
                             {TitleButton.Agregar}
                         </Button>
 
@@ -616,7 +586,7 @@ const ListOccupationalexamination = () => {
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/Occupationalexamination/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/Occupational-examination/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -662,4 +632,4 @@ const ListOccupationalexamination = () => {
     );
 };
 
-export default ListOccupationalexamination;
+export default ListOccupationalExamination;

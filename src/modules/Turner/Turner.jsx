@@ -1,29 +1,13 @@
 import { useTheme} from '@mui/material/styles';
 import { useState, useEffect } from 'react';
 import { Button, Card,TextField, CardActions,useMediaQuery, CardContent, CardHeader, CardMedia, Divider, Grid, Typography, IconButton, Modal, } from '@mui/material';
-import QRCode from 'qrcode';
 import { QrReader } from 'react-qr-reader';
-import PropTypes from 'prop-types';
-import { forwardRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { useDispatch } from 'react-redux';
 // project imports
 
-import DetailsEmployee from 'components/views/DetailsEmployee';
 import { Link } from 'react-router-dom';
-// assets
-import CloseIcon from '@mui/icons-material/Close';
-
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import completed from 'assets/images/e-commerce/completed.png';
-
-// project imports
-import UserDetailsCard from 'ui-component/cards/UserDetailsCard';
-import UserProfileCard from 'ui-component/cards/UserProfileCard';
-import UserSimpleCard from 'ui-component/cards/UserSimpleCard';
-import FollowerCard from 'ui-component/cards/FollowerCard';
-import FriendsCard from 'ui-component/cards/FriendsCard';
 import { useNavigate } from 'react-router-dom';
 
 import SubCard from 'ui-component/cards/SubCard';
@@ -31,72 +15,13 @@ import MainCard from 'ui-component/cards/MainCard';
 import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 import { gridSpacing } from 'store/constant';
 
-
-import { SNACKBAR_OPEN } from 'store/actions';
-import { InsertCatalog } from 'api/clients/CatalogClient';
 import { GetAllTypeCatalog } from 'api/clients/TypeCatalogClient';
-import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
-
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SideIconCard from 'ui-component/cards/SideIconCard';
-import InputCheck from 'components/input/InputCheck';
-
-
-// assets
-import Card1 from 'assets/images/cards/card-1.jpg';
-import Card2 from 'assets/images/cards/card-2.jpg';
-import Card3 from 'assets/images/cards/card-3.jpg';
-
 
 const videoConstraints = {
     width: 250,
     height: 87,
     margin: 0
-};
-
-const userDetails = {
-    id: '#1Card_Phoebe',
-    avatar: 'user-2.png',
-    name: 'Gaetano',
-    role: 'Investor Division Strategist',
-    about: 'Try to connect the SAS transmitter, maybe it will index the optical hard drive!',
-    email: 'alia_shields25@yahoo.com',
-    contact: '253-418-5940',
-    location: 'Herminahaven'
-};
-
-const userProfile = {
-    id: '#9Card_Madyson',
-    avatar: 'user-5.png',
-    profile: 'profile-back-9.png',
-    name: 'Madyson',
-    role: 'Product Tactics Facilitator',
-    status: 'Active'
-};
-
-const simpleCard = {
-    id: '#6Card_Joanne',
-    avatar: 'user-6.png',
-    name: 'Joanne',
-    status: 'Active'
-};
-
-const friend = {
-    id: '#4Friends_Henderson',
-    avatar: 'user-4.png',
-    name: 'Henderson',
-    location: 'South Antonina'
-};
-
-const follower = {
-    id: '#4Followers_Henderson',
-    avatar: 'user-8.png',
-    name: 'Henderson',
-    location: 'South Antonina',
-    follow: 1
 };
 
 // ===============================|| UI CARDS ||=============================== //

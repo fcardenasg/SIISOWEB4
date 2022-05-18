@@ -1,13 +1,10 @@
 // material-ui
-import { useTheme, styled } from '@mui/material/styles';
-import { Container, Grid, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Container, Grid } from '@mui/material';
 
 // project imports
-import MailerSubscriber from '../maintenance/ComingSoon/ComingSoon1/MailerSubscriber';
 import { gridSpacing } from 'store/constant';
 
-// assets
-import imgMail from 'assets/images/landing/img-groupmail.png';
 
 // styles
 const SubscribeWrapper = styled('div')(({ theme }) => {
@@ -39,68 +36,16 @@ const SubscribeWrapper = styled('div')(({ theme }) => {
     };
 });
 
-const SubscribeCard = styled('div')(({ theme }) => ({
-    background: theme.palette.mode === 'dark' ? theme.palette.dark.dark : '#FFFFFF',
-    boxShadow: '0px 0px 50px rgba(33, 150, 243, 0.2)',
-    borderRadius: '20px',
-    padding: '100px 75px',
-    [theme.breakpoints.down('md')]: {
-        padding: '40px 25px'
-    }
-}));
-
-const SubscribeImage = styled('img')({
-    width: 330,
-    animation: '5s wings ease-in-out infinite',
-    maxWidth: '100%'
-});
 
 // ============================|| LANDING - SUBSCRIBE PAGE ||============================ //
 
 const Subscribe = () => {
-    const theme = useTheme();
 
     return (
         <SubscribeWrapper>
             <Container>
                 <Grid container alignItems="center" spacing={gridSpacing}>
-                    {/* <Grid
-                        item
-                        xs={12}
-                        md={5}
-                        sx={{
-                            display: { xs: 'none', md: 'block' },
-                            textAlign: 'right',
-                            [theme.breakpoints.down('lg')]: { textAlign: 'center' }
-                        }}
-                    >
-                        <SubscribeImage src={imgMail} alt="Berry" />
-                    </Grid> */}
-                    {/* <Grid item xs={12} md={7}>
-                        <SubscribeCard>
-                            <Grid container spacing={gridSpacing} sx={{ mb: '1rem' }}>
-                                <Grid item sm={12}>
-                                    <Typography
-                                        variant="h1"
-                                        component="div"
-                                        sx={{ [theme.breakpoints.down('md')]: { fontSize: '1.125rem' } }}
-                                    >
-                                        Subscribe
-                                    </Typography>
-                                </Grid>
-                                <Grid item sm={12}>
-                                    <Typography variant="body2">
-                                        Subscribe for the latest news &#38; updates of Berry admin template. We never send spam newsletters.
-                                    </Typography>
 
-                             
-                                </Grid>
-                                <Grid item sm={12}>
-                                    <MailerSubscriber />
-                                </Grid>
-                            </Grid>
-                        </SubscribeCard>
-                    </Grid> */}
                 </Grid>
             </Container>
         </SubscribeWrapper>

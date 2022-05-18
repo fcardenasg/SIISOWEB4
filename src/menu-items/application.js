@@ -179,9 +179,9 @@ const application = {
             children: [
                 {
                     id: 'occupationalexamination',
-                    title: <FormattedMessage id="Historia clínica ocupacional" />,
+                    title: <FormattedMessage id="Historia Clínica Ocupacional" />,
                     type: 'item',
-                    url: '/occupationalexamination/list',
+                    url: '/occupational-examination/list',
                     breadcrumbs: true
                 },
                 {
