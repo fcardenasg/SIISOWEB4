@@ -3980,21 +3980,724 @@ const Emo = () => {
                     </Grid>
                 </Grid>
             </SubCard >
+
+
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
                 <Typography variant="h4" color="inherit">TRABAJO EN ALTURA</Typography></>}>
-                <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIONES</Typography>}>
+                <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIÓN EMPRESA</Typography>}>
                     <Grid container xs={12} spacing={2}>
+
+
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Del Concepto"
+                            value={fechaRnmCervicalEPA}
+                            onChange={(e) => setFechaRnmCervicalEPA(e)}
+                        />
+                    </Grid>
+
+                    <Grid item xs={4} >
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdConceptoActitudID"
+                                label="Concepto Aptitud"
+                                defaultValue=""
+                                options={catalog}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={4} >
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdConceptoActitudID"
+                                label="El Concepto de aptitud debe ser aplazado"
+                                defaultValue=""
+                                options={catalog}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                   
                         <Grid item xs={12}>
-                            <InputMultiSelects
-                                fullWidth
-                                onChange={(event, value) => setDxID(value)}
-                                value={dxID}
-                                label="DX"
-                                options={lsSupplier}
+                            <InputOnChange
+                                multiline
+                                rows={4}
+                                label="Motivo de Aplazo"
+                                placeholder="Esperando dictado..."
+                                name="inputArea"
+                                size={matchesXS ? 'small' : 'medium'}
+                                value={observacionID}
+                                onChange={(e) => setObservacionID(e?.target.value)}
                             />
                         </Grid>
+
+
+                        <Grid item xs={12}>
+                        <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Plantilla de texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <ListAltSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Borrar texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Audio">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <SettingsVoiceIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Ver Historico">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Funcion")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <AddBoxIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+
+                        <Grid item xs={12}>
+                            <InputOnChange
+                                multiline
+                                rows={4}
+                                label="Descripción de resultados(Resumen de limitaciones o restricciones)"
+                                placeholder="Esperando dictado..."
+                                name="inputArea"
+                                size={matchesXS ? 'small' : 'medium'}
+                                value={observacionID}
+                                onChange={(e) => setObservacionID(e?.target.value)}
+                            />
+                        </Grid>
+
+
+                        <Grid item xs={12}>
+                        <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Plantilla de texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <ListAltSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Borrar texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Audio">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <SettingsVoiceIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Ver Historico">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Funcion")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <AddBoxIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                        <Grid item xs={12}>
+                            <InputOnChange
+                                multiline
+                                rows={4}
+                                label="Recomendaciones (En términos sencillos de cuidados y controles requeridos)"
+                                placeholder="Esperando dictado..."
+                                name="inputArea"
+                                size={matchesXS ? 'small' : 'medium'}
+                                value={observacionID}
+                                onChange={(e) => setObservacionID(e?.target.value)}
+                            />
+                        </Grid>
+
+
+                        <Grid item xs={12}>
+                        <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Plantilla de texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <ListAltSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Borrar texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Audio">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <SettingsVoiceIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Ver Historico">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Funcion")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <AddBoxIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                        <Grid item xs={6} >
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdConceptoActitudID"
+                                label="Remitido"
+                                defaultValue=""
+                                options={catalog}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={6} >
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdConceptoActitudID"
+                                label="A Donde:"
+                                defaultValue=""
+                                options={catalog}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    </Grid>
+                </SubCard >
+
+                <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIÓN EMPLEADO</Typography>}>
+                    <Grid container xs={12} spacing={2}>
+
+
+           
+
+                    <Grid item xs={12} >
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdConceptoActitudID"
+                                label="1. Menor de Edad."
+                                defaultValue=""
+                                options={catalog}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+           
+                
+ 
+                     <Grid item xs={12} >
+                         <FormProvider {...methods}>
+                             <InputSelect
+                                 name="IdConceptoActitudID"
+                                 label="2. Mujer embarazada con cualquier edad de Gestacíón."
+                                 defaultValue=""
+                                 options={catalog}
+                                 size={matchesXS ? 'small' : 'medium'}
+                                 bug={errors}
+                             />
+                         </FormProvider>
+                     </Grid>
+
+
+               
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="3. Arritmias Cardiacas."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+               
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="3. Arritmias Cardiacas."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+              
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="4. Enfermedades o malformaciones cardiacas asintomáticas."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+                 
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="5. Historia de Hipotensión ortostática (no basta presentar episodios aislados)."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+               
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="6. Hipertensión arterial no controlada o resistente al tratamiento."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+         
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="7. Hipertrigliceridemia aislada severa, con cifras mayores a 500 mg/dl."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+              
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="8. Cifras LDL mayores a 190 mg/dl."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+              
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="9. Diabetes controladas."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+                 
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="10. Dislipemia de moderada a severa asociada a diabetes, HTA, obesidad, hipotiroidismo."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+     
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="11. Diagnóstico o sospecha de dislipemia de origen familiar (genético)."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+             
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="12. Riesgo Cardivascular a 10 años ≥ 20% según Método de Framingham."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+         
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="13. Riesgo Cardiovascular entre 10 y 20% si existen dos o mas factores mayores de riesgo."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+           
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="14. Hipertiroidismo no controlado o sintomático."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+               
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="15. Alteración auditiva severa y bilateral que comprometa bandas conversacionales (500 a 2000 Hz)."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+             
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="16. Vertigo y otras alteraciones del equilibrio."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+              
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="17. Epilepsia u otra enfermedad neurológica, que pueda generar alteraciones de la conciencia o el equilibrio."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+            
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="18. Ceguera Temporal o permanente o alteraciones visuales significativas y severas."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+                 
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="19. Historia de fobias o episodios de pánico relacionados con altura."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+          
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="20. Transtornos psiquiátricos, incluyendo adicciones a sustancias psicoactivas."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+               
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="21. Limitacionesn permanentes para deambular por sus propios medios o lesiones con compromiso funcional del cuello, espalda o extremidades, que afecten el agarre requerido en estas labores."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+                 
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="22. Obesidad Morbida (IMC mayor a 35) o peso mayor de 120 kg, por limitaciones de sistemas de arneses."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+                
+  
+                      <Grid item xs={12} >
+                          <FormProvider {...methods}>
+                              <InputSelect
+                                  name="IdConceptoActitudID"
+                                  label="23. De forma temporal, el uso de medicamentos que produzcan sueño o deprivación de sueño mas de un turno."
+                                  defaultValue=""
+                                  options={catalog}
+                                  size={matchesXS ? 'small' : 'medium'}
+                                  bug={errors}
+                              />
+                          </FormProvider>
+                      </Grid>
+
+
+
+                
+ 
+                     <Grid item xs={12} >
+                         <FormProvider {...methods}>
+                             <InputSelect
+                                 name="IdConceptoActitudID"
+                                 label="24. Otras alteraciones Cardiovasculares, pulmonares, musculares, hepáticas, sanguíneas o renales, que por su severidad
+                                 o progreso puedan general alteraciones del equilibrio o de la conciencia en concepto  del médico tratante."
+                                 defaultValue=""
+                                 options={catalog}
+                                 size={matchesXS ? 'small' : 'medium'}
+                                 bug={errors}
+                             />
+                         </FormProvider>
+                     </Grid>
+
+
+
+
+
 
                         <Grid item xs={12}>
                             <InputOnChange
@@ -4008,15 +4711,558 @@ const Emo = () => {
                                 onChange={(e) => setObservacionID(e?.target.value)}
                             />
                         </Grid>
+
+
+
+                        <Grid item xs={12}>
+                        <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Plantilla de texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <ListAltSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Borrar texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Audio">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <SettingsVoiceIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Ver Historico">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Funcion")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <AddBoxIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                     
+
+
+
+                        <Grid item xs={12} >
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdConceptoActitudID"
+                                label="Concepto de Aptitud Medica"
+                                defaultValue=""
+                                options={catalog}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                  
+
                     </Grid>
                 </SubCard >
+
             </Accordion>
             <Divider />
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
                 <Typography align='right' variant="h4" color="inherit">FRAMINGHAM</Typography></>}>
-                Aqui Va Render
+                <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN CARDIOVASCULAR</Typography>}>
+                    <Grid container xs={12} spacing={2}>
+
+
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha"
+                            value={fechaRnmCervicalEPA}
+                            onChange={(e) => setFechaRnmCervicalEPA(e)}
+                        />
+                    </Grid>
+
+                    <Grid item xs={4} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="Tensión Arterial"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+
+                    <Grid item xs={4} >
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdConceptoActitudID"
+                                label="Dx Tensión Arterial "
+                                defaultValue=""
+                                options={catalog}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+
+                    <Grid item xs={4}>
+                        <InputMultiSelects
+                            fullWidth
+                            onChange={(event, value) => setDxID(value)}
+                            value={dxID}
+                            label="Antecedentes Cardiovascular"
+                            options={lsSupplier}
+                        />
+                    </Grid>
+
+
+                    <Grid item xs={4} >
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdConceptoActitudID"
+                                label="Deporte  "
+                                defaultValue=""
+                                options={catalog}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+           
+                    <Grid item xs={4} >
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdConceptoActitudID"
+                                label="Bebidas "
+                                defaultValue=""
+                                options={catalog}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+
+                    <Grid item xs={4}>
+                        <InputDatePick
+                            label="Fecha Laboratorio"
+                            value={fechaRnmCervicalEPA}
+                            onChange={(e) => setFechaRnmCervicalEPA(e)}
+                        />
+                    </Grid>
+
+
+
+                    <Grid item xs={4} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="Colesterol Total"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+
+                        <Grid item xs={4} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="HDL"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+
+                        <Grid item xs={4} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="Trigliceridos"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+
+
+                        <Grid item xs={4}>
+                        <InputMultiSelects
+                            fullWidth
+                            onChange={(event, value) => setDxID(value)}
+                            value={dxID}
+                            label="Dx Metabólico"
+                            options={lsSupplier}
+                        />
+                    </Grid>
+
+                    <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="Glicemia"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+
+                        <Grid item xs={2} >
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdConceptoActitudID"
+                                label="Fuma"
+                                defaultValue=""
+                                options={catalog}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+
+
+                        <Grid item xs={12}>
+                            <InputOnChange
+                                multiline
+                                rows={4}
+                                label="Observación"
+                                placeholder="Esperando dictado..."
+                                name="inputArea"
+                                size={matchesXS ? 'small' : 'medium'}
+                                value={observacionID}
+                                onChange={(e) => setObservacionID(e?.target.value)}
+                            />
+                        </Grid>
+
+                   <Grid item xs={12}>
+                        <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Plantilla de texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <ListAltSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Borrar texto">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Audio">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Todo Bien")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <SettingsVoiceIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid justifyContent="center" alignItems="center" container>
+                                    <AnimateButton>
+                                        <Tooltip title="Ver Historico">
+                                            <Fab
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => console.log("Funcion")}
+                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                            >
+                                                <AddBoxIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+
+                    <Divider />
+
+
+                    <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="LDL"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="Relación"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="FR Edad"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="Fr Colesterol"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="Fr HDL"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="FR Glicemia"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="Fr Tensión Arterial "
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="FR Tabaquismo "
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="Puntaje"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="Riesgo Absoluto  "
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+
+
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    type="number"
+                                    name="clasificacionEF"
+                                    label="Riesgo Relativo  "
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="clasificacionEF"
+                                    label="Interpretación  "
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+
+
+
+
+                  
+
+                    </Grid>
+                </SubCard >
+
+
             </Accordion>
             <Divider />
         </Fragment >
