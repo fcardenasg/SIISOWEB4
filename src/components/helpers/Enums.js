@@ -19,6 +19,8 @@ export const CodCatalogo = {
     Cesantias: 5225,
     AtencionEMO: 5228,
 
+    HCO_VACUNAS: 5229,
+
     Proveedor: 2174,
     Pais: 1153,
     Contingencia: 3175,

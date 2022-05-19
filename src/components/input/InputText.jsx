@@ -7,12 +7,6 @@ import {
 } from '@mui/material';
 
 const InputText = ({ bug, defaultValue, label, size, fullWidth = true, name, required, ...others }) => {
-    /* let isError = false;
-    let errorMessage = '';
-    if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
-        isError = true;
-        errorMessage = bug[name].message;
-    } */
 
     return (
         <>

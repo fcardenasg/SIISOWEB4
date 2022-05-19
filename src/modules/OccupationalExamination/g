@@ -1,3 +1,0 @@
-const [dxID, setDxID] = useState('');
-const [observacionID, setObservacionID] = useState('');
-const [recomendacionesID, setRecomendacionesID] = useState('');

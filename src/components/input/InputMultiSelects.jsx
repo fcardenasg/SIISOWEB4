@@ -13,8 +13,9 @@ const InputMultiSelects = ({ onChange, renderTags, value, options, label, ...oth
                 onChange={onChange}
                 value={value}
                 options={options}
-                getOptionLabel={(option) => option.nombre}
-                renderInput={(params) => <TextField {...params} label={label} />}
+                renderInput={(params) => <TextField
+                    {...params} label={label} />
+                }
                 {...others}
             />
         </>
