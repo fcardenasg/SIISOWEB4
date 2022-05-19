@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import de Material-ui
@@ -13,17 +13,18 @@ import {
 // Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import SubCard from 'ui-component/cards/SubCard';
+import useAuth from 'hooks/useAuth';
 import PhotoModel from 'components/form/PhotoModel';
 import ModalChildren from 'components/form/ModalChildren';
 import WebCamCapture from 'components/form/WebCam';
 import { PutEmployee } from 'formatdata/EmployeeForm';
 import { SNACKBAR_OPEN } from 'store/actions';
-import UpdateData from 'components/form/UpdateData';
 import { GetByIdEmployee, UpdateEmployees } from 'api/clients/EmployeeClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
@@ -34,7 +35,7 @@ import { Message, TitleButton, ValidationMessage, CodCatalogo } from 'components
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputDatePick from 'components/input/InputDatePick';
-import { FormatDate, DateFormat } from 'components/helpers/Format';
+import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/Cargando';
 
 /* VALIDACIÓN CON YUP */
@@ -44,14 +45,14 @@ import Cargando from 'components/Cargando';
 }); */
 
 const UpdateEmployee = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
+    const { user } = useAuth();
     const dispatch = useDispatch();
+    const WebCamRef = useRef(null);
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
     const { id } = useParams();
 
-    /* NUESTROS USESTATE */
     const [catalog, setCatalog] = useState([]);
     const [employee, setEmployee] = useState([]);
     const [company, setCompany] = useState([]);
@@ -69,6 +70,7 @@ const UpdateEmployee = () => {
     const [lsRosterPosition, setRosterPosition] = useState([]);
     const [lsArea, setArea] = useState([]);
     const [lsSubArea, setSubArea] = useState([]);
+    const [lsDepartEmpresa, setDepartEmpresa] = useState([]);
     const [lsGrupo, setGrupo] = useState([]);
     const [lsTurno, setTurno] = useState([]);
     const [lsEstado, setLsEstado] = useState([]);
@@ -86,14 +88,10 @@ const UpdateEmployee = () => {
     const [open, setOpen] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
 
-    /* ESTADOS PARA LAS FECHAS */
     const [valueFechaNaci, setFechaNaci] = useState(null);
     const [valueFechaContrato, setFechaContrato] = useState(null);
     const [valueTermDate, setTermDate] = useState(null);
-    const [valueFechaModificacion, setFechaModificacion] = useState(null);
-    const [valueFechaCreacion, setFechaCreacion] = useState(null);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServerCatalog = await GetAllCatalog(0, 0);
@@ -110,12 +108,17 @@ const UpdateEmployee = () => {
                 setFechaNaci(lsServerEmployeeId.data.fechaNaci);
                 setFechaContrato(lsServerEmployeeId.data.fechaContrato);
                 setTermDate(lsServerEmployeeId.data.termDate);
-                setFechaModificacion(lsServerEmployeeId.data.fechaModificacion);
-                setFechaCreacion(lsServerEmployeeId.data.fechaCreacion);
                 setDptoNacido(lsServerEmployeeId.data.dptoNacido);
                 setDptoResidencia(lsServerEmployeeId.data.dptoResidencia);
                 setEventArea(lsServerEmployeeId.data.area);
             }
+
+            const lsServerDepartEmpresa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DepartEmpresa);
+            var resultDepartEmpresa = lsServerDepartEmpresa.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setDepartEmpresa(resultDepartEmpresa);
 
             const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
             var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
@@ -262,10 +265,11 @@ const UpdateEmployee = () => {
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
+    const { handleSubmit, errors } = methods;
 
     async function GetSubString(codigo) {
         try {
-            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 2);
+            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 3);
             if (lsServerCatalog.status === 200) {
                 var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
                     value: item.idCatalogo,
@@ -320,41 +324,30 @@ const UpdateEmployee = () => {
         setSubArea(resultSubArea);
     };
 
-    /* MANEJO DE WEBCAM */
-    const WebCamRef = useRef(null);
-
     const CapturePhoto = useCallback(() => {
         const imageSrc = WebCamRef.current.getScreenshot();
         setImgSrc(imageSrc);
     }, [WebCamRef, setImgSrc]);
 
-    const { handleSubmit, errors } = methods;
-
-    /* METODO DE UPDATE  */
     const handleClick = async (datos) => {
         try {
             const FechaNaci = FormatDate(valueFechaNaci);
             const FechaContrato = FormatDate(valueFechaContrato);
             const TermDate = FormatDate(valueTermDate);
-            const FechaModificacion = FormatDate(valueFechaModificacion);
-            const FechaCreacion = FormatDate(valueFechaCreacion);
 
             const municipioResidencia_DATA = municipioResidencia == '' ? datos.municipioResidencia : municipioResidencia;
             const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
             const subArea_DATA = eventSubArea == '' ? datos.subArea : eventSubArea;
 
-            const DataToUpdate = PutEmployee(id, datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
+            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
                 eventArea, subArea_DATA, datos.grupo, municipioNacido_DATA, dptoNacido, FechaContrato,
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
-                datos.direccionResidencia, municipioResidencia_DATA, dptoResidencia, datos.celular, datos.eps,
+                datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
-                datos.bandera, datos.ges, datos.usuarioModifica, FechaModificacion, datos.usuarioCreacion,
-                FechaCreacion, imgSrc);
+                datos.bandera, datos.ges, user.id, FormatDate(new Date()), employee.usuarioCreacion, FormatDate(employee.fechaCreacion), imgSrc);
 
-            if (FechaNaci != null && FechaContrato != null && TermDate != null && FechaModificacion != null
-                && FechaCreacion != null && imgSrc != null) {
-
+            if (FechaNaci != null && FechaContrato != null && TermDate != null && imgSrc != null) {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await UpdateEmployees(DataToUpdate);
                     if (result.status === 200) {
@@ -404,12 +397,10 @@ const UpdateEmployee = () => {
     };
 
     return (
-        <MainCard title="Actualizar Empleado">
+        <MainCard>
             {timeWait ? (
-                <Grid container xs={12} sx={{ pt: 3 }}>
-                    <form onSubmit={handleSubmit(handleClick)}>
-                        <Typography sx={{ pb: 2 }} variant="h4">Datos Personales</Typography>
-
+                <Fragment>
+                    <SubCard darkTitle title={<Typography variant="h4">DATOS PERSONALES</Typography>}>
                         <ModalChildren
                             open={open}
                             onClose={() => setOpen(false)}
@@ -423,7 +414,7 @@ const UpdateEmployee = () => {
                             />
                         </ModalChildren>
 
-                        <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
+                        <Grid container xs={12} spacing={2}>
                             <Grid item xs={3}>
                                 <PhotoModel
                                     OpenModal={() => setOpen(true)}
@@ -574,10 +565,11 @@ const UpdateEmployee = () => {
                                 </Grid>
                             </Grid>
                         </Grid>
+                    </SubCard>
+                    <Grid sx={{ pb: 2 }} />
 
-                        <Typography sx={{ pb: 2 }} variant="h4">Información Contractual</Typography>
-
-                        <Grid container spacing={2} sx={{ pb: 3 }}>
+                    <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN CONTRACTUAL</Typography>}>
+                        <Grid container spacing={2}>
                             <Grid item xs={3}>
                                 <InputDatePick
                                     label="Fecha de Contrato"
@@ -639,7 +631,7 @@ const UpdateEmployee = () => {
                                         name="departamento"
                                         label="Departamentos"
                                         defaultValue={employee.departamento}
-                                        options={lsDepartamento}
+                                        options={lsDepartEmpresa}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -728,10 +720,11 @@ const UpdateEmployee = () => {
                                 </FormProvider>
                             </Grid>
                         </Grid>
+                    </SubCard>
+                    <Grid sx={{ pb: 2 }} />
 
-                        <Typography sx={{ pb: 2 }} variant="h4">Información Demografica</Typography>
-
-                        <Grid container spacing={2} sx={{ pb: 3 }}>
+                    <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN DEMOGRÁFICA</Typography>}>
+                        <Grid container spacing={2}>
                             <Grid item xs={4}>
                                 <SelectOnChange
                                     name="dptoNacido"
@@ -812,11 +805,24 @@ const UpdateEmployee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+                            <Grid item xs={4}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue={employee.direccionResidenciaTrabaja}
+                                        fullWidth
+                                        name="direccionResidenciaTrabaja"
+                                        label="Dirección de Residencia Laboral"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
                         </Grid>
+                    </SubCard>
+                    <Grid sx={{ pb: 2 }} />
 
-                        <Typography sx={{ pb: 2 }} variant="h4">Seguridad Social</Typography>
-
-                        <Grid container spacing={2} sx={{ pb: 3 }}>
+                    <SubCard darkTitle title={<Typography variant="h4">SEGURIDAD SOCIAL</Typography>}>
+                        <Grid container spacing={2}>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -866,18 +872,19 @@ const UpdateEmployee = () => {
                                 </FormProvider>
                             </Grid>
                         </Grid>
+                    </SubCard>
+                    <Grid sx={{ pb: 2 }} />
 
-                        <Typography sx={{ pb: 2 }} variant="h4">Datos Adicionales</Typography>
-
-                        <Grid container spacing={2} sx={{ pb: 4 }}>
-                            <Grid item xs={3}>
+                    <SubCard darkTitle title={<Typography variant="h4">DATOS ADICIONALES</Typography>}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={4}>
                                 <InputDatePick
                                     label="Fecha de Terminación"
                                     value={valueTermDate}
                                     onChange={(e) => setTermDate(e)}
                                 />
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="bandera"
@@ -889,80 +896,42 @@ const UpdateEmployee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={employee.ges}
-                                        fullWidth
+                                    <InputSelect
                                         name="ges"
                                         label="Ges"
+                                        defaultValue={employee.ges}
+                                        options={catalog}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={employee.usuarioModifica}
-                                        fullWidth
-                                        name="usuarioModifica"
-                                        label="Usuario Modifica"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <InputDatePick
-                                    label="Fecha de Modificación"
-                                    value={valueFechaModificacion}
-                                    onChange={(e) => setFechaModificacion(e)}
-                                />
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={employee.usuarioCreacion}
-                                        fullWidth
-                                        name="usuarioCreacion"
-                                        label="Usuario de Creación"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <InputDatePick
-                                    label="Fecha de Creación"
-                                    value={valueFechaCreacion}
-                                    onChange={(e) => setFechaCreacion(e)}
-                                />
                             </Grid>
                         </Grid>
+                    </SubCard>
+                    <Grid sx={{ pb: 2 }} />
 
-                        <Grid item xs={12} sx={{ pb: 3 }}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={6}>
-                                    <AnimateButton>
-                                        <Button variant="contained" type="submit" fullWidth>
-                                            {TitleButton.Actualizar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/employee/list")}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
+                    <Grid item xs={12} sx={{ pb: 2 }}>
+                        <Grid container spacing={1}>
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                        {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/employee/list")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
                             </Grid>
                         </Grid>
-                    </form>
-                </Grid>
+                    </Grid>
+                </Fragment>
             ) : <Cargando />}
-
         </MainCard>
     );
 };

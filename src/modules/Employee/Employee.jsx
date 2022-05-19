@@ -12,8 +12,8 @@ import SubCard from 'ui-component/cards/SubCard';
 // Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import useAuth from 'hooks/useAuth';
@@ -75,6 +75,8 @@ import { PostEmployee } from 'formatdata/EmployeeForm';
 
 const Employee = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
+    const WebCamRef = useRef(null);
     const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -113,15 +115,11 @@ const Employee = () => {
     const [valueFechaNaci, setFechaNaci] = useState(null);
     const [valueFechaContrato, setFechaContrato] = useState(null);
     const [valueTermDate, setTermDate] = useState(null);
-    const [valueFechaModificacion, setFechaModificacion] = useState(null);
-    const [valueFechaCreacion, setFechaCreacion] = useState(null);
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors, reset } = methods;
-
-    const WebCamRef = useRef(null);
 
     const CapturePhoto = useCallback(() => {
         const imageSrc = WebCamRef.current.getScreenshot();
@@ -346,11 +344,10 @@ const Employee = () => {
     }, [])
 
     const CleanCombo = () => {
+        setEventArea('');
         setFechaNaci(null);
         setFechaContrato(null);
         setTermDate(null);
-        setFechaModificacion(null);
-        setFechaCreacion(null);
         setImgSrc(null);
         setDptoResidencia('');
         setDptoNacido('');
@@ -365,7 +362,7 @@ const Employee = () => {
             const DataToInsert = PostEmployee(datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
                 eventArea, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido, FechaContrato,
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
-                datos.direccionResidencia, datos.municipioResidencia, dptoResidencia, datos.celular, datos.eps,
+                datos.direccionResidencia, datos.direccionResidenciaTrabaja, datos.municipioResidencia, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
                 datos.bandera, datos.ges, 'Usuario Modifica', FormatDate(new Date()), user.id,
@@ -421,8 +418,6 @@ const Employee = () => {
             })
         }
     };
-
-    const navigate = useNavigate();
 
     return (
         <MainCard>
@@ -867,14 +862,14 @@ const Employee = () => {
 
             <SubCard darkTitle title={<Typography variant="h4">DATOS ADICIONALES</Typography>}>
                 <Grid container spacing={2} >
-                    <Grid item xs={3}>
+                    <Grid item xs={4}>
                         <InputDatePick
                             label="Fecha de Terminación"
                             value={valueTermDate}
                             onChange={(e) => setTermDate(e)}
                         />
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="bandera"
@@ -886,7 +881,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="ges"
@@ -897,44 +892,6 @@ const Employee = () => {
                                 bug={errors}
                             />
                         </FormProvider>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="usuarioModifica"
-                                label="Usuario Modifica"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <InputDatePick
-                            label="Fecha de Modificación"
-                            value={valueFechaModificacion}
-                            onChange={(e) => setFechaModificacion(e)}
-                        />
-                    </Grid>
-                    <Grid item xs={3}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="usuarioCreacion"
-                                label="Usuario de Creación"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <InputDatePick
-                            label="Fecha de Creación"
-                            value={valueFechaCreacion}
-                            onChange={(e) => setFechaCreacion(e)}
-                        />
                     </Grid>
                 </Grid>
             </SubCard>
