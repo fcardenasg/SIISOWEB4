@@ -199,6 +199,12 @@ const ListCIE11 = Loadable(lazy(() => import('modules/CIE11/ListCIE11')));
 const CIE11 = Loadable(lazy(() => import('modules/CIE11/CIE11')));
 const UpdateCIE11 = Loadable(lazy(() => import('modules/CIE11/UpdateCIE11')));
 
+
+const ListCharges = Loadable(lazy(() => import('modules/Charges/ListCharges')));
+const Charges = Loadable(lazy(() => import('modules/Charges/Charges')));
+const UpdateCharges = Loadable(lazy(() => import('modules/Charges/UpdateCharges')));
+
+
 const ListTemplate = Loadable(lazy(() => import('modules/Template/ListTemplate')));
 const Template = Loadable(lazy(() => import('modules/Template/Template')));
 const UpdateTemplate = Loadable(lazy(() => import('modules/Template/UpdateTemplate')));
@@ -444,6 +450,22 @@ const MainRoutes = {
             path: '/cie11/update/:id',
             element: <UpdateCIE11 />
         },
+
+        /* Render de Charges */
+        {
+            path: '/charges/list',
+            element: <ListCharges />
+        },
+        {
+            path: '/charges/add',
+            element: <Charges />
+        },
+        {
+            path: '/charges/update/:id',
+            element: <UpdateCharges />
+        },
+
+
         {
             path: '/cie11/report',
             element: <ReportPsychologicalCounseling />
@@ -617,9 +639,10 @@ const MainRoutes = {
         },
 
         {
-            path: '/e-commerce/products',
-            element: <AppECommProducts />
+            path: '/charges/list',
+            element: <ListCharges />
         },
+
         {
             path: '/e-commerce/product-details/:id',
             element: <AppECommProductDetails />
