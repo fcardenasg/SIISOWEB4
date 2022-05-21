@@ -9,7 +9,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { Controller } from 'react-hook-form';
 
-const InputCheckBox = ({ bug, control, label, name, size, defaultValue, ...others }) => {
+const InputCheckBox = ({ bug, label, name, size, defaultValue, ...others }) => {
     const theme = useTheme();
 
     let isError = false;
@@ -27,7 +27,18 @@ const InputCheckBox = ({ bug, control, label, name, size, defaultValue, ...other
                     render={({ field }) => (
                         <FormControlLabel
                             control={
-                                <Checkbox {...field} />
+                                <Checkbox
+                                    onChange={(e) => field.onChange(e.target.checked)}
+                                    checked={field.value}
+                                    sx={{
+                                        color: theme.palette.primary,
+                                        '&.Mui-checked': {
+                                            color: theme.palette.primary
+                                        },
+                                        '& .MuiSvgIcon-root': { fontSize: size }
+                                    }}
+                                    {...others}
+                                />
                             }
                             label={label}
                         />
@@ -51,8 +62,6 @@ InputCheckBox.propTypes = {
     bug: PropTypes.object,
     name: PropTypes.string,
     defaultValue: PropTypes.string,
-    onChange: PropTypes.func,
     size: PropTypes.string,
     label: PropTypes.string,
-    control: PropTypes.any,
 };

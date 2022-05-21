@@ -17,6 +17,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import InputDatePicker from 'components/input/InputDatePicker';
+import { FormatDate } from 'components/helpers/Format';
+import useAuth from 'hooks/useAuth';
 import { Url } from 'api/instances/AuthRoute';
 import { PutTypeCatalog } from 'formatdata/TypeCatalogForm';
 import { SNACKBAR_OPEN } from 'store/actions';
@@ -34,12 +37,14 @@ const validationSchema = yup.object().shape({
     nombre: yup.string().required(`${ValidationMessage.Requerido}`)
 });
 
+
 const UpdateTypeCatalog = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
+    const [values, setValues] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -48,11 +53,19 @@ const UpdateTypeCatalog = () => {
     const { handleSubmit, errors } = methods;
     const { id } = useParams();
 
-    /* METODO DE UPDATE  */
+/*     useEffect(() => {
+        async function GetAll() {
+            setValues({ fecha1: '2002-04-10T00:00:00', fecha2: '2022-05-19T00:00:00' })
+        }
+
+        GetAll();
+    }, []) */
+
     const onSubmit = async (datos) => {
         try {
             if (Object.keys(datos.length !== 0)) {
-                const DataToUpdate = PutTypeCatalog(id, datos.nombre);
+                const DataToUpdate = PutTypeCatalog(id, datos.nombre, user.id, FormatDate(new Date()),
+                    'Usuario 1', FormatDate(new Date()));
                 const result = await UpdateTypeCatalogs(DataToUpdate);
                 if (result.status === 200) {
                     dispatch({
@@ -98,6 +111,22 @@ const UpdateTypeCatalog = () => {
                                         />
 
                                     </FormProvider>
+
+                                    {/* <FormProvider {...methods}>
+                                        <InputDatePicker
+                                            label="Fecha de prueba 1"
+                                            name="fecha1"
+                                            defaultValue={values.fecha1}
+                                        />
+                                    </FormProvider>
+
+                                    <FormProvider {...methods}>
+                                        <InputDatePicker
+                                            label="Fecha de prueba 2"
+                                            name="fecha2"
+                                            defaultValue={values.fecha2}
+                                        />
+                                    </FormProvider> */}
                                 </Grid>
 
                                 <Grid item xs={12}>

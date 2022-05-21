@@ -14,8 +14,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
-import { PostTypeCatalog } from 'formatdata/TypeCatalog';
+import { PostTypeCatalog } from 'formatdata/TypeCatalogForm';
 import useAuth from 'hooks/useAuth';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertTypeCatalog } from 'api/clients/TypeCatalogClient';
@@ -44,6 +45,7 @@ const TypeCatalog = () => {
 
     const onSubmit = async (datos) => {
         try {
+
             const DataToInsert = PostTypeCatalog(datos.nombre, user.id, FormatDate(new Date()),
                 '', FormatDate(new Date()));
 
@@ -93,6 +95,7 @@ const TypeCatalog = () => {
                                     bug={errors}
                                 />
                             </FormProvider>
+
                         </Grid>
 
                         <Grid item xs={12}>
