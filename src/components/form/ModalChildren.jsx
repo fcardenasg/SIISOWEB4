@@ -22,7 +22,6 @@ function getModalStyle() {
 }
 
 const ModalChildren = ({ open, onClose, title, children }) => {
-    const [modalStyle] = useState(getModalStyle);
 
     return (
         <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}

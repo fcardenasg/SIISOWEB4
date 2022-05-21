@@ -14,7 +14,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
-import InputDatePicker from 'components/input/InputDatePicker';
+import ControllerListen from 'components/controllers/ControllerListen';
 import { FormatDate } from 'components/helpers/Format';
 import { PostTypeCatalog } from 'formatdata/TypeCatalogForm';
 import useAuth from 'hooks/useAuth';
@@ -95,10 +95,9 @@ const TypeCatalog = () => {
                                     bug={errors}
                                 />
                             </FormProvider>
-
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item sx={{ pt: 2 }} xs={12}>
                             <Grid container spacing={1}>
                                 <Grid item xs={6}>
                                     <AnimateButton>

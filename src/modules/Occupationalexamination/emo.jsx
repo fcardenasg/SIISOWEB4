@@ -1,43 +1,30 @@
-// Import de Material-ui
+import PropTypes from 'prop-types';
 import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button, useMediaQuery,
-    Grid, Typography, Tooltip, Fab, Divider
+    Grid, Typography, Divider
 } from '@mui/material';
 
+import ControllerListen from 'components/controllers/ControllerListen';
+import ControlModal from 'components/form/ControlModal';
+import DetailedIcon from 'components/controllers/DetailedIcon';
 import InputCheckBox from 'components/input/InputCheckBox';
 import Accordion from 'components/accordion/Accordion';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import InputCheck from 'components/input/InputCheck';
-import InputDatePick from 'components/input/InputDatePick';
+import InputDatePicker from 'components/input/InputDatePicker';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { IconEdit } from '@tabler/icons';
 import InputMultiSelects from 'components/input/InputMultiSelects';
-import { GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
-import { gridSpacing } from 'store/constant';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 
-import { useDispatch } from 'react-redux';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import InputOnChange from 'components/input/InputOnChange';
-
-const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition
-const mic = new SpeechRecognition()
-
-mic.continuous = true
-mic.interimResults = true
-mic.lang = 'es-ES'
 
 const MaperCatalogo = async (idTipoCatalogo) => {
     try {
@@ -54,18 +41,20 @@ const MaperCatalogo = async (idTipoCatalogo) => {
     }
 }
 
-const Emo = () => {
+const DetailIcons = [
+    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
+    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
+]
+
+const Emo = ({ errors, setArrays, arrays, ...methods }) => {
     const theme = useTheme();
-    const [isListening, setIsListening] = useState(false);
-    const [note, setNote] = useState(null);
+    const [open, setOpen] = useState(false);
 
     const [lsSupplier, setSupplier] = useState([]);
     const [catalog, setCatalog] = useState([]);
     const [lsVacuna, setLsVacuna] = useState([]);
-
-    /* ACCIDENTES DE TRABAJO / ENFERMEDAD LABORAL */
-    const [especifiqueAT, setEspecifiqueAT] = useState("");
-    const [especifique1AT, setEspecifique1AT] = useState('');
 
     /* INMUNIZACIONES */
     const [vacunasIM, setVacunasIM] = useState([]);
@@ -74,93 +63,12 @@ const Emo = () => {
     const [parentescoHB, setParentescoHB] = useState([]);
     const [tipoFobiaHB, setTipoFobiaHB] = useState([]);
 
-    /* GINECO OBSTÉTRICOS */
-    const [fUPGO, setFUPGO] = useState(new Date());
-    const [fURGO, setFURGO] = useState(new Date());
-
-    /* REVISIÓN POR SISTEMAS */
-    const [observacionRS, setObservacionRS] = useState('');
-
-    /* EXAMEN FÍSICO */
-    const [especifiqueEMEFU, setEspecifiqueEMEFU] = useState('');
-
-    /* EXPLORACIÓN FUNCIONAL */
-    const [observacionEFU, setObservacionEFU] = useState('');
-
-    /* EXÁMENES PARACLÍNICOS */
-    const [fechaRxToraxEPA, setFechaRxToraxEPA] = useState(new Date());
-    const [observacionesRxToraxEPA, setObservacionesRxToraxEPA] = useState('');
-    const [fechaEspirometriaEPA, setFechaEspirometriaEPA] = useState(new Date());
-    const [observacionesEspirometriaEPA, setObservacionesEspirometriaEPA] = useState('');
-    const [fechaAudiometriaEPA, setFechaAudiometriaEPA] = useState(new Date());
-    const [observacionesAudiometriaEPA, setObservacionesAudiometriaEPA] = useState('');
-    const [fechaVisiometriaEPA, setFechaVisiometriaEPA] = useState(new Date());
-    const [observacionesVisiometriaEPA, setObservacionesVisiometriaEPA] = useState('');
-    const [fechaLaboratorioClinicoEPA, setFechaLaboratorioClinicoEPA] = useState(new Date());
-    const [observacionesLaboratorioClinicoEPA, setObservacionesLaboratorioClinicoEPA] = useState('');
-    const [fechaCuestionarioSintomaEPA, setFechaCuestionarioSintomaEPA] = useState(new Date());
-    const [observacionesCuestionarioSintomaEPA, setObservacionesCuestionarioSintomaEPA] = useState('');
-    const [fechaEkgEPA, setFechaEkgEPA] = useState(new Date());
-    const [observacionesEkgEPA, setObservacionesEkgEPA] = useState('');
-    const [fechaRnmLumbosacraEPA, setFechaRnmLumbosacraEPA] = useState(new Date());
-    const [observacionesRnmLumbosacraEPA, setObservacionesRnmLumbosacraEPA] = useState('');
-    const [fechaRnmCervicalEPA, setFechaRnmCervicalEPA] = useState(new Date());
-    const [observacionesRnmCervicalEPA, setObservacionesRnmCervicalEPA] = useState('');
-    const [observacionEPA, setObservacionEPA] = useState('');
-
     /* IMPRESIÓN DIAGNÓSTICA Y CONCEPTO FINAL */
     const [dxID, setDxID] = useState([]);
-    const [observacionID, setObservacionID] = useState('');
-    const [recomendacionesID, setRecomendacionesID] = useState('');
-
-    /* TRABAJO EN ALTURA - NOTIFICACIÓN EMPRESA */
-    const [motivoAplazoNETA, setMotivoAplazoNETA] = useState('');
-    const [descripcionResultadoNETA, setDescripcionResultadoNETA] = useState('');
-    const [recomendacionesNETA, setRecomendacionesNETA] = useState('');
-
-    /* TRABAJO EN ALTURA - NOTIFICACIÓN EMPLEADO */
-    const [observacionesNEMTA, setObservacionesNEMTA] = useState('');
 
     /* FRAMINGHAM - INFORMACIÓN CARDIOVASCULAR */
     const [idAntecedenteCardiovascularFRA, setIdAntecedenteCardiovascularFRA] = useState([]);
     const [idMetabolicoFRA, setIdMetabolicoFRA] = useState([]);
-    const [observacionFRA, setObservacionFRA] = useState('');
-    const [fechaFRA, setFechaFRA] = useState(new Date());
-    const [fechaLaboratorioFRA, setFechaLaboratorioFRA] = useState(new Date());
-
-    const methods = useForm();
-
-    const { handleSubmit, errors, reset } = methods;
-
-    const handleListen = () => {
-        if (isListening) {
-            mic.start()
-            mic.onend = () => {
-                console.log('continue..')
-                mic.start()
-            }
-        } else {
-            mic.stop()
-            mic.onend = () => {
-                console.log('Stopped Mic on Click')
-            }
-        }
-        mic.onstart = () => {
-            console.log('Mics on')
-        }
-        mic.onresult = event => {
-            const transcript = Array.from(event.results)
-                .map(result => result[0])
-                .map(result => result.transcript)
-                .join('')
-            console.log(transcript)
-            setNote(transcript)
-            setStateText({ especifiqueAP: transcript });
-            mic.onerror = event => {
-                console.log(event.error)
-            }
-        }
-    }
 
     async function GetAll() {
         try {
@@ -180,30 +88,29 @@ const Emo = () => {
 
     useEffect(() => {
         GetAll();
-        handleListen();
     }, [])
+
+    const handleOpen = () => {
+        setOpen(true);
+    }
 
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     /* { resolver: yupResolver(validationSchema) } */
 
-    const [congenitos, setCongenitos] = useState(false);
-
-
-    useEffect(() => {
-        handleListen();
-    }, [isListening])
-
-    const haldlerNote = (event) => setNote(event.target.value);
-
-    const [stateText, setStateText] = useState({
-        especifiqueAP: '',
-    });
-
     return (
         <Fragment>
+            <ControlModal
+                maxWidth="md"
+                open={open}
+                onClose={() => setOpen(false)}
+                title="DICTADO POR VOZ"
+            >
+                <ControllerListen />
+            </ControlModal>
+
             <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES PATALÓGICOS</Typography>}>
 
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2} >
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -450,7 +357,7 @@ const Emo = () => {
                         <FormProvider {...methods}>
                             <InputCheckBox
                                 label="23. Psiquiatrico"
-                                name="ciquiatricosAP"
+                                name="psiquiatricosAP"
                                 size={30}
                                 defaultValue={false}
                             />
@@ -525,19 +432,6 @@ const Emo = () => {
                 </Grid>
 
                 <Grid item xs={12} sx={{ pt: 2 }}>
-
-                    {/* CONTROL DE TEXTO CONTROLADO */}
-                    <InputOnChange
-                        rows={4}
-                        multiline
-                        label="Especifique"
-                        name="especifiqueAP"
-                        size={matchesXS ? 'small' : 'medium'}
-                        value={stateText.especifiqueAP}
-                        onChange={(e) => setStateText({ especifiqueAP: e.target.value })}
-                    />
-
-                    {/* CONTROL DE TEXTO NO CONTROLADO */}
                     <FormProvider {...methods}>
                         <InputText
                             multiline
@@ -552,83 +446,30 @@ const Emo = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12}>
-                    <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12} sx={{ pt: 2 }}>
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Plantilla de texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <ListAltSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <DetailedIcon
+                        title={DetailIcons[0].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[0].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Borrar texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[1].title}
+                        onClick={handleOpen}
+                        icons={DetailIcons[1].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Audio">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => setIsListening(prevState1 => !prevState1)}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <SettingsVoiceIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Ver Historico">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Funcion")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <AddBoxIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[2].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[2].icons}
+                    />
                 </Grid>
-
             </SubCard>
             <Grid sx={{ pb: 2 }} />
 
             <SubCard darkTitle title={<Typography variant="h4">ACCIDENTES DE TRABAJO / ENFERMEDAD LABORAL</Typography>}>
-                <Grid container xs={12} spacing={2}>
+                <Grid container spacing={2}>
                     <Grid item xs={3} >
                         <FormProvider {...methods}>
                             <InputText
@@ -644,90 +485,48 @@ const Emo = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <InputOnChange
-                            rows={4}
-                            label="Especifique"
-                            name="especifiqueAT"
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={especifiqueAT}
-                            onChange={(e) => setEspecifiqueAT(e.target.value)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputText
+                                multiline
+                                rows={4}
+                                defaultValue=""
+                                fullWidth
+                                name="especifiqueAT"
+                                label="Especifique"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
                 </Grid>
 
-                <Grid item xs={12}>
-                    <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12} sx={{ pt: 2 }}>
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Plantilla de texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <ListAltSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <DetailedIcon
+                        title={DetailIcons[0].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[0].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Borrar texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[1].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[1].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Audio">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <SettingsVoiceIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[2].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[2].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Ver Historico">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Funcion")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <AddBoxIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[3].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[3].icons}
+                    />
                 </Grid>
 
-                <Grid container xs={12} spacing={2} sx={{ pt: 2 }}>
+                <Grid container spacing={2} sx={{ pt: 2 }}>
                     <Grid item xs={3} >
                         <FormProvider {...methods}>
                             <InputText
@@ -743,100 +542,57 @@ const Emo = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <InputOnChange
-                            rows={4}
-                            label="Especifique"
-                            placeholder="Esperando dictado..."
-
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={especifique1AT}
-                            onChange={(e) => setEspecifique1AT(e?.target.value)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputText
+                                multiline
+                                rows={4}
+                                defaultValue=""
+                                fullWidth
+                                name="especifique1AT"
+                                label="Especifique"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
                 </Grid>
 
-                <Grid item xs={12}>
-                    <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12} sx={{ pt: 2 }}>
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Plantilla de texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <ListAltSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <DetailedIcon
+                        title={DetailIcons[0].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[0].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Borrar texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[1].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[1].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Audio">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <SettingsVoiceIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[2].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[2].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Ver Historico">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Funcion")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <AddBoxIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[3].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[3].icons}
+                    />
                 </Grid>
 
             </SubCard>
             <Grid sx={{ pb: 2 }} />
 
             <SubCard darkTitle title={<Typography variant="h4">INMUNIZACIONES</Typography>}>
-                <Grid container xs={12} spacing={3} sx={{ pb: 1, pt: 1 }}  >
+                <Grid container spacing={3} sx={{ pb: 1, pt: 1 }}  >
                     <Grid item xs={12} >
                         <InputMultiSelects
                             fullWidth
-                            onChange={(event, value) => setVacunasIM(value)}
-                            value={vacunasIM.value}
+                            onChange={(event, value) => setArrays({ vacuna: value })}
+                            value={arrays.vacuna}
                             label="Vacuna"
                             options={lsVacuna}
                         />
@@ -930,7 +686,7 @@ const Emo = () => {
             <Grid sx={{ pb: 2 }} />
 
             <SubCard darkTitle title={<Typography variant="h4">HÁBITOS</Typography>}>
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2} >
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -999,7 +755,7 @@ const Emo = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2}>
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -1067,7 +823,7 @@ const Emo = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2}>
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -1119,7 +875,7 @@ const Emo = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2}>
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -1145,7 +901,7 @@ const Emo = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2} >
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -1184,7 +940,7 @@ const Emo = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2}>
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -1220,7 +976,7 @@ const Emo = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2}>
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -1260,7 +1016,7 @@ const Emo = () => {
             <Grid sx={{ pb: 2 }} />
 
             <SubCard darkTitle title={<Typography variant="h4">GINECO OBSTÉTRICOS</Typography>}>
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2.5}>
                         <FormProvider {...methods}>
                             <InputText
@@ -1336,7 +1092,7 @@ const Emo = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2.5}>
                         <FormProvider {...methods}>
                             <InputText
@@ -1436,21 +1192,25 @@ const Emo = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}  >
+                <Grid container spacing={2} sx={{ pb: 2 }}  >
                     <Grid item xs={2.5}>
-                        <InputDatePick
-                            label="Fecha"
-                            value={fUPGO}
-                            onChange={(e) => setFUPGO(e)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputDatePicker
+                                label="Fecha"
+                                name="fUPGO"
+                                defaultValue={new Date()}
+                            />
+                        </FormProvider>
                     </Grid>
 
                     <Grid item xs={2.5}>
-                        <InputDatePick
-                            label="Fecha"
-                            value={fURGO}
-                            onChange={(e) => setFURGO(e)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputDatePicker
+                                label="Fecha"
+                                name="fURGO"
+                                defaultValue={new Date()}
+                            />
+                        </FormProvider>
                     </Grid>
 
                     <Grid item xs={1}>
@@ -1469,7 +1229,7 @@ const Emo = () => {
                             <InputText
                                 defaultValue=""
                                 fullWidth
-                                name="gUALGO"
+                                name="cUALGO"
                                 label="Cúal?"
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
@@ -1478,7 +1238,7 @@ const Emo = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container xs={12} spacing={2}>
+                <Grid container spacing={2}>
                     <Grid item xs={2}>
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -1567,7 +1327,7 @@ const Emo = () => {
             <Grid sx={{ pb: 2 }} />
 
             <SubCard darkTitle title={<Typography variant="h4">REVISIÓN POR SISTEMAS</Typography>}>
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={4}>
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -1724,94 +1484,50 @@ const Emo = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <InputOnChange
-                        rows={4}
-                        label="Observaciones"
-                        placeholder="Esperando dictado..."
-
-                        size={matchesXS ? 'small' : 'medium'}
-                        value={observacionRS}
-                        onChange={(e) => setObservacionRS(e?.target.value)}
-                    />
+                    <FormProvider {...methods}>
+                        <InputText
+                            multiline
+                            rows={4}
+                            defaultValue=""
+                            fullWidth
+                            name="observacionRS"
+                            label="Observaciones"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
                 </Grid>
 
-                <Grid item xs={12}>
-                    <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12} sx={{ pt: 2 }}>
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Plantilla de texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <ListAltSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <DetailedIcon
+                        title={DetailIcons[0].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[0].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Borrar texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[1].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[1].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Audio">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <SettingsVoiceIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[2].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[2].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Ver Historico">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Funcion")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <AddBoxIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[3].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[3].icons}
+                    />
                 </Grid>
 
             </SubCard>
             <Grid sx={{ pb: 2 }} />
 
             <SubCard darkTitle title={<Typography variant="h4">EXAMEN FÍSICO</Typography>}>
-
                 <SubCard title="Signos Vitales" secondary={<Button><IconEdit stroke={1.5} size="1.3rem" /></Button>}>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item xs={4} >
@@ -1903,7 +1619,7 @@ const Emo = () => {
                 <Grid sx={{ pb: 2 }} />
 
                 <SubCard title="Antropometria" secondary={<Button><IconEdit stroke={1.5} size="1.3rem" /></Button>}>
-                    <Grid container xs={12} spacing={2}>
+                    <Grid container spacing={2}>
                         <Grid item xs={2} >
                             <FormProvider {...methods}>
                                 <InputText
@@ -1978,7 +1694,7 @@ const Emo = () => {
                 <Grid sx={{ pb: 2 }} />
 
                 <SubCard title="Exploración Morfologica" secondary={<Button><IconEdit stroke={1.5} size="1.3rem" /></Button>}>
-                    <Grid container xs={12} spacing={1} sx={{ pb: 2 }}>
+                    <Grid container spacing={1} sx={{ pb: 2 }}>
                         <Grid item xs={3}>
                             <FormProvider {...methods}>
                                 <InputCheckBox
@@ -2442,92 +2158,50 @@ const Emo = () => {
                         </Grid>
                     </Grid>
 
-                    <InputOnChange
-                        multiline
-                        rows={4}
-                        label="Especifique"
-                        placeholder="Esperando dictado..."
+                    <FormProvider {...methods}>
+                        <InputText
+                            multiline
+                            rows={4}
+                            defaultValue=""
+                            fullWidth
+                            name="especifiqueEMEFU"
+                            label="Especifique"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
 
-                        size={matchesXS ? 'small' : 'medium'}
-                        value={especifiqueEMEFU}
-                        onChange={(e) => setEspecifiqueEMEFU(e?.target.value)}
-                    />
+                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
 
-                    <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12} sx={{ pt: 2 }}>
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Plantilla de texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <ListAltSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Borrar texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Audio">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <SettingsVoiceIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Ver Historico">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Funcion")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <AddBoxIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
+                        />
                     </Grid>
                 </SubCard>
             </SubCard>
             <Grid sx={{ pb: 2 }} />
 
             <SubCard darkTitle title={<Typography variant="h4">EXPLORACIÓN FUNCIONAL</Typography>}>
-                <Grid container xs={12} spacing={1} sx={{ pb: 2 }}>
+                <Grid container spacing={1} sx={{ pb: 2 }}>
                     <Grid item xs={3}>
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -2771,101 +2445,57 @@ const Emo = () => {
                     </Grid>
                 </Grid>
 
-                <Grid item xs={12} spacing={4}>
-                    <InputOnChange
+                <FormProvider {...methods}>
+                    <InputText
                         multiline
                         rows={4}
+                        defaultValue=""
+                        fullWidth
+                        name="observacionEFU"
                         label="Observaciones"
-                        placeholder="Esperando dictado..."
-
                         size={matchesXS ? 'small' : 'medium'}
-                        value={observacionEFU}
-                        onChange={(e) => setObservacionEFU(e?.target.value)}
+                        bug={errors}
                     />
-                </Grid>
+                </FormProvider>
 
-                <Grid item xs={12}>
-                    <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12} sx={{ pt: 2 }}>
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Plantilla de texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <ListAltSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <DetailedIcon
+                        title={DetailIcons[0].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[0].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Borrar texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[1].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[1].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Audio">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Todo Bien")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <SettingsVoiceIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[2].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[2].icons}
+                    />
 
-                        <Grid item xs={2}>
-                            <Grid justifyContent="center" alignItems="center" container>
-                                <AnimateButton>
-                                    <Tooltip title="Ver Historico">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Funcion")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <AddBoxIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                    <DetailedIcon
+                        title={DetailIcons[3].title}
+                        onClick={() => alert("Hola Mundo")}
+                        icons={DetailIcons[3].icons}
+                    />
                 </Grid>
             </SubCard>
             <Grid sx={{ pb: 2 }} />
 
             <SubCard darkTitle title={<Typography variant="h4">EXÁMENES PARACLÍNICOS</Typography>}>
-                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2}>
-                        <InputDatePick
-                            label="Rx de Torax(Criterios OIT)"
-                            value={fechaRxToraxEPA}
-                            onChange={(e) => setFechaRxToraxEPA(e)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputDatePicker
+                                label="Rx de Torax(Criterios OIT)"
+                                name="fechaRxToraxEPA"
+                                defaultValue={new Date()}
+                            />
+                        </FormProvider>
                     </Grid>
 
                     <Grid item xs={2}>
@@ -2882,94 +2512,56 @@ const Emo = () => {
                     </Grid>
 
                     <Grid item xs={4}>
-                        <InputOnChange
-                            label="Observaciones"
-                            placeholder="Esperando dictado..."
-
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={observacionesRxToraxEPA}
-                            onChange={(e) => setObservacionesRxToraxEPA(e?.target.value)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="observacionesRxToraxEPA"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <Grid spacing={2} justifyContent="center" alignItems="center" container xs={12}>
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
+                        />
                     </Grid>
 
                     <Grid item xs={2}>
-                        <InputDatePick
-                            label="Espirometria"
-                            value={fechaEspirometriaEPA}
-                            onChange={(e) => setFechaEspirometriaEPA(e)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputDatePicker
+                                label="Espirometria"
+                                name="fechaEspirometriaEPA"
+                                defaultValue={new Date()}
+                            />
+                        </FormProvider>
                     </Grid>
 
                     <Grid item xs={2} >
@@ -2986,94 +2578,56 @@ const Emo = () => {
                     </Grid>
 
                     <Grid item xs={4} >
-                        <InputOnChange
-                            label="Observaciones"
-                            placeholder="Esperando dictado..."
-
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={observacionesEspirometriaEPA}
-                            onChange={(e) => setObservacionesEspirometriaEPA(e?.target.value)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="observacionesEspirometriaEPA"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <Grid spacing={2} justifyContent="center" alignItems="center" container xs={12}>
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
+                        />
                     </Grid>
 
                     <Grid item xs={2}>
-                        <InputDatePick
-                            label="Audiometria"
-                            value={fechaAudiometriaEPA}
-                            onChange={(e) => setFechaAudiometriaEPA(e)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputDatePicker
+                                label="Audiometria"
+                                name="fechaAudiometriaEPA"
+                                defaultValue={new Date()}
+                            />
+                        </FormProvider>
                     </Grid>
 
                     <Grid item xs={2} >
@@ -3089,95 +2643,57 @@ const Emo = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4} >
-                        <InputOnChange
-                            label="Observaciones"
-                            placeholder="Esperando dictado..."
-
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={observacionesAudiometriaEPA}
-                            onChange={(e) => setObservacionesAudiometriaEPA(e?.target.value)}
-                        />
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="observacionesAudiometriaEPA"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <Grid spacing={2} justifyContent="center" alignItems="center" container xs={12}>
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
+                        />
                     </Grid>
 
                     <Grid item xs={2}>
-                        <InputDatePick
-                            label="Visiometria"
-                            value={fechaVisiometriaEPA}
-                            onChange={(e) => setFechaVisiometriaEPA(e)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputDatePicker
+                                label="Visiometria"
+                                name="fechaVisiometriaEPA"
+                                defaultValue={new Date()}
+                            />
+                        </FormProvider>
                     </Grid>
 
                     <Grid item xs={2} >
@@ -3194,97 +2710,59 @@ const Emo = () => {
                     </Grid>
 
                     <Grid item xs={4} >
-                        <InputOnChange
-                            label="Observaciones"
-                            placeholder="Esperando dictado..."
-
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={observacionesVisiometriaEPA}
-                            onChange={(e) => setObservacionesVisiometriaEPA(e?.target.value)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="observacionesVisiometriaEPA"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <Grid spacing={2} justifyContent="center" alignItems="center" container xs={12}>
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
+                        />
                     </Grid>
 
                     <Grid item xs={2}>
-                        <InputDatePick
-                            label="Laboratorio Clinico"
-                            value={fechaLaboratorioClinicoEPA}
-                            onChange={(e) => setFechaLaboratorioClinicoEPA(e)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputDatePicker
+                                label="Laboratorio Clinico"
+                                name="fechaLaboratorioClinicoEPA"
+                                defaultValue={new Date()}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={2} >
+                    <Grid item xs={2}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="resultadoLaboratorioClinicoEPA"
@@ -3297,95 +2775,57 @@ const Emo = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4} >
-                        <InputOnChange
-                            label="Observaciones"
-                            placeholder="Esperando dictado..."
-
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={observacionesLaboratorioClinicoEPA}
-                            onChange={(e) => setObservacionesLaboratorioClinicoEPA(e?.target.value)}
-                        />
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="observacionesLaboratorioClinicoEPA"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <Grid spacing={2} justifyContent="center" alignItems="center" container xs={12}>
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
+                        />
                     </Grid>
 
                     <Grid item xs={2}>
-                        <InputDatePick
-                            label="Cuestionario de Sintomas Respiratorios"
-                            value={fechaCuestionarioSintomaEPA}
-                            onChange={(e) => setFechaCuestionarioSintomaEPA(e)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputDatePicker
+                                label="Cuestionario de Sintomas Respiratorios"
+                                name="fechaCuestionarioSintomaEPA"
+                                defaultValue={new Date()}
+                            />
+                        </FormProvider>
                     </Grid>
 
                     <Grid item xs={2} >
@@ -3401,95 +2841,57 @@ const Emo = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4} >
-                        <InputOnChange
-                            label="Observaciones"
-                            placeholder="Esperando dictado..."
-
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={observacionesCuestionarioSintomaEPA}
-                            onChange={(e) => setObservacionesCuestionarioSintomaEPA(e?.target.value)}
-                        />
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="observacionesCuestionarioSintomaEPA"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <Grid spacing={2} justifyContent="center" alignItems="center" container xs={12}>
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
+                        />
                     </Grid>
 
                     <Grid item xs={2}>
-                        <InputDatePick
-                            label="EKG"
-                            value={fechaEkgEPA}
-                            onChange={(e) => setFechaEkgEPA(e)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputDatePicker
+                                label="EKG"
+                                name="fechaEkgEPA"
+                                defaultValue={new Date()}
+                            />
+                        </FormProvider>
                     </Grid>
 
                     <Grid item xs={2} >
@@ -3506,94 +2908,56 @@ const Emo = () => {
                     </Grid>
 
                     <Grid item xs={4} >
-                        <InputOnChange
-                            label="Observaciones"
-                            placeholder="Esperando dictado..."
-
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={observacionesEkgEPA}
-                            onChange={(e) => setObservacionesEkgEPA(e?.target.value)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="observacionesEkgEPA"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <Grid spacing={2} justifyContent="center" alignItems="center" container xs={12}>
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
+                        />
                     </Grid>
 
                     <Grid item xs={2}>
-                        <InputDatePick
-                            label="RNM-Columna Lumbosacra"
-                            value={fechaRnmLumbosacraEPA}
-                            onChange={(e) => setFechaRnmLumbosacraEPA(e)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputDatePicker
+                                label="RNM-Columna Lumbosacra"
+                                name="fechaRnmLumbosacraEPA"
+                                defaultValue={new Date()}
+                            />
+                        </FormProvider>
                     </Grid>
 
                     <Grid item xs={2} >
@@ -3609,95 +2973,57 @@ const Emo = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4} >
-                        <InputOnChange
-                            label="Observaciones"
-                            placeholder="Esperando dictado..."
-
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={observacionesRnmLumbosacraEPA}
-                            onChange={(e) => setObservacionesRnmLumbosacraEPA(e?.target.value)}
-                        />
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="observacionesRnmLumbosacraEPA"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <Grid spacing={2} justifyContent="center" alignItems="center" container xs={12}>
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
+                        />
                     </Grid>
 
                     <Grid item xs={2}>
-                        <InputDatePick
-                            label="RNM-Columna Cervical"
-                            value={fechaRnmCervicalEPA}
-                            onChange={(e) => setFechaRnmCervicalEPA(e)}
-                        />
+                        <FormProvider {...methods}>
+                            <InputDatePicker
+                                label="RNM-Columna Cervical"
+                                name="fechaRnmCervicalEPA"
+                                defaultValue={new Date()}
+                            />
+                        </FormProvider>
                     </Grid>
 
                     <Grid item xs={2} >
@@ -3714,178 +3040,94 @@ const Emo = () => {
                     </Grid>
 
                     <Grid item xs={4} >
-                        <InputOnChange
-                            label="Observaciones"
-                            placeholder="Esperando dictado..."
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="observacionesRnmCervicalEPA"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
 
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={observacionesRnmCervicalEPA}
-                            onChange={(e) => setObservacionesRnmCervicalEPA(e?.target.value)}
+                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
+
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
+
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
+
+                        <DetailedIcon
+                            xs={3}
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
                         />
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <Grid spacing={2} justifyContent="center" alignItems="center" container xs={12}>
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                multiline
+                                rows={4}
+                                defaultValue=""
+                                fullWidth
+                                name="observacionEPA"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={12} spacing={4}>
-                        <InputOnChange
-                            multiline
-                            rows={4}
-                            label="Observaciones"
-                            placeholder="Esperando dictado..."
-
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={observacionEPA}
-                            onChange={(e) => setObservacionEPA(e?.target.value)}
+                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
                         />
-                    </Grid>
 
-                    <Grid item xs={4}>
-                        <Grid spacing={2} justifyContent="center" alignItems="center" container xs={12}>
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                        <DetailedIcon
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
 
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
+                        />
                     </Grid>
                 </Grid>
             </SubCard>
             <Grid sx={{ pb: 2 }} />
 
             <SubCard darkTitle title={<Typography variant="h4">IMPRESIÓN DIAGNÓSTICA Y CONCEPTO FINAL</Typography>}>
-                <Grid container xs={12} spacing={2}>
+                <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <InputMultiSelects
                             fullWidth
@@ -3897,176 +3139,88 @@ const Emo = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <InputOnChange
-                            multiline
-                            rows={4}
-                            label="Observaciones"
-                            placeholder="Esperando dictado..."
+                        <FormProvider {...methods}>
+                            <InputText
+                                multiline
+                                rows={4}
+                                defaultValue=""
+                                fullWidth
+                                name="observacionID"
+                                label="Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
 
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={observacionID}
-                            onChange={(e) => setObservacionID(e?.target.value)}
+                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
+
+                        <DetailedIcon
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
+
+                        <DetailedIcon
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
+
+                        <DetailedIcon
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
                         />
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <FormProvider {...methods}>
+                            <InputText
+                                multiline
+                                rows={4}
+                                defaultValue=""
+                                fullWidth
+                                name="recomendacionesID"
+                                label="Recomendaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={12} spacing={4}>
-                        <InputOnChange
-                            multiline
-                            rows={4}
-                            label="Recomendaciones"
-                            placeholder="Esperando dictado..."
-                            /* name="inputArea" */
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={recomendacionesID}
-                            onChange={(e) => setRecomendacionesID(e?.target.value)}
+                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            title={DetailIcons[0].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[0].icons}
+                        />
+
+                        <DetailedIcon
+                            title={DetailIcons[1].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[1].icons}
+                        />
+
+                        <DetailedIcon
+                            title={DetailIcons[2].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[2].icons}
+                        />
+
+                        <DetailedIcon
+                            title={DetailIcons[3].title}
+                            onClick={() => alert("Hola Mundo")}
+                            icons={DetailIcons[3].icons}
                         />
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12} sx={{ pt: 2 }}>
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-
-                    <Grid item xs={12} spacing={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="IdConceptoActitudID"
@@ -4078,78 +3232,6 @@ const Emo = () => {
                             />
                         </FormProvider>
                     </Grid>
-
-                    <Grid item xs={12}>
-                        <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Ver Historico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
                 </Grid>
             </SubCard>
             <Grid sx={{ pb: 2 }} />
@@ -4158,13 +3240,15 @@ const Emo = () => {
                 <Typography variant="h4" color="inherit">TRABAJO EN ALTURA</Typography></>}>
 
                 <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIÓN EMPRESA</Typography>}>
-                    <Grid container xs={12} spacing={2}>
+                    <Grid container spacing={2}>
                         <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Del Concepto"
-                                value={fechaRnmCervicalEPA}
-                                onChange={(e) => setFechaRnmCervicalEPA(e)}
-                            />
+                            <FormProvider {...methods}>
+                                <InputDatePicker
+                                    label="Fecha Del Concepto"
+                                    name="fechaRnmCervicalEPA"
+                                    defaultValue={new Date()}
+                                />
+                            </FormProvider>
                         </Grid>
 
                         <Grid item xs={4} >
@@ -4194,258 +3278,126 @@ const Emo = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <InputOnChange
-                                multiline
-                                rows={4}
-                                label="Motivo de Aplazo"
-                                placeholder="Esperando dictado..."
-                                /* name="inputArea" */
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={motivoAplazoNETA}
-                                onChange={(e) => setMotivoAplazoNETA(e?.target.value)}
+                            <FormProvider {...methods}>
+                                <InputText
+                                    multiline
+                                    rows={4}
+                                    defaultValue=""
+                                    fullWidth
+                                    name="motivoAplazoNETA"
+                                    label="Motivo de Aplazo"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[0].icons}
+                            />
+
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[1].icons}
+                            />
+
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[2].icons}
+                            />
+
+                            <DetailedIcon
+                                title={DetailIcons[3].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[3].icons}
                             />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Ver Historico">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Funcion")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <AddBoxIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    multiline
+                                    rows={4}
+                                    defaultValue=""
+                                    fullWidth
+                                    name="descripcionResultadoNETA"
+                                    label="Descripción de resultados(Resumen de limitaciones o restricciones)"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12}>
-                            <InputOnChange
-                                multiline
-                                rows={4}
-                                label="Descripción de resultados(Resumen de limitaciones o restricciones)"
-                                placeholder="Esperando dictado..."
-                                /* name="inputArea" */
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={descripcionResultadoNETA}
-                                onChange={(e) => setDescripcionResultadoNETA(e?.target.value)}
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[0].icons}
+                            />
+
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[1].icons}
+                            />
+
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[2].icons}
+                            />
+
+                            <DetailedIcon
+                                title={DetailIcons[3].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[3].icons}
                             />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Ver Historico">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Funcion")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <AddBoxIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    multiline
+                                    rows={4}
+                                    defaultValue=""
+                                    fullWidth
+                                    name="recomendacionesNETA"
+                                    label="Recomendaciones (En términos sencillos de cuidados y controles requeridos)"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12}>
-                            <InputOnChange
-                                multiline
-                                rows={4}
-                                label="Recomendaciones (En términos sencillos de cuidados y controles requeridos)"
-                                placeholder="Esperando dictado..."
-                                /* name="inputArea" */
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={recomendacionesNETA}
-                                onChange={(e) => setRecomendacionesNETA(e?.target.value)}
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[0].icons}
                             />
-                        </Grid>
 
-                        <Grid item xs={12}>
-                            <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[2].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Ver Historico">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Funcion")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <AddBoxIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[3].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[3].icons}
+                            />
                         </Grid>
 
                         <Grid item xs={6} >
@@ -4477,9 +3429,8 @@ const Emo = () => {
                 </SubCard>
                 <Grid sx={{ pb: 2 }} />
 
-
                 <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIÓN EMPLEADO</Typography>}>
-                    <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
+                    <Grid container spacing={2} sx={{ pb: 2 }}>
                         <Grid item xs={3}>
                             <FormProvider {...methods}>
                                 <InputText
@@ -4541,7 +3492,7 @@ const Emo = () => {
                         </Grid>
                     </Grid>
 
-                    <Grid container xs={12} spacing={2}>
+                    <Grid container spacing={2}>
                         <Grid item xs={6}>
                             <FormProvider {...methods}>
                                 <InputSelect
@@ -4821,7 +3772,6 @@ const Emo = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-
                             <FormProvider {...methods}>
                                 <InputCheckBox
                                     label="24. Otras alteraciones Cardiovasculares, pulmonares, musculares, hepáticas, sanguíneas o renales, que por su severidad
@@ -4834,88 +3784,44 @@ const Emo = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <InputOnChange
-                                multiline
-                                rows={4}
-                                label="Observaciones"
-                                placeholder="Esperando dictado..."
-                                /* name="inputArea" */
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={observacionesNEMTA}
-                                onChange={(e) => setObservacionesNEMTA(e?.target.value)}
-                            />
+                            <FormProvider {...methods}>
+                                <InputText
+                                    multiline
+                                    rows={4}
+                                    defaultValue=""
+                                    fullWidth
+                                    name="observacionesNEMTA"
+                                    label="Observaciones"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12}>
-                            <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[2].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Ver Historico">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Funcion")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <AddBoxIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[3].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[3].icons}
+                            />
                         </Grid>
 
                         <Grid item xs={12} >
@@ -4940,13 +3846,15 @@ const Emo = () => {
                 <Typography align='right' variant="h4" color="inherit">FRAMINGHAM</Typography></>}>
 
                 <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN CARDIOVASCULAR</Typography>}>
-                    <Grid container xs={12} spacing={2}>
+                    <Grid container spacing={2}>
                         <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha"
-                                value={fechaFRA}
-                                onChange={(e) => setFechaFRA(e)}
-                            />
+                            <FormProvider {...methods}>
+                                <InputDatePicker
+                                    label="Fecha"
+                                    name="fechaFRA"
+                                    defaultValue={new Date()}
+                                />
+                            </FormProvider>
                         </Grid>
 
                         <Grid item xs={4} >
@@ -5013,11 +3921,13 @@ const Emo = () => {
                         </Grid>
 
                         <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Laboratorio"
-                                value={fechaLaboratorioFRA}
-                                onChange={(e) => setFechaLaboratorioFRA(e)}
-                            />
+                            <FormProvider {...methods}>
+                                <InputDatePicker
+                                    label="Fecha Laboratorio"
+                                    name="fechaLaboratorioFRA"
+                                    defaultValue={new Date()}
+                                />
+                            </FormProvider>
                         </Grid>
 
                         <Grid item xs={4} >
@@ -5100,88 +4010,44 @@ const Emo = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <InputOnChange
-                                multiline
-                                rows={4}
-                                label="Observación"
-                                placeholder="Esperando dictado..."
-                                /* name="inputArea" */
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={observacionFRA}
-                                onChange={(e) => setObservacionFRA(e?.target.value)}
-                            />
+                            <FormProvider {...methods}>
+                                <InputText
+                                    multiline
+                                    rows={4}
+                                    defaultValue=""
+                                    fullWidth
+                                    name="observacionFRA"
+                                    label="Observación"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12}>
-                            <Grid spacing={2} justifyContent="left" alignItems="center" container xs={12}>
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[2].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Ver Historico">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Funcion")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <AddBoxIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[3].title}
+                                onClick={() => alert("Hola Mundo")}
+                                icons={DetailIcons[3].icons}
+                            />
                         </Grid>
 
                         <Grid item xs={2} >
@@ -5190,8 +4056,8 @@ const Emo = () => {
                                     defaultValue=""
                                     fullWidth
                                     type="number"
-                                    name="clasificacionEF"
-                                    label="lDLFRA"
+                                    name="lDLFRA"
+                                    label="LDL"
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -5354,8 +4220,14 @@ const Emo = () => {
                 </SubCard>
             </Accordion>
             <Divider />
-        </Fragment >
+        </Fragment>
     );
 };
 
 export default Emo;
+
+Emo.propTypes = {
+    errors: PropTypes.any,
+    setArrays: PropTypes.func,
+    arrays: PropTypes.any,
+};

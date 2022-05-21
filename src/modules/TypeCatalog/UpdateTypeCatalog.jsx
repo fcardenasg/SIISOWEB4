@@ -111,22 +111,6 @@ const UpdateTypeCatalog = () => {
                                         />
 
                                     </FormProvider>
-
-                                    {/* <FormProvider {...methods}>
-                                        <InputDatePicker
-                                            label="Fecha de prueba 1"
-                                            name="fecha1"
-                                            defaultValue={values.fecha1}
-                                        />
-                                    </FormProvider>
-
-                                    <FormProvider {...methods}>
-                                        <InputDatePicker
-                                            label="Fecha de prueba 2"
-                                            name="fecha2"
-                                            defaultValue={values.fecha2}
-                                        />
-                                    </FormProvider> */}
                                 </Grid>
 
                                 <Grid item xs={12}>

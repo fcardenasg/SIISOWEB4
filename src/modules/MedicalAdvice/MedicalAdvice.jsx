@@ -749,7 +749,7 @@ const MedicalAdvice = () => {
                             </Grid>
                         </Grid>
                     </Grid>
-                    
+
                 </Accordion>
 
                 <Divider />

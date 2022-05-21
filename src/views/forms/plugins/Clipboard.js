@@ -80,6 +80,7 @@ const ClipboardPage = () => {
                         />
                     </SubCard>
                 </Grid>
+                
                 <Grid item xs={12} md={6}>
                     <SubCard title="Copy from TextArea">
                         <TextField

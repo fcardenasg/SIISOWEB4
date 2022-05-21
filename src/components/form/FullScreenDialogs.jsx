@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 
@@ -8,36 +9,42 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function FullScreenDialogs(props) {
-
+const FullScreenDialogs = ({ open, handleClose, title, children }) => {
     return (
-        <div>
-            <Dialog
-                fullScreen
-                open={props.open}
-                onClose={props.handleClose}
-                TransitionComponent={Transition}
-            >
-                <AppBar sx={{ position: 'fixed' }}>
-                    <Toolbar>
-                        <Typography sx={{ ml: 2, flex: 1, color: 'white' }} variant="h5" component="div">
-                            {props.title}
-                        </Typography>
+        <Dialog
+            fullScreen
+            open={open}
+            onClose={handleClose}
+            TransitionComponent={Transition}
+        >
+            <AppBar sx={{ position: 'fixed' }}>
+                <Toolbar>
+                    <Typography sx={{ ml: 2, flex: 1, color: 'white' }} variant="h5" component="div">
+                        {title}
+                    </Typography>
 
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            onClick={props.handleClose}
-                            aria-label="close"
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-                <Grid sx={{ pt: 8 }}>
-                    {props.children}
-                </Grid>
-            </Dialog>
-        </div>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        onClick={handleClose}
+                        aria-label="close"
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </Toolbar>
+            </AppBar>
+            <Grid sx={{ pt: 8 }}>
+                {children}
+            </Grid>
+        </Dialog>
     );
 }
+
+export default FullScreenDialogs;
+
+FullScreenDialogs.propTypes = {
+    open: PropTypes.bool,
+    title: PropTypes.string,
+    handleClose: PropTypes.func,
+    children: PropTypes.node,
+};

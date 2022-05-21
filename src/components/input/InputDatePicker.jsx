@@ -14,7 +14,7 @@ const InputDatePicker = ({ label, name, defaultValue, ...others }) => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Controller
                     name={name}
-                    defaultValue={new Date(defaultValue)}
+                    defaultValue={defaultValue}
                     render={({ field }) => (
                         <MobileDatePicker
                             mask="__/__/____"
@@ -39,6 +39,6 @@ export default InputDatePicker;
 
 InputDatePicker.propTypes = {
     label: PropTypes.string,
-    defaultValue: PropTypes.string,
+    defaultValue: PropTypes.any,
     name: PropTypes.string
 };

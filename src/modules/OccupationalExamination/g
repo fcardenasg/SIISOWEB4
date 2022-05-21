@@ -1,0 +1,72 @@
+datos.idHistoriaLaboral, datos.documento, datos.fecha, datos.idAtencion,
+
+datos.congenitosAP, datos.inmunoPrevenibleAP, datos.infecciososAP, datos.ojoAP, datos.agudezaVisualAP, datos.oidosAP, datos.nasoFaringeAP, datos.cardiovascularAP,
+datos.pulmonarAP, datos.gastrointestinalAP,
+datos.gimitoUrinarioAP, datos.neurologicoAP, datos.transtornoPielAP, datos.osteoMuscularAP, datos.alergicosAP, datos.toxicoAP, datos.faRmacologicosAP, 
+datos.quirurgicosAP, datos.traumaticosAP, datos.tranfuccionesAP,
+datos.etsAP, datos.deformidadesAP, datos.ciquiatricosAP, datos.farmacoDependenciaAP, datos.emAP, datos.renalAP, datos.asmaAP, datos.orlAP, datos.cancerAP, datos.especifiqueAP,
+
+datos.anioAT, datos.especifiqueAT, datos.anio1AT, datos.especifique1AT,
+
+datos.vacunasIM, datos.anioVacuna1IM, datos.anioVacuna2IM, datos.anioVacuna3IM, datos.anioVacuna4IM, datos.anioVacuna5IM, datos.anioVacuna6IM,
+
+datos.fumaHB, datos.cigarrillosDiasFumaHB, datos.aniosCigaFumaHB, datos.mesesCigaFumaHB, datos.observacionFumaHB, datos.fumabaHB, datos.cigarrillosDiasFumabaHB,
+datos.aniosCigaFumabaHB, datos.mesesCigaFumabaHB,
+datos.observacionFumabaHB, datos.practicaDeporteHB, datos.idFrecuenciaDeporteHB, datos.idCualDeporteHB, datos.observacionPracticaDeporHB, datos.hobbiesPasatiempoHB,
+datos.cualHobbiesHB,
+datos.consumeBebidasAlcoholicasHB, datos.idFrecuenciaBebidaAlHB, datos.cualBebidasAlHB, datos.fobiasHB, datos.tipoFobiaHB, datos.cualFobiaHB, datos.heredoFamiliarHB,
+datos.parentescoHB, datos.observacionHeredoFamiHB,
+
+datos.menarquiaGO, datos.idCiclosGO, datos.duracionGO, datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO, datos.vidaMaritalGO, datos.vidaObstetricaGO,
+datos.gGO, datos.pGO, datos.aGO, datos.cSGO, datos.vGO, datos.fUPGO, datos.fURGO, datos.eTSGO, datos.cUALGO,
+datos.quisteOvariosBiomasGO, datos.endometriosisGO, datos.ePIGO, datos.planificaGO, datos.idMetodoGO, datos.ultimoAnioCitologiaGO, datos.idResultadoGO,
+
+datos.cabezaRS, datos.ojosRS, datos.oidosRS, datos.narizRS, datos.bocaRS, datos.gargantaRS, datos.cuellosRS, datos.cardioRS, datos.gastrointestinalRS,
+datos.genitoUrinarioRS, datos.osteoRS, datos.neuroRS,
+datos.pielRS, datos.psiquiatricoRS, datos.observacionRS,
+
+datos.tASentadoEF, datos.tAAcostadoEF, datos.pulsoEF, datos.fCEF, datos.fREF, datos.temperaturaEF, datos.pesoEF, datos.tallaEF, datos.iMCEF, datos.clasificacionEF, 
+datos.idBiotipoEF, datos.estadoNitricionalEF, datos.pielFaneraEF, datos.craneoEF,
+datos.parpadoEF, datos.conjuntivasEF, datos.corniasEF, datos.pupilasEF, datos.reflejoFotomotorEF, datos.reflejoCornialEF, datos.fondoOjosEF, datos.inspeccionEF,
+datos.otoscopiaEF, datos.inspeccionNarizEF, datos.rinoscopioEF,
+datos.labiosEF, datos.mucosaEF, datos.enciasEF, datos.paladarEF, datos.dientesEF, datos.lenguaEF, datos.faringeEF, datos.amigdalasEF, datos.cuellosEF,
+datos.inspeccionToraxEF, datos.auscultacionCardiacaEF, datos.auscultacionRespiratoriaEF,
+datos.inspeccionAbdomenEF, datos.palpacionAbdomenEF, datos.exploracionHigadoEF, datos.exploracionVasoEF, datos.exploracionRinionesEF, datos.anillosInguinalesEF,
+datos.anilloUmbilicalEF, datos.genitalesExternosEF,
+datos.regionAnalEF, datos.tactoRectalEF, datos.tactoVaginalEF, datos.extremidadesSuperioresEF, datos.extremidadesInferioresEF, datos.pulsosEF,
+datos.columnaVertebralEF, datos.articulacionesEF,
+
+datos.especifiqueEMEFU, datos.movilidadEFU, datos.equilibrioEFU, datos.marchaEFU, datos.movilidadHombroEFU, datos.movilidadCodoEFU, datos.movilidadMuniecaEFU,
+datos.signoTinelEFU, datos.signoPhalenEFU, datos.movilidadManosEFU,
+datos.movilidadCaderaEFU, datos.movilidadRodillaEFU, datos.movilidadTobilloEFU, datos.movilidadCuelloEFU, datos.rOTVisipitalEFU, datos.rOTRotuleanoEFU,
+datos.extencionEFU, datos.sensibilidadCaraAnteriorEFU,
+datos.eversionPiesEFU, datos.sensibilidadCaraLateralEFU, datos.rOTAquileanoEFU, datos.signoLasegueEFU, datos.indiceWellsEFU, datos.observacionEFU,
+
+datos.fechaRxToraxEPA, datos.resultadoRxToraxEPA, datos.observacionesRxToraxEPA, datos.fechaEspirometriaEPA, datos.resultadoEspirometriaEPA,
+datos.observacionesEspirometriaEPA, datos.fechaAudiometriaEPA,
+datos.resultadoAudiometriaEPA, datos.observacionesAudiometriaEPA, datos.fechaVisiometriaEPA, datos.resultadoVisiometriaEPA, datos.observacionesVisiometriaEPA,
+datos.fechaLaboratorioClinicoEPA,
+datos.resultadoLaboratorioClinicoEPA, datos.observacionesLaboratorioClinicoEPA, datos.fechaCuestionarioSintomaEPA, datos.resultadoCuestionarioSintomaEPA,
+datos.observacionesCuestionarioSintomaEPA,
+datos.fechaEkgEPA, datos.resultadoEkgEPA, datos.observacionesEkgEPA, datos.fechaRnmLumbosacraEPA, datos.resultadoRnmLumbosacraEPA, datos.observacionesRnmLumbosacraEPA,
+datos.fechaRnmCervicalEPA, datos.resultadoRnmCervicalEPA, datos.observacionesRnmCervicalEPA, datos.observacionEPA,
+
+datos.dxID, datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
+
+datos.fechaConceptoNETA, datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.motivoAplazoNETA, datos.descripcionResultadoNETA, datos.recomendacionesNETA,
+datos.remitidoNETA, datos.remididoDondeNETA,
+
+datos.idRiesgoCardiovascularNEMTA, datos.idClasificacionNEMTA, datos.idMenorEdadNEMTA, datos.idMujerEmbarazadaNEMTA, datos.idArimiaNEMTA, datos.idEnfermedadNEMTA,
+datos.idHistoriaNEMTA, datos.idHipertensionNEMTA,
+datos.idHipertrigliceridemiaNEMTA, datos.idCifrasNEMTA, datos.idDiabetesNEMTA, datos.idDislipidemiaNEMTA, datos.idDiagnosticoNEMTA, datos.idRiesgoCardiovascular1NEMTA,
+datos.idRiesgoCardiovascular2NEMTA,
+datos.idHipertiroidismoNEMTA, datos.idAlteracionAuditivaNEMTA, datos.idVertigoAlteracionesNEMTA, datos.idEpilegsiaNEMTA, datos.idCegueraTemporalNEMTA,
+datos.idHistoriaFobiasNEMTA,
+datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA, datos.idOtrasAlteracionesNEMTA,
+datos.observacionesNEMTA, datos.conceptoActitudMedicoNEMTA,
+
+datos.fechaFRA, datos.tencionFRA, datos.idTencionArterialFRA, datos.idAntecedenteCardiovascularFRA, datos.idDeporteFRA, datos.idBebidaFRA, datos.fechaLaboratorioFRA,
+datos.colesterolTotalFRA, datos.hDLFRA, datos.triglicericosFRA,
+datos.idMetabolicoFRA, datos.glisemiaFRA, datos.fumaFRA, datos.observacionFRA, datos.lDLFRA, datos.relacionFRA, datos.fRLEdadFRA, datos.fRLColesterolFRA,
+datos.fRHDLFRA, datos.fRGlisemiaFRA, datos.fRTencionFRA, datos.fRTabaquismoFRA, datos.puntajeFRA,
+datos.riesgoAbsolutoFRA, datos.riesgoRelativoFRA, datos.interpretacionFRA,

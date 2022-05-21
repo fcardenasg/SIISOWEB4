@@ -62,6 +62,6 @@ InputCheckBox.propTypes = {
     bug: PropTypes.object,
     name: PropTypes.string,
     defaultValue: PropTypes.string,
-    size: PropTypes.string,
+    size: PropTypes.number,
     label: PropTypes.string,
 };
