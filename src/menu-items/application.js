@@ -247,10 +247,10 @@ const application = {
             icon: icons.IconBasket,
             children: [
                 {
-                    id: 'products',
-                    title: <FormattedMessage id="products" />,
+                    id: 'charges',
+                    title: <FormattedMessage id="Cargos" />,
                     type: 'item',
-                    url: '/e-commerce/products'
+                    url: '/charges/list'
                 },
                 {
                     id: 'product-details',
