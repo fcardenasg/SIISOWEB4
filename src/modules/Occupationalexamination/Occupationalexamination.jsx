@@ -82,7 +82,7 @@ const tabsOption = [
 
 ];
 
-const Occupationalexamination = () => {
+const OccupationalExamination = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -385,4 +385,4 @@ const Occupationalexamination = () => {
     );
 };
 
-export default Occupationalexamination;
+export default OccupationalExamination;

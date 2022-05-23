@@ -16,6 +16,8 @@ export const CodCatalogo = {
     Eps: 5219,
     Afp: 5218,
     Arl: 5220,
+    Version: 5230,
+    Ges: 5231,
     Cesantias: 5225,
     AtencionEMO: 5228,
 

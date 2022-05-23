@@ -16,6 +16,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import { GetAllBySubTipoCatalogo, GetAllCatalog, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { CodCatalogo } from 'components/helpers/Enums';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
 import { SNACKBAR_OPEN } from 'store/actions';
@@ -25,6 +27,24 @@ import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enum
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
+
+
+//filtrar combos
+const MaperCatalogo = async (idTipoCatalogo) => {
+    try {
+        const lsServerCatalog = await GetAllByTipoCatalogo(0, 0, idTipoCatalogo);
+        if (lsServerCatalog.status === 200) {
+            var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            return resultCatalogo;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 
 /* VALIDACIÓN CON YUP */
@@ -42,6 +62,49 @@ const Charges = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [catalog, setCatalogo] = useState([]);
 
+    const [lsSede, setLsSede] = useState([]);
+    const [lsVersion, setLsVersion] = useState([]);
+    const [lsGes, setLsGes] = useState([]);
+    const [lsCargo, setLsCargo] = useState([]);
+    const [lsCodigoFilterArea, setLsCodigoFilterArea] = useState([]);
+
+    const [lsArea, setLsArea] = useState([]);
+    const [area, setArea] = useState('');
+    const [lsSubarea, setLsSubarea] = useState([]);
+
+    async function GetSubString(codigo) {
+        try {
+            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 3);
+            if (lsServerCatalog.status === 200) {
+                var result = lsServerCatalog.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                return result;
+            } else {
+                dispatch({
+                    type: SNACKBAR_OPEN,
+                    open: true,
+                    message: 'Problemas al traer los datos de combo',
+                    variant: 'alert',
+                    alertSeverity: 'error',
+                    close: false,
+                    transition: 'SlideUp'
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${error}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
+        }
+    }
+
 
     /* NUESTROS USESTATE */
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
@@ -58,51 +121,37 @@ const Charges = () => {
 
     const { handleSubmit, errors, reset } = methods;
 
-    const handleChangeSegAgrupado = async (event) => {
+    //Filtro entre  combo con codigo
+    const handleChangeArea = async (event) => {
         try {
-            setSubsegmento([]);
-            setSegmentoAgrupado(event.target.value);
+            setArea(event.target.value);
 
-            const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
-            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                value: item.id,
-                label: item.descripcion
-            }));
-            setLsSegmentoAfectado(resultSegAfectado);
-
-            console.log(event.target.value);
+            var lsResulCode = String(lsCodigoFilterArea.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+            var resultArea = await GetSubString(lsResulCode);
+            setLsSubarea(resultArea);
         } catch (error) {
             console.log(error);
-            setLsSegmentoAfectado([]);
         }
-    }
-
-    const handleChangeSegAfectado = async (event) => {
-        try {
-            setSegmentoAfectado(event.target.value);
-
-            const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
-            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                value: item.id,
-                label: item.descripcion
-            }));
-            setSubsegmento(resultSubsegmento);
-
-            console.log(event.target.value);
-        } catch (error) {
-            console.log(error);
-            setSubsegmento([]);
-        }
-    }
+    };
 
     async function GetAll() {
         try {
-            const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
-            var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
-                value: item.id,
+            const lsCatalogo = await GetAllCatalog(0, 0);
+            setLsCodigoFilterArea(lsCatalogo.data.entities);
+
+            const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Area);
+            var resultArea = lsServerArea.data.entities.map((item) => ({
+                value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsSegmentoAgrupado(resultSegAgrupado);
+            setLsArea(resultArea);
+            setLsCodigoFilterArea(lsServerArea.data.entities);
+
+            setLsSede(await MaperCatalogo(CodCatalogo.Sede));
+            setLsVersion(await MaperCatalogo(CodCatalogo.Version));
+            setLsGes(await MaperCatalogo(CodCatalogo.Ges));
+            setLsCargo(await MaperCatalogo(CodCatalogo.RosterPosition));
+
         } catch (error) {
             console.log(error);
         }
@@ -115,7 +164,7 @@ const Charges = () => {
 
     /* METODO DE INSERT  */
     const onSubmit = async (datos) => {
-        
+
     };
 
     return (
@@ -123,90 +172,88 @@ const Charges = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
-                     
-                     
-                    <FormProvider {...methods}>
-                                <InputSelect
-                                    name="IdSedeCargo"
-                                    label="Sede"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+
+
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdSedeCargo"
+                                label="Sede"
+                                defaultValue=""
+                                options={lsSede}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
 
 
                     </Grid>
 
                     <Grid item xs={4}>
-                    <FormProvider {...methods}>
-                                <InputSelect
-                                    name="IdRosterCargo"
-                                    label="Cargo"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdRosterCargo"
+                                label="Cargo"
+                                defaultValue=""
+                                options={lsCargo}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
 
                     <Grid item xs={4}>
-                    <FormProvider {...methods}>
-                                <InputSelect
-                                    name="IdAreaCargo"
-                                    label="Área"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                       
+                        <SelectOnChange
+                            name="IdAreaCargo"
+                            label="Área"
+                            options={lsArea}
+                            size={matchesXS ? 'small' : 'medium'}
+                            value={area}
+                            onChange={handleChangeArea}
+                        />
+
                     </Grid>
 
 
                     <Grid item xs={4}>
-                    <FormProvider {...methods}>
-                                <InputSelect
-                                    name="IdSubareaCargo "
-                                    label="Subarea"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                       
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdSubareaCargo "
+                                label="Subarea"
+                                defaultValue=""
+                                options={lsSubarea}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+
                     </Grid>
 
                     <Grid item xs={4}>
-                    <FormProvider {...methods}>
-                                <InputSelect
-                                    name="Idversion"
-                                    label="Versión"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                       
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="Idversion"
+                                label="Versión"
+                                defaultValue=""
+                                options={lsVersion}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+
                     </Grid>
 
                     <Grid item xs={4}>
-                    <FormProvider {...methods}>
-                                <InputSelect
-                                    name="IdGES"
-                                    label="GES"
-                                    defaultValue=""
-                                    options={catalog}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                       
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="IdGES"
+                                label="GES"
+                                defaultValue=""
+                                options={lsGes}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+
                     </Grid>
 
 
@@ -224,7 +271,7 @@ const Charges = () => {
                         </FormProvider>
                     </Grid>
 
-          
+
                 </Grid>
 
                 <Grid sx={{ pb: 2, pt: 3 }} item xs={12}>
