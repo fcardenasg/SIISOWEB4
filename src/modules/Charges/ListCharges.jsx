@@ -73,19 +73,19 @@ function stableSort(array, comparator) {
 /* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'IdCargo',
+        id: 'idCargo',
         numeric: false,
         label: 'ID',
         align: 'center'
     },
     {
-        id: 'NameSede',
+        id: 'nameSede',
         numeric: false,
         label: 'Sede',
         align: 'left'
     },
     {
-        id: 'NameRosterPosition',
+        id: 'nameRosterPosition',
         numeric: false,
         label: 'Cargo',
         align: 'left'
@@ -252,7 +252,7 @@ const ListCharges = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['IdCargo', 'NameSede', 'NameRosterPosition'];
+                const properties = ['IdCargo', 'nameSede', 'nameRosterPosition'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -283,7 +283,7 @@ const ListCharges = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = charges.map((n) => n.id);
+            const newSelectedId = charges.map((n) => n.idCargo);
             setSelected(newSelectedId);
             return;
         }
@@ -376,11 +376,11 @@ const ListCharges = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Charges">
-                            <ExcelSheet data={charges} name="Charges">
+                        } filename="Cargo">
+                            <ExcelSheet data={charges} name="Cargo">
                                 <ExcelColumn label="Id" value="idCargo" />
                                 <ExcelColumn label="Sede" value="sede" />
-                                <ExcelColumn label="Cargo" value="RosterPosition" />
+                                <ExcelColumn label="Cargo" value="rosterPosition" />
                             </ExcelSheet>
                         </ExcelFile>
 
@@ -420,7 +420,7 @@ const ListCharges = () => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'number') return null;
 
-                                const isItemSelected = isSelected(row.id);
+                                const isItemSelected = isSelected(row.idCargo);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -432,7 +432,7 @@ const ListCharges = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idCargo)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -445,7 +445,7 @@ const ListCharges = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idCargo)}
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
@@ -454,14 +454,14 @@ const ListCharges = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                #{row.id}{' '}
+                                                #{row.idCargo}{' '}
                                             </Typography>
                                         </TableCell>
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idCargo)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -469,14 +469,14 @@ const ListCharges = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.dx}{' '}
+                                                {row.nameSede}{' '}
                                             </Typography>
                                         </TableCell>
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idCargo)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -484,7 +484,7 @@ const ListCharges = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameSubsegmento}{' '}
+                                                {row.nameRosterPosition}{' '}
                                             </Typography>
                                         </TableCell>
                                         <TableCell align="center" sx={{ pr: 3 }}>
@@ -495,7 +495,7 @@ const ListCharges = () => {
                                                 size="small"
                                                 color="info"
                                                 sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/charges/update/${row.id}`)}>
+                                                onClick={() => navigate(`/charges/update/${row.idCargo}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
