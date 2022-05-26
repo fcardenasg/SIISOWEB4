@@ -20,6 +20,13 @@ export const CodCatalogo = {
     Ges: 5231,
     Cesantias: 5225,
     AtencionEMO: 5228,
+    Exposicion: 5228,
+  GradoconEPP: 5228,
+  GradosinEPP: 5228,
+  Medidascontrol: 5228,
+  AnalisisMPI: 5228,
+  AnalisisRuido: 5228,
+
 
     HCO_VACUNAS: 5229,
 

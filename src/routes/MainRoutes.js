@@ -205,6 +205,12 @@ const Charges = Loadable(lazy(() => import('modules/Charges/Charges')));
 const UpdateCharges = Loadable(lazy(() => import('modules/Charges/UpdateCharges')));
 
 
+
+const ListPanorama = Loadable(lazy(() => import('modules/Charges/ListPanorama')));
+const Panorama = Loadable(lazy(() => import('modules/Charges/Panorama')));
+const UpdatePanorama = Loadable(lazy(() => import('modules/Charges/UpdatePanorama')));
+
+
 const ListTemplate = Loadable(lazy(() => import('modules/Template/ListTemplate')));
 const Template = Loadable(lazy(() => import('modules/Template/Template')));
 const UpdateTemplate = Loadable(lazy(() => import('modules/Template/UpdateTemplate')));
@@ -464,6 +470,22 @@ const MainRoutes = {
             path: '/charges/update/:id',
             element: <UpdateCharges />
         },
+
+
+        /* Render de Charges */
+        {
+            path: '/panorama/list',
+            element: <ListPanorama />
+        },
+        {
+            path: '/panorama/add/:id',
+            element: <Panorama />
+        },
+        {
+            path: '/panorama/update/:id',
+            element: <UpdatePanorama />
+        },
+
 
 
         {

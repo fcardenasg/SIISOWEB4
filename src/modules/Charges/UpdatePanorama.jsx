@@ -20,17 +20,17 @@ import Cargando from 'components/Cargando';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
 import { SNACKBAR_OPEN } from 'store/actions';
-import { UpdateChargess, GetByIdCharges } from 'api/clients/ChargesClient';
+import { UpdatePanoramas, GetByIdPanorama, GetAllPanorama } from 'api/clients/PanoramaClient';
 import InputText from 'components/input/InputText';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 // Import del Proyecto
-import { PutCargo } from 'formatdata/CargoForm';
+import { PutPanorama } from 'formatdata/PanoramaForm';
 import { GetAllBySubTipoCatalogo, GetAllCatalog, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
-import { GetAllCharges } from 'api/clients/ChargesClient';
+
 
 /* VALIDACIÓN CON YUP */
 const validationSchema = yup.object().shape({
@@ -39,7 +39,7 @@ const validationSchema = yup.object().shape({
     idSubsegmento: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
-const UpdateCharges = () => {
+const UpdatePanorama = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
     const { id } = useParams();
     const dispatch = useDispatch();
@@ -83,18 +83,24 @@ const UpdateCharges = () => {
     }
 
     /* NUESTROS USESTATE */
-    const [charges, setCharges] = useState([]);
-
-    const [lsSede, setLsSede] = useState([]);
-    const [lsVersion, setLsVersion] = useState([]);
-    const [lsGes, setLsGes] = useState([]);
+    const [panorama, setPanorama] = useState([]);
     const [lsCargo, setLsCargo] = useState([]);
+    const [lsRiesgo, setLsRiesgo] = useState([]);
+    const [riesgo, setRiesgo] = useState('');
+    const [lsClase, setLsClase] = useState([]);
+    const [clase, setClase] = useState('');
+
+    const [lsExposicion, setLsExposicion] = useState([]);
+
+    const [lsGradoconEPP, setLsGradoconEPP] = useState([]);
+    const [lsGradosinEPP, setLsGradosinEPP] = useState([]);
+    const [lsMedidascontrol, setLsMedidascontrol] = useState([]);
+    const [lsAnalisisMPI, setLsAnalisisMPI] = useState([]);
+    const [lsAnalisisRuido, setLsAnalisisRuido] = useState([]);
+
     const [lsCodigoFilterArea, setLsCodigoFilterArea] = useState([]);
 
-    const [lsArea, setLsArea] = useState([]);
-    const [area, setArea] = useState('');
-    const [lsSubarea, setLsSubarea] = useState([]);
-    const [subArea, setSubArea] = useState('');
+
 
     const methods = useForm();
 
@@ -105,11 +111,11 @@ const UpdateCharges = () => {
     //Filtro entre  combo con codigo
     const handleChangeArea = async (event) => {
         try {
-            setArea(event.target.value);
+            setRiesgo(event.target.value);
 
             var lsResulCode = String(lsCodigoFilterArea.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
             var resultArea = await GetSubString(lsResulCode);
-            setLsSubarea(resultArea);
+            setLsClase(resultArea);
         } catch (error) {
             console.log(error);
         }
@@ -117,10 +123,10 @@ const UpdateCharges = () => {
 
     async function GetAll() {
         try {
-            const lsServerId = await GetByIdCharges(id);
+            const lsServerId = await GetByIdPanorama(id);
             if (lsServerId.status === 200) {
-                setCharges(lsServerId.data);
-                setArea(lsServerId.data.area);
+                setPanorama(lsServerId.data);
+                setRiesgo(lsServerId.data.riesgo);
             }
 
             const lsServerCatalogo = await GetAllCatalog(0, 0);
@@ -131,41 +137,58 @@ const UpdateCharges = () => {
             setLsCatalogo(resultArea);
             setLsCodigoFilterArea(lsServerCatalogo.data.entities);
 
-            const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Area);
-            var resultArea = lsServerArea.data.entities.map((item) => ({
+            const lsServerRiesgo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Riesgo);
+            var resultArea = lsServerRiesgo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsArea(resultArea);
-            setLsCodigoFilterArea(lsServerArea.data.entities);
+            setLsRiesgo(resultArea);
+            setLsCodigoFilterArea(lsServerRiesgo.data.entities);
 
-            const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
-            var resultArea = lsServerSede.data.entities.map((item) => ({
+            const lsServerExposicion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Exposicion);
+            var resultArea = lsServerExposicion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsSede(resultArea);
+            setLsExposicion(resultArea);
 
-            const lsServerVersion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Version);
-            var resultArea = lsServerVersion.data.entities.map((item) => ({
+            const lsServerGradoconEPP = await GetAllByTipoCatalogo(0, 0, CodCatalogo.GradoconEPP);
+            var resultArea = lsServerGradoconEPP.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsVersion(resultArea);
+            setLsGradoconEPP(resultArea);
 
-            const lsServerGes = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Ges);
-            var resultArea = lsServerGes.data.entities.map((item) => ({
+            const lsServerGradosinEPP = await GetAllByTipoCatalogo(0, 0, CodCatalogo.GradosinEPP);
+            var resultArea = lsServerGradosinEPP.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsGes(resultArea);
+            setLsGradosinEPP(resultArea);
 
-            const lsServerCargo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RosterPosition);
-            var resultArea = lsServerCargo.data.entities.map((item) => ({
+            const lsServerMedidascontrol = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Medidascontrol);
+            var resultArea = lsServerMedidascontrol.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsCargo(resultArea);
+            setLsMedidascontrol(resultArea);
+
+
+            const lsServerAnalisisMPI = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AnalisisMPI);
+            var resultArea = lsServerAnalisisMPI.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsAnalisisMPI(resultArea);
+
+            const lsServerAnasisRuido = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AnalisisRuido);
+            var resultArea = lsServerAnasisRuido.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsAnalisisRuido(resultArea);
+
+
 
         } catch (error) {
             console.log(error);
@@ -181,14 +204,14 @@ const UpdateCharges = () => {
     /* METODO DE UPDATE  */
     const handleClick = async (datos) => {
         try {
-            const subArea_ = subArea == '' ? datos.subAreaDisa : subArea;
+            const clase_ = clase == '' ? datos.claseDisa : clase;
 
-            const DataToUpdate = PutCargo(id, datos.sede, datos.rosterPosition, area,
-                subArea_, datos.descripcionCargo, datos.idversion, datos.idGES);
+            const DataToUpdate = PutPanorama(id, datos.idCargo, riesgo, clase_, datos.exposicion, datos.gradoconEPP, datos.gradosinEPP,
+                datos.medidascontrol, datos.analisisMPI, datos.analisisRuido, datos.descripcionCargo);
 
             console.log('DataToUpdate = ', DataToUpdate)
             if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateChargess(DataToUpdate);
+                const result = await UpdatePanoramas(DataToUpdate);
                 if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,
@@ -216,29 +239,16 @@ const UpdateCharges = () => {
     };
 
     return (
-        <MainCard title="Actualizar Cargos">
-            {charges.length != 0 ? (<>
+        <MainCard title="Actualizar Panorama de riesgos">
+            {panorama.length != 0 ? (<>
 
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
                         <FormProvider {...methods}>
                             <InputSelect
-                                name="sede"
-                                label="Sede"
-                                defaultValue={charges.sede}
-                                options={lsSede}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="rosterPosition"
+                                name="idCargo"
                                 label="Cargo"
-                                defaultValue={charges.rosterPosition}
+                                defaultValue=""
                                 options={lsCargo}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
@@ -246,35 +256,37 @@ const UpdateCharges = () => {
                         </FormProvider>
                     </Grid>
 
+
+
                     <Grid item xs={4}>
                         <SelectOnChange
-                            name="idAreaCargo"
-                            label="Área"
-                            options={lsArea}
+                            name="idRiesgo"
+                            label="Riesgo"
+                            options={lsRiesgo}
                             size={matchesXS ? 'small' : 'medium'}
-                            value={area}
+                            value={riesgo}
                             onChange={handleChangeArea}
                         />
                     </Grid>
 
                     <Grid item xs={4}>
-                        {lsSubarea.length != 0 ? (
+                        {lsClase.length != 0 ? (
                             <SelectOnChange
-                                name="subAreaLLega"
-                                label="Subarea"
-                                options={lsSubarea}
+                                name="clase"
+                                label="Clase"
+                                options={lsClase}
                                 size={matchesXS ? 'small' : 'medium'}
-                                value={subArea}
-                                onChange={(e) => setSubArea(e.target.value)}
+                                value={clase}
+                                onChange={(e) => setClase(e.target.value)}
                             />
                         ) : (
                             <FormProvider {...methods}>
                                 <InputSelect
-                                    name="subAreaDisa"
-                                    label="Subarea"
-                                    defaultValue={charges.subArea}
+                                    name="claseDisa"
+                                    label="Clase"
+                                    defaultValue={panorama.clase}
                                     disabled
-                                    options={lsCatago}
+                                    options={lsClase}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -285,10 +297,25 @@ const UpdateCharges = () => {
                     <Grid item xs={4}>
                         <FormProvider {...methods}>
                             <InputSelect
-                                name="idversion"
-                                label="Versión"
-                                defaultValue={charges.idversion}
-                                options={lsVersion}
+                                name="exposicion"
+                                label="Exposición"
+                                defaultValue={panorama.exposicion}
+                                options={lsExposicion}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+
+
+                    <Grid item xs={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="gradoconEPP"
+                                label="Grado con EPP"
+                                defaultValue={panorama.gradoconEPP}
+                                options={lsGradoconEPP}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -299,20 +326,66 @@ const UpdateCharges = () => {
 
                         <FormProvider {...methods}>
                             <InputSelect
-                                name="idGES"
-                                label="GES"
-                                defaultValue={charges.idGES}
-                                options={lsGes}
+                                name="gradosinEPP"
+                                label="Grado sin EPP"
+                                defaultValue={panorama.gradosinEPP}
+                                options={lsGradosinEPP}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
                     </Grid>
 
+                    <Grid item xs={4}>
+
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="medidascontrol"
+                                label="Medidas de control"
+                                defaultValue={panorama.medidascontrol}
+                                options={lsMedidascontrol}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+
+
+                    <Grid item xs={4}>
+
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="analisisMPI"
+                                label="Análisis MPI"
+                                defaultValue={panorama.analisisMPI}
+                                options={lsAnalisisMPI}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+
+                    <Grid item xs={4}>
+
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="analisisRuido"
+                                label="Análisis Ruido"
+                                defaultValue={panorama.analisisRuido}
+                                options={lsAnalisisRuido}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+
                     <Grid item xs={12}>
                         <FormProvider {...methods}>
                             <InputText
-                                defaultValue={charges.descripcionCargo}
+                                defaultValue={panorama.descripcionCargo}
                                 fullWidth
                                 name="descripcionCargo"
                                 label="Descripción"
@@ -334,7 +407,7 @@ const UpdateCharges = () => {
                         </Grid>
                         <Grid item xs={6}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/charges/list")}>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/charges/listp")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </AnimateButton>
@@ -346,4 +419,4 @@ const UpdateCharges = () => {
     );
 };
 
-export default UpdateCharges;
+export default UpdatePanorama;

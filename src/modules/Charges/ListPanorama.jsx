@@ -32,7 +32,7 @@ import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 
 // Import de proyectos
-import { GetAllCharges, DeleteCharges } from 'api/clients/ChargesClient';
+import { GetAllPanorama, DeletePanorama } from 'api/clients/PanoramaClient';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
@@ -74,21 +74,33 @@ function stableSort(array, comparator) {
 /* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'idCargo',
+        id: 'idpanorama',
         numeric: false,
         label: 'ID',
         align: 'center'
     },
     {
-        id: 'nameSede',
+        id: 'nameCargo',
         numeric: false,
-        label: 'Sede',
+        label: 'Cargo',
         align: 'left'
     },
     {
-        id: 'nameRosterPosition',
+        id: 'nameRiesgo',
         numeric: false,
-        label: 'Cargo',
+        label: 'Riesgo',
+        align: 'left'
+    },
+    {
+        id: 'nameClase',
+        numeric: false,
+        label: 'Clase',
+        align: 'left'
+    },
+    {
+        id: 'nameExposicion',
+        numeric: false,
+        label: 'Exposición',
         align: 'left'
     }
 ];
@@ -214,9 +226,9 @@ const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const ListCharges = () => {
+const ListPanorama = () => {
     const dispatch = useDispatch();
-    const [charges, setCharges] = useState([]);
+    const [panorama, setPanorama] = useState([]);
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
@@ -231,8 +243,8 @@ const ListCharges = () => {
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
-            const lsServer = await GetAllCharges(0, 0);
-            setCharges(lsServer.data.entities);
+            const lsServer = await GetAllPanorama(0, 0);
+            setPanorama(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
@@ -253,7 +265,7 @@ const ListCharges = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idCargo', 'nameSede', 'nameRosterPosition'];
+                const properties = ['idpanorama', 'nameCargo', 'nameRiesgo','nameClase', 'nameExposicion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -267,9 +279,9 @@ const ListCharges = () => {
                 }
                 return matches;
             });
-            setCharges(newRows);
+            setPanorama(newRows);
         } else {
-            setCharges(rows);
+            setPanorama(rows);
         }
     };
 
@@ -284,7 +296,7 @@ const ListCharges = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = charges.map((n) => n.idCargo);
+            const newSelectedId = panorama.map((n) => n.idpanorama);
             setSelected(newSelectedId);
             return;
         }
@@ -325,7 +337,7 @@ const ListCharges = () => {
     /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
-            const result = await DeleteCharges(idCheck);
+            const result = await DeletePanorama(idCheck);
             if (result.status === 200) {
                 dispatch({
                     type: SNACKBAR_OPEN,
@@ -347,7 +359,7 @@ const ListCharges = () => {
     const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - charges.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - panorama.length) : 0;
 
     return (
         <MainCard title="Lista de Panorama de Cargos" content={false}>
@@ -377,11 +389,13 @@ const ListCharges = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Cargo">
-                            <ExcelSheet data={charges} name="Cargo">
-                                <ExcelColumn label="Id" value="idCargo" />
-                                <ExcelColumn label="Sede" value="sede" />
-                                <ExcelColumn label="Cargo" value="rosterPosition" />
+                        } filename="Panorama">
+                            <ExcelSheet data={panorama} name="Panorama">
+                                <ExcelColumn label="Id" value="idpanorama" />
+                                <ExcelColumn label="Cargo" value="idCargo" />
+                                <ExcelColumn label="Riesgo" value="riesgo" />
+                                <ExcelColumn label="Clase" value="clase" />
+                                <ExcelColumn label="Exposición" value="exposicion" />
                             </ExcelSheet>
                         </ExcelFile>
 
@@ -393,7 +407,7 @@ const ListCharges = () => {
 
                         {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/charges/add")}>
+                            onClick={() => navigate("/charges/addp")}>
                             {TitleButton.Agregar}
                         </Button>
                     </Grid>
@@ -409,13 +423,13 @@ const ListCharges = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={charges.length}
+                        rowCount={panorama.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(charges, getComparator(order, orderBy))
+                        {stableSort(panorama, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
@@ -489,13 +503,13 @@ const ListCharges = () => {
                                             </Typography>
                                         </TableCell>
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/charges/update/${row.idCargo}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/panorama/update/${row.idpanorama}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip title="Asignar Panorama de riesgos" onClick={() => navigate(`/panorama/add/${row.idCargo}`)}>
+                                            <Tooltip title="Asignar Panorama de riesgos" onClick={() => navigate(`/panorama/update/${row.idpanorama}`)}>
                                                 <IconButton size="large">
                                                     <HowToRegSharpIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -522,7 +536,7 @@ const ListCharges = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={charges.length}
+                count={panorama.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -532,4 +546,4 @@ const ListCharges = () => {
     );
 };
 
-export default ListCharges;
+export default ListPanorama;

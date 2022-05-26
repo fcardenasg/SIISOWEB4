@@ -16,6 +16,9 @@ export const Url = {
     CargoId: 'api/Cargo/id',
 
 
+    Panorama: 'api/Panorama',
+    PanoramaId: 'api/Panorama/id',
+
     Empresa: 'api/Empresa',
     EmpresaId: 'api/Empresa/id',
 
