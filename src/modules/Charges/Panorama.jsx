@@ -230,11 +230,11 @@ const Panorama = () => {
                     <Grid item xs={2}>
                         <FormProvider {...methods}>
                             <InputText
-                                defaultValue={`ID: ${cargo.idCargo}`}
+                                defaultValue={`ID: ${cargo.rosterPosition}`}
                                 disabled
                                 fullWidth
                                 name="idCargo"
-                                label="Cargo"
+                                label="ID"
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -242,7 +242,7 @@ const Panorama = () => {
                     </Grid> : <></>}
 
                
-               
+{/*                
                 {cargo.length != 0 ?
                     <Grid item xs={10}>
                         <FormProvider {...methods}>
@@ -250,13 +250,13 @@ const Panorama = () => {
                                 defaultValue={`ID: ${cargo.idCargo}  ` + `Nombre: ${cargo.nameRosterPosition}`}
                                 disabled
                                 fullWidth
-                                name="idCargo"
+                                name="idCargo1"
                                 label="Cargo"
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
-                    </Grid> : <></>}
+                    </Grid> : <></>} */}
 
 
 
@@ -400,20 +400,29 @@ const Panorama = () => {
 
             <Grid sx={{ pb: 2, pt: 3 }} item xs={12}>
                 <Grid container spacing={1}>
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                         <AnimateButton>
                             <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                 {TitleButton.Guardar}
                             </Button>
                         </AnimateButton>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                         <AnimateButton>
                             <Button variant="outlined" fullWidth onClick={() => navigate("/charges/list")}>
+                                {TitleButton.Regresaracargos}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <AnimateButton>
+                            <Button variant="outlined" fullWidth onClick={() => navigate("/panorama/list")}>
                                 {TitleButton.Cancelar}
                             </Button>
                         </AnimateButton>
                     </Grid>
+                 
+
                 </Grid>
             </Grid>
         </MainCard>

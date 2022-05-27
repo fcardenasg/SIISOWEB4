@@ -45,7 +45,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import HowToRegSharpIcon from '@mui/icons-material/HowToRegSharp';
-
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 // Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -80,7 +80,7 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'nameCargo',
+        id: 'nameRoster',
         numeric: false,
         label: 'Cargo',
         align: 'left'
@@ -265,7 +265,7 @@ const ListPanorama = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idpanorama', 'nameCargo', 'nameRiesgo','nameClase', 'nameExposicion'];
+                const properties = ['idpanorama', 'nameRoster', 'nameRiesgo','nameClase', 'nameExposicion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -392,7 +392,7 @@ const ListPanorama = () => {
                         } filename="Panorama">
                             <ExcelSheet data={panorama} name="Panorama">
                                 <ExcelColumn label="Id" value="idpanorama" />
-                                <ExcelColumn label="Cargo" value="idCargo" />
+                                <ExcelColumn label="Cargo" value="nameRosterPosition" />
                                 <ExcelColumn label="Riesgo" value="riesgo" />
                                 <ExcelColumn label="Clase" value="clase" />
                                 <ExcelColumn label="Exposición" value="exposicion" />
@@ -406,9 +406,9 @@ const ListPanorama = () => {
                         </Tooltip>
 
                         {/* product add & dialog */}
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/charges/addp")}>
-                            {TitleButton.Agregar}
+                        <Button variant="contained" size="large" startIcon={<ArrowLeftIcon/>}
+                            onClick={() => navigate("/charges/list")}>
+                            {TitleButton.Regresaracargos}
                         </Button>
                     </Grid>
                 </Grid>
@@ -435,7 +435,7 @@ const ListPanorama = () => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'number') return null;
 
-                                const isItemSelected = isSelected(row.idCargo);
+                                const isItemSelected = isSelected(row.idpanorama);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -447,7 +447,7 @@ const ListPanorama = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idCargo)}>
+                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idpanorama)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -460,7 +460,7 @@ const ListPanorama = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCargo)}
+                                            onClick={(event) => handleClick(event, row.idpanorama)}
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
@@ -469,14 +469,14 @@ const ListPanorama = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                #{row.idCargo}{' '}
+                                                #{row.idpanorama}{' '}
                                             </Typography>
                                         </TableCell>
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCargo)}
+                                            onClick={(event) => handleClick(event, row.idpanorama)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -484,14 +484,14 @@ const ListPanorama = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameSede}{' '}
+                                                {row.nameRoster}{' '}
                                             </Typography>
                                         </TableCell>
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idCargo)}
+                                            onClick={(event) => handleClick(event, row.idpanorama)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -499,9 +499,50 @@ const ListPanorama = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameRosterPosition}{' '}
+                                                {row.nameRiesgo}{' '}
                                             </Typography>
                                         </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.idpanorama)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {' '}
+                                                {row.nameClase}{' '}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.idpanorama)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {' '}
+                                                {row.nameExposicion}{' '}
+                                            </Typography>
+                                        </TableCell>
+
+
+
+
+
+
+
+
+
                                         <TableCell align="center" sx={{ pr: 3 }}>
                                             <Tooltip title="Actualizar" onClick={() => navigate(`/panorama/update/${row.idpanorama}`)}>
                                                 <IconButton size="large">
@@ -509,7 +550,7 @@ const ListPanorama = () => {
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip title="Asignar Panorama de riesgos" onClick={() => navigate(`/panorama/update/${row.idpanorama}`)}>
+                                            <Tooltip title="Visualizar Panorama de riesgos" onClick={() => navigate(`/panorama/update/${row.idpanorama}`)}>
                                                 <IconButton size="large">
                                                     <HowToRegSharpIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>

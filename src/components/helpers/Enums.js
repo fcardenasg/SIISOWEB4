@@ -81,7 +81,9 @@ export const TitleButton = {
     Actualizar: 'Actualizar',
     Eliminar: 'Eliminar',
     Agregar: 'Nuevo',
-    Seleccionadas: 'Seleccionadas'
+    Seleccionadas: 'Seleccionadas',
+    Regresar: 'Regresar',
+    Regresaracargos:'Regresar a cargos',
 }
 
 export const ValidationMessage = {
