@@ -16,8 +16,17 @@ export const CodCatalogo = {
     Eps: 5219,
     Afp: 5218,
     Arl: 5220,
+    Version: 5230,
+    Ges: 5231,
     Cesantias: 5225,
     AtencionEMO: 5228,
+    Exposicion: 5228,
+  GradoconEPP: 5228,
+  GradosinEPP: 5228,
+  Medidascontrol: 5228,
+  AnalisisMPI: 5228,
+  AnalisisRuido: 5228,
+
 
     HCO_VACUNAS: 5229,
     HCO_FRECUENCIAS: 5240,
@@ -101,7 +110,9 @@ export const TitleButton = {
     Actualizar: 'Actualizar',
     Eliminar: 'Eliminar',
     Agregar: 'Nuevo',
-    Seleccionadas: 'Seleccionadas'
+    Seleccionadas: 'Seleccionadas',
+    Regresar: 'Regresar',
+    Regresaracargos:'Regresar a cargos',
 }
 
 export const ValidationMessage = {
