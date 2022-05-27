@@ -28,6 +28,6 @@ InputMultiSelects.propTypes = {
     onChange: PropTypes.func,
     renderTags: PropTypes.any,
     label: PropTypes.string,
-    value: PropTypes.string,
+    value: PropTypes.array,
     options: PropTypes.any,
 };

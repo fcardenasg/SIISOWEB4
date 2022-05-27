@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { FormProvider, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -16,25 +21,17 @@ import PersonalData from './PersonalData';
 import WorkHistory from './WorkHistory';
 import Emo from './Emo';
 
+import { Message } from 'components/helpers/Enums';
+import { SNACKBAR_OPEN } from 'store/actions';
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
 import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone';
-
+import { InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-
-// Terceros
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-
-// Import del Proyectot
 import { TitleButton } from 'components/helpers/Enums';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import User from 'assets/img/user.png'
-import { GetAllCatalog, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { GetAllCompany } from 'api/clients/CompanyClient';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { CodCatalogo } from 'components/helpers/Enums';
@@ -82,27 +79,24 @@ const tabsOption = [
 
 ];
 
-const Occupationalexamination = () => {
+const OccupationalExamination = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [value, setValue] = useState(0);
-
     const [document, setDocument] = useState('');
+    const [lsAtencionEMO, setLsAtencionEMO] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [arrays, setArrays] = useState({
-        vacuna: []
+        vacuna: [],
+        tipoFobia: [],
+        parentesco: [],
+        dx: [],
+        antecedentesCardio: [],
+        metabolico: [],
     });
-
-    console.log("Array = ", arrays)
-
-    const [catalog, setCatalog] = useState([]);
-    const [company, setCompany] = useState([]);
-    const [lsAtencionEMO, setLsAtencionEMO] = useState([]);
-    const [lsDepartamento, setDepartamento] = useState([]);
-    const [lsCodigoFilter, setCodigoFilter] = useState([]);
 
     const handleDocumento = async (event) => {
         try {
@@ -121,37 +115,17 @@ const Occupationalexamination = () => {
 
     const { handleSubmit, errors, reset } = methods;
 
-
     async function GetAll() {
         try {
-            const lsServerCatalog = await GetAllCatalog(0, 0);
-            var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setCatalog(resultCatalogo);
 
-            const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, 1077);
-            var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setDepartamento(resultDepartamento);
-            setCodigoFilter(lsServerDepartamento.data.entities);
-
-            const lsServerAtencionEMO = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
-            var resultAtencionEMO = lsServerAtencionEMO.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsAtencionEMO(resultAtencionEMO);
-
-            const lsServerCompany = await GetAllCompany(0, 0);
-            var resultCompany = lsServerCompany.data.entities.map((item) => ({
-                value: item.codigo,
-                label: item.descripcionSpa
-            }));
-            setCompany(resultCompany);
+            const lsResultAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
+            if (lsResultAtencion.status === 200) {
+                var resultAtencion = lsResultAtencion.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsAtencionEMO(resultAtencion);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -165,44 +139,37 @@ const Occupationalexamination = () => {
         try {
             const DataToInset = PostOccupationalExamination(
                 101010, document, FormatDate(datos.fecha), datos.idAtencion,
-
                 datos.congenitosAP, datos.inmunoPrevenibleAP, datos.infecciososAP, datos.ojoAP, datos.agudezaVisualAP, datos.oidosAP, datos.nasoFaringeAP,
                 datos.cardiovascularAP, datos.pulmonarAP, datos.gastrointestinalAP, datos.gimitoUrinarioAP, datos.neurologicoAP, datos.transtornoPielAP,
                 datos.osteoMuscularAP, datos.alergicosAP, datos.toxicoAP, datos.faRmacologicosAP, datos.quirurgicosAP, datos.traumaticosAP, datos.tranfuccionesAP,
                 datos.etsAP, datos.deformidadesAP, datos.psiquiatricosAP, datos.farmacoDependenciaAP, datos.emAP, datos.renalAP, datos.asmaAP, datos.orlAP,
-                datos.cancerAP, datos.especifiqueAP,
-
-                datos.anioAT, datos.especifiqueAT, datos.anio1AT, datos.especifique1AT,
-
-                JSON.stringify(arrays.vacuna), datos.anioVacuna1IM, datos.anioVacuna2IM, datos.anioVacuna3IM, datos.anioVacuna4IM, datos.anioVacuna5IM, datos.anioVacuna6IM,
-
-                datos.fumaHB, datos.cigarrillosDiasFumaHB, datos.aniosCigaFumaHB, datos.mesesCigaFumaHB, datos.observacionFumaHB, datos.fumabaHB,
-                datos.cigarrillosDiasFumabaHB, datos.aniosCigaFumabaHB, datos.mesesCigaFumabaHB, datos.observacionFumabaHB, datos.practicaDeporteHB,
+                datos.cancerAP, datos.especifiqueAP, Number(datos.anioAT), datos.especifiqueAT, Number(datos.anio1AT), datos.especifique1AT,
+                JSON.stringify(arrays.vacuna), Number(datos.anioVacuna1IM), Number(datos.anioVacuna2IM), Number(datos.anioVacuna3IM), Number(datos.anioVacuna4IM),
+                Number(datos.anioVacuna5IM), Number(datos.anioVacuna6IM),
+                datos.fumaHB, Number(datos.cigarrillosDiasFumaHB), Number(datos.aniosCigaFumaHB), Number(datos.mesesCigaFumaHB), datos.observacionFumaHB, datos.fumabaHB,
+                Number(datos.cigarrillosDiasFumabaHB), Number(datos.aniosCigaFumabaHB), Number(datos.mesesCigaFumabaHB), datos.observacionFumabaHB, datos.practicaDeporteHB,
                 datos.idFrecuenciaDeporteHB, datos.idCualDeporteHB, datos.observacionPracticaDeporHB, datos.hobbiesPasatiempoHB, datos.cualHobbiesHB,
-                datos.consumeBebidasAlcoholicasHB, datos.idFrecuenciaBebidaAlHB, datos.cualBebidasAlHB, datos.fobiasHB, datos.tipoFobiaHB, datos.cualFobiaHB,
-                datos.heredoFamiliarHB, datos.parentescoHB, datos.observacionHeredoFamiHB,
-
-                datos.menarquiaGO, datos.idCiclosGO, datos.duracionGO, datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO, datos.vidaMaritalGO,
-                datos.vidaObstetricaGO, datos.gGO, datos.pGO, datos.aGO, datos.cSGO, datos.vGO, FormatDate(datos.fUPGO), FormatDate(datos.fURGO), datos.eTSGO, datos.cUALGO,
-                datos.quisteOvariosBiomasGO, datos.endometriosisGO, datos.ePIGO, datos.planificaGO, datos.idMetodoGO, datos.ultimoAnioCitologiaGO, datos.idResultadoGO,
-
+                datos.consumeBebidasAlcoholicasHB, datos.idFrecuenciaBebidaAlHB, datos.cualBebidasAlHB, datos.fobiasHB, JSON.stringify(arrays.tipoFobia), datos.cualFobiaHB,
+                datos.heredoFamiliarHB, JSON.stringify(arrays.parentesco), datos.observacionHeredoFamiHB,
+                Number(datos.menarquiaGO), datos.idCiclosGO, Number(datos.duracionGO), datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO, Number(datos.vidaMaritalGO),
+                Number(datos.vidaObstetricaGO), Number(datos.gGO), Number(datos.pGO), Number(datos.aGO), Number(datos.cSGO), Number(datos.vGO), FormatDate(datos.fUPGO),
+                FormatDate(datos.fURGO), datos.eTSGO, datos.cUALGO, datos.quisteOvariosBiomasGO, datos.endometriosisGO, datos.ePIGO, datos.planificaGO, datos.idMetodoGO,
+                Number(datos.ultimoAnioCitologiaGO), datos.idResultadoGO,
                 datos.cabezaRS, datos.ojosRS, datos.oidosRS, datos.narizRS, datos.bocaRS, datos.gargantaRS, datos.cuellosRS, datos.cardioRS, datos.gastrointestinalRS,
                 datos.genitoUrinarioRS, datos.osteoRS, datos.neuroRS, datos.pielRS, datos.psiquiatricoRS, datos.observacionRS,
-
-                datos.tASentadoEF, datos.tAAcostadoEF, datos.pulsoEF, datos.fCEF, datos.fREF, datos.temperaturaEF, datos.pesoEF, datos.tallaEF, datos.iMCEF,
-                datos.clasificacionEF, datos.idBiotipoEF, datos.estadoNitricionalEF, datos.pielFaneraEF, datos.craneoEF, datos.parpadoEF, datos.conjuntivasEF,
+                Number(datos.tASentadoEF), Number(datos.tAAcostadoEF), Number(datos.pulsoEF), Number(datos.fCEF), Number(datos.fREF), Number(datos.temperaturaEF),
+                Number(datos.pesoEF), Number(datos.tallaEF), Number(datos.iMCEF),
+                Number(datos.clasificacionEF), datos.idBiotipoEF, datos.estadoNitricionalEF, datos.pielFaneraEF, datos.craneoEF, datos.parpadoEF, datos.conjuntivasEF,
                 datos.corniasEF, datos.pupilasEF, datos.reflejoFotomotorEF, datos.reflejoCornialEF, datos.fondoOjosEF, datos.inspeccionEF, datos.otoscopiaEF,
                 datos.inspeccionNarizEF, datos.rinoscopioEF, datos.labiosEF, datos.mucosaEF, datos.enciasEF, datos.paladarEF, datos.dientesEF, datos.lenguaEF,
                 datos.faringeEF, datos.amigdalasEF, datos.cuellosEF, datos.inspeccionToraxEF, datos.auscultacionCardiacaEF, datos.auscultacionRespiratoriaEF,
                 datos.inspeccionAbdomenEF, datos.palpacionAbdomenEF, datos.exploracionHigadoEF, datos.exploracionVasoEF, datos.exploracionRinionesEF,
                 datos.anillosInguinalesEF, datos.anilloUmbilicalEF, datos.genitalesExternosEF, datos.regionAnalEF, datos.tactoRectalEF, datos.tactoVaginalEF,
                 datos.extremidadesSuperioresEF, datos.extremidadesInferioresEF, datos.pulsosEF, datos.columnaVertebralEF, datos.articulacionesEF,
-
                 datos.especifiqueEMEFU, datos.movilidadEFU, datos.equilibrioEFU, datos.marchaEFU, datos.movilidadHombroEFU, datos.movilidadCodoEFU,
                 datos.movilidadMuniecaEFU, datos.signoTinelEFU, datos.signoPhalenEFU, datos.movilidadManosEFU, datos.movilidadCaderaEFU, datos.movilidadRodillaEFU,
                 datos.movilidadTobilloEFU, datos.movilidadCuelloEFU, datos.rOTVisipitalEFU, datos.rOTRotuleanoEFU, datos.extencionEFU, datos.sensibilidadCaraAnteriorEFU,
                 datos.eversionPiesEFU, datos.sensibilidadCaraLateralEFU, datos.rOTAquileanoEFU, datos.signoLasegueEFU, datos.indiceWellsEFU, datos.observacionEFU,
-
                 FormatDate(datos.fechaRxToraxEPA), datos.resultadoRxToraxEPA, datos.observacionesRxToraxEPA, FormatDate(datos.fechaEspirometriaEPA),
                 datos.resultadoEspirometriaEPA, datos.observacionesEspirometriaEPA, FormatDate(datos.fechaAudiometriaEPA), datos.resultadoAudiometriaEPA,
                 datos.observacionesAudiometriaEPA, FormatDate(datos.fechaVisiometriaEPA), datos.resultadoVisiometriaEPA, datos.observacionesVisiometriaEPA,
@@ -211,31 +178,26 @@ const Occupationalexamination = () => {
                 FormatDate(datos.fechaEkgEPA), datos.resultadoEkgEPA, datos.observacionesEkgEPA, FormatDate(datos.fechaRnmLumbosacraEPA),
                 datos.resultadoRnmLumbosacraEPA, datos.observacionesRnmLumbosacraEPA, FormatDate(datos.fechaRnmCervicalEPA), datos.resultadoRnmCervicalEPA,
                 datos.observacionesRnmCervicalEPA, datos.observacionEPA,
-
-                datos.dxID, datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
-
+                JSON.stringify(arrays.dx), datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
                 FormatDate(datos.fechaConceptoNETA), datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.motivoAplazoNETA, datos.descripcionResultadoNETA,
                 datos.recomendacionesNETA, datos.remitidoNETA, datos.remididoDondeNETA,
-
                 datos.idRiesgoCardiovascularNEMTA, datos.idClasificacionNEMTA, datos.idMenorEdadNEMTA, datos.idMujerEmbarazadaNEMTA, datos.idArimiaNEMTA,
                 datos.idEnfermedadNEMTA, datos.idHistoriaNEMTA, datos.idHipertensionNEMTA, datos.idHipertrigliceridemiaNEMTA, datos.idCifrasNEMTA,
                 datos.idDiabetesNEMTA, datos.idDislipidemiaNEMTA, datos.idDiagnosticoNEMTA, datos.idRiesgoCardiovascular1NEMTA, datos.idRiesgoCardiovascular2NEMTA,
                 datos.idHipertiroidismoNEMTA, datos.idAlteracionAuditivaNEMTA, datos.idVertigoAlteracionesNEMTA, datos.idEpilegsiaNEMTA, datos.idCegueraTemporalNEMTA,
                 datos.idHistoriaFobiasNEMTA, datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA,
                 datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, datos.conceptoActitudMedicoNEMTA,
-
-                FormatDate(datos.fechaFRA), datos.tencionFRA, datos.idTencionArterialFRA, datos.idAntecedenteCardiovascularFRA, datos.idDeporteFRA, datos.idBebidaFRA,
-                FormatDate(datos.fechaLaboratorioFRA), datos.colesterolTotalFRA, datos.hDLFRA, datos.triglicericosFRA, datos.idMetabolicoFRA, datos.glisemiaFRA,
-                datos.fumaFRA, datos.observacionFRA, datos.lDLFRA, datos.relacionFRA, datos.fRLEdadFRA, datos.fRLColesterolFRA, datos.fRHDLFRA, datos.fRGlisemiaFRA,
-                datos.fRTencionFRA, datos.fRTabaquismoFRA, datos.puntajeFRA, datos.riesgoAbsolutoFRA, datos.riesgoRelativoFRA, datos.interpretacionFRA,
+                FormatDate(datos.fechaFRA), Number(datos.tencionFRA), datos.idTencionArterialFRA, JSON.stringify(arrays.antecedentesCardio), datos.idDeporteFRA, datos.idBebidaFRA,
+                FormatDate(datos.fechaLaboratorioFRA), Number(datos.colesterolTotalFRA), Number(datos.hDLFRA), Number(datos.triglicericosFRA), JSON.stringify(arrays.metabolico),
+                Number(datos.glisemiaFRA), datos.fumaFRA, datos.observacionFRA, Number(datos.lDLFRA), Number(datos.relacionFRA), Number(datos.fRLEdadFRA), Number(datos.fRLColesterolFRA),
+                Number(datos.fRHDLFRA), Number(datos.fRGlisemiaFRA), Number(datos.fRTencionFRA), Number(datos.fRTabaquismoFRA), Number(datos.puntajeFRA), Number(datos.riesgoAbsolutoFRA),
+                Number(datos.riesgoRelativoFRA), datos.interpretacionFRA
             );
-
             console.log("Datos  = ", DataToInset);
 
-
-            /* if (Object.keys(datos.length !== 0)) {
-                const result = await InsertEmployee(datos);
-                if (result.status === 200) { PostOccupationalExamination
+            if (Object.keys(datos.length !== 0)) {
+                const result = await InsertOccupationalExamination(DataToInset);
+                if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,
                         open: true,
@@ -246,9 +208,8 @@ const Occupationalexamination = () => {
                         transition: 'SlideUp'
                     })
                     reset();
-                    CleanCombo();
                 }
-            } */
+            }
         } catch (error) {
             console.log(error);
         }
@@ -278,7 +239,7 @@ const Occupationalexamination = () => {
                                     <Typography variant="h6">{lsEmployee.nameGenero}</Typography>
                                 </Grid>
                                 <Grid item>
-                                    <Typography variant="h6">{FormatDate(lsEmployee.fechaNaci)}</Typography>
+                                    <Typography variant="h6">{ViewFormat(lsEmployee.fechaNaci)}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid> : <Grid item xs={7}></Grid>}
@@ -300,7 +261,7 @@ const Occupationalexamination = () => {
                     <Grid item xs={6}>
                         <FormProvider {...methods}>
                             <InputSelect
-                                name="atencion"
+                                name="idAtencion"
                                 label="Atención"
                                 defaultValue=""
                                 options={lsAtencionEMO}
@@ -361,7 +322,7 @@ const Occupationalexamination = () => {
                 <Emo
                     errors={errors}
                     setArrays={setArrays}
-                    arrays={arrays.vacuna}
+                    arrays={arrays}
                     {...methods} />
             </TabPanel>
 
@@ -385,4 +346,4 @@ const Occupationalexamination = () => {
     );
 };
 
-export default Occupationalexamination;
+export default OccupationalExamination;

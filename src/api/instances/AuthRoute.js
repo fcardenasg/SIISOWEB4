@@ -57,6 +57,9 @@ export const Url = {
     AusentismoLaboral: 'api/AusentismoLaboral',
     AusentismoLaboralId: 'api/AusentismoLaboral/id',
 
+    HistoriaClinicaOcupacional: 'api/HistoriaClinicaOcupacional',
+    HistoriaClinicaOcupacionalId: 'api/HistoriaClinicaOcupacional/id',
+
     TipoAtencion: 'api/TipoAtencion',
     AtencionGetAllByTipoAtencion: 'api/Atencion/GetAllByTipoAtencion',
     Atencion: 'api/Atencion',

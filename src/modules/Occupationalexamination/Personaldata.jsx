@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 
 import PropTypes from 'prop-types';
-import { FormatDate } from 'components/helpers/Format';
+import { ViewFormat } from 'components/helpers/Format';
 import User from 'assets/img/user.png'
 import Avatar from 'ui-component/extended/Avatar';
 import SubCard from 'ui-component/cards/SubCard';
@@ -87,20 +87,23 @@ const PersonalData = ({ lsEmployee }) => {
                             <Avatar sx={{ width: 60, height: 60 }} alt="Foto del Empleado" src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
                         </Grid>
 
-                        <Grid item xs zeroMinWidth>
-                            <Typography align="left" variant="h4">
-                                {lsEmployee.nombres}
-                            </Typography>
-                            <Typography align="left" variant="h7">
-                                {lsEmployee.nameGenero}
-                            </Typography>
-                            <Typography align="left" variant="subtitle2">
-                                {FormatDate(lsEmployee.fechaNaci)}
-                            </Typography>
-                            <Typography align="left" variant="subtitle2">
-                                {lsEmployee.nameEstadoCivil}
-                            </Typography>
-                        </Grid>
+                        {lsEmployee.length != 0 ?
+                            <Grid item xs zeroMinWidth>
+                                <Typography align="left" variant="h4">
+                                    {lsEmployee.nombres}
+                                </Typography>
+                                <Typography align="left" variant="h7">
+                                    {lsEmployee.nameGenero}
+                                </Typography>
+                                <Typography align="left" variant="subtitle2">
+                                    {ViewFormat(lsEmployee.fechaNaci)}
+                                </Typography>
+                                <Typography align="left" variant="subtitle2">
+                                    {lsEmployee.nameEstadoCivil}
+                                </Typography>
+                            </Grid>
+                            : <></>}
+
                     </Grid>
 
                     <List component="nav" aria-label="main mailbox folders">
@@ -129,7 +132,7 @@ const PersonalData = ({ lsEmployee }) => {
                         <ListDetails name={DetailsViewTwo[6].name} campoRender={lsEmployee.nameGrupo} />
                         <ListDetails name={DetailsViewTwo[7].name} campoRender={lsEmployee.nameTurno} />
                         <ListDetails name={DetailsViewTwo[8].name} campoRender={lsEmployee.nameTipoContrato} />
-                        <ListDetails name={DetailsViewTwo[9].name} campoRender={FormatDate(lsEmployee.fechaContrato)} />
+                        <ListDetails name={DetailsViewTwo[9].name} campoRender={ViewFormat(lsEmployee.fechaContrato)} />
                         <ListDetails name={DetailsViewTwo[11].name} campoRender={lsEmployee.ges} />
                     </Grid>
                 </SubCard>

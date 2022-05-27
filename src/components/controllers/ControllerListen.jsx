@@ -8,12 +8,22 @@ import { gridSpacing } from 'store/constant';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { useTheme } from '@mui/material/styles';
 
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-const mic = new SpeechRecognition();
+var colors = ['punto y coma', 'coma', 'punto'];
+var grammar = '#JSGF V1.0; grammar colors; public <color> = ' + colors.join(' , ') + ' - '
 
-mic.continuous = true;
-mic.interimResults = true;
-mic.lang = 'es-ES';
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
+
+const recognition = new SpeechRecognition();
+const speechRecognitionList = new SpeechGrammarList();
+
+speechRecognitionList.addFromString(grammar, 1);
+
+recognition.grammars = speechRecognitionList;
+recognition.continuous = true;
+recognition.interimResults = true;
+recognition.lang = 'es-ES'
+recognition.maxAlternatives = 1;
 
 const ControllerListen = () => {
     const theme = useTheme();
@@ -24,27 +34,29 @@ const ControllerListen = () => {
     const handleListen = () => {
         try {
             if (isListening) {
-                mic.start()
-                mic.onend = () => {
+                recognition.start()
+                recognition.onend = () => {
                     console.log('continue..')
-                    mic.start()
+                    recognition.start()
                 }
             } else {
-                mic.stop()
-                mic.onend = () => {
+                recognition.stop()
+                recognition.onend = () => {
                     console.log('Stopped Mic on Click')
                 }
             }
-            mic.onstart = () => {
+            recognition.onstart = () => {
                 console.log('Mics on')
             }
-            mic.onresult = event => {
+            recognition.onresult = event => {
+                console.log("Evento = ", event);
                 const transcript = Array.from(event.results)
                     .map(result => result[0])
                     .map(result => result.transcript)
                     .join('')
                 setTextNote(transcript);
-                mic.onerror = event => {
+
+                recognition.onerror = event => {
                     console.log(event.error)
                 }
             }

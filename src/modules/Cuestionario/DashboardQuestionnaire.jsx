@@ -374,8 +374,6 @@ const DashboardQuestionnaire = () => {
         }
     }
 
-    const navigate = useNavigate();
-
     return (
         <MainCard title="Cuestionario De Salud">
             <Grid xs={12} sx={{ pt: 3 }}>

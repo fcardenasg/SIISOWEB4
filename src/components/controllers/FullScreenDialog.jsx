@@ -9,7 +9,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const FullScreenDialogs = ({ open, handleClose, title, children }) => {
+const FullScreenDialog = ({ open, handleClose, title, children }) => {
     return (
         <Dialog
             fullScreen
@@ -40,9 +40,9 @@ const FullScreenDialogs = ({ open, handleClose, title, children }) => {
     );
 }
 
-export default FullScreenDialogs;
+export default FullScreenDialog;
 
-FullScreenDialogs.propTypes = {
+FullScreenDialog.propTypes = {
     open: PropTypes.bool,
     title: PropTypes.string,
     handleClose: PropTypes.func,

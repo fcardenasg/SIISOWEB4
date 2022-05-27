@@ -45,7 +45,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { PutEvolutionNote } from 'formatdata/EvolutionNoteForm';
 import { GetByIdEvolutionNote, UpdateEvolutionNotes } from 'api/clients/EvolutionNoteClient';
-import FullScreenDialogs from 'components/form/FullScreenDialogs';
+import FullScreenDialogs from 'components/controllers/FullScreenDialog';
 import ListEvolutionnotes from './ListEvolutionNote';
 import { FormatDate } from 'components/helpers/Format';
 

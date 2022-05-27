@@ -4,7 +4,6 @@ import {
     FormControlLabel
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Controller } from 'react-hook-form';
 
 const InputCheck = ({ onChange, checked, label, size }) => {
     const theme = useTheme();

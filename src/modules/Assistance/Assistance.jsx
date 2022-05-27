@@ -46,7 +46,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { PostAssistance } from 'formatdata/AssistanceForm';
 import { InsertMedicalHistory } from 'api/clients/MedicalHistoryClient';
-import FullScreenDialogs from 'components/form/FullScreenDialogs';
+import FullScreenDialogs from 'components/controllers/FullScreenDialog';
 import ListAssistance from './ListAssistance';
 
 // Audio

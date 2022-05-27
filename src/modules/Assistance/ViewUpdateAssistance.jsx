@@ -45,7 +45,7 @@ import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { PutAssistance } from 'formatdata/AssistanceForm';
 import { UpdateMedicalHistorys, GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
 import Cargando from 'components/Cargando';
-import FullScreenDialogs from 'components/form/FullScreenDialogs';
+import FullScreenDialogs from 'components/controllers/FullScreenDialog';
 import ListAssistance from './ListAssistance';
 
 // Audio

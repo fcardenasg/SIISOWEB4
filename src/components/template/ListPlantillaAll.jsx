@@ -1,9 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-// Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
@@ -24,20 +22,16 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
+
 import { visuallyHidden } from '@mui/utils';
 
-// Import de proyectos
-import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { GetAllTemplate, DeleteTemplate } from 'api/clients/TemplateClient';
 
-// Iconos y masss
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -51,7 +45,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -62,7 +55,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
         id: 'id',
@@ -89,10 +81,6 @@ const headCells = [
         align: 'left'
     }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
     const createSortHandler = (property) => (event) => {
@@ -144,13 +132,10 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
-const ListCatalog = () => {
+const ListPlantillaAll = () => {
     const dispatch = useDispatch();
     const [lsTemplate, setLsTemplate] = useState([]);
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -160,7 +145,6 @@ const ListCatalog = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServer = await GetAllTemplate(0, 0);
@@ -171,12 +155,10 @@ const ListCatalog = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -205,7 +187,6 @@ const ListCatalog = () => {
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -225,7 +206,6 @@ const ListCatalog = () => {
 
     return (
         <>
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -246,14 +226,12 @@ const ListCatalog = () => {
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
                         numSelected={selected.length}
                         order={order}
                         orderBy={orderBy}
-                        /* onSelectAllClick={handleSelectAllClick} */
                         onRequestSort={handleRequestSort}
                         rowCount={lsTemplate.length}
                         theme={theme}
@@ -263,7 +241,6 @@ const ListCatalog = () => {
                         {stableSort(lsTemplate, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
                                 const labelId = `enhanced-table-checkbox-${index}`;
@@ -274,14 +251,11 @@ const ListCatalog = () => {
                                         tabIndex={-1}
                                         key={index}
                                     >
-                                        {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
 
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            /* onClick={(event) => handleClick(event, row.idCatalogo)} */
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
@@ -298,7 +272,6 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            /* onClick={(event) => handleClick(event, row.idCatalogo)} */
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -314,7 +287,6 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            /* onClick={(event) => handleClick(event, row.idCatalogo)} */
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -330,7 +302,6 @@ const ListCatalog = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            /* onClick={(event) => handleClick(event, row.idCatalogo)} */
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -382,7 +353,6 @@ const ListCatalog = () => {
                 </Table>
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
@@ -396,4 +366,4 @@ const ListCatalog = () => {
     );
 };
 
-export default ListCatalog;
+export default ListPlantillaAll;

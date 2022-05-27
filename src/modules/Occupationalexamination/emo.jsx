@@ -7,9 +7,10 @@ import {
 } from '@mui/material';
 
 import ControllerListen from 'components/controllers/ControllerListen';
-import ControlModal from 'components/form/ControlModal';
+import ControlModal from 'components/controllers/ControlModal';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import InputCheckBox from 'components/input/InputCheckBox';
+import InputCheck from 'components/input/InputCheck';
 import Accordion from 'components/accordion/Accordion';
 import { FormProvider } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
@@ -22,64 +23,201 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { IconEdit } from '@tabler/icons';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo } from 'components/helpers/Enums';
+import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
-
-
-const MaperCatalogo = async (idTipoCatalogo) => {
-    try {
-        const lsServerCatalog = await GetAllByTipoCatalogo(0, 0, idTipoCatalogo);
-        if (lsServerCatalog.status === 200) {
-            var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            return resultCatalogo;
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
+import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import FullScreenDialog from 'components/controllers/FullScreenDialog'
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
 const Emo = ({ errors, setArrays, arrays, ...methods }) => {
     const theme = useTheme();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
     const [open, setOpen] = useState(false);
+    const [openTemplate, setOpenTemplate] = useState(false);
+    const [openViewPdf, setOpenViewPdf] = useState(false);
 
-    const [lsSupplier, setSupplier] = useState([]);
-    const [catalog, setCatalog] = useState([]);
     const [lsVacuna, setLsVacuna] = useState([]);
+    const [lsDeporte, setLsDeporte] = useState([]);
+    const [lsTipoFobia, setLsTipoFobia] = useState([]);
+    const [lsFrecuencia, setLsFrecuencia] = useState([]);
 
-    /* INMUNIZACIONES */
-    const [vacunasIM, setVacunasIM] = useState([]);
+    const [lsPariente, setLsPariente] = useState([]);
+    const [lsGineMetodo, setLsGineMetodo] = useState([]);
+    const [lsBiotipo, setLsBiotipo] = useState([]);
+    const [lsResultado, setLsResultado] = useState([]);
+    const [lsConceptoActitud, setLsConceptoActitud] = useState([]);
+    const [lsCie11, setLsCie11] = useState([]);
+    const [lsCiclos, setLsCiclos] = useState([]);
 
-    /* HÁBITOS */
-    const [parentescoHB, setParentescoHB] = useState([]);
-    const [tipoFobiaHB, setTipoFobiaHB] = useState([]);
+    const [lsNeConceptoActi, setLsNeConceptoActi] = useState([]);
+    const [lsOpcion, setLsOpcion] = useState([]);
+    const [lsNeADonde, setLsNeADonde] = useState([]);
+    const [lsRiesClasifi, setLsRiesClasifi] = useState([]);
 
-    /* IMPRESIÓN DIAGNÓSTICA Y CONCEPTO FINAL */
-    const [dxID, setDxID] = useState([]);
+    const [lsFramDeporte, setLsFramDeporte] = useState([]);
+    const [lsFramBebida, setLsFramBebida] = useState([]);
+    const [lsFramDxMetabolismo, setLsFramDxMetabolismo] = useState([]);
+    const [lsFramDxTension, setLsFramDxTension] = useState([]);
+    const [lsFramAntecedentesCardiovascular, setLsFramAntecedentesCardiovascular] = useState([]);
 
-    /* FRAMINGHAM - INFORMACIÓN CARDIOVASCULAR */
-    const [idAntecedenteCardiovascularFRA, setIdAntecedenteCardiovascularFRA] = useState([]);
-    const [idMetabolicoFRA, setIdMetabolicoFRA] = useState([]);
+    const [estadoVacuna, setEstadoVacuna] = useState({
+        tetanoIM: false,
+        influenzaIM: false,
+        fiebreAmarillaIM: false,
+        rubeolaSarampionIM: false,
+        covid19IM: false,
+        otrasIM: false,
+    });
 
     async function GetAll() {
         try {
-            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Proveedor);
-            var resultSupplier = lsServerSupplier.data.entities.map((item) => ({
-                nombre: item.nombre
+            const lsServerCie11 = await GetAllCIE11(0, 0);
+            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                value: item.id,
+                label: item.dx
             }));
-            setSupplier(resultSupplier);
+            setLsCie11(resultCie11);
 
-            setCatalog(await MaperCatalogo(CodCatalogo.Area));
-            setLsVacuna(await MaperCatalogo(CodCatalogo.HCO_VACUNAS));
+            const lsServerRiesClasifi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RIES_CLASI);
+            var resultRiesClasifi = lsServerRiesClasifi.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsRiesClasifi(resultRiesClasifi);
+
+            const lsServerFramDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_FRAM_DEPOR);
+            var resultFramDeporte = lsServerFramDeporte.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsFramDeporte(resultFramDeporte);
+
+            const lsServerFramBebida = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_FRAM_BEBIDAS);
+            var resultFramBebida = lsServerFramBebida.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsFramBebida(resultFramBebida);
+
+            const lsServerFramDxMetabolismo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_DXMETA);
+            var resultFramDxMetabolismo = lsServerFramDxMetabolismo.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsFramDxMetabolismo(resultFramDxMetabolismo);
+
+            const lsServerFramDxTension = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_DXTENSI);
+            var resultFramDxTension = lsServerFramDxTension.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+
+            setLsFramDxTension(resultFramDxTension);
+
+            const lsServerFramAntecedentesCardiovascular = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_ANTE_CARDIOVAS);
+            var resultFramAntecedentesCardiovascular = lsServerFramAntecedentesCardiovascular.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsFramAntecedentesCardiovascular(resultFramAntecedentesCardiovascular);
+
+            const lsServerNeConceptoActi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_NECONCEPTOAC);
+            var resultNeConceptoActi = lsServerNeConceptoActi.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsNeConceptoActi(resultNeConceptoActi);
+
+            const lsServerOpcion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.OPT_SINO);
+            var resultOpcion = lsServerOpcion.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsOpcion(resultOpcion);
+
+            const lsServerNeADonde = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_NEADONDE);
+            var resultNeADonde = lsServerNeADonde.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsNeADonde(resultNeADonde);
+
+            const lsServerCiclos = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_GINECOCICLO);
+            var resultCiclos = lsServerCiclos.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCiclos(resultCiclos);
+
+            const lsServerPariente = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_PARENTES);
+            var resultPariente = lsServerPariente.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsPariente(resultPariente);
+
+            const lsServerGineMetodo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_GINECOMETO);
+            var resultGineMetodo = lsServerGineMetodo.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsGineMetodo(resultGineMetodo);
+
+            const lsServerBiotipo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_BIOTIPO);
+            var resultBiotipo = lsServerBiotipo.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsBiotipo(resultBiotipo);
+
+            const lsServerResultado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULT);
+            var resultResultado = lsServerResultado.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsResultado(resultResultado);
+
+            const lsServerConceptoActitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_ACTIPSI);
+            var resultConceptoActitud = lsServerConceptoActitud.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsConceptoActitud(resultConceptoActitud);
+
+            const lsServerVacuna = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_VACUNAS);
+            var resultVacuna = lsServerVacuna.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsVacuna(resultVacuna);
+
+            const lsServerDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HC_DEPOR);
+            var resultDeporte = lsServerDeporte.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsDeporte(resultDeporte);
+
+            const lsServerFrecuencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_FRECUENCIAS);
+            var resultFrecuencia = lsServerFrecuencia.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsFrecuencia(resultFrecuencia);
+
+            const lsServerTipoFobia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HC_TIFOBIA);
+            var resultTipoFobia = lsServerTipoFobia.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsTipoFobia(resultTipoFobia);
 
         } catch (error) {
             console.log(error);
@@ -88,14 +226,8 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
 
     useEffect(() => {
         GetAll();
-    }, [])
+    }, []);
 
-    const handleOpen = () => {
-        setOpen(true);
-    }
-
-    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    /* { resolver: yupResolver(validationSchema) } */
 
     return (
         <Fragment>
@@ -107,6 +239,22 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
             >
                 <ControllerListen />
             </ControlModal>
+
+            <FullScreenDialog
+                open={openTemplate}
+                title="LISTADO DE PLANTILLA"
+                handleClose={() => setOpenTemplate(false)}
+            >
+                <ListPlantillaAll />
+            </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openViewPdf}
+                title="VISTA DE PDF"
+                handleClose={() => setOpenViewPdf(false)}
+            >
+
+            </FullScreenDialog>
 
             <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES PATALÓGICOS</Typography>}>
 
@@ -449,19 +597,19 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                 <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                     <DetailedIcon
                         title={DetailIcons[0].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpenTemplate(true)}
                         icons={DetailIcons[0].icons}
                     />
 
                     <DetailedIcon
                         title={DetailIcons[1].title}
-                        onClick={handleOpen}
+                        onClick={() => setOpen(true)}
                         icons={DetailIcons[1].icons}
                     />
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpenViewPdf(true)}
                         icons={DetailIcons[2].icons}
                     />
                 </Grid>
@@ -503,26 +651,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                 <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                     <DetailedIcon
                         title={DetailIcons[0].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpenTemplate(true)}
                         icons={DetailIcons[0].icons}
                     />
 
                     <DetailedIcon
                         title={DetailIcons[1].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpen(true)}
                         icons={DetailIcons[1].icons}
                     />
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpenViewPdf(true)}
                         icons={DetailIcons[2].icons}
-                    />
-
-                    <DetailedIcon
-                        title={DetailIcons[3].title}
-                        onClick={() => alert("Hola Mundo")}
-                        icons={DetailIcons[3].icons}
                     />
                 </Grid>
 
@@ -560,26 +702,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                 <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                     <DetailedIcon
                         title={DetailIcons[0].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpenTemplate(true)}
                         icons={DetailIcons[0].icons}
                     />
 
                     <DetailedIcon
                         title={DetailIcons[1].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpen(true)}
                         icons={DetailIcons[1].icons}
                     />
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpenViewPdf(true)}
                         icons={DetailIcons[2].icons}
-                    />
-
-                    <DetailedIcon
-                        title={DetailIcons[3].title}
-                        onClick={() => alert("Hola Mundo")}
-                        icons={DetailIcons[3].icons}
                     />
                 </Grid>
 
@@ -587,100 +723,161 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
             <Grid sx={{ pb: 2 }} />
 
             <SubCard darkTitle title={<Typography variant="h4">INMUNIZACIONES</Typography>}>
-                <Grid container spacing={3} sx={{ pb: 1, pt: 1 }}  >
-                    <Grid item xs={12} >
-                        <InputMultiSelects
-                            fullWidth
-                            onChange={(event, value) => setArrays({ vacuna: value })}
-                            value={arrays.vacuna}
-                            label="Vacuna"
-                            options={lsVacuna}
+                <Grid container spacing={3} sx={{ pb: 1, pt: 1 }}>
+
+                    <Grid item xs={2} >
+                        <InputCheck
+                            label="Tetano"
+                            onChange={(e) => setEstadoVacuna({ ...estadoVacuna, tetanoIM: e.target.checked })}
+                            size={30}
+                            checked={estadoVacuna.tetano}
                         />
                     </Grid>
 
                     <Grid item xs={2} >
                         <FormProvider {...methods}>
-                            <InputText
-                                type="number"
-                                defaultValue=""
-                                fullWidth
-                                name="anioVacuna1IM"
-                                label="Año"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                            <InputCheckBox
+                                label="Influenza"
+                                name="influenzaIM"
+                                size={30}
+                                defaultValue={false}
+                            />
+                        </FormProvider>
+                        <InputCheck
+                            label="Influenza"
+                            onChange={(e) => setEstadoVacuna({ ...estadoVacuna, influenzaIM: e.target.checked })}
+                            size={30}
+                            checked={estadoVacuna.influenzaIM}
+                        />
+                    </Grid>
+
+                    <Grid item xs={2} >
+                        <FormProvider {...methods}>
+                            <InputCheckBox
+                                label="Fiebre Amarilla"
+                                name="fiebreAmarillaIM"
+                                size={30}
+                                defaultValue={false}
                             />
                         </FormProvider>
                     </Grid>
 
                     <Grid item xs={2} >
                         <FormProvider {...methods}>
-                            <InputText
-                                type="number"
-                                defaultValue=""
-                                fullWidth
-                                name="anioVacuna2IM"
-                                label="Año"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                            <InputCheckBox
+                                label="Rubéola - Sarampión"
+                                name="rubeolaSarampionIM"
+                                size={30}
+                                defaultValue={false}
                             />
                         </FormProvider>
                     </Grid>
 
                     <Grid item xs={2} >
                         <FormProvider {...methods}>
-                            <InputText
-                                type="number"
-                                defaultValue=""
-                                fullWidth
-                                name="anioVacuna3IM"
-                                label="Año"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                            <InputCheckBox
+                                label="COVID-19"
+                                name="covid19IM"
+                                size={30}
+                                defaultValue={false}
                             />
                         </FormProvider>
                     </Grid>
 
                     <Grid item xs={2} >
                         <FormProvider {...methods}>
-                            <InputText
-                                type="number"
-                                defaultValue=""
-                                fullWidth
-                                name="anioVacuna4IM"
-                                label="Año"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                            <InputCheckBox
+                                label="Otras"
+                                name="otrasIM"
+                                size={30}
+                                defaultValue={false}
                             />
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={2} >
-                        <FormProvider {...methods}>
-                            <InputText
-                                type="number"
-                                defaultValue=""
-                                fullWidth
-                                name="anioVacuna5IM"
-                                label="Año"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                    {estadoVacuna.tetano ?
+                        <Grid item xs={2}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="anioVacuna1IM"
+                                    label="Año"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid> : <></>}
 
-                    <Grid item xs={2} >
-                        <FormProvider {...methods}>
-                            <InputText
-                                type="number"
-                                defaultValue=""
-                                fullWidth
-                                name="anioVacuna6IM"
-                                label="Año"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                    {lsVacuna.value === DefaultValue.HCOVA_INFLUENZA ?
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="anioVacuna2IM"
+                                    label="Año"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        : lsVacuna.value === DefaultValue.HCOVA_FIEBRE_AMA ?
+                            <Grid item xs={2} >
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        type="number"
+                                        defaultValue=""
+                                        fullWidth
+                                        name="anioVacuna3IM"
+                                        label="Año"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                            : lsVacuna.value === DefaultValue.HCOVA_RUBEOLA_SAR ?
+                                <Grid item xs={2} >
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            type="number"
+                                            defaultValue=""
+                                            fullWidth
+                                            name="anioVacuna4IM"
+                                            label="Año"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid> : lsVacuna.value === DefaultValue.HCOVA_COVID_19 ?
+                                    <Grid item xs={2} >
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                type="number"
+                                                defaultValue=""
+                                                fullWidth
+                                                name="anioVacuna5IM"
+                                                label="Año"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    : lsVacuna.value === DefaultValue.HCOVA_OTRAS ? <Grid item xs={2} >
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                type="number"
+                                                defaultValue=""
+                                                fullWidth
+                                                name="anioVacuna6IM"
+                                                label="Año"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid> : <></>}
                 </Grid>
             </SubCard>
             <Grid sx={{ pb: 2 }} />
@@ -841,7 +1038,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="idFrecuenciaDeporteHB"
                                 label="Frecuencia Deporte"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsFrecuencia}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -854,7 +1051,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="idCualDeporteHB"
                                 label="Cual Deporte"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsDeporte}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -919,7 +1116,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="idFrecuenciaBebidaAlHB"
                                 label="Frecuencia de Bebidas"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsFrecuencia}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -955,10 +1152,10 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                     <Grid item xs={5} >
                         <InputMultiSelects
                             fullWidth
-                            onChange={(event, value) => setTipoFobiaHB(value)}
-                            value={tipoFobiaHB}
+                            onChange={(event, value) => setArrays({ ...arrays, tipoFobia: value })}
+                            value={arrays.tipoFobia}
                             label="Tipo de Fobia"
-                            options={lsSupplier}
+                            options={lsTipoFobia}
                         />
                     </Grid>
 
@@ -991,10 +1188,10 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                     <Grid item xs={5} >
                         <InputMultiSelects
                             fullWidth
-                            onChange={(event, value) => setParentescoHB(value)}
-                            value={parentescoHB}
+                            onChange={(event, value) => setArrays({ ...arrays, parentesco: value })}
+                            value={arrays.parentesco}
                             label="Parentesco"
-                            options={lsSupplier}
+                            options={lsPariente}
                         />
                     </Grid>
 
@@ -1037,7 +1234,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="idCiclosGO"
                                 label="Ciclos"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsCiclos}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -1289,7 +1486,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="idMetodoGO"
                                 label="Método"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsGineMetodo}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -1316,7 +1513,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="idResultadoGO"
                                 label="Resultado"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsResultado}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -1501,26 +1698,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                 <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                     <DetailedIcon
                         title={DetailIcons[0].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpenTemplate(true)}
                         icons={DetailIcons[0].icons}
                     />
 
                     <DetailedIcon
                         title={DetailIcons[1].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpen(true)}
                         icons={DetailIcons[1].icons}
                     />
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpenViewPdf(true)}
                         icons={DetailIcons[2].icons}
-                    />
-
-                    <DetailedIcon
-                        title={DetailIcons[3].title}
-                        onClick={() => alert("Hola Mundo")}
-                        icons={DetailIcons[3].icons}
                     />
                 </Grid>
 
@@ -1682,7 +1873,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                     name="idBiotipoEF"
                                     label="Biotipo"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsBiotipo}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -2174,26 +2365,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                         <DetailedIcon
                             title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpenTemplate(true)}
                             icons={DetailIcons[0].icons}
                         />
 
                         <DetailedIcon
                             title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpen(true)}
                             icons={DetailIcons[1].icons}
                         />
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpenViewPdf(true)}
                             icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
                         />
                     </Grid>
                 </SubCard>
@@ -2461,26 +2646,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                 <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                     <DetailedIcon
                         title={DetailIcons[0].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpenTemplate(true)}
                         icons={DetailIcons[0].icons}
                     />
 
                     <DetailedIcon
                         title={DetailIcons[1].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpen(true)}
                         icons={DetailIcons[1].icons}
                     />
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => alert("Hola Mundo")}
+                        onClick={() => setOpenViewPdf(true)}
                         icons={DetailIcons[2].icons}
-                    />
-
-                    <DetailedIcon
-                        title={DetailIcons[3].title}
-                        onClick={() => alert("Hola Mundo")}
-                        icons={DetailIcons[3].icons}
                     />
                 </Grid>
             </SubCard>
@@ -2504,14 +2683,14 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="resultadoRxToraxEPA"
                                 label="Resultado"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsResultado}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
+                    <Grid item xs={5}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2524,34 +2703,26 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[0].icons}
-                        />
+                    <Grid item xs={3}>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[1].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => setOpenViewPdf(true)}
+                                icons={DetailIcons[2].icons}
+                            />
+                        </Grid>
                     </Grid>
 
                     <Grid item xs={2}>
@@ -2570,14 +2741,14 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="resultadoEspirometriaEPA"
                                 label="Resultado"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsResultado}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4} >
+                    <Grid item xs={5}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2590,34 +2761,26 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[0].icons}
-                        />
+                    <Grid item xs={3}>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[1].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => setOpenViewPdf(true)}
+                                icons={DetailIcons[2].icons}
+                            />
+                        </Grid>
                     </Grid>
 
                     <Grid item xs={2}>
@@ -2636,14 +2799,14 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="resultadoAudiometriaEPA"
                                 label="Resultado"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsResultado}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
+                    <Grid item xs={5}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2656,34 +2819,26 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[0].icons}
-                        />
+                    <Grid item xs={3}>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[1].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => setOpenViewPdf(true)}
+                                icons={DetailIcons[2].icons}
+                            />
+                        </Grid>
                     </Grid>
 
                     <Grid item xs={2}>
@@ -2702,14 +2857,14 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="resultadoVisiometriaEPA"
                                 label="Resultado"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsResultado}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4} >
+                    <Grid item xs={5} >
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2722,34 +2877,26 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[0].icons}
-                        />
+                    <Grid item xs={3}>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[1].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => setOpenViewPdf(true)}
+                                icons={DetailIcons[2].icons}
+                            />
+                        </Grid>
                     </Grid>
 
                     <Grid item xs={2}>
@@ -2768,14 +2915,14 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="resultadoLaboratorioClinicoEPA"
                                 label="Resultado"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsResultado}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
+                    <Grid item xs={5}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2788,34 +2935,26 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[0].icons}
-                        />
+                    <Grid item xs={3}>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[1].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => setOpenViewPdf(true)}
+                                icons={DetailIcons[2].icons}
+                            />
+                        </Grid>
                     </Grid>
 
                     <Grid item xs={2}>
@@ -2834,14 +2973,14 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="resultadoCuestionarioSintomaEPA"
                                 label="Resultado"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsResultado}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
+                    <Grid item xs={5}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2854,34 +2993,26 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[0].icons}
-                        />
+                    <Grid item xs={3}>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[1].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => setOpenViewPdf(true)}
+                                icons={DetailIcons[2].icons}
+                            />
+                        </Grid>
                     </Grid>
 
                     <Grid item xs={2}>
@@ -2900,14 +3031,14 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="resultadoEkgEPA"
                                 label="Resultado"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsResultado}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4} >
+                    <Grid item xs={5}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2920,34 +3051,26 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[0].icons}
-                        />
+                    <Grid item xs={3}>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[1].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => setOpenViewPdf(true)}
+                                icons={DetailIcons[2].icons}
+                            />
+                        </Grid>
                     </Grid>
 
                     <Grid item xs={2}>
@@ -2960,20 +3083,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={2} >
+                    <Grid item xs={2}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="resultadoRnmLumbosacraEPA"
                                 label="Resultado"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsResultado}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
+                    <Grid item xs={5}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2985,35 +3108,26 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                             />
                         </FormProvider>
                     </Grid>
+                    <Grid item xs={3}>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[0].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[1].icons}
-                        />
-
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => setOpenViewPdf(true)}
+                                icons={DetailIcons[2].icons}
+                            />
+                        </Grid>
                     </Grid>
 
                     <Grid item xs={2}>
@@ -3032,14 +3146,14 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                 name="resultadoRnmCervicalEPA"
                                 label="Resultado"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsResultado}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4} >
+                    <Grid item xs={5}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -3052,34 +3166,26 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid container spacing={2} justifyContent="center" alignItems="center" xs={4} sx={{ pt: 2 }}>
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[0].icons}
-                        />
+                    <Grid item xs={3}>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[1].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            xs={3}
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
-                        />
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => setOpenViewPdf(true)}
+                                icons={DetailIcons[2].icons}
+                            />
+                        </Grid>
                     </Grid>
 
                     <Grid item xs={12}>
@@ -3100,26 +3206,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                         <DetailedIcon
                             title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpenTemplate(true)}
                             icons={DetailIcons[0].icons}
                         />
 
                         <DetailedIcon
                             title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpen(true)}
                             icons={DetailIcons[1].icons}
                         />
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpenViewPdf(true)}
                             icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
                         />
                     </Grid>
                 </Grid>
@@ -3131,10 +3231,10 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                     <Grid item xs={12}>
                         <InputMultiSelects
                             fullWidth
-                            onChange={(event, value) => setDxID(value)}
-                            value={dxID}
+                            onChange={(event, value) => setArrays({ ...arrays, dx: value })}
+                            value={arrays.dx}
                             label="DX"
-                            options={lsSupplier}
+                            options={lsCie11}
                         />
                     </Grid>
 
@@ -3156,26 +3256,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                         <DetailedIcon
                             title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpenTemplate(true)}
                             icons={DetailIcons[0].icons}
                         />
 
                         <DetailedIcon
                             title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpen(true)}
                             icons={DetailIcons[1].icons}
                         />
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpenViewPdf(true)}
                             icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
                         />
                     </Grid>
 
@@ -3197,36 +3291,30 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                         <DetailedIcon
                             title={DetailIcons[0].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpenTemplate(true)}
                             icons={DetailIcons[0].icons}
                         />
 
                         <DetailedIcon
                             title={DetailIcons[1].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpen(true)}
                             icons={DetailIcons[1].icons}
                         />
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => alert("Hola Mundo")}
+                            onClick={() => setOpenViewPdf(true)}
                             icons={DetailIcons[2].icons}
-                        />
-
-                        <DetailedIcon
-                            title={DetailIcons[3].title}
-                            onClick={() => alert("Hola Mundo")}
-                            icons={DetailIcons[3].icons}
                         />
                     </Grid>
 
                     <Grid item xs={12}>
                         <FormProvider {...methods}>
                             <InputSelect
-                                name="IdConceptoActitudID"
+                                name="idConceptoActitudID"
                                 label="Concepto de Aptitud PsicoFisica"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsConceptoActitud}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -3254,10 +3342,10 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         <Grid item xs={4} >
                             <FormProvider {...methods}>
                                 <InputSelect
-                                    name="conceptoAplazadoNETA"
+                                    name="conceptoActitudNETA"
                                     label="Concepto Aptitud"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsNeConceptoActi}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -3267,10 +3355,10 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         <Grid item xs={4} >
                             <FormProvider {...methods}>
                                 <InputSelect
-                                    name="conceptoActitudNETA"
+                                    name="conceptoAplazadoNETA"
                                     label="El Concepto de aptitud debe ser aplazado"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsOpcion}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -3295,26 +3383,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
                                 title={DetailIcons[0].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
                                 title={DetailIcons[1].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
-                            />
-
-                            <DetailedIcon
-                                title={DetailIcons[3].title}
-                                onClick={() => alert("Hola Mundo")}
-                                icons={DetailIcons[3].icons}
                             />
                         </Grid>
 
@@ -3336,26 +3418,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
                                 title={DetailIcons[0].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
                                 title={DetailIcons[1].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
-                            />
-
-                            <DetailedIcon
-                                title={DetailIcons[3].title}
-                                onClick={() => alert("Hola Mundo")}
-                                icons={DetailIcons[3].icons}
                             />
                         </Grid>
 
@@ -3377,26 +3453,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
                                 title={DetailIcons[0].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
                                 title={DetailIcons[1].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
-                            />
-
-                            <DetailedIcon
-                                title={DetailIcons[3].title}
-                                onClick={() => alert("Hola Mundo")}
-                                icons={DetailIcons[3].icons}
                             />
                         </Grid>
 
@@ -3406,7 +3476,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                     name="remitidoNETA"
                                     label="Remitido"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsOpcion}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -3419,7 +3489,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                     name="remididoDondeNETA"
                                     label="A Donde:"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsNeADonde}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -3499,7 +3569,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                     name="idRiesgoCardiovascularNEMTA"
                                     label="Riesgo Cardiovascular"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsRiesClasifi}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -3511,7 +3581,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                     name="idClasificacionNEMTA"
                                     label="Clasificación"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsRiesClasifi}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -3801,26 +3871,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
                                 title={DetailIcons[0].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
                                 title={DetailIcons[1].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
-                            />
-
-                            <DetailedIcon
-                                title={DetailIcons[3].title}
-                                onClick={() => alert("Hola Mundo")}
-                                icons={DetailIcons[3].icons}
                             />
                         </Grid>
 
@@ -3830,7 +3894,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                     name="conceptoActitudMedicoNEMTA"
                                     label="Concepto de Aptitud Medica"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsNeConceptoActi}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -3875,9 +3939,9 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idTencionArterialFRA"
-                                    label="Dx Tensión Arterial "
+                                    label="Dx Tensión Arterial"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsFramDxTension}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -3887,10 +3951,10 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         <Grid item xs={4}>
                             <InputMultiSelects
                                 fullWidth
-                                onChange={(event, value) => setIdAntecedenteCardiovascularFRA(value)}
-                                value={idAntecedenteCardiovascularFRA}
+                                onChange={(event, value) => setArrays({ ...arrays, antecedentesCardio: value })}
+                                value={arrays.antecedentesCardio}
                                 label="Antecedentes Cardiovascular"
-                                options={lsSupplier}
+                                options={lsFramAntecedentesCardiovascular}
                             />
                         </Grid>
 
@@ -3900,7 +3964,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                     name="idDeporteFRA"
                                     label="Deporte"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsFramDeporte}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -3913,7 +3977,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                     name="idBebidaFRA"
                                     label="Bebidas "
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsFramBebida}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -3975,10 +4039,10 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         <Grid item xs={4}>
                             <InputMultiSelects
                                 fullWidth
-                                onChange={(event, value) => setIdMetabolicoFRA(value)}
-                                value={idMetabolicoFRA}
+                                onChange={(event, value) => setArrays({ ...arrays, metabolico: value })}
+                                value={arrays.metabolico}
                                 label="Dx Metabólico"
-                                options={lsSupplier}
+                                options={lsFramDxMetabolismo}
                             />
                         </Grid>
 
@@ -4002,7 +4066,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                     name="fumaFRA"
                                     label="Fuma"
                                     defaultValue=""
-                                    options={catalog}
+                                    options={lsOpcion}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
@@ -4027,26 +4091,20 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                         <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
                                 title={DetailIcons[0].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
                                 title={DetailIcons[1].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => alert("Hola Mundo")}
+                                onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
-                            />
-
-                            <DetailedIcon
-                                title={DetailIcons[3].title}
-                                onClick={() => alert("Hola Mundo")}
-                                icons={DetailIcons[3].icons}
                             />
                         </Grid>
 
@@ -4196,6 +4254,7 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                     defaultValue=""
                                     fullWidth
                                     type="number"
+
                                     name="riesgoRelativoFRA"
                                     label="Riesgo Relativo  "
                                     size={matchesXS ? 'small' : 'medium'}

@@ -20,6 +20,26 @@ export const CodCatalogo = {
     AtencionEMO: 5228,
 
     HCO_VACUNAS: 5229,
+    HCO_FRECUENCIAS: 5240,
+    HC_DEPOR: 5241,
+    HC_TIFOBIA: 5242,
+    HCO_PARENTES: 5243,
+    HCO_GINECOMETO: 5245,
+    HCO_GINECOCICLO: 5246,
+    HCO_GINECORESULT: 5247,
+    HCO_BIOTIPO: 5248,
+    HCO_RESULT: 5249,
+    HCO_CONCEP_ACTIPSI: 5250,
+    HCO_NECONCEPTOAC: 5251,
+    OPT_SINO: 5252,
+    HCO_NEADONDE: 5253,
+    HCO_RIES_CLASI: 5254,
+
+    HCO_DXTENSI: 5255,
+    HCO_ANTE_CARDIOVAS: 5256,
+    HCO_FRAM_DEPOR: 5257,
+    HCO_FRAM_BEBIDAS: 5258,
+    HCO_DXMETA: 5259,
 
     Proveedor: 2174,
     Pais: 1153,
@@ -63,6 +83,15 @@ export const DefaultData = {
     AsesoriaMedica: 2171,
     AsesoriaPsicologica: 2172,
     SinRegistro: 73,
+}
+
+export const DefaultValue = {
+    HCOVA_TETANO: 4404,
+    HCOVA_INFLUENZA: 4405,
+    HCOVA_FIEBRE_AMA: 4406,
+    HCOVA_RUBEOLA_SAR: 4407,
+    HCOVA_COVID_19: 4408,
+    HCOVA_OTRAS: 4409,
 }
 
 export const TitleButton = {

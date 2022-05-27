@@ -28,7 +28,7 @@ import { PostNoteInfirmary } from 'formatdata/NoteInfirmaryForm';
 import ListNoteInfirmary from './ListNoteInfirmary';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import InputMultiSelects from 'components/input/InputMultiSelects';
-import FullScreenDialogs from 'components/form/FullScreenDialogs';
+import FullScreenDialogs from 'components/controllers/FullScreenDialog';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import InputOnChange from 'components/input/InputOnChange';
 import Accordion from 'components/accordion/Accordion';

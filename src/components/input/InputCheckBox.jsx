@@ -19,39 +19,37 @@ const InputCheckBox = ({ bug, label, name, size, defaultValue, ...others }) => {
         errorMessage = bug[name].message;
     }
     return (
-        <>
-            <FormControl error={isError}>
-                <Controller
-                    name={name}
-                    defaultValue={defaultValue}
-                    render={({ field }) => (
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    onChange={(e) => field.onChange(e.target.checked)}
-                                    checked={field.value}
-                                    sx={{
-                                        color: theme.palette.primary,
-                                        '&.Mui-checked': {
-                                            color: theme.palette.primary
-                                        },
-                                        '& .MuiSvgIcon-root': { fontSize: size }
-                                    }}
-                                    {...others}
-                                />
-                            }
-                            label={label}
-                        />
-                    )}
-                />
-
-                {errorMessage && (
-                    <Grid item xs={12}>
-                        <FormHelperText error>{errorMessage}</FormHelperText>
-                    </Grid>
+        <FormControl error={isError}>
+            <Controller
+                name={name}
+                defaultValue={defaultValue}
+                render={({ field }) => (
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                onChange={(e) => field.onChange(e.target.checked)}
+                                checked={field.value}
+                                sx={{
+                                    color: theme.palette.primary,
+                                    '&.Mui-checked': {
+                                        color: theme.palette.primary
+                                    },
+                                    '& .MuiSvgIcon-root': { fontSize: size }
+                                }}
+                                {...others}
+                            />
+                        }
+                        label={label}
+                    />
                 )}
-            </FormControl>
-        </>
+            />
+
+            {errorMessage && (
+                <Grid item xs={12}>
+                    <FormHelperText error>{errorMessage}</FormHelperText>
+                </Grid>
+            )}
+        </FormControl>
     );
 
 }
@@ -61,7 +59,7 @@ export default InputCheckBox;
 InputCheckBox.propTypes = {
     bug: PropTypes.object,
     name: PropTypes.string,
-    defaultValue: PropTypes.string,
+    defaultValue: PropTypes.bool,
     size: PropTypes.number,
     label: PropTypes.string,
 };

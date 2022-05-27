@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-// Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
@@ -29,13 +28,11 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-// Import de proyectos
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
 
-// Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
@@ -51,7 +48,6 @@ const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -65,7 +61,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -76,7 +71,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
         id: 'idCatalogo',
@@ -103,10 +97,6 @@ const headCells = [
         align: 'left'
     }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -178,11 +168,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -219,13 +204,12 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
 const ListCatalog = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [catalog, setCatalog] = useState([]);
+    const [idCheck, setIdCheck] = useState('');
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -235,23 +219,28 @@ const ListCatalog = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServer = await GetAllCatalog(0, 0);
             setCatalog(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${error}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -280,14 +269,12 @@ const ListCatalog = () => {
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
@@ -298,7 +285,6 @@ const ListCatalog = () => {
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
         setIdCheck(id);
 
@@ -327,9 +313,6 @@ const ListCatalog = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
-
-    /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
             const result = await DeleteCatalog(idCheck);
@@ -345,20 +328,26 @@ const ListCatalog = () => {
                 })
             }
             setSelected([]);
+            setSearch('');
             GetAll();
         } catch (error) {
-            console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: 'ERROR: No sé pudo eliminar el Catálogo',
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     }
-
-    const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - catalog.length) : 0;
 
     return (
         <MainCard title="Lista de Catálogo" content={false}>
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -383,12 +372,16 @@ const ListCatalog = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Cátalogo">
-                            <ExcelSheet data={catalog} name="Cátalogo">
+                        } filename="Cátalogos">
+                            <ExcelSheet data={catalog} name="Lista de Catálogos">
                                 <ExcelColumn label="Id" value="idCatalogo" />
                                 <ExcelColumn label="Nombre" value="nombre" />
                                 <ExcelColumn label="Código" value="codigo" />
                                 <ExcelColumn label="Tipo Cátalogo" value="nameTypeCatalog" />
+                                <ExcelColumn label="Usuario que Registro" value="usuarioRegistro" />
+                                <ExcelColumn label="Fecha de Registro" value="fechaRegistro" />
+                                <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
+                                <ExcelColumn label="Fecha Modifico" value="fechaModifico" />
                             </ExcelSheet>
                         </ExcelFile>
 
@@ -398,17 +391,14 @@ const ListCatalog = () => {
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/catalog/add")}>
                             {TitleButton.Agregar}
                         </Button>
-
                     </Grid>
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -426,7 +416,7 @@ const ListCatalog = () => {
                         {stableSort(catalog, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
+
                                 if (typeof row === 'string') return null;
 
                                 const isItemSelected = isSelected(row.idCatalogo);
@@ -441,9 +431,6 @@ const ListCatalog = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
-
                                         <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idCatalogo)}>
                                             <Checkbox
                                                 color="primary"
@@ -482,7 +469,6 @@ const ListCatalog = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
                                                 {row.nombre}{' '}
                                             </Typography>
                                         </TableCell>
@@ -498,7 +484,6 @@ const ListCatalog = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
                                                 {row.codigo}{' '}
                                             </Typography>
                                         </TableCell>
@@ -514,16 +499,11 @@ const ListCatalog = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
                                                 {row.nameTypeCatalog}{' '}
                                             </Typography>
                                         </TableCell>
 
-
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <IconButton color="primary" size="large">
-                                                <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                            </IconButton>
                                             <Tooltip title="Actualizar" onClick={() => navigate(`/catalog/update/${row.idCatalogo}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
@@ -546,7 +526,6 @@ const ListCatalog = () => {
                 </Table>
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"

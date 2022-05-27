@@ -1,4 +1,3 @@
-// Import de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -6,15 +5,12 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-// Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as Yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Import del Proyecto
-import ControllerListen from 'components/controllers/ControllerListen';
 import { FormatDate } from 'components/helpers/Format';
 import { PostTypeCatalog } from 'formatdata/TypeCatalogForm';
 import useAuth from 'hooks/useAuth';
@@ -25,8 +21,6 @@ import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enum
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
-// ==============================|| SOCIAL PROFILE - POST ||============================== //
-
 const validationSchema = Yup.object().shape({
     nombre: Yup.string().required(`${ValidationMessage.Requerido}`),
 }).required();
@@ -34,6 +28,7 @@ const validationSchema = Yup.object().shape({
 const TypeCatalog = () => {
     const { user } = useAuth();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -45,7 +40,6 @@ const TypeCatalog = () => {
 
     const onSubmit = async (datos) => {
         try {
-
             const DataToInsert = PostTypeCatalog(datos.nombre, user.id, FormatDate(new Date()),
                 '', FormatDate(new Date()));
 
@@ -76,8 +70,6 @@ const TypeCatalog = () => {
             })
         }
     };
-
-    const navigate = useNavigate();
 
     return (
         <MainCard title="Registrar Tipo de Catálogo">

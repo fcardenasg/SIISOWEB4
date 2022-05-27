@@ -7,18 +7,19 @@ import {
     useMediaQuery,
     Typography,
     Divider,
-    Tooltip,
-    Fab
 } from '@mui/material';
 
 // Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import DetailedIcon from 'components/controllers/DetailedIcon';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format'
@@ -39,7 +40,6 @@ import SubCard from 'ui-component/cards/SubCard';
 import InputOnChange from 'components/input/InputOnChange';
 
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
-import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { useParams } from 'react-router-dom';
@@ -53,12 +53,18 @@ mic.continuous = true;
 mic.interimResults = true;
 mic.lang = 'es-ES';
 
+const DetailIcons = [
+    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
+]
+
 const UpdateMedicalAdvice = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
     const { id } = useParams();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const [open, setOpen] = useState(false);
 
     const [document, setDocument] = useState('');
     const [catalog, setCatalog] = useState([]);
@@ -291,8 +297,16 @@ const UpdateMedicalAdvice = () => {
         <MainCard>
             {timeWait ? (
                 <Grid container xs={12} sx={{ pt: 0.5 }}>
+                    <FullScreenDialog
+                        open={open}
+                        title="LISTADO DE PLANTILLA"
+                        handleClose={() => setOpen(false)}
+                    >
+                        <ListPlantillaAll />
+                    </FullScreenDialog>
+
                     <form onSubmit={handleSubmit(handleClick)}>
-                        <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
+                        <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}>
                             <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
                                 <Grid item xs={3}>
                                     <PhotoModel
@@ -669,7 +683,7 @@ const UpdateMedicalAdvice = () => {
 
                         <Divider />
                         <Grid sx={{ pt: 2 }}>
-                            <SubCard darkTitle title={<><Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography></>}>
+                            <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
                                 <Grid container justifyContent="center" alignItems="center" spacing={2} sx={{ pb: 3 }}>
                                     <Grid item xs={3}>
                                         <InputDatePick
@@ -721,95 +735,69 @@ const UpdateMedicalAdvice = () => {
                             </SubCard>
                         </Grid>
 
-                        {clickAttend ? (<>
-                            <Grid sx={{ pt: 2 }}>
-                                <SubCard darkTitle title={<><Typography variant="h4">NOTA</Typography></>}>
-                                    <Grid item xs={12}>
-                                        <InputArea
-                                            rows={4}
-                                            label="Observaciones"
-                                            placeholder="Esperando dictado..."
-                                            name="inputArea"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            value={note}
-                                            onChange={(e) => setNote(e?.target.value)}
-                                        />
-                                    </Grid>
-                                    {/* Iconos de opciones */}
-                                    <Grid item xs={12} sx={{ pt: 2 }}>
-                                        <Grid justifyContent="left" alignItems="center" container xs={12}>
-                                            <Grid item xs={2}>
-                                                <Grid justifyContent="center" alignItems="center" container>
-                                                    <AnimateButton>
-                                                        <Tooltip title="Plantilla de texto">
-                                                            <Fab
-                                                                color="primary"
-                                                                size="small"
-                                                                onClick={() => console.log("Funciona???")}
-                                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                            >
-                                                                <ListAltSharpIcon fontSize="small" />
-                                                            </Fab>
-                                                        </Tooltip>
-                                                    </AnimateButton>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item xs={2}>
-                                                <Grid justifyContent="center" alignItems="center" container>
-                                                    <AnimateButton>
-                                                        <Tooltip title="Borrar texto">
-                                                            <Fab
-                                                                color="primary"
-                                                                size="small"
-                                                                onClick={() => setNote('')}
-                                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                            >
-                                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                            </Fab>
-                                                        </Tooltip>
-                                                    </AnimateButton>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item xs={2}>
-                                                <Grid justifyContent="center" alignItems="center" container>
-                                                    <AnimateButton>
-                                                        <Tooltip title="Audio">
-                                                            <Fab
-                                                                color="primary"
-                                                                size="small"
-                                                                onClick={() => setIsListening(prevState => !prevState)}
-                                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                            >
-                                                                <SettingsVoiceIcon fontSize="small" />
-                                                            </Fab>
-                                                        </Tooltip>
-                                                    </AnimateButton>
-                                                </Grid>
-                                            </Grid>
+                        <Grid sx={{ pt: 2 }}>
+                            <SubCard darkTitle title={<Typography variant="h4">NOTA</Typography>}>
+                                <Grid item xs={12}>
+                                    <InputArea
+                                        rows={4}
+                                        label="Observaciones"
+                                        placeholder="Esperando dictado..."
+                                        name="inputArea"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        value={note}
+                                        onChange={(e) => setNote(e?.target.value)}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sx={{ pt: 2 }}>
+                                    <SubCard darkTitle title={<Typography variant="h4">NOTA</Typography>}>
+                                        <Grid item xs={12}>
+                                            <InputArea
+                                                rows={4}
+                                                label="Observaciones"
+                                                placeholder="Esperando dictado..."
+                                                name="inputArea"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                value={note}
+                                                onChange={(e) => setNote(e?.target.value)}
+                                            />
                                         </Grid>
-                                    </Grid>
-                                </SubCard>
-                            </Grid>
 
-                            <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
-                                <Grid container spacing={1}>
-                                    <Grid item xs={6}>
-                                        <AnimateButton>
-                                            <Button variant="contained" type="submit" fullWidth>
-                                                {TitleButton.Actualizar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
-                                                {TitleButton.Cancelar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                            <DetailedIcon
+                                                title={DetailIcons[0].title}
+                                                onClick={() => setOpen(true)}
+                                                icons={DetailIcons[0].icons}
+                                            />
+
+                                            <DetailedIcon
+                                                title={DetailIcons[1].title}
+                                                onClick={() => setIsListening(prevState => !prevState)}
+                                                icons={DetailIcons[1].icons}
+                                            />
+                                        </Grid>
+                                    </SubCard>
+                                </Grid>
+                            </SubCard>
+                        </Grid>
+
+                        <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
+                            <Grid container spacing={1}>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="contained" type="submit" fullWidth>
+                                            {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
                                 </Grid>
                             </Grid>
-                        </>) : (<></>)}
+                        </Grid>
                     </form>
                 </Grid >
             ) : <Cargando />}

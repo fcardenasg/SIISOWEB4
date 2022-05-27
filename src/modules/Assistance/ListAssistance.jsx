@@ -43,7 +43,7 @@ import { DeleteMedicalHistory, GetAllMedicalHistory } from 'api/clients/MedicalH
 import { FormatDate } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
-import FullScreenDialogs from 'components/form/FullScreenDialogs';
+import FullScreenDialogs from 'components/controllers/FullScreenDialog';
 import Assistance from './Assistance';
 import ViewUpdateAssistance from './ViewUpdateAssistance';
 

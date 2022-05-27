@@ -1,17 +1,14 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 
 import { Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
-// third-party
 import ReactToPrint from 'react-to-print';
 
-// project imports
 import { GetAllCatalog } from 'api/clients/CatalogClient';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
@@ -29,24 +26,22 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const ReportCatolog = () => {
-    const theme = useTheme();
     const componentRef = useRef(null);
 
     const [catalog, setCatalog] = useState([]);
 
-    async function GetAll() {
-        try {
-            const lsServer = await GetAllCatalog(0, 0);
-            if (lsServer.status === 200) setCatalog(lsServer.data.entities);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetAllCatalog(0, 0);
+                if (lsServer.status === 200) setCatalog(lsServer.data.entities);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         GetAll();
-    }, [])
+    }, [catalog])
 
     const navigate = useNavigate();
 
@@ -94,9 +89,6 @@ const ReportCatolog = () => {
                                                 <TableCell align="left">{row.nombre}</TableCell>
                                                 <TableCell align="left">{row.codigo}</TableCell>
                                                 <TableCell align="left">{row.nameTypeCatalog}</TableCell>
-                                                {/* <TableCell align="left" sx={{ pr: 3 }}>
-                                                    {row.legt}
-                                                </TableCell> */}
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -108,7 +100,7 @@ const ReportCatolog = () => {
             </Grid>
 
             <Grid item>
-                <Grid sx={{ pt: 2 }} container xs={12} spacing={2} alignItems="center" justifyContent="center">
+                <Grid container sx={{ pt: 0.5, pb: 0.5 }} spacing={4} alignItems="center" justifyContent="center">
                     <Grid xs={6} item>
                         <AnimateButton>
                             <ReactToPrint trigger={() => <Button variant="contained">Imprimir</Button>} content={() => componentRef.current} />
@@ -116,7 +108,7 @@ const ReportCatolog = () => {
                     </Grid>
                     <Grid xs={6} item>
                         <AnimateButton>
-                            <Button variant="contained" onClick={() => navigate('/catalog/list')}>
+                            <Button variant="contained" onClick={() => navigate('/typecatalog/list')}>
                                 Cerrar
                             </Button>
                         </AnimateButton>

@@ -1,17 +1,18 @@
 const FormatDate = (date = new Date()) => {
     try {
-        const fecha = new Date(date).toISOString().split('.')[0];
+        const fecha = date.toISOString();
         return fecha;
     } catch (error) {
         console.log(error);
     }
 }
 
-const DateFormat = (fecha) => {
-    var result = fecha.toUTCString();
-    return result;
+const ViewFormat = (fecha = new Date()) => {
+    const fechaFormat = new Date(fecha).toISOString().split('T')[0];
+    return fechaFormat;
 }
 
 export {
     FormatDate,
+    ViewFormat
 }

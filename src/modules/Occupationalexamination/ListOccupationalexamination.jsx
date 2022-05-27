@@ -43,6 +43,8 @@ import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import { DeleteOccupationalExamination, GetAllOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import { ViewFormat } from 'components/helpers/Format';
 
 function getModalStyle() {
     const top = 50;
@@ -79,39 +81,27 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'id',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
+        align: 'center'
+    },
+    {
+        id: 'nameEmpleado',
+        numeric: false,
+        label: 'Nombre',
         align: 'left'
     },
     {
-        id: 'nombres',
+        id: 'idAtencion',
         numeric: false,
-        label: 'Nombres',
+        label: 'Estado Caso',
         align: 'left'
     },
     {
-        id: 'celular',
+        id: 'fecha',
         numeric: false,
-        label: 'Celular',
-        align: 'left'
-    },
-    {
-        id: 'email',
-        numeric: false,
-        label: 'Email',
-        align: 'left'
-    },
-    {
-        id: 'nameCompany',
-        numeric: false,
-        label: 'Empresa',
+        label: 'Fecha',
         align: 'left'
     },
     {
@@ -119,7 +109,13 @@ const headCells = [
         numeric: false,
         label: 'Sede',
         align: 'left'
-    }
+    },
+    {
+        id: 'usuarioCreacion',
+        numeric: false,
+        label: 'Usuario Que Atiende',
+        align: 'left'
+    },
 ];
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
@@ -228,14 +224,10 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
 const ListOccupationalExamination = () => {
     const dispatch = useDispatch();
-    const [assistance, setAssistance] = useState([]);
-    console.log("Lista = ", assistance);
+    const [lsOccupationalExamination, setLsOccupationalExamination] = useState([]);
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -245,11 +237,10 @@ const ListOccupationalExamination = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
-            const lsServer = await GetAllAssistance(0, 0);
-            setAssistance(lsServer.data.entities);
+            const lsServer = await GetAllOccupationalExamination(0, 0);
+            setLsOccupationalExamination(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
@@ -267,17 +258,10 @@ const ListOccupationalExamination = () => {
         setOpen(false);
     };
 
-    /* Abrir Modal */
-    /*     const OpenModal = (idEmpleado) => {
-            return (<BodyEmployee IdEmployee={idEmpleado} openModal={true} />);
-        } */
-
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -300,13 +284,12 @@ const ListOccupationalExamination = () => {
                 }
                 return matches;
             });
-            setAssistance(newRows);
+            setLsOccupationalExamination(newRows);
         } else {
-            setAssistance(rows);
+            setLsOccupationalExamination(rows);
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -317,14 +300,13 @@ const ListOccupationalExamination = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = assistance.map((n) => n.id);
+            const newSelectedId = lsOccupationalExamination.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
         setIdCheck(id);
 
@@ -354,11 +336,9 @@ const ListOccupationalExamination = () => {
     };
 
     const [idCheck, setIdCheck] = useState('');
-
-    /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
-            const result = await DeleteAssistance(idCheck);
+            const result = await DeleteOccupationalExamination(idCheck);
             if (result.status === 200) {
                 dispatch({
                     type: SNACKBAR_OPEN,
@@ -380,12 +360,11 @@ const ListOccupationalExamination = () => {
     const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - assistance.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsOccupationalExamination.length) : 0;
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
 
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -416,7 +395,6 @@ const ListOccupationalExamination = () => {
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/occupational-examination/add")}>
                             {TitleButton.Agregar}
@@ -426,7 +404,6 @@ const ListOccupationalExamination = () => {
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -435,16 +412,15 @@ const ListOccupationalExamination = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={assistance.length}
+                        rowCount={lsOccupationalExamination.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(assistance, getComparator(order, orderBy))
+                        {stableSort(lsOccupationalExamination, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
                                 const isItemSelected = isSelected(row.id);
@@ -459,8 +435,6 @@ const ListOccupationalExamination = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
 
                                         <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                             <Checkbox
@@ -470,17 +444,6 @@ const ListOccupationalExamination = () => {
                                                     'aria-labelledby': labelId
                                                 }}
                                             />
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                            align="center"
-                                        >
-                                            <Avatar alt="Foto Empleado" src={row.imagenUrl} />
                                         </TableCell>
 
                                         <TableCell
@@ -511,7 +474,7 @@ const ListOccupationalExamination = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombres}{' '}
+                                                {row.documento}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -527,7 +490,7 @@ const ListOccupationalExamination = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.celular}{' '}
+                                                {row.idAtencion}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -543,7 +506,7 @@ const ListOccupationalExamination = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.email}{' '}
+                                                {ViewFormat(row.fecha)}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -559,7 +522,7 @@ const ListOccupationalExamination = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameCompany}{' '}
+                                                {row.sede}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -591,9 +554,8 @@ const ListOccupationalExamination = () => {
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                            {console.log(row.id)}
                                         </TableCell>
-                                        {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
+
                                         <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                             open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
                                             aria-describedby="simple-modal-description"
@@ -616,18 +578,15 @@ const ListOccupationalExamination = () => {
                 </Table>
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={assistance.length}
+                count={lsOccupationalExamination.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-
-
         </MainCard>
     );
 };

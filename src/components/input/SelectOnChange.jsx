@@ -47,9 +47,9 @@ SelectOnChange.propTypes = {
     bug: PropTypes.object,
     onChange: PropTypes.func,
     name: PropTypes.string,
-    disabled: PropTypes.string,
+    disabled: PropTypes.bool,
     label: PropTypes.string,
-    value: PropTypes.string,
+    value: PropTypes.number,
     options: PropTypes.any,
-    size: PropTypes.string
+    size: PropTypes.any
 };

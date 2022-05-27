@@ -1,17 +1,14 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 
 import { Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
-// third-party
 import ReactToPrint from 'react-to-print';
 
-// project imports
 import { GetAllTypeCatalog } from 'api/clients/TypeCatalogClient';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
@@ -29,37 +26,35 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const ReportTypeCatolog = () => {
-    const theme = useTheme();
     const componentRef = useRef(null);
-
+    const navigate = useNavigate();
     const [typeCatalog, setTypeCatalog] = useState([]);
 
-    async function GetAll() {
-        try {
-            const lsServer = await GetAllTypeCatalog(0, 0);
-            if (lsServer.status === 200) setTypeCatalog(lsServer.data.entities);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
-        GetAll();
-    }, [])
+        async function GetAll() {
+            try {
+                const lsServer = await GetAllTypeCatalog(0, 0);
+                if (lsServer.status === 200) setTypeCatalog(lsServer.data.entities);
+            } catch (error) {
+                console.log(error);
+            }
+        }
 
-    const navigate = useNavigate();
+        GetAll();
+    }, [typeCatalog])
 
     return (
         <Grid container alignItems="center" justifyContent="center" spacing={gridSpacing}>
             <Grid item xs={18} md={6} lg={12} ref={componentRef}>
+
                 <SubCard darkTitle title={
-                    <>
+                    <Grid>
                         <Typography variant="subtitle1">DRUMMOND LTD</Typography>
                         <Typography variant="subtitle1">DEPARTAMENTO DE SALUD E HIGIENE OCUPACIONAL</Typography>
                         <Typography variant="subtitle1">LISTADO DE EMPRESAS</Typography>
-                    </>
-                } secondary={<Logo />}>
+                    </Grid>
+                } secondary={<Grid container alignContent="center"><Logo /></Grid>}>
+
                     <Grid container spacing={gridSpacing}>
                         <Grid item xs={12}>
                             <TableContainer>
@@ -81,9 +76,9 @@ const ReportTypeCatolog = () => {
                                 >
                                     <TableHead>
                                         <TableRow>
-
                                             <StyledTableCell align="left">ID</StyledTableCell>
                                             <StyledTableCell align="left">NOMBRE</StyledTableCell>
+
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -91,9 +86,6 @@ const ReportTypeCatolog = () => {
                                             <TableRow key={index}>
                                                 <TableCell align="left">{row.id}</TableCell>
                                                 <TableCell align="left">{row.nombre}</TableCell>
-                                                {/* <TableCell align="left" sx={{ pr: 3 }}>
-                                                    {row.legt}
-                                                </TableCell> */}
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -105,7 +97,7 @@ const ReportTypeCatolog = () => {
             </Grid>
 
             <Grid item>
-                <Grid sx={{ pt: 2 }} container xs={12} spacing={2} alignItems="center" justifyContent="center">
+                <Grid sx={{ pt: 0.5, pb: 0.5 }} container spacing={4} alignItems="center" justifyContent="center">
                     <Grid xs={6} item>
                         <AnimateButton>
                             <ReactToPrint trigger={() => <Button variant="contained">Imprimir</Button>} content={() => componentRef.current} />
