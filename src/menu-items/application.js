@@ -13,11 +13,13 @@ import {
     IconTool,
     IconHeartbeat,
     IconMessageReport,
-    IconVirus
+    IconVirus,
+    IconEyeglass
 } from '@tabler/icons';
 
 // constant
 const icons = {
+    IconEyeglass,
     IconUserCheck,
     IconBasket,
     IconMessages,
@@ -63,21 +65,27 @@ const application = {
                     url: '/note-infirmary/list'
                 },
                 {
+                    id: 'infirmary',
+                    title: <FormattedMessage id="Prueba de Alcohol y Drogas" />,
+                    type: 'item',
+                    url: '/note-infirmary/list'
+                },
+                {
                     id: 'medicalformula',
                     title: <FormattedMessage id="Recetario" />,
                     type: 'item',
                     url: '/medicalformula/list'
                 },
                 {
-                    id: 'account-profile',
-                    title: <FormattedMessage id="account-profile" />,
+                    id: 'taxi',
+                    title: <FormattedMessage id="Taxi" />,
                     type: 'collapse',
                     children: [
                         {
                             id: 'profile1',
                             title: (
                                 <>
-                                    <FormattedMessage id="profile" /> 01
+                                    <FormattedMessage id="Rutas de Taxis" />
                                 </>
                             ),
                             type: 'item',
@@ -87,7 +95,7 @@ const application = {
                             id: 'profile2',
                             title: (
                                 <>
-                                    <FormattedMessage id="profile" /> 02
+                                    <FormattedMessage id="Destino de Taxis" />
                                 </>
                             ),
                             type: 'item',
@@ -97,7 +105,7 @@ const application = {
                             id: 'profile3',
                             title: (
                                 <>
-                                    <FormattedMessage id="profile" /> 03
+                                    <FormattedMessage id="Solicitud de Taxi" />
                                 </>
                             ),
                             type: 'item',
@@ -107,70 +115,13 @@ const application = {
                 },
                 {
                     id: 'user-card',
-                    title: <FormattedMessage id="cards" />,
-                    type: 'collapse',
-                    children: [
-                        {
-                            id: 'card1',
-                            title: (
-                                <>
-                                    <FormattedMessage id="style" /> 01
-                                </>
-                            ),
-                            type: 'item',
-                            url: '/user/card/card1'
-                        },
-                        {
-                            id: 'card2',
-                            title: (
-                                <>
-                                    <FormattedMessage id="style" /> 02
-                                </>
-                            ),
-                            type: 'item',
-                            url: '/user/card/card2'
-                        },
-                        {
-                            id: 'card3',
-                            title: (
-                                <>
-                                    <FormattedMessage id="style" /> 03
-                                </>
-                            ),
-                            type: 'item',
-                            url: '/user/card/card3'
-                        }
-                    ]
+                    title: <FormattedMessage id="Fisioterapia" />,
+                    type: 'item',
+                    url: '/user/card/card1'
                 },
-                {
-                    id: 'user-list',
-                    title: <FormattedMessage id="list" />,
-                    type: 'collapse',
-                    children: [
-                        {
-                            id: 'list1',
-                            title: (
-                                <>
-                                    <FormattedMessage id="style" /> 01
-                                </>
-                            ),
-                            type: 'item',
-                            url: '/user/list/list1'
-                        },
-                        {
-                            id: 'list2',
-                            title: (
-                                <>
-                                    <FormattedMessage id="style" /> 02
-                                </>
-                            ),
-                            type: 'item',
-                            url: '/user/list/list2'
-                        }
-                    ]
-                }
             ]
         },
+
         {
             id: 'customer',
             title: <FormattedMessage id="customer" />,
@@ -192,6 +143,13 @@ const application = {
                     breadcrumbs: true
                 },
                 {
+                    id: 'history',
+                    title: <FormattedMessage id="Historico Ausentismo" />,
+                    type: 'item',
+                    url: '/customer/product-review',
+                    breadcrumbs: false
+                },
+                {
                     id: 'occupational-health',
                     title: <FormattedMessage id="Salud Ocupacional" />,
                     type: 'item',
@@ -207,11 +165,46 @@ const application = {
                 },
                 {
                     id: 'product-review',
-                    title: <FormattedMessage id="product-review" />,
+                    title: <FormattedMessage id="Caso De Enfermedad Profesional" />,
                     type: 'item',
                     url: '/customer/product-review',
                     breadcrumbs: false
-                }
+                },
+                {
+                    id: 'product-re',
+                    title: <FormattedMessage id="Reintegro Laboral" />,
+                    type: 'item',
+                    url: '/customer/product-review',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'work',
+                    title: <FormattedMessage id="Trabajo En Altura" />,
+                    type: 'item',
+                    url: '/customer/product-review',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'history',
+                    title: <FormattedMessage id="Accidente De Trabajo" />,
+                    type: 'item',
+                    url: '/customer/product-review',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'investigacion',
+                    title: <FormattedMessage id="Investigación Laboral" />,
+                    type: 'item',
+                    url: '/customer/product-review',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'Framingham ',
+                    title: <FormattedMessage id="Framingham" />,
+                    type: 'item',
+                    url: '/customer/product-review',
+                    breadcrumbs: false
+                },
             ]
         },
         {
@@ -248,30 +241,10 @@ const application = {
             children: [
                 {
                     id: 'charges',
-                    title: <FormattedMessage id="Cargos" />,
+                    title: <FormattedMessage id="Panorama De Cargo" />,
                     type: 'item',
                     url: '/charges/list'
                 },
-                {
-                    id: 'product-details',
-                    title: <FormattedMessage id="product-details" />,
-                    type: 'item',
-                    url: '/e-commerce/product-details/default',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'product-list',
-                    title: <FormattedMessage id="product-list" />,
-                    type: 'item',
-                    url: '/e-commerce/product-list',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'checkout',
-                    title: <FormattedMessage id="checkout" />,
-                    type: 'item',
-                    url: '/e-commerce/checkout'
-                }
             ]
         },
         {
@@ -282,60 +255,74 @@ const application = {
             children: [
                 {
                     id: 'autocomplete',
-                    title: <FormattedMessage id="autocomplete" />,
+                    title: <FormattedMessage id="Ordenes" />,
                     type: 'item',
                     url: '/components/autocomplete',
                     breadcrumbs: false
                 },
                 {
                     id: 'button',
-                    title: <FormattedMessage id="button" />,
+                    title: <FormattedMessage id="Audiometría" />,
                     type: 'item',
                     url: '/components/button',
                     breadcrumbs: false
                 },
                 {
                     id: 'checkbox',
-                    title: <FormattedMessage id="checkbox" />,
+                    title: <FormattedMessage id="Electrocardiograma" />,
                     type: 'item',
                     url: '/components/checkbox',
                     breadcrumbs: false
                 },
                 {
                     id: 'date-time',
-                    title: <FormattedMessage id="date-time" />,
+                    title: <FormattedMessage id="Espirometría" />,
                     type: 'item',
                     url: '/components/date-time',
                     breadcrumbs: false
                 },
                 {
                     id: 'radio',
-                    title: <FormattedMessage id="radio" />,
+                    title: <FormattedMessage id="Laboratorios" />,
                     type: 'item',
                     url: '/components/radio',
                     breadcrumbs: false
                 },
                 {
                     id: 'slider',
-                    title: <FormattedMessage id="slider" />,
+                    title: <FormattedMessage id="RX de Torax" />,
                     type: 'item',
                     url: '/components/slider',
                     breadcrumbs: false
                 },
                 {
                     id: 'switch',
-                    title: <FormattedMessage id="switch" />,
+                    title: <FormattedMessage id="Visiometria" />,
                     type: 'item',
                     url: '/components/switch',
                     breadcrumbs: false
                 },
                 {
                     id: 'text-field',
-                    title: <FormattedMessage id="text-field" />,
+                    title: <FormattedMessage id="RMN" />,
                     type: 'item',
                     url: '/components/text-field',
                     breadcrumbs: false
-                }
+                },
+                {
+                    id: 'psa',
+                    title: <FormattedMessage id="PSA" />,
+                    type: 'item',
+                    url: '/components/text-field',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'citologia',
+                    title: <FormattedMessage id="Citología" />,
+                    type: 'item',
+                    url: '/components/text-field',
+                    breadcrumbs: false
+                },
             ]
         },
         {
@@ -346,52 +333,31 @@ const application = {
             children: [
                 {
                     id: 'frm-autocomplete',
-                    title: <FormattedMessage id="autocomplete" />,
+                    title: <FormattedMessage id="PQRSD" />,
                     type: 'item',
                     url: '/forms/frm-autocomplete',
                     breadcrumbs: false
                 },
+            ]
+        },
+        {
+            id: 'users',
+            title: <FormattedMessage id="Ordenes EPP" />,
+            type: 'collapse',
+            icon: icons.IconEyeglass,
+            children: [
                 {
-                    id: 'frm-mask',
-                    title: <FormattedMessage id="mask" />,
+                    id: 'Individuales',
+                    title: <FormattedMessage id="Individuales" />,
                     type: 'item',
-                    url: '/forms/frm-mask',
-                    breadcrumbs: false
+                    url: '/assistance/list'
                 },
                 {
-                    id: 'frm-clipboard',
-                    title: <FormattedMessage id="clipboard" />,
+                    id: 'Masivas',
+                    title: <FormattedMessage id="Masivas" />,
                     type: 'item',
-                    url: '/forms/frm-clipboard',
-                    breadcrumbs: false
+                    url: '/assistance/list'
                 },
-                {
-                    id: 'frm-recaptcha',
-                    title: <FormattedMessage id="recaptcha" />,
-                    type: 'item',
-                    url: '/forms/frm-recaptcha',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'frm-wysiwug',
-                    title: <FormattedMessage id="wysiwug-editor" />,
-                    type: 'item',
-                    url: '/forms/frm-wysiwug',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'frm-modal',
-                    title: <FormattedMessage id="modal" />,
-                    type: 'item',
-                    url: '/forms/frm-modal',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'frm-tooltip',
-                    title: <FormattedMessage id="tooltip" />,
-                    type: 'item',
-                    url: '/forms/frm-tooltip'
-                }
             ]
         },
         {
@@ -402,28 +368,34 @@ const application = {
             children: [
                 {
                     id: 'frm-layouts',
-                    title: <FormattedMessage id="layouts" />,
+                    title: <FormattedMessage id="Registro Aislamiento" />,
                     type: 'item',
                     url: '/forms/layouts/layouts'
                 },
                 {
                     id: 'frm-multi-column-forms',
-                    title: <FormattedMessage id="multi-column-forms" />,
+                    title: <FormattedMessage id="Vacunas" />,
                     type: 'item',
                     url: '/forms/layouts/multi-column-forms'
                 },
                 {
                     id: 'frm-action-bar',
-                    title: <FormattedMessage id="action-bar" />,
+                    title: <FormattedMessage id="Ordenes de Laboratorio" />,
                     type: 'item',
                     url: '/forms/layouts/action-bar'
                 },
                 {
-                    id: 'frm-sticky-action-bar',
-                    title: <FormattedMessage id="sticky-action-bar" />,
+                    id: 'censo',
+                    title: <FormattedMessage id="Cuestionario y Censo" />,
                     type: 'item',
                     url: '/forms/layouts/sticky-action-bar'
-                }
+                },
+                {
+                    id: 'tablerocontrol',
+                    title: <FormattedMessage id="Tablero de Control" />,
+                    type: 'item',
+                    url: '/forms/layouts/sticky-action-bar'
+                },
             ]
         },
         {
@@ -481,34 +453,6 @@ const application = {
                     url: '/template/list',
                     breadcrumbs: false
                 },
-                {
-                    id: 'speeddial',
-                    title: <FormattedMessage id="speeddial" />,
-                    type: 'item',
-                    url: '/advance/speeddial',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'timeline',
-                    title: <FormattedMessage id="timeline" />,
-                    type: 'item',
-                    url: '/advance/timeline',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'toggle-button',
-                    title: <FormattedMessage id="toggle-button" />,
-                    type: 'item',
-                    url: '/advance/toggle-button',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'treeview',
-                    title: <FormattedMessage id="treeview" />,
-                    type: 'item',
-                    url: '/advance/treeview',
-                    breadcrumbs: false
-                }
             ]
         },
     ]

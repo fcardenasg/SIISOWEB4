@@ -1,58 +1,127 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import Logo from 'ui-component/Logo';
 
-// material-ui
-import { Grid } from '@mui/material';
+import { Grid, Typography, Box } from '@mui/material';
+import { motion } from 'framer-motion';
 
-// project imports
-import EarningCard from './EarningCard';
-import PopularCard from './PopularCard';
-import TotalOrderLineChartCard from './TotalOrderLineChartCard';
-import TotalIncomeDarkCard from './TotalIncomeDarkCard';
-import TotalIncomeLightCard from './TotalIncomeLightCard';
-import TotalGrowthBarChart from './TotalGrowthBarChart';
-import { gridSpacing } from 'store/constant';
+import { useTheme, createTheme } from '@mui/material/styles';
 
-// ==============================|| DEFAULT DASHBOARD ||============================== //
 
 const Dashboard = () => {
+    const theme = useTheme();
+
+    const themeColor = createTheme({
+        palette: {
+            error: {
+                main: '#E31937',
+            },
+        },
+    });
     const [isLoading, setLoading] = useState(true);
     useEffect(() => {
         setLoading(false);
     }, []);
 
     return (
-        <Grid container spacing={gridSpacing}>
-            <Grid item xs={12}>
-                <Grid container spacing={gridSpacing}>
-                    <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} />
+        <Fragment>
+            <Grid container justifyContent="left" alignItems="center"
+                sx={{ pl: 30, pt: 15, [theme.breakpoints.down('lg')]: { textAlign: 'center' } }}>
+
+                <Grid item xs={4.5}>
+                    <motion.div
+                        initial={{ opacity: 0, translateY: 550 }}
+                        animate={{ opacity: 1, translateY: 0 }}
+                        transition={{
+                            type: 'spring',
+                            stiffness: 150,
+                            damping: 30
+                        }}
+                    >
+                        <Typography
+                            variant="h1"
+                            sx={{
+                                fontSize: { xs: '2.25rem', sm: '3rem', md: '6rem' },
+                                fontWeight: 900,
+                                lineHeight: 1.4
+                            }}
+                        >
+                            <Box component="span" sx={{ color: themeColor.palette.error.main }}>
+                                <b>&#169;</b> SIISO
+                            </Box>
+                        </Typography>
+                    </motion.div>
+                </Grid>
+
+                <Grid item xs={4} sx={{ pt: 4 }}>
+                    <Grid container justifyContent="left" alignItems="center">
+                        <motion.div
+                            initial={{ opacity: 0, translateY: 550 }}
+                            animate={{ opacity: 1, translateY: 0 }}
+                            transition={{
+                                type: 'spring',
+                                stiffness: 150,
+                                damping: 30
+                            }}
+                        >
+                            <Logo size={40} />
+                        </motion.div>
                     </Grid>
-                    <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <TotalOrderLineChartCard isLoading={isLoading} />
-                    </Grid>
-                    <Grid item lg={4} md={12} sm={12} xs={12}>
-                        <Grid container spacing={gridSpacing}>
-                            <Grid item sm={6} xs={12} md={6} lg={12}>
-                                <TotalIncomeDarkCard isLoading={isLoading} />
-                            </Grid>
-                            <Grid item sm={6} xs={12} md={6} lg={12}>
-                                <TotalIncomeLightCard isLoading={isLoading} />
-                            </Grid>
+                </Grid>
+
+
+                <Grid item xs={12}>
+                    <motion.div
+                        initial={{ opacity: 0, translateY: 550 }}
+                        animate={{ opacity: 1, translateY: 0 }}
+                        transition={{
+                            type: 'spring',
+                            stiffness: 150,
+                            damping: 30,
+                            delay: 0.2
+                        }}
+                    >
+                        <Typography
+                            variant="h4"
+                            component="div"
+                            color="inherit"
+                            sx={{
+                                fontSize: { xs: '2rem', md: '1.125rem' },
+                                fontWeight: 400,
+                                lineHeight: 1.4
+                            }}
+                        >
+                            Sistema integral de información de salud ocupacional.
+                        </Typography>
+                    </motion.div>
+                </Grid>
+            </Grid>
+
+            <Grid item sx={{ pt: 36 }} xs={12}>
+                <motion.div
+                    initial={{ opacity: 0, translateY: 550 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{
+                        type: 'spring',
+                        stiffness: 150,
+                        damping: 30,
+                        delay: 0.6
+                    }}
+                >
+                    <Grid
+                        container
+                        alignItems="center"
+                        spacing={2}
+                        sx={{ [theme.breakpoints.down('lg')]: { display: 'inline-flex', width: 'auto' } }}
+                    >
+                        <Grid item xs zeroMinWidth>
+                            <Typography variant="h6" component="div" color="inherit" sx={{ fontWeight: 400, lineHeight: 1.4 }}>
+                                <b>&#169;</b>Copyright 2022 Drummond Ltd. Colombia - V 4.0.
+                            </Typography>
                         </Grid>
                     </Grid>
-                </Grid>
+                </motion.div>
             </Grid>
-            <Grid item xs={12}>
-                <Grid container spacing={gridSpacing}>
-                    <Grid item xs={12} md={8}>
-                        <TotalGrowthBarChart isLoading={isLoading} />
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <PopularCard isLoading={isLoading} />
-                    </Grid>
-                </Grid>
-            </Grid>
-        </Grid>
+        </Fragment >
     );
 };
 

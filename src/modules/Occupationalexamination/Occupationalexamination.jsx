@@ -211,8 +211,6 @@ const OccupationalExamination = () => {
                 datos.fRTencionFRA, datos.fRTabaquismoFRA, datos.puntajeFRA, datos.riesgoAbsolutoFRA, datos.riesgoRelativoFRA, datos.interpretacionFRA,
             );
 
-            console.log("Datos  = ", DataToInset);
-
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertOccupationalExamination(DataToInset);
                 if (result.status === 200) {
@@ -343,6 +341,7 @@ const OccupationalExamination = () => {
                     arrays={arrays}
                     setEstadoVacuna={setEstadoVacuna}
                     estadoVacuna={estadoVacuna}
+                    lsEmployee={lsEmployee}
                     {...methods} />
             </TabPanel>
 

@@ -95,12 +95,7 @@ export const DefaultData = {
 }
 
 export const DefaultValue = {
-    HCOVA_TETANO: 4404,
-    HCOVA_INFLUENZA: 4405,
-    HCOVA_FIEBRE_AMA: 4406,
-    HCOVA_RUBEOLA_SAR: 4407,
-    HCOVA_COVID_19: 4408,
-    HCOVA_OTRAS: 4409,
+    GeneroWomen: 4282,
 }
 
 export const TitleButton = {

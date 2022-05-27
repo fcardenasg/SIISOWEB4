@@ -58,13 +58,13 @@ const HeaderPage = () => {
                                         lineHeight: 1.4
                                     }}
                                 >
-                                    {/* Sistema integral de información de salud ocupacional */}
                                     <Box component="span" sx={{ ml: 2, color: theme.palette.primary.main }}>
-                                    <b>&#169;</b> SIISO
+                                        <b>&#169;</b> SIISO
                                     </Box>
                                 </Typography>
                             </motion.div>
                         </Grid>
+
                         <Grid item xs={12}>
                             <motion.div
                                 initial={{ opacity: 0, translateY: 550 }}
@@ -90,6 +90,7 @@ const HeaderPage = () => {
                                 </Typography>
                             </motion.div>
                         </Grid>
+
                         <Grid item xs={12} sx={{ my: 3.25 }}>
                             <motion.div
                                 initial={{ opacity: 0, translateY: 550 }}
@@ -116,10 +117,10 @@ const HeaderPage = () => {
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
-                                 
                                 </Grid>
                             </motion.div>
                         </Grid>
+                        
                         <Grid item xs={12}>
                             <motion.div
                                 initial={{ opacity: 0, translateY: 550 }}
@@ -147,7 +148,7 @@ const HeaderPage = () => {
                         </Grid>
                     </Grid>
                 </Grid>
-             
+
             </Grid>
         </Container>
     );

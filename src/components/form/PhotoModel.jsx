@@ -5,38 +5,41 @@ import {
 } from '@mui/material';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import user from 'assets/img/user.png';
+import { Fragment } from 'react';
 
 const PhotoModel = ({ OpenModal, disabledCapture, disabledDelete, EstadoImg, RemoverImg }) => {
 
     return (
         <>
             {EstadoImg !== null ? (
-                <>
-                    <Grid container justifyContent="center" alignItems="center" xs={12} sx={{ pb: 2 }}>
-                        <img alt='Imagen de Usuario' src={EstadoImg} width={225} height={225} />
+                <Fragment>
+                    <Grid container justifyContent="center" alignItems="center" sx={{ pb: 2 }}>
+                        <img alt='Imagen de Usuario' src={EstadoImg} width={200} height={200} />
                     </Grid>
-                    <Grid xs={12} sx={{ pb: 2 }}>
+                    <Grid item xs={12} sx={{ pb: 2 }}>
                         <AnimateButton>
                             <Button disabled={disabledDelete} variant="outlined" fullWidth onClick={RemoverImg}>
                                 Eliminar
                             </Button>
                         </AnimateButton>
                     </Grid>
-                </>
+                </Fragment>
 
             ) : (
-                <>
-                    <Grid container justifyContent="center" alignItems="center" xs={12} sx={{ pb: 2 }}>
-                        <img alt='Imagen de Usuario' src={user} width={225} />
+                <Fragment>
+                    <Grid container justifyContent="center" alignItems="center" sx={{ pb: 2 }}>
+                        <img alt='Imagen de Usuario' src={user} width={200} />
                     </Grid>
-                    <Grid xs={12} sx={{ pb: 2 }}>
-                        <AnimateButton>
-                            <Button disabled={disabledCapture} variant="contained" fullWidth onClick={OpenModal}>
-                                Capturar
-                            </Button>
-                        </AnimateButton>
+                    <Grid container justifyContent="center" alignItems="center">
+                        <Grid item xs={10} sx={{ pb: 2 }}>
+                            <AnimateButton>
+                                <Button disabled={disabledCapture} variant="contained" fullWidth onClick={OpenModal}>
+                                    Capturar
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
                     </Grid>
-                </>
+                </Fragment>
             )
             }
         </>

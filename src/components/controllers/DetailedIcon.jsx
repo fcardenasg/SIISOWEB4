@@ -30,5 +30,4 @@ DetailedIcon.propTypes = {
     title: PropTypes.string,
     onClick: PropTypes.func,
     icons: PropTypes.node,
-
 };

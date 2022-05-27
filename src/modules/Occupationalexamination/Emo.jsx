@@ -23,7 +23,7 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { IconEdit } from '@tabler/icons';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo } from 'components/helpers/Enums';
+import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import FullScreenDialog from 'components/controllers/FullScreenDialog'
@@ -35,7 +35,7 @@ const DetailIcons = [
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...methods }) => {
+const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arrays, ...methods }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -1179,316 +1179,320 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
             </SubCard>
             <Grid sx={{ pb: 2 }} />
 
-            <SubCard darkTitle title={<Typography variant="h4">GINECO OBSTÉTRICOS</Typography>}>
-                <Grid container spacing={2} sx={{ pb: 2 }}>
-                    <Grid item xs={2.5}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                type="number"
-                                name="menarquiaGO"
-                                label="Menarquía (EDAD)"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+            {lsEmployee.genero == DefaultValue.GeneroWomen ?
+                <Fragment>
+                    <SubCard darkTitle title={<Typography variant="h4">GINECO OBSTÉTRICOS</Typography>}>
+                        <Grid container spacing={2} sx={{ pb: 2 }}>
+                            <Grid item xs={2.5}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        type="number"
+                                        name="menarquiaGO"
+                                        label="Menarquía (EDAD)"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={2.5} >
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idCiclosGO"
-                                label="Ciclos"
-                                defaultValue=""
-                                options={lsCiclos}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={2.5} >
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idCiclosGO"
+                                        label="Ciclos"
+                                        defaultValue=""
+                                        options={lsCiclos}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={2.5} >
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                type="number"
-                                name="duracionGO"
-                                label="Duración (DIAS)"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={2.5} >
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        type="number"
+                                        name="duracionGO"
+                                        label="Duración (DIAS)"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1.5}>
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="Amenorrea"
-                                name="amenoreaGO"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={1.5}>
+                                <FormProvider {...methods}>
+                                    <InputCheckBox
+                                        label="Amenorrea"
+                                        name="amenoreaGO"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1.5}>
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="Dismenorrea"
-                                name="disminureaGO"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={1.5}>
+                                <FormProvider {...methods}>
+                                    <InputCheckBox
+                                        label="Dismenorrea"
+                                        name="disminureaGO"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1.5} >
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="Leucorrea"
-                                name="leucoreaGO"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
-                    </Grid>
-                </Grid>
+                            <Grid item xs={1.5} >
+                                <FormProvider {...methods}>
+                                    <InputCheckBox
+                                        label="Leucorrea"
+                                        name="leucoreaGO"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                        </Grid>
 
-                <Grid container spacing={2} sx={{ pb: 2 }}>
-                    <Grid item xs={2.5}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                type="number"
-                                name="vidaMaritalGO"
-                                label="Vida Marital (EDAD EN AÑOS)"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                        <Grid container spacing={2} sx={{ pb: 2 }}>
+                            <Grid item xs={2.5}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        type="number"
+                                        name="vidaMaritalGO"
+                                        label="Vida Marital (EDAD EN AÑOS)"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={2.5}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                type="number"
-                                name="vidaObstetricaGO"
-                                label="Vida Obstétrica (EDAD EN AÑOS)"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={2.5}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        type="number"
+                                        name="vidaObstetricaGO"
+                                        label="Vida Obstétrica (EDAD EN AÑOS)"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1.4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                type="number"
-                                name="gGO"
-                                label="G"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={1.4}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        type="number"
+                                        name="gGO"
+                                        label="G"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1.4} >
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                type="number"
-                                name="pGO"
-                                label="P"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={1.4} >
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        type="number"
+                                        name="pGO"
+                                        label="P"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1.4} >
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                type="number"
-                                name="aGO"
-                                label="A"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={1.4} >
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        type="number"
+                                        name="aGO"
+                                        label="A"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1.4} >
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                type="number"
-                                name="cSGO"
-                                label="C"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={1.4} >
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        type="number"
+                                        name="cSGO"
+                                        label="C"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1.4} >
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                type="number"
-                                name="vGO"
-                                label="V"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                </Grid>
+                            <Grid item xs={1.4} >
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        type="number"
+                                        name="vGO"
+                                        label="V"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                        </Grid>
 
-                <Grid container spacing={2} sx={{ pb: 2 }}  >
-                    <Grid item xs={2.5}>
-                        <FormProvider {...methods}>
-                            <InputDatePicker
-                                label="Fecha"
-                                name="fUPGO"
-                                defaultValue={new Date()}
-                            />
-                        </FormProvider>
-                    </Grid>
+                        <Grid container spacing={2} sx={{ pb: 2 }}  >
+                            <Grid item xs={2.5}>
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha"
+                                        name="fUPGO"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={2.5}>
-                        <FormProvider {...methods}>
-                            <InputDatePicker
-                                label="Fecha"
-                                name="fURGO"
-                                defaultValue={new Date()}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={2.5}>
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha"
+                                        name="fURGO"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1}>
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="ETS"
-                                name="eTSGO"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={1}>
+                                <FormProvider {...methods}>
+                                    <InputCheckBox
+                                        label="ETS"
+                                        name="eTSGO"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={6}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="cUALGO"
-                                label="Cúal?"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                </Grid>
+                            <Grid item xs={6}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="cUALGO"
+                                        label="Cúal?"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                        </Grid>
 
-                <Grid container spacing={2}>
-                    <Grid item xs={2}>
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="Quiste de Ovarios - Miomas"
-                                name="quisteOvariosBiomasGO"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
-                    </Grid>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <FormProvider {...methods}>
+                                    <InputCheckBox
+                                        label="Quiste de Ovarios - Miomas"
+                                        name="quisteOvariosBiomasGO"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1.5}>
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="Endometriosis"
-                                name="endometriosisGO"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={1.5}>
+                                <FormProvider {...methods}>
+                                    <InputCheckBox
+                                        label="Endometriosis"
+                                        name="endometriosisGO"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1}>
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="EPI"
-                                name="ePIGO"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={1}>
+                                <FormProvider {...methods}>
+                                    <InputCheckBox
+                                        label="EPI"
+                                        name="ePIGO"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={1.5} >
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="Planifica"
-                                name="planificaGO"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={1.5} >
+                                <FormProvider {...methods}>
+                                    <InputCheckBox
+                                        label="Planifica"
+                                        name="planificaGO"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={2}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idMetodoGO"
-                                label="Método"
-                                defaultValue=""
-                                options={lsGineMetodo}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={2}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idMetodoGO"
+                                        label="Método"
+                                        defaultValue=""
+                                        options={lsGineMetodo}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={2}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                type="number"
-                                name="ultimoAnioCitologiaGO"
-                                label="Ultimo Año Citologia."
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                            <Grid item xs={2}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        type="number"
+                                        name="ultimoAnioCitologiaGO"
+                                        label="Ultimo Año Citologia."
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={2}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idResultadoGO"
-                                label="Resultado"
-                                defaultValue=""
-                                options={lsResultado}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                </Grid>
-            </SubCard>
-            <Grid sx={{ pb: 2 }} />
+                            <Grid item xs={2}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idResultadoGO"
+                                        label="Resultado"
+                                        defaultValue=""
+                                        options={lsResultado}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                        </Grid>
+                    </SubCard>
+                    <Grid sx={{ pb: 2 }} />
+                </Fragment>
+                : <></>}
 
             <SubCard darkTitle title={<Typography variant="h4">REVISIÓN POR SISTEMAS</Typography>}>
                 <Grid container spacing={2} sx={{ pb: 2 }}>
@@ -2657,7 +2661,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2670,21 +2674,24 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={3}>
-                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <Grid item xs={2}>
+                        <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[0].title}
                                 onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[1].title}
                                 onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[2].title}
                                 onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
@@ -2715,7 +2722,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2728,21 +2735,24 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={3}>
-                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <Grid item xs={2}>
+                        <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[0].title}
                                 onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[1].title}
                                 onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[2].title}
                                 onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
@@ -2773,7 +2783,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2786,21 +2796,24 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={3}>
-                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <Grid item xs={2}>
+                        <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[0].title}
                                 onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[1].title}
                                 onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[2].title}
                                 onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
@@ -2831,7 +2844,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={5} >
+                    <Grid item xs={6} >
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2844,21 +2857,24 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={3}>
-                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <Grid item xs={2}>
+                        <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[0].title}
                                 onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[1].title}
                                 onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[2].title}
                                 onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
@@ -2889,7 +2905,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2902,21 +2918,24 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={3}>
-                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <Grid item xs={2}>
+                        <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[0].title}
                                 onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[1].title}
                                 onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[2].title}
                                 onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
@@ -2947,7 +2966,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -2960,21 +2979,24 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={3}>
+                    <Grid item xs={2}>
                         <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[0].title}
                                 onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[1].title}
                                 onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[2].title}
                                 onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
@@ -3005,7 +3027,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -3018,21 +3040,24 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={3}>
-                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <Grid item xs={2}>
+                        <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[0].title}
                                 onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[1].title}
                                 onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[2].title}
                                 onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
@@ -3063,7 +3088,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -3075,21 +3100,24 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
-                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <Grid item xs={2}>
+                        <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[0].title}
                                 onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[1].title}
                                 onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[2].title}
                                 onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
@@ -3120,7 +3148,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -3133,21 +3161,24 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={3}>
-                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                    <Grid item xs={2}>
+                        <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ pt: 2 }}>
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[0].title}
                                 onClick={() => setOpenTemplate(true)}
                                 icons={DetailIcons[0].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[1].title}
                                 onClick={() => setOpen(true)}
                                 icons={DetailIcons[1].icons}
                             />
 
                             <DetailedIcon
+                                xs={4}
                                 title={DetailIcons[2].title}
                                 onClick={() => setOpenViewPdf(true)}
                                 icons={DetailIcons[2].icons}
@@ -4253,6 +4284,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...meth
 export default Emo;
 
 Emo.propTypes = {
+    lsEmployee: PropTypes.any,
     errors: PropTypes.any,
     setArrays: PropTypes.func,
     arrays: PropTypes.any,

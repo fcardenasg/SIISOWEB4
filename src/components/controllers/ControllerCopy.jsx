@@ -42,7 +42,7 @@ export default ControllerCopy;
 
 ControllerCopy.propTypes = {
     text: PropTypes.string,
-    size: PropTypes.string,
+    size: PropTypes.number,
     color: PropTypes.string,
     title: PropTypes.string
 }

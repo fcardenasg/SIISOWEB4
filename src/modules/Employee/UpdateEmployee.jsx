@@ -34,7 +34,7 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import { Message, TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import InputDatePick from 'components/input/InputDatePick';
+import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/Cargando';
 
@@ -78,7 +78,10 @@ const UpdateEmployee = () => {
     const [lsAfp, setAfp] = useState([]);
     const [lsArl, setArl] = useState([]);
     const [lsCesantias, setCesantias] = useState([]);
+    const [lsMunicipioTrabaja, setLsMunicipioTrabaja] = useState([]);
+    const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState('');
     const [dptoNacido, setDptoNacido] = useState('');
+    const [municipioResidenciaTrabaja, setMunicipioResidenciaTrabaja] = useState('');
     const [dptoResidencia, setDptoResidencia] = useState('');
     const [municipioNacido, setMunicipioNacido] = useState('');
     const [municipioResidencia, setMunicipioResidencia] = useState('');
@@ -87,10 +90,6 @@ const UpdateEmployee = () => {
     const [imgSrc, setImgSrc] = useState(null);
     const [open, setOpen] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
-
-    const [valueFechaNaci, setFechaNaci] = useState(null);
-    const [valueFechaContrato, setFechaContrato] = useState(null);
-    const [valueTermDate, setTermDate] = useState(null);
 
     async function GetAll() {
         try {
@@ -105,10 +104,8 @@ const UpdateEmployee = () => {
             if (lsServerEmployeeId.status === 200) {
                 setEmployee(lsServerEmployeeId.data);
                 setImgSrc(lsServerEmployeeId.data.imagenUrl);
-                setFechaNaci(lsServerEmployeeId.data.fechaNaci);
-                setFechaContrato(lsServerEmployeeId.data.fechaContrato);
-                setTermDate(lsServerEmployeeId.data.termDate);
                 setDptoNacido(lsServerEmployeeId.data.dptoNacido);
+                setDptoResidenciaTrabaja(lsServerEmployeeId.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId.data.dptoResidencia);
                 setEventArea(lsServerEmployeeId.data.area);
             }
@@ -316,6 +313,14 @@ const UpdateEmployee = () => {
         setMunicipioN(resultMunicipioNacimiento);
     };
 
+    const handleChangeDptoResidenciaTrabaja = async (event) => {
+        setDptoResidenciaTrabaja(event.target.value);
+
+        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+        var resultMunicipioNacimiento = await GetSubString(lsResulCode);
+        setLsMunicipioTrabaja(resultMunicipioNacimiento);
+    };
+
     const handleChangeArea = async (event) => {
         setEventArea(event.target.value);
 
@@ -331,23 +336,22 @@ const UpdateEmployee = () => {
 
     const handleClick = async (datos) => {
         try {
-            const FechaNaci = FormatDate(valueFechaNaci);
-            const FechaContrato = FormatDate(valueFechaContrato);
-            const TermDate = FormatDate(valueTermDate);
-
             const municipioResidencia_DATA = municipioResidencia == '' ? datos.municipioResidencia : municipioResidencia;
             const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
             const subArea_DATA = eventSubArea == '' ? datos.subArea : eventSubArea;
+            const municipioTrabaja_DATA = municipioResidenciaTrabaja == '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
 
-            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, FechaNaci, datos.type, datos.departamento,
-                eventArea, subArea_DATA, datos.grupo, municipioNacido_DATA, dptoNacido, FechaContrato,
+            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, FormatDate(datos.fechaNaci), datos.type, datos.departamento,
+                eventArea, subArea_DATA, datos.grupo, municipioNacido_DATA, dptoNacido, FormatDate(datos.fechaContrato),
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
-                datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidencia, datos.celular, datos.eps,
+                datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidenciaTrabaja,
+                municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
-                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, TermDate,
+                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(datos.termDate),
                 datos.bandera, datos.ges, user.id, FormatDate(new Date()), employee.usuarioCreacion, FormatDate(employee.fechaCreacion), imgSrc);
+            console.log("Datos = ", DataToUpdate);
 
-            if (FechaNaci != null && FechaContrato != null && TermDate != null && imgSrc != null) {
+            if (imgSrc != null) {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await UpdateEmployees(DataToUpdate);
                     if (result.status === 200) {
@@ -414,7 +418,7 @@ const UpdateEmployee = () => {
                             />
                         </ModalChildren>
 
-                        <Grid container xs={12} spacing={2}>
+                        <Grid container spacing={2}>
                             <Grid item xs={3}>
                                 <PhotoModel
                                     OpenModal={() => setOpen(true)}
@@ -423,145 +427,149 @@ const UpdateEmployee = () => {
                                 />
                             </Grid>
 
-                            <Grid container spacing={2} item xs={9}>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue={employee.documento}
-                                            fullWidth
-                                            name="documento"
-                                            label="Documento"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue={employee.nombres}
-                                            fullWidth
-                                            name="nombres"
-                                            label="Nombres"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue={employee.email}
-                                            fullWidth
-                                            name="email"
-                                            label="Email"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue={employee.celular}
-                                            fullWidth
-                                            name="celular"
-                                            label="Celular"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="escolaridad"
-                                            label="Escolaridad"
-                                            defaultValue={employee.escolaridad}
-                                            options={lsEscolaridad}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="empresa"
-                                            label="Empresa"
-                                            defaultValue={employee.empresa}
-                                            options={company}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="sede"
-                                            label="Sede"
-                                            defaultValue={employee.sede}
-                                            options={lsSede}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha de Nacimiento"
-                                        value={valueFechaNaci}
-                                        onChange={(e) => setFechaNaci(e)}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="genero"
-                                            label="Genero"
-                                            defaultValue={employee.genero}
-                                            options={lsGenero}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="estadoCivil"
-                                            label="Estado civil"
-                                            defaultValue={employee.estadoCivil}
-                                            options={lsEstadoCivil}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue={employee.contacto}
-                                            fullWidth
-                                            name="contacto"
-                                            label="Contacto"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue={employee.telefonoContacto}
-                                            fullWidth
-                                            name="telefonoContacto"
-                                            label="Telefono Contacto"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                            <Grid item xs={9}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={employee.documento}
+                                                fullWidth
+                                                name="documento"
+                                                label="Documento"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={employee.nombres}
+                                                fullWidth
+                                                name="nombres"
+                                                label="Nombres"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={employee.email}
+                                                fullWidth
+                                                name="email"
+                                                label="Email"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={employee.celular}
+                                                fullWidth
+                                                name="celular"
+                                                label="Celular"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="escolaridad"
+                                                label="Escolaridad"
+                                                defaultValue={employee.escolaridad}
+                                                options={lsEscolaridad}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="empresa"
+                                                label="Empresa"
+                                                defaultValue={employee.empresa}
+                                                options={company}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="sede"
+                                                label="Sede"
+                                                defaultValue={employee.sede}
+                                                options={lsSede}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha de Nacimiento"
+                                                name="fechaNaci"
+                                                defaultValue={new Date()}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="genero"
+                                                label="Genero"
+                                                defaultValue={employee.genero}
+                                                options={lsGenero}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="estadoCivil"
+                                                label="Estado civil"
+                                                defaultValue={employee.estadoCivil}
+                                                options={lsEstadoCivil}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={employee.contacto}
+                                                fullWidth
+                                                name="contacto"
+                                                label="Contacto"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={employee.telefonoContacto}
+                                                fullWidth
+                                                name="telefonoContacto"
+                                                label="Telefono Contacto"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -571,11 +579,13 @@ const UpdateEmployee = () => {
                     <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN CONTRACTUAL</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={3}>
-                                <InputDatePick
-                                    label="Fecha de Contrato"
-                                    value={valueFechaContrato}
-                                    onChange={(e) => setFechaContrato(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha de Contrato"
+                                        name="fechaContrato"
+                                        defaultValue={employee.fechaContrato}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -725,7 +735,7 @@ const UpdateEmployee = () => {
 
                     <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN DEMOGRÁFICA</Typography>}>
                         <Grid container spacing={2}>
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
                                 <SelectOnChange
                                     name="dptoNacido"
                                     label="Departamento de Nacimiento"
@@ -735,7 +745,7 @@ const UpdateEmployee = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
                                 {lsMunicipioN.length != 0 ? (
                                     <SelectOnChange
                                         name="municipioNacido"
@@ -759,7 +769,7 @@ const UpdateEmployee = () => {
                                     </FormProvider>
                                 )}
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
                                 <SelectOnChange
                                     name="dptoResidencia"
                                     label="Departamento de Residencia"
@@ -769,7 +779,7 @@ const UpdateEmployee = () => {
                                     onChange={handleChangeDptoResidencia}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
                                 {lsMunicipioR.length != 0 ? (
                                     <SelectOnChange
                                         name="municipioResidencia"
@@ -793,7 +803,7 @@ const UpdateEmployee = () => {
                                     </FormProvider>
                                 )}
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue={employee.direccionResidencia}
@@ -805,7 +815,39 @@ const UpdateEmployee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
+                                <SelectOnChange
+                                    name="dptoResidenciaTrabaja"
+                                    label="Departamento de Residencia Laboral"
+                                    options={lsDepartamento}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    value={dptoResidenciaTrabaja}
+                                    onChange={handleChangeDptoResidenciaTrabaja}
+                                />
+                            </Grid>
+                            <Grid item xs={3}>
+                                {lsMunicipioTrabaja.length != 0 ?
+                                    <SelectOnChange
+                                        name="municipioResidenciaTrabaja"
+                                        label="Municipio de Residencia Laboral"
+                                        value={municipioResidenciaTrabaja}
+                                        options={lsMunicipioTrabaja}
+                                        onChange={(e) => setMunicipioResidenciaTrabaja(e.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                    : <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="municipioResidenciaTrabaja"
+                                            label="Municipio de Residencia Laboral"
+                                            defaultValue={employee.municipioResidenciaTrabaja}
+                                            disabled
+                                            options={catalog}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>}
+                            </Grid>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue={employee.direccionResidenciaTrabaja}
@@ -878,11 +920,13 @@ const UpdateEmployee = () => {
                     <SubCard darkTitle title={<Typography variant="h4">DATOS ADICIONALES</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha de Terminación"
-                                    value={valueTermDate}
-                                    onChange={(e) => setTermDate(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha de Terminación"
+                                        name="termDate"
+                                        defaultValue={employee.termDate}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -917,7 +961,7 @@ const UpdateEmployee = () => {
                             <Grid item xs={6}>
                                 <AnimateButton>
                                     <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                        {TitleButton.Guardar}
+                                        {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>

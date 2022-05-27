@@ -49,7 +49,7 @@ SelectOnChange.propTypes = {
     name: PropTypes.string,
     disabled: PropTypes.bool,
     label: PropTypes.string,
-    value: PropTypes.number,
+    value: PropTypes.any,
     options: PropTypes.any,
     size: PropTypes.any
 };
