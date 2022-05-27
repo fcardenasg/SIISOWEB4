@@ -33,10 +33,9 @@ const InputCheck = ({ onChange, checked, label, size }) => {
 export default InputCheck;
 
 InputCheck.propTypes = {
-    name: PropTypes.string,
     checked: PropTypes.bool,
     defaultValue: PropTypes.string,
     onClick: PropTypes.func,
-    size: PropTypes.string,
+    size: PropTypes.number,
     label: PropTypes.string
 };

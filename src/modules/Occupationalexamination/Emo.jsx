@@ -23,7 +23,7 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { IconEdit } from '@tabler/icons';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo } from 'components/helpers/Enums';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import FullScreenDialog from 'components/controllers/FullScreenDialog'
@@ -35,7 +35,7 @@ const DetailIcons = [
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const Emo = ({ errors, setArrays, arrays, ...methods }) => {
+const Emo = ({ errors, setEstadoVacuna, estadoVacuna, setArrays, arrays, ...methods }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -43,7 +43,6 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openViewPdf, setOpenViewPdf] = useState(false);
 
-    const [lsVacuna, setLsVacuna] = useState([]);
     const [lsDeporte, setLsDeporte] = useState([]);
     const [lsTipoFobia, setLsTipoFobia] = useState([]);
     const [lsFrecuencia, setLsFrecuencia] = useState([]);
@@ -66,15 +65,6 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
     const [lsFramDxMetabolismo, setLsFramDxMetabolismo] = useState([]);
     const [lsFramDxTension, setLsFramDxTension] = useState([]);
     const [lsFramAntecedentesCardiovascular, setLsFramAntecedentesCardiovascular] = useState([]);
-
-    const [estadoVacuna, setEstadoVacuna] = useState({
-        tetanoIM: false,
-        influenzaIM: false,
-        fiebreAmarillaIM: false,
-        rubeolaSarampionIM: false,
-        covid19IM: false,
-        otrasIM: false,
-    });
 
     async function GetAll() {
         try {
@@ -190,13 +180,6 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                 label: item.nombre
             }));
             setLsConceptoActitud(resultConceptoActitud);
-
-            const lsServerVacuna = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_VACUNAS);
-            var resultVacuna = lsServerVacuna.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsVacuna(resultVacuna);
 
             const lsServerDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HC_DEPOR);
             var resultDeporte = lsServerDeporte.data.entities.map((item) => ({
@@ -730,19 +713,11 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                             label="Tetano"
                             onChange={(e) => setEstadoVacuna({ ...estadoVacuna, tetanoIM: e.target.checked })}
                             size={30}
-                            checked={estadoVacuna.tetano}
+                            checked={estadoVacuna.tetanoIM}
                         />
                     </Grid>
 
                     <Grid item xs={2} >
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="Influenza"
-                                name="influenzaIM"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
                         <InputCheck
                             label="Influenza"
                             onChange={(e) => setEstadoVacuna({ ...estadoVacuna, influenzaIM: e.target.checked })}
@@ -752,65 +727,56 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                     </Grid>
 
                     <Grid item xs={2} >
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="Fiebre Amarilla"
-                                name="fiebreAmarillaIM"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
+                        <InputCheck
+                            label="Fiebre Amarilla"
+                            onChange={(e) => setEstadoVacuna({ ...estadoVacuna, fiebreAmarillaIM: e.target.checked })}
+                            size={30}
+                            checked={estadoVacuna.fiebreAmarillaIM}
+                        />
                     </Grid>
 
                     <Grid item xs={2} >
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="Rubéola - Sarampión"
-                                name="rubeolaSarampionIM"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
+                        <InputCheck
+                            label="Rubéola - Sarampión"
+                            onChange={(e) => setEstadoVacuna({ ...estadoVacuna, rubeolaSarampionIM: e.target.checked })}
+                            size={30}
+                            checked={estadoVacuna.rubeolaSarampionIM}
+                        />
                     </Grid>
 
                     <Grid item xs={2} >
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="COVID-19"
-                                name="covid19IM"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
+                        <InputCheck
+                            label="COVID-19"
+                            onChange={(e) => setEstadoVacuna({ ...estadoVacuna, covid19IM: e.target.checked })}
+                            size={30}
+                            checked={estadoVacuna.covid19IM}
+                        />
                     </Grid>
 
                     <Grid item xs={2} >
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="Otras"
-                                name="otrasIM"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
+                        <InputCheck
+                            label="Otras"
+                            onChange={(e) => setEstadoVacuna({ ...estadoVacuna, otrasIM: e.target.checked })}
+                            size={30}
+                            checked={estadoVacuna.otrasIM}
+                        />
                     </Grid>
 
-                    {estadoVacuna.tetano ?
+                    {estadoVacuna.tetanoIM ?
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
+                                    defaultValue={""}
                                     fullWidth
                                     name="anioVacuna1IM"
-                                    label="Año"
+                                    label="Año Tetano"
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
                             </FormProvider>
                         </Grid> : <></>}
-
-                    {lsVacuna.value === DefaultValue.HCOVA_INFLUENZA ?
+                    {estadoVacuna.influenzaIM ?
                         <Grid item xs={2} >
                             <FormProvider {...methods}>
                                 <InputText
@@ -818,66 +784,67 @@ const Emo = ({ errors, setArrays, arrays, ...methods }) => {
                                     defaultValue=""
                                     fullWidth
                                     name="anioVacuna2IM"
-                                    label="Año"
+                                    label="Año Influenza"
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
                                 />
                             </FormProvider>
-                        </Grid>
-                        : lsVacuna.value === DefaultValue.HCOVA_FIEBRE_AMA ?
-                            <Grid item xs={2} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        type="number"
-                                        defaultValue=""
-                                        fullWidth
-                                        name="anioVacuna3IM"
-                                        label="Año"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            : lsVacuna.value === DefaultValue.HCOVA_RUBEOLA_SAR ?
-                                <Grid item xs={2} >
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            type="number"
-                                            defaultValue=""
-                                            fullWidth
-                                            name="anioVacuna4IM"
-                                            label="Año"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid> : lsVacuna.value === DefaultValue.HCOVA_COVID_19 ?
-                                    <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                type="number"
-                                                defaultValue=""
-                                                fullWidth
-                                                name="anioVacuna5IM"
-                                                label="Año"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-                                    : lsVacuna.value === DefaultValue.HCOVA_OTRAS ? <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                type="number"
-                                                defaultValue=""
-                                                fullWidth
-                                                name="anioVacuna6IM"
-                                                label="Año"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid> : <></>}
+                        </Grid> : <></>}
+                    {estadoVacuna.fiebreAmarillaIM ?
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="anioVacuna3IM"
+                                    label="Año Fiebre Amarilla"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid> : <></>}
+                    {estadoVacuna.rubeolaSarampionIM ?
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="anioVacuna4IM"
+                                    label="Año Rubéola - Sarampion"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid> : <></>}
+                    {estadoVacuna.covid19IM ?
+                        <Grid item xs={2} >
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="anioVacuna5IM"
+                                    label="Año COVID-19"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid> : <></>}
+                    {estadoVacuna.otrasIM ? <Grid item xs={2} >
+                        <FormProvider {...methods}>
+                            <InputText
+                                type="number"
+                                defaultValue=""
+                                fullWidth
+                                name="anioVacuna6IM"
+                                label="Año Otras"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid> : <></>}
                 </Grid>
             </SubCard>
             <Grid sx={{ pb: 2 }} />
@@ -4289,4 +4256,6 @@ Emo.propTypes = {
     errors: PropTypes.any,
     setArrays: PropTypes.func,
     arrays: PropTypes.any,
+    setEstadoVacuna: PropTypes.func,
+    estadoVacuna: PropTypes.any,
 };

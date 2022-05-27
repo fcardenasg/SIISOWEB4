@@ -22,19 +22,19 @@ import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 
-// Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Import del Proyectot
+import { InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import { Message } from 'components/helpers/Enums';
+import { SNACKBAR_OPEN } from 'store/actions';
 import { TitleButton } from 'components/helpers/Enums';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import User from 'assets/img/user.png'
-import { GetAllCatalog, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { GetAllCompany } from 'api/clients/CompanyClient';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { CodCatalogo } from 'components/helpers/Enums';
@@ -77,9 +77,6 @@ const tabsOption = [
         label: 'Historia Ocupacional',
         icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
     },
-
-
-
 ];
 
 const OccupationalExamination = () => {
@@ -91,18 +88,24 @@ const OccupationalExamination = () => {
     const [value, setValue] = useState(0);
 
     const [document, setDocument] = useState('');
+    const [lsAtencionEMO, setLsAtencionEMO] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [arrays, setArrays] = useState({
-        vacuna: []
+        tipoFobia: [],
+        parentesco: [],
+        dx: [],
+        antecedentesCardio: [],
+        metabolico: [],
     });
 
-    console.log("Array = ", arrays)
-
-    const [catalog, setCatalog] = useState([]);
-    const [company, setCompany] = useState([]);
-    const [lsAtencionEMO, setLsAtencionEMO] = useState([]);
-    const [lsDepartamento, setDepartamento] = useState([]);
-    const [lsCodigoFilter, setCodigoFilter] = useState([]);
+    const [estadoVacuna, setEstadoVacuna] = useState({
+        tetanoIM: false,
+        influenzaIM: false,
+        fiebreAmarillaIM: false,
+        rubeolaSarampionIM: false,
+        covid19IM: false,
+        otrasIM: false,
+    });
 
     const handleDocumento = async (event) => {
         try {
@@ -121,43 +124,20 @@ const OccupationalExamination = () => {
 
     const { handleSubmit, errors, reset } = methods;
 
-
-    async function GetAll() {
-        try {
-            const lsServerCatalog = await GetAllCatalog(0, 0);
-            var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setCatalog(resultCatalogo);
-
-            const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, 1077);
-            var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setDepartamento(resultDepartamento);
-            setCodigoFilter(lsServerDepartamento.data.entities);
-
-            const lsServerAtencionEMO = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
-            var resultAtencionEMO = lsServerAtencionEMO.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsAtencionEMO(resultAtencionEMO);
-
-            const lsServerCompany = await GetAllCompany(0, 0);
-            var resultCompany = lsServerCompany.data.entities.map((item) => ({
-                value: item.codigo,
-                label: item.descripcionSpa
-            }));
-            setCompany(resultCompany);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServerAtencionEMO = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
+                var resultAtencionEMO = lsServerAtencionEMO.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsAtencionEMO(resultAtencionEMO);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         GetAll();
     }, [])
 
@@ -174,13 +154,14 @@ const OccupationalExamination = () => {
 
                 datos.anioAT, datos.especifiqueAT, datos.anio1AT, datos.especifique1AT,
 
-                JSON.stringify(arrays.vacuna), datos.anioVacuna1IM, datos.anioVacuna2IM, datos.anioVacuna3IM, datos.anioVacuna4IM, datos.anioVacuna5IM, datos.anioVacuna6IM,
+                estadoVacuna.tetanoIM, estadoVacuna.influenzaIM, estadoVacuna.fiebreAmarillaIM, estadoVacuna.rubeolaSarampionIM, estadoVacuna.covid19IM,
+                estadoVacuna.otrasIM, datos.anioVacuna1IM, datos.anioVacuna2IM, datos.anioVacuna3IM, datos.anioVacuna4IM, datos.anioVacuna5IM, datos.anioVacuna6IM,
 
                 datos.fumaHB, datos.cigarrillosDiasFumaHB, datos.aniosCigaFumaHB, datos.mesesCigaFumaHB, datos.observacionFumaHB, datos.fumabaHB,
                 datos.cigarrillosDiasFumabaHB, datos.aniosCigaFumabaHB, datos.mesesCigaFumabaHB, datos.observacionFumabaHB, datos.practicaDeporteHB,
                 datos.idFrecuenciaDeporteHB, datos.idCualDeporteHB, datos.observacionPracticaDeporHB, datos.hobbiesPasatiempoHB, datos.cualHobbiesHB,
-                datos.consumeBebidasAlcoholicasHB, datos.idFrecuenciaBebidaAlHB, datos.cualBebidasAlHB, datos.fobiasHB, datos.tipoFobiaHB, datos.cualFobiaHB,
-                datos.heredoFamiliarHB, datos.parentescoHB, datos.observacionHeredoFamiHB,
+                datos.consumeBebidasAlcoholicasHB, datos.idFrecuenciaBebidaAlHB, datos.cualBebidasAlHB, datos.fobiasHB, JSON.stringify(arrays.tipoFobia),
+                datos.cualFobiaHB, datos.heredoFamiliarHB, JSON.stringify(arrays.parentesco), datos.observacionHeredoFamiHB,
 
                 datos.menarquiaGO, datos.idCiclosGO, datos.duracionGO, datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO, datos.vidaMaritalGO,
                 datos.vidaObstetricaGO, datos.gGO, datos.pGO, datos.aGO, datos.cSGO, datos.vGO, FormatDate(datos.fUPGO), FormatDate(datos.fURGO), datos.eTSGO, datos.cUALGO,
@@ -212,7 +193,7 @@ const OccupationalExamination = () => {
                 datos.resultadoRnmLumbosacraEPA, datos.observacionesRnmLumbosacraEPA, FormatDate(datos.fechaRnmCervicalEPA), datos.resultadoRnmCervicalEPA,
                 datos.observacionesRnmCervicalEPA, datos.observacionEPA,
 
-                datos.dxID, datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
+                JSON.stringify(arrays.dx), datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
 
                 FormatDate(datos.fechaConceptoNETA), datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.motivoAplazoNETA, datos.descripcionResultadoNETA,
                 datos.recomendacionesNETA, datos.remitidoNETA, datos.remididoDondeNETA,
@@ -224,18 +205,17 @@ const OccupationalExamination = () => {
                 datos.idHistoriaFobiasNEMTA, datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA,
                 datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, datos.conceptoActitudMedicoNEMTA,
 
-                FormatDate(datos.fechaFRA), datos.tencionFRA, datos.idTencionArterialFRA, datos.idAntecedenteCardiovascularFRA, datos.idDeporteFRA, datos.idBebidaFRA,
-                FormatDate(datos.fechaLaboratorioFRA), datos.colesterolTotalFRA, datos.hDLFRA, datos.triglicericosFRA, datos.idMetabolicoFRA, datos.glisemiaFRA,
+                FormatDate(datos.fechaFRA), datos.tencionFRA, datos.idTencionArterialFRA, JSON.stringify(arrays.antecedentesCardio), datos.idDeporteFRA, datos.idBebidaFRA,
+                FormatDate(datos.fechaLaboratorioFRA), datos.colesterolTotalFRA, datos.hDLFRA, datos.triglicericosFRA, JSON.stringify(arrays.metabolico), datos.glisemiaFRA,
                 datos.fumaFRA, datos.observacionFRA, datos.lDLFRA, datos.relacionFRA, datos.fRLEdadFRA, datos.fRLColesterolFRA, datos.fRHDLFRA, datos.fRGlisemiaFRA,
                 datos.fRTencionFRA, datos.fRTabaquismoFRA, datos.puntajeFRA, datos.riesgoAbsolutoFRA, datos.riesgoRelativoFRA, datos.interpretacionFRA,
             );
 
             console.log("Datos  = ", DataToInset);
 
-
-            /* if (Object.keys(datos.length !== 0)) {
-                const result = await InsertEmployee(datos);
-                if (result.status === 200) { PostOccupationalExamination
+            if (Object.keys(datos.length !== 0)) {
+                const result = await InsertOccupationalExamination(DataToInset);
+                if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,
                         open: true,
@@ -246,9 +226,8 @@ const OccupationalExamination = () => {
                         transition: 'SlideUp'
                     })
                     reset();
-                    CleanCombo();
                 }
-            } */
+            }
         } catch (error) {
             console.log(error);
         }
@@ -278,7 +257,7 @@ const OccupationalExamination = () => {
                                     <Typography variant="h6">{lsEmployee.nameGenero}</Typography>
                                 </Grid>
                                 <Grid item>
-                                    <Typography variant="h6">{FormatDate(lsEmployee.fechaNaci)}</Typography>
+                                    <Typography variant="h6">{ViewFormat(lsEmployee.fechaNaci)}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid> : <Grid item xs={7}></Grid>}
@@ -300,7 +279,7 @@ const OccupationalExamination = () => {
                     <Grid item xs={6}>
                         <FormProvider {...methods}>
                             <InputSelect
-                                name="atencion"
+                                name="idAtencion"
                                 label="Atención"
                                 defaultValue=""
                                 options={lsAtencionEMO}
@@ -361,7 +340,9 @@ const OccupationalExamination = () => {
                 <Emo
                     errors={errors}
                     setArrays={setArrays}
-                    arrays={arrays.vacuna}
+                    arrays={arrays}
+                    setEstadoVacuna={setEstadoVacuna}
+                    estadoVacuna={estadoVacuna}
                     {...methods} />
             </TabPanel>
 

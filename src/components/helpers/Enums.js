@@ -21,11 +21,11 @@ export const CodCatalogo = {
     Cesantias: 5225,
     AtencionEMO: 5228,
     Exposicion: 5228,
-  GradoconEPP: 5228,
-  GradosinEPP: 5228,
-  Medidascontrol: 5228,
-  AnalisisMPI: 5228,
-  AnalisisRuido: 5228,
+    GradoconEPP: 5228,
+    GradosinEPP: 5228,
+    Medidascontrol: 5228,
+    AnalisisMPI: 5228,
+    AnalisisRuido: 5228,
 
 
     HCO_VACUNAS: 5229,
@@ -112,7 +112,7 @@ export const TitleButton = {
     Agregar: 'Nuevo',
     Seleccionadas: 'Seleccionadas',
     Regresar: 'Regresar',
-    Regresaracargos:'Regresar a cargos',
+    Regresaracargos: 'Regresar a cargos',
 }
 
 export const ValidationMessage = {
