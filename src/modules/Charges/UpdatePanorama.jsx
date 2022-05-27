@@ -407,7 +407,7 @@ const UpdatePanorama = () => {
                         </Grid>
                         <Grid item xs={6}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/charges/listp")}>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/panorama/list")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </AnimateButton>

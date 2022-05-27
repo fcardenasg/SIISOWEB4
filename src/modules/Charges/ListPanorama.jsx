@@ -362,7 +362,7 @@ const ListPanorama = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - panorama.length) : 0;
 
     return (
-        <MainCard title="Lista de Panorama de Cargos" content={false}>
+        <MainCard title="Lista de Panorama de Riesgos" content={false}>
 
             {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
