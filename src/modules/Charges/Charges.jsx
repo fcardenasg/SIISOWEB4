@@ -115,7 +115,7 @@ const Charges = () => {
     const [subsegmento, setSubsegmento] = useState([]);
 
     const methods = useForm();
-        // resolver: yupResolver(validationSchema),
+    // resolver: yupResolver(validationSchema),
 
 
     const { handleSubmit, errors, reset } = methods;
@@ -170,7 +170,7 @@ const Charges = () => {
             const DataToInsert = PostCargo(datos.sede, datos.rosterPosition, area,
                 datos.subArea, datos.descripcionCargo, datos.idversion, datos.idGES);
 
-                console.log('DataToInsert = ', DataToInsert)
+            console.log('DataToInsert = ', DataToInsert)
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertCharges(DataToInsert);
                 if (result.status === 200) {
