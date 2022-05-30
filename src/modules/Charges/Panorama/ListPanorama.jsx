@@ -211,7 +211,6 @@ const ListPanorama = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [panorama, setPanorama] = useState([]);
-    console.log("panorama = ", panorama);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -376,10 +375,9 @@ const ListPanorama = () => {
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<ArrowLeftIcon />}
                             onClick={() => navigate("/charges/list")}>
-                            {TitleButton.Regresaracargos}
+                            {TitleButton.RegresarACargos}
                         </Button>
                     </Grid>
                 </Grid>
@@ -506,27 +504,12 @@ const ListPanorama = () => {
                                             </Typography>
                                         </TableCell>
 
-
-
-
-
-
-
-
-
                                         <TableCell align="center" sx={{ pr: 3 }}>
                                             <Tooltip title="Actualizar" onClick={() => navigate(`/panorama/update/${row.idpanorama}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-
-                                            <Tooltip title="Visualizar Panorama de riesgos" onClick={() => navigate(`/panorama/update/${row.idpanorama}`)}>
-                                                <IconButton size="large">
-                                                    <HowToRegSharpIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
-
                                         </TableCell>
                                     </TableRow>
                                 );

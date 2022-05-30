@@ -204,11 +204,9 @@ const ListCharges = Loadable(lazy(() => import('modules/Charges/ListCharges')));
 const Charges = Loadable(lazy(() => import('modules/Charges/Charges')));
 const UpdateCharges = Loadable(lazy(() => import('modules/Charges/UpdateCharges')));
 
-
-
-const ListPanorama = Loadable(lazy(() => import('modules/Charges/ListPanorama')));
-const Panorama = Loadable(lazy(() => import('modules/Charges/Panorama')));
-const UpdatePanorama = Loadable(lazy(() => import('modules/Charges/UpdatePanorama')));
+const ListPanorama = Loadable(lazy(() => import('modules/Charges/Panorama/ListPanorama')));
+const Panorama = Loadable(lazy(() => import('modules/Charges/Panorama/Panorama')));
+const UpdatePanorama = Loadable(lazy(() => import('modules/Charges/Panorama/UpdatePanorama')));
 
 
 const ListTemplate = Loadable(lazy(() => import('modules/Template/ListTemplate')));
