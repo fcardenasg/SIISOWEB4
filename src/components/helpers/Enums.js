@@ -22,7 +22,7 @@ export const CodCatalogo = {
     AtencionEMO: 5228,
     GradoconEPP: 5228,
     GradosinEPP: 5228,
-    
+
     PANO_ANALISISRUIDO: 5280,
     PANO_ANALISISMPI: 5279,
     PANO_EXPOSICIÓN: 5267,
@@ -52,6 +52,9 @@ export const CodCatalogo = {
     HCO_FRAM_DEPOR: 5257,
     HCO_FRAM_BEBIDAS: 5258,
     HCO_DXMETA: 5259,
+
+    RECE_TIPORDEN: 5281,
+    RECE_CONTINGENCIA: 5282,
 
     Proveedor: 2174,
     Pais: 1153,
@@ -110,7 +113,7 @@ export const TitleButton = {
     Agregar: 'Nuevo',
     Seleccionadas: 'Seleccionadas',
     Regresar: 'Regresar',
-    Regresaracargos: 'Regresar a cargos',
+    RegresarACargos: 'Regresar A Cargos',
 }
 
 export const ValidationMessage = {

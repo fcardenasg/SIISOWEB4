@@ -3,14 +3,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-// Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -26,43 +24,29 @@ import {
     Tooltip,
     Typography,
     Button,
-    Avatar,
-    Modal
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-// Import de proyectos
-
-import BodyMedicalAdvice from './ViewMedicalformula';
+import { ViewFormat } from 'components/helpers/Format';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
-import { GetAllEmployee, DeleteEmployee } from 'api/clients/EmployeeClient';
 
-import { GetAllAssistance, DeleteAssistance } from 'api/clients/AssistanceClient';
+import { GetAllMedicalFormula, DeleteMedicalFormula } from 'api/clients/MedicalFormulaClient';
 
-// Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import ReactExport from "react-export-excel";
+import { IconFileExport } from '@tabler/icons';
 
-function getModalStyle() {
-    const top = 50;
-    const left = 50;
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-    return {
-        top: `${top}%`,
-        margin: 'auto'
-    };
-}
 
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -76,7 +60,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -87,10 +70,9 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'id',
+        id: 'idRecetario',
         numeric: false,
         label: 'ID',
         align: 'center'
@@ -102,40 +84,24 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nombres',
+        id: 'nameEmpleado',
         numeric: false,
-        label: 'Nombres',
+        label: 'Nombre',
         align: 'left'
     },
     {
-        id: 'celular',
+        id: 'medico',
         numeric: false,
-        label: 'Celular',
+        label: 'Médico',
         align: 'left'
     },
     {
-        id: 'email',
+        id: 'fecha',
         numeric: false,
-        label: 'Email',
-        align: 'left'
-    },
-    {
-        id: 'nameCompany',
-        numeric: false,
-        label: 'Empresa',
-        align: 'left'
-    },
-    {
-        id: 'nameSede',
-        numeric: false,
-        label: 'Sede',
+        label: 'Fecha',
         align: 'left'
     }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -207,11 +173,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -248,14 +209,11 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
-const ListMedicalformula = () => {
+const ListMedicalFormula = () => {
     const dispatch = useDispatch();
-    const [assistance, setAssistance] = useState([]);
-    console.table("Lista = ", assistance);
+    const navigate = useNavigate();
+    const [lsMedicalFormula, setLsMedicalFormula] = useState([]);
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -265,34 +223,22 @@ const ListMedicalformula = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
-            const lsServer = await GetAllAssistance(0, 0);
-            setAssistance(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllMedicalFormula(0, 0);
+            if (lsServer.status === 200) {
+                setLsMedicalFormula(lsServer.data.entities);
+                setRows(lsServer.data.entities);
+            }
         } catch (error) {
             console.log(error);
         }
     }
 
-    const [modalStyle] = useState(getModalStyle);
-
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -301,7 +247,7 @@ const ListMedicalformula = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nombres', 'celular', 'email', 'nameSede', 'nameCompany'];
+                const properties = ['idRecetario', 'documento', 'nameEmpleado', 'medico', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -315,31 +261,27 @@ const ListMedicalformula = () => {
                 }
                 return matches;
             });
-            setAssistance(newRows);
+            setLsMedicalFormula(newRows);
         } else {
-            setAssistance(rows);
+            setLsMedicalFormula(rows);
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
-
         if (event.target.checked) {
-            const newSelectedId = assistance.map((n) => n.id);
+            const newSelectedId = lsMedicalFormula.map((n) => n.idRecetario);
             setSelected(newSelectedId);
             return;
         }
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
         setIdCheck(id);
 
@@ -370,10 +312,9 @@ const ListMedicalformula = () => {
 
     const [idCheck, setIdCheck] = useState('');
 
-    /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
-            const result = await DeleteAssistance(idCheck);
+            const result = await DeleteMedicalFormula(idCheck);
             if (result.status === 200) {
                 dispatch({
                     type: SNACKBAR_OPEN,
@@ -392,14 +333,11 @@ const ListMedicalformula = () => {
         }
     }
 
-    const navigate = useNavigate();
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - assistance.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicalFormula.length) : 0;
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -418,19 +356,35 @@ const ListMedicalformula = () => {
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <Tooltip title="Copiar">
-                            <IconButton size="large">
-                                <FileCopyIcon />
-                            </IconButton>
-                        </Tooltip>
+                        <ExcelFile element={
+                            <Tooltip title="Exportar">
+                                <IconButton size="large">
+                                    <IconFileExport />
+                                </IconButton>
+                            </Tooltip>
+                        } filename="Recetario">
+                            <ExcelSheet data={lsMedicalFormula} name="Lista de Recetario">
+                                <ExcelColumn label="Id" value="idRecetario" />
+                                <ExcelColumn label="Fecha" value="fecha" />
+                                <ExcelColumn label="Documento" value="documento" />
+                                <ExcelColumn label="Nombre del Empleado" value="nameEmpleado" />
+                                <ExcelColumn label="Contingencia" value="nameContingencia" />
+                                <ExcelColumn label="Número de historia" value="numeroHistoria" />
+                                <ExcelColumn label="Tipo de Orden" value="nameTipoRemision" />
+                                <ExcelColumn label="Diagnostico" value="diagnostico" />
+                                <ExcelColumn label="Descripción" value="descripcion" />
+                                <ExcelColumn label="Médico" value="medico" />
+                                <ExcelColumn label="Usuario" value="usuario" />
+                                <ExcelColumn label="Fecha del Sistema" value="fechaSistema" />
+                            </ExcelSheet>
+                        </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/medicalformula/report/${idCheck}`)}>
+                        <Tooltip title="Impresión" onClick={() => navigate('/medicalformula/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/medicalformula/add")}>
                             {TitleButton.Agregar}
@@ -449,19 +403,19 @@ const ListMedicalformula = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={assistance.length}
+                        rowCount={lsMedicalFormula.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(assistance, getComparator(order, orderBy))
+                        {stableSort(lsMedicalFormula, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.id);
+                                const isItemSelected = isSelected(row.idRecetario);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -473,10 +427,7 @@ const ListMedicalformula = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
-
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idRecetario)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -490,18 +441,19 @@ const ListMedicalformula = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idRecetario)}
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
-                                            <Avatar alt="Foto Empleado" src={row.imagenUrl} />
+                                            {' '}
+                                            {row.idRecetario}{' '}
                                         </TableCell>
 
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idRecetario)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -517,7 +469,7 @@ const ListMedicalformula = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idRecetario)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -525,7 +477,7 @@ const ListMedicalformula = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nombres}{' '}
+                                                {row.nameEmpleado}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -533,7 +485,7 @@ const ListMedicalformula = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idRecetario)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -541,7 +493,7 @@ const ListMedicalformula = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.celular}{' '}
+                                                {row.medico}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -549,7 +501,7 @@ const ListMedicalformula = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idRecetario)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -557,63 +509,17 @@ const ListMedicalformula = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.email}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.nameCompany}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.nameSede}{' '}
+                                                {ViewFormat(row.fecha)}{' '}
                                             </Typography>
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Detalles" onClick={handleOpen}>
-                                                <IconButton color="primary" size="large">
-                                                    <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
-
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/medicalformula/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/medicalformula/update/${row.idRecetario}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                            {console.log(row.id)}
                                         </TableCell>
-                                        {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
-                                        <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                            open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
-                                            aria-describedby="simple-modal-description"
-                                        >
-                                            <BodyMedicalAdvice IdEmployee={row.id} modalStyle={modalStyle} handleClose={handleClose} />
-                                        </Modal>
                                     </TableRow>
                                 );
                             })}
@@ -630,11 +536,10 @@ const ListMedicalformula = () => {
                 </Table>
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={assistance.length}
+                count={lsMedicalFormula.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -644,4 +549,4 @@ const ListMedicalformula = () => {
     );
 };
 
-export default ListMedicalformula;
+export default ListMedicalFormula;

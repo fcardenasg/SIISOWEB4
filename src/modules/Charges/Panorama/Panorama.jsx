@@ -169,8 +169,6 @@ const Panorama = () => {
             const DataToInsert = PostPanorama(cargo.rosterPosition, riesgo, datos.clase, datos.exposicion, datos.gradoconEPP, datos.gradosinEPP,
                 datos.medidascontrol, datos.analisisMPI, datos.analisisRuido, datos.descripcionCargo);
 
-            console.log("datos = ", DataToInsert);
-
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertPanorama(DataToInsert);
                 if (result.status === 200) {
@@ -340,7 +338,7 @@ const Panorama = () => {
                     <Grid item xs={4}>
                         <AnimateButton>
                             <Button variant="outlined" fullWidth onClick={() => navigate("/charges/list")}>
-                                {TitleButton.Regresaracargos}
+                                {TitleButton.RegresarACargos}
                             </Button>
                         </AnimateButton>
                     </Grid>

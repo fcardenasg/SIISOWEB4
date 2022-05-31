@@ -181,9 +181,10 @@ const UpdateNoteInfirmary = Loadable(lazy(() => import('../modules/NoteInfirmary
 const ReportInfirmary = Loadable(lazy(() => import('components/report/ReportInfirmary')));
 
 
-const ListMedicalformula = Loadable(lazy(() => import('modules/Medicalformula/ListMedicalformula')));
-const Medicalformula = Loadable(lazy(() => import('modules/Medicalformula/Medicalformula')));
-
+const ListMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/ListMedicalFormula')));
+const MedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/MedicalFormula')));
+const UpdateMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/UpdateMedicalFormula')));
+const ReportMedicalFormula = Loadable(lazy(() => import('components/report/ReportMedicalFormula')));
 
 const Turner = Loadable(lazy(() => import('modules/Turner/Turner')));
 
@@ -204,11 +205,9 @@ const ListCharges = Loadable(lazy(() => import('modules/Charges/ListCharges')));
 const Charges = Loadable(lazy(() => import('modules/Charges/Charges')));
 const UpdateCharges = Loadable(lazy(() => import('modules/Charges/UpdateCharges')));
 
-
-
-const ListPanorama = Loadable(lazy(() => import('modules/Charges/ListPanorama')));
-const Panorama = Loadable(lazy(() => import('modules/Charges/Panorama')));
-const UpdatePanorama = Loadable(lazy(() => import('modules/Charges/UpdatePanorama')));
+const ListPanorama = Loadable(lazy(() => import('modules/Charges/Panorama/ListPanorama')));
+const Panorama = Loadable(lazy(() => import('modules/Charges/Panorama/Panorama')));
+const UpdatePanorama = Loadable(lazy(() => import('modules/Charges/Panorama/UpdatePanorama')));
 
 
 const ListTemplate = Loadable(lazy(() => import('modules/Template/ListTemplate')));
@@ -389,11 +388,19 @@ const MainRoutes = {
         /* Render de FORMULAS MEDICAS */
         {
             path: '/medicalformula/list',
-            element: <ListMedicalformula />
+            element: <ListMedicalFormula />
         },
         {
             path: '/medicalformula/add',
-            element: <Medicalformula />
+            element: <MedicalFormula />
+        },
+        {
+            path: '/medicalformula/update/:id',
+            element: <UpdateMedicalFormula />
+        },
+        {
+            path: '/medicalformula/report',
+            element: <ReportMedicalFormula />
         },
         /* Render de Turner */
         {
