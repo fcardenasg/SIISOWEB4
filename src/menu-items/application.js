@@ -81,26 +81,26 @@ const application = {
                     title: <FormattedMessage id="Taxi" />,
                     type: 'collapse',
                     children: [
-                        {
-                            id: 'profile1',
-                            title: (
-                                <>
-                                    <FormattedMessage id="Rutas de Taxis" />
-                                </>
-                            ),
-                            type: 'item',
-                            url: '/user/account-profile/profile1'
-                        },
-                        {
-                            id: 'profile2',
-                            title: (
-                                <>
-                                    <FormattedMessage id="Destino de Taxis" />
-                                </>
-                            ),
-                            type: 'item',
-                            url: '/user/account-profile/profile2'
-                        },
+                        // {
+                        //     id: 'profile1',
+                        //     title: (
+                        //         <>
+                        //             <FormattedMessage id="Rutas de Taxis" />
+                        //         </>
+                        //     ),
+                        //     type: 'item',
+                        //     url: '/user/account-profile/profile1'
+                        // },
+                        // {
+                        //     id: 'profile2',
+                        //     title: (
+                        //         <>
+                        //             <FormattedMessage id="Destino de Taxis" />
+                        //         </>
+                        //     ),
+                        //     type: 'item',
+                        //     url: '/user/account-profile/profile2'
+                        // },
                         {
                             id: 'profile3',
                             title: (
@@ -149,26 +149,13 @@ const application = {
                     url: '/customer/product-review',
                     breadcrumbs: false
                 },
-                {
-                    id: 'occupational-health',
-                    title: <FormattedMessage id="Salud Ocupacional" />,
-                    type: 'item',
-                    url: '/occupational-health/list',
-                    breadcrumbs: true
-                },
+            
                 {
                     id: 'product',
                     title: <FormattedMessage id="Medicina Laboral" />,
                     type: 'item',
                     url: '/occupationalmedicine/list',
                     breadcrumbs: true
-                },
-                {
-                    id: 'product-review',
-                    title: <FormattedMessage id="Caso De Enfermedad Profesional" />,
-                    type: 'item',
-                    url: '/customer/product-review',
-                    breadcrumbs: false
                 },
                 {
                     id: 'product-re',
