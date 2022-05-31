@@ -75,7 +75,6 @@ const UpdateMedicalAdvice = () => {
     const [medicalAdvice, setMedicalAdvice] = useState([]);
 
     const [imgSrc, setImgSrc] = useState(null);
-    const [clickAttend, setClickAttend] = useState(false);
     const [fecha, setFecha] = useState(null);
     const [timeWait, setTimeWait] = useState(false);
 
@@ -150,7 +149,6 @@ const UpdateMedicalAdvice = () => {
         try {
             const lsServerMedicalAdvice = await GetByIdAdvice(id);
             if (lsServerMedicalAdvice.status === 200) {
-                setClickAttend(true);
                 setMedicalAdvice(lsServerMedicalAdvice.data);
                 setFecha(lsServerMedicalAdvice.data.fecha);
                 setNote(lsServerMedicalAdvice.data.motivo);

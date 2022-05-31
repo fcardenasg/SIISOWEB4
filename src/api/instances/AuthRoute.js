@@ -15,10 +15,11 @@ export const Url = {
     Cargo: 'api/Cargo',
     CargoId: 'api/Cargo/id',
 
-
     Panorama: 'api/Panoramariesgo',
     PanoramaId: 'api/Panoramariesgo/id',
 
+    Recetario: 'api/Recetario',
+    RecetarioId: 'api/Recetario/id',
 
     Empresa: 'api/Empresa',
     EmpresaId: 'api/Empresa/id',

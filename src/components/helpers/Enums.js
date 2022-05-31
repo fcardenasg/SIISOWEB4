@@ -53,6 +53,9 @@ export const CodCatalogo = {
     HCO_FRAM_BEBIDAS: 5258,
     HCO_DXMETA: 5259,
 
+    RECE_TIPORDEN: 5281,
+    RECE_CONTINGENCIA: 5282,
+
     Proveedor: 2174,
     Pais: 1153,
     Contingencia: 3175,

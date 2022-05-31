@@ -16,7 +16,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { FormatDate } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
-import { Url } from 'api/instances/AuthRoute';
 import { PutTypeCatalog } from 'formatdata/TypeCatalogForm';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { UpdateTypeCatalogs } from 'api/clients/TypeCatalogClient';
@@ -63,10 +62,11 @@ const UpdateTypeCatalog = () => {
 
     const onSubmit = async (datos) => {
         try {
-            if (Object.keys(datos.length !== 0)) {
-                const DataToUpdate = PutTypeCatalog(id, datos.nombre, lsTipoCatalogo.usuarioRegistro,
-                    lsTipoCatalogo.fechaRegistro, user.id, FormatDate(new Date()));
 
+            const DataToUpdate = PutTypeCatalog(id, datos.nombre, lsTipoCatalogo.usuarioRegistro,
+                lsTipoCatalogo.fechaRegistro, user.id, FormatDate(new Date()));
+
+            if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateTypeCatalogs(DataToUpdate);
                 if (result.status === 200) {
                     dispatch({

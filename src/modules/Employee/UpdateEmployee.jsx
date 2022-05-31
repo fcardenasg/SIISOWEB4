@@ -341,15 +341,14 @@ const UpdateEmployee = () => {
             const subArea_DATA = eventSubArea == '' ? datos.subArea : eventSubArea;
             const municipioTrabaja_DATA = municipioResidenciaTrabaja == '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
 
-            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, FormatDate(datos.fechaNaci), datos.type, datos.departamento,
-                eventArea, subArea_DATA, datos.grupo, municipioNacido_DATA, dptoNacido, FormatDate(datos.fechaContrato),
+            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, FormatDate(new Date(datos.fechaNaci)), datos.type, datos.departamento,
+                eventArea, subArea_DATA, datos.grupo, municipioNacido_DATA, dptoNacido, FormatDate(new Date(datos.fechaContrato)),
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
                 datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidenciaTrabaja,
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
-                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(datos.termDate),
+                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date(datos.termDate)),
                 datos.bandera, datos.ges, user.id, FormatDate(new Date()), employee.usuarioCreacion, FormatDate(employee.fechaCreacion), imgSrc);
-            console.log("Datos = ", DataToUpdate);
 
             if (imgSrc != null) {
                 if (Object.keys(datos.length !== 0)) {
@@ -518,7 +517,7 @@ const UpdateEmployee = () => {
                                             <InputDatePicker
                                                 label="Fecha de Nacimiento"
                                                 name="fechaNaci"
-                                                defaultValue={new Date()}
+                                                defaultValue={employee.fechaNaci}
                                             />
                                         </FormProvider>
                                     </Grid>

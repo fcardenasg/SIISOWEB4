@@ -1,7 +1,7 @@
-const FormatDate = (date = new Date()) => {
+const FormatDate = (date) => {
     try {
-        const fecha = date.toISOString();
-        return fecha;
+        const fechaFormat = date.toISOString().split('T')[0];
+        return fechaFormat;
     } catch (error) {
         console.log(error);
     }

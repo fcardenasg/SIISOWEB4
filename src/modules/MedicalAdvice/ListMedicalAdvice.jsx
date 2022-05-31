@@ -330,7 +330,6 @@ const ListMedicalAdvice = () => {
 
     /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
-
         if (event.target.checked) {
             const newSelectedId = medicalAdvice.map((n) => n.id);
             setSelected(newSelectedId);
@@ -455,12 +454,10 @@ const ListMedicalAdvice = () => {
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/medicaladvice/add")}>
                             {TitleButton.Agregar}
                         </Button>
-
                     </Grid>
                 </Grid>
             </CardContent>
