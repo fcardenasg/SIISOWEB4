@@ -30,31 +30,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 
-
-//filtrar combos
-const MaperCatalogo = async (idTipoCatalogo) => {
-    try {
-        const lsServerCatalog = await GetAllByTipoCatalogo(0, 0, idTipoCatalogo);
-        if (lsServerCatalog.status === 200) {
-            var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            return resultCatalogo;
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-
-
-/* VALIDACIÓN CON YUP */
-// const validationSchema = yup.object().shape({
-// }).required();
-
 const Charges = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -146,31 +122,47 @@ const Charges = () => {
             setLsArea(resultArea);
             setLsCodigoFilterArea(lsServerArea.data.entities);
 
-            setLsSede(await MaperCatalogo(CodCatalogo.Sede));
-            setLsVersion(await MaperCatalogo(CodCatalogo.Version));
-            setLsGes(await MaperCatalogo(CodCatalogo.Ges));
-            setLsCargo(await MaperCatalogo(CodCatalogo.RosterPosition));
+            const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
+            var resultSede = lsServerSede.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsSede(resultSede);
 
+            const lsServerVersion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Version);
+            var resultVersion = lsServerVersion.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsVersion(resultVersion);
+
+            const lsServerGes = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Ges);
+            var resultGes = lsServerGes.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsGes(resultGes);
+
+            const lsServerCargo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RosterPosition);
+            var resultCargo = lsServerCargo.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCargo(resultCargo);
         } catch (error) {
             console.log(error);
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
+    }, []);
 
-    }, [])
-
-
-
-    /* METODO DE INSERT  */
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostCargo(datos.sede, datos.rosterPosition, area,
                 datos.subArea, datos.descripcionCargo, datos.idversion, datos.idGES);
 
-            console.log('DataToInsert = ', DataToInsert)
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertCharges(DataToInsert);
                 if (result.status === 200) {
@@ -200,13 +192,10 @@ const Charges = () => {
         }
     };
 
-
-
     return (
         <MainCard title="Registrar Cargos">
             <Grid container spacing={2}>
                 <Grid item xs={4}>
-
                     <FormProvider {...methods}>
                         <InputSelect
                             name="sede"
@@ -217,8 +206,6 @@ const Charges = () => {
                             bug={errors}
                         />
                     </FormProvider>
-
-
                 </Grid>
 
                 <Grid item xs={4}>
@@ -243,9 +230,7 @@ const Charges = () => {
                         value={area}
                         onChange={handleChangeArea}
                     />
-
                 </Grid>
-
 
                 <Grid item xs={4}>
                     <FormProvider {...methods}>
@@ -258,7 +243,6 @@ const Charges = () => {
                             bug={errors}
                         />
                     </FormProvider>
-
                 </Grid>
 
                 <Grid item xs={4}>
@@ -272,7 +256,6 @@ const Charges = () => {
                             bug={errors}
                         />
                     </FormProvider>
-
                 </Grid>
 
                 <Grid item xs={4}>
@@ -286,10 +269,7 @@ const Charges = () => {
                             bug={errors}
                         />
                     </FormProvider>
-
                 </Grid>
-
-
 
                 <Grid item xs={12}>
                     <FormProvider {...methods}>
@@ -303,8 +283,6 @@ const Charges = () => {
                         />
                     </FormProvider>
                 </Grid>
-
-
             </Grid>
 
             <Grid sx={{ pb: 2, pt: 3 }} item xs={12}>

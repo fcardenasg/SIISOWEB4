@@ -37,6 +37,9 @@ export const Url = {
     Asesorias: 'api/Asesorias',
     AsesoriasId: 'api/Asesorias/id',
 
+    HistoriaLaboral: 'api/HistoriaLaboral',
+    HistoriaLaboralId: 'api/HistoriaLaboral/id',
+
     CIE11: 'api/CIE11',
     CIE11Id: 'api/CIE11/id',
 

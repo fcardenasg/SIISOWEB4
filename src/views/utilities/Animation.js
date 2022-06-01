@@ -154,6 +154,7 @@ const Animation = () => {
                                         <Typography variant={!animate ? 'h5' : 'body1'}>OUT</Typography>
                                     </Stack>
                                 </Box>
+
                                 <Transitions type={type} in={animate} position={position} direction={direction}>
                                     <MainCard content={false} border={false} boxShadow>
                                         <CardMedia
@@ -164,6 +165,7 @@ const Animation = () => {
                                         />
                                     </MainCard>
                                 </Transitions>
+                                
                             </Stack>
                         </Grid>
                     </Grid>

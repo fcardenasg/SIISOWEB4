@@ -59,11 +59,11 @@ function AddItemPageEP({ handleAddItem, setAddItemClicked }) {
     const [errors, setErrors] = useState({
         quantityError: ''
     });
-  
 
-    
+
+
     const methods = useForm();
-  
+
     const itemList1 = [
         {
             value: 1,
@@ -75,10 +75,10 @@ function AddItemPageEP({ handleAddItem, setAddItemClicked }) {
             label: 'NO REFIERE',
 
         },
-        
+
     ];
 
-   
+
 
     useEffect(() => {
         if (selectedItem?.id) {
@@ -97,7 +97,7 @@ function AddItemPageEP({ handleAddItem, setAddItemClicked }) {
     const handleChange1 = (event) => {
         setValueCargo(event.target.value);
 
-   
+
     }
 
 
@@ -124,7 +124,7 @@ function AddItemPageEP({ handleAddItem, setAddItemClicked }) {
                 });
             }
         } else {
-       
+
 
 
         }
@@ -144,10 +144,10 @@ function AddItemPageEP({ handleAddItem, setAddItemClicked }) {
     return (
         <>
             <Grid container spacing={gridSpacing}>
-         
+
                 <Grid item xs={12} md={3}>
                     <Stack spacing={1}>
-             
+
                         <SelectOnChange
                             name="refiere"
                             label="Refiere"
@@ -155,46 +155,43 @@ function AddItemPageEP({ handleAddItem, setAddItemClicked }) {
                             onChange={handleChange1}
                             value={valueCargo}
                         />
-                      
+
                     </Stack>
                 </Grid>
-   
+
 
                 <Grid item xs={12} md={3}>
                     <Stack spacing={1}>
-                    <FormProvider {...methods}>    
-                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="ano"
-                                        label="Año"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        multiline
-                                        rows={6}
-                                        bug={errors}
-                                    />
-                     </FormProvider>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="ano"
+                                label="Año"
+                                size={matchesXS ? 'small' : 'medium'}
+                                multiline
+                                rows={6}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Stack>
-                 
+
                 </Grid>
 
                 <Grid item xs={12}>
-                                <FormProvider {...methods}>       
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="observacion"
-                                        label="Observación"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        multiline
-                                        rows={6}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-
-
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            fullWidth
+                            name="observacion"
+                            label="Observación"
+                            size={matchesXS ? 'small' : 'medium'}
+                            multiline
+                            rows={6}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
 
                 <Grid item container justifyContent="flex-end">
                     <Stack direction="row" spacing={1} alignItems="center">
