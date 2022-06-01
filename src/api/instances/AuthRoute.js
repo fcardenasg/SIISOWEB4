@@ -22,6 +22,10 @@ export const Url = {
     Recetario: 'api/Recetario',
     RecetarioId: 'api/Recetario/id',
 
+    PruebasAlcoholDroga: 'api/PruebasAlcoholDroga',
+    PruebasAlcoholDrogaId: 'api/PruebasAlcoholDroga/id',
+
+
     Empresa: 'api/Empresa',
     EmpresaId: 'api/Empresa/id',
 
