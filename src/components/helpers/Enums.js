@@ -110,6 +110,9 @@ export const DefaultValue = {
     RiesgoErgonomicoCargaFisica_Postura: 4514,
     RiesgoErgonomicoCargaFisica_Fuerza: 4515,
     RiesgoErgonomicoCargaFisica_Movimiento: 4516,
+
+    Opcion_SI: 4454,
+    Opcion_NO: 4455,
 }
 
 export const TitleButton = {
