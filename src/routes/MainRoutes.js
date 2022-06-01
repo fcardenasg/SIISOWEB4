@@ -186,6 +186,13 @@ const MedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/Medica
 const UpdateMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/UpdateMedicalFormula')));
 const ReportMedicalFormula = Loadable(lazy(() => import('components/report/ReportMedicalFormula')));
 
+
+const ListAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/ListAlcoholAndDrugTesting')));
+const AlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/AlcoholAndDrugTesting')));
+const UpdateAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/UpdateAlcoholAndDrugTesting')));
+const ReportAlcoholAndDrugTesting = Loadable(lazy(() => import('components/report/ReportAlcoholAndDrugTesting')));
+
+
 const Turner = Loadable(lazy(() => import('modules/Turner/Turner')));
 
 const ListOccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/ListOccupationalExamination')));
@@ -401,7 +408,27 @@ const MainRoutes = {
         {
             path: '/medicalformula/report',
             element: <ReportMedicalFormula />
+
         },
+         /* Render de Pruebas de Alcohol y Droga */
+         {
+            path: '/alcoholanddrugtesting/list',
+            element: <ListAlcoholAndDrugTesting />
+        },
+        {
+            path: '/alcoholanddrugtesting/add',
+            element: <AlcoholAndDrugTesting />
+        },
+        {
+            path: '/alcoholanddrugtesting/update/:id',
+            element: <UpdateAlcoholAndDrugTesting/>
+        },
+        {
+            path: '/alcoholanddrugtesting/report',
+            element: <ReportAlcoholAndDrugTesting />
+        },
+
+
         /* Render de Turner */
         {
             path: '/turner/add',

@@ -65,10 +65,10 @@ const application = {
                     url: '/note-infirmary/list'
                 },
                 {
-                    id: 'infirmary',
+                    id: 'alcoholanddrugtesting',
                     title: <FormattedMessage id="Prueba de Alcohol y Drogas" />,
                     type: 'item',
-                    url: '/note-infirmary/list'
+                    url: '/alcoholanddrugtesting/list'
                 },
                 {
                     id: 'medicalformula',
