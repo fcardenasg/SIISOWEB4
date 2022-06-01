@@ -56,6 +56,14 @@ export const CodCatalogo = {
     RECE_TIPORDEN: 5281,
     RECE_CONTINGENCIA: 5282,
 
+    PAD_MOTIVO: 5281  ,
+    PAD_MOTIVONO: 5282,
+    PAD_MUESTRAAD: 5283,
+    PAD_MUESTRAA: 5285,
+    PAD_RESULTADO: 5284,
+    PAD_CONCEPTOA: 5286,
+
+
     Proveedor: 2174,
     Pais: 1153,
     Contingencia: 3175,
@@ -73,7 +81,7 @@ export const CodCatalogo = {
     SaludOcupacional_Motivo: 4176,
     TipoAtencion_Item: 3184,
     Atencion_HistoriaClinica: 4177,
-    Opciones_SINO: 4184,
+    Opciones_SINO: 5252,
     ConceptoAptitud_HistoriaClinica: 4185,
     AUSLAB_INC: 4189,
     AUSLAB_TIPOINCA: 4190,
@@ -102,6 +110,8 @@ export const DefaultData = {
 
 export const DefaultValue = {
     GeneroWomen: 4282,
+    Opcion_SI: 4454,
+    Opcion_NO: 4455,
 }
 
 export const TitleButton = {
