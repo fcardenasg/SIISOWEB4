@@ -112,10 +112,10 @@ const OccupationalExamination = () => {
         try {
             setDocument(event.target.value);
             const lsServer = await GetByIdEmployee(event.target.value);
-            if (lsServer.status === 200) {
+            if (lsServer.status === 200)
                 setLsEmployee(lsServer.data);
-            }
         } catch (error) {
+            setLsEmployee([]);
             console.log(error);
         }
     }

@@ -102,6 +102,14 @@ export const DefaultData = {
 
 export const DefaultValue = {
     GeneroWomen: 4282,
+
+    RiesgoQuimico: 4493,
+    RiesgoFisico: 4494,
+    RiesgoPsicosocial: 4495,
+    RiesgoBiologico: 4496,
+    RiesgoErgonomicoCargaFisica_Postura: 4514,
+    RiesgoErgonomicoCargaFisica_Fuerza: 4515,
+    RiesgoErgonomicoCargaFisica_Movimiento: 4516,
 }
 
 export const TitleButton = {

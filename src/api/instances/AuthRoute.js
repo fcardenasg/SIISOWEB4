@@ -16,6 +16,7 @@ export const Url = {
     CargoId: 'api/Cargo/id',
 
     Panorama: 'api/Panoramariesgo',
+    PanoramaGetAllByCharge: 'api/Panoramariesgo/GetAllByCharge',
     PanoramaId: 'api/Panoramariesgo/id',
 
     Recetario: 'api/Recetario',
@@ -34,6 +35,7 @@ export const Url = {
     AsesoriasId: 'api/Asesorias/id',
 
     HistoriaLaboral: 'api/HistoriaLaboral',
+    HistoriaLaboralGetAllByDocument: 'api/HistoriaLaboral/GetAllByDocument',
     HistoriaLaboralId: 'api/HistoriaLaboral/id',
 
     CIE11: 'api/CIE11',
