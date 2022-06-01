@@ -5,6 +5,7 @@ import {
     InputLabel,
     MenuItem
 } from '@mui/material';
+import { Fragment } from 'react';
 
 const SelectOnChange = ({ bug, disabled, options, value, onChange, size, label, name }) => {
     let isError = false;
@@ -15,7 +16,7 @@ const SelectOnChange = ({ bug, disabled, options, value, onChange, size, label, 
     }
 
     return (
-        <>
+        <Fragment>
             <FormControl fullWidth error={isError}>
                 <InputLabel htmlFor="my-input" id="demo-simple-select-label" sx={{ fontSize: 14 }}>
                     {label}
@@ -37,7 +38,7 @@ const SelectOnChange = ({ bug, disabled, options, value, onChange, size, label, 
                     ))}
                 </Select>
             </FormControl>
-        </>
+        </Fragment>
     );
 }
 

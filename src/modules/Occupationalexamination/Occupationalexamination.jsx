@@ -24,7 +24,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -35,7 +35,7 @@ import { TitleButton } from 'components/helpers/Enums';
 import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import User from 'assets/img/user.png'
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
+import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
@@ -88,6 +88,7 @@ const OccupationalExamination = () => {
     const [value, setValue] = useState(0);
 
     const [document, setDocument] = useState('');
+    const [atencion, setAtencion] = useState('');
     const [lsAtencionEMO, setLsAtencionEMO] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [arrays, setArrays] = useState({
@@ -144,7 +145,7 @@ const OccupationalExamination = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInset = PostOccupationalExamination(
-                101010, document, FormatDate(datos.fecha), datos.idAtencion,
+                101010, document, FormatDate(datos.fecha), atencion,
 
                 datos.congenitosAP, datos.inmunoPrevenibleAP, datos.infecciososAP, datos.ojoAP, datos.agudezaVisualAP, datos.oidosAP, datos.nasoFaringeAP,
                 datos.cardiovascularAP, datos.pulmonarAP, datos.gastrointestinalAP, datos.gimitoUrinarioAP, datos.neurologicoAP, datos.transtornoPielAP,
@@ -275,16 +276,15 @@ const OccupationalExamination = () => {
                         </FormProvider>
                     </Grid>
                     <Grid item xs={6}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idAtencion"
-                                label="Atención"
-                                defaultValue=""
-                                options={lsAtencionEMO}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
+                        <SelectOnChange
+                            name="idAtencion"
+                            label="Atención"
+                            value={atencion}
+                            onChange={(e) => setAtencion(e.target.value)}
+                            options={lsAtencionEMO}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
                     </Grid>
                 </Grid>
             </SubCard>
@@ -332,7 +332,9 @@ const OccupationalExamination = () => {
                 <PersonalData lsEmployee={lsEmployee} />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <WorkHistory />
+                <WorkHistory
+                    documento={document}
+                    atencion={atencion} />
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <Emo
@@ -345,7 +347,7 @@ const OccupationalExamination = () => {
                     {...methods} />
             </TabPanel>
 
-            <Grid container spacing={1} sx={{ pt: 2 }}>
+            <Grid container spacing={1} sx={{ pt: 5 }}>
                 <Grid item xs={6}>
                     <AnimateButton>
                         <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>

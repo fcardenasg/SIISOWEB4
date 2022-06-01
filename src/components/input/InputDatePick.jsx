@@ -2,11 +2,12 @@ import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { LocalizationProvider, MobileDatePicker } from "@mui/lab";
+import { Fragment } from 'react';
 
-const InputDatePick = ({ bug, value, label, onChange, name, required, ...others }) => {
+const InputDatePick = ({ value, label, onChange, required, ...others }) => {
 
     return (
-        <>
+        <Fragment>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <MobileDatePicker
                     label={label}
@@ -20,16 +21,14 @@ const InputDatePick = ({ bug, value, label, onChange, name, required, ...others 
                     {...others}
                 />
             </LocalizationProvider>
-        </>
+        </Fragment>
     );
 };
 
 export default InputDatePick;
 
 InputDatePick.propTypes = {
-    bug: PropTypes.object,
     onChange: PropTypes.func,
     label: PropTypes.string,
     value: PropTypes.any,
-    name: PropTypes.string
 };

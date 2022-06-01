@@ -78,7 +78,7 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
     const handleChange1 = (event) => {
         setValueCargo(event.target.value);
 
-   
+
     }
 
 
@@ -152,7 +152,7 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
                                             <Typography variant="subtitle1" sx={{ lineHeight: '1.4375em' }}>
                                                 {selectedData.name}
                                             </Typography>
-                                
+
                                         </Stack>
                                     );
                                 }}
@@ -165,7 +165,7 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
                                     <MenuItem key={i} value={item.id}>
                                         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: '100%' }}>
                                             <Typography variant="subtitle1">{item.name}</Typography>
-                                
+
                                         </Stack>
                                     </MenuItem>
                                 ))}
@@ -176,7 +176,7 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
 
                 <Grid item xs={12} md={3}>
                     <Stack spacing={1}>
-                    <Typography variant="subtitle1">Cargo</Typography>
+                        <Typography variant="subtitle1">Cargo</Typography>
                         <SelectOnChange
                             name="cargo"
                             label="Cargo"
@@ -215,6 +215,7 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
                         <TextField fullWidth name="amount" value={amount} disabled />
                     </Stack>
                 </Grid>
+
                 <Grid item container justifyContent="flex-end">
                     <Stack direction="row" spacing={1} alignItems="center">
                         <Button color="error" onClick={() => setAddItemClicked(false)}>
@@ -230,6 +231,7 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
                         </Button>
                     </Stack>
                 </Grid>
+
             </Grid>
         </>
     );
