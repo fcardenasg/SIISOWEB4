@@ -40,7 +40,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { DeleteMedicalHistory, GetAllMedicalHistory } from 'api/clients/MedicalHistoryClient';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import FullScreenDialogs from 'components/controllers/FullScreenDialog';
@@ -532,7 +532,7 @@ const ListAssistance = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {FormatDate(row.fecha)}{' '}
+                                                {ViewFormat(row.fecha)}{' '}
                                             </Typography>
                                         </TableCell>
 

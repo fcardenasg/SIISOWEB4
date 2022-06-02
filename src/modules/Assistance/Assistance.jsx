@@ -25,6 +25,11 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 
 // Import del Proyecto
+import ControlModal from 'components/controllers/ControlModal';
+import ControllerListen from 'components/controllers/ControllerListen';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import DetailedIcon from 'components/controllers/DetailedIcon';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format'
@@ -46,18 +51,13 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { PostAssistance } from 'formatdata/AssistanceForm';
 import { InsertMedicalHistory } from 'api/clients/MedicalHistoryClient';
-import FullScreenDialogs from 'components/controllers/FullScreenDialog';
-import ListAssistance from './ListAssistance';
 
-// Audio
-const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition
-const mic = new SpeechRecognition()
-
-mic.continuous = true
-mic.interimResults = true
-mic.lang = 'es-ES'
-
+const DetailIcons = [
+    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
+    { title: 'Ver Examenes Físicos', icons: <DirectionsRunIcon fontSize="small" /> },
+    { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
+]
 
 const Assistance = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
@@ -66,11 +66,11 @@ const Assistance = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* ESTADOS PARA EL CONTROL DE VOZ */
-    const [isListening, setIsListening] = useState(false);
     const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
-    const [note, setNote] = useState(null);
+    const [openTemplate, setOpenTemplate] = useState(false);
+    const [openExamenParaclinico, setOpenExamenParaclinico] = useState(false);
+    const [openExamenFisico, setOpenExamenFisico] = useState(false);
     const [diagnosticoArray, setDiagnosticoArray] = useState([]);
 
     /* NUESTROS ESTADOS PARA LOS DIFERENTES USOS */
@@ -123,40 +123,10 @@ const Assistance = () => {
 
     const { handleSubmit, errors, reset } = methods;
 
-    const handleListen = () => {
-        if (isListening) {
-            mic.start()
-            mic.onend = () => {
-                console.log('continue..')
-                mic.start()
-            }
-        } else {
-            mic.stop()
-            mic.onend = () => {
-                console.log('Stopped Mic on Click')
-            }
-        }
-        mic.onstart = () => {
-            console.log('Mics on')
-        }
-
-        mic.onresult = event => {
-            const transcript = Array.from(event.results)
-                .map(result => result[0])
-                .map(result => result.transcript)
-                .join('')
-            console.log(transcript)
-            setNote(transcript)
-            mic.onerror = event => {
-                console.log(event.error)
-            }
-        }
-    }
 
     const CleanCombo = () => {
         setDiagnosticoArray([]);
         setImgSrc(null);
-        setNote('');
         setFecha(new Date());
         setDocument('');
         setNombres('');
@@ -279,11 +249,11 @@ const Assistance = () => {
             const lsServerCie11 = await GetAllCIE11(0, 0);
             var resultCie11 = lsServerCie11.data.entities.map((item) => ({
                 value: item.id,
-                nombre: item.dx
+                label: item.dx
             }));
             setLsCie11(resultCie11);
 
-            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Atencion_HistoriaClinica);
+            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION);
             var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -318,7 +288,7 @@ const Assistance = () => {
             }));
             setLsRemitido(resultRemitido);
 
-            const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ConceptoAptitud_HistoriaClinica);
+            const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_CONCEP_ACTITUD);
             var resultConceptoAptitud = lsServerConceptoAptitud.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -339,8 +309,7 @@ const Assistance = () => {
     /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
-        handleListen();
-    }, [isListening])
+    }, [])
 
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
@@ -350,8 +319,10 @@ const Assistance = () => {
 
             const DataToInsert = PostAssistance(document, fechaFormat, datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
                 datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico, datos.examenParaclinico,
-                JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, datos.idRemitido, "UsuarioCreacion", fechaSistemas,
+                JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, datos.idRemitido, "Usuario de Creacion", fechaSistemas,
                 "UsuarioModifica", fechaSistemas);
+
+            console.log("DataToInsert = ", DataToInsert);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertMedicalHistory(DataToInsert);
@@ -386,6 +357,39 @@ const Assistance = () => {
 
     return (
         <MainCard>
+            <ControlModal
+                maxWidth="md"
+                open={open}
+                onClose={() => setOpen(false)}
+                title="DICTADO POR VOZ"
+            >
+                <ControllerListen />
+            </ControlModal>
+
+            <FullScreenDialog
+                open={openTemplate}
+                title="LISTADO DE PLANTILLA"
+                handleClose={() => setOpenTemplate(false)}
+            >
+                <ListPlantillaAll />
+            </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openExamenFisico}
+                title="VISTA DE EXAMEN FÍSICO"
+                handleClose={() => setOpenExamenFisico(false)}
+            >
+
+            </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openExamenParaclinico}
+                title="VISTA DE EXAMEN PARACLÍNICO"
+                handleClose={() => setOpenExamenParaclinico(false)}
+            >
+
+            </FullScreenDialog>
+
             <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
                 <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
                     <Grid item xs={3}>
@@ -846,61 +850,19 @@ const Assistance = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
                         </Grid>
-
                         <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputText
@@ -915,59 +877,18 @@ const Assistance = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
                         </Grid>
 
                         <Grid item xs={12}>
@@ -984,59 +905,18 @@ const Assistance = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
                         </Grid>
 
                         <Grid item xs={12}>
@@ -1053,59 +933,18 @@ const Assistance = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
                         </Grid>
 
                         <Grid item xs={12}>
@@ -1122,76 +961,24 @@ const Assistance = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pb: 2 }}>
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Ver Examen Fisico">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => setOpen(true)}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <DirectionsRunIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[2].title}
+                                onClick={() => setOpenExamenFisico(true)}
+                                icons={DetailIcons[2].icons}
+                            />
                         </Grid>
 
                         <Grid item xs={12}>
@@ -1208,76 +995,24 @@ const Assistance = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Grid container justifyContent="left" alignItems="center" spacing={2}>
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Plantilla de texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <ListAltSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Borrar texto">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
 
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Audio">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => console.log("Todo Bien")}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <SettingsVoiceIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Grid justifyContent="center" alignItems="center" container>
-                                        <AnimateButton>
-                                            <Tooltip title="Ver Examen Paraclínico">
-                                                <Fab
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => setOpen(true)}
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                >
-                                                    <AddBoxIcon fontSize="small" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <DetailedIcon
+                                title={DetailIcons[3].title}
+                                onClick={() => setOpenExamenParaclinico(true)}
+                                icons={DetailIcons[3].icons}
+                            />
                         </Grid>
                     </Grid>
                 </SubCard>
@@ -1312,59 +1047,18 @@ const Assistance = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={12}>
-                        <Grid container justifyContent="left" alignItems="center" spacing={2}>
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
+                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            title={DetailIcons[0].title}
+                            onClick={() => setOpenTemplate(true)}
+                            icons={DetailIcons[0].icons}
+                        />
 
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Grid justifyContent="center" alignItems="center" container>
-                                    <AnimateButton>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Todo Bien")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <DetailedIcon
+                            title={DetailIcons[1].title}
+                            onClick={() => setOpen(true)}
+                            icons={DetailIcons[1].icons}
+                        />
                     </Grid>
                 </SubCard>
             </Grid>
@@ -1426,14 +1120,6 @@ const Assistance = () => {
                     </Grid>
                 </Grid>
             </Grid>
-
-            <FullScreenDialogs
-                open={open}
-                title="LISTADO DE EXAMENES DE PARACLÍNICOS"
-                handleClose={() => setOpen(false)}
-            >
-                <ListAssistance />
-            </FullScreenDialogs>
         </MainCard>
     );
 };

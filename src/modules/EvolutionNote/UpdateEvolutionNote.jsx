@@ -25,6 +25,11 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
+import DetailedIcon from 'components/controllers/DetailedIcon';
+import ControlModal from 'components/controllers/ControlModal';
+import ControllerListen from 'components/controllers/ControllerListen';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import Cargando from 'components/Cargando';
 import Accordion from 'components/accordion/Accordion';
 import InputOnChange from 'components/input/InputOnChange';
@@ -45,17 +50,13 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { PutEvolutionNote } from 'formatdata/EvolutionNoteForm';
 import { GetByIdEvolutionNote, UpdateEvolutionNotes } from 'api/clients/EvolutionNoteClient';
-import FullScreenDialogs from 'components/controllers/FullScreenDialog';
-import ListEvolutionnotes from './ListEvolutionNote';
 import { FormatDate } from 'components/helpers/Format';
 
-const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition
-const mic = new SpeechRecognition()
-
-mic.continuous = true
-mic.interimResults = true
-mic.lang = 'es-ES'
+const DetailIcons = [
+    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
+    { title: 'Ver Examenes', icons: <AddBoxIcon fontSize="small" /> },
+]
 
 const UpdateEvolutionNote = () => {
     const dispatch = useDispatch();
@@ -65,10 +66,10 @@ const UpdateEvolutionNote = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [lsEvolutionNote, setLsEvolutionNote] = useState([]);
-    const [isListening, setIsListening] = useState(false);
     const [open, setOpen] = useState(false);
+    const [openTemplate, setOpenTemplate] = useState(false);
+    const [openExamen, setOpenExamen] = useState(false);
     const [buttonReport, setButtonReport] = useState(false);
-    const [note, setNote] = useState(null);
     const [diagnosticoArray, setDiagnosticoArray] = useState([]);
 
     const [catalog, setCatalog] = useState([]);
@@ -113,36 +114,6 @@ const UpdateEvolutionNote = () => {
     const [dptoNacido, setDptoNacido] = useState('');
     const [eps, setEps] = useState('');
     const [afp, setAfp] = useState('');
-
-    const handleListen = () => {
-        if (isListening) {
-            mic.start()
-            mic.onend = () => {
-                console.log('continue..')
-                mic.start()
-            }
-        } else {
-            mic.stop()
-            mic.onend = () => {
-                console.log('Stopped Mic on Click')
-            }
-        }
-        mic.onstart = () => {
-            console.log('Mics on')
-        }
-
-        mic.onresult = event => {
-            const transcript = Array.from(event.results)
-                .map(result => result[0])
-                .map(result => result.transcript)
-                .join('')
-            console.log(transcript)
-            setNote(transcript)
-            mic.onerror = event => {
-                console.log(event.error)
-            }
-        }
-    }
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -218,11 +189,11 @@ const UpdateEvolutionNote = () => {
             const lsServerCie11 = await GetAllCIE11(0, 0);
             var resultCie11 = lsServerCie11.data.entities.map((item) => ({
                 value: item.id,
-                nombre: item.dx
+                label: item.dx
             }));
             setLsCie11(resultCie11);
 
-            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Atencion_HistoriaClinica);
+            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION);
             var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -257,7 +228,7 @@ const UpdateEvolutionNote = () => {
             }));
             setLsRemitido(resultRemitido);
 
-            const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ConceptoAptitud_HistoriaClinica);
+            const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_CONCEP_ACTITUD);
             var resultConceptoAptitud = lsServerConceptoAptitud.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -277,12 +248,11 @@ const UpdateEvolutionNote = () => {
 
     useEffect(() => {
         GetAll();
-        handleListen();
-    }, [isListening])
+    }, [])
 
     const handleClick = async (datos) => {
         try {
-            const fechaFormat = FormatDate(fecha);
+            const fechaFormat = FormatDate(new Date(fecha));
             const fechaSistemas = FormatDate(new Date());
 
             const DataToUpdate = PutEvolutionNote(id, document, fechaFormat, datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
@@ -295,7 +265,7 @@ const UpdateEvolutionNote = () => {
                     dispatch({
                         type: SNACKBAR_OPEN,
                         open: true,
-                        message: `${Message.Guardar}`,
+                        message: `${Message.Actualizar}`,
                         variant: 'alert',
                         alertSeverity: 'success',
                         close: false,
@@ -320,6 +290,29 @@ const UpdateEvolutionNote = () => {
 
     return (
         <MainCard>
+            <ControlModal
+                maxWidth="md"
+                open={open}
+                onClose={() => setOpen(false)}
+                title="DICTADO POR VOZ"
+            >
+                <ControllerListen />
+            </ControlModal>
+
+            <FullScreenDialog
+                open={openTemplate}
+                title="LISTADO DE PLANTILLA"
+                handleClose={() => setOpenTemplate(false)}
+            >
+                <ListPlantillaAll />
+            </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openExamen}
+                title="VISTA DE EXAMENES"
+                handleClose={() => setOpenExamen(false)}
+            ></FullScreenDialog>
+
             {lsEvolutionNote.length != 0 ? <>
                 <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
                     <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
@@ -776,58 +769,24 @@ const UpdateEvolutionNote = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={12}>
-                                <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Plantilla de texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <ListAltSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Borrar texto">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
+                            <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                <DetailedIcon
+                                    title={DetailIcons[0].title}
+                                    onClick={() => setOpenTemplate(true)}
+                                    icons={DetailIcons[0].icons}
+                                />
 
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Audio">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => setIsListening(prevState => !prevState)}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <SettingsVoiceIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Tooltip title="Ver Examen Paraclinico">
-                                            <Fab
-                                                color="primary"
-                                                size="small"
-                                                onClick={() => console.log("Funcion")}
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                            >
-                                                <AddBoxIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                </Grid>
+                                <DetailedIcon
+                                    title={DetailIcons[1].title}
+                                    onClick={() => setOpen(true)}
+                                    icons={DetailIcons[1].icons}
+                                />
+
+                                <DetailedIcon
+                                    title={DetailIcons[2].title}
+                                    onClick={() => setOpenExamen(true)}
+                                    icons={DetailIcons[2].icons}
+                                />
                             </Grid>
                         </Grid>
                     </SubCard>
@@ -861,45 +820,18 @@ const UpdateEvolutionNote = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Grid spacing={2} container xs={12} sx={{ pt: 2 }}>
-                                <Grid item xs={2}>
-                                    <Tooltip title="Plantilla de texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Funcion")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <ListAltSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <Tooltip title="Borrar texto">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => console.log("Funcion")}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <RemoveCircleOutlineSharpIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <Tooltip title="Audio">
-                                        <Fab
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => setIsListening(prevState => !prevState)}
-                                            sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                        >
-                                            <SettingsVoiceIcon fontSize="small" />
-                                        </Fab>
-                                    </Tooltip>
-                                </Grid>
-                            </Grid>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpenTemplate(true)}
+                                icons={DetailIcons[0].icons}
+                            />
+
+                            <DetailedIcon
+                                title={DetailIcons[1].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[1].icons}
+                            />
                         </Grid>
                     </SubCard>
                 </Grid>
@@ -961,14 +893,6 @@ const UpdateEvolutionNote = () => {
                         </Grid>
                     </Grid>
                 </Grid>
-
-                <FullScreenDialogs
-                    open={open}
-                    title="LISTADO DE NOTAS DE EVOLUCIÓN"
-                    handleClose={() => setOpen(false)}
-                >
-                    <ListEvolutionnotes />
-                </FullScreenDialogs>
             </> : <Cargando />}
         </MainCard >
     );

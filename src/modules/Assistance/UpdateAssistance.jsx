@@ -21,8 +21,15 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 
 // Import del Proyecto
+import ControlModal from 'components/controllers/ControlModal';
+import ControllerListen from 'components/controllers/ControllerListen';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import DetailedIcon from 'components/controllers/DetailedIcon';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format'
@@ -45,18 +52,13 @@ import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { PutAssistance } from 'formatdata/AssistanceForm';
 import { UpdateMedicalHistorys, GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
 import Cargando from 'components/Cargando';
-import FullScreenDialogs from 'components/controllers/FullScreenDialog';
-import ListAssistance from './ListAssistance';
 
-// Audio
-const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition
-const mic = new SpeechRecognition()
-
-mic.continuous = true
-mic.interimResults = true
-mic.lang = 'es-ES'
-
+const DetailIcons = [
+    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
+    { title: 'Ver Examenes Físicos', icons: <DirectionsRunIcon fontSize="small" /> },
+    { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
+]
 
 const UpdateAssistance = () => {
     /* ESTILO, HOOKS Y OTROS TEMAS */
@@ -66,11 +68,11 @@ const UpdateAssistance = () => {
     const { id } = useParams();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* ESTADOS PARA EL CONTROL DE VOZ */
     const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
-    const [isListening, setIsListening] = useState(false)
-    const [note, setNote] = useState(null)
+    const [openTemplate, setOpenTemplate] = useState(false);
+    const [openExamenParaclinico, setOpenExamenParaclinico] = useState(false);
+    const [openExamenFisico, setOpenExamenFisico] = useState(false);
     const [diagnosticoArray, setDiagnosticoArray] = useState([]);
     const [lsAssistance, setLsAssistance] = useState([]);
 
@@ -123,36 +125,6 @@ const UpdateAssistance = () => {
     /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors, reset } = methods;
-
-    const handleListen = () => {
-        if (isListening) {
-            mic.start()
-            mic.onend = () => {
-                console.log('continue..')
-                mic.start()
-            }
-        } else {
-            mic.stop()
-            mic.onend = () => {
-                console.log('Stopped Mic on Click')
-            }
-        }
-        mic.onstart = () => {
-            console.log('Mics on')
-        }
-
-        mic.onresult = event => {
-            const transcript = Array.from(event.results)
-                .map(result => result[0])
-                .map(result => result.transcript)
-                .join('')
-            console.log(transcript)
-            setNote(transcript)
-            mic.onerror = event => {
-                console.log(event.error)
-            }
-        }
-    }
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -224,11 +196,11 @@ const UpdateAssistance = () => {
             const lsServerCie11 = await GetAllCIE11(0, 0);
             var resultCie11 = lsServerCie11.data.entities.map((item) => ({
                 value: item.id,
-                nombre: item.dx
+                label: item.dx
             }));
             setLsCie11(resultCie11);
 
-            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Atencion_HistoriaClinica);
+            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION);
             var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -263,7 +235,7 @@ const UpdateAssistance = () => {
             }));
             setLsRemitido(resultRemitido);
 
-            const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ConceptoAptitud_HistoriaClinica);
+            const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_CONCEP_ACTITUD);
             var resultConceptoAptitud = lsServerConceptoAptitud.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -284,13 +256,12 @@ const UpdateAssistance = () => {
     /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
-        handleListen();
-    }, [isListening])
+    }, [])
 
     /* METODO DE INSERT  */
     const handleClick = async (datos) => {
         try {
-            const fechaFormat = FormatDate(fecha);
+            const fechaFormat = FormatDate(new Date(fecha));
             const fechaSistemas = FormatDate(new Date());
 
             const DataToUpdate = PutAssistance(id, document, fechaFormat, datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
@@ -329,6 +300,39 @@ const UpdateAssistance = () => {
 
     return (
         <MainCard>
+            <ControlModal
+                maxWidth="md"
+                open={open}
+                onClose={() => setOpen(false)}
+                title="DICTADO POR VOZ"
+            >
+                <ControllerListen />
+            </ControlModal>
+
+            <FullScreenDialog
+                open={openTemplate}
+                title="LISTADO DE PLANTILLA"
+                handleClose={() => setOpenTemplate(false)}
+            >
+                <ListPlantillaAll />
+            </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openExamenFisico}
+                title="VISTA DE EXAMEN FÍSICO"
+                handleClose={() => setOpenExamenFisico(false)}
+            >
+
+            </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openExamenParaclinico}
+                title="VISTA DE EXAMEN PARACLÍNICO"
+                handleClose={() => setOpenExamenParaclinico(false)}
+            >
+
+            </FullScreenDialog>
+
             {lsAssistance.length != 0 ? <>
                 <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
                     <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
@@ -1133,7 +1137,6 @@ const UpdateAssistance = () => {
                                         bug={errors}
                                     />
                                 </FormProvider>
-                                <p>{note}</p>
                             </Grid>
                             <Grid item xs={12}>
                                 <Grid container justifyContent="left" alignItems="center" spacing={2}>
@@ -1335,14 +1338,6 @@ const UpdateAssistance = () => {
                             </AnimateButton>
                         </Grid>
                     </Grid>
-
-                    <FullScreenDialogs
-                        open={open}
-                        title="LISTADO DE EXAMENES DE PARACLÍNICOS"
-                        handleClose={() => setOpen(false)}
-                    >
-                        <ListAssistance />
-                    </FullScreenDialogs>
                 </Grid>
             </> : <Cargando />}
 

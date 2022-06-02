@@ -10,10 +10,10 @@ export async function postData(url = '', datos = {}, headersVali = false) {
                 method: 'post',
                 url: `${Url.Base}${url}`,
                 data: datos,
-                headers: {'Content-Type': 'multipart/form-data'}
+                headers: { 'Content-Type': 'multipart/form-data' }
             }).then(respuesta => {
                 if (respuesta.status !== 200) throw Error(respuesta.status);
-
+                console.log(respuesta);
                 return respuesta;
             }).catch((error) => {
                 console.log(error);
@@ -29,7 +29,7 @@ export async function postData(url = '', datos = {}, headersVali = false) {
                 data: datos,
             }).then(respuesta => {
                 if (respuesta.status !== 200) throw Error(respuesta.status);
-
+                console.log(respuesta);
                 return respuesta;
             }).catch((error) => {
                 console.log(error);
@@ -49,7 +49,7 @@ export async function getData(url = '', parametros = {}) {
         return await axios.get(urlGet)
             .then(respuesta => {
                 if (respuesta.status !== 200) throw Error(respuesta.status);
-
+                console.log(respuesta);
                 return respuesta;
             }).catch((error) => {
                 console.log(error);
@@ -67,7 +67,7 @@ export async function putData(url = '', datos = {}) {
             data: datos
         }).then(respuesta => {
             if (respuesta.status !== 200) throw Error(respuesta.status);
-
+            console.log(respuesta);
             return respuesta;
         }).catch((error) => {
             console.log(error);

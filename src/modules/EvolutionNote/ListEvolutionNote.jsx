@@ -33,7 +33,7 @@ import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import { DeleteEvolutionNote, GetAllEvolutionNote } from 'api/clients/EvolutionNoteClient';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -530,7 +530,7 @@ const ListEvolutionNote = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {FormatDate(row.fecha)}{' '}
+                                                {ViewFormat(row.fecha)}{' '}
                                             </Typography>
                                         </TableCell>
 

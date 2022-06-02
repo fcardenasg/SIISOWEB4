@@ -65,8 +65,8 @@ export const CodCatalogo = {
 
     Proveedor: 2174,
     Pais: 1153,
-    Contingencia: 3175,
-    DiaTurno: 3176,
+    Contingencia: 5291,
+    DiaTurno: 5292,
     AsesoriaMotivo: 3177,
     TipoAsesoria: 3178,
     CausaAsesoria: 3180,
@@ -79,9 +79,10 @@ export const CodCatalogo = {
     SaludOcupacional_Atencion: 4175,
     SaludOcupacional_Motivo: 4176,
     TipoAtencion_Item: 3184,
-    Atencion_HistoriaClinica: 4177,
+
+    AHC_ATENCION: 5290,
     Opciones_SINO: 5252,
-    ConceptoAptitud_HistoriaClinica: 4185,
+    AHC_CONCEP_ACTITUD: 5293,
     AUSLAB_INC: 4189,
     AUSLAB_TIPOINCA: 4190,
     AUSLAB_CONT: 4191,
