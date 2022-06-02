@@ -53,8 +53,13 @@ export const CodCatalogo = {
     HCO_FRAM_BEBIDAS: 5258,
     HCO_DXMETA: 5259,
 
-    RECE_TIPORDEN: 5281,
-    RECE_CONTINGENCIA: 5282,
+    PAD_MOTIVO: 5284,
+    PAD_MOTIVO_NO_ASIS: 5285,
+
+    PAD_MUESTRAAD: 5286,
+    PAD_MUESTRAAL: 5287,
+    PAD_RESULTADO: 5288,
+    PAD_CONCEPTOA: 5289,
 
     Proveedor: 2174,
     Pais: 1153,
@@ -73,7 +78,7 @@ export const CodCatalogo = {
     SaludOcupacional_Motivo: 4176,
     TipoAtencion_Item: 3184,
     Atencion_HistoriaClinica: 4177,
-    Opciones_SINO: 4184,
+    Opciones_SINO: 5252,
     ConceptoAptitud_HistoriaClinica: 4185,
     AUSLAB_INC: 4189,
     AUSLAB_TIPOINCA: 4190,
@@ -101,6 +106,7 @@ export const DefaultData = {
 }
 
 export const DefaultValue = {
+    SINREGISTRO_GLOBAL: 4552,
     GeneroWomen: 4282,
 
     RiesgoQuimico: 4493,

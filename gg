@@ -1,11 +1,75 @@
-NameEmpleado = rhis..Nombre.Nombre,
-NameClase = rhis..Nombre,
-NameCargo = rhis..Nombre,
-NameRiesgo = rhis..Nombre,
-NameExpocision = rhis..Nombre,
-NameGradoConEPP = rhis..Nombre,
-NameGradoSinEPP = rhis..Nombre,
-NameHistoriaLaboral = rhis..Nombre,
-NameAnalisisRuido = rhis..Nombre,
-NameAnalisisMPI = rhis..Nombre,
-NameMedidasControl = rhis..Nombre,
+modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoMotivoPrueba)
+                        .WithMany(tc => tc.PruebaMotivoPrueba)
+                        .HasForeignKey(c => c.IdMotivoPrueba);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoMuestra1)
+                        .WithMany(tc => tc.PruebaMuestra1)
+                        .HasForeignKey(c => c.IdMuestra1);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoResultado1)
+                        .WithMany(tc => tc.PruebaResultado1)
+                        .HasForeignKey(c => c.IdResultado1);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoMuestra2)
+                        .WithMany(tc => tc.PruebaMuestra2)
+                        .HasForeignKey(c => c.IdMuestra2);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoResultado2)
+                        .WithMany(tc => tc.PruebaResultado2)
+                        .HasForeignKey(c => c.IdResultado2);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoMuestra3)
+                        .WithMany(tc => tc.PruebaMuestra3)
+                        .HasForeignKey(c => c.IdMuestra3);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoResultado3)
+                        .WithMany(tc => tc.PruebaResultado3)
+                        .HasForeignKey(c => c.IdResultado3);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoMuestra4)
+                        .WithMany(tc => tc.PruebaMuestra4)
+                        .HasForeignKey(c => c.IdMuestra4);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoResultado4)
+                        .WithMany(tc => tc.PruebaResultado4)
+                        .HasForeignKey(c => c.IdResultado4);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoMuestra5)
+                        .WithMany(tc => tc.PruebaMuestra5)
+                        .HasForeignKey(c => c.IdMuestra5);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoResultado5)
+                        .WithMany(tc => tc.PruebaResultado5)
+                        .HasForeignKey(c => c.IdResultado5);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoMuestra6)
+                        .WithMany(tc => tc.PruebaMuestra6)
+                        .HasForeignKey(c => c.IdMuestra6);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoResultado6)
+                        .WithMany(tc => tc.PruebaResultado6)
+                        .HasForeignKey(c => c.IdResultado6);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoRemitido)
+                        .WithMany(tc => tc.PruebaRemitido)
+                        .HasForeignKey(c => c.IdRemitido);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoConcepto)
+                        .WithMany(tc => tc.PruebaConcepto)
+                        .HasForeignKey(c => c.IdConcepto);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoRealizada)
+                        .WithMany(tc => tc.PruebaRealizada)
+                        .HasForeignKey(c => c.IdRealizada);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.TipoMotivoAsis)
+                        .WithMany(tc => tc.PruebaMotivoAsis)
+                        .HasForeignKey(c => c.IdMotivoAsis);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.DatosDocumento)
+                        .WithMany(tc => tc.PruebaDocumento)
+                        .HasForeignKey(c => c.Documento);
+
+                  modelBuilder.Entity<PruebasAlcoholDrogaModel>().HasOne(c => c.DatosDocumentoSolicitante)
+                        .WithMany(tc => tc.PruebaDocumentoSolicitante)
+                        .HasForeignKey(c => c.IdDocumentoSolicitante);
