@@ -30,7 +30,6 @@ export const CodCatalogo = {
     PANO_RIESGO: 5265,
     PANO_GRADO_CONSINEPP: 5268,
 
-
     HCO_VACUNAS: 5229,
     HCO_FRECUENCIAS: 5240,
     HC_DEPOR: 5241,
@@ -52,6 +51,9 @@ export const CodCatalogo = {
     HCO_FRAM_DEPOR: 5257,
     HCO_FRAM_BEBIDAS: 5258,
     HCO_DXMETA: 5259,
+
+    RECE_TIPORDEN: 5281,
+    RECE_CONTINGENCIA: 5282,
 
     PAD_MOTIVO: 5284,
     PAD_MOTIVO_NO_ASIS: 5285,
