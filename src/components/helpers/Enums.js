@@ -110,6 +110,7 @@ export const DefaultData = {
 
 export const DefaultValue = {
     SINREGISTRO_GLOBAL: 4552,
+    SINREGISTRO_TEXTO: 'REGISTRO NO APLICA',
     GeneroWomen: 4282,
 
     RiesgoQuimico: 4493,

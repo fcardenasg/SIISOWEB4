@@ -522,7 +522,7 @@ const ListOccupationalExamination = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.sede}{' '}
+                                                {row.idAtencion}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -538,7 +538,7 @@ const ListOccupationalExamination = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameSede}{' '}
+                                                {row.idAtencion}{' '}
                                             </Typography>
                                         </TableCell>
 

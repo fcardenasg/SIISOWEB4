@@ -212,6 +212,8 @@ const OccupationalExamination = () => {
                 datos.fRTencionFRA, datos.fRTabaquismoFRA, datos.puntajeFRA, datos.riesgoAbsolutoFRA, datos.riesgoRelativoFRA, datos.interpretacionFRA,
             );
 
+            console.log("Datos = ", DataToInset);
+
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertOccupationalExamination(DataToInset);
                 if (result.status === 200) {
@@ -225,10 +227,37 @@ const OccupationalExamination = () => {
                         transition: 'SlideUp'
                     })
                     reset();
+                    setLsEmployee([]);
+                    setArrays({
+                        tipoFobia: [],
+                        parentesco: [],
+                        dx: [],
+                        antecedentesCardio: [],
+                        metabolico: [],
+                    });
+                    setAtencion('');
+                    setDocument('');
+                    setEstadoVacuna({
+                        tetanoIM: false,
+                        influenzaIM: false,
+                        fiebreAmarillaIM: false,
+                        rubeolaSarampionIM: false,
+                        covid19IM: false,
+                        otrasIM: false,
+                    });
+                    setValue(0);
                 }
             }
         } catch (error) {
-            console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: 'Hubo un error al guardar la Historia Ocupacional',
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     };
 
@@ -333,6 +362,7 @@ const OccupationalExamination = () => {
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <WorkHistory
+                    lsEmpleado={lsEmployee}
                     documento={document}
                     atencion={atencion} />
             </TabPanel>

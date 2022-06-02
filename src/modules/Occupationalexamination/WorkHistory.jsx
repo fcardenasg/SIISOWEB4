@@ -198,7 +198,7 @@ Row.propTypes = {
 };
 
 
-const WorkHistory = ({ documento, atencion }) => {
+const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const [addItemClicked, setAddItemClicked] = useState(false);
@@ -273,27 +273,39 @@ const WorkHistory = ({ documento, atencion }) => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostWorkHistory(FormatDate(datos.fecha), atencion, documento, datos.idEmpresa,
+            const DataToInsert = PostWorkHistory(FormatDate(new Date()), atencion, documento, datos.idEmpresa,
                 datos.idCargo, datos.anio, datos.meses);
 
             console.log("Datos = ", DataToInsert);
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertWorkHistory(DataToInsert);
-                if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Guardar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
-                    reset();
-                    setAddItemClicked(false);
-                    GetAll();
+            if (atencion !== '') {
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await InsertWorkHistory(DataToInsert);
+                    if (result.status === 200) {
+                        dispatch({
+                            type: SNACKBAR_OPEN,
+                            open: true,
+                            message: `${Message.Guardar}`,
+                            variant: 'alert',
+                            alertSeverity: 'success',
+                            close: false,
+                            transition: 'SlideUp'
+                        })
+                        reset();
+                        setAddItemClicked(false);
+                        GetAll();
+                    }
                 }
+            } else {
+                dispatch({
+                    type: SNACKBAR_OPEN,
+                    open: true,
+                    message: 'Por favor, seleccione la Atención',
+                    variant: 'alert',
+                    alertSeverity: 'error',
+                    close: false,
+                    transition: 'SlideUp'
+                })
             }
         } catch (error) {
             console.log(error);
@@ -330,7 +342,7 @@ const WorkHistory = ({ documento, atencion }) => {
 
             <Transitions type="collapse" in={addItemClicked} position="top-left" direction="up">
                 <Grid container sx={{ pt: 5 }} spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid item xs={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="idEmpresa"
@@ -343,7 +355,7 @@ const WorkHistory = ({ documento, atencion }) => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={2.5}>
+                    <Grid item xs={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="idCargo"
@@ -352,29 +364,6 @@ const WorkHistory = ({ documento, atencion }) => {
                                 options={lsCargo}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    {/* <Grid item xs={2.5}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="ges"
-                                label="GES"
-                                defaultValue=""
-                                options={lsGes}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid> */}
-
-                    <Grid item xs={2}>
-                        <FormProvider {...methods}>
-                            <InputDatePicker
-                                label="Fecha"
-                                name="fecha"
-                                defaultValue={null}
                             />
                         </FormProvider>
                     </Grid>
@@ -422,7 +411,7 @@ const WorkHistory = ({ documento, atencion }) => {
 
             {!addItemClicked ?
                 <Grid item sx={{ pl: 2, pt: 3 }}>
-                    <Button variant="text" onClick={() => setAddItemClicked(true)}>
+                    <Button disabled={lsEmpleado.length === 0 ? true : false} variant="text" onClick={() => setAddItemClicked(true)}>
                         + Agregar Cargo
                     </Button>
                 </Grid> : <></>}
@@ -434,5 +423,6 @@ export default WorkHistory;
 
 WorkHistory.propTypes = {
     documento: PropTypes.string,
-    atencion: PropTypes.string
+    lsEmpleado: PropTypes.array,
+    atencion: PropTypes.number
 };

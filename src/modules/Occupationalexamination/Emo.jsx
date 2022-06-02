@@ -767,7 +767,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue={""}
+                                    defaultValue="0"
                                     fullWidth
                                     name="anioVacuna1IM"
                                     label="Año Tetano"
@@ -781,7 +781,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
+                                    defaultValue="0"
                                     fullWidth
                                     name="anioVacuna2IM"
                                     label="Año Influenza"
@@ -795,7 +795,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
+                                    defaultValue="0"
                                     fullWidth
                                     name="anioVacuna3IM"
                                     label="Año Fiebre Amarilla"
@@ -809,7 +809,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
+                                    defaultValue="0"
                                     fullWidth
                                     name="anioVacuna4IM"
                                     label="Año Rubéola - Sarampion"
@@ -823,7 +823,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
+                                    defaultValue="0"
                                     fullWidth
                                     name="anioVacuna5IM"
                                     label="Año COVID-19"
@@ -836,7 +836,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                         <FormProvider {...methods}>
                             <InputText
                                 type="number"
-                                defaultValue=""
+                                defaultValue="0"
                                 fullWidth
                                 name="anioVacuna6IM"
                                 label="Año Otras"
@@ -1491,8 +1491,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                         </Grid>
                     </SubCard>
                     <Grid sx={{ pb: 2 }} />
-                </Fragment>
-                : <></>}
+                </Fragment> : <></>}
 
             <SubCard darkTitle title={<Typography variant="h4">REVISIÓN POR SISTEMAS</Typography>}>
                 <Grid container spacing={2} sx={{ pb: 2 }}>
