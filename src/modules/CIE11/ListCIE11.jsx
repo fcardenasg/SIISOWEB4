@@ -75,19 +75,19 @@ const headCells = [
     {
         id: 'id',
         numeric: false,
-        label: 'ID',
+        label: 'CÓDIGO',
         align: 'center'
     },
     {
         id: 'dx',
         numeric: false,
-        label: 'Descripción',
+        label: 'DIAGNOSTICO CIE11',
         align: 'left'
     },
     {
         id: 'nameSubsegmento',
         numeric: false,
-        label: 'Subsegmento',
+        label: 'SUBSEGMENTO',
         align: 'left'
     }
 ];
