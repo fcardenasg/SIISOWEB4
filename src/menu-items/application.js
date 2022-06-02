@@ -334,16 +334,16 @@ const application = {
             icon: icons.IconEyeglass,
             children: [
                 {
-                    id: 'Individuales',
+                    id: 'frm-multi-column-forms',
                     title: <FormattedMessage id="Individuales" />,
                     type: 'item',
-                    url: '/assistance/list'
+                    url: '/forms/layouts/multi-column-forms'
                 },
                 {
-                    id: 'Masivas',
+                    id: 'frm-multi-column-forms',
                     title: <FormattedMessage id="Masivas" />,
                     type: 'item',
-                    url: '/assistance/list'
+                    url: '/forms/layouts/multi-column-forms'
                 },
             ]
         },

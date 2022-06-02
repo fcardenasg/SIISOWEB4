@@ -156,7 +156,7 @@ const CIE11 = () => {
                     <Grid item xs={12}>
                         <SelectOnChange
                             name="segmentoAgrupado"
-                            label="Segmento Agrupado"
+                            label="Capitulo CIE11"
                             options={lsSegmentoAgrupado}
                             size={matchesXS ? 'small' : 'medium'}
                             value={segmentoAgrupado}
