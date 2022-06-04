@@ -12,7 +12,7 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 
-const Accordion = ({ defaultExpandedId = null, title, defaultExpand, id,  disabled, children, expandIcon, square, toggle }) => {
+const Accordion = ({ defaultExpandedId = null, title, defaultExpand, id, disabled, children, expandIcon, square, toggle }) => {
     const theme = useTheme();
 
     const [expanded, setExpanded] = useState(null);

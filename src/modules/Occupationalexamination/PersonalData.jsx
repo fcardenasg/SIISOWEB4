@@ -77,7 +77,7 @@ const handleUpdateEmployee = (idEmployee) => {
     );
 }
 
-const PersonalData = ({ lsEmployee }) => {
+const PersonalData = ({ lsEmployee = [] }) => {
     return (
         <Grid container spacing={gridSpacing}>
             <Grid item lg={6} xs={12}>

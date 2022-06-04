@@ -3,15 +3,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-
-// Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -30,7 +27,6 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-// Import de proyectos
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
@@ -40,7 +36,6 @@ import { GetAllCompany, DeleteCompany } from 'api/clients/CompanyClient';
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 
 import { IconFileExport } from '@tabler/icons';
@@ -53,7 +48,6 @@ const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -67,7 +61,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -78,7 +71,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
         id: 'codigo',
@@ -111,9 +103,6 @@ const headCells = [
         align: 'left'
     }
 ];
-
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -185,11 +174,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -226,14 +210,11 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
 const ListCompany = () => {
     const dispatch = useDispatch();
     const [company, setCompany] = useState([]);
-    console.log("Lista = ", company);
+    const [idCheck, setIdCheck] = useState('');
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -243,7 +224,6 @@ const ListCompany = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServer = await GetAllCompany(0, 0);
@@ -254,12 +234,10 @@ const ListCompany = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -288,14 +266,12 @@ const ListCompany = () => {
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
@@ -306,7 +282,6 @@ const ListCompany = () => {
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
         setIdCheck(id);
 
@@ -335,9 +310,6 @@ const ListCompany = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
-
-    /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
             const result = await DeleteCompany(idCheck);
@@ -366,7 +338,6 @@ const ListCompany = () => {
 
     return (
         <MainCard title="Lista de Empresas" content={false}>
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -407,7 +378,6 @@ const ListCompany = () => {
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/company/add")}>
                             {TitleButton.Agregar}
@@ -417,7 +387,6 @@ const ListCompany = () => {
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -435,7 +404,7 @@ const ListCompany = () => {
                         {stableSort(company, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
+
                                 if (typeof row === 'number') return null;
 
                                 const isItemSelected = isSelected(row.codigo);
@@ -471,8 +440,7 @@ const ListCompany = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
-                                                {' '}
-                                                #{row.codigo}{' '}
+                                                #{row.codigo}
                                             </Typography>
                                         </TableCell>
 
@@ -487,8 +455,7 @@ const ListCompany = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
-                                                {' '}
-                                                {row.descripcionSpa}{' '}
+                                                {row.descripcionSpa}
                                             </Typography>
                                         </TableCell>
 
@@ -503,8 +470,7 @@ const ListCompany = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
-                                                {' '}
-                                                {row.email}{' '}
+                                                {row.email}
                                             </Typography>
                                         </TableCell>
 
@@ -519,8 +485,7 @@ const ListCompany = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
-                                                {' '}
-                                                {row.celular}{' '}
+                                                {row.celular}
                                             </Typography>
                                         </TableCell>
 
@@ -535,8 +500,7 @@ const ListCompany = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
                                             >
-                                                {' '}
-                                                {row.gerente}{' '}
+                                                {row.gerente}
                                             </Typography>
                                         </TableCell>
 
@@ -563,7 +527,6 @@ const ListCompany = () => {
                 </Table>
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"

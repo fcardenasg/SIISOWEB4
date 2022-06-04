@@ -2638,10 +2638,10 @@
     "@svgr/plugin-svgo" "^5.5.0"
     "loader-utils" "^2.0.0"
 
-"@tabler/icons@^1.47":
-  "integrity" "sha512-X0SjUMWlu6IWsWIZP6gtMZhi9Q7pO2+BQ9vex28rOu+gtym7fZjnDXWG0okzVhtt4mlOwJ2BHQllRky29lsn7Q=="
-  "resolved" "https://registry.npmjs.org/@tabler/icons/-/icons-1.54.0.tgz"
-  "version" "1.54.0"
+"@tabler/icons@^1.64":
+  "integrity" "sha512-UseBEEhv7r+Drl3iZih7rkwqkfJJZscjd5ZvK1WdIIulQsBa+qE8WBDGdAO0RtjkCclEK88z9kC0s5wiVPIvkw=="
+  "resolved" "https://registry.npmjs.org/@tabler/icons/-/icons-1.68.0.tgz"
+  "version" "1.68.0"
 
 "@tootallnate/once@1":
   "integrity" "sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw=="
@@ -3279,7 +3279,12 @@
     "loader-utils" "^2.0.0"
     "regex-parser" "^2.2.11"
 
-"adler-32@", "adler-32@~1.3.0":
+"adler-32@":
+  "integrity" "sha512-ynZ4w/nUUv5rrsR8UUGoe1VC9hZj6V5hU9Qw1HlMDJGEJw5S7TfTErWTjMys6M7vr0YWcPqs3qAr4ss0nDfP+A=="
+  "resolved" "https://registry.npmjs.org/adler-32/-/adler-32-1.3.1.tgz"
+  "version" "1.3.1"
+
+"adler-32@~1.3.0":
   "integrity" "sha512-f5nltvjl+PRUh6YNfUstRaXwJxtfnKEWhAWWlmKvh+Y3J2+98a0KKVYDEhz6NdKGqswLhjNGznxfSsZGOvOd9g=="
   "resolved" "https://registry.npmjs.org/adler-32/-/adler-32-1.3.0.tgz"
   "version" "1.3.0"
@@ -4574,15 +4579,20 @@
   "resolved" "https://registry.npmjs.org/comma-separated-tokens/-/comma-separated-tokens-1.0.8.tgz"
   "version" "1.0.8"
 
-"commander@", "commander@^4.1.1":
-  "integrity" "sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA=="
-  "resolved" "https://registry.npmjs.org/commander/-/commander-4.1.1.tgz"
-  "version" "4.1.1"
+"commander@":
+  "integrity" "sha512-hv95iU5uXPbK83mjrJKuZyFM/LBAoCV/XhVGkS5Je6tl7sxr6A0ITMw5WoRV46/UaJ46Nllm3Xt7IaJhXTIkzw=="
+  "resolved" "https://registry.npmjs.org/commander/-/commander-9.3.0.tgz"
+  "version" "9.3.0"
 
 "commander@^2.20.0":
   "integrity" "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
   "resolved" "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz"
   "version" "2.20.3"
+
+"commander@^4.1.1":
+  "integrity" "sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA=="
+  "resolved" "https://registry.npmjs.org/commander/-/commander-4.1.1.tgz"
+  "version" "4.1.1"
 
 "common-tags@^1.8.0":
   "integrity" "sha512-6P6g0uetGpW/sdyUy/iQQCbFF0kWVMSIVSyYz7Zgjcgh8mgw8PQzDNZeyZ5DQ2gM7LBoZPHmnjz8rUthkBG5tw=="
@@ -4631,7 +4641,17 @@
   "resolved" "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
   "version" "0.0.1"
 
-"concat-stream@", "concat-stream@^1.5.0":
+"concat-stream@":
+  "integrity" "sha512-MWufYdFw53ccGjCA+Ol7XJYpAlW6/prSMzuPOTRnJGcGzuhLn4Scrz7qf6o8bROZ514ltazcIFJZevcfbo0x7A=="
+  "resolved" "https://registry.npmjs.org/concat-stream/-/concat-stream-2.0.0.tgz"
+  "version" "2.0.0"
+  dependencies:
+    "buffer-from" "^1.0.0"
+    "inherits" "^2.0.3"
+    "readable-stream" "^3.0.2"
+    "typedarray" "^0.0.6"
+
+"concat-stream@^1.5.0":
   "integrity" "sha512-27HBghJxjiZtIk3Ycvn/4kbJk/1uZuJFfuPEns6LaEvpvG1f0hTea8lilrouyo9mVc2GWdcEZ8OLoGmSADlrCw=="
   "resolved" "https://registry.npmjs.org/concat-stream/-/concat-stream-1.6.2.tgz"
   "version" "1.6.2"
@@ -4796,7 +4816,12 @@
     "path-type" "^4.0.0"
     "yaml" "^1.10.0"
 
-"crc-32@", "crc-32@~1.2.0":
+"crc-32@":
+  "integrity" "sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ=="
+  "resolved" "https://registry.npmjs.org/crc-32/-/crc-32-1.2.2.tgz"
+  "version" "1.2.2"
+
+"crc-32@~1.2.0":
   "integrity" "sha512-Dn/xm/1vFFgs3nfrpEVScHoIslO9NZRITWGz/1E/St6u4xw99vfZzVkW0OSnzx2h9egej9xwMCEut6sqwokM/w=="
   "resolved" "https://registry.npmjs.org/crc-32/-/crc-32-1.2.1.tgz"
   "version" "1.2.1"
@@ -6474,6 +6499,11 @@
   "resolved" "https://registry.npmjs.org/file-saver/-/file-saver-1.3.8.tgz"
   "version" "1.3.8"
 
+"file-uri-to-path@1.0.0":
+  "integrity" "sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw=="
+  "resolved" "https://registry.npmjs.org/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz"
+  "version" "1.0.0"
+
 "filesize@6.1.0":
   "integrity" "sha512-LpCHtPQ3sFx67z+uh2HnSyWSLLu5Jxo21795uRDuar/EOuYWXib5EmPaGIBuSnRqH2IODiKA2k5re/K9OnN/Yg=="
   "resolved" "https://registry.npmjs.org/filesize/-/filesize-6.1.0.tgz"
@@ -6762,19 +6792,6 @@
   "integrity" "sha512-hlq4+BU0hlPmwsFjwGGzZ+OZ9N/wq9Ljg/sq3pX+2CD7hrJsX9tJgWWK/wiNTFM212CLHWhicOoqwXyZGGetJg=="
   "resolved" "https://registry.npmjs.org/fscreen/-/fscreen-1.2.0.tgz"
   "version" "1.2.0"
-
-"fsevents@^1.2.7":
-  "integrity" "sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw=="
-  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz"
-  "version" "1.2.13"
-  dependencies:
-    "bindings" "^1.5.0"
-    "nan" "^2.12.1"
-
-"fsevents@^2.1.2", "fsevents@^2.1.3", "fsevents@~2.3.2":
-  "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
-  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
-  "version" "2.3.2"
 
 "function-bind@^1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
@@ -12063,6 +12080,15 @@
     "string_decoder" "~1.1.1"
     "util-deprecate" "~1.0.1"
 
+"readable-stream@^3.0.2":
+  "integrity" "sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA=="
+  "resolved" "https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.0.tgz"
+  "version" "3.6.0"
+  dependencies:
+    "inherits" "^2.0.3"
+    "string_decoder" "^1.1.1"
+    "util-deprecate" "^1.0.1"
+
 "readable-stream@^3.0.6":
   "integrity" "sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA=="
   "resolved" "https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.0.tgz"
@@ -14629,14 +14655,6 @@
   dependencies:
     "loader-utils" "^1.0.0"
     "schema-utils" "^0.4.0"
-
-"worker-loader@^3.0.7", "worker-loader@^3.0.8":
-  "integrity" "sha512-XQyQkIFeRVC7f7uRhFdNMe/iJOdO6zxAaR3EWbDp45v3mDhrTi+++oswKNxShUNjPC/1xUp5DB29YKLhFo129g=="
-  "resolved" "https://registry.npmjs.org/worker-loader/-/worker-loader-3.0.8.tgz"
-  "version" "3.0.8"
-  dependencies:
-    "loader-utils" "^2.0.0"
-    "schema-utils" "^3.0.0"
 
 "worker-rpc@^0.1.0":
   "integrity" "sha512-P1WjMrUB3qgJNI9jfmpZ/htmBEjFh//6l/5y8SD9hg1Ef5zTTVVoRjTrTEzPrNBQvmhMxkoTsjOXN10GWU7aCg=="

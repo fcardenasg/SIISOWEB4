@@ -110,7 +110,7 @@ const ReportCompany = () => {
             </Grid>
 
             <Grid item>
-                <Grid sx={{ pt: 2 }} container xs={12} spacing={2} alignItems="center" justifyContent="center">
+                <Grid sx={{ pt: 0.5, pb: 0.5 }} container spacing={4} alignItems="center" justifyContent="center">
                     <Grid xs={6} item>
                         <AnimateButton>
                             <ReactToPrint trigger={() => <Button variant="contained">Imprimir</Button>} content={() => componentRef.current} />

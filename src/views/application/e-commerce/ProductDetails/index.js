@@ -61,6 +61,7 @@ const ProductDetails = () => {
     };
 
     const [product, setProduct] = useState(null);
+    
     const getProduct = async () => {
         const response = await axios.post('/api/product/details', {
             id
