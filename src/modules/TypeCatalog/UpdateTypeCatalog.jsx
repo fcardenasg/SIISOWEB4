@@ -98,7 +98,7 @@ const UpdateTypeCatalog = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 {lsTipoCatalogo.length != 0 ?
                     <Grid container spacing={2}>
-                        <Grid item xs={8} sx={{ pb: 2 }}>
+                        <Grid item xs={12} sx={{ pb: 2 }}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={lsTipoCatalogo.nombre}
@@ -111,7 +111,7 @@ const UpdateTypeCatalog = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={8}>
+                        <Grid item xs={12}>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <AnimateButton>

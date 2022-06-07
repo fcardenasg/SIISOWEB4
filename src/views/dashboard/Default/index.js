@@ -1,23 +1,11 @@
-import { Fragment, useEffect, useState } from 'react';
-import Logo from 'ui-component/Logo';
+import { Fragment, useState } from 'react';
 
-import { Grid, IconButton, Tooltip, Typography, Box } from '@mui/material';
+import { Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import MenuItems from 'components/components/buttons/MenuItems';
-import { itemsMenu } from 'components/components/buttons/items';
-import MainCard from 'ui-component/cards/MainCard';
-import ViewEmployee from 'components/views/ViewEmployee'
+import MenuItems from 'components/components/MenuItems/MenuItems';
+import { itemsMenu } from 'components/components/MenuItems/items';
 import HoverSocialCard from 'components/components/HoverSocialCard';
-import {
-    IconZoomIn,
-    IconActivity,
-    IconReportMedical,
-    IconStethoscope,
-    IconBuildingHospital
-} from '@tabler/icons';
-
-import { useTheme, createTheme } from '@mui/material/styles';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -52,7 +40,7 @@ const Dashboard = () => {
                     </Grid>
                 ))}
 
-                <MenuItems items={itemsMenu} selectedItem={selectedItem} />
+                <MenuItems items={itemsMenuButton} selectedItem={selectedItem} />
             </Grid>
         </Fragment>
     );
