@@ -4,14 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import ReactExport from "react-export-excel";
 
-// Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -31,21 +29,21 @@ import {
 import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 
-// Import de proyectos
 import { GetAllCIE11, DeleteCIE11 } from 'api/clients/CIE11Client';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 
-// Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 
-// Mesa de Destino
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -59,7 +57,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -70,31 +67,26 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
         id: 'id',
         numeric: false,
-        label: 'CÓDIGO',
+        label: 'ID',
         align: 'center'
     },
     {
         id: 'dx',
         numeric: false,
-        label: 'DIAGNOSTICO CIE11',
+        label: 'Diagnóstico',
         align: 'left'
     },
     {
         id: 'nameSubsegmento',
         numeric: false,
-        label: 'SUBSEGMENTO',
+        label: 'Subsegmento',
         align: 'left'
     }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -166,11 +158,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -207,17 +194,12 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-
 const ListCIE11 = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [idCheck, setIdCheck] = useState('');
     const [cie11, setCie11] = useState([]);
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -227,7 +209,6 @@ const ListCIE11 = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServer = await GetAllCIE11(0, 0);
@@ -238,12 +219,10 @@ const ListCIE11 = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -272,14 +251,12 @@ const ListCIE11 = () => {
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
@@ -290,7 +267,6 @@ const ListCIE11 = () => {
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
         setIdCheck(id);
 
@@ -319,9 +295,6 @@ const ListCIE11 = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
-
-    /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
             const result = await DeleteCIE11(idCheck);
@@ -343,15 +316,11 @@ const ListCIE11 = () => {
         }
     }
 
-    const navigate = useNavigate();
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - cie11.length) : 0;
 
     return (
         <MainCard title="Lista de CIE11" content={false}>
-
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -380,9 +349,9 @@ const ListCIE11 = () => {
                             <ExcelSheet data={cie11} name="CIE11">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Nombre" value="dx" />
-                                <ExcelColumn label="Segmento Agrupado" value="idSegmentoAgrupado" />
-                                <ExcelColumn label="Segmento Afectado" value="idSegmentoAfectado" />
-                                <ExcelColumn label="Subsegmento" value="idSubsegmento" />
+                                <ExcelColumn label="Segmento Agrupado" value="nameSegmentoAgrupado" />
+                                <ExcelColumn label="Segmento Afectado" value="nameSegmentoAfectado" />
+                                <ExcelColumn label="Subsegmento" value="nameSubsegmento" />
                             </ExcelSheet>
                         </ExcelFile>
 
@@ -392,7 +361,6 @@ const ListCIE11 = () => {
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/cie11/add")}>
                             {TitleButton.Agregar}
@@ -401,7 +369,6 @@ const ListCIE11 = () => {
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -419,7 +386,7 @@ const ListCIE11 = () => {
                         {stableSort(cie11, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
+
                                 if (typeof row === 'number') return null;
 
                                 const isItemSelected = isSelected(row.id);
@@ -443,6 +410,7 @@ const ListCIE11 = () => {
                                                 }}
                                             />
                                         </TableCell>
+
                                         <TableCell
                                             component="th"
                                             id={labelId}
@@ -455,10 +423,10 @@ const ListCIE11 = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                #{row.id}{' '}
+                                                #{row.id}
                                             </Typography>
                                         </TableCell>
+
                                         <TableCell
                                             component="th"
                                             id={labelId}
@@ -470,10 +438,10 @@ const ListCIE11 = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.dx}{' '}
+                                                {row.dx}
                                             </Typography>
                                         </TableCell>
+
                                         <TableCell
                                             component="th"
                                             id={labelId}
@@ -485,23 +453,16 @@ const ListCIE11 = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.nameSubsegmento}{' '}
+                                                {row.nameSubsegmento}
                                             </Typography>
                                         </TableCell>
+
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <IconButton color="primary" size="large">
-                                                <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                            </IconButton>
-                                            <Fab
-                                                size="small"
-                                                color="info"
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/cie11/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/cie11/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
-                                            </Fab>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -519,7 +480,6 @@ const ListCIE11 = () => {
                 </Table>
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"

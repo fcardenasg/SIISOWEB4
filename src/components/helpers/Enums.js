@@ -63,8 +63,11 @@ export const CodCatalogo = {
     PAD_RESULTADO: 5288,
     PAD_CONCEPTOA: 5289,
 
-    Proveedor: 2174,
-    Pais: 1153,
+    ASME_TIPOASESORIA: 5295,
+    ASME_MOT_ASESORIA: 5296,
+
+    TIPO_PROVEEDOR: 5294,
+    CIUDADES: 5211,
     Contingencia: 5291,
     DiaTurno: 5292,
     AsesoriaMotivo: 3177,
@@ -103,9 +106,10 @@ export const CodCatalogo = {
 }
 
 export const DefaultData = {
-    AsesoriaMedica: 2171,
+    SINREGISTRO_GLOBAL: 4552,
     AsesoriaPsicologica: 2172,
-    SinRegistro: 73,
+    ASESORIA_MEDICA: 4612,
+    SinRegistro: 4552,
 }
 
 export const DefaultValue = {
@@ -145,6 +149,8 @@ export const Message = {
     Guardar: 'Registro guardado con éxito',
     Actualizar: 'Registro actualizado con éxito',
     Eliminar: 'Registro eliminado con éxito',
+
+    NoEliminar: 'No se pudo eliminar el registro',
 
     ErrorDocumento: 'Por favor, ingrese un número de documento',
     ErrorDeDatos: 'Hubo un error al buscar los datos, vuelva a intentarlo',

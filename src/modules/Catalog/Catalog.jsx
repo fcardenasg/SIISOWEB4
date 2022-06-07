@@ -97,7 +97,7 @@ const Catalog = () => {
     return (
         <MainCard title="Registrar Catálogo">
             <form onSubmit={handleSubmit(handleClick)}>
-                <Grid container spacing={2} sx={{ pb: 3 }}>
+                <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <FormProvider {...methods}>
                             <InputSelect
@@ -124,7 +124,7 @@ const Catalog = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={12} sx={{ pb: 2 }}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -136,23 +136,23 @@ const Catalog = () => {
                             />
                         </FormProvider>
                     </Grid>
-                </Grid>
 
-                <Grid item xs={12} sx={{ pb: 3 }}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={6}>
-                            <AnimateButton>
-                                <Button variant="contained" fullWidth type="submit">
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
+                    <Grid item xs={12}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button variant="contained" fullWidth type="submit">
+                                        {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>

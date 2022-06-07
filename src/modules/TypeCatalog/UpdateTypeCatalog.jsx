@@ -98,37 +98,34 @@ const UpdateTypeCatalog = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 {lsTipoCatalogo.length != 0 ?
                     <Grid container spacing={2}>
+                        <Grid item xs={8} sx={{ pb: 2 }}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={lsTipoCatalogo.nombre}
+                                    fullWidth
+                                    name="nombre"
+                                    label="Nombre"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
                         <Grid item xs={8}>
-                            <Grid item xs zeroMinWidth sx={{ pb: 2 }}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={lsTipoCatalogo.nombre}
-                                        fullWidth
-                                        name="nombre"
-                                        label="Nombre"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <Grid container spacing={1}>
-                                    <Grid item xs={6}>
-                                        <AnimateButton>
-                                            <Button variant="contained" fullWidth type="submit">
-                                                {TitleButton.Actualizar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
-                                                {TitleButton.Cancelar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth type="submit">
+                                            {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
                                 </Grid>
                             </Grid>
                         </Grid>

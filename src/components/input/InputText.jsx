@@ -23,7 +23,7 @@ const InputText = ({ bug, defaultValue, label, size, fullWidth = true, name, req
                             required: required || false
                         }}
                         error={bug ? true : false}
-                        fullWidth={fullWidth}
+                        fullWidth
                         {...others}
                     />
                 )}

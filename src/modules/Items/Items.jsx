@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// Import de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -8,14 +7,12 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-// Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Import del Proyecto
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
 import { SNACKBAR_OPEN } from 'store/actions';
@@ -27,24 +24,19 @@ import { PostItems } from 'formatdata/ItemsForm';
 import { InsertItems } from 'api/clients/ItemsClient';
 import { GetAllByTipoAtencion, GetAllTipoAtencion } from 'api/clients/OthersClients';
 
-
-/* VALIDACIÓN CON YUP */
 const validationSchema = yup.object().shape({
     descripcion: yup.string().required(`${ValidationMessage.Requerido}`),
     idAtencion: yup.string().required(`${ValidationMessage.Requerido}`),
 }).required();
 
 const Items = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* NUESTROS USESTATE */
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [tipoAtencion, setTipoAtencion] = useState('');
-
     const [lsAtencion, setLsAtencion] = useState([]);
 
     const methods = useForm({
@@ -82,13 +74,11 @@ const Items = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
-    }, [])
+    }, []);
 
-    /* METODO DE INSERT  */
-    const onSubmit = async (datos) => {
+    const handleClick = async (datos) => {
         try {
             const DataToInsert = PostItems(datos.descripcion, tipoAtencion, datos.idAtencion);
 
@@ -136,54 +126,51 @@ const Items = () => {
 
     return (
         <MainCard title="Registrar Items">
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <SelectOnChange
-                            name="idTipoAtencion"
-                            label="Tipo de Atención"
-                            options={lsTipoAtencion}
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={tipoAtencion}
-                            onChange={handleChangeTipoAtencion}
-                        />
-                    </Grid>
-
-                    <Grid item xs={6}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idAtencion"
-                                label="Atención"
-                                defaultValue=""
-                                options={lsAtencion}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                                disabled={lsAtencion.length != 0 ? false : true}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                multiline
-                                rows={2}
-                                name="descripcion"
-                                label="Descripción"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+            <Grid container spacing={2}>
+                <Grid item xs={6}>
+                    <SelectOnChange
+                        name="idTipoAtencion"
+                        label="Tipo de Atención"
+                        options={lsTipoAtencion}
+                        size={matchesXS ? 'small' : 'medium'}
+                        value={tipoAtencion}
+                        onChange={handleChangeTipoAtencion}
+                    />
                 </Grid>
 
-                <Grid sx={{ pb: 2, pt: 3 }} item xs={12}>
-                    <Grid container spacing={1}>
+                <Grid item xs={6}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="idAtencion"
+                            label="Atención"
+                            defaultValue=""
+                            options={lsAtencion}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                            disabled={lsAtencion.length != 0 ? false : true}
+                        />
+                    </FormProvider>
+                </Grid>
+
+                <Grid item xs={12} sx={{ pb: 2 }}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            multiline
+                            rows={2}
+                            name="descripcion"
+                            label="Descripción"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Grid container spacing={2}>
                         <Grid item xs={6}>
                             <AnimateButton>
-                                <Button variant="contained" fullWidth type="submit">
+                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                     {TitleButton.Guardar}
                                 </Button>
                             </AnimateButton>
@@ -197,7 +184,7 @@ const Items = () => {
                         </Grid>
                     </Grid>
                 </Grid>
-            </form>
+            </Grid>
         </MainCard>
     );
 };

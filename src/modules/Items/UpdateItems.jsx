@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// Import de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -8,14 +7,12 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-// Terceros
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Import del Proyecto
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
 import { SNACKBAR_OPEN } from 'store/actions';
@@ -28,27 +25,20 @@ import { GetByIdItems, UpdateItem } from 'api/clients/ItemsClient';
 import Cargando from 'components/Cargando';
 import { GetAllByTipoAtencion, GetAllTipoAtencion } from 'api/clients/OthersClients';
 
-
-/* VALIDACIÓN CON YUP */
 const validationSchema = yup.object().shape({
     descripcion: yup.string().required(`${ValidationMessage.Requerido}`),
     idAtencion: yup.string().required(`${ValidationMessage.Requerido}`),
 }).required();
 
 const Items = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const theme = useTheme();
     const { id } = useParams();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* NUESTROS USESTATE */
-    const [timeWait, setTimeWait] = useState(false);
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [tipoAtencion, setTipoAtencion] = useState('');
-    const [lsCodigoFilterTipoAtencion, setCodigoFiltrado] = useState([]);
-
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsItems, setLsItems] = useState([]);
 
@@ -56,7 +46,7 @@ const Items = () => {
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, errors } = methods;
 
     const handleChangeTipoAtencion = async (event) => {
         try {
@@ -100,13 +90,11 @@ const Items = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* METODO DE INSERT  */
-    const onSubmit = async (datos) => {
+    const handleClick = async (datos) => {
         try {
             const DataToUpdate = PutItems(id, datos.descripcion, tipoAtencion, datos.idAtencion);
 
@@ -151,55 +139,53 @@ const Items = () => {
 
     return (
         <MainCard title="Registrar Items">
-            <form onSubmit={handleSubmit(onSubmit)}>
-                {lsItems.length != 0 ? <>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <SelectOnChange
-                                name="idTipoAtencion"
-                                label="Tipo de Atención"
-                                options={lsTipoAtencion}
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={tipoAtencion}
-                                onChange={handleChangeTipoAtencion}
-                            />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="idAtencion"
-                                    label="Atención"
-                                    defaultValue={lsItems.idAtencion}
-                                    options={lsAtencion}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsItems.descripcion}
-                                    fullWidth
-                                    multiline
-                                    rows={2}
-                                    name="descripcion"
-                                    label="Descripción"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
+            {lsItems.length != 0 ? <>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <SelectOnChange
+                            name="idTipoAtencion"
+                            label="Tipo de Atención"
+                            options={lsTipoAtencion}
+                            size={matchesXS ? 'small' : 'medium'}
+                            value={tipoAtencion}
+                            onChange={handleChangeTipoAtencion}
+                        />
                     </Grid>
 
-                    <Grid sx={{ pb: 2, pt: 3 }} item xs={12}>
-                        <Grid container spacing={1}>
+                    <Grid item xs={6}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="idAtencion"
+                                label="Atención"
+                                defaultValue={lsItems.idAtencion}
+                                options={lsAtencion}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={12} sx={{ pb: 2 }}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue={lsItems.descripcion}
+                                fullWidth
+                                multiline
+                                rows={2}
+                                name="descripcion"
+                                label="Descripción"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <AnimateButton>
-                                    <Button variant="contained" fullWidth type="submit">
-                                        {TitleButton.Guardar}
+                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
@@ -212,8 +198,8 @@ const Items = () => {
                             </Grid>
                         </Grid>
                     </Grid>
-                </> : <Cargando />}
-            </form>
+                </Grid>
+            </> : <Cargando />}
         </MainCard>
     );
 };

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// Import de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -8,14 +7,12 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-// Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Import del Proyecto
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
 import { SNACKBAR_OPEN } from 'store/actions';
@@ -27,8 +24,6 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import { PostCIE11 } from 'formatdata/CIE11';
 
-
-/* VALIDACIÓN CON YUP */
 const validationSchema = yup.object().shape({
     id: yup.string().required(`${ValidationMessage.Requerido}`),
     dx: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -36,19 +31,15 @@ const validationSchema = yup.object().shape({
 }).required();
 
 const CIE11 = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* NUESTROS USESTATE */
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState('');
-
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
     const [segmentoAfectado, setSegmentoAfectado] = useState('');
-
     const [subsegmento, setSubsegmento] = useState([]);
 
     const methods = useForm({
@@ -107,13 +98,11 @@ const CIE11 = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* METODO DE INSERT  */
-    const onSubmit = async (datos) => {
+    const handleClick = async (datos) => {
         try {
             const DataToInsert = PostCIE11(datos.id, datos.dx, segmentoAgrupado, segmentoAfectado, datos.idSubsegmento);
             console.log(DataToInsert);
@@ -151,77 +140,75 @@ const CIE11 = () => {
 
     return (
         <MainCard title="Registrar CIE11">
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <SelectOnChange
-                            name="segmentoAgrupado"
-                            label="Capitulo CIE11"
-                            options={lsSegmentoAgrupado}
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={segmentoAgrupado}
-                            onChange={handleChangeSegAgrupado}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <SelectOnChange
-                            name="segmentoAfectado"
-                            label="Segmento Afectado"
-                            options={lsSegmentoAfectado}
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={segmentoAfectado}
-                            onChange={handleChangeSegAfectado}
-                            disabled={lsSegmentoAfectado.length != 0 ? false : true}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idSubsegmento"
-                                label="Subsegmento"
-                                defaultValue=""
-                                options={subsegmento}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                                disabled={subsegmento.length != 0 ? false : true}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="id"
-                                label="ID"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="dx"
-                                label="Nombre"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <SelectOnChange
+                        name="segmentoAgrupado"
+                        label="Capitulo CIE11"
+                        options={lsSegmentoAgrupado}
+                        size={matchesXS ? 'small' : 'medium'}
+                        value={segmentoAgrupado}
+                        onChange={handleChangeSegAgrupado}
+                    />
                 </Grid>
 
-                <Grid sx={{ pb: 2, pt: 3 }} item xs={12}>
-                    <Grid container spacing={1}>
+                <Grid item xs={12}>
+                    <SelectOnChange
+                        name="segmentoAfectado"
+                        label="Segmento Afectado"
+                        options={lsSegmentoAfectado}
+                        size={matchesXS ? 'small' : 'medium'}
+                        value={segmentoAfectado}
+                        onChange={handleChangeSegAfectado}
+                        disabled={lsSegmentoAfectado.length != 0 ? false : true}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="idSubsegmento"
+                            label="Subsegmento"
+                            defaultValue=""
+                            options={subsegmento}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                            disabled={subsegmento.length != 0 ? false : true}
+                        />
+                    </FormProvider>
+                </Grid>
+
+                <Grid item xs={6}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            fullWidth
+                            name="id"
+                            label="ID"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+
+                <Grid item xs={6} sx={{ pb: 2 }}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
+                            fullWidth
+                            name="dx"
+                            label="Nombre"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Grid container spacing={2}>
                         <Grid item xs={6}>
                             <AnimateButton>
-                                <Button variant="contained" fullWidth type="submit">
+                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                     {TitleButton.Guardar}
                                 </Button>
                             </AnimateButton>
@@ -235,7 +222,7 @@ const CIE11 = () => {
                         </Grid>
                     </Grid>
                 </Grid>
-            </form>
+            </Grid>
         </MainCard>
     );
 };

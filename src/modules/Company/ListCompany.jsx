@@ -327,7 +327,15 @@ const ListCompany = () => {
             setSelected([]);
             GetAll();
         } catch (error) {
-            console.log(error);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${Message.NoEliminar}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     }
 

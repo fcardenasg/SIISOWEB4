@@ -34,6 +34,7 @@ const validationSchema = yup.object().shape({
 
 const UpdateCatalog = () => {
     const { user } = useAuth();
+    const { id } = useParams();
     const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -63,7 +64,6 @@ const UpdateCatalog = () => {
     });
 
     const { handleSubmit, errors } = methods;
-    const { id } = useParams();
 
     const onSubmit = async (datos) => {
         const DataToUpdate = PutCatalog(id, datos.nombre, datos.codigo, datos.idTipoCatalogo,
@@ -100,7 +100,7 @@ const UpdateCatalog = () => {
         <MainCard title="Actualizar Catálogo">
             {lsCatalog.length != 0 ?
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Grid container spacing={2} sx={{ pb: 3 }}>
+                    <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <FormProvider {...methods}>
                                 <InputSelect
@@ -127,7 +127,7 @@ const UpdateCatalog = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sx={{ pb: 2 }}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={lsCatalog.nombre}
@@ -139,23 +139,23 @@ const UpdateCatalog = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                    </Grid>
 
-                    <Grid item xs={12} sx={{ pb: 3 }}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={6}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth type="submit">
-                                        {TitleButton.Actualizar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
+                        <Grid item xs={12}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth type="submit">
+                                            {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>

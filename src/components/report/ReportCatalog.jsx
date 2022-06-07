@@ -47,7 +47,7 @@ const ReportCatolog = () => {
 
     return (
         <Grid container alignItems="center" justifyContent="center" spacing={gridSpacing}>
-            <Grid item xs={18} md={6} lg={12} ref={componentRef}>
+            <Grid item xs={12} md={6} lg={12} ref={componentRef}>
                 <SubCard darkTitle title={
                     <>
                         <Typography variant="subtitle1">DRUMMOND LTD</Typography>

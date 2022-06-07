@@ -1,17 +1,21 @@
 import { useRef, useState, useEffect } from 'react';
+import ReactToPrint from 'react-to-print';
 import { useNavigate } from 'react-router-dom';
-
-// material-ui
-import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 
-import { Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+    Button,
+    Grid,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from '@mui/material';
 
-// third-party
-import ReactToPrint from 'react-to-print';
-
-// project imports
 import { GetAllSupplier } from 'api/clients/SupplierClient';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
@@ -29,7 +33,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const ReportSupplier = () => {
-    const theme = useTheme();
     const componentRef = useRef(null);
 
     const [supplier, setSupplier] = useState([]);
@@ -43,7 +46,6 @@ const ReportSupplier = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
@@ -52,7 +54,7 @@ const ReportSupplier = () => {
 
     return (
         <Grid container alignItems="center" justifyContent="center" spacing={gridSpacing}>
-            <Grid item xs={18} md={6} lg={12} ref={componentRef}>
+            <Grid item xs={12} md={6} lg={12} ref={componentRef}>
                 <SubCard darkTitle title={
                     <>
                         <Typography variant="subtitle1">DRUMMOND LTD</Typography>
@@ -85,7 +87,7 @@ const ReportSupplier = () => {
                                             <StyledTableCell align="left">NOMBRE</StyledTableCell>
                                             <StyledTableCell align="left">TELÉFONO</StyledTableCell>
                                             <StyledTableCell align="left">CORREO ELECTRÓNICO</StyledTableCell>
-                                            <StyledTableCell align="left">TIPO PROVEEDOR</StyledTableCell>
+                                            <StyledTableCell align="left">CIUDAD</StyledTableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -95,10 +97,7 @@ const ReportSupplier = () => {
                                                 <TableCell align="left">{row.nombProv}</TableCell>
                                                 <TableCell align="left">{row.teleProv}</TableCell>
                                                 <TableCell align="left">{row.emaiProv}</TableCell>
-                                                <TableCell align="left">{row.nameTypeSupplier}</TableCell>
-                                                {/* <TableCell align="left" sx={{ pr: 3 }}>
-                                                    {row.legt}
-                                                </TableCell> */}
+                                                <TableCell align="left">{row.nameCiudad}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -110,7 +109,7 @@ const ReportSupplier = () => {
             </Grid>
 
             <Grid item>
-                <Grid sx={{ pt: 2 }} container xs={12} spacing={2} alignItems="center" justifyContent="center">
+                <Grid sx={{ pt: 0.5, pb: 0.5 }} container spacing={4} alignItems="center" justifyContent="center">
                     <Grid xs={6} item>
                         <AnimateButton>
                             <ReactToPrint trigger={() => <Button variant="contained">Imprimir</Button>} content={() => componentRef.current} />

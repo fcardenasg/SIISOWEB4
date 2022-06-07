@@ -5,9 +5,6 @@ import {
     Grid,
     useMediaQuery,
     Typography,
-    Divider,
-    Tooltip,
-    Fab
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
@@ -20,15 +17,11 @@ import InputText from 'components/input/InputText';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import DetailedIcon from 'components/controllers/DetailedIcon';
-import SelectOnChange from 'components/input/SelectOnChange';
-import InputDatePick from 'components/input/InputDatePick';
-import { FormatDate } from 'components/helpers/Format'
-import Accordion from 'components/accordion/Accordion';
-import PhotoModel from 'components/form/PhotoModel';
+import InputDatePicker from 'components/input/InputDatePicker';
+import { FormatDate } from 'components/helpers/Format';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertAdvice } from 'api/clients/AdviceClient';
-import { GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
-import { GetAllCompany } from 'api/clients/CompanyClient';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo, DefaultData } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
@@ -36,9 +29,6 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
-import InputOnChange from 'components/input/InputOnChange';
-
-import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
@@ -51,7 +41,6 @@ const DetailIcons = [
 ]
 
 const MedicalAdvice = () => {
-
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -76,7 +65,6 @@ const MedicalAdvice = () => {
 
     async function GetAll() {
         try {
-
             const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
             var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -84,14 +72,14 @@ const MedicalAdvice = () => {
             }));
             setContingencia(resultContingencia);
 
-            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAsesoria);
+            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_TIPOASESORIA);
             var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setTipoAsesoria(resultTipoAsesoria);
 
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AsesoriaMotivo);
+            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_MOT_ASESORIA);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -169,14 +157,15 @@ const MedicalAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const fechaData = FormatDate(fecha);
-            const resto = "Sin Registro";
+            const DatosVacios = "Sin Registro";
             const usuario = "Manuel Vásquez";
             const dateNow = FormatDate(new Date());
 
-            const DataToInsert = PostMedicalAdvice(documento, fechaData, DefaultData.AsesoriaMedica, lsEmployee.sede, datos.idContingencia,
-                DefaultData.SinRegistro, DefaultData.SinRegistro, DefaultData.SinRegistro, datos.idTipoAsesoria, datos.idMotivo,
-                DefaultData.SinRegistro, datos.observaciones, resto, resto, DefaultData.SinRegistro, usuario, dateNow, usuario, dateNow);
+            const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), DefaultData.ASESORIA_MEDICA, lsEmployee.sede, datos.idContingencia,
+                DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo,
+                DefaultData.SINREGISTRO_GLOBAL, datos.observaciones, DatosVacios, DatosVacios, DefaultData.SINREGISTRO_GLOBAL, usuario, dateNow, usuario, dateNow);
+
+            console.log("Datos = ", DataToInsert);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertAdvice(DataToInsert);
@@ -238,11 +227,13 @@ const MedicalAdvice = () => {
                     <SubCard darkTitle title={<><Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography></>}>
                         <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pt: 2, pb: 2 }}>
                             <Grid item xs={2.4}>
-                                <InputDatePick
-                                    label="Fecha"
-                                    value={fecha}
-                                    onChange={(e) => setFecha(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha"
+                                        name="fecha"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
 
                             <Grid item xs={2.4}>

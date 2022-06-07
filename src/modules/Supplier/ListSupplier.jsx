@@ -3,14 +3,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-// Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -30,20 +28,15 @@ import {
 import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 
-// Import de proyectos
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllSupplier, DeleteSupplier } from 'api/clients/SupplierClient';
 
-// Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 
@@ -65,7 +58,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -76,7 +68,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
         id: 'codiProv',
@@ -101,18 +92,8 @@ const headCells = [
         numeric: false,
         label: 'Correo Electronico',
         align: 'left'
-    },
-    {
-        id: 'tipoProv',
-        numeric: false,
-        label: 'Tipo Proveedor',
-        align: 'left'
     }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -184,11 +165,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -225,13 +201,12 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
 const ListSupplier = () => {
     const dispatch = useDispatch();
     const [supplier, setSupplier] = useState([]);
+    const navigate = useNavigate();
+    const [idCheck, setIdCheck] = useState('');
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -241,23 +216,22 @@ const ListSupplier = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServer = await GetAllSupplier(0, 0);
-            setSupplier(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            if (lsServer.status === 200) {
+                setSupplier(lsServer.data.entities);
+                setRows(lsServer.data.entities);
+            }
         } catch (error) {
             console.log(error);
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -266,7 +240,7 @@ const ListSupplier = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codiProv', 'nombProv', 'teleProv', 'emaiProv', 'tipoProv'];
+                const properties = ['codiProv', 'nombProv', 'teleProv', 'emaiProv'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -286,14 +260,12 @@ const ListSupplier = () => {
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
@@ -304,7 +276,6 @@ const ListSupplier = () => {
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
         setIdCheck(id);
 
@@ -333,9 +304,6 @@ const ListSupplier = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
-
-    /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
             const result = await DeleteSupplier(idCheck);
@@ -357,15 +325,11 @@ const ListSupplier = () => {
         }
     }
 
-    const navigate = useNavigate();
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - supplier.length) : 0;
 
     return (
         <MainCard title="Lista de Proveedores" content={false}>
-
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -395,8 +359,11 @@ const ListSupplier = () => {
                                 <ExcelColumn label="Código" value="codiProv" />
                                 <ExcelColumn label="Nombre" value="nombProv" />
                                 <ExcelColumn label="Teléfono" value="teleProv" />
-                                <ExcelColumn label="Correo Electronico" value="emaiProv" />
-                                <ExcelColumn label="Tipo de Proveedor" value="nameTypeSupplier" />
+                                <ExcelColumn label="Email" value="emaiProv" />
+                                <ExcelColumn label="Contacto" value="contaProv" />
+                                <ExcelColumn label="Ciudad" value="nameCiudad" />
+                                <ExcelColumn label="Dirección" value="direProv" />
+                                <ExcelColumn label="Tipo de Proveedor" value="tipoProv" />
                             </ExcelSheet>
                         </ExcelFile>
 
@@ -406,7 +373,6 @@ const ListSupplier = () => {
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/supplier/add")}>
                             {TitleButton.Agregar}
@@ -416,7 +382,6 @@ const ListSupplier = () => {
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -434,7 +399,7 @@ const ListSupplier = () => {
                         {stableSort(supplier, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
+
                                 if (typeof row === 'string') return null;
 
                                 const isItemSelected = isSelected(row.codiProv);
@@ -449,9 +414,6 @@ const ListSupplier = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
-
                                         <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.codiProv)}>
                                             <Checkbox
                                                 color="primary"
@@ -474,8 +436,7 @@ const ListSupplier = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                #{row.codiProv}{' '}
+                                                #{row.codiProv}
                                             </Typography>
                                         </TableCell>
 
@@ -490,8 +451,7 @@ const ListSupplier = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.nombProv}{' '}
+                                                {row.nombProv}
                                             </Typography>
                                         </TableCell>
 
@@ -506,8 +466,7 @@ const ListSupplier = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.teleProv}{' '}
+                                                {row.teleProv}
                                             </Typography>
                                         </TableCell>
 
@@ -522,41 +481,16 @@ const ListSupplier = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.emaiProv}{' '}
+                                                {row.emaiProv}
                                             </Typography>
                                         </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.codiProv)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.tipoProv}{' '}
-                                            </Typography>
-                                        </TableCell>
-
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <IconButton color="primary" size="large">
-                                                <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                            </IconButton>
-                                            <Fab
-                                                size="small"
-                                                color="info"
-                                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                onClick={() => navigate(`/supplier/update/${row.codiProv}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/supplier/update/${row.codiProv}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
-                                            </Fab>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -574,7 +508,6 @@ const ListSupplier = () => {
                 </Table>
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-// Import de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -9,14 +8,12 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-// Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Import del Proyecto
 import Cargando from 'components/Cargando';
 import { PutCIE11 } from 'formatdata/CIE11';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -29,7 +26,6 @@ import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enum
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
-/* VALIDACIÓN CON YUP */
 const validationSchema = yup.object().shape({
     id: yup.string().required(`${ValidationMessage.Requerido}`),
     dx: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -37,22 +33,17 @@ const validationSchema = yup.object().shape({
 });
 
 const UpdateCIE11 = () => {
-    /* ESTILO, HOOKS Y OTROS TEMAS */
     const { id } = useParams();
     const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
 
-    /* NUESTROS USESTATE */
     const [cie11, setCie11] = useState([]);
-
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState('');
-
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
     const [segmentoAfectado, setSegmentoAfectado] = useState('');
-
     const [subsegmento, setSubsegmento] = useState([]);
 
     const methods = useForm({
@@ -129,13 +120,11 @@ const UpdateCIE11 = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* METODO DE UPDATE  */
-    const onSubmit = async (datos) => {
+    const handleClick = async (datos) => {
         try {
             const DataToUpdate = PutCIE11(datos.id, datos.dx, segmentoAgrupado, segmentoAfectado, datos.idSubsegmento);
             console.log(DataToUpdate);
@@ -168,77 +157,75 @@ const UpdateCIE11 = () => {
 
     return (
         <MainCard title="Actualizar CIE11">
-            <form onSubmit={handleSubmit(onSubmit)}>
-                {cie11.length != 0 ? (<>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <SelectOnChange
-                                name="segmentoAgrupado"
-                                label="Segmento Agrupado"
-                                options={lsSegmentoAgrupado}
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={segmentoAgrupado}
-                                onChange={handleChangeSegAgrupado}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <SelectOnChange
-                                name="segmentoAfectado"
-                                label="Segmento Afectado"
-                                options={lsSegmentoAfectado}
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={segmentoAfectado}
-                                onChange={handleChangeSegAfectado}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="idSubsegmento"
-                                    label="Subsegmento"
-                                    defaultValue={cie11.idSubsegmento}
-                                    options={subsegmento}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={cie11.id}
-                                    fullWidth
-                                    disabled
-                                    name="id"
-                                    label="ID"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={cie11.dx}
-                                    fullWidth
-                                    name="dx"
-                                    label="Nombre"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
+            {cie11.length != 0 ? (<>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <SelectOnChange
+                            name="segmentoAgrupado"
+                            label="Segmento Agrupado"
+                            options={lsSegmentoAgrupado}
+                            size={matchesXS ? 'small' : 'medium'}
+                            value={segmentoAgrupado}
+                            onChange={handleChangeSegAgrupado}
+                        />
                     </Grid>
 
-                    <Grid sx={{ pb: 2, pt: 3 }} item xs={12}>
-                        <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                        <SelectOnChange
+                            name="segmentoAfectado"
+                            label="Segmento Afectado"
+                            options={lsSegmentoAfectado}
+                            size={matchesXS ? 'small' : 'medium'}
+                            value={segmentoAfectado}
+                            onChange={handleChangeSegAfectado}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="idSubsegmento"
+                                label="Subsegmento"
+                                defaultValue={cie11.idSubsegmento}
+                                options={subsegmento}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={6}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue={cie11.id}
+                                fullWidth
+                                disabled
+                                name="id"
+                                label="ID"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={6} sx={{ pb: 2 }}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue={cie11.dx}
+                                fullWidth
+                                name="dx"
+                                label="Nombre"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <AnimateButton>
-                                    <Button variant="contained" fullWidth type="submit">
+                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Guardar}
                                     </Button>
                                 </AnimateButton>
@@ -252,8 +239,8 @@ const UpdateCIE11 = () => {
                             </Grid>
                         </Grid>
                     </Grid>
-                </>) : <Cargando />}
-            </form>
+                </Grid>
+            </>) : <Cargando />}
         </MainCard>
     );
 };

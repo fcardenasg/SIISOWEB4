@@ -75,36 +75,34 @@ const TypeCatalog = () => {
         <MainCard title="Registrar Tipo de Catálogo">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={2}>
-                    <Grid item xs={8}>
-                        <Grid item xs zeroMinWidth sx={{ pb: 2 }}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="nombre"
-                                    label="Nombre"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
+                    <Grid item xs={8} sx={{ pb: 2 }}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="nombre"
+                                label="Nombre"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
 
-                        <Grid item sx={{ pt: 2 }} xs={12}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={6}>
-                                    <AnimateButton>
-                                        <Button variant="contained" fullWidth type="submit">
-                                            {TitleButton.Guardar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
+                    <Grid item xs={8}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button variant="contained" fullWidth type="submit">
+                                        {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
                             </Grid>
                         </Grid>
                     </Grid>
