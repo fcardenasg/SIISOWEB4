@@ -24,9 +24,9 @@ const MenuItems = ({ items, selectedItem }) => {
   return (
     <div>
       <button onClick={handleClick}>
-        <div>
-          <AddBox />
-          <span>
+      <div className="flex flex-row gap-1 items-center">
+      <AddBox/>
+          <span className="font-montserrat text-xs text-gray-700 mr-10">
             Agregar más opciones
           </span>
         </div>
@@ -41,7 +41,7 @@ const MenuItems = ({ items, selectedItem }) => {
         }}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "center",
+          horizontal: "left",
         }}
         transformOrigin={{
           vertical: "top",
@@ -54,7 +54,7 @@ const MenuItems = ({ items, selectedItem }) => {
               {item.selected ? <CheckBox /> : <CheckBoxOutlined />}
             </ListItemIcon>
             <ListItemText>
-              <span>
+            <span className="text-gray-700 font-montserrat font-semibold text-xs">
                 {item.title}
               </span>
             </ListItemText>

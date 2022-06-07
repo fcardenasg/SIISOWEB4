@@ -113,12 +113,7 @@ const application = {
                         }
                     ]
                 },
-                {
-                    id: 'user-card',
-                    title: <FormattedMessage id="Fisioterapia" />,
-                    type: 'item',
-                    url: '/user/card/card1'
-                },
+              
             ]
         },
 
