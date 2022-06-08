@@ -2,9 +2,9 @@ import { useState, Fragment } from "react";
 import {
   ListItemIcon,
   ListItemText,
+  Typography,
   Menu,
   Button,
-  Checkbox,
   MenuItem as Item,
 } from "@mui/material";
 import { CheckBox, CheckBoxOutlined, AddBox } from "@mui/icons-material";
@@ -31,7 +31,7 @@ const MenuItems = ({ items, selectedItem }) => {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
-        <AddBox /> Agregar más opciones
+        <AddBox color="error" /><Typography variant="h5" sx={{ pl: 1 }}>Agregar Opción</Typography>
       </Button>
       <Menu
         id="basic-menu"
@@ -43,13 +43,12 @@ const MenuItems = ({ items, selectedItem }) => {
         }}
       >
         {items.map((item) => (
-          <Item onClick={() => handleClose(item)}>
+          <Item key={item} onClick={() => handleClose(item)}>
             <ListItemIcon>
-              {/* {item.selected ? <CheckBox /> : <CheckBoxOutlined />} */}
-              <Checkbox size="10" checked={item.selected} />
+              {item.selected ? <CheckBox color="error" /> : <CheckBoxOutlined color="error" />}
             </ListItemIcon>
             <ListItemText>
-              {item.title}
+              <Typography variant="h5">{item.title}</Typography>
             </ListItemText>
           </Item>
         ))}

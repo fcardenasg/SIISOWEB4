@@ -7,6 +7,8 @@ import {
     useMediaQuery
 } from '@mui/material';
 
+import useAuth from 'hooks/useAuth';
+import { FormatDate } from 'components/helpers/Format';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as yup from "yup";
@@ -30,6 +32,7 @@ const validationSchema = yup.object().shape({
 }).required();
 
 const Items = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const theme = useTheme();
@@ -80,7 +83,8 @@ const Items = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostItems(datos.descripcion, tipoAtencion, datos.idAtencion);
+            const DataToInsert = PostItems(datos.descripcion, tipoAtencion, datos.idAtencion,
+                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (tipoAtencion != '') {
                 if (Object.keys(datos.length !== 0)) {

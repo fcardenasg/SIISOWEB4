@@ -11,12 +11,15 @@ import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import useAuth from 'hooks/useAuth';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import { PostCompany } from 'formatdata/CompanyForm';
+import { FormatDate } from 'components/helpers/Format';
 
 const validationSchema = yup.object().shape({
     Codigo: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -27,6 +30,7 @@ const validationSchema = yup.object().shape({
 });
 
 const Company = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -40,8 +44,11 @@ const Company = () => {
 
     const handleClick = async (datos) => {
         try {
+            const DataToInsert = PostCompany(datos.Codigo, datos.DescripcionSpa, datos.Email, datos.Celular, datos.Gerente,
+                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertCompany(datos);
+                const result = await InsertCompany(DataToInsert);
                 if (result.status === 200) {
                     dispatch({
                         type: SNACKBAR_OPEN,

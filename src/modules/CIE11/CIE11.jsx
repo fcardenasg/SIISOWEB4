@@ -13,6 +13,8 @@ import * as yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import useAuth from 'hooks/useAuth';
+import { FormatDate } from 'components/helpers/Format';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
 import { SNACKBAR_OPEN } from 'store/actions';
@@ -31,6 +33,7 @@ const validationSchema = yup.object().shape({
 }).required();
 
 const CIE11 = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -104,8 +107,9 @@ const CIE11 = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostCIE11(datos.id, datos.dx, segmentoAgrupado, segmentoAfectado, datos.idSubsegmento);
-            console.log(DataToInsert);
+            const DataToInsert = PostCIE11(datos.id, datos.dx, segmentoAgrupado, segmentoAfectado, datos.idSubsegmento,
+                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertCIE11(DataToInsert);
                 if (result.status === 200) {

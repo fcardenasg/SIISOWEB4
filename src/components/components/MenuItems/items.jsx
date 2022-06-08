@@ -1,19 +1,20 @@
 import {
   IconUser,
-  IconHierarchy,
   IconSchool,
   IconGenderBigender,
 } from '@tabler/icons';
+
+import { ColorDrummondltd } from 'themes/colors';
 
 
 export const itemsMenu = [
   {
     title: "Personal",
-    subtitle: "Empleados y contratistas",
+    subtitle: "Empleados, contratistas, practicantes y visitantes",
     icon: IconUser,
     selected: true,
     url: '/catalog/list',
-    color: '#d81b60'
+    color: ColorDrummondltd.RedDrummond
   },
   {
     title: "Atención",
@@ -21,7 +22,7 @@ export const itemsMenu = [
     icon: IconGenderBigender,
     selected: true,
     url: '/catalog/list',
-    color: '#d81b60'
+    color: ColorDrummondltd.OrangeDrummond
   },
   {
     title: "Programación",
@@ -29,7 +30,7 @@ export const itemsMenu = [
     icon: IconSchool,
     selected: true,
     url: '/catalog/list',
-    color: '#388e3c'
+    color: ColorDrummondltd.GreenDrummond
   },
   {
     title: "Reimpresión",
@@ -37,7 +38,7 @@ export const itemsMenu = [
     icon: IconSchool,
     selected: false,
     url: '/catalog/list',
-    color: '#d81b60'
+    color: ColorDrummondltd.GrayDrummond
   },
   {
     title: "Indicadores",
@@ -45,7 +46,7 @@ export const itemsMenu = [
     icon: IconSchool,
     selected: false,
     url: '/catalog/list',
-    color: '#388e3c'
+    color: ColorDrummondltd.BlueSeDrummond
   },
   {
     title: "Exportar",
@@ -53,7 +54,7 @@ export const itemsMenu = [
     icon: IconSchool,
     selected: false,
     url: '/catalog/list',
-    color: '#388e3c'
+    color: ColorDrummondltd.BlueSeDrummond
   },
   {
     title: "Historial",
@@ -61,7 +62,7 @@ export const itemsMenu = [
     icon: IconSchool,
     selected: false,
     url: '/catalog/list',
-    color: '#388e3c'
+    color: ColorDrummondltd.BlueSeDrummond
   },
 
 

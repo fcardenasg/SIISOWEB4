@@ -14,6 +14,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import useAuth from 'hooks/useAuth';
 import Cargando from 'components/Cargando';
 import { PutSupplier } from 'formatdata/SupplierForm';
 import { SNACKBAR_OPEN } from 'store/actions';
@@ -25,8 +26,10 @@ import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputMultiSelects from 'components/input/InputMultiSelects';
+import { FormatDate } from 'components/helpers/Format';
 
 const UpdateSupplier = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -75,7 +78,8 @@ const UpdateSupplier = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PutSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
-                datos.contaProv, datos.ciudProv, JSON.stringify(supplierArray), datos.direProv);
+                datos.contaProv, datos.ciudProv, JSON.stringify(supplierArray), datos.direProv,
+                supplier.usuarioRegistro, supplier.fechaRegistro, user.email, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateSuppliers(DataToUpdate);

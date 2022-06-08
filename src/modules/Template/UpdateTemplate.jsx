@@ -12,6 +12,7 @@ import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import useAuth from 'hooks/useAuth';
 import Cargando from 'components/Cargando';
 import { PutTemplate } from 'formatdata/TemplateForm';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -32,6 +33,7 @@ import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enum
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllByAtencion } from 'api/clients/ItemsClient';
+import { FormatDate } from 'components/helpers/Format';
 
 const validationSchema = yup.object().shape({
     descripcion: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -40,6 +42,7 @@ const validationSchema = yup.object().shape({
 });
 
 const UpdateTemplate = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const { id } = useParams();
@@ -227,7 +230,8 @@ const UpdateTemplate = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PutTemplate(id, segmentoAgrupado, segmentoAfectado, subsegmento,
-                datos.idCIE11, "Usuario", tipoAtencion, atencion, datos.idItems, datos.descripcion);
+                datos.idCIE11, "Usuario", tipoAtencion, atencion, datos.idItems, datos.descripcion,
+                lsTemplate.usuarioRegistro, lsTemplate.fechaRegistro, user.email, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateTemplates(DataToUpdate);

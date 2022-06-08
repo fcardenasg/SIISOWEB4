@@ -13,6 +13,8 @@ import * as yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import useAuth from 'hooks/useAuth';
+import { FormatDate } from 'components/helpers/Format';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
 import { SNACKBAR_OPEN } from 'store/actions';
@@ -31,6 +33,7 @@ const validationSchema = yup.object().shape({
 }).required();
 
 const Items = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const { id } = useParams();
@@ -96,7 +99,8 @@ const Items = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutItems(id, datos.descripcion, tipoAtencion, datos.idAtencion);
+            const DataToUpdate = PutItems(id, datos.descripcion, tipoAtencion, datos.idAtencion,
+                lsItems.usuarioRegistro, lsItems.fechaRegistro, user.email, FormatDate(new Date()));
 
             if (tipoAtencion != '') {
                 if (Object.keys(datos.length !== 0)) {

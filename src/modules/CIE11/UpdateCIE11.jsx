@@ -14,6 +14,8 @@ import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { FormatDate } from 'components/helpers/Format';
+import useAuth from 'hooks/useAuth';
 import Cargando from 'components/Cargando';
 import { PutCIE11 } from 'formatdata/CIE11';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -33,6 +35,7 @@ const validationSchema = yup.object().shape({
 });
 
 const UpdateCIE11 = () => {
+    const { user } = useAuth();
     const { id } = useParams();
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -126,8 +129,9 @@ const UpdateCIE11 = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutCIE11(datos.id, datos.dx, segmentoAgrupado, segmentoAfectado, datos.idSubsegmento);
-            console.log(DataToUpdate);
+            const DataToUpdate = PutCIE11(datos.id, datos.dx, segmentoAgrupado, segmentoAfectado, datos.idSubsegmento,
+                cie11.usuarioRegistro, cie11.fechaRegistro, user.email, FormatDate(new Date()));
+
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateCIE11s(DataToUpdate);
                 if (result.status === 200) {

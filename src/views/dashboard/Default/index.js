@@ -27,7 +27,11 @@ const Dashboard = () => {
 
     return (
         <Fragment>
-            <Grid container direction="row" justifyContent="space-between" alignItems="center">
+            <Grid container sx={{ pb: 2 }} direction="column" justifyContent="flex-start" alignItems="flex-end">
+                <MenuItems items={itemsMenuButton} selectedItem={selectedItem} />
+            </Grid>
+
+            <Grid container spacing={2}>
                 {itemsMenuButton.filter((item) => item.selected).map((item) => (
                     <Grid item xs={3}>
                         <HoverSocialCard
@@ -39,8 +43,6 @@ const Dashboard = () => {
                         />
                     </Grid>
                 ))}
-
-                <MenuItems items={itemsMenuButton} selectedItem={selectedItem} />
             </Grid>
         </Fragment>
     );

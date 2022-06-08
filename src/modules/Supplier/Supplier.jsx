@@ -13,6 +13,7 @@ import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import useAuth from 'hooks/useAuth';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertSupplier } from 'api/clients/SupplierClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -20,6 +21,7 @@ import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
+import { FormatDate } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import { PostSupplier } from 'formatdata/SupplierForm';
@@ -35,6 +37,7 @@ const validationSchema = yup.object().shape({
 });
 
 const Supplier = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const theme = useTheme();
@@ -77,7 +80,8 @@ const Supplier = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
-                datos.contaProv, datos.ciudProv, JSON.stringify(supplierArray), datos.direProv);
+                datos.contaProv, datos.ciudProv, JSON.stringify(supplierArray), datos.direProv,
+                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (supplierArray.length != 0) {
                 if (Object.keys(datos.length !== 0)) {

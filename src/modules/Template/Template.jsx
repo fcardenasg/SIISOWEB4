@@ -6,6 +6,7 @@ import {
     useMediaQuery
 } from '@mui/material';
 
+import useAuth from 'hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
@@ -30,6 +31,7 @@ import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enum
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllByAtencion } from 'api/clients/ItemsClient';
+import { FormatDate } from 'components/helpers/Format';
 
 const validationSchema = yup.object().shape({
     descripcion: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -38,6 +40,7 @@ const validationSchema = yup.object().shape({
 });
 
 const Template = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -184,7 +187,8 @@ const Template = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostTemplate(segmentoAgrupado, segmentoAfectado, subsegmento,
-                datos.idCIE11, "Usuario", tipoAtencion, atencion, datos.idItems, datos.descripcion);
+                datos.idCIE11, "Usuario", tipoAtencion, atencion, datos.idItems, datos.descripcion,
+                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertTemplate(DataToInsert);

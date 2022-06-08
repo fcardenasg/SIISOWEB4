@@ -64,7 +64,7 @@ const UpdateTypeCatalog = () => {
         try {
 
             const DataToUpdate = PutTypeCatalog(id, datos.nombre, lsTipoCatalogo.usuarioRegistro,
-                lsTipoCatalogo.fechaRegistro, user.id, FormatDate(new Date()));
+                lsTipoCatalogo.fechaRegistro, user.email, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateTypeCatalogs(DataToUpdate);
