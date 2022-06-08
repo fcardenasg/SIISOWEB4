@@ -53,9 +53,12 @@ const ViewData = ({ icons, nameData, label }) => {
     return (
         <Grid item xs={4}>
             <Grid container>
-                {icons}<Typography variant="h4" sx={{ pl: 1.2 }}>{label}: </Typography>
+                {icons}<Typography variant="h5" sx={{ pl: 1.2 }}>{label}: </Typography>
             </Grid>
             <Typography variant="body2" sx={{ pl: 2.5 }}>{nameData}</Typography>
+            <Grid item xs={12}>
+                <Divider />
+            </Grid>
         </Grid>
     );
 }
@@ -89,26 +92,44 @@ ViewDataDetails.propTypes = {
     nameData: PropTypes.string,
 };
 
-const EmployeeInfo = ({ lsEmployee = [], documento, onChange, handleDocumento }) => {
+const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, handleDocumento }) => {
     return (
         <Grid container spacing={1}>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ pb: 4 }}>
                 <Stack direction="row" alignItems="center" alignContent="center" justifyContent="space-between">
+                    <TextField
+                        disabled={disabled}
+                        value={documento}
+                        onChange={onChange}
+                        onKeyDown={handleDocumento}
+                        id="standard-basic"
+                        label="Documento"
+                        variant="standard"
+                    />
 
-                    <Grid container>
-                        <Stack sx={{ pr: 2 }} direction="row" alignItems="center" spacing={1}>
-                            <Typography variant="h3">{lsEmployee.nombres == null ? 'Digite Documento...' : lsEmployee.nombres}</Typography>
-                        </Stack>
-                        {lsEmployee.namePayStatus != null ?
-                            <Chip
-                                size="small"
-                                label={lsEmployee.namePayStatus}
-                                chipcolor={true ? 'success' : 'error'}
-                                sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
-                            /> : <></>}
+                    <Grid container alignItems="leftS" alignContent="center">
+                        <Grid item xs={6}>
+                            <Stack sx={{ pr: 2 }} alignItems="center" spacing={1}>
+                                <Typography variant="h3">
+                                    {lsEmployee.nombres == null ? 'Digite Documento...' : lsEmployee.nombres}
+                                    <Typography variant="h6">
+                                        {lsEmployee.nameType == null ? '' : lsEmployee.nameType}
+                                    </Typography>
+                                </Typography>
+                            </Stack>
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            {lsEmployee.namePayStatus != null ?
+                                <Chip
+                                    size="small"
+                                    label={lsEmployee.namePayStatus}
+                                    chipcolor={true ? 'success' : 'error'}
+                                    sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
+                                /> : <></>}
+                        </Grid>
                     </Grid>
 
-                    <TextField sx={{ pr: 5 }} value={documento} onChange={onChange} onKeyDown={handleDocumento} id="standard-basic" label="Documento" variant="standard" />
                     {/* AQUI VA EL ACTUALIZAR */}
                     <AnimateButton>
                         <Button>
@@ -119,10 +140,10 @@ const EmployeeInfo = ({ lsEmployee = [], documento, onChange, handleDocumento })
                 </Stack>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ pb: 1 }}>
                 <Grid container>
-                    <Grid item xs={3}>
-                        <Typography variant="h4">
+                    <Grid item xs={4}>
+                        <Typography variant="h5">
                             Cargo:
                             <Typography variant="h6">
                                 {lsEmployee.nameRosterPosition}
@@ -130,8 +151,8 @@ const EmployeeInfo = ({ lsEmployee = [], documento, onChange, handleDocumento })
                         </Typography>
                     </Grid>
 
-                    <Grid item xs={3}>
-                        <Typography variant="h4">
+                    <Grid item xs={4}>
+                        <Typography variant="h5">
                             Sede:
                             <Typography variant="h6">
                                 {lsEmployee.nameSede}
@@ -139,28 +160,19 @@ const EmployeeInfo = ({ lsEmployee = [], documento, onChange, handleDocumento })
                         </Typography>
                     </Grid>
 
-                    <Grid item xs={3}>
-                        <Typography variant="h4">
+                    <Grid item xs={4}>
+                        <Typography variant="h5">
                             Fecha de Contrato:
                             <Typography variant="h6">
                                 {lsEmployee.fechaContrato == null ? '' : ViewFormat(lsEmployee.fechaContrato)}
                             </Typography>
                         </Typography>
                     </Grid>
-
-                    <Grid item xs={3}>
-                        <Typography variant="h4">
-                            Edad:
-                            <Typography variant="h6">
-                                {lsEmployee.length == 0 ? '' : '20 Años'}
-                            </Typography>
-                        </Typography>
-                    </Grid>
                 </Grid>
             </Grid>
 
-            <Grid item xs={12}>
-                <Divider />
+            <Grid item xs={12} sx={{ pb: 1 }}>
+                <Divider orientation="horizontal" />
             </Grid>
 
             <Grid item xs={12}>
@@ -227,13 +239,13 @@ const EmployeeInfo = ({ lsEmployee = [], documento, onChange, handleDocumento })
 EmployeeInfo.propTypes = {
     lsEmployee: PropTypes.object,
     documento: PropTypes.string,
+    disabled: PropTypes.bool,
     handleDocumento: PropTypes.object,
     onChange: PropTypes.object,
 };
 
-const ViewEmployee = ({ lsEmployee = [], documento, onChange, handleDocumento }) => {
+const ViewEmployee = ({ lsEmployee = [], documento, disabled = false, onChange, handleDocumento }) => {
     const theme = useTheme();
-    const customization = useSelector((state) => state.customization);
 
     return (
         <Fragment>
@@ -243,17 +255,24 @@ const ViewEmployee = ({ lsEmployee = [], documento, onChange, handleDocumento })
                         <CardMedia
                             component="img"
                             image={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : user}
-                            sx={{ width: 260, borderRadius: `${customization.borderRadius}px`, overflow: 'hidden' }}
+                            sx={{ width: 260, borderRadius: '150px', overflow: 'hidden' }}
                         />
                     </Grid>
 
                     <Grid item xs={8.8}>
-                        <EmployeeInfo lsEmployee={lsEmployee} onChange={onChange} documento={documento} handleDocumento={handleDocumento} />
+                        <EmployeeInfo
+                            disabled={disabled}
+                            lsEmployee={lsEmployee}
+                            onChange={onChange}
+                            documento={documento}
+                            handleDocumento={handleDocumento}
+                        />
                     </Grid>
 
                     <Grid item xs={12} sx={{ pt: 1.5 }}>
+                        <Divider />
                         <Accordion title={<><IconDatabase stroke={2} color={theme.palette.primary.main} size="1.3rem" />
-                            <Typography sx={{ pl: 1 }} variant="h4">Ver mas...</Typography></>}
+                            <Typography sx={{ pl: 1 }} variant="h5">Ver mas...</Typography></>}
                         >
                             <Grid container spacing={1}>
                                 <Grid item xs={4}>
@@ -295,5 +314,6 @@ export default ViewEmployee;
 ViewEmployee.propTypes = {
     lsEmployee: PropTypes.object,
     documento: PropTypes.string,
+    disabled: PropTypes.bool,
     handleDocumento: PropTypes.object,
 };

@@ -219,7 +219,7 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListMedicalAdvice = () => {
+const ListAttention = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
@@ -344,7 +344,7 @@ const ListMedicalAdvice = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medicalAdvice.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
+        <MainCard title="Lista de Atención" content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -372,36 +372,17 @@ const ListMedicalAdvice = () => {
                         } filename="Asesoría Médica">
                             <ExcelSheet data={medicalAdvice} name="Asesoría Médica">
                                 <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Fecha" value="fecha" />
-                                <ExcelColumn label="Tipo Atención" value="idTipoAtencion" />
-                                <ExcelColumn label="Sede" value="idSede" />
-                                <ExcelColumn label="Contingencia" value="idContingencia" />
-                                <ExcelColumn label="Estado del Caso" value="idEstadoCaso" />
-                                <ExcelColumn label="Turno" value="idTurno" />
-                                <ExcelColumn label="Día del Turno" value="idDiaTurno" />
-                                <ExcelColumn label="Tipo Asesoría" value="idTipoAsesoria" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Causa" value="idCausa" />
-                                <ExcelColumn label="Descripción" value="motivo" />
-                                <ExcelColumn label="Recomendaciones" value="recomdaciones" />
-                                <ExcelColumn label="Pautas" value="pautas" />
-                                <ExcelColumn label="Estado Asesoría" value="idEstadoAsesoria" />
-                                <ExcelColumn label="Usuario" value="usuario" />
-                                <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
-                                <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
-                                <ExcelColumn label="Fecha de Actualización" value="fechaActualizacion" />
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/medicaladvice/report')}>
+                        <Tooltip title="Impresión" onClick={() => navigate('/attention/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/medicaladvice/add")}>
+                            onClick={() => navigate("/attention/add")}>
                             {TitleButton.Agregar}
                         </Button>
                     </Grid>
@@ -552,7 +533,7 @@ const ListMedicalAdvice = () => {
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/medicaladvice/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/attention/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -587,4 +568,4 @@ const ListMedicalAdvice = () => {
     );
 };
 
-export default ListMedicalAdvice;
+export default ListAttention;

@@ -1,21 +1,18 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// material-ui
-import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
-// third-party
 import ReactToPrint from 'react-to-print';
 
-// project imports
 import { GetAllAdvice } from 'api/clients/AdviceClient';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import Logo from 'ui-component/Logo';
 import { gridSpacing } from 'store/constant';
+import { ViewFormat } from 'components/helpers/Format';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -41,7 +38,6 @@ const ReportMedicalAdvice = () => {
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
@@ -91,11 +87,10 @@ const ReportMedicalAdvice = () => {
                                     <TableBody>
                                         {medicalAdvice.map((row, index) => (
                                             <TableRow key={index}>
-
                                                 <TableCell align="left">{row.documento}</TableCell>
-                                                <TableCell align="left">{row.fecha}</TableCell>
+                                                <TableCell align="left">{ViewFormat(row.fecha)}</TableCell>
                                                 <TableCell align="left">{row.motivo}</TableCell>
-                                                <TableCell align="left">{row.usuario}</TableCell>
+                                                <TableCell align="left">{row.usuarioRegistro}</TableCell>
                                                 <TableCell align="left">{row.idEstadoCaso}</TableCell>
                                             </TableRow>
                                         ))}
@@ -108,7 +103,7 @@ const ReportMedicalAdvice = () => {
             </Grid>
 
             <Grid item>
-                <Grid sx={{ pt: 2 }} container xs={12} spacing={2} alignItems="center" justifyContent="center">
+                <Grid sx={{ pt: 0.5, pb: 0.5 }} container spacing={4} alignItems="center" justifyContent="center">
                     <Grid xs={6} item>
                         <AnimateButton>
                             <ReactToPrint trigger={() => <Button variant="contained">Imprimir</Button>} content={() => componentRef.current} />
@@ -116,7 +111,7 @@ const ReportMedicalAdvice = () => {
                     </Grid>
                     <Grid xs={6} item>
                         <AnimateButton>
-                            <Button variant="contained" onClick={() => navigate('/medicalAdvice/list')}>
+                            <Button variant="contained" onClick={() => navigate('/medicaladvice/list')}>
                                 Cerrar
                             </Button>
                         </AnimateButton>

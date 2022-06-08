@@ -74,8 +74,6 @@ const AlcoholAndDrugTesting = () => {
     const [lsCatalogo, setLsCatalogo] = useState([]);
     const [lsOpciones, setLsOpciones] = useState([]);
     const [lsEmpresas, setLsEmpresas] = useState([]);
-    const [diagnostico, setDiagnostico] = useState([]);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsTipoMotivo, setLsTipoMotivo] = useState([]);
 
     const [lsMotivoNoAsistencia, setLsMotivoNoAsistencia] = useState([]);
@@ -87,7 +85,6 @@ const AlcoholAndDrugTesting = () => {
     const [lsResultado, setLsResultado] = useState([]);
     const [lsConceptoA, setLsConceptoA] = useState([]);
 
-    const [lsAlcoholAndDrugTesting, setLsAlcoholAndDrugTesting] = useState([]);
 
     const [nombres, setNombres] = useState('');
     const [nombresS, setNombresS] = useState('');
@@ -129,7 +126,6 @@ const AlcoholAndDrugTesting = () => {
                     var lsQuestionnaire = await GetByIdEmployee(event?.target.value);
 
                     if (lsQuestionnaire.status === 200) {
-                        setLsAlcoholAndDrugTesting(lsQuestionnaire.data);
                         setImgSrc(lsQuestionnaire.data.imagenUrl);
                         setNombres(lsQuestionnaire.data.nombres);
                         setEmail(lsQuestionnaire.data.email);
@@ -206,7 +202,6 @@ const AlcoholAndDrugTesting = () => {
                     var lsQuestionnaire = await GetByIdEmployee(event?.target.value);
 
                     if (lsQuestionnaire.status === 200) {
-                        setLsAlcoholAndDrugTesting(lsQuestionnaire.data);
                         setImgSrc(lsQuestionnaire.data.imagenUrl);
                         setNombresS(lsQuestionnaire.data.nombres);
 
@@ -371,14 +366,14 @@ const AlcoholAndDrugTesting = () => {
     const handleClick = async (datos) => {
         try {
             const DocumentoSolicitante = documentS == '' ? document : documentS;
-            const DataToInsert = PostAlcoholAndDrugTesting(document, FormatDate(datos.fecha), datos.idMotivoPrueba, datos.sustancia1,
+            const DataToInsert = PostAlcoholAndDrugTesting("1003039229", FormatDate(datos.fecha), datos.idMotivoPrueba, datos.sustancia1,
                 datos.idMuestra1, datos.idResultado1, datos.sustancia2, datos.idMuestra2, datos.idResultado2, datos.sustancia3, datos.idMuestra3,
                 datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5, datos.idResultado5,
-                datos.sustancia6, datos.idMuestra6, datos.idResultado6, datos.idRemitido, DocumentoSolicitante, "Numero de historia", datos.idConcepto,
-                realizada, datos.idMotivoAsis, datos.observaciones, user.id, user.id,
-                FormatDate(new Date()));
+                datos.sustancia6, datos.idMuestra6, datos.idResultado6, datos.idRemitido, "1003039229", "Numero de historia", datos.idConcepto,
+                realizada, datos.idMotivoAsis, datos.observaciones, user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            console.log("DataToInsert = ", DataToInsert)
+            console.log("DataToInsert = ", DataToInsert);
+
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertAlcoholAndDrugTesting(DataToInsert);
                 if (result.status === 200) {
@@ -392,7 +387,6 @@ const AlcoholAndDrugTesting = () => {
                         transition: 'SlideUp'
                     })
                     reset();
-                    setDiagnostico([]);
                     CleanCombo();
                 }
             }
@@ -853,7 +847,7 @@ const AlcoholAndDrugTesting = () => {
                                 <InputSelect
                                     name="idMotivoAsis"
                                     label="Motivo de No Asistencia"
-                                    defaultValue=""
+                                    defaultValue={1}
                                     options={lsMotivoNoAsistencia}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}

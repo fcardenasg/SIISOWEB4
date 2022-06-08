@@ -192,8 +192,10 @@ const AlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrug
 const UpdateAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/UpdateAlcoholAndDrugTesting')));
 const ReportAlcoholAndDrugTesting = Loadable(lazy(() => import('components/report/ReportAlcoholAndDrugTesting')));
 
-
 const Turner = Loadable(lazy(() => import('modules/Turner/Turner')));
+
+const Attention = Loadable(lazy(() => import('modules/Attention/Attention')));
+const ListAttention = Loadable(lazy(() => import('modules/Attention/ListAttention')));
 
 const ListOccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/ListOccupationalExamination')));
 const OccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/OccupationalExamination')));
@@ -408,10 +410,18 @@ const MainRoutes = {
         {
             path: '/medicalformula/report',
             element: <ReportMedicalFormula />
-
         },
-         /* Render de Pruebas de Alcohol y Droga */
-         {
+        /* Render de FORMULAS MEDICAS */
+        {
+            path: '/attention/list',
+            element: <ListAttention />
+        },
+        {
+            path: '/attention/add',
+            element: <Attention />
+        },
+        /* Render de Pruebas de Alcohol y Droga */
+        {
             path: '/alcoholanddrugtesting/list',
             element: <ListAlcoholAndDrugTesting />
         },
@@ -421,7 +431,7 @@ const MainRoutes = {
         },
         {
             path: '/alcoholanddrugtesting/update/:id',
-            element: <UpdateAlcoholAndDrugTesting/>
+            element: <UpdateAlcoholAndDrugTesting />
         },
         {
             path: '/alcoholanddrugtesting/report',

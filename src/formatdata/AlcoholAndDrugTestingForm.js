@@ -7,13 +7,15 @@ export function PostAlcoholAndDrugTesting(documento, fecha, idMotivoPrueba = Def
     sustancia5 = false, idMuestra5 = DefaultValue.SINREGISTRO_GLOBAL, idResultado5 = DefaultValue.SINREGISTRO_GLOBAL,
     sustancia6 = false, idMuestra6 = DefaultValue.SINREGISTRO_GLOBAL, idResultado6 = DefaultValue.SINREGISTRO_GLOBAL,
     idRemitido = DefaultValue.SINREGISTRO_GLOBAL, idDocumentoSolicitante, idNumeroHistoria = "Sin numero", idConcepto = DefaultValue.SINREGISTRO_GLOBAL,
-    idRealizada = DefaultValue.SINREGISTRO_GLOBAL, idMotivoAsis = DefaultValue.SINREGISTRO_GLOBAL, observaciones, idMedico, usuario, fechaSistema) {
+    idRealizada = DefaultValue.SINREGISTRO_GLOBAL, idMotivoAsis = DefaultValue.SINREGISTRO_GLOBAL, observaciones, idMedico,
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
         documento, fecha, idMotivoPrueba, sustancia1,
         idMuestra1, idResultado1, sustancia2, idMuestra2, idResultado2, sustancia3, idMuestra3,
         idResultado3, sustancia4, idMuestra4, idResultado4, sustancia5, idMuestra5, idResultado5,
         sustancia6, idMuestra6, idResultado6, idRemitido, idDocumentoSolicitante, idNumeroHistoria, idConcepto,
-        idRealizada, idMotivoAsis, observaciones, idMedico, usuario, fechaSistema
+        idRealizada, idMotivoAsis, observaciones, idMedico,
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }
 
@@ -24,13 +26,15 @@ export function PutAlcoholAndDrugTesting(idPruebasAlcoholDroga, documento, fecha
     sustancia5 = false, idMuestra5 = DefaultValue.SINREGISTRO_GLOBAL, idResultado5 = DefaultValue.SINREGISTRO_GLOBAL,
     sustancia6 = false, idMuestra6 = DefaultValue.SINREGISTRO_GLOBAL, idResultado6 = DefaultValue.SINREGISTRO_GLOBAL, idRemitido = DefaultValue.SINREGISTRO_GLOBAL,
     idDocumentoSolicitante, idNumeroHistoria = DefaultValue.SINREGISTRO_GLOBAL, idConcepto = DefaultValue.SINREGISTRO_GLOBAL,
-    idRealizada = DefaultValue.SINREGISTRO_GLOBAL, idMotivoAsis = DefaultValue.SINREGISTRO_GLOBAL, observaciones, idMedico, usuario, fechaSistema) {
+    idRealizada = DefaultValue.SINREGISTRO_GLOBAL, idMotivoAsis = DefaultValue.SINREGISTRO_GLOBAL, observaciones, idMedico,
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
         idPruebasAlcoholDroga, documento, fecha, idMotivoPrueba, sustancia1,
         idMuestra1, idResultado1, sustancia2, idMuestra2, idResultado2, sustancia3, idMuestra3,
         idResultado3, sustancia4, idMuestra4, idResultado4, sustancia5, idMuestra5, idResultado5,
         sustancia6, idMuestra6, idResultado6, idRemitido, idDocumentoSolicitante, idNumeroHistoria, idConcepto,
-        idRealizada, idMotivoAsis, observaciones, idMedico, usuario, fechaSistema
+        idRealizada, idMotivoAsis, observaciones, idMedico,
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }
 

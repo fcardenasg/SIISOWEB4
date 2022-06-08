@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -13,10 +13,11 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import useAuth from 'hooks/useAuth';
 import InputText from 'components/input/InputText';
+import DetailedIcon from 'components/controllers/DetailedIcon';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import { SNACKBAR_OPEN } from 'store/actions';
@@ -24,7 +25,6 @@ import { InsertAdvice } from 'api/clients/AdviceClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo, DefaultData } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -41,6 +41,7 @@ const DetailIcons = [
 ]
 
 const MedicalAdvice = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -54,9 +55,6 @@ const MedicalAdvice = () => {
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
     const [contingencia, setContingencia] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [clickAttend, setClickAttend] = useState(false);
-
-    const [fecha, setFecha] = useState(new Date());
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
@@ -130,40 +128,14 @@ const MedicalAdvice = () => {
         GetAll();
     }, [])
 
-    const handleAtender = () => {
-        if (documento === '') {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${Message.ErrorDocumento}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
-        } else if (lsEmployee.length === 0) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${Message.ErrorNoHayDatos}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
-        } else
-            setClickAttend(true);
-    }
-
     const handleClick = async (datos) => {
         try {
             const DatosVacios = "Sin Registro";
-            const usuario = "Manuel Vásquez";
-            const dateNow = FormatDate(new Date());
 
             const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), DefaultData.ASESORIA_MEDICA, lsEmployee.sede, datos.idContingencia,
                 DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo,
-                DefaultData.SINREGISTRO_GLOBAL, datos.observaciones, DatosVacios, DatosVacios, DefaultData.SINREGISTRO_GLOBAL, usuario, dateNow, usuario, dateNow);
+                DefaultData.SINREGISTRO_GLOBAL, datos.observaciones, DatosVacios, DatosVacios, DefaultData.SINREGISTRO_GLOBAL,
+                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             console.log("Datos = ", DataToInsert);
 
@@ -179,6 +151,8 @@ const MedicalAdvice = () => {
                         close: false,
                         transition: 'SlideUp'
                     })
+                    setDocumento('');
+                    setLsEmployee([]);
                     reset();
                 }
             }
@@ -196,7 +170,7 @@ const MedicalAdvice = () => {
     };
 
     return (
-        <MainCard>
+        <Fragment>
             <FullScreenDialog
                 open={openTemplate}
                 title="LISTADO DE PLANTILLA"
@@ -214,29 +188,31 @@ const MedicalAdvice = () => {
                 <ControllerListen />
             </ControlModal>
 
-            <Grid container>
-                <ViewEmployee
-                    key={lsEmployee.documento}
-                    documento={documento}
-                    onChange={(e) => setDocumento(e.target.value)}
-                    lsEmployee={lsEmployee}
-                    handleDocumento={handleDocumento}
-                />
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <ViewEmployee
+                        key={lsEmployee.documento}
+                        documento={documento}
+                        onChange={(e) => setDocumento(e.target.value)}
+                        lsEmployee={lsEmployee}
+                        handleDocumento={handleDocumento}
+                    />
+                </Grid>
 
-                <Grid item xs={12} sx={{ pt: 2 }}>
-                    <SubCard darkTitle title={<><Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography></>}>
-                        <Grid container justifyContent="left" alignItems="center" spacing={2} sx={{ pt: 2, pb: 2 }}>
-                            <Grid item xs={2.4}>
+                <Grid item xs={12}>
+                    <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputDatePicker
                                         label="Fecha"
                                         name="fecha"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={2.4}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idContingencia"
@@ -249,7 +225,7 @@ const MedicalAdvice = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={2.4}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idMotivo"
@@ -262,7 +238,7 @@ const MedicalAdvice = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={2.4}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idTipoAsesoria"
@@ -275,88 +251,62 @@ const MedicalAdvice = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={2.4}>
-                                <AnimateButton>
-                                    <Button size="large" variant="contained" onClick={handleAtender} fullWidth>
-                                        Atender
-                                    </Button>
-                                </AnimateButton>
+                            <Grid item xs={12}>
+                                <SubCard darkTitle title={<><Typography variant="h4">NOTA</Typography></>}>
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                multiline
+                                                rows={4}
+                                                defaultValue=""
+                                                fullWidth
+                                                name="observaciones"
+                                                label="Observaciones"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                        <DetailedIcon
+                                            title={DetailIcons[0].title}
+                                            onClick={() => setOpenTemplate(true)}
+                                            icons={DetailIcons[0].icons}
+                                        />
+
+                                        <DetailedIcon
+                                            title={DetailIcons[1].title}
+                                            onClick={() => setOpen(true)}
+                                            icons={DetailIcons[1].icons}
+                                        />
+                                    </Grid>
+                                </SubCard>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12} sx={{ pt: 4 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </SubCard>
                 </Grid>
-
-                {clickAttend ? (<>
-                    <Grid item xs={12} sx={{ pt: 2 }}>
-                        <SubCard darkTitle title={<><Typography variant="h4">NOTA</Typography></>}>
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        multiline
-                                        rows={4}
-                                        defaultValue=""
-                                        fullWidth
-                                        name="observaciones"
-                                        label="Observaciones"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                <DetailedIcon
-                                    title={DetailIcons[0].title}
-                                    onClick={() => setOpen(true)}
-                                    icons={DetailIcons[0].icons}
-                                />
-
-                                <DetailedIcon
-                                    title={DetailIcons[1].title}
-                                    onClick={() => setOpen(true)}
-                                    icons={DetailIcons[1].icons}
-                                />
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-                    <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={6}>
-                                <AnimateButton>
-                                    <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                        {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </>) : (<>
-                    <Grid item sx={{ pt: 3 }} xs={12}>
-                        <AnimateButton>
-                            <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
-                                {TitleButton.Cancelar}
-                            </Button>
-                        </AnimateButton>
-                    </Grid>
-                </>)}
-
-                <FullScreenDialog
-                    open={open}
-                    title="LISTADO DE PLANTILLA"
-                    handleClose={() => setOpen(false)}
-                >
-                    <ListPlantillaAll />
-                </FullScreenDialog>
             </Grid >
-        </MainCard >
+        </Fragment >
     );
 };
 

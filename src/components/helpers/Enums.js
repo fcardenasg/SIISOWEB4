@@ -23,6 +23,8 @@ export const CodCatalogo = {
     GradoconEPP: 8,
     GradosinEPP: 8,
 
+    TIPO_ATENCION: 107,
+
     PANO_ANALISISRUIDO: 8,
     PANO_ANALISISMPI: 8,
     PANO_EXPOSICIÓN: 8,
@@ -55,7 +57,7 @@ export const CodCatalogo = {
     RECE_TIPORDEN: 8,
     RECE_CONTINGENCIA: 8,
 
-    PAD_MOTIVO: 8,
+    PAD_MOTIVO: 50,
     PAD_MOTIVO_NO_ASIS: 8,
 
     PAD_MUESTRAAD: 8,
@@ -106,31 +108,41 @@ export const CodCatalogo = {
 }
 
 export const DefaultData = {
-    SINREGISTRO_GLOBAL: 8,
-    AsesoriaPsicologica: 8,
-    ASESORIA_MEDICA: 8,
-    SinRegistro: 8,
+    SINREGISTRO_GLOBAL: 1,
+    AsesoriaPsicologica: 1,
+    ASESORIA_MEDICA: 1,
+    SinRegistro: 1,
 }
 
 export const DefaultValue = {
-    SINREGISTRO_GLOBAL: 8,
+    SINREGISTRO_GLOBAL: 1,
     SINREGISTRO_TEXTO: 'REGISTRO NO APLICA',
-    GeneroWomen: 8,
+    GeneroWomen: 1,
 
-    RiesgoQuimico: 8,
-    RiesgoFisico: 8,
-    RiesgoPsicosocial: 8,
-    RiesgoBiologico: 8,
-    RiesgoErgonomicoCargaFisica_Postura: 8,
-    RiesgoErgonomicoCargaFisica_Fuerza: 8,
-    RiesgoErgonomicoCargaFisica_Movimiento: 8,
+    TIP_AT_TRIAGE: 4,
+    TIP_AT_ENFERME: 5,
+    TIP_AT_ASESORIA: 6,
+    TIP_AT_EMO: 7,
 
-    Opcion_SI: 8,
-    Opcion_NO: 8,
+    AT_ENFERMERIA: 15,
+    AT_PAD: 16,
+    AT_PAD_MOTIVO: 35,
+
+    RiesgoQuimico: 1,
+    RiesgoFisico: 1,
+    RiesgoPsicosocial: 1,
+    RiesgoBiologico: 1,
+    RiesgoErgonomicoCargaFisica_Postura: 1,
+    RiesgoErgonomicoCargaFisica_Fuerza: 1,
+    RiesgoErgonomicoCargaFisica_Movimiento: 1,
+
+    Opcion_SI: 1,
+    Opcion_NO: 1,
 }
 
 export const TitleButton = {
     Guardar: 'Guardar',
+    Programacion: 'Programación',
     Imprimir: 'Imprimir',
     Cancelar: 'Cerrar',
     Actualizar: 'Actualizar',

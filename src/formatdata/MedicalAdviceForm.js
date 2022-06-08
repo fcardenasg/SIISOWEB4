@@ -14,10 +14,7 @@ export function PostMedicalAdvice(
     recomdaciones,
     pautas,
     idEstadoAsesoria,
-    usuario,
-    fechaRegistro,
-    usuarioModifica,
-    fechaActualizacion
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
 ) {
     return {
         documento,
@@ -35,10 +32,7 @@ export function PostMedicalAdvice(
         recomdaciones,
         pautas,
         idEstadoAsesoria,
-        usuario,
-        fechaRegistro,
-        usuarioModifica,
-        fechaActualizacion
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }
 
@@ -59,10 +53,7 @@ export function PutMedicalAdvice(
     recomdaciones,
     pautas,
     idEstadoAsesoria,
-    usuario,
-    fechaRegistro,
-    usuarioModifica,
-    fechaActualizacion
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
 ) {
     return {
         id,
@@ -81,9 +72,6 @@ export function PutMedicalAdvice(
         recomdaciones,
         pautas,
         idEstadoAsesoria,
-        usuario,
-        fechaRegistro,
-        usuarioModifica,
-        fechaActualizacion
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }

@@ -13,7 +13,7 @@ export const itemsMenu = [
     subtitle: "Empleados, contratistas, practicantes y visitantes",
     icon: IconUser,
     selected: true,
-    url: '/catalog/list',
+    url: '/employee/list',
     color: ColorDrummondltd.RedDrummond
   },
   {
@@ -21,7 +21,7 @@ export const itemsMenu = [
     subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
     icon: IconGenderBigender,
     selected: true,
-    url: '/catalog/list',
+    url: '/attention/list',
     color: ColorDrummondltd.OrangeDrummond
   },
   {
@@ -29,7 +29,7 @@ export const itemsMenu = [
     subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
     icon: IconSchool,
     selected: true,
-    url: '/catalog/list',
+    url: '/programming/list',
     color: ColorDrummondltd.GreenDrummond
   },
   {
