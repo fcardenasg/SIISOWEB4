@@ -298,6 +298,8 @@ const Attention = () => {
                         transition: 'SlideUp'
                     })
                     setDocumento('');
+                    setTipoAtencion('');
+                    setAtencion('');
                     setLsEmployee([]);
                     reset();
                 }
@@ -782,7 +784,7 @@ const Attention = () => {
                                                 defaultValue=""
                                                 fullWidth
                                                 name="observaciones"
-                                                label="Observaciones"
+                                                label="Nota"
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />
