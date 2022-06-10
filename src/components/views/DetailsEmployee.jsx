@@ -53,83 +53,45 @@ const DetailsEmployee = ({ id }) => {
         <>
             {
                 employee.length !== 0 ? (
-                    <Grid container spacing={gridSpacing}>
+                    <Grid container alignContent="center" alignItems="center" spacing={gridSpacing}>
                         <Grid item xs={12}>
                             <Grid container spacing={gridSpacing}>
                                 <Grid item xs zeroMinWidth>
                                     <Avatar sx={{ width: 150, height: 150 }} src={employee.imagenUrl} />
                                 </Grid>
-                                <Grid item>
-                                    <IconButton size="small" sx={{ mt: -0.75, mr: -0.75 }}>
-                                        <MoreHorizOutlinedIcon
-                                            fontSize="small"
-                                            color="inherit"
-                                            aria-controls="menu-friend-card"
-                                            aria-haspopup="true"
-                                            sx={{ opacity: 0.6 }}
-                                            onClick={handleClick}
-                                        />
-                                    </IconButton>
-                                    <Menu
-                                        id="menu-user-details-card"
-                                        anchorEl={anchorEl}
-                                        keepMounted
-                                        open={Boolean(anchorEl)}
-                                        onClose={handleClose}
-                                        variant="selectedMenu"
-                                        anchorOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'right'
-                                        }}
-                                        transformOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'right'
-                                        }}
-                                    >
-                                        <MenuItem onClick={handleClose}>Edit</MenuItem>
-                                        <MenuItem onClick={handleClose}>Delete</MenuItem>
-                                    </Menu>
-                                </Grid>
                             </Grid>
                         </Grid>
+
                         <Grid item xs={12}>
                             <Typography variant="h3" component="div">
                                 {employee.nombres}
                             </Typography>
-                            <Typography variant="caption">{"Rol del empleado"}</Typography>
+                            <Typography variant="caption" sx={{ pr: 2 }}>Cargo: {employee.nameRosterPosition}</Typography>
+                            <Typography variant="caption">Estado: {employee.namePayStatus}</Typography>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="subtitle2" sx={{ color: theme.palette.grey[700] }}>
-                                {"Try to connect the SAS transmitter, maybe it will index the optical hard drive!"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="caption">Email</Typography>
-                            <Typography variant="h6">{employee.email}</Typography>
-                        </Grid>
+
                         <Grid item xs={12}>
                             <Grid container spacing={gridSpacing}>
                                 <Grid item xs={6}>
-                                    <Typography variant="caption">Telefono</Typography>
+                                    <Typography variant="caption">Email</Typography>
+                                    <Typography variant="h6">{employee.email}</Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography variant="caption">Celular</Typography>
+                                    <Typography variant="h6">{employee.celular}</Typography>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Grid container spacing={gridSpacing}>
+                                <Grid item xs={6}>
+                                    <Typography variant="caption">Telefono Contacto </Typography>
                                     <Typography variant="h6">{employee.telefonoContacto}</Typography>
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant="caption">Sede</Typography>
                                     <Typography variant="h6">{employee.nameSede}</Typography>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={6}>
-                                    <Button variant="outlined" fullWidth startIcon={<ChatBubbleTwoToneIcon />}>
-                                        Actualizar
-                                    </Button>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Button variant="outlined" color="error" fullWidth startIcon={<NotInterestedTwoToneIcon />}>
-                                        Eliminar
-                                    </Button>
                                 </Grid>
                             </Grid>
                         </Grid>

@@ -288,6 +288,8 @@ const ListEmployee = () => {
 
     const handleClose = () => {
         setOpen(false);
+        setSelected([]);
+        setIdCheck('');
     };
 
     /* EL useEffect QUE LLENA LA LISTA */
@@ -646,7 +648,7 @@ const ListEmployee = () => {
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
                                             <Tooltip title="Detalles" onClick={handleOpen}>
-                                                <IconButton color="primary" size="large">
+                                                <IconButton disabled={idCheck == '' ? true : false} color="primary" size="large">
                                                     <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
@@ -657,13 +659,6 @@ const ListEmployee = () => {
                                                 </IconButton>
                                             </Tooltip>
                                         </TableCell>
-                                        {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
-                                        <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                            open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
-                                            aria-describedby="simple-modal-description"
-                                        >
-                                            <BodyEmployee IdEmployee={row.documento} modalStyle={modalStyle} handleClose={handleClose} />
-                                        </Modal>
                                     </TableRow>
                                 );
                             })}
@@ -680,7 +675,6 @@ const ListEmployee = () => {
                 </Table>
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
@@ -691,6 +685,12 @@ const ListEmployee = () => {
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
 
+            <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                <BodyEmployee IdEmployee={idCheck} modalStyle={modalStyle} handleClose={handleClose} />
+            </Modal>
 
         </MainCard>
     );

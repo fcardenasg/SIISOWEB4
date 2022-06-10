@@ -31,7 +31,7 @@ import { ViewFormat } from 'components/helpers/Format';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllAdvice, DeleteAdvice } from 'api/clients/AdviceClient';
+import { GetAllAttention, DeleteAttention } from 'api/clients/AttentionClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -82,6 +82,24 @@ const headCells = [
         align: 'left'
     },
     {
+        id: 'nameEmpleado',
+        numeric: false,
+        label: 'Nombres',
+        align: 'left'
+    },
+    {
+        id: 'nameTipoAtencion',
+        numeric: false,
+        label: 'Tipo Atención',
+        align: 'left'
+    },
+    {
+        id: 'nameAtencion',
+        numeric: false,
+        label: 'Atención',
+        align: 'left'
+    },
+    {
         id: 'fecha',
         numeric: false,
         label: 'Fecha',
@@ -90,25 +108,7 @@ const headCells = [
     {
         id: 'usuarioRegistro',
         numeric: false,
-        label: 'Usuario',
-        align: 'left'
-    },
-    {
-        id: 'motivo',
-        numeric: false,
-        label: 'Motivo',
-        align: 'left'
-    },
-    {
-        id: 'idTipoAtencion',
-        numeric: false,
-        label: 'Tipo Atencion',
-        align: 'left'
-    },
-    {
-        id: 'idEstadoCaso',
-        numeric: false,
-        label: 'Estado Caso',
+        label: 'usuario',
         align: 'left'
     }
 ];
@@ -223,7 +223,7 @@ const ListAttention = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
-    const [medicalAdvice, setMedicalAdvice] = useState([]);
+    const [lsAttention, setLsAttention] = useState([]);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -236,8 +236,8 @@ const ListAttention = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllAdvice(0, 0);
-            setMedicalAdvice(lsServer.data.entities);
+            const lsServer = await GetAllAttention(0, 0);
+            setLsAttention(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
@@ -256,7 +256,7 @@ const ListAttention = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'fecha', 'usuarioRegistro', 'motivo', 'idTipoAtencion', 'idEstadoCaso'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameTipoAtencion', 'nameAtencion', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -270,9 +270,9 @@ const ListAttention = () => {
                 }
                 return matches;
             });
-            setMedicalAdvice(newRows);
+            setLsAttention(newRows);
         } else {
-            setMedicalAdvice(rows);
+            setLsAttention(rows);
         }
     };
 
@@ -284,7 +284,7 @@ const ListAttention = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelectedId = medicalAdvice.map((n) => n.id);
+            const newSelectedId = lsAttention.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -321,7 +321,7 @@ const ListAttention = () => {
 
     const handleDelete = async () => {
         try {
-            const result = await DeleteAdvice(idCheck);
+            const result = await DeleteAttention(idCheck);
             if (result.status === 200) {
                 dispatch({
                     type: SNACKBAR_OPEN,
@@ -341,7 +341,7 @@ const ListAttention = () => {
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medicalAdvice.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsAttention.length) : 0;
 
     return (
         <MainCard title="Lista de Atención" content={false}>
@@ -370,7 +370,7 @@ const ListAttention = () => {
                                 </IconButton>
                             </Tooltip>
                         } filename="Asesoría Médica">
-                            <ExcelSheet data={medicalAdvice} name="Asesoría Médica">
+                            <ExcelSheet data={lsAttention} name="Asesoría Médica">
                                 <ExcelColumn label="Id" value="id" />
                             </ExcelSheet>
                         </ExcelFile>
@@ -397,13 +397,13 @@ const ListAttention = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={medicalAdvice.length}
+                        rowCount={lsAttention.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(medicalAdvice, getComparator(order, orderBy))
+                        {stableSort(lsAttention, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
 
@@ -468,6 +468,51 @@ const ListAttention = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
+                                                {row.nameEmpleado}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameTipoAtencion}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameAtencion}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
                                                 {ViewFormat(row.fecha)}
                                             </Typography>
                                         </TableCell>
@@ -484,51 +529,6 @@ const ListAttention = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {row.usuarioRegistro}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.motivo}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.idTipoAtencion}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.idEstadoCaso}
                                             </Typography>
                                         </TableCell>
 
@@ -558,7 +558,7 @@ const ListAttention = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={medicalAdvice.length}
+                count={lsAttention.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

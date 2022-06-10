@@ -129,39 +129,41 @@ const UtilsGrid = Loadable(lazy(() => import('views/utilities/Grid')));
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 //Nuestros import
-const ListTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/ListTypeCatalog')));
+const ListTypeCatalog = Loadable(lazy(() => import('modules/TypeCatalog/ListTypeCatalog')));
 const ReportTypeCatolog = Loadable(lazy(() => import('components/report/ReportTypeCatolog')));
-const TypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/TypeCatalog')));
-const UpdateTypeCatalog = Loadable(lazy(() => import('../modules/TypeCatalog/UpdateTypeCatalog')));
+const TypeCatalog = Loadable(lazy(() => import('modules/TypeCatalog/TypeCatalog')));
+const UpdateTypeCatalog = Loadable(lazy(() => import('modules/TypeCatalog/UpdateTypeCatalog')));
 
-const ListCatalog = Loadable(lazy(() => import('../modules/Catalog/ListCatalog')));
-const Catalog = Loadable(lazy(() => import('../modules/Catalog/Catalog')));
+const ListProgramming = Loadable(lazy(() => import('modules/Programming/ListProgramming')));
+
+const ListCatalog = Loadable(lazy(() => import('modules/Catalog/ListCatalog')));
+const Catalog = Loadable(lazy(() => import('modules/Catalog/Catalog')));
 const ReportCatalog = Loadable(lazy(() => import('components/report/ReportCatalog')));
-const UpdateCatalog = Loadable(lazy(() => import('../modules/Catalog/UpdateCatalog')));
+const UpdateCatalog = Loadable(lazy(() => import('modules/Catalog/UpdateCatalog')));
 
-const ListCompany = Loadable(lazy(() => import('../modules/Company/ListCompany')));
-const Company = Loadable(lazy(() => import('../modules/Company/Company')));
-const UpdateCompany = Loadable(lazy(() => import('../modules/Company/UpdateCompany')));
+const ListCompany = Loadable(lazy(() => import('modules/Company/ListCompany')));
+const Company = Loadable(lazy(() => import('modules/Company/Company')));
+const UpdateCompany = Loadable(lazy(() => import('modules/Company/UpdateCompany')));
 const ReportCompany = Loadable(lazy(() => import('components/report/ReportCompany')));
 
-const ListEmployee = Loadable(lazy(() => import('../modules/Employee/ListEmployee')));
-const Employee = Loadable(lazy(() => import('../modules/Employee/Employee')));
-const UpdateEmployee = Loadable(lazy(() => import('../modules/Employee/UpdateEmployee')));
+const ListEmployee = Loadable(lazy(() => import('modules/Employee/ListEmployee')));
+const Employee = Loadable(lazy(() => import('modules/Employee/Employee')));
+const UpdateEmployee = Loadable(lazy(() => import('modules/Employee/UpdateEmployee')));
 const ReportEmployee = Loadable(lazy(() => import('components/report/ReportEmployee')));
 
-const ListSupplier = Loadable(lazy(() => import('../modules/Supplier/ListSupplier')));
-const Supplier = Loadable(lazy(() => import('../modules/Supplier/Supplier')));
+const ListSupplier = Loadable(lazy(() => import('modules/Supplier/ListSupplier')));
+const Supplier = Loadable(lazy(() => import('modules/Supplier/Supplier')));
 const ReportSupplier = Loadable(lazy(() => import('components/report/ReportSupplier')));
-const UpdateSupplier = Loadable(lazy(() => import('../modules/Supplier/UpdateSupplier')));
+const UpdateSupplier = Loadable(lazy(() => import('modules/Supplier/UpdateSupplier')));
 
-const ListAssistance = Loadable(lazy(() => import('../modules/Assistance/ListAssistance')));
-const Assistance = Loadable(lazy(() => import('../modules/Assistance/Assistance')));
-const UpdateAssistance = Loadable(lazy(() => import('../modules/Assistance/UpdateAssistance')));
+const ListAssistance = Loadable(lazy(() => import('modules/Assistance/ListAssistance')));
+const Assistance = Loadable(lazy(() => import('modules/Assistance/Assistance')));
+const UpdateAssistance = Loadable(lazy(() => import('modules/Assistance/UpdateAssistance')));
 const ReportAssistance = Loadable(lazy(() => import('components/report/ReportAssistance')));
 
-const ListEvolutionNote = Loadable(lazy(() => import('../modules/EvolutionNote/ListEvolutionNote')));
-const EvolutionNote = Loadable(lazy(() => import('../modules/EvolutionNote/EvolutionNote')));
-const UpdateEvolutionNote = Loadable(lazy(() => import('../modules/EvolutionNote/UpdateEvolutionNote')));
+const ListEvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/ListEvolutionNote')));
+const EvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/EvolutionNote')));
+const UpdateEvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/UpdateEvolutionNote')));
 const ReportEvolutionNote = Loadable(lazy(() => import('components/report/ReportEvolutionNote')));
 
 const ListMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/ListMedicalAdvice')));
@@ -175,9 +177,9 @@ const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/Psycho
 const ReportPsychologicalCounseling = Loadable(lazy(() => import('components/report/ReportPsychologicalCounseling')));
 
 
-const ListNoteInfirmary = Loadable(lazy(() => import('../modules/NoteInfirmary/ListNoteInfirmary')));
-const NoteInfirmary = Loadable(lazy(() => import('../modules/NoteInfirmary/NoteInfirmary')));
-const UpdateNoteInfirmary = Loadable(lazy(() => import('../modules/NoteInfirmary/UpdateNoteInfirmary')));
+const ListNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/ListNoteInfirmary')));
+const NoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/NoteInfirmary')));
+const UpdateNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/UpdateNoteInfirmary')));
 const ReportInfirmary = Loadable(lazy(() => import('components/report/ReportInfirmary')));
 
 
@@ -515,7 +517,6 @@ const MainRoutes = {
             element: <UpdateCharges />
         },
 
-
         /* Render de Charges */
         {
             path: '/panorama/list',
@@ -529,9 +530,6 @@ const MainRoutes = {
             path: '/panorama/update/:id',
             element: <UpdatePanorama />
         },
-
-
-
         {
             path: '/cie11/report',
             element: <ReportPsychologicalCounseling />
@@ -565,6 +563,10 @@ const MainRoutes = {
         {
             path: '/occupational-health/update/:id',
             element: <UpdateOccupationalHealth />
+        },
+        {
+            path: '/programming/list',
+            element: <ListProgramming />
         },
         /* Render de Occupational Medicine */
         {

@@ -21,7 +21,7 @@ import WebCamCapture from 'components/form/WebCam';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertEmployee } from 'api/clients/EmployeeClient';
-import { GetAllCatalog, GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
@@ -79,7 +79,7 @@ const Employee = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [catalog, setCatalog] = useState([]);
+    const [lsGes, setLsGes] = useState([]);
     const [company, setCompany] = useState([]);
     const [lsEscolaridad, setEscolaridad] = useState([]);
     const [lsMunicipioN, setMunicipioN] = useState([]);
@@ -89,7 +89,6 @@ const Employee = () => {
     const [lsSede, setSede] = useState([]);
     const [lsGenero, setGenero] = useState([]);
     const [lsCodigoFilterDpto, setCodigoFilterDpto] = useState([]);
-    const [lsCodigoFilterArea, setCodigoFilterArea] = useState([]);
     const [lsEstadoCivil, setEstadoCivil] = useState([]);
     const [lsTipoContrato, setTipoContrato] = useState([]);
     const [lsRol, setRol] = useState([]);
@@ -107,8 +106,7 @@ const Employee = () => {
     const [dptoNacido, setDptoNacido] = useState('');
     const [dptoResidencia, setDptoResidencia] = useState('');
     const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState('');
-    const [eventArea, setEventArea] = useState('');
-    const [lsSubArea, setSubArea] = useState([]);
+    const [lsSubArea, setLsSubArea] = useState([]);
     const [imgSrc, setImgSrc] = useState(null);
     const [open, setOpen] = useState(false);
 
@@ -124,7 +122,7 @@ const Employee = () => {
 
     async function GetSubString(codigo) {
         try {
-            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 3);
+            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 5);
             if (lsServerCatalog.status === 200) {
                 var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
                     value: item.idCatalogo,
@@ -169,6 +167,8 @@ const Employee = () => {
         var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
         var resultMunicipioNacimiento = await GetSubString(lsResulCode);
         setMunicipioN(resultMunicipioNacimiento);
+
+        console.log("Datos = ", lsResulCode, resultMunicipioNacimiento, event.target.value);
     };
 
     const handleChangeDptoResidenciaTrabaja = async (event) => {
@@ -179,22 +179,21 @@ const Employee = () => {
         setLsMunicipioTrabaja(resultMunicipioNacimiento);
     };
 
-    const handleChangeArea = async (event) => {
-        setEventArea(event.target.value);
-
-        var lsResulCode = String(lsCodigoFilterArea.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
-        var resultSubArea = await GetSubString(lsResulCode);
-        setSubArea(resultSubArea);
-    };
-
     async function GetAll() {
         try {
-            const lsServerCatalog = await GetAllCatalog(0, 0);
-            var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
+            const lsServerCompany = await GetAllCompany(0, 0);
+            var resultCompany = lsServerCompany.data.entities.map((item) => ({
+                value: item.codigo,
+                label: item.descripcionSpa
+            }));
+            setCompany(resultCompany);
+
+            const lsServerGes = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Ges);
+            var resultGes = lsServerGes.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setCatalog(resultCatalogo);
+            setLsGes(resultGes);
 
             const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
             var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
@@ -203,6 +202,13 @@ const Employee = () => {
             }));
             setDepartamento(resultDepartamento);
             setCodigoFilterDpto(lsServerDepartamento.data.entities);
+
+            const lsServerSubArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SubArea);
+            var resultSubArea = lsServerSubArea.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsSubArea(resultSubArea);
 
             const lsServerEscolaridad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Escolaridad);
             var resultEscolaridad = lsServerEscolaridad.data.entities.map((item) => ({
@@ -273,7 +279,6 @@ const Employee = () => {
                 label: item.nombre
             }));
             setArea(resultArea);
-            setCodigoFilterArea(lsServerArea.data.entities);
 
             const lsServerGrupo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Grupo);
             var resultGrupo = lsServerGrupo.data.entities.map((item) => ({
@@ -323,13 +328,6 @@ const Employee = () => {
                 label: item.nombre
             }));
             setCesantias(resultCesantias);
-
-            const lsServerCompany = await GetAllCompany(0, 0);
-            var resultCompany = lsServerCompany.data.entities.map((item) => ({
-                value: item.codigo,
-                label: item.descripcionSpa
-            }));
-            setCompany(resultCompany);
         } catch (error) {
             dispatch({
                 type: SNACKBAR_OPEN,
@@ -348,7 +346,6 @@ const Employee = () => {
     }, [])
 
     const CleanCombo = () => {
-        setEventArea('');
         setImgSrc(null);
         setDptoResidencia('');
         setDptoNacido('');
@@ -358,14 +355,13 @@ const Employee = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostEmployee(datos.documento, datos.nombres, FormatDate(datos.fechaNaci), datos.type, datos.departamento,
-                eventArea, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido, FormatDate(datos.fechaContrato),
+                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido, FormatDate(datos.fechaContrato),
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
                 datos.direccionResidencia, datos.direccionResidenciaTrabaja, datos.municipioResidencia, dptoResidenciaTrabaja,
                 datos.municipioResidenciaTrabaja, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(datos.termDate),
-                datos.bandera, datos.ges, 'Usuario Modifica', FormatDate(new Date()), user.id,
-                FormatDate(new Date()), imgSrc);
+                1, datos.ges, user.email, FormatDate(new Date()), '', FormatDate(new Date()), imgSrc);
 
             if (imgSrc != null) {
                 if (Object.keys(datos.length !== 0)) {
@@ -663,14 +659,16 @@ const Employee = () => {
                         </FormProvider>
                     </Grid>
                     <Grid item xs={3}>
-                        <SelectOnChange
-                            name="area"
-                            label="Area"
-                            value={eventArea}
-                            options={lsArea}
-                            onChange={handleChangeArea}
-                            size={matchesXS ? 'small' : 'medium'}
-                        />
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="area"
+                                label="Area"
+                                defaultValue=""
+                                options={lsArea}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
                     <Grid item xs={3}>
                         <FormProvider {...methods}>
@@ -897,30 +895,20 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="bandera"
-                                label="Bandera"
-                                defaultValue=""
-                                options={catalog}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+
                     <Grid item xs={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="ges"
                                 label="Ges"
                                 defaultValue=""
-                                options={catalog}
+                                options={lsGes}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
                         </FormProvider>
                     </Grid>
+
                 </Grid>
             </SubCard>
             <Grid sx={{ pb: 2 }} />

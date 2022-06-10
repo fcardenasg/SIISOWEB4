@@ -53,7 +53,8 @@ const UpdateEmployee = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
-    const [catalog, setCatalog] = useState([]);
+    const [lsCatalogo, setLsCatalogo] = useState([]);
+    const [lsGes, setLsGes] = useState([]);
     const [employee, setEmployee] = useState([]);
     const [company, setCompany] = useState([]);
     const [lsEscolaridad, setEscolaridad] = useState([]);
@@ -63,13 +64,13 @@ const UpdateEmployee = () => {
     const [lsSede, setSede] = useState([]);
     const [lsGenero, setGenero] = useState([]);
     const [lsCodigoFilter, setCodigoFilter] = useState([]);
-    const [lsCodigoFilterArea, setCodigoFilterArea] = useState([]);
     const [lsEstadoCivil, setEstadoCivil] = useState([]);
     const [lsTipoContrato, setTipoContrato] = useState([]);
     const [lsRol, setRol] = useState([]);
+    const [lsGeneralPosition, setGeneralPosition] = useState([]);
     const [lsRosterPosition, setRosterPosition] = useState([]);
     const [lsArea, setArea] = useState([]);
-    const [lsSubArea, setSubArea] = useState([]);
+    const [lsSubArea, setLsSubArea] = useState([]);
     const [lsDepartEmpresa, setDepartEmpresa] = useState([]);
     const [lsGrupo, setGrupo] = useState([]);
     const [lsTurno, setTurno] = useState([]);
@@ -85,20 +86,12 @@ const UpdateEmployee = () => {
     const [dptoResidencia, setDptoResidencia] = useState('');
     const [municipioNacido, setMunicipioNacido] = useState('');
     const [municipioResidencia, setMunicipioResidencia] = useState('');
-    const [eventArea, setEventArea] = useState('');
-    const [eventSubArea, setEventSubArea] = useState('');
     const [imgSrc, setImgSrc] = useState(null);
     const [open, setOpen] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
 
     async function GetAll() {
         try {
-            const lsServerCatalog = await GetAllCatalog(0, 0);
-            var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setCatalog(resultCatalogo);
 
             const lsServerEmployeeId = await GetByIdEmployee(id);
             if (lsServerEmployeeId.status === 200) {
@@ -107,8 +100,14 @@ const UpdateEmployee = () => {
                 setDptoNacido(lsServerEmployeeId.data.dptoNacido);
                 setDptoResidenciaTrabaja(lsServerEmployeeId.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId.data.dptoResidencia);
-                setEventArea(lsServerEmployeeId.data.area);
             }
+
+            const lsServerCatalogo = await GetAllCatalog(0, 0);
+            var resultCatalogo = lsServerCatalogo.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCatalogo(resultCatalogo);
 
             const lsServerDepartEmpresa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DepartEmpresa);
             var resultDepartEmpresa = lsServerDepartEmpresa.data.entities.map((item) => ({
@@ -116,6 +115,27 @@ const UpdateEmployee = () => {
                 label: item.nombre
             }));
             setDepartEmpresa(resultDepartEmpresa);
+
+            const lsServerGeneralPosition = await GetAllByTipoCatalogo(0, 0, CodCatalogo.GeneralPosition);
+            var resultGeneralPosition = lsServerGeneralPosition.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setGeneralPosition(resultGeneralPosition);
+
+            const lsServerGes = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Ges);
+            var resultGes = lsServerGes.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsGes(resultGes);
+
+            const lsServerSubArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SubArea);
+            var resultSubArea = lsServerSubArea.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsSubArea(resultSubArea);
 
             const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
             var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
@@ -180,7 +200,6 @@ const UpdateEmployee = () => {
                 label: item.nombre
             }));
             setArea(resultArea);
-            setCodigoFilterArea(lsServerArea.data.entities);
 
             const lsServerGrupo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Grupo);
             var resultGrupo = lsServerGrupo.data.entities.map((item) => ({
@@ -266,7 +285,7 @@ const UpdateEmployee = () => {
 
     async function GetSubString(codigo) {
         try {
-            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 3);
+            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 5);
             if (lsServerCatalog.status === 200) {
                 var resultMunicipio = lsServerCatalog.data.entities.map((item) => ({
                     value: item.idCatalogo,
@@ -321,14 +340,6 @@ const UpdateEmployee = () => {
         setLsMunicipioTrabaja(resultMunicipioNacimiento);
     };
 
-    const handleChangeArea = async (event) => {
-        setEventArea(event.target.value);
-
-        var lsResulCode = String(lsCodigoFilterArea.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
-        var resultSubArea = await GetSubString(lsResulCode);
-        setSubArea(resultSubArea);
-    };
-
     const CapturePhoto = useCallback(() => {
         const imageSrc = WebCamRef.current.getScreenshot();
         setImgSrc(imageSrc);
@@ -338,17 +349,16 @@ const UpdateEmployee = () => {
         try {
             const municipioResidencia_DATA = municipioResidencia == '' ? datos.municipioResidencia : municipioResidencia;
             const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
-            const subArea_DATA = eventSubArea == '' ? datos.subArea : eventSubArea;
             const municipioTrabaja_DATA = municipioResidenciaTrabaja == '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
 
             const DataToUpdate = PutEmployee(datos.documento, datos.nombres, FormatDate(new Date(datos.fechaNaci)), datos.type, datos.departamento,
-                eventArea, subArea_DATA, datos.grupo, municipioNacido_DATA, dptoNacido, FormatDate(new Date(datos.fechaContrato)),
+                datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, FormatDate(new Date(datos.fechaContrato)),
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
                 datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidenciaTrabaja,
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date(datos.termDate)),
-                datos.bandera, datos.ges, user.id, FormatDate(new Date()), employee.usuarioCreacion, FormatDate(employee.fechaCreacion), imgSrc);
+                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.email, FormatDate(new Date()), imgSrc);
 
             if (imgSrc != null) {
                 if (Object.keys(datos.length !== 0)) {
@@ -628,7 +638,7 @@ const UpdateEmployee = () => {
                                         name="generalPosition"
                                         label="General Position"
                                         defaultValue={employee.generalPosition}
-                                        options={catalog}
+                                        options={lsGeneralPosition}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -647,38 +657,28 @@ const UpdateEmployee = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
-                                <SelectOnChange
-                                    name="area"
-                                    label="Area"
-                                    value={eventArea}
-                                    options={lsArea}
-                                    onChange={handleChangeArea}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="area"
+                                        label="Area"
+                                        defaultValue={employee.area}
+                                        options={lsArea}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
-                                {lsSubArea.length != 0 ? (
-                                    <SelectOnChange
+                                <FormProvider {...methods}>
+                                    <InputSelect
                                         name="subArea"
                                         label="Subarea"
-                                        value={eventSubArea}
+                                        defaultValue={employee.subArea}
                                         options={lsSubArea}
-                                        onChange={(e) => setEventSubArea(e.target.value)}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
                                     />
-                                ) : (
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="subArea"
-                                            label="Subarea"
-                                            defaultValue={employee.subArea}
-                                            disabled
-                                            options={catalog}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                )}
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -761,7 +761,7 @@ const UpdateEmployee = () => {
                                             label="Municipio de Nacimiento"
                                             defaultValue={employee.municipioNacido}
                                             disabled
-                                            options={catalog}
+                                            options={lsCatalogo}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -795,7 +795,7 @@ const UpdateEmployee = () => {
                                             label="Municipio de Residencia"
                                             defaultValue={employee.municipioResidencia}
                                             disabled
-                                            options={catalog}
+                                            options={lsCatalogo}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -840,7 +840,7 @@ const UpdateEmployee = () => {
                                             label="Municipio de Residencia Laboral"
                                             defaultValue={employee.municipioResidenciaTrabaja}
                                             disabled
-                                            options={catalog}
+                                            options={lsCatalogo}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -927,25 +927,14 @@ const UpdateEmployee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="bandera"
-                                        label="Bandera"
-                                        defaultValue={employee.bandera}
-                                        options={catalog}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
+
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="ges"
                                         label="Ges"
                                         defaultValue={employee.ges}
-                                        options={catalog}
+                                        options={lsGes}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />

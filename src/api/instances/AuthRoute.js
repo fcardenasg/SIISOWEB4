@@ -38,6 +38,9 @@ export const Url = {
     Asesorias: 'api/Asesorias',
     AsesoriasId: 'api/Asesorias/id',
 
+    RegistroAtencion: 'api/RegistroAtencion',
+    RegistroAtencionId: 'api/RegistroAtencion/id',
+
     HistoriaLaboral: 'api/HistoriaLaboral',
     HistoriaLaboralGetAllByDocument: 'api/HistoriaLaboral/GetAllByDocument',
     HistoriaLaboralId: 'api/HistoriaLaboral/id',

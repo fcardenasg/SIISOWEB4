@@ -29,12 +29,9 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-import BodyEmployee from './ViewAssistance';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-
-import { GetAllAssistance, DeleteAssistance } from 'api/clients/AssistanceClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -555,13 +552,6 @@ const ListOccupationalExamination = () => {
                                                 </IconButton>
                                             </Tooltip>
                                         </TableCell>
-
-                                        <Modal style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                            open={open} onClose={handleClose} aria-labelledby="simple-modal-title"
-                                            aria-describedby="simple-modal-description"
-                                        >
-                                            <BodyEmployee IdEmployee={row.id} modalStyle={modalStyle} handleClose={handleClose} />
-                                        </Modal>
                                     </TableRow>
                                 );
                             })}

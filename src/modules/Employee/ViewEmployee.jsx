@@ -30,12 +30,12 @@ function getModalStyle() {
 const BodyEmployee = forwardRef(({ modalStyle, IdEmployee, handleClose }, ref) => (
 
     <div ref={ref} tabIndex={-1}>
-     
+
         <MainCard
             style={modalStyle}
             sx={{
                 position: 'absolute',
-                width: { xs: 280, lg: 450 },
+                width: { xs: 300, lg: 350 },
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)'
@@ -48,7 +48,6 @@ const BodyEmployee = forwardRef(({ modalStyle, IdEmployee, handleClose }, ref) =
                 </IconButton>
             }
         >
-            {console.log("IdEmployee = ", IdEmployee)}
             <CardContent>
                 <DetailsEmployee id={IdEmployee} />
             </CardContent>

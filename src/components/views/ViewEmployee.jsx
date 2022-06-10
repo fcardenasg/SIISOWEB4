@@ -176,7 +176,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
             </Grid>
 
             <Grid item xs={12}>
-                <Grid container spacing={3}>
+                <Grid container spacing={2}>
                     <ViewData
                         icons={ViewEmployeeDetails[0].icons}
                         nameData={lsEmployee.email}
@@ -255,7 +255,7 @@ const ViewEmployee = ({ lsEmployee = [], documento, disabled = false, onChange, 
                         <CardMedia
                             component="img"
                             image={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : user}
-                            sx={{ width: 260, borderRadius: '150px', overflow: 'hidden' }}
+                            sx={{ width: 260, borderRadius: '150px' }}
                         />
                     </Grid>
 

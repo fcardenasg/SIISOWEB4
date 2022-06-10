@@ -19,6 +19,7 @@ import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 const CardStyle3 = () => {
     const theme = useTheme();
     const [users, setUsers] = useState([]);
+
     const getUsers = async () => {
         const response = await axios.get('/api/profile-card/list');
         setUsers(response.data.users);
@@ -47,6 +48,7 @@ const CardStyle3 = () => {
     }
 
     const [search, setSearch] = useState('');
+
     const handleSearch = async (event) => {
         const newString = event?.target.value;
         setSearch(newString);
@@ -106,6 +108,7 @@ const CardStyle3 = () => {
                             >
                                 10 Rows
                             </Button>
+
                             <Menu
                                 id="menu-user-card-style3"
                                 anchorEl={anchorEl}

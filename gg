@@ -1,0 +1,26 @@
+atencion: 3921
+contingencia: undefined
+diaTurno: undefined
+docSolicitante: ""
+documento: "94367343"
+duracion: "2022-06-09"
+estadoCaso: undefined
+estadoPac: "Pendiente por Atención"
+fecha: "2022-06-09"
+fechaCierreAtencion: "2022-06-09"
+fechaDigitacion: "2022-06-09"
+fechaModifico: ""
+fechaRegistro: "2022-06-09"
+iMC: "26.8"
+medico: undefined
+motivo: undefined
+numeroHistoria: 0
+observaciones: "PRUEBA"
+peso: "85"
+sede: 1108
+talla: "1.78"
+tipo: undefined
+turno: undefined
+usuarioCierreAtencion: ""
+usuarioModifico: "correovisitante@gmail.com"
+usuarioRegistro: 0
