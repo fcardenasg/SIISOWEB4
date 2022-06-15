@@ -45,6 +45,10 @@ export const Url = {
     HistoriaLaboralGetAllByDocument: 'api/HistoriaLaboral/GetAllByDocument',
     HistoriaLaboralId: 'api/HistoriaLaboral/id',
 
+    HistoriaLaboralOtrasEmpresas: 'api/HistoriaLaboralOtrasEmpresas',
+    HistoriaLaboralOtrasEmpresasGetAllByDocument: 'api/HistoriaLaboralOtrasEmpresas/GetAllByDocument',
+    HistoriaLaboralOtrasEmpresasId: 'api/HistoriaLaboralOtrasEmpresas/id',
+
     CIE11: 'api/CIE11',
     CIE11Id: 'api/CIE11/id',
 

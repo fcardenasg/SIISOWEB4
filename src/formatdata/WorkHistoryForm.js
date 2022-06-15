@@ -1,7 +1,27 @@
-export function PostWorkHistory(fecha, idAtencion, documento, idEmpresa, idCargo, anio, meses) {
-    return { fecha, idAtencion, documento, idEmpresa, idCargo, anio, meses };
+export function PostWorkHistoryDLTD(fecha, idAtencion, documento, idEmpresa, idCargo, anio, meses,
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
+    return {
+        fecha, idAtencion, documento, idEmpresa, idCargo, anio, meses,
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+    };
 }
 
-export function PutWorkHistory(id, fecha, idAtencion, documento, idEmpresa, idCargo, anio, meses) {
+export function PutWorkHistoryDLTD(id, fecha, idAtencion, documento, idEmpresa, idCargo, anio, meses) {
     return { id, fecha, idAtencion, documento, idEmpresa, idCargo, anio, meses };
+}
+
+export function PostWorkHistoryEmpresa(fecha, idAtencion, documento, empresa, cargo, anio, meses,
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
+    return {
+        fecha, idAtencion, documento, empresa, cargo, anio, meses,
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+    };
+}
+
+export function PutWorkHistoryEmpresa(id, fecha, idAtencion, documento, empresa, cargo, anio, meses,
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
+    return {
+        id, fecha, idAtencion, documento, empresa, cargo, anio, meses,
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+    };
 }

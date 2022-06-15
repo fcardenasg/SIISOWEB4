@@ -271,7 +271,7 @@ const OccupationalExamination = () => {
                                 <Avatar sx={{ width: 100, height: 100 }} src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
                             </Grid>
                             <Grid item xs={4}>
-                                <TextField value={document} onChange={handleDocumento} fullWidth id="standard-basic" label="Documento" variant="standard" />
+                                <TextField value={document} onChange={(e) => setDocument(e.target.value)} onKeyDown={handleDocumento} fullWidth id="standard-basic" label="Documento" variant="standard" />
                             </Grid>
                         </Grid>
                     </Grid>

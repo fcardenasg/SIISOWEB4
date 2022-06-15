@@ -28,10 +28,10 @@ export const CodCatalogo = {
 
     PANO_ANALISISRUIDO: 8,
     PANO_ANALISISMPI: 8,
-    PANO_EXPOSICIÓN: 8,
-    PANO_MEDIDASCONTROL: 8,
-    PANO_RIESGO: 8,
-    PANO_GRADO_CONSINEPP: 8,
+    PANO_EXPOSICIÓN: 130,
+    PANO_MEDIDASCONTROL: 40,
+    PANO_RIESGO: 128,
+    PANO_GRADO_CONSINEPP: 131,
 
     HCO_VACUNAS: 8,
     HCO_FRECUENCIAS: 8,
@@ -137,13 +137,13 @@ export const DefaultValue = {
     AT_ASESORIA_MEDICA: 3911,
 
     /* RIESGOS */
-    RiesgoQuimico: 1,
-    RiesgoFisico: 1,
-    RiesgoPsicosocial: 1,
-    RiesgoBiologico: 1,
-    RiesgoErgonomicoCargaFisica_Postura: 1,
-    RiesgoErgonomicoCargaFisica_Fuerza: 1,
-    RiesgoErgonomicoCargaFisica_Movimiento: 1,
+    RiesgoQuimico: 3949,
+    RiesgoFisico: 3950,
+    RiesgoPsicosocial: 3952,
+    RiesgoBiologico: 3953,
+    RiesgoErgonomicoCargaFisica_Postura: 3954,
+    RiesgoErgonomicoCargaFisica_Fuerza: 4065,
+    RiesgoErgonomicoCargaFisica_Movimiento: 4066,
 
     Opcion_SI: 1,
     Opcion_NO: 1,
@@ -154,6 +154,7 @@ export const TitleButton = {
     Programacion: 'Programación',
     Imprimir: 'Imprimir',
     Cancelar: 'Cerrar',
+    Cerrar: 'Cancelar',
     Actualizar: 'Actualizar',
     Eliminar: 'Eliminar',
     Agregar: 'Nuevo',

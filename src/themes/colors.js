@@ -5,5 +5,6 @@ export const ColorDrummondltd = {
     GreenDrummond: '#8DC63F',
     OrangeDrummond: '#F26522',
     GrayDrummond: '#7C7C7B',
+    YellowSeDrummond: '#FFC20E',
     BlueSeDrummond: '#4978BC',
 }

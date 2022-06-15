@@ -211,7 +211,6 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
         GetAll();
     }, []);
 
-
     return (
         <Fragment>
             <ControlModal

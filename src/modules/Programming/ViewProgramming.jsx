@@ -8,16 +8,18 @@ import { Button, Card, CardContent, CardMedia, Chip, Grid, Typography } from '@m
 import { ColorDrummondltd } from 'themes/colors';
 import Avatar from 'ui-component/extended/Avatar';
 import { gridSpacing } from 'store/constant';
-import { IconEye } from '@tabler/icons';
+import { IconEye, IconCircleMinus } from '@tabler/icons';
 
-const ViewProgramming = ({ programming }) => {
+const ViewProgramming = ({ programming, onClickDelete }) => {
     const navigate = useNavigate();
     const theme = useTheme();
 
-    const ColorCard = programming.nameTipoAtencion === 'EMO' ? ColorDrummondltd.OrangeDrummond :
-        programming.nameTipoAtencion === 'TRIAGE' ? ColorDrummondltd.BlueDrummond :
-            programming.nameTipoAtencion === 'ENFERMERIA' ? ColorDrummondltd.RedDrummond :
-                programming.nameTipoAtencion === 'ASESORIAS' ? ColorDrummondltd.GreenDrummond : ColorDrummondltd.GrayDrummond;
+    const ColorCard = programming.nameAtencion === 'TRIAGE I' ? ColorDrummondltd.RedDrummond :
+        programming.nameAtencion === 'TRIAGE II' ? ColorDrummondltd.RedDrummond :
+            programming.nameTipoAtencion === 'ENFERMERIA' ? ColorDrummondltd.BlueDrummond :
+                programming.nameTipoAtencion === 'ASESORIAS' ? ColorDrummondltd.GreenDrummond :
+                    programming.nameTipoAtencion === 'EMO' ? ColorDrummondltd.GrayDrummond :
+                        programming.nameAtencion === 'TRIAGE III' ? ColorDrummondltd.YellowSeDrummond : ColorDrummondltd.GrayDrummond;
 
     const ChipColor = programming.estadoPac === 'PENDIENTE POR ATENCIÓN' ? ColorDrummondltd.BlueDrummond :
         programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' ? ColorDrummondltd.RedDrummond :
@@ -32,16 +34,19 @@ const ViewProgramming = ({ programming }) => {
                 textAlign: 'center'
             }}
         >
-            <CardMedia component="div" title="Atención" sx={{ height: '125px', bgcolor: ColorCard }}>
-                <Typography variant="h4" sx={{ pt: 5, color: 'white' }}>{programming.nameAtencion}</Typography>
+            <CardMedia component="div" title="Atención" sx={{ height: '90px', bgcolor: ColorCard }}>
+                <Typography variant="h6" sx={{
+                    pt: programming.nameAtencion === 'PRUEBAS DE ALCOHOL Y DROGAS' ?
+                        1.5 : 3, color: 'white'
+                }}>{programming.nameAtencion}</Typography>
             </CardMedia>
 
             <CardContent sx={{ p: 2, pb: '16px !important' }}>
-                <Grid container spacing={gridSpacing}>
+                <Grid container spacing={1}>
                     <Grid item xs={12}>
                         <Grid container spacing={gridSpacing}>
                             <Grid item xs={12}>
-                                <Avatar alt={programming.nameEmpleado} src={programming.empleadoFoto} sx={{ width: 72, height: 72, m: '-50px auto 0' }} />
+                                <Avatar alt={programming.nameEmpleado} src={programming.empleadoFoto} sx={{ width: 60, height: 60, m: '-50px auto 0' }} />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -86,9 +91,15 @@ const ViewProgramming = ({ programming }) => {
                             </Grid>
                         </Grid>
                     </Grid>
+
                     <Grid item xs={12}>     {/* /${programming.id} */}
                         <Button variant="outlined" onClick={() => navigate(`/occupational-examination/add`)} fullWidth startIcon={<IconEye />}>
                             Atender
+                        </Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button variant="outlined" color="error" onClick={() => onClickDelete(programming.id)} fullWidth startIcon={<IconCircleMinus />}>
+                            Anular
                         </Button>
                     </Grid>
                 </Grid>
@@ -99,6 +110,7 @@ const ViewProgramming = ({ programming }) => {
 
 ViewProgramming.propTypes = {
     programming: PropTypes.object,
+    onClickDelete: PropTypes.object
 };
 
 export default ViewProgramming;

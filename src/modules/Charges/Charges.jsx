@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// Import de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -8,119 +7,51 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-// Terceros
+import useAuth from 'hooks/useAuth';
+import { FormatDate } from 'components/helpers/Format';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import * as yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
+import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Import del Proyecto
 import { PostCargo } from 'formatdata/CargoForm';
-import { GetAllBySubTipoCatalogo, GetAllCatalog, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
-import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertCharges } from 'api/clients/ChargesClient';
-import { GetAllCharges } from 'api/clients/ChargesClient';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 
 const Charges = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [catalog, setCatalogo] = useState([]);
 
     const [lsSede, setLsSede] = useState([]);
-    const [lsVersion, setLsVersion] = useState([]);
     const [lsGes, setLsGes] = useState([]);
     const [lsCargo, setLsCargo] = useState([]);
-    const [lsCodigoFilterArea, setLsCodigoFilterArea] = useState([]);
 
     const [lsArea, setLsArea] = useState([]);
-    const [area, setArea] = useState('');
     const [lsSubarea, setLsSubarea] = useState([]);
-
-    async function GetSubString(codigo) {
-        try {
-            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 3);
-            if (lsServerCatalog.status === 200) {
-                var result = lsServerCatalog.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                return result;
-            } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Problemas al traer los datos de combo',
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-        } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
-        }
-    }
-
-
-    /* NUESTROS USESTATE */
-    const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
-    const [segmentoAgrupado, setSegmentoAgrupado] = useState('');
-
-    const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
-    const [segmentoAfectado, setSegmentoAfectado] = useState('');
-
-    const [subsegmento, setSubsegmento] = useState([]);
 
     const methods = useForm();
     // resolver: yupResolver(validationSchema),
-
-
     const { handleSubmit, errors, reset } = methods;
-
-    //Filtro entre  combo con codigo
-    const handleChangeArea = async (event) => {
-        try {
-            setArea(event.target.value);
-
-            var lsResulCode = String(lsCodigoFilterArea.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
-            var resultArea = await GetSubString(lsResulCode);
-            setLsSubarea(resultArea);
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
     async function GetAll() {
         try {
-            const lsCatalogo = await GetAllCatalog(0, 0);
-            setLsCodigoFilterArea(lsCatalogo.data.entities);
-
             const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Area);
             var resultArea = lsServerArea.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsArea(resultArea);
-            setLsCodigoFilterArea(lsServerArea.data.entities);
 
             const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
             var resultSede = lsServerSede.data.entities.map((item) => ({
@@ -129,12 +60,12 @@ const Charges = () => {
             }));
             setLsSede(resultSede);
 
-            const lsServerVersion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Version);
-            var resultVersion = lsServerVersion.data.entities.map((item) => ({
+            const lsServerSubArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SubArea);
+            var resultSubArea = lsServerSubArea.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsVersion(resultVersion);
+            setLsSubarea(resultSubArea);
 
             const lsServerGes = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Ges);
             var resultGes = lsServerGes.data.entities.map((item) => ({
@@ -144,6 +75,7 @@ const Charges = () => {
             setLsGes(resultGes);
 
             const lsServerCargo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RosterPosition);
+            console.log("lsServerCargo = ", lsServerCargo);
             var resultCargo = lsServerCargo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -160,8 +92,8 @@ const Charges = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostCargo(datos.sede, datos.rosterPosition, area,
-                datos.subArea, datos.descripcionCargo, datos.idversion, datos.idGES);
+            const DataToInsert = PostCargo(datos.sede, datos.rosterPosition, datos.area, datos.subArea,
+                datos.descripcionCargo, datos.idGES, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertCharges(DataToInsert);
@@ -176,7 +108,6 @@ const Charges = () => {
                         transition: 'SlideUp'
                     })
                     reset();
-                    setArea('');
                 }
             }
         } catch (error) {
@@ -222,23 +153,12 @@ const Charges = () => {
                 </Grid>
 
                 <Grid item xs={4}>
-                    <SelectOnChange
-                        name="idAreaCargo"
-                        label="Área"
-                        options={lsArea}
-                        size={matchesXS ? 'small' : 'medium'}
-                        value={area}
-                        onChange={handleChangeArea}
-                    />
-                </Grid>
-
-                <Grid item xs={4}>
                     <FormProvider {...methods}>
                         <InputSelect
-                            name="subArea"
-                            label="Subarea"
+                            name="area"
+                            label="Área"
                             defaultValue=""
-                            options={lsSubarea}
+                            options={lsArea}
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors}
                         />
@@ -248,10 +168,10 @@ const Charges = () => {
                 <Grid item xs={4}>
                     <FormProvider {...methods}>
                         <InputSelect
-                            name="idversion"
-                            label="Versión"
+                            name="subArea"
+                            label="Subarea"
                             defaultValue=""
-                            options={lsVersion}
+                            options={lsSubarea}
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors}
                         />
@@ -275,7 +195,6 @@ const Charges = () => {
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
-                            fullWidth
                             name="descripcionCargo"
                             label="Descripción"
                             size={matchesXS ? 'small' : 'medium'}

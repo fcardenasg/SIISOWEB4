@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// Import de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -9,14 +8,15 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-// Terceros
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Import del Proyecto
+import InputMultiSelects from 'components/input/InputMultiSelects';
+import useAuth from 'hooks/useAuth';
+import { FormatDate } from 'components/helpers/Format';
 import { PostPanorama } from 'formatdata/PanoramaForm';
 import { GetAllBySubTipoCatalogo, GetAllCatalog, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
@@ -24,14 +24,14 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertPanorama } from 'api/clients/PanoramaClient';
-import { GetAllPanorama } from 'api/clients/PanoramaClient';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetByIdCharges } from 'api/clients/ChargesClient';
 
 const Panorama = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -41,20 +41,16 @@ const Panorama = () => {
     const [lsRiesgo, setLsRiesgo] = useState([]);
     const [riesgo, setRiesgo] = useState('');
     const [lsClase, setLsClase] = useState([]);
-
     const [lsExposicion, setLsExposicion] = useState([]);
-
     const [lsGradoConSinEPP, setLsGradoConSinEPP] = useState([]);
     const [lsMedidascontrol, setLsMedidasControl] = useState([]);
-    const [lsAnalisisMPI, setLsAnalisisMPI] = useState([]);
-    const [lsAnalisisRuido, setLsAnalisisRuido] = useState([]);
+    const [medicaControl, setMedicaControl] = useState([]);
 
     const [lsCodigoFilterArea, setLsCodigoFilterRiesgo] = useState([]);
 
-
     async function GetSubString(codigo) {
         try {
-            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 4);
+            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 5);
             if (lsServerCatalog.status === 200) {
                 var result = lsServerCatalog.data.entities.map((item) => ({
                     value: item.idCatalogo,
@@ -110,9 +106,6 @@ const Panorama = () => {
             if (lsServerCargo.status === 200)
                 setCargo(lsServerCargo.data);
 
-            const lsCatalogo = await GetAllCatalog(0, 0);
-            setLsCodigoFilterRiesgo(lsCatalogo.data.entities);
-
             const lsServerRiesgo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PANO_RIESGO);
             var lresultRiesgo = lsServerRiesgo.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -128,13 +121,6 @@ const Panorama = () => {
             }));
             setLsExposicion(lsResultExposicion);
 
-            const lsServerAnalisisMPI = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PANO_ANALISISMPI);
-            var lresultAnalisisMPI = lsServerAnalisisMPI.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsAnalisisMPI(lresultAnalisisMPI);
-
             const lsServerMedidasControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PANO_MEDIDASCONTROL);
             var lsResultMedidasControl = lsServerMedidasControl.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -148,13 +134,6 @@ const Panorama = () => {
                 label: item.nombre
             }));
             setLsGradoConSinEPP(lresultGradoConSinEPP);
-
-            const lsServerAnalisisRuido = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PANO_ANALISISRUIDO);
-            var lresultAnalisisRuido = lsServerAnalisisRuido.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsAnalisisRuido(lresultAnalisisRuido);
         } catch (error) {
             console.log(error);
         }
@@ -167,7 +146,8 @@ const Panorama = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostPanorama(cargo.rosterPosition, riesgo, datos.clase, datos.exposicion, datos.gradoconEPP, datos.gradosinEPP,
-                datos.medidascontrol, datos.analisisMPI, datos.analisisRuido, datos.descripcionCargo);
+                JSON.stringify(medicaControl), datos.descripcionCargo, user.email,
+                FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertPanorama(DataToInsert);
@@ -182,6 +162,7 @@ const Panorama = () => {
                         transition: 'SlideUp'
                     })
                     reset();
+                    setMedicaControl([]);
                     setRiesgo('');
                 }
             }
@@ -271,52 +252,22 @@ const Panorama = () => {
                     </FormProvider>
                 </Grid>
 
-
-                <Grid item xs={4}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="medidascontrol"
-                            label="Medidas de control"
-                            defaultValue=""
-                            options={lsMedidascontrol}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
-                        />
-                    </FormProvider>
-                </Grid>
-
-
-                <Grid item xs={4}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="analisisMPI"
-                            label="Análisis MPI"
-                            defaultValue=""
-                            options={lsAnalisisMPI}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
-                        />
-                    </FormProvider>
-                </Grid>
-
-                <Grid item xs={4}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="analisisRuido"
-                            label="Análisis Ruido"
-                            defaultValue=""
-                            options={lsAnalisisRuido}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
-                        />
-                    </FormProvider>
-                </Grid>
-
                 <Grid item xs={12}>
+                    <InputMultiSelects
+                        fullWidth
+                        onChange={(event, value) => setMedicaControl(value)}
+                        value={medicaControl}
+                        label="Medidas de control"
+                        options={lsMedidascontrol}
+                    />
+                </Grid>
+
+                <Grid item sx={{ pb: 2 }} xs={12}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
-                            fullWidth
+                            multiline
+                            rows={3}
                             name="descripcionCargo"
                             label="Descripción"
                             size={matchesXS ? 'small' : 'medium'}
@@ -324,30 +275,30 @@ const Panorama = () => {
                         />
                     </FormProvider>
                 </Grid>
-            </Grid>
 
-            <Grid sx={{ pb: 2, pt: 3 }} item xs={12}>
-                <Grid container spacing={1}>
-                    <Grid item xs={4}>
-                        <AnimateButton>
-                            <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                {TitleButton.Guardar}
-                            </Button>
-                        </AnimateButton>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <AnimateButton>
-                            <Button variant="outlined" fullWidth onClick={() => navigate("/charges/list")}>
-                                {TitleButton.RegresarACargos}
-                            </Button>
-                        </AnimateButton>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <AnimateButton>
-                            <Button variant="outlined" fullWidth onClick={() => navigate("/panorama/list")}>
-                                {TitleButton.Cancelar}
-                            </Button>
-                        </AnimateButton>
+                <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={4}>
+                            <AnimateButton>
+                                <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                    {TitleButton.Guardar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/charges/list")}>
+                                    {TitleButton.RegresarACargos}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/panorama/list")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>

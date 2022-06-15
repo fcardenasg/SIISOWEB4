@@ -1,9 +1,15 @@
-export function PostCargo(sede, rosterPosition, area,subArea,descripcionCargo,idversion,idGES) {
-    return { sede, rosterPosition, area,subArea,descripcionCargo,idversion,idGES };
+export function PostCargo(sede, rosterPosition, area, subArea, descripcionCargo, idGES,
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
+    return {
+        sede, rosterPosition, area, subArea, descripcionCargo, idGES,
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+    };
 }
 
-export function PutCargo(idCargo, sede, rosterPosition, area,subArea,descripcionCargo,idversion,idGES) {
-    return { idCargo,sede, rosterPosition, area,subArea,descripcionCargo,idversion,idGES };
+export function PutCargo(idCargo, sede, rosterPosition, area, subArea, descripcionCargo, idGES,
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
+    return {
+        idCargo, sede, rosterPosition, area, subArea, descripcionCargo, idGES,
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+    };
 }
-
-

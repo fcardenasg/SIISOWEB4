@@ -1,5 +1,4 @@
-// Import de Material-ui
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -10,14 +9,12 @@ import {
 } from '@mui/material';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 
-// Terceros
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Import del Proyecto
 import ViewPdf from 'components/controllers/ViewPdf';
 import { GetAllBySegAfectado, GetAllBySegAgrupado, GetAllBySubsegmento, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -39,9 +36,6 @@ import InputOnChange from 'components/input/InputOnChange';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { InsertOccupationalMedicine } from 'api/clients/OccupationalMedicineClient';
-
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-const mic = new SpeechRecognition();
 
 const OccupationalMedicine = () => {
     const dispatch = useDispatch();
@@ -132,38 +126,6 @@ const OccupationalMedicine = () => {
     const [fechaEstructuracionPclInstFinal, setFechaEstructuracionPclInstFinal] = useState(new Date());
     const [fechaPagoInstaFinal, setFechaPagoInstaFinal] = useState(new Date());
     const [fechaPagoRecalificadoInstaFinal, setFechaPagoRecalificadoInstaFinal] = useState(new Date());
-
-    const [isListening, setIsListening] = useState(false);
-    const [note, setNote] = useState(null);
-
-    const handleListen = () => {
-        if (isListening) {
-            mic.start()
-            mic.onend = () => {
-                console.log('continue..')
-                mic.start()
-            }
-        } else {
-            mic.stop()
-            mic.onend = () => {
-                console.log('Stopped Mic on Click')
-            }
-        }
-        mic.onstart = () => {
-            console.log('Mics on')
-        }
-        mic.onresult = event => {
-            const transcript = Array.from(event.results)
-                .map(result => result[0])
-                .map(result => result.transcript)
-                .join('')
-            console.log(transcript)
-            setNote(transcript)
-            mic.onerror = event => {
-                console.log(event.error)
-            }
-        }
-    }
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
@@ -394,6 +356,7 @@ const OccupationalMedicine = () => {
     }
 
     const allowedFiles = ['application/pdf'];
+
     const handleFile = (e) => {
         let selectedFile = e.target.files[0];
         setFileUpload(selectedFile);
@@ -418,8 +381,7 @@ const OccupationalMedicine = () => {
 
     useEffect(() => {
         GetAll();
-        handleListen();
-    }, [isListening])
+    }, [])
 
     const CleanCombo = () => {
         setLsSegmentoAfectado([]); setLsSubsegmento([]); setLsCie11([]); setSegmentoAfectado('');
@@ -433,7 +395,7 @@ const OccupationalMedicine = () => {
         setFechaEstructuracionOrigenInstaFinal(new Date()); setFechaCalificacionPclInstFinal(new Date()); setFechaEstructuracionPclInstFinal(new Date());
         setFechaPagoInstaFinal(new Date()); setFechaPagoRecalificadoInstaFinal(new Date());
 
-        setClickAttend(false); setImgSrc(null); setNote(null); setDocument(''); setNombres(''); setEmail(''); setCelular(''); setEscolaridad('');
+        setClickAttend(false); setImgSrc(null); setDocument(''); setNombres(''); setEmail(''); setCelular(''); setEscolaridad('');
         setEmpresa(''); setSede(''); setFechaNaci(null); setGenero(''); setEstadoCivil(''); setContacto(''); setTelefonoContacto(''); setFechaContrato(null);
         setTipoContrato(''); setPayStatus(''); setType(''); setRosterPosition(''); setGeneralPosition(''); setDepartamento(''); setArea(''); setSubArea(''); setGrupo('');
         setTurno(''); setDireccionResidencia(''); setDptoResidencia(''); setMunicipioResidencia(''); setMunicipioNacido(''); setDptoNacido(''); setEps(''); setAfp('');
@@ -1441,10 +1403,9 @@ const OccupationalMedicine = () => {
                             />
                         </FormProvider>
                     </Grid>
-                </Grid> 
+                </Grid>
             </SubCard>
             <Grid sx={{ pb: 2 }} />
-
 
             <SubCard darkTitle title={<><Typography variant="h4">INSTANCIA FINAL</Typography></>}>
                 <Grid container spacing={2}>
@@ -1665,7 +1626,17 @@ const OccupationalMedicine = () => {
                 <Grid xs={12} sx={{ pl: 4, pt: 4 }} container spacing={2}>
                     <input type="file" onChange={handleFile} />
                 </Grid>
-                <ViewPdf pdfFile={fileUpload} />
+                {/* <object type="application/pdf"
+                    data={pdfFile}
+                    width="1020"
+                    height="500">
+                </object> */}
+
+                <iframe
+                    width="1020"
+                    height="500"
+                    src={pdfFile}
+                />
             </SubCard>
 
 
