@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 import PersonalData from './PersonalData';
-import WorkHistory from './WorkHistory';
+import WorkHistory from './WorkHistory/WorkHistory';
 import Emo from './Emo';
 
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
@@ -32,7 +32,7 @@ import { InsertOccupationalExamination } from 'api/clients/OccupationalExaminati
 import { Message } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { TitleButton } from 'components/helpers/Enums';
-import { FormatDate, ViewFormat } from 'components/helpers/Format';
+import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
 import User from 'assets/img/user.png'
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -282,10 +282,10 @@ const OccupationalExamination = () => {
                             </Typography>
                             <Grid container spacing={1} direction="row" justifyContent="left" alignItems="center">
                                 <Grid item>
-                                    <Typography variant="h6">{lsEmployee.nameGenero}</Typography>
+                                    <Typography variant="h5">{lsEmployee.nameGenero}</Typography>
                                 </Grid>
                                 <Grid item>
-                                    <Typography variant="h6">{ViewFormat(lsEmployee.fechaNaci)}</Typography>
+                                    <Typography variant="h5">{GetEdad(new Date(lsEmployee.fechaNaci))}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid> : <Grid item xs={7}></Grid>}

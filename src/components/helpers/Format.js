@@ -25,7 +25,7 @@ function GetEdad(dateString) {
     ) {
         edad--
     }
-    return edad
+    return edad + ' AÑOS';
 }
 
 export {

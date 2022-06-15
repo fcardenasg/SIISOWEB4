@@ -4,7 +4,6 @@ import { Grid, InputAdornment, OutlinedInput, TablePagination, Typography } from
 import { useDispatch } from 'react-redux';
 import { Message } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
-import AlertDelete from 'components/alert/AlertDelete';
 import ViewProgramming from './ViewProgramming';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
@@ -182,15 +181,6 @@ const ListProgramming = () => {
                     </Grid>
                 </Grid>
             </Grid>
-
-            <AlertDelete
-                title="Anular registro de atención"
-                subtitle="¿Esta seguro de eliminar el registro de atención?"
-                open={open}
-                onClickDelete={onClickDelete}
-                onClickCancelar={() => setOpen(false)}
-                key={lsProgramming.id}
-            />
         </MainCard>
     );
 };

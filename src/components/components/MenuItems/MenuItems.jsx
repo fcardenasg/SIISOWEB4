@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { CheckBox, CheckBoxOutlined, AddBox } from "@mui/icons-material";
 
-const MenuItems = ({ items, selectedItem }) => {
+const MenuItems = ({ items, selectedItem, title }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -31,7 +31,7 @@ const MenuItems = ({ items, selectedItem }) => {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
-        <AddBox color="error" /><Typography variant="h5" sx={{ pl: 1 }}>Agregar Opción</Typography>
+        <AddBox color="error" /><Typography variant="h5" sx={{ pl: 1 }}>{title}</Typography>
       </Button>
       <Menu
         id="basic-menu"

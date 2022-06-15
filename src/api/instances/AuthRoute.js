@@ -29,6 +29,10 @@ export const Url = {
     Empresa: 'api/Empresa',
     EmpresaId: 'api/Empresa/id',
 
+    RiesgoHistoriaLaboral: 'api/RiesgoHistoriaLaboral',
+    RiesgoHistoriaLaboralId: 'api/RiesgoHistoriaLaboral/id',
+    RiesgoHistoriaLaboralByCharge: 'api/RiesgoHistoriaLaboral/GetAllByCharge',
+
     Proveedor: 'api/Proveedor',
     ProveedorId: 'api/Proveedor/id',
 

@@ -62,7 +62,7 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
                                         <Typography variant="body2">{programming.empleadoGenero}</Typography>
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <Typography variant="body2">{GetEdad(new Date(programming.empleadoFechaNacimiento))} AÑOS</Typography>
+                                        <Typography variant="body2">{GetEdad(new Date(programming.empleadoFechaNacimiento))}</Typography>
                                     </Grid>
                                 </Grid>
                             </Grid>

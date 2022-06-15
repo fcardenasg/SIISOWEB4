@@ -28,7 +28,7 @@ const Dashboard = () => {
     return (
         <Fragment>
             <Grid container sx={{ pb: 2 }} direction="column" justifyContent="flex-start" alignItems="flex-end">
-                <MenuItems items={itemsMenuButton} selectedItem={selectedItem} />
+                <MenuItems items={itemsMenuButton} selectedItem={selectedItem} title="Agregar Opción" />
             </Grid>
 
             <Grid container spacing={2}>

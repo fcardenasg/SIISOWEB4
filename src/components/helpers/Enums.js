@@ -169,6 +169,7 @@ export const ValidationMessage = {
 
 export const Message = {
     Guardar: 'Registro guardado con éxito',
+    RiesgoGuardado: 'Riesgos Cargados',
     Actualizar: 'Registro actualizado con éxito',
     Eliminar: 'Registro eliminado con éxito',
 

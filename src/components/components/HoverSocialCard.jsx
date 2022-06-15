@@ -63,7 +63,8 @@ HoverSocialCard.propTypes = {
     secondary: PropTypes.string,
     iconPrimary: PropTypes.object,
     onClick: PropTypes.object,
-    color: PropTypes.string
+    color: PropTypes.string,
+    variant: PropTypes.string,
 };
 
 export default HoverSocialCard;
