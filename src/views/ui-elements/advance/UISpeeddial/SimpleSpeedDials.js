@@ -47,6 +47,7 @@ export default function SimpleSpeedDials() {
         <div>
             <FormControlLabel control={<Switch checked={hidden} onChange={handleHiddenChange} color="primary" />} label="Hidden" />
             <FormLabel component="legend">Direction</FormLabel>
+
             <RadioGroup sx={{ mt: 1 }} aria-label="direction" name="direction" value={direction} onChange={handleDirectionChange} row>
                 <FormControlLabel value="up" control={<Radio />} label="Up" />
                 <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
@@ -57,6 +58,7 @@ export default function SimpleSpeedDials() {
                     <FormControlLabel value="left" control={<Radio />} label="Left" />
                 </Box>
             </RadioGroup>
+
             <Box sx={{ position: 'relative', marginTop: theme.spacing(3), height: 300 }}>
                 <SpeedDial
                     sx={{

@@ -19,10 +19,12 @@ import {
     Stack,
 } from '@mui/material';
 
-import { AlertDelete } from 'components/alert/AlertDelete';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import swal from 'sweetalert';
+import { MessageSuccess, MessageDelete, ParamDelete, ParamLoadingData } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import { GetAllByCharge } from 'api/clients/PanoramaClient';
-import { GetAllByChargeWHR } from 'api/clients/WorkHistoryRiskClient';
+import { GetAllByChargeWHR, GetAllByChargeWHRAdvance, GetAllByHistorico } from 'api/clients/WorkHistoryRiskClient';
 import { PostWorkHistoryDLTD, PostWorkHistoryEmpresa } from 'formatdata/WorkHistoryForm';
 import { PostWorkHistoryRiskDLTD } from 'formatdata/WorkHistoryRiskForm';
 import { useDispatch } from 'react-redux';
@@ -47,12 +49,11 @@ import {
 } from 'api/clients/WorkHistoryOtherCompany';
 import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import Cargando from 'components/Cargando';
+import LoadingLine from 'components/loading/LoadingLine';
 import { SubRow } from './SubRow';
 import { MenuItem } from './MenuItem';
 
-function RowCompany({ row, handleDelete }) {
+function RowCompany({ row = [], handleDelete }) {
     const [open, setOpen] = useState(false);
     const [lsQuimico, setLsQuimico] = useState([]);
     const [lsFisico, setLsFisico] = useState([]);
@@ -104,28 +105,30 @@ function RowCompany({ row, handleDelete }) {
 
     return (
         <Fragment>
-            <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
-                <TableCell sx={{ pl: 3 }}>
-                    <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                </TableCell>
-
-                <TableCell component="th" scope="row">
-                    {row.empresa}
-                </TableCell>
-                <TableCell>{row.cargo}</TableCell>
-                <TableCell>{ViewFormat(row.fecha)}</TableCell>
-                <TableCell>{row.anio}</TableCell>
-                <TableCell>{row.meses}</TableCell>
-                <TableCell>
-                    <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
-                        <IconButton color="error" size="small">
-                            <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+            {row.length != 0 ? <>
+                <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
+                    <TableCell sx={{ pl: 3 }}>
+                        <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                         </IconButton>
-                    </Tooltip>
-                </TableCell>
-            </TableRow>
+                    </TableCell>
+
+                    <TableCell component="th" scope="row">
+                        {row.empresa}
+                    </TableCell>
+                    <TableCell>{row.cargo}</TableCell>
+                    <TableCell>{ViewFormat(row.fecha)}</TableCell>
+                    <TableCell>{row.anio}</TableCell>
+                    <TableCell>{row.meses}</TableCell>
+                    <TableCell>
+                        <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
+                            <IconButton color="error" size="small">
+                                <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+                            </IconButton>
+                        </Tooltip>
+                    </TableCell>
+                </TableRow>
+            </> : <LoadingLine />}
 
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
@@ -155,11 +158,16 @@ RowCompany.propTypes = {
     handleDelete: PropTypes.object,
 };
 
-function RowDLTD({ row, handleDelete }) {
+function RowDLTD({ row = [], handleDelete, documento }) {
     const { user } = useAuth();
     const dispatch = useDispatch();
+    const [numId, setNumId] = useState(1);
 
+    const [waitNew, setWaitNew] = useState(false);
     const [open, setOpen] = useState(false);
+    const [openHistorico, setOpenHistorico] = useState(false);
+    const [lsHistorico, setLsHistorico] = useState([]);
+    const [lsNewQuimico, setLsNewQuimico] = useState([]);
     const [lsQuimico, setLsQuimico] = useState([]);
     const [lsFisico, setLsFisico] = useState([]);
     const [lsBiologico, setLsBiologico] = useState([]);
@@ -170,30 +178,14 @@ function RowDLTD({ row, handleDelete }) {
 
     async function GetAll() {
         try {
+            const lsServerQuimico = await GetAllByChargeWHR(0, 0, row.idCargo, DefaultValue.RiesgoQuimico);
+            if (lsServerQuimico.status === 200)
+                setLsQuimico(lsServerQuimico.data.entities);
 
-            const lsServerFisico = await GetAllByCharge(0, 0, row.idCargo, DefaultValue.RiesgoFisico);
-            if (lsServerFisico.status === 200)
-                setLsFisico(lsServerFisico.data.entities);
+            const lsServerRiesgoQuimico = await GetAllByChargeWHRAdvance(0, 0, row.idCargo, DefaultValue.RiesgoQuimico, row.id);
+            if (lsServerRiesgoQuimico.status === 200)
+                setLsNewQuimico(lsServerRiesgoQuimico.data.entities);
 
-            const lsServerPsicosocial = await GetAllByCharge(0, 0, row.idCargo, DefaultValue.RiesgoPsicosocial);
-            if (lsServerPsicosocial.status === 200)
-                setLsPsicosocial(lsServerPsicosocial.data.entities);
-
-            const lsServerBiologico = await GetAllByCharge(0, 0, row.idCargo, DefaultValue.RiesgoBiologico);
-            if (lsServerBiologico.status === 200)
-                setLsBiologico(lsServerBiologico.data.entities);
-
-            const lsServerErFuerza = await GetAllByCharge(0, 0, row.idCargo, DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza);
-            if (lsServerErFuerza.status === 200)
-                setLsErFuerza(lsServerErFuerza.data.entities);
-
-            const lsServerErMovi = await GetAllByCharge(0, 0, row.idCargo, DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento);
-            if (lsServerErMovi.status === 200)
-                setLsErMovi(lsServerErMovi.data.entities);
-
-            const lsServerErPost = await GetAllByCharge(0, 0, row.idCargo, DefaultValue.RiesgoErgonomicoCargaFisica_Postura);
-            if (lsServerErPost.status === 200)
-                setLsErPost(lsServerErPost.data.entities);
 
 
         } catch (error) {
@@ -205,33 +197,8 @@ function RowDLTD({ row, handleDelete }) {
         GetAll();
     }, [row.id]);
 
-    const handleRefresh = async () => {
-
-        const lsServerQuimico = await GetAllByCharge(0, 0, row.idCargo, DefaultValue.RiesgoQuimico);
-
-        if (lsServerQuimico.status === 200) {
-            var arrayQuimico = lsServerQuimico.data.entities;
-
-            for (let index = 0; index < arrayQuimico.length; index++) {
-                const riesgoQui = arrayQuimico[index];
-
-                const DataToInsert = PostWorkHistoryRiskDLTD();
-
-                if (DataToInsert !== null) {
-                    const result = await InsertWorkHistory(DataToInsert);
-                    if (result.status === 200) {
-
-                    }
-                }
-
-            }
-        }
-    }
-
     const handleClick = async (id) => {
         try {
-            console.log("id = ", id);
-
             if (id == 1) {
                 const lsServerQuimico = await GetAllByCharge(0, 0, row.idCargo, DefaultValue.RiesgoQuimico);
 
@@ -244,6 +211,8 @@ function RowDLTD({ row, handleDelete }) {
                         const DataToInsert = PostWorkHistoryRiskDLTD(row.id, row.fecha, row.documento, DefaultValue.RiesgoQuimico,
                             row.idCargo, riesgoQui.clase, riesgoQui.exposicion, riesgoQui.gradosinEPP, riesgoQui.gradoconEPP,
                             riesgoQui.medidascontrol, 0, 0, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+
+
 
                         if (DataToInsert) {
                             const result = await InsertWorkHistoryRisk(DataToInsert);
@@ -274,8 +243,99 @@ function RowDLTD({ row, handleDelete }) {
         }
     }
 
+    const handleClickMenu = (id) => {
+        try {
+            swal(ParamLoadingData).then(async (willDelete) => {
+                if (willDelete) {
+                    if (id == 1) {
+                        const lsServerQuimico = await GetAllByCharge(0, 0, row.idCargo, DefaultValue.RiesgoQuimico);
+
+                        if (lsServerQuimico.status === 200) {
+                            var arrayQuimico = lsServerQuimico.data.entities;
+
+                            for (let index = 0; index < arrayQuimico.length; index++) {
+                                const riesgoQui = arrayQuimico[index];
+
+                                const DataToInsert = PostWorkHistoryRiskDLTD(row.id, row.fecha, row.documento, DefaultValue.RiesgoQuimico,
+                                    row.idCargo, riesgoQui.clase, riesgoQui.exposicion, riesgoQui.gradosinEPP, riesgoQui.gradoconEPP,
+                                    riesgoQui.medidascontrol, 0, 0, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+
+                                if (DataToInsert) {
+                                    const result = await InsertWorkHistoryRisk(DataToInsert);
+                                    if (result.status === 200) {
+                                        if (index < arrayQuimico.length) {
+                                            dispatch({
+                                                type: SNACKBAR_OPEN,
+                                                open: true,
+                                                message: `${Message.RiesgoGuardado}`,
+                                                variant: 'alert',
+                                                alertSeverity: 'success',
+                                                close: false,
+                                                transition: 'SlideUp'
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        const lsServerRiesgoHL = await GetAllByChargeWHRAdvance(0, 0, row.idCargo, DefaultValue.RiesgoQuimico, row.id);
+                        if (lsServerRiesgoHL.status === 200) {
+                            setLsNewQuimico(lsServerRiesgoHL.data.entities);
+
+                        }
+                    }
+                }
+            });
+
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleClickHistorico = () => {
+
+    }
+
+    const handleClickButton = async (id) => {
+        try {
+            if (id == 8) {
+                const lsServerRiesgoHistorico = await GetAllByHistorico(0, 0, row.documento);
+                if (lsServerRiesgoHistorico.status === 200) {
+                    setLsHistorico(lsServerRiesgoHistorico.data.entities);
+                    setOpenHistorico(true);
+                }
+            }
+
+            setNumId(id);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    if (lsNewQuimico.length != 0) {
+        setTimeout(() => {
+            setWaitNew(true);
+        }, 1500)
+    }
+
     return (
         <Fragment>
+            <FullScreenDialog
+                open={openHistorico}
+                title="REGISTRO HISTÓRICO DE EXPOSICIÓN OCUPACIONAL"
+                handleClose={() => setOpenHistorico(false)}
+            >
+                <Grid container spacing={2}>
+                    <Grid item>
+                        <SubRow key={row.id} row={lsNewQuimico} title="EXPOSICIONES OCUPACIONALES" />
+                    </Grid>
+                </Grid>
+            </FullScreenDialog>
+
+
             <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
                 <TableCell sx={{ pl: 3 }}>
                     <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
@@ -304,9 +364,15 @@ function RowDLTD({ row, handleDelete }) {
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 1 }}>
 
-                            <MenuItem key={row.id} onClick={handleClick} />
+                            <MenuItem
+                                key={row.id}
+                                numId={numId}
+                                onClickButton={handleClickButton}
+                                onClickNuevo={handleClickMenu}
+                                onClickHistorico={handleClickHistorico}
+                            />
 
-                            {lsQuimico.length != 0 ? <SubRow key={row.id} row={lsQuimico} title="Riesgo Químico" /> : <></>}
+                            {waitNew ? <SubRow key={row.id} getAll={GetAll} row={lsNewQuimico} title="Riesgo Químico" /> : <></>}
 
 
                             {/* <SubRow key={row.id} row={lsFisico} title="Riesgo Físico" />
@@ -334,6 +400,9 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const theme = useTheme();
     const { user } = useAuth();
     const dispatch = useDispatch();
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
+
     const [addItemClickedEmpresa, setAddItemClickedEmpresa] = useState(false);
     const [addItemClickedDLTD, setAddItemClickedDLTD] = useState(false);
     const [lsWorkHistory, setLsWorkHistory] = useState([]);
@@ -346,6 +415,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors, reset } = methods;
+
 
     async function GetAll() {
         try {
@@ -382,24 +452,16 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const handleDeleteEmpresa = async (idWorkHistory) => {
         try {
             if (idWorkHistory !== null) {
-                const result = await DeleteWorkHistoryOtherCompany(idWorkHistory);
-                if (result.status === 200) {
-                    /* dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Eliminar}`,
-                        variant: 'alert',
-                        alertSeverity: 'error',
-                        close: false,
-                        transition: 'SlideUp'
-                    }) */
-
-                    AlertDelete(`${Message.Eliminar}`);
-
-
-                    setAddItemClickedEmpresa(false);
-                    GetAll();
-                }
+                swal(ParamDelete).then(async (willDelete) => {
+                    if (willDelete) {
+                        const result = await DeleteWorkHistoryOtherCompany(idWorkHistory);
+                        if (result.status === 200) {
+                            setOpenDelete(true);
+                            setAddItemClickedEmpresa(false);
+                            GetAll();
+                        }
+                    }
+                });
             }
         } catch (error) {
             console.log(error);
@@ -418,7 +480,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                         variant: 'alert',
                         alertSeverity: 'error',
                         close: false,
-                        transition: 'SlideUp'
+                        transition: 'SlideUp',
                     })
                     setAddItemClickedDLTD(false);
                     GetAll();
@@ -439,18 +501,10 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await InsertWorkHistoryOtherCompany(DataToInsert);
                     if (result.status === 200) {
-                        dispatch({
-                            type: SNACKBAR_OPEN,
-                            open: true,
-                            message: `${Message.Guardar}`,
-                            variant: 'alert',
-                            alertSeverity: 'success',
-                            close: false,
-                            transition: 'SlideUp'
-                        })
                         reset();
                         setAddItemClickedEmpresa(false);
                         GetAll();
+                        setOpenSuccess(true);
                     }
                 }
             } else {
@@ -510,6 +564,9 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
     return (
         <Grid container spacing={2}>
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <Grid item xs={12}>
                 <SubCard title="Historia Laboral otras empresas">
                     <TableContainer>
@@ -529,12 +586,11 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
-                            {lsWorkHistoryOtherCompany.length != 0 ?
-                                <TableBody>
-                                    {lsWorkHistoryOtherCompany.map((row) => (
-                                        <RowCompany key={row.id} row={row} handleDelete={handleDeleteEmpresa} />
-                                    ))}
-                                </TableBody> : <Cargando />}
+                            <TableBody>
+                                {lsWorkHistoryOtherCompany.map((row) => (
+                                    <RowCompany key={row.id} row={row} handleDelete={handleDeleteEmpresa} />
+                                ))}
+                            </TableBody>
                         </Table>
                     </TableContainer>
 
@@ -635,12 +691,11 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
-                            {lsWorkHistory.length != 0 ?
-                                <TableBody>
-                                    {lsWorkHistory.map((row) => (
-                                        <RowDLTD key={row.id} row={row} handleDelete={handleDeleteDLTD} />
-                                    ))}
-                                </TableBody> : <Cargando />}
+                            <TableBody>
+                                {lsWorkHistory.map((row) => (
+                                    <RowDLTD key={row.id} row={row} handleDelete={handleDeleteDLTD} />
+                                ))}
+                            </TableBody>
                         </Table>
                     </TableContainer>
 

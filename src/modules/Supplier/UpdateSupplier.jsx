@@ -15,7 +15,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import useAuth from 'hooks/useAuth';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 import { PutSupplier } from 'formatdata/SupplierForm';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { UpdateSuppliers, GetByIdSupplier } from 'api/clients/SupplierClient';

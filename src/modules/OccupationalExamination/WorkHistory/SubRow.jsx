@@ -1,3 +1,4 @@
+import { useState, Fragment } from 'react';
 import SubCard from 'ui-component/cards/SubCard';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
@@ -9,17 +10,28 @@ import {
     TableHead,
     TableRow,
 } from '@mui/material';
-import { Fragment } from 'react';
+import ModalRisk from './ModalRisk';
 
-export const SubRow = ({ title, row }) => {
+export const SubRow = ({ title, getAll, row }) => {
     const theme = useTheme();
+    const [open, setOpen] = useState(false);
+    const [idRisk, setIdRisk] = useState(0);
 
     const handleClick = (event, id) => {
-        alert(id);
+        setOpen(true);
+        setIdRisk(id);
     };
 
     return (
         <Fragment>
+            <ModalRisk
+                idRisk={idRisk}
+                key={row.id}
+                open={open}
+                title={'Editar ' + title}
+                onClose={() => setOpen(false)}
+                getAll={getAll}
+            />
 
             <TableContainer sx={{ pb: 2, pt: 4 }}>
                 <SubCard
@@ -29,7 +41,7 @@ export const SubRow = ({ title, row }) => {
                 >
                     <Table size="small" aria-label="purchases">
                         <TableHead>
-                            <TableRow>
+                            <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
                                 <TableCell>Consecutivo</TableCell>
                                 <TableCell>Clase</TableCell>
                                 <TableCell>Exposición</TableCell>
@@ -43,16 +55,15 @@ export const SubRow = ({ title, row }) => {
 
                         <TableBody>
                             {row.map((historyRow) => (
-                                <TableRow hover onClick={(event) => handleClick(event, historyRow.id)} key={historyRow.id}>
-
-                                    <TableCell>{historyRow.id}</TableCell>
-                                    <TableCell>{historyRow.nameClase}</TableCell>
-                                    <TableCell >{historyRow.nameExpocision}</TableCell>
-                                    <TableCell > {historyRow.nameGradoSinEPP} </TableCell>
-                                    <TableCell>{historyRow.nameGradoConEPP}</TableCell>
-                                    <TableCell >{historyRow.medidasControl}</TableCell>
-                                    <TableCell >{historyRow.anio}</TableCell>
-                                    <TableCell >{historyRow.mes}</TableCell>
+                                <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }} onClick={(event) => handleClick(event, historyRow.id)} key={historyRow.id}>
+                                    <TableCell sx={{ cursor: 'pointer' }}>{historyRow.id}</TableCell>
+                                    <TableCell sx={{ cursor: 'pointer' }}>{historyRow.nameClase}</TableCell>
+                                    <TableCell sx={{ cursor: 'pointer' }}>{historyRow.nameExpocision}</TableCell>
+                                    <TableCell sx={{ cursor: 'pointer' }}> {historyRow.nameGradoSinEPP} </TableCell>
+                                    <TableCell sx={{ cursor: 'pointer' }}>{historyRow.nameGradoConEPP}</TableCell>
+                                    <TableCell sx={{ cursor: 'pointer' }}>{historyRow.medidasControl}</TableCell>
+                                    <TableCell sx={{ cursor: 'pointer' }}>{historyRow.anio}</TableCell>
+                                    <TableCell sx={{ cursor: 'pointer' }}>{historyRow.mes}</TableCell>
 
                                 </TableRow>
                             ))}
@@ -67,5 +78,6 @@ export const SubRow = ({ title, row }) => {
 
 SubRow.propTypes = {
     title: PropTypes.string,
+    getAll: PropTypes.func,
     row: PropTypes.array,
 };

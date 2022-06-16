@@ -37,7 +37,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton'
 import SubCard from 'ui-component/cards/SubCard';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';

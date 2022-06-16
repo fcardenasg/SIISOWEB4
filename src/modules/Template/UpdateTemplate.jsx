@@ -13,7 +13,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import useAuth from 'hooks/useAuth';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 import { PutTemplate } from 'formatdata/TemplateForm';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { GetByIdTemplate } from 'api/clients/TemplateClient';

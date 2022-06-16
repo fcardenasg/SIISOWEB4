@@ -44,7 +44,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 
 // Audio
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition

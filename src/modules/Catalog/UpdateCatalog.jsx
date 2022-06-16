@@ -25,7 +25,7 @@ import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 
 const validationSchema = yup.object().shape({
     nombre: yup.string().required(`${ValidationMessage.Requerido}`),

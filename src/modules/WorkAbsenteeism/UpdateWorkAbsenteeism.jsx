@@ -17,7 +17,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 import { PutWorkAbsenteeism } from 'formatdata/WorkAbsenteeismForm';
 import { GetAllBySegAfectado, GetAllBySegAgrupado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';

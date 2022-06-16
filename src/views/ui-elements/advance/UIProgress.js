@@ -111,7 +111,7 @@ const UIProgress = () => {
     useEffect(() => {
         const timer = setInterval(() => {
             progressRef.current();
-        }, 500);
+        }, 5000);
 
         return () => {
             clearInterval(timer);

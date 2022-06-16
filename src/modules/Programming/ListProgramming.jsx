@@ -10,7 +10,7 @@ import { gridSpacing } from 'store/constant';
 
 import { IconSearch } from '@tabler/icons';
 import { GetAllAttention, DeleteAttention } from 'api/clients/AttentionClient';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {

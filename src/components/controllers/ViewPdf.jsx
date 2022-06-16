@@ -1,4 +1,4 @@
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 /* import React, { useState } from 'react';
 import { Document, Page } from 'react-pdf';
 

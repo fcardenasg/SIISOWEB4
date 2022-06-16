@@ -20,7 +20,7 @@ export const CodCatalogo = {
     Ges: 20,
     Cesantias: 19,
 
-    AtencionEMO: 8,
+    AtencionEMO: 138,
     GradoconEPP: 8,
     GradosinEPP: 8,
 
@@ -173,16 +173,19 @@ export const Message = {
     Actualizar: 'Registro actualizado con éxito',
     Eliminar: 'Registro eliminado con éxito',
 
+    TituloEliminar: '¿Estas seguro?',
+    TextoEliminar: 'Este registro se eliminara, ¿esta seguro de eliminarlo?',
+
+    TituloCargar: '¿Desea cargar la exposición ocupacional?',
+    TextoCargar: 'Se cargaran los riesgos, esto puede demorar un poco',
+
     NoEliminar: 'No se pudo eliminar el registro',
 
     ErrorDocumento: 'Por favor, ingrese un número de documento',
     ErrorDeDatos: 'Hubo un error al buscar los datos, vuelva a intentarlo',
     ErrorNoHayDatos: 'No hay datos buscados, vuelva a intentarlo',
 
-    Seleccionar: 'Debe seleccionar ',
     CampoRequerido: 'Este campo es requerido',
-    TituloEliminado: 'Eliminado!',
-    InfoEliminada: 'La información se ha eliminado.'
 }
 
 export const optionsDate = {

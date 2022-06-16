@@ -15,7 +15,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 import InputSelect from 'components/input/InputSelect';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { UpdateChargess, GetByIdCharges } from 'api/clients/ChargesClient';

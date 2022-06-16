@@ -32,6 +32,8 @@ export const Url = {
     RiesgoHistoriaLaboral: 'api/RiesgoHistoriaLaboral',
     RiesgoHistoriaLaboralId: 'api/RiesgoHistoriaLaboral/id',
     RiesgoHistoriaLaboralByCharge: 'api/RiesgoHistoriaLaboral/GetAllByCharge',
+    RiesgoHistoriaLaboralByHistorico: 'api/RiesgoHistoriaLaboral/GetAllByHistorico',
+    RiesgoHistoriaLaboralByChargeAdvance: 'api/RiesgoHistoriaLaboral/GetAllByChargeAdvance',
 
     Proveedor: 'api/Proveedor',
     ProveedorId: 'api/Proveedor/id',

@@ -30,7 +30,7 @@ import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 import Accordion from 'components/accordion/Accordion';
 import InputOnChange from 'components/input/InputOnChange';
 import InputMultiSelects from 'components/input/InputMultiSelects';

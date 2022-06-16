@@ -35,7 +35,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { useParams } from 'react-router-dom';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },

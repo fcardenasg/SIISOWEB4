@@ -48,7 +48,7 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdNoteInfirmary, UpdateNoteInfirmarys } from 'api/clients/NoteInfirmaryClient';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },

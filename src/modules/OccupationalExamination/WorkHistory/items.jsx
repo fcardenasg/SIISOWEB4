@@ -4,6 +4,7 @@ import {
   IconRun,
   IconSocial,
   IconFall,
+  IconDatabase,
   IconPhysotherapist,
   IconDna,
 } from '@tabler/icons';
@@ -59,6 +60,13 @@ export const itemsMenu = [
     icon: IconRun,
     selected: false,
     func: 7,
+    color: ColorDrummondltd.BlueSeDrummond
+  },
+  {
+    title: "Histórico",
+    icon: IconDatabase,
+    selected: false,
+    func: 8,
     color: ColorDrummondltd.BlueSeDrummond
   },
 ];

@@ -24,7 +24,7 @@ import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enum
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetByIdTypeCatalog } from 'api/clients/TypeCatalogClient';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 
 const validationSchema = yup.object().shape({
     nombre: yup.string().required(`${ValidationMessage.Requerido}`)

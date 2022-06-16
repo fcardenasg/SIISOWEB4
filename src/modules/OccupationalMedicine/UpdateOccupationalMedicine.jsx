@@ -38,7 +38,7 @@ import InputOnChange from 'components/input/InputOnChange';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetByIdOccupationalMedicine, UpdateOccupationalMedicines } from 'api/clients/OccupationalMedicineClient';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const mic = new SpeechRecognition();

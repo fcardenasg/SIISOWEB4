@@ -6,7 +6,7 @@ import { useTheme } from '@mui/material/styles';
 import { Button, Card, Grid, IconButton, Menu, MenuItem, Typography, Avatar } from '@mui/material';
 
 // project imports
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 import { gridSpacing } from 'store/constant';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 

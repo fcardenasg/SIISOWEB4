@@ -1,9 +1,7 @@
 import PropTypes from 'prop-types';
 
-// material-ui
 import { Card, CardContent, Grid, Typography } from '@mui/material';
 
-// ===========================|| HOVER SOCIAL CARD ||=========================== //
 
 const HoverSocialCard = ({ primary, onClick, secondary, iconPrimary, color }) => {
     const IconPrimary = iconPrimary;

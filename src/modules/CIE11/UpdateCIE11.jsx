@@ -16,7 +16,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { FormatDate } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 import { PutCIE11 } from 'formatdata/CIE11';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';

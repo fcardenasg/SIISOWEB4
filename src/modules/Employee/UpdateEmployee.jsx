@@ -36,7 +36,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 
 /* VALIDACIÓN CON YUP */
 /* const validationSchema = yup.object().shape({

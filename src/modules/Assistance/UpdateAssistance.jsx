@@ -51,7 +51,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { PutAssistance } from 'formatdata/AssistanceForm';
 import { UpdateMedicalHistorys, GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },

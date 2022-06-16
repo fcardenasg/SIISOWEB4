@@ -24,7 +24,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutItems } from 'formatdata/ItemsForm';
 import { GetByIdItems, UpdateItem } from 'api/clients/ItemsClient';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 import { GetAllByTipoAtencion, GetAllTipoAtencion } from 'api/clients/OthersClients';
 
 const validationSchema = yup.object().shape({

@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { Fragment, useEffect, useState } from 'react';
 import { GetById } from 'api/clients/OthersClients';
-import Cargando from 'components/Cargando';
+import Cargando from 'components/loading/Cargando';
 import PropTypes from 'prop-types';
 
 const UpdateData = ({ children, url }) => {

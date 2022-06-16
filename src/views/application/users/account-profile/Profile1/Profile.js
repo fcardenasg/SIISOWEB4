@@ -161,6 +161,7 @@ const Profile = () => (
                 </CardContent>
             </SubCard>
         </Grid>
+        
         <Grid item lg={8} xs={12}>
             <Grid container direction="column" spacing={gridSpacing}>
                 <Grid item xs={12}>
