@@ -222,19 +222,15 @@ const ModalRisk = ({ open = false, onClose, getAll, idRisk, title }) => {
 
                 </DialogContent>
                 <DialogActions>
-                    {wait ?
-                        <>
-                            <AnimateButton>
-                                <Button variant="contained" onClick={handleSubmit(handleClick)}>{TitleButton.Guardar}</Button>
-                            </AnimateButton>
+                    <AnimateButton>
+                        <Button variant="contained" onClick={handleSubmit(handleClick)}>{TitleButton.Guardar}</Button>
+                    </AnimateButton>
 
-                            <AnimateButton>
-                                <Button variant="text" onClick={onClose}>
-                                    {TitleButton.Cerrar}
-                                </Button>
-                            </AnimateButton>
-                        </>
-                        : <></>}
+                    <AnimateButton>
+                        <Button variant="text" onClick={onClose}>
+                            {TitleButton.Cerrar}
+                        </Button>
+                    </AnimateButton>
                 </DialogActions>
             </Dialog>
         </Fragment>
