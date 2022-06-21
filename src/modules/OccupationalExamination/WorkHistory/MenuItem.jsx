@@ -8,7 +8,7 @@ import { itemsMenu } from './items';
 import HoverSocialCard from 'components/components/HoverSocialCard';
 import { IconPlus, IconHistory } from '@tabler/icons';
 
-export const MenuItem = ({ onClickNuevo, onClickButton, numId, onClickHistorico, children }) => {
+export const MenuItem = ({ onClickNuevo, onClickButton, numId, onClickHistorico }) => {
 
     const [itemsMenuButton, setItemsMenuButton] = useState([
         ...itemsMenu,

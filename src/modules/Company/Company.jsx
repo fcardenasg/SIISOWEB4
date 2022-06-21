@@ -79,7 +79,7 @@ const Company = () => {
     return (
         <MainCard title="Registrar Empresas">
             <Grid container spacing={2}>
-                <Grid item xs={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -91,7 +91,7 @@ const Company = () => {
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -103,7 +103,7 @@ const Company = () => {
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -115,7 +115,7 @@ const Company = () => {
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -127,7 +127,7 @@ const Company = () => {
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={4} sx={{ pb: 2 }}>
+                <Grid item xs={12} md={6} lg={4} sx={{ pb: 2 }}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""

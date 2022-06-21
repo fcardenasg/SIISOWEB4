@@ -208,11 +208,11 @@ function RowDLTD({ row = [], handleDelete, documento }) {
                     for (let index = 0; index < arrayQuimico.length; index++) {
                         const riesgoQui = arrayQuimico[index];
 
+                        
+
                         const DataToInsert = PostWorkHistoryRiskDLTD(row.id, row.fecha, row.documento, DefaultValue.RiesgoQuimico,
                             row.idCargo, riesgoQui.clase, riesgoQui.exposicion, riesgoQui.gradosinEPP, riesgoQui.gradoconEPP,
                             riesgoQui.medidascontrol, 0, 0, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
-
-
 
                         if (DataToInsert) {
                             const result = await InsertWorkHistoryRisk(DataToInsert);
@@ -318,7 +318,7 @@ function RowDLTD({ row = [], handleDelete, documento }) {
     if (lsNewQuimico.length != 0) {
         setTimeout(() => {
             setWaitNew(true);
-        }, 1500)
+        }, 500)
     }
 
     return (

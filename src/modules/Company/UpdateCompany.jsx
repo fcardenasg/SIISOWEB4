@@ -74,7 +74,7 @@ const UpdateCompany = () => {
             <UpdateData url={Url.EmpresaId}>
                 {(Company) => (
                     <Grid container spacing={2}>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={Company.codigo}
@@ -87,7 +87,7 @@ const UpdateCompany = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={Company.descripcionSpa}
@@ -99,7 +99,7 @@ const UpdateCompany = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={Company.email}
@@ -111,7 +111,7 @@ const UpdateCompany = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={Company.celular}
@@ -123,7 +123,7 @@ const UpdateCompany = () => {
                                 />
                             </FormProvider>
                         </Grid>
-                        <Grid item xs={4} sx={{ pb: 2 }}>
+                        <Grid item xs={12} md={6} lg={4} sx={{ pb: 2 }}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={Company.gerente}
