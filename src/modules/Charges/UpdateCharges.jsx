@@ -137,7 +137,7 @@ const UpdateCharges = () => {
             {charges.length != 0 ? (
                 <Fragment>
                     <Grid container spacing={2}>
-                        <Grid item xs={4}>
+                    <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="sede"
@@ -150,7 +150,7 @@ const UpdateCharges = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="rosterPosition"
@@ -162,8 +162,7 @@ const UpdateCharges = () => {
                                 />
                             </FormProvider>
                         </Grid>
-
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="area"
@@ -175,8 +174,7 @@ const UpdateCharges = () => {
                                 />
                             </FormProvider>
                         </Grid>
-
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="subArea"
@@ -189,7 +187,7 @@ const UpdateCharges = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idGES"
@@ -202,7 +200,7 @@ const UpdateCharges = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} sx={{ pb: 2 }}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={charges.descripcionCargo}

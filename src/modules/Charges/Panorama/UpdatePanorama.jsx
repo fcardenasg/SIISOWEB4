@@ -194,13 +194,13 @@ const Panorama = () => {
                 <Fragment>
                     <Grid container spacing={2}>
                         {lsPanorama.length != 0 ?
-                            <Grid item xs={12}>
+                             <Grid item xs={12} md={6} lg={4}>
                                 <Typography>
                                     ID: {lsPanorama.idCargo}
                                     Cargo: {lsPanorama.nameRoster}
                                 </Typography> </Grid> : <></>}
 
-                        <Grid item xs={6}>
+                                <Grid item xs={12} md={6} lg={4}>
                             <SelectOnChange
                                 name="idRiesgo"
                                 label="Riesgo"
@@ -212,7 +212,7 @@ const Panorama = () => {
                         </Grid>
 
                         {lsClase.length != 0 ?
-                            <Grid item xs={6}>
+                               <Grid item xs={12} md={6} lg={4}>
                                 <SelectOnChange
                                     name="clase"
                                     label="Clase"
@@ -222,7 +222,7 @@ const Panorama = () => {
                                     onChange={(e) => setClase(e.target.value)}
                                 />
                             </Grid> :
-                            <Grid item xs={6}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="clase"
@@ -236,7 +236,7 @@ const Panorama = () => {
                                 </FormProvider>
                             </Grid>}
 
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="exposicion"
@@ -249,7 +249,7 @@ const Panorama = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="gradoconEPP"
@@ -261,8 +261,7 @@ const Panorama = () => {
                                 />
                             </FormProvider>
                         </Grid>
-
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="gradosinEPP"
@@ -275,7 +274,7 @@ const Panorama = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <InputMultiSelects
                                 fullWidth
                                 onChange={(event, value) => setMedicaControl(value)}
@@ -285,7 +284,7 @@ const Panorama = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12} sx={{ pb: 2 }}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={lsPanorama.descripcionCargo}

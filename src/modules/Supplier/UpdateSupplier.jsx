@@ -113,7 +113,7 @@ const UpdateSupplier = () => {
         <MainCard title="Actualizar Proveedor">
             {supplier.length != 0 ? (
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+              <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue={supplier.codiProv}
@@ -126,7 +126,7 @@ const UpdateSupplier = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+              <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue={supplier.nombProv}
@@ -138,7 +138,7 @@ const UpdateSupplier = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+              <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue={supplier.teleProv}
@@ -150,7 +150,7 @@ const UpdateSupplier = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+              <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue={supplier.emaiProv}
@@ -162,7 +162,7 @@ const UpdateSupplier = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+              <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue={supplier.contaProv}
@@ -174,7 +174,7 @@ const UpdateSupplier = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+              <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="ciudProv"
@@ -186,7 +186,7 @@ const UpdateSupplier = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+              <Grid item xs={12} md={6} lg={4}>
                         <InputMultiSelects
                             fullWidth
                             onChange={(event, value) => setSupplierArray(value)}
@@ -195,7 +195,7 @@ const UpdateSupplier = () => {
                             options={lsSupplier}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ pb: 2 }}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue={supplier.direProv}
@@ -208,16 +208,16 @@ const UpdateSupplier = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                        <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/supplier/list")}>
                                         {TitleButton.Cancelar}

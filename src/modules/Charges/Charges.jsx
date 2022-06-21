@@ -126,7 +126,7 @@ const Charges = () => {
     return (
         <MainCard title="Registrar Cargos">
             <Grid container spacing={2}>
-                <Grid item xs={4}>
+            <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="sede"
@@ -139,7 +139,7 @@ const Charges = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="rosterPosition"
@@ -151,8 +151,7 @@ const Charges = () => {
                         />
                     </FormProvider>
                 </Grid>
-
-                <Grid item xs={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="area"
@@ -165,7 +164,7 @@ const Charges = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="subArea"
@@ -178,7 +177,7 @@ const Charges = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="idGES"
@@ -191,7 +190,7 @@ const Charges = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""

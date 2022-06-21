@@ -99,7 +99,7 @@ const Catalog = () => {
         <MainCard title="Registrar Catálogo">
             <form onSubmit={handleSubmit(handleClick)}>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="idTipoCatalogo"
@@ -112,7 +112,7 @@ const Catalog = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -125,7 +125,7 @@ const Catalog = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={12} sx={{ pb: 2 }}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""

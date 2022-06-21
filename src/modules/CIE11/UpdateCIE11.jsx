@@ -163,7 +163,7 @@ const UpdateCIE11 = () => {
         <MainCard title="Actualizar CIE11">
             {cie11.length != 0 ? (<>
                 <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                 <Grid item xs={12} md={6} lg={4}>
                         <SelectOnChange
                             name="segmentoAgrupado"
                             label="Segmento Agrupado"
@@ -174,7 +174,7 @@ const UpdateCIE11 = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12}>
+                 <Grid item xs={12} md={6} lg={4}>
                         <SelectOnChange
                             name="segmentoAfectado"
                             label="Segmento Afectado"
@@ -185,7 +185,7 @@ const UpdateCIE11 = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12}>
+                 <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="idSubsegmento"
@@ -225,7 +225,7 @@ const UpdateCIE11 = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <AnimateButton>
