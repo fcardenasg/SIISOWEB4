@@ -131,7 +131,7 @@ const Items = () => {
     return (
         <MainCard title="Registrar Items">
             <Grid container spacing={2}>
-                <Grid item xs={6}>
+            <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="idTipoAtencion"
                         label="Tipo de Atención"
@@ -142,7 +142,7 @@ const Items = () => {
                     />
                 </Grid>
 
-                <Grid item xs={6}>
+            <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="idAtencion"
@@ -172,14 +172,14 @@ const Items = () => {
 
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        <Grid item xs={6}>
+                    <Grid item xs={12} md={6} lg={4}>
                             <AnimateButton>
                                 <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                     {TitleButton.Guardar}
                                 </Button>
                             </AnimateButton>
                         </Grid>
-                        <Grid item xs={6}>
+                    <Grid item xs={12} md={6} lg={4}>
                             <AnimateButton>
                                 <Button variant="outlined" fullWidth onClick={() => navigate("/item/list")}>
                                     {TitleButton.Cancelar}

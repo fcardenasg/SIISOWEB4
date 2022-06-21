@@ -183,13 +183,13 @@ const Panorama = () => {
         <MainCard title="Registrar Panoramas de Riesgos ">
             <Grid container spacing={2}>
                 {cargo.length != 0 ?
-                    <Grid item xs={12}>
+                   <Grid item xs={12} md={6} lg={4}>
                         <Typography>
                             ID: {cargo.rosterPosition}
                             Cargo: {cargo.nameRosterPosition}
                         </Typography> </Grid> : <></>}
 
-                <Grid item xs={6}>
+                        <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="idRiesgo"
                         label="Riesgo"
@@ -200,7 +200,7 @@ const Panorama = () => {
                     />
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="clase"
@@ -213,7 +213,7 @@ const Panorama = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="exposicion"
@@ -226,7 +226,7 @@ const Panorama = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="gradoconEPP"
@@ -239,7 +239,7 @@ const Panorama = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="gradosinEPP"
@@ -252,7 +252,7 @@ const Panorama = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} md={6} lg={4}>
                     <InputMultiSelects
                         fullWidth
                         onChange={(event, value) => setMedicaControl(value)}
@@ -262,7 +262,7 @@ const Panorama = () => {
                     />
                 </Grid>
 
-                <Grid item sx={{ pb: 2 }} xs={12}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""

@@ -43,7 +43,7 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
 
             <CardContent sx={{ p: 2, pb: '16px !important' }}>
                 <Grid container spacing={1}>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <Grid container spacing={gridSpacing}>
                             <Grid item xs={12}>
                                 <Avatar alt={programming.nameEmpleado} src={programming.empleadoFoto} sx={{ width: 60, height: 60, m: '-50px auto 0' }} />
@@ -58,10 +58,10 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
 
                             <Grid item xs={12} alignItems="center">
                                 <Grid container direction="row" justifyContent="space-between" alignItems="center">
-                                    <Grid item xs={6}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                         <Typography variant="body2">{programming.empleadoGenero}</Typography>
                                     </Grid>
-                                    <Grid item xs={6}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                         <Typography variant="body2">{GetEdad(new Date(programming.empleadoFechaNacimiento))}</Typography>
                                     </Grid>
                                 </Grid>
@@ -81,11 +81,11 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
                     </Grid>
                     <Grid item xs={12}>
                         <Grid container spacing={1}>
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6}>
                                 <Typography variant="h5">FECHA: </Typography>
                                 <Typography variant="h6">{ViewFormat(programming.fecha)}</Typography>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6}>
                                 <Typography variant="h5">SEDE: </Typography>
                                 <Typography variant="h6">{programming.nameSede}</Typography>
                             </Grid>

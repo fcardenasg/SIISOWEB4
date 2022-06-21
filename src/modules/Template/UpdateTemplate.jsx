@@ -264,7 +264,7 @@ const UpdateTemplate = () => {
         <MainCard title="Actualizar Plantilla">
             {lsTemplate.length != 0 ? <>
                 <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                   <Grid item xs={12} md={6} lg={4}>
                         <SelectOnChange
                             name="segmentoAgrupado"
                             label="Segmento Agrupado"
@@ -275,7 +275,7 @@ const UpdateTemplate = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={6}>
+                   <Grid item xs={12} md={6} lg={4}>
                         <SelectOnChange
                             name="segmentoAfectado"
                             label="Segmento Afectado"
@@ -287,7 +287,7 @@ const UpdateTemplate = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={6}>
+                   <Grid item xs={12} md={6} lg={4}>
                         <SelectOnChange
                             name="idSubsegmento"
                             label="Subsegmento"
@@ -299,7 +299,7 @@ const UpdateTemplate = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={6}>
+                   <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="idCIE11"
@@ -313,7 +313,7 @@ const UpdateTemplate = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={6}>
+                   <Grid item xs={12} md={6} lg={4}>
                         <SelectOnChange
                             name="idTipoAtencion"
                             label="Tipo de Atención"
@@ -325,7 +325,7 @@ const UpdateTemplate = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={6}>
+                   <Grid item xs={12} md={6} lg={4}>
                         <SelectOnChange
                             name="idAtencion"
                             label="Atención"
@@ -368,14 +368,14 @@ const UpdateTemplate = () => {
 
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                           <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={6}>
+                           <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/template/list")}>
                                         {TitleButton.Cancelar}

@@ -279,7 +279,7 @@ const UpdateAlcoholAndDrugTesting = () => {
 
                 <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}>
                     <Grid container spacing={2} sx={{ pb: 3, pt: 3 }}>
-                        <Grid item xs={3}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <PhotoModel
                                 disabledCapture
                                 disabledDelete
@@ -287,7 +287,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                             />
                         </Grid>
                         <Grid container spacing={2} item xs={9}>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <InputOnChange
                                     label="N° Documento"
                                     onChange={(e) => setDocument(e?.target.value)}
@@ -298,7 +298,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     autoFocus
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <InputOnChange
                                     label="Nombres"
                                     value={nombres}
@@ -308,7 +308,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     required={true}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <InputOnChange
                                     label="Email"
                                     value={email}
@@ -318,7 +318,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     required={true}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <InputOnChange
                                     label="Celular"
                                     value={celular}
@@ -328,7 +328,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     required={true}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <SelectOnChange
                                     name="escolaridad"
                                     label="Escolaridad"
@@ -339,7 +339,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <SelectOnChange
                                     name="empresa"
                                     label="Empresa"
@@ -350,7 +350,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <SelectOnChange
                                     name="sede"
                                     label="Sede"
@@ -361,7 +361,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <InputDatePick
                                     label="Fecha de Nacimiento"
                                     value={fechaNaci}
@@ -369,7 +369,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     onChange={(e) => setFechaNaci(e)}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <SelectOnChange
                                     name="genero"
                                     label="Genero"
@@ -380,7 +380,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <SelectOnChange
                                     name="estadoCivil"
                                     label="Estado Civil"
@@ -391,7 +391,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <InputOnChange
                                     label="Contacto"
                                     value={contacto}
@@ -401,7 +401,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     required={true}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <InputOnChange
                                     label="Teléfono de Contacto"
                                     value={telefonoContacto}
@@ -420,7 +420,7 @@ const UpdateAlcoholAndDrugTesting = () => {
 
                     <Grid item xs={12} sx={{ pt: 1, pb: 1 }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <InputDatePick
                                         label="Fecha de Contrato"
@@ -430,7 +430,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="tipoContrato"
@@ -443,7 +443,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="estado"
@@ -456,7 +456,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="Rol"
@@ -469,7 +469,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="rosterPosition"
@@ -482,7 +482,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="generalPosition"
@@ -495,7 +495,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="Departamento"
@@ -508,7 +508,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="Area"
@@ -521,7 +521,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="Subarea"
@@ -534,7 +534,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="Grupo"
@@ -547,7 +547,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="Turno"
@@ -560,7 +560,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <InputOnChange
                                         label="Dirección de Residencia"
@@ -572,7 +572,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="dptoResidencia"
@@ -585,7 +585,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="municipioResidencia"
@@ -598,7 +598,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="municipioNacido"
@@ -611,7 +611,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="dptoNacido"
@@ -624,7 +624,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="EPS"
@@ -637,7 +637,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                     />
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <AnimateButton>
                                     <SelectOnChange
                                         name="AFP"
@@ -658,7 +658,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                 <Grid item sx={{ pt: 2, pb: 2 }}>
                     <SubCard darkTitle title={<Typography variant="h4">GENERAR ORDEN</Typography>}>
                         <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputDatePicker
                                         label="Fecha"
@@ -668,7 +668,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idTipoRemision"
@@ -681,7 +681,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={4}>
+                         <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idContingencia"
@@ -699,7 +699,7 @@ const UpdateAlcoholAndDrugTesting = () => {
 
                 <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                     <Grid item xs={12} md={6} lg={4}>
                             <InputMultiSelects
                                 fullWidth
                                 onChange={(event, value) => setDiagnostico(value)}
@@ -709,7 +709,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12}>
+                     <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     multiline

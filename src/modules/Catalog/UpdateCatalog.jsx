@@ -101,7 +101,7 @@ const UpdateCatalog = () => {
             {lsCatalog.length != 0 ?
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idTipoCatalogo"
@@ -114,7 +114,7 @@ const UpdateCatalog = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={lsCatalog.codigo}
@@ -127,7 +127,7 @@ const UpdateCatalog = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} sx={{ pb: 2 }}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={lsCatalog.nombre}

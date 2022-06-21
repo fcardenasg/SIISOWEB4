@@ -424,7 +424,7 @@ const AlcoholAndDrugTesting = () => {
 
             <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}>
                 <Grid container spacing={2} sx={{ pb: 3, pt: 3 }}>
-                    <Grid item xs={3}>
+                       <Grid item xs={12} md={6} lg={4}>
                         <PhotoModel
                             disabledCapture
                             disabledDelete
@@ -432,7 +432,7 @@ const AlcoholAndDrugTesting = () => {
                         />
                     </Grid>
                     <Grid container spacing={2} item xs={9}>
-                        <Grid item xs={4}>
+                    <Grid item xs={12} md={6} lg={4}>
                             <InputOnChange
                                 label="N° Documento"
                                 onKeyDown={handleDocument}
@@ -443,7 +443,7 @@ const AlcoholAndDrugTesting = () => {
                                 autoFocus
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <InputOnChange
                                 label="Nombres"
                                 value={nombres}
@@ -453,7 +453,7 @@ const AlcoholAndDrugTesting = () => {
                                 required={true}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <InputOnChange
                                 label="Email"
                                 value={email}
@@ -463,7 +463,7 @@ const AlcoholAndDrugTesting = () => {
                                 required={true}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <InputOnChange
                                 label="Celular"
                                 value={celular}
@@ -473,7 +473,7 @@ const AlcoholAndDrugTesting = () => {
                                 required={true}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <SelectOnChange
                                 name="escolaridad"
                                 label="Escolaridad"
@@ -484,7 +484,7 @@ const AlcoholAndDrugTesting = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <SelectOnChange
                                 name="empresa"
                                 label="Empresa"
@@ -495,7 +495,7 @@ const AlcoholAndDrugTesting = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <SelectOnChange
                                 name="sede"
                                 label="Sede"
@@ -506,7 +506,7 @@ const AlcoholAndDrugTesting = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <InputDatePick
                                 label="Fecha de Nacimiento"
                                 value={fechaNaci}
@@ -514,7 +514,7 @@ const AlcoholAndDrugTesting = () => {
                                 onChange={(e) => setFechaNaci(e)}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <SelectOnChange
                                 name="genero"
                                 label="Genero"
@@ -525,7 +525,7 @@ const AlcoholAndDrugTesting = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <SelectOnChange
                                 name="estadoCivil"
                                 label="Estado Civil"
@@ -536,7 +536,7 @@ const AlcoholAndDrugTesting = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <InputOnChange
                                 label="Contacto"
                                 value={contacto}
@@ -546,7 +546,7 @@ const AlcoholAndDrugTesting = () => {
                                 required={true}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <InputOnChange
                                 label="Teléfono de Contacto"
                                 value={telefonoContacto}
@@ -803,7 +803,7 @@ const AlcoholAndDrugTesting = () => {
             <Grid item sx={{ pt: 2, pb: 2 }}>
                 <SubCard darkTitle title={<Typography variant="h4">PRUEBA DE ALCOHOL Y DROGAS</Typography>}>
                     <Grid container sx={{ pb: 2 }} justifyContent="center" alignItems="center" spacing={2}>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputDatePicker
                                     label="Fecha"
@@ -813,7 +813,7 @@ const AlcoholAndDrugTesting = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idMotivoPrueba"
@@ -826,7 +826,7 @@ const AlcoholAndDrugTesting = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <SelectOnChange
                                     name="idRealizada"
@@ -842,7 +842,7 @@ const AlcoholAndDrugTesting = () => {
                     </Grid>
 
                     {realizada == DefaultValue.Opcion_NO ? <Grid container spacing={2}>
-                        <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idMotivoAsis"
@@ -881,7 +881,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idMuestra1"
@@ -894,7 +894,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idResultado1"
@@ -918,7 +918,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idMuestra2"
@@ -931,7 +931,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idResultado2"
@@ -955,7 +955,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idMuestra3"
@@ -968,7 +968,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idResultado3"
@@ -992,7 +992,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idMuestra4"
@@ -1005,7 +1005,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idResultado4"
@@ -1029,7 +1029,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idMuestra5"
@@ -1042,7 +1042,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idResultado5"
@@ -1066,7 +1066,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idMuestra6"
@@ -1079,7 +1079,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idResultado6"
@@ -1094,7 +1094,7 @@ const AlcoholAndDrugTesting = () => {
 
                                 <Divider />
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <InputOnChange
                                         label="N° Documento"
                                         onKeyDown={handleDocumentS}
@@ -1106,7 +1106,7 @@ const AlcoholAndDrugTesting = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                     <InputOnChange
                                         label="Nombres"
                                         value={nombresS}
@@ -1117,7 +1117,7 @@ const AlcoholAndDrugTesting = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={8}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idConcepto"
@@ -1130,7 +1130,7 @@ const AlcoholAndDrugTesting = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             multiline

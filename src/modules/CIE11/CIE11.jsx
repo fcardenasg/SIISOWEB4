@@ -145,7 +145,7 @@ const CIE11 = () => {
     return (
         <MainCard title="Registrar CIE11">
             <Grid container spacing={2}>
-                <Grid item xs={12}>
+             <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="segmentoAgrupado"
                         label="Capitulo CIE11"
@@ -156,7 +156,7 @@ const CIE11 = () => {
                     />
                 </Grid>
 
-                <Grid item xs={12}>
+             <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="segmentoAfectado"
                         label="Segmento Afectado"
@@ -168,7 +168,7 @@ const CIE11 = () => {
                     />
                 </Grid>
 
-                <Grid item xs={12}>
+             <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="idSubsegmento"
@@ -182,7 +182,7 @@ const CIE11 = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -195,7 +195,7 @@ const CIE11 = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={6} sx={{ pb: 2 }}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -208,7 +208,7 @@ const CIE11 = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12}>
+             <Grid item xs={12} md={6} lg={4}>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
                             <AnimateButton>

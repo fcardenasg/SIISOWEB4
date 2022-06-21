@@ -141,10 +141,10 @@ const ListProgramming = () => {
         <MainCard
             title={
                 <Grid container alignItems="center" justifyContent="space-between" spacing={gridSpacing}>
-                    <Grid item>
+                      <Grid item xs={12} md={6} lg={4}>
                         <Typography variant="h3">Lista de Programación</Typography>
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={12} md={6} lg={4}>
                         <OutlinedInput
                             id="input-search-card-style3"
                             placeholder="Search"
@@ -164,10 +164,10 @@ const ListProgramming = () => {
             <Grid container spacing={gridSpacing}>
                 {usersResult}
 
-                <Grid item xs={12}>
+                <Grid item xs={12} md={6} lg={4}>
                     <Grid container justifyContent="space-between" spacing={gridSpacing}>
 
-                        <Grid item>
+                    <Grid item xs={12} md={6} lg={4}>
                             <TablePagination
                                 rowsPerPageOptions={[12, 24, 36]}
                                 component="div"

@@ -74,7 +74,7 @@ const TypeCatalog = () => {
     return (
         <MainCard title="Registrar Tipo de Catálogo">
             <Grid container spacing={2}>
-                <Grid item xs={12} sx={{ pb: 2 }}>
+            <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -87,16 +87,16 @@ const TypeCatalog = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} md={6} lg={4}>
                     <Grid container spacing={2}>
-                        <Grid item xs={6}>
+                    <Grid item xs={12} md={6} lg={4}>
                             <AnimateButton>
                                 <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                     {TitleButton.Guardar}
                                 </Button>
                             </AnimateButton>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <AnimateButton>
                                 <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
                                     {TitleButton.Cancelar}

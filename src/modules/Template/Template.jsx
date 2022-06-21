@@ -221,7 +221,7 @@ const Template = () => {
     return (
         <MainCard title="Registrar Plantilla">
             <Grid container spacing={2}>
-                <Grid item xs={6}>
+         <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="segmentoAgrupado"
                         label="Segmento Agrupado"
@@ -231,7 +231,7 @@ const Template = () => {
                         onChange={handleChangeSegAgrupado}
                     />
                 </Grid>
-                <Grid item xs={6}>
+         <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="segmentoAfectado"
                         label="Segmento Afectado"
@@ -242,7 +242,7 @@ const Template = () => {
                         disabled={lsSegmentoAfectado.length != 0 ? false : true}
                     />
                 </Grid>
-                <Grid item xs={6}>
+         <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="idSubsegmento"
                         label="Subsegmento"
@@ -253,7 +253,7 @@ const Template = () => {
                         disabled={lsSubsegmento.length != 0 ? false : true}
                     />
                 </Grid>
-                <Grid item xs={6}>
+         <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="idCIE11"
@@ -266,7 +266,7 @@ const Template = () => {
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={6}>
+         <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="idTipoAtencion"
                         label="Tipo de Atención"
@@ -277,7 +277,7 @@ const Template = () => {
                         disabled={lsTipoAtencion.length != 0 ? false : true}
                     />
                 </Grid>
-                <Grid item xs={6}>
+         <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="idAtencion"
                         label="Atención"
@@ -318,14 +318,14 @@ const Template = () => {
 
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        <Grid item xs={6}>
+                 <Grid item xs={12} md={6} lg={4}>
                             <AnimateButton>
                                 <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                     {TitleButton.Guardar}
                                 </Button>
                             </AnimateButton>
                         </Grid>
-                        <Grid item xs={6}>
+                 <Grid item xs={12} md={6} lg={4}>
                             <AnimateButton>
                                 <Button variant="outlined" fullWidth onClick={() => navigate("/template/list")}>
                                     {TitleButton.Cancelar}

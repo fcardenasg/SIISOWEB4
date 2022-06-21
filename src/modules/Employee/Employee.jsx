@@ -431,16 +431,17 @@ const Employee = () => {
                 </ModalChildren>
 
                 <Grid container spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <PhotoModel
                             OpenModal={() => setOpen(true)}
                             EstadoImg={imgSrc}
                             RemoverImg={() => setImgSrc(null)}
                         />
                     </Grid>
-                    <Grid item xs={9}>
+
+                    <Grid item xs={12} md={6} lg={8}>
                         <Grid container spacing={2}>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
@@ -452,7 +453,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
@@ -464,7 +465,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
@@ -476,7 +477,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
@@ -488,7 +489,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="escolaridad"
@@ -500,7 +501,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="empresa"
@@ -512,7 +513,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="sede"
@@ -524,7 +525,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputDatePicker
                                         label="Fecha de Nacimiento"
@@ -533,7 +534,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="genero"
@@ -545,7 +546,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="estadoCivil"
@@ -557,7 +558,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
@@ -569,7 +570,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
@@ -589,7 +590,7 @@ const Employee = () => {
 
             <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN CONTRACTUAL</Typography>}>
                 <Grid container spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputDatePicker
                                 label="Fecha de Contrato"
@@ -598,7 +599,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="tipoContrato"
@@ -610,7 +611,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="type"
@@ -622,7 +623,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="rosterPosition"
@@ -634,7 +635,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="generalPosition"
@@ -646,7 +647,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="departamento"
@@ -658,7 +659,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="area"
@@ -670,7 +671,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="subArea"
@@ -682,7 +683,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="grupo"
@@ -694,7 +695,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="turno"
@@ -706,7 +707,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -718,7 +719,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="payStatus"
@@ -736,7 +737,7 @@ const Employee = () => {
 
             <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN DEMOGRÁFICA</Typography>}>
                 <Grid container spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <SelectOnChange
                             name="dptoNacido"
                             label="Departamento de Nacimiento"
@@ -746,7 +747,7 @@ const Employee = () => {
                             size={matchesXS ? 'small' : 'medium'}
                         />
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="municipioNacido"
@@ -758,7 +759,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <SelectOnChange
                             name="dptoResidencia"
                             label="Departamento de Residencia"
@@ -768,7 +769,7 @@ const Employee = () => {
                             onChange={handleChangeDptoResidencia}
                         />
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="municipioResidencia"
@@ -780,7 +781,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -792,7 +793,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <SelectOnChange
                             name="dptoResidenciaTrabaja"
                             label="Departamento de Residencia Laboral"
@@ -802,7 +803,7 @@ const Employee = () => {
                             onChange={handleChangeDptoResidenciaTrabaja}
                         />
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="municipioResidenciaTrabaja"
@@ -814,7 +815,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputText
                                 defaultValue=""
@@ -832,7 +833,7 @@ const Employee = () => {
 
             <SubCard darkTitle title={<Typography variant="h4">SEGURIDAD SOCIAL</Typography>}>
                 <Grid container spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="eps"
@@ -844,7 +845,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="afp"
@@ -856,7 +857,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="arl"
@@ -868,7 +869,7 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="cesantias"
@@ -886,7 +887,7 @@ const Employee = () => {
 
             <SubCard darkTitle title={<Typography variant="h4">DATOS ADICIONALES</Typography>}>
                 <Grid container spacing={2} >
-                    <Grid item xs={4}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputDatePicker
                                 label="Fecha de Terminación"
@@ -896,7 +897,7 @@ const Employee = () => {
                         </FormProvider>
                     </Grid>
 
-                    <Grid item xs={4}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="ges"
