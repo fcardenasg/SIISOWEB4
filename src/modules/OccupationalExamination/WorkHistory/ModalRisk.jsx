@@ -34,9 +34,10 @@ import Avatar from 'ui-component/extended/Avatar';
 import SubCard from 'ui-component/cards/SubCard';
 import Cargando from 'components/loading/Cargando';
 
-import PhonelinkRingTwoToneIcon from '@mui/icons-material/PhonelinkRingTwoTone';
-import PinDropTwoToneIcon from '@mui/icons-material/PinDropTwoTone';
-import MailTwoToneIcon from '@mui/icons-material/MailTwoTone';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import RemoveModeratorIcon from '@mui/icons-material/RemoveModerator';
 import user from 'assets/img/user.png';
 import { PutWorkHistoryRiskDLTD } from 'formatdata/WorkHistoryRiskForm';
 
@@ -67,7 +68,7 @@ const ViewInfo = ({ row }) => {
                 <List component="nav">
                     <ListItemButton>
                         <ListItemIcon>
-                            <MailTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                            <AccountBoxIcon sx={{ fontSize: '1.3rem' }} />
                         </ListItemIcon>
                         <ListItemText primary={<Typography variant="subtitle1">Cargo</Typography>} />
                         <ListItemSecondaryAction>
@@ -80,7 +81,7 @@ const ViewInfo = ({ row }) => {
                     <Divider />
                     <ListItemButton>
                         <ListItemIcon>
-                            <PhonelinkRingTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                            <AccessibilityNewIcon sx={{ fontSize: '1.3rem' }} />
                         </ListItemIcon>
                         <ListItemText primary={<Typography variant="subtitle1">Exposición</Typography>} />
                         <ListItemSecondaryAction>
@@ -92,21 +93,25 @@ const ViewInfo = ({ row }) => {
                     <Divider />
                     <ListItemButton>
                         <ListItemIcon>
-                            <PinDropTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                            <VerifiedUserIcon sx={{ fontSize: '1.3rem' }} />
                         </ListItemIcon>
                         <ListItemText primary={<Typography variant="subtitle1">Grado Con EPP</Typography>} />
                         <ListItemSecondaryAction>
-                            <Chip chipcolor="error" label={row.nameGradoConEPP} size="small" />
+                            <Chip chipcolor={row.nameGradoConEPP === 'BAJO' ? 'success' :
+                                row.nameGradoConEPP === 'MEDIO' ? 'warning' :
+                                    row.nameGradoConEPP === 'CRITICO' ? 'error' : 'error'} label={row.nameGradoConEPP} size="small" />
                         </ListItemSecondaryAction>
                     </ListItemButton>
                     <Divider />
                     <ListItemButton>
                         <ListItemIcon>
-                            <PhonelinkRingTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                            <RemoveModeratorIcon sx={{ fontSize: '1.3rem' }} />
                         </ListItemIcon>
                         <ListItemText primary={<Typography variant="subtitle1">Grado Sin EPP</Typography>} />
                         <ListItemSecondaryAction>
-                            <Chip chipcolor="error" label={row.nameGradoSinEPP} size="small" />
+                            <Chip chipcolor={row.nameGradoSinEPP === 'BAJO' ? 'success' :
+                                row.nameGradoSinEPP === 'MEDIO' ? 'warning' :
+                                    row.nameGradoSinEPP === 'CRITICO' ? 'error' : 'error'} label={row.nameGradoSinEPP} size="small" />
                         </ListItemSecondaryAction>
                     </ListItemButton>
                     <Divider />
@@ -131,14 +136,15 @@ const ModalRisk = ({ open = false, onClose, getAll, idRisk, title }) => {
 
     const [row, setRow] = useState([]);
     const [openUpdate, setOpenUpdate] = useState(false);
-    const [wait, setWait] = useState(false);
 
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServerRisk = await GetByIdWorkHistoryRisk(idRisk);
-                if (lsServerRisk.status === 200)
-                    setRow(lsServerRisk.data);
+                if (idRisk !== 0) {
+                    const lsServerRisk = await GetByIdWorkHistoryRisk(idRisk);
+                    if (lsServerRisk.status === 200)
+                        setRow(lsServerRisk.data);
+                }
             } catch (error) {
                 console.log(error);
             }
