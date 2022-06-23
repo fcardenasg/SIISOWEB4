@@ -10,15 +10,16 @@ import {
     Tooltip,
 } from '@mui/material';
 
+import Cargando from 'components/loading/Cargando';
+import SubRowChargeHistory from './SubRowChargeHistory';
 import swal from 'sweetalert';
-import { GetAllByChargeHistorico, GetAllByChargeWHRAdvance } from 'api/clients/WorkHistoryRiskClient';
 import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import { PostWorkHistoryRiskCompany } from 'formatdata/WorkHistoryRiskForm';
 import SubRowHistorical from './SubRowHistorical';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import { MessageSuccess, MessageDelete, ParamDelete, ParamLoadingData } from 'components/alert/AlertAll';
-import { InsertWorkHistoryRisk, DeleteWorkHistoryRisk } from 'api/clients/WorkHistoryRiskClient';
+import { InsertWorkHistoryRiskCompany, DeleteWorkHistoryRiskCompany, GetAllByChargeHistoricoCompany, GetAllByChargeWHRAdvanceCompany } from 'api/clients/WorkHistoryRiskClient';
 import { GetAllByCharge } from 'api/clients/PanoramaClient';
 import { DefaultValue } from 'components/helpers/Enums';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -63,11 +64,11 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                 for (let index = 0; index < lsDelete.length; index++) {
                     const riesgoDelete = lsDelete[index];
 
-                    await DeleteWorkHistoryRisk(riesgoDelete.id);
+                    await DeleteWorkHistoryRiskCompany(riesgoDelete.id);
                 }
             }
 
-            const lsServerRiesgo = await GetAllByCharge(0, 0, row.idCargo, numRiesgo);
+            const lsServerRiesgo = await GetAllByCharge(0, 0, DefaultValue.RiesgoEnOtrasEmpresas, numRiesgo);
 
             if (lsServerRiesgo.status === 200) {
                 var arrayInsert = lsServerRiesgo.data.entities;
@@ -80,7 +81,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                         riesgo.medidascontrol, 0, 0, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
                     if (DataToInsert) {
-                        const result = await InsertWorkHistoryRisk(DataToInsert);
+                        const result = await InsertWorkHistoryRiskCompany(DataToInsert);
                         if (result.status === 200) {
                             if (index < arrayInsert.length) {
                                 setOpenSuccess(true);
@@ -90,7 +91,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                 }
             }
 
-            const lsServerRiesgoHL = await GetAllByChargeWHRAdvance(0, 0, row.idCargo, numRiesgo, row.id);
+            const lsServerRiesgoHL = await GetAllByChargeWHRAdvanceCompany(0, 0, row.idCargo, numRiesgo, row.id);
             if (lsServerRiesgoHL.status === 200) {
                 return lsServerRiesgoHL.data.entities;
             }
@@ -103,37 +104,37 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
 
     async function GetAllHistoricoForCharge() {
         try {
-            const lsServerRiesgoQuimico = await GetAllByChargeHistorico(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoQuimico = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoQuimico, documento);
             if (lsServerRiesgoQuimico.status === 200)
                 setLsHisQuimico(lsServerRiesgoQuimico.data.entities);
 
-            const lsServerRiesgoFisico = await GetAllByChargeHistorico(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoFisico = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoFisico, documento);
             if (lsServerRiesgoFisico.status === 200)
                 setLsHisFisico(lsServerRiesgoFisico.data.entities);
 
-            const lsServerRiesgoPsicosocial = await GetAllByChargeHistorico(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoPsicosocial = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoPsicosocial, documento);
             if (lsServerRiesgoPsicosocial.status === 200)
                 setLsHisPsicosocial(lsServerRiesgoPsicosocial.data.entities);
 
-            const lsServerRiesgoBiologico = await GetAllByChargeHistorico(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoBiologico = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoBiologico, documento);
             if (lsServerRiesgoBiologico.status === 200)
                 setLsHisBiologico(lsServerRiesgoBiologico.data.entities);
 
-            const lsServerRiesgoECFPostura = await GetAllByChargeHistorico(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoECFPostura = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoErgonomicoCargaFisica_Postura, documento);
             if (lsServerRiesgoECFPostura.status === 200)
                 setLsHisECFPostura(lsServerRiesgoECFPostura.data.entities);
 
-            const lsServerRiesgoECFFuerza = await GetAllByChargeHistorico(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoECFFuerza = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, documento);
             if (lsServerRiesgoECFFuerza.status === 200)
                 setLsHisECFFuerza(lsServerRiesgoECFFuerza.data.entities);
 
-            const lsServerRiesgoECFMovimiento = await GetAllByChargeHistorico(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoECFMovimiento = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, documento);
             if (lsServerRiesgoECFMovimiento.status === 200)
                 setLsHisECFMovimiento(lsServerRiesgoECFMovimiento.data.entities);
@@ -148,37 +149,37 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
 
     async function GetAll() {
         try {
-            const lsServerRiesgoQuimico = await GetAllByChargeWHRAdvance(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoQuimico = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoQuimico, row.id);
             if (lsServerRiesgoQuimico.status === 200)
                 setLsQuimico(lsServerRiesgoQuimico.data.entities);
 
-            const lsServerRiesgoFisico = await GetAllByChargeWHRAdvance(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoFisico = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoFisico, row.id);
             if (lsServerRiesgoFisico.status === 200)
                 setLsFisico(lsServerRiesgoFisico.data.entities);
 
-            const lsServerRiesgoPsicosocial = await GetAllByChargeWHRAdvance(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoPsicosocial = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoPsicosocial, row.id);
             if (lsServerRiesgoPsicosocial.status === 200)
                 setLsPsicosocial(lsServerRiesgoPsicosocial.data.entities);
 
-            const lsServerRiesgoBiologico = await GetAllByChargeWHRAdvance(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoBiologico = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoBiologico, row.id);
             if (lsServerRiesgoBiologico.status === 200)
                 setLsBiologico(lsServerRiesgoBiologico.data.entities);
 
-            const lsServerRiesgoECFFuerza = await GetAllByChargeWHRAdvance(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoECFFuerza = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, row.id);
             if (lsServerRiesgoECFFuerza.status === 200)
                 setLsECFPostura(lsServerRiesgoECFFuerza.data.entities);
 
-            const lsServerRiesgoECFMovimiento = await GetAllByChargeWHRAdvance(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoECFMovimiento = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, row.id);
             if (lsServerRiesgoECFMovimiento.status === 200)
                 setLsECFFuerza(lsServerRiesgoECFMovimiento.data.entities);
 
-            const lsServerRiesgoECFPostura = await GetAllByChargeWHRAdvance(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
+            const lsServerRiesgoECFPostura = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
                 DefaultValue.RiesgoErgonomicoCargaFisica_Postura, row.id);
             if (lsServerRiesgoECFPostura.status === 200)
                 setLsECFMovimiento(lsServerRiesgoECFPostura.data.entities);
@@ -285,7 +286,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteWorkHistoryRisk(id);
+                    const result = await DeleteWorkHistoryRiskCompany(id);
                     if (result.status === 200) {
                         setOpenDelete(true);
                         GetAll();
@@ -304,10 +305,10 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
 
             <FullScreenDialog
                 open={openCargoHistorico}
-                title={"REGISTRO HISTÓRICO DE "  /* titleCargoHistorico */}
+                title={"REGISTRO HISTÓRICO DE " + titleCargoHistorico}
                 handleClose={() => setOpenCargoHistorico(false)}
             >
-
+                {cargoHistorico.length != 0 ? <SubRowChargeHistory key={row.id} row={cargoHistorico} title={titleCargoHistorico} /> : <Cargando />}
             </FullScreenDialog>
 
             <FullScreenDialog
