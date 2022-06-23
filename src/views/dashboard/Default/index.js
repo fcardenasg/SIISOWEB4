@@ -33,7 +33,7 @@ const Dashboard = () => {
 
             <Grid container spacing={2}>
                 {itemsMenuButton.filter((item) => item.selected).map((item) => (
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={6} lg={3}>
                         <HoverSocialCard
                             secondary={item.title}
                             onClick={() => navigate(`${item.url}`)}
