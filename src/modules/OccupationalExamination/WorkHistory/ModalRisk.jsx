@@ -12,7 +12,6 @@ import {
     DialogContent,
     DialogTitle,
     Grid,
-    useMediaQuery,
     Divider,
     List,
     ListItemButton,
@@ -25,10 +24,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 import { MessageUpdate } from 'components/alert/AlertAll';
-import { UpdateWorkHistoryRisks } from 'api/clients/WorkHistoryRiskClient';
 import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdWorkHistoryRisk } from 'api/clients/WorkHistoryRiskClient';
+import { GetByIdWorkHistoryRisk, GetByIdWorkHistoryRiskCompany, UpdateWorkHistoryRisks, UpdateWorkHistoryRisksCompany } from 'api/clients/WorkHistoryRiskClient';
 import Avatar from 'ui-component/extended/Avatar';
 import SubCard from 'ui-component/cards/SubCard';
 import Cargando from 'components/loading/Cargando';
@@ -40,7 +38,7 @@ import RemoveModeratorIcon from '@mui/icons-material/RemoveModerator';
 import userImg from 'assets/img/user.png';
 import { PutWorkHistoryRiskDLTD } from 'formatdata/WorkHistoryRiskForm';
 
-const ModalRisk = ({ open = false, onClose, getAll, idRisk, title }) => {
+const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) => {
     let openRisk = open;
 
     const { user } = useAuth();
@@ -54,9 +52,17 @@ const ModalRisk = ({ open = false, onClose, getAll, idRisk, title }) => {
         async function GetAll() {
             try {
                 if (idRisk !== 0) {
-                    const lsServerRisk = await GetByIdWorkHistoryRisk(idRisk);
-                    if (lsServerRisk.status === 200)
-                        setRow(lsServerRisk.data);
+                    if (diferen == "DLTD") {
+                        const lsServerRisk = await GetByIdWorkHistoryRisk(idRisk);
+                        if (lsServerRisk.status === 200)
+                            setRow(lsServerRisk.data);
+                    }
+
+                    if (diferen == "COMPANY") {
+                        const lsServerRisk = await GetByIdWorkHistoryRiskCompany(idRisk);
+                        if (lsServerRisk.status === 200)
+                            setRow(lsServerRisk.data);
+                    }
                 }
             } catch (error) {
                 console.log(error);
@@ -73,14 +79,27 @@ const ModalRisk = ({ open = false, onClose, getAll, idRisk, title }) => {
                 row.usuarioRegistro, row.fechaRegistro, user.email, FormatDate(new Date()));
 
             if (DataToInsert) {
-                const result = await UpdateWorkHistoryRisks(DataToInsert);
-                if (result.status === 200) {
-                    openRisk = false;
-                    setOpenUpdate(true);
-                    reset();
-                    getAll();
+                if (diferen == "DLTD") {
+                    const result = await UpdateWorkHistoryRisks(DataToInsert);
+                    if (result.status === 200) {
+                        openRisk = false;
+                        setOpenUpdate(true);
+                        reset();
+                        getAll();
+                    }
+                }
+
+                if (diferen == "COMPANY") {
+                    const result = await UpdateWorkHistoryRisksCompany(DataToInsert);
+                    if (result.status === 200) {
+                        openRisk = false;
+                        setOpenUpdate(true);
+                        reset();
+                        getAll();
+                    }
                 }
             }
+
 
         } catch (error) {
             console.log(error);
@@ -230,12 +249,13 @@ const ModalRisk = ({ open = false, onClose, getAll, idRisk, title }) => {
     );
 };
 
+export default ModalRisk;
+
 ModalRisk.propTypes = {
     open: PropTypes.bool,
     title: PropTypes.string,
+    diferen: PropTypes.string,
     idRisk: PropTypes.number,
     onClose: PropTypes.func,
     getAll: PropTypes.func,
 };
-
-export default ModalRisk;

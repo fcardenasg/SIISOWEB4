@@ -239,7 +239,6 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
             </FullScreenDialog>
 
             <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES PATALÓGICOS</Typography>}>
-
                 <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2} >
                         <FormProvider {...methods}>

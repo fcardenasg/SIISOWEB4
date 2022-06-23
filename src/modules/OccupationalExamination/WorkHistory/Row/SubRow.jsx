@@ -15,7 +15,7 @@ import {
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ModalRisk from '../ModalRisk';
 
-export const SubRow = ({ title, getAll, onClickDelete, row }) => {
+export const SubRow = ({ title, getAll, diferen, onClickDelete, row }) => {
     const theme = useTheme();
     const [open, setOpen] = useState(false);
     const [idRisk, setIdRisk] = useState(0);
@@ -46,6 +46,7 @@ export const SubRow = ({ title, getAll, onClickDelete, row }) => {
     return (
         <Fragment>
             <ModalRisk
+                diferen={diferen}
                 idRisk={idRisk}
                 key={row.id}
                 open={open}
@@ -108,6 +109,7 @@ export const SubRow = ({ title, getAll, onClickDelete, row }) => {
 
 SubRow.propTypes = {
     title: PropTypes.string,
+    diferen: PropTypes.string,
     onClickDelete: PropTypes.func,
     getAll: PropTypes.func,
     row: PropTypes.array,

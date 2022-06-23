@@ -14,7 +14,7 @@ export const GetAllWorkHistoryRiskCompany = async (page, pageSize) => await getD
 export const GetAllByChargeHistoricoCompany = async (page, pageSize, cargo, riesgo, documento) => await getData(Url.RHLByChargeHistoricoEmpresa, { page, pageSize, cargo, riesgo, documento });
 export const GetAllByHistoricoCompany = async (page, pageSize, documento) => await getData(Url.RHLByHistoricoEmpresa, { page, pageSize, documento });
 export const GetAllByChargeWHRAdvanceCompany = async (page, pageSize, cargo, riesgo, idHistoriaLaboral) => await getData(Url.RHLByChargeAdvanceEmpresa, { page, pageSize, cargo, riesgo, idHistoriaLaboral });
-export const GetByIdWorkHistoryRiskCompany = async (id) => await getData(Url.RiesgoHistoriaLaboralId, { id });
+export const GetByIdWorkHistoryRiskCompany = async (id) => await getData(Url.RiesgoHistoriaLaboralIdEmpresa, { id });
 export const InsertWorkHistoryRiskCompany = async (riesgoHistoriaLaboralOtrasEmpresas) => await postData(Url.RiesgoHistoriaLaboralEmpresa, riesgoHistoriaLaboralOtrasEmpresas);
 export const UpdateWorkHistoryRisksCompany = async (riesgoHistoriaLaboralOtrasEmpresas) => await putData(Url.RiesgoHistoriaLaboralEmpresa, riesgoHistoriaLaboralOtrasEmpresas);
 export const DeleteWorkHistoryRiskCompany = async (idRiesgoHistoriaLaboralOtrasEmpresas) => await deleteData(Url.RiesgoHistoriaLaboralEmpresa, { idRiesgoHistoriaLaboralOtrasEmpresas });

@@ -122,7 +122,7 @@ export const DefaultData = {
 export const DefaultValue = {
     SINREGISTRO_GLOBAL: 1,
     SINREGISTRO_TEXTO: 'REGISTRO NO APLICA',
-    GeneroWomen: 1,
+    GeneroWomen: 2,
 
     /* REGISTRO ATENCIÓN */
     TIP_AT_TRIAGE: 3897,
@@ -137,7 +137,7 @@ export const DefaultValue = {
     AT_ASESORIA_MEDICA: 3911,
 
     /* RIESGOS */
-    RiesgoEnOtrasEmpresas: 3949,
+    RiesgoEnOtrasEmpresas: 4067,
     RiesgoQuimico: 3949,
     RiesgoFisico: 3950,
     RiesgoPsicosocial: 3952,

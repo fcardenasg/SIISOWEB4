@@ -219,7 +219,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             </TableHead>
                             <TableBody>
                                 {lsWorkHistoryOtherCompany.map((row) => (
-                                    <RowCompany key={row.id} row={row} handleDelete={handleDeleteEmpresa} />
+                                    <RowCompany key={row.id} documento={documento} row={row} handleDelete={handleDeleteEmpresa} />
                                 ))}
                             </TableBody>
                         </Table>

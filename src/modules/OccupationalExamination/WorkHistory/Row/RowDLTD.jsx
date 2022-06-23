@@ -26,10 +26,11 @@ import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { SubRow } from './SubRow';
 import { MenuItem } from '../Menu/MenuItem';
-import SubRowHistorical from './SubRowHistorical';
+import SubRowHistoricalDLTD from './SubRowHistoricalDLTD';
 import SubRowChargeHistory from './SubRowChargeHistory';
 
 export default function RowDLTD({ row = [], handleDelete, documento }) {
+    const diferen = "DLTD";
     const { user } = useAuth();
     const [numId, setNumId] = useState(1);
 
@@ -162,15 +163,15 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
 
             const lsServerRiesgoECFFuerza = await GetAllByChargeWHRAdvance(0, 0, row.idCargo, DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, row.id);
             if (lsServerRiesgoECFFuerza.status === 200)
-                setLsECFPostura(lsServerRiesgoECFFuerza.data.entities);
+                setLsECFFuerza(lsServerRiesgoECFFuerza.data.entities);
 
             const lsServerRiesgoECFMovimiento = await GetAllByChargeWHRAdvance(0, 0, row.idCargo, DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, row.id);
             if (lsServerRiesgoECFMovimiento.status === 200)
-                setLsECFFuerza(lsServerRiesgoECFMovimiento.data.entities);
+                setLsECFMovimiento(lsServerRiesgoECFMovimiento.data.entities);
 
             const lsServerRiesgoECFPostura = await GetAllByChargeWHRAdvance(0, 0, row.idCargo, DefaultValue.RiesgoErgonomicoCargaFisica_Postura, row.id);
             if (lsServerRiesgoECFPostura.status === 200)
-                setLsECFMovimiento(lsServerRiesgoECFPostura.data.entities);
+                setLsECFPostura(lsServerRiesgoECFPostura.data.entities);
         } catch (error) {
             console.log(error);
         }
@@ -304,7 +305,7 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
                 title="REGISTRO HISTÓRICO DE EXPOSICIÓN OCUPACIONAL"
                 handleClose={() => setOpenHistorico(false)}
             >
-                <SubRowHistorical key={row.id} documento={documento} />
+                <SubRowHistoricalDLTD key={row.id} documento={documento} />
             </FullScreenDialog>
 
             <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -344,31 +345,31 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
                             />
 
                             {lsQuimico.length != 0 && numId == 1 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsQuimico} title="Riesgo Químico" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsQuimico} title="Riesgo Químico" />
                                 : <></>}
 
                             {lsFisico.length != 0 && numId == 2 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsFisico} title="Riesgo Físico" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsFisico} title="Riesgo Físico" />
                                 : <></>}
 
                             {lsPsicosocial.length != 0 && numId == 3 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsPsicosocial} title="Riesgo Psicosocial" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsPsicosocial} title="Riesgo Psicosocial" />
                                 : <></>}
 
                             {lsBiologico.length != 0 && numId == 4 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsBiologico} title="Riesgo Biológico" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsBiologico} title="Riesgo Biológico" />
                                 : <></>}
 
                             {lsECFPostura.length != 0 && numId == 5 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsECFPostura} title="Riesgo ECF - Postura" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFPostura} title="Riesgo ECF - Postura" />
                                 : <></>}
 
                             {lsECFFuerza.length != 0 && numId == 6 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsECFFuerza} title="Riesgo ECF - Fuerza" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFFuerza} title="Riesgo ECF - Fuerza" />
                                 : <></>}
 
                             {lsECFMovimiento.length != 0 && numId == 7 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsECFMovimiento} title="Riesgo ECF - Movimiento" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFMovimiento} title="Riesgo ECF - Movimiento" />
                                 : <></>}
 
                         </Box>
@@ -382,4 +383,5 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
 RowDLTD.propTypes = {
     row: PropTypes.object,
     handleDelete: PropTypes.func,
+    documento: PropTypes.string,
 };

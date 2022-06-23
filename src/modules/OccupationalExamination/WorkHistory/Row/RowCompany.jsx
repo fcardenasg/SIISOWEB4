@@ -16,7 +16,7 @@ import swal from 'sweetalert';
 import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import { PostWorkHistoryRiskCompany } from 'formatdata/WorkHistoryRiskForm';
-import SubRowHistorical from './SubRowHistorical';
+import SubRowHistoricalCompany from './SubRowHistoricalCompany';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import { MessageSuccess, MessageDelete, ParamDelete, ParamLoadingData } from 'components/alert/AlertAll';
 import { InsertWorkHistoryRiskCompany, DeleteWorkHistoryRiskCompany, GetAllByChargeHistoricoCompany, GetAllByChargeWHRAdvanceCompany } from 'api/clients/WorkHistoryRiskClient';
@@ -29,6 +29,7 @@ import { SubRow } from './SubRow';
 import { MenuItem } from '../Menu/MenuItem';
 
 export default function RowCompany({ row = [], handleDelete, documento }) {
+    const diferen = "COMPANY";
     const { user } = useAuth();
     const [numId, setNumId] = useState(1);
     const [openDelete, setOpenDelete] = useState(false);
@@ -72,13 +73,16 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
 
             if (lsServerRiesgo.status === 200) {
                 var arrayInsert = lsServerRiesgo.data.entities;
+                console.log("Datos Riesgo = ", arrayInsert);
 
                 for (let index = 0; index < arrayInsert.length; index++) {
                     const riesgo = arrayInsert[index];
 
                     const DataToInsert = PostWorkHistoryRiskCompany(row.id, row.fecha, row.documento, numRiesgo,
-                        row.idCargo, riesgo.clase, riesgo.exposicion, riesgo.gradosinEPP, riesgo.gradoconEPP,
+                        row.cargo, riesgo.clase, riesgo.exposicion, riesgo.gradosinEPP, riesgo.gradoconEPP,
                         riesgo.medidascontrol, 0, 0, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+
+                    console.log("Datos = ", DataToInsert);
 
                     if (DataToInsert) {
                         const result = await InsertWorkHistoryRiskCompany(DataToInsert);
@@ -91,7 +95,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                 }
             }
 
-            const lsServerRiesgoHL = await GetAllByChargeWHRAdvanceCompany(0, 0, row.idCargo, numRiesgo, row.id);
+            const lsServerRiesgoHL = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, numRiesgo, row.id);
             if (lsServerRiesgoHL.status === 200) {
                 return lsServerRiesgoHL.data.entities;
             }
@@ -104,38 +108,31 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
 
     async function GetAllHistoricoForCharge() {
         try {
-            const lsServerRiesgoQuimico = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoQuimico, documento);
+            const lsServerRiesgoQuimico = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoQuimico, documento);
             if (lsServerRiesgoQuimico.status === 200)
                 setLsHisQuimico(lsServerRiesgoQuimico.data.entities);
 
-            const lsServerRiesgoFisico = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoFisico, documento);
+            const lsServerRiesgoFisico = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoFisico, documento);
             if (lsServerRiesgoFisico.status === 200)
                 setLsHisFisico(lsServerRiesgoFisico.data.entities);
 
-            const lsServerRiesgoPsicosocial = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoPsicosocial, documento);
+            const lsServerRiesgoPsicosocial = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoPsicosocial, documento);
             if (lsServerRiesgoPsicosocial.status === 200)
                 setLsHisPsicosocial(lsServerRiesgoPsicosocial.data.entities);
 
-            const lsServerRiesgoBiologico = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoBiologico, documento);
+            const lsServerRiesgoBiologico = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoBiologico, documento);
             if (lsServerRiesgoBiologico.status === 200)
                 setLsHisBiologico(lsServerRiesgoBiologico.data.entities);
 
-            const lsServerRiesgoECFPostura = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoErgonomicoCargaFisica_Postura, documento);
+            const lsServerRiesgoECFPostura = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Postura, documento);
             if (lsServerRiesgoECFPostura.status === 200)
                 setLsHisECFPostura(lsServerRiesgoECFPostura.data.entities);
 
-            const lsServerRiesgoECFFuerza = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, documento);
+            const lsServerRiesgoECFFuerza = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, documento);
             if (lsServerRiesgoECFFuerza.status === 200)
                 setLsHisECFFuerza(lsServerRiesgoECFFuerza.data.entities);
 
-            const lsServerRiesgoECFMovimiento = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, documento);
+            const lsServerRiesgoECFMovimiento = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, documento);
             if (lsServerRiesgoECFMovimiento.status === 200)
                 setLsHisECFMovimiento(lsServerRiesgoECFMovimiento.data.entities);
         } catch (error) {
@@ -149,40 +146,33 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
 
     async function GetAll() {
         try {
-            const lsServerRiesgoQuimico = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoQuimico, row.id);
+            const lsServerRiesgoQuimico = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoQuimico, row.id);
             if (lsServerRiesgoQuimico.status === 200)
                 setLsQuimico(lsServerRiesgoQuimico.data.entities);
 
-            const lsServerRiesgoFisico = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoFisico, row.id);
+            const lsServerRiesgoFisico = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoFisico, row.id);
             if (lsServerRiesgoFisico.status === 200)
                 setLsFisico(lsServerRiesgoFisico.data.entities);
 
-            const lsServerRiesgoPsicosocial = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoPsicosocial, row.id);
+            const lsServerRiesgoPsicosocial = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoPsicosocial, row.id);
             if (lsServerRiesgoPsicosocial.status === 200)
                 setLsPsicosocial(lsServerRiesgoPsicosocial.data.entities);
 
-            const lsServerRiesgoBiologico = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoBiologico, row.id);
+            const lsServerRiesgoBiologico = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoBiologico, row.id);
             if (lsServerRiesgoBiologico.status === 200)
                 setLsBiologico(lsServerRiesgoBiologico.data.entities);
 
-            const lsServerRiesgoECFFuerza = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, row.id);
+            const lsServerRiesgoECFFuerza = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, row.id);
             if (lsServerRiesgoECFFuerza.status === 200)
-                setLsECFPostura(lsServerRiesgoECFFuerza.data.entities);
+                setLsECFFuerza(lsServerRiesgoECFFuerza.data.entities);
 
-            const lsServerRiesgoECFMovimiento = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, row.id);
+            const lsServerRiesgoECFMovimiento = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, row.id);
             if (lsServerRiesgoECFMovimiento.status === 200)
-                setLsECFFuerza(lsServerRiesgoECFMovimiento.data.entities);
+                setLsECFMovimiento(lsServerRiesgoECFMovimiento.data.entities);
 
-            const lsServerRiesgoECFPostura = await GetAllByChargeWHRAdvanceCompany(0, 0, DefaultValue.RiesgoEnOtrasEmpresas,
-                DefaultValue.RiesgoErgonomicoCargaFisica_Postura, row.id);
+            const lsServerRiesgoECFPostura = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Postura, row.id);
             if (lsServerRiesgoECFPostura.status === 200)
-                setLsECFMovimiento(lsServerRiesgoECFPostura.data.entities);
+                setLsECFPostura(lsServerRiesgoECFPostura.data.entities);
         } catch (error) {
             console.log(error);
         }
@@ -208,6 +198,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                     if (id == 1) {
                         const lsRiesgoQuimico = await DeleteAndInsertRisk(lsQuimico, DefaultValue.RiesgoQuimico);
                         setLsQuimico(lsRiesgoQuimico);
+                        console.log("Datos = ", lsRiesgoQuimico);
                     }
 
                     if (id == 2) {
@@ -316,7 +307,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                 title="REGISTRO HISTÓRICO DE EXPOSICIÓN OCUPACIONAL"
                 handleClose={() => setOpenHistorico(false)}
             >
-                <SubRowHistorical key={row.id} documento={documento} />
+                <SubRowHistoricalCompany key={row.id} documento={documento} />
             </FullScreenDialog>
 
             <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -356,31 +347,31 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                             />
 
                             {lsQuimico.length != 0 && numId == 1 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsQuimico} title="Riesgo Químico" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsQuimico} title="Riesgo Químico" />
                                 : <></>}
 
                             {lsFisico.length != 0 && numId == 2 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsFisico} title="Riesgo Físico" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsFisico} title="Riesgo Físico" />
                                 : <></>}
 
                             {lsPsicosocial.length != 0 && numId == 3 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsPsicosocial} title="Riesgo Psicosocial" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsPsicosocial} title="Riesgo Psicosocial" />
                                 : <></>}
 
                             {lsBiologico.length != 0 && numId == 4 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsBiologico} title="Riesgo Biológico" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsBiologico} title="Riesgo Biológico" />
                                 : <></>}
 
                             {lsECFPostura.length != 0 && numId == 5 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsECFPostura} title="Riesgo ECF - Postura" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFPostura} title="Riesgo ECF - Postura" />
                                 : <></>}
 
                             {lsECFFuerza.length != 0 && numId == 6 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsECFFuerza} title="Riesgo ECF - Fuerza" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFFuerza} title="Riesgo ECF - Fuerza" />
                                 : <></>}
 
                             {lsECFMovimiento.length != 0 && numId == 7 ?
-                                <SubRow key={row.id} getAll={GetAll} onClickDelete={handleDeleteHistoryRisk} row={lsECFMovimiento} title="Riesgo ECF - Movimiento" />
+                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFMovimiento} title="Riesgo ECF - Movimiento" />
                                 : <></>}
 
                         </Box>

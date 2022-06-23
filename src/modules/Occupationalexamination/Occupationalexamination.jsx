@@ -33,6 +33,7 @@ import { Message } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { TitleButton } from 'components/helpers/Enums';
 import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
+import useAuth from 'hooks/useAuth';
 import User from 'assets/img/user.png'
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -80,6 +81,7 @@ const tabsOption = [
 ];
 
 const OccupationalExamination = () => {
+    const { user } = useAuth();
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -210,6 +212,7 @@ const OccupationalExamination = () => {
                 FormatDate(datos.fechaLaboratorioFRA), datos.colesterolTotalFRA, datos.hDLFRA, datos.triglicericosFRA, JSON.stringify(arrays.metabolico), datos.glisemiaFRA,
                 datos.fumaFRA, datos.observacionFRA, datos.lDLFRA, datos.relacionFRA, datos.fRLEdadFRA, datos.fRLColesterolFRA, datos.fRHDLFRA, datos.fRGlisemiaFRA,
                 datos.fRTencionFRA, datos.fRTabaquismoFRA, datos.puntajeFRA, datos.riesgoAbsolutoFRA, datos.riesgoRelativoFRA, datos.interpretacionFRA,
+                user.email, FormatDate(new Date()), '', FormatDate(new Date())
             );
 
             console.log("Datos = ", DataToInset);
@@ -263,7 +266,7 @@ const OccupationalExamination = () => {
 
     return (
         <MainCard>
-            <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
+            <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}>
                 <Grid container justifyContent="left" alignItems="center" spacing={2}>
                     <Grid item xs={5}>
                         <Grid container justifyContent="center" alignItems="center" spacing={2}>

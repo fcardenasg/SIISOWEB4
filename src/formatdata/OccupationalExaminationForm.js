@@ -48,7 +48,7 @@ export function PostOccupationalExamination(
     conceptoActitudMedicoNEMTA, fechaFRA, tencionFRA, idTencionArterialFRA, idAntecedenteCardiovascularFRA, idDeporteFRA,
     idBebidaFRA, fechaLaboratorioFRA, colesterolTotalFRA, hdlfra, triglicericosFRA, idMetabolicoFRA, glisemiaFRA,
     fumaFRA, observacionFRA, ldlfra, relacionFRA, frlEdadFRA, frlColesterolFRA, frhdlfra, frGlisemiaFRA, frTencionFRA, frTabaquismoFRA,
-    puntajeFRA, riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA) {
+    puntajeFRA, riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
         idHistoriaLaboral, documento, fecha, idAtencion, congenitosAP, inmunoPrevenibleAP, infecciososAP,
         ojoAP, agudezaVisualAP, oidosAP, nasoFaringeAP, cardiovascularAP, pulmonarAP, gastrointestinalAP, gimitoUrinarioAP,
@@ -94,7 +94,7 @@ export function PostOccupationalExamination(
         conceptoActitudMedicoNEMTA, fechaFRA, tencionFRA, idTencionArterialFRA, idAntecedenteCardiovascularFRA, idDeporteFRA,
         idBebidaFRA, fechaLaboratorioFRA, colesterolTotalFRA, hdlfra, triglicericosFRA, idMetabolicoFRA, glisemiaFRA,
         fumaFRA, observacionFRA, ldlfra, relacionFRA, frlEdadFRA, frlColesterolFRA, frhdlfra, frGlisemiaFRA, frTencionFRA, frTabaquismoFRA,
-        puntajeFRA, riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA
+        puntajeFRA, riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }
 
@@ -146,7 +146,7 @@ export function PutOccupationalExamination(id, idHistoriaLaboral, documento, fec
 
     fechaFRA, tencionFRA, idTencionArterialFRA, idAntecedenteCardiovascularFRA, idDeporteFRA, idBebidaFRA, fechaLaboratorioFRA, colesterolTotalFRA, hDLFRA, triglicericosFRA,
     idMetabolicoFRA, glisemiaFRA, fumaFRA, observacionFRA, lDLFRA, relacionFRA, fRLEdadFRA, fRLColesterolFRA, fRHDLFRA, fRGlisemiaFRA, fRTencionFRA, fRTabaquismoFRA, puntajeFRA,
-    riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA,) {
+    riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
         id, idHistoriaLaboral, documento, fecha, idAtencion,
 
@@ -196,6 +196,6 @@ export function PutOccupationalExamination(id, idHistoriaLaboral, documento, fec
 
         fechaFRA, tencionFRA, idTencionArterialFRA, idAntecedenteCardiovascularFRA, idDeporteFRA, idBebidaFRA, fechaLaboratorioFRA, colesterolTotalFRA, hDLFRA, triglicericosFRA,
         idMetabolicoFRA, glisemiaFRA, fumaFRA, observacionFRA, lDLFRA, relacionFRA, fRLEdadFRA, fRLColesterolFRA, fRHDLFRA, fRGlisemiaFRA, fRTencionFRA, fRTabaquismoFRA, puntajeFRA,
-        riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA,
+        riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }
