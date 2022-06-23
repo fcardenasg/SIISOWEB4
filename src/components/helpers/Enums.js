@@ -137,6 +137,7 @@ export const DefaultValue = {
     AT_ASESORIA_MEDICA: 3911,
 
     /* RIESGOS */
+    RiesgoEnOtrasEmpresas: 3949,
     RiesgoQuimico: 3949,
     RiesgoFisico: 3950,
     RiesgoPsicosocial: 3952,

@@ -13,7 +13,7 @@ import {
     IconButton,
 } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import ModalRisk from './ModalRisk';
+import ModalRisk from '../ModalRisk';
 
 export const SubRow = ({ title, getAll, onClickDelete, row }) => {
     const theme = useTheme();

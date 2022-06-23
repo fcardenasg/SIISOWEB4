@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { Fragment, useEffect, useState } from 'react';
-import { useTheme } from '@mui/material/styles';
 
 import { TitleButton } from 'components/helpers/Enums';
 import Chip from 'ui-component/extended/Chip';
@@ -38,99 +37,13 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import RemoveModeratorIcon from '@mui/icons-material/RemoveModerator';
-import user from 'assets/img/user.png';
+import userImg from 'assets/img/user.png';
 import { PutWorkHistoryRiskDLTD } from 'formatdata/WorkHistoryRiskForm';
-
-const ViewInfo = ({ row }) => {
-
-    return (
-        <Fragment>
-            <SubCard
-                title={
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={12}>
-                            <Chip chipcolor="success" label={row.nameAtencion} size="small" />
-                        </Grid>
-                        <Grid item>
-                            <Avatar size="sm" alt="Foto Empleado" src={row.empleadoFoto != null ? row.empleadoFoto : user} />
-                        </Grid>
-                        <Grid item xs zeroMinWidth>
-                            <Typography align="left" variant="h4">
-                                {row.nameRiesgo}
-                            </Typography>
-                            <Typography align="left" variant="h7">
-                                {row.nameClase}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                }
-            >
-                <List component="nav">
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <AccountBoxIcon sx={{ fontSize: '1.3rem' }} />
-                        </ListItemIcon>
-                        <ListItemText primary={<Typography variant="subtitle1">Cargo</Typography>} />
-                        <ListItemSecondaryAction>
-                            <Typography variant="subtitle2" align="right">
-                                {row.nameCargo}
-                            </Typography>
-                        </ListItemSecondaryAction>
-                    </ListItemButton>
-
-                    <Divider />
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <AccessibilityNewIcon sx={{ fontSize: '1.3rem' }} />
-                        </ListItemIcon>
-                        <ListItemText primary={<Typography variant="subtitle1">Exposición</Typography>} />
-                        <ListItemSecondaryAction>
-                            <Typography variant="subtitle2" align="right">
-                                {row.nameExpocision}
-                            </Typography>
-                        </ListItemSecondaryAction>
-                    </ListItemButton>
-                    <Divider />
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <VerifiedUserIcon sx={{ fontSize: '1.3rem' }} />
-                        </ListItemIcon>
-                        <ListItemText primary={<Typography variant="subtitle1">Grado Con EPP</Typography>} />
-                        <ListItemSecondaryAction>
-                            <Chip chipcolor={row.nameGradoConEPP === 'BAJO' ? 'success' :
-                                row.nameGradoConEPP === 'MEDIO' ? 'warning' :
-                                    row.nameGradoConEPP === 'CRITICO' ? 'error' : 'error'} label={row.nameGradoConEPP} size="small" />
-                        </ListItemSecondaryAction>
-                    </ListItemButton>
-                    <Divider />
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <RemoveModeratorIcon sx={{ fontSize: '1.3rem' }} />
-                        </ListItemIcon>
-                        <ListItemText primary={<Typography variant="subtitle1">Grado Sin EPP</Typography>} />
-                        <ListItemSecondaryAction>
-                            <Chip chipcolor={row.nameGradoSinEPP === 'BAJO' ? 'success' :
-                                row.nameGradoSinEPP === 'MEDIO' ? 'warning' :
-                                    row.nameGradoSinEPP === 'CRITICO' ? 'error' : 'error'} label={row.nameGradoSinEPP} size="small" />
-                        </ListItemSecondaryAction>
-                    </ListItemButton>
-                    <Divider />
-                </List>
-            </SubCard>
-        </Fragment>
-    );
-}
-
-ViewInfo.propTypes = {
-    row: PropTypes.array,
-};
 
 const ModalRisk = ({ open = false, onClose, getAll, idRisk, title }) => {
     let openRisk = open;
 
     const { user } = useAuth();
-    const theme = useTheme();
-    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const methods = useForm();
     const { handleSubmit, errors, reset } = methods;
 
@@ -190,43 +103,117 @@ const ModalRisk = ({ open = false, onClose, getAll, idRisk, title }) => {
                 }}
             >
                 <DialogTitle>{title}</DialogTitle>
-
                 <DialogContent>
                     <Grid container spacing={2} sx={{ my: 0 }}>
                         <Grid item xs={12}>
-                            {row.length != 0 ? <ViewInfo row={row} key={idRisk} /> : <Cargando />}
-                        </Grid>
-                        {row.length != 0 ? <>
-                            <Grid item xs={6}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        type="number"
-                                        disabled={row.length != 0 ? false : true}
-                                        defaultValue=""
-                                        name="anio"
-                                        label="Año"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        type="number"
-                                        disabled={row.length != 0 ? false : true}
-                                        defaultValue=""
-                                        name="mes"
-                                        label="Mes"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid></> : <></>
-                        }
-                    </Grid>
+                            {row.length != 0 ?
+                                <SubCard
+                                    title={
+                                        <Grid container spacing={1} alignItems="center">
+                                            <Grid item xs={12}>
+                                                <Chip chipcolor="success" label={row.nameAtencion} size="small" />
+                                            </Grid>
+                                            <Grid item>
+                                                <Avatar size="sm" alt="Foto Empleado" src={row.empleadoFoto != null ? row.empleadoFoto : userImg} />
+                                            </Grid>
+                                            <Grid item xs zeroMinWidth>
+                                                <Typography align="left" variant="h4">
+                                                    {row.nameRiesgo}
+                                                </Typography>
 
+                                                <Typography align="left" variant="caption">
+                                                    {row.nameClase}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    }
+                                >
+                                    <List component="div">
+                                        <ListItemButton>
+                                            <ListItemIcon>
+                                                <AccountBoxIcon sx={{ fontSize: '1.3rem' }} />
+                                            </ListItemIcon>
+                                            <ListItemText primary={<Typography variant="subtitle1">Cargo</Typography>} />
+                                            <ListItemSecondaryAction>
+                                                <Typography variant="subtitle2" align="right">
+                                                    {row.nameCargo}
+                                                </Typography>
+                                            </ListItemSecondaryAction>
+                                        </ListItemButton>
+
+                                        <Divider />
+                                        <ListItemButton>
+                                            <ListItemIcon>
+                                                <AccessibilityNewIcon sx={{ fontSize: '1.3rem' }} />
+                                            </ListItemIcon>
+                                            <ListItemText primary={<Typography variant="subtitle1">Exposición</Typography>} />
+                                            <ListItemSecondaryAction>
+                                                <Typography variant="subtitle2" align="right">
+                                                    {row.nameExpocision}
+                                                </Typography>
+                                            </ListItemSecondaryAction>
+                                        </ListItemButton>
+                                        <Divider />
+                                        <ListItemButton>
+                                            <ListItemIcon>
+                                                <VerifiedUserIcon sx={{ fontSize: '1.3rem' }} />
+                                            </ListItemIcon>
+                                            <ListItemText primary={<Typography variant="subtitle1">Grado Con EPP</Typography>} />
+                                            <ListItemSecondaryAction>
+                                                <Chip chipcolor={row.nameGradoConEPP === 'BAJO' ? 'success' :
+                                                    row.nameGradoConEPP === 'MEDIO' ? 'warning' :
+                                                        row.nameGradoConEPP === 'CRITICO' ? 'error' : 'error'} label={row.nameGradoConEPP} size="small" />
+                                            </ListItemSecondaryAction>
+                                        </ListItemButton>
+                                        <Divider />
+                                        <ListItemButton>
+                                            <ListItemIcon>
+                                                <RemoveModeratorIcon sx={{ fontSize: '1.3rem' }} />
+                                            </ListItemIcon>
+                                            <ListItemText primary={<Typography variant="subtitle1">Grado Sin EPP</Typography>} />
+                                            <ListItemSecondaryAction>
+                                                <Chip chipcolor={row.nameGradoSinEPP === 'BAJO' ? 'success' :
+                                                    row.nameGradoSinEPP === 'MEDIO' ? 'warning' :
+                                                        row.nameGradoSinEPP === 'CRITICO' ? 'error' : 'error'} label={row.nameGradoSinEPP} size="small" />
+                                            </ListItemSecondaryAction>
+                                        </ListItemButton>
+                                        <Divider />
+                                    </List>
+
+                                    <Grid sx={{ pt: 2 }} container spacing={2}>
+                                        <Grid item xs={6}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    type="number"
+                                                    disabled={row.length != 0 ? false : true}
+                                                    defaultValue=""
+                                                    name="anio"
+                                                    label="Año"
+                                                    size="small"
+                                                    bug={errors}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    type="number"
+                                                    disabled={row.length != 0 ? false : true}
+                                                    defaultValue=""
+                                                    name="mes"
+                                                    label="Mes"
+                                                    size="small"
+                                                    bug={errors}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+                                    </Grid>
+                                </SubCard> : <Cargando />
+                            }
+                        </Grid>
+                    </Grid>
                 </DialogContent>
+
                 <DialogActions>
                     <AnimateButton>
                         <Button variant="contained" onClick={handleSubmit(handleClick)}>{TitleButton.Guardar}</Button>
@@ -234,7 +221,7 @@ const ModalRisk = ({ open = false, onClose, getAll, idRisk, title }) => {
 
                     <AnimateButton>
                         <Button variant="text" onClick={onClose}>
-                            {TitleButton.Cerrar}
+                            {TitleButton.Cancelar}
                         </Button>
                     </AnimateButton>
                 </DialogActions>

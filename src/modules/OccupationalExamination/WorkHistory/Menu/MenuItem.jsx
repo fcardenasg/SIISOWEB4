@@ -55,7 +55,7 @@ export const MenuItem = ({ onClickNuevo, onClickButton, numId, onClickHistorico 
                                 </Grid>
                                 <Grid item xs={6}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={onClickHistorico} startIcon={<IconHistory />}>
+                                        <Button variant="outlined" fullWidth onClick={() => onClickHistorico(`${numId}`)} startIcon={<IconHistory />}>
                                             Histórico
                                         </Button>
                                     </AnimateButton>

@@ -1,0 +1,38 @@
+const headCells = [
+    {
+        id: 'nameRiesgo',
+        numeric: false,
+        label: 'Tipo de Atención',
+        align: 'left'
+    },
+    {
+        id: 'nameClase',
+        numeric: false,
+        label: 'Atención',
+        align: 'left'
+    },
+    {
+        id: 'nameCargo',
+        numeric: false,
+        label: 'Atención',
+        align: 'left'
+    },
+    {
+        id: 'nameExpocision',
+        numeric: false,
+        label: 'Atención',
+        align: 'left'
+    },
+    {
+        id: 'nameGradoConEPP',
+        numeric: false,
+        label: 'Atención',
+        align: 'left'
+    },
+    {
+        id: 'fecha',
+        numeric: false,
+        label: 'Fecha',
+        align: 'left'
+    },
+];
