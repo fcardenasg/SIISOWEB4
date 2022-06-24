@@ -28,6 +28,7 @@ import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import FullScreenDialog from 'components/controllers/FullScreenDialog'
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import TableAntecedentes from './TableEmo/TableAntecedentes';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -232,10 +233,10 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
             <FullScreenDialog
                 open={openViewPdf}
-                title="VISTA DE PDF"
+                title="VISTA DE HISTÓRICO"
                 handleClose={() => setOpenViewPdf(false)}
             >
-
+                <TableAntecedentes />
             </FullScreenDialog>
 
             <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES PATALÓGICOS</Typography>}>
