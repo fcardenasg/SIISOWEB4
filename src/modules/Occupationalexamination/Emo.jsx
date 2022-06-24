@@ -42,7 +42,8 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [openViewPdf, setOpenViewPdf] = useState(false);
+    const [openHistory, setOpenHistory] = useState(false);
+    const [numHistory, setNumHistory] = useState('');
 
     const [lsDeporte, setLsDeporte] = useState([]);
     const [lsTipoFobia, setLsTipoFobia] = useState([]);
@@ -232,12 +233,13 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
             </FullScreenDialog>
 
             <FullScreenDialog
-                open={openViewPdf}
+                open={openHistory}
                 title="VISTA DE HISTÓRICO"
-                handleClose={() => setOpenViewPdf(false)}
+                handleClose={() => setOpenHistory(false)}
             >
                 <TableAntecedentes />
             </FullScreenDialog>
+
 
             <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES PATALÓGICOS</Typography>}>
                 <Grid container spacing={2} sx={{ pb: 2 }}>
@@ -591,7 +593,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => setOpenViewPdf(true)}
+                        onClick={() => { setOpenHistory(true); setNumHistory('ANTECEDENTES_PATALOGICOS') }}
                         icons={DetailIcons[2].icons}
                     />
                 </Grid>
@@ -645,7 +647,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => setOpenViewPdf(true)}
+                        onClick={() => { setOpenHistory(true); setNumHistory('ACCIDENTES_TRABAJO') }}
                         icons={DetailIcons[2].icons}
                     />
                 </Grid>
@@ -696,7 +698,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => setOpenViewPdf(true)}
+                        onClick={() => { setOpenHistory(true); setNumHistory('ACCIDENTES_TRABAJO') }}
                         icons={DetailIcons[2].icons}
                     />
                 </Grid>
@@ -1679,7 +1681,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => setOpenViewPdf(true)}
+                        onClick={() => { setOpenHistory(true); setNumHistory('REVISION_SISTEMAS') }}
                         icons={DetailIcons[2].icons}
                     />
                 </Grid>
@@ -2346,7 +2348,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => setOpenViewPdf(true)}
+                            onClick={() => { setOpenHistory(true); setNumHistory('EXPLORACION_MORFOLOGICA') }}
                             icons={DetailIcons[2].icons}
                         />
                     </Grid>
@@ -2627,7 +2629,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => setOpenViewPdf(true)}
+                        onClick={() => { setOpenHistory(true); setNumHistory('EXPLORACION_FUNCIONAL') }}
                         icons={DetailIcons[2].icons}
                     />
                 </Grid>
@@ -2691,7 +2693,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('RX_TORAX') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -2752,7 +2754,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('ESPIROMETRIA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -2813,7 +2815,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('AUDIOMETRIA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -2874,7 +2876,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('VISIOMETRIA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -2935,7 +2937,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('LABORATORIO_CLINICO') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -2996,7 +2998,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('CUESTIONARIO_SINTOMAS') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3057,7 +3059,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('EKG') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3117,7 +3119,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('RNM-COLUMNA_LUMBOSACRA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3178,7 +3180,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('RNM-COLUMNA_CERVICAL') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3214,7 +3216,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => setOpenViewPdf(true)}
+                            onClick={() => { setOpenHistory(true); setNumHistory('EXAMENES_PARACLINICOS') }}
                             icons={DetailIcons[2].icons}
                         />
                     </Grid>
@@ -3264,7 +3266,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => setOpenViewPdf(true)}
+                            onClick={() => { setOpenHistory(true); setNumHistory('IMPRESION_DIAGNOSTICA') }}
                             icons={DetailIcons[2].icons}
                         />
                     </Grid>
@@ -3299,7 +3301,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => setOpenViewPdf(true)}
+                            onClick={() => { setOpenHistory(true); setNumHistory('IMPRESION_DIAGNOSTICA') }}
                             icons={DetailIcons[2].icons}
                         />
                     </Grid>
@@ -3391,7 +3393,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('NOTIFICACION_EMPRESA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3426,7 +3428,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('NOTIFICACION_EMPRESA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3461,7 +3463,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('NOTIFICACION_EMPRESA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3879,7 +3881,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('NOTIFICACION_EMPLEADO') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -4099,7 +4101,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => setOpenViewPdf(true)}
+                                onClick={() => { setOpenHistory(true); setNumHistory('INFORMACION_CARDIOVASCULAR') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>

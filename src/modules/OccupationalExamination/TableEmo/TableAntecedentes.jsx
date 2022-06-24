@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { GetAllOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 
-const columns = [
+const columnsAntecedentesPatologicos = [
     { field: 'congenitosAP', headerName: 'Congenitos', width: 100 },
     { field: 'inmunoPrevenibleAP', headerName: 'Inmunoprevenible', width: 100 },
     { field: 'infecciososAP', headerName: 'Infeccioso', width: 100 },
@@ -26,7 +26,7 @@ const columns = [
     traumaticosAP, tranfuccionesAP, etsAP, deformidadesAP, psiquiatricosAP, farmacoDependenciaAP, emAP, renalAP,
     asmaAP, orlAP, cancerAP */
 
-const TableAntecedentes = () => {
+const TableAntecedentes = ({ param = 0 }) => {
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
@@ -48,7 +48,7 @@ const TableAntecedentes = () => {
         <div style={{ height: 620, width: '100%' }}>
             <DataGrid
                 rows={rows.length != 0 ? rows : []}
-                columns={columns}
+                columns={columnsAntecedentesPatologicos}
                 pageSize={9}
                 rowsPerPageOptions={[9]}
             />
