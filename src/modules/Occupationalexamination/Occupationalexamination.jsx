@@ -28,6 +28,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import RespiratorySymptoms from './RespiratorySymptoms';
 import { InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { Message } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
@@ -78,6 +79,10 @@ const tabsOption = [
         label: 'Historia Ocupacional',
         icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
     },
+    {
+        label: 'Sintomas Respiratorios',
+        icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+    },
 ];
 
 const OccupationalExamination = () => {
@@ -99,6 +104,19 @@ const OccupationalExamination = () => {
         dx: [],
         antecedentesCardio: [],
         metabolico: [],
+    });
+
+    const [peso, setPeso] = useState('');
+    const [talla, setTalla] = useState('');
+    const [imc, setIMC] = useState('');
+    const [clasificacion, setClasificacion] = useState('');
+    const [clasificacionColor, setClasificacionColor] = useState('');
+
+    const [antropometria, setAntropometria] = useState({
+        peso: '',
+        imc: '',
+        clasificacion: '',
+        clasificacionColor: '',
     });
 
     const [estadoVacuna, setEstadoVacuna] = useState({
@@ -164,7 +182,7 @@ const OccupationalExamination = () => {
                 datos.cigarrillosDiasFumabaHB, datos.aniosCigaFumabaHB, datos.mesesCigaFumabaHB, datos.observacionFumabaHB, datos.practicaDeporteHB,
                 datos.idFrecuenciaDeporteHB, datos.idCualDeporteHB, datos.observacionPracticaDeporHB, datos.hobbiesPasatiempoHB, datos.cualHobbiesHB,
                 datos.consumeBebidasAlcoholicasHB, datos.idFrecuenciaBebidaAlHB, datos.cualBebidasAlHB, datos.fobiasHB, JSON.stringify(arrays.tipoFobia),
-                datos.cualFobiaHB, datos.heredoFamiliarHB, JSON.stringify(arrays.parentesco), datos.observacionHeredoFamiHB,
+                datos.cualFobiaHB,
 
                 datos.menarquiaGO, datos.idCiclosGO, datos.duracionGO, datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO, datos.vidaMaritalGO,
                 datos.vidaObstetricaGO, datos.gGO, datos.pGO, datos.aGO, datos.cSGO, datos.vGO, FormatDate(datos.fUPGO), FormatDate(datos.fURGO), datos.eTSGO, datos.cUALGO,
@@ -361,16 +379,35 @@ const OccupationalExamination = () => {
             </Tabs>
 
             <TabPanel value={value} index={0}>
-                <PersonalData lsEmployee={lsEmployee} />
+                <PersonalData key={166991} lsEmployee={lsEmployee} />
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <WorkHistory
+                    key={564564645}
                     lsEmpleado={lsEmployee}
                     documento={document}
                     atencion={atencion} />
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <Emo
+                    setAntropometria={setAntropometria}
+                    antropometria={antropometria}
+                    key={12645646}
+                    documento={document}
+                    errors={errors}
+                    setArrays={setArrays}
+                    arrays={arrays}
+                    setEstadoVacuna={setEstadoVacuna}
+                    estadoVacuna={estadoVacuna}
+                    lsEmployee={lsEmployee}
+                    {...methods} />
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+                <RespiratorySymptoms
+                    setAntropometria={setAntropometria}
+                    antropometria={antropometria}
+                    key={12645646}
+                    documento={document}
                     errors={errors}
                     setArrays={setArrays}
                     arrays={arrays}

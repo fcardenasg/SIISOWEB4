@@ -95,6 +95,7 @@ export const Url = {
     AusentismoLaboralId: 'api/AusentismoLaboral/id',
 
     HistoriaClinicaOcupacional: 'api/HistoriaClinicaOcupacional',
+    HCOGetAllByDocumento: 'api/HistoriaClinicaOcupacional/GetAllByDocumento',
     HistoriaClinicaOcupacionalId: 'api/HistoriaClinicaOcupacional/id',
 
     TipoAtencion: 'api/TipoAtencion',

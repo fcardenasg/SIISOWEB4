@@ -6,6 +6,7 @@ import {
     Grid, Typography, Divider
 } from '@mui/material';
 
+import InputOnChange from 'components/input/InputOnChange';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import DetailedIcon from 'components/controllers/DetailedIcon';
@@ -36,14 +37,50 @@ const DetailIcons = [
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arrays, ...methods }) => {
+const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arrays, ...methods }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const [peso, setPeso] = useState('');
+    const [talla, setTalla] = useState('');
+    const [imc, setIMC] = useState('');
+    const [clasificacion, setClasificacion] = useState('');
+    const [clasificacionColor, setClasificacionColor] = useState('');
+
+    const handleChangeTalla = (event) => {
+        try {
+            setTalla(event.target.value);
+            var tallaPaci = event.target.value;
+            var imcFinal = peso / Math.pow(tallaPaci, 2);
+            setIMC(imcFinal.toFixed(1));
+
+            if (imcFinal < 18.4) {
+                setClasificacion("Bajo de Peso")
+                setClasificacionColor("info");
+            } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
+                setClasificacion("Normal")
+                setClasificacionColor("success");
+            } else if (imcFinal >= 25 && imcFinal <= 29.9) {
+                setClasificacion("Sobrepeso")
+                setClasificacionColor("warning");
+            } else if (imcFinal >= 30 && imcFinal <= 34.9) {
+                setClasificacion("Obesidad Grado I")
+                setClasificacionColor("error");
+            } else if (imcFinal >= 35 && imcFinal <= 39.9) {
+                setClasificacion("Obesidad Grado II")
+                setClasificacionColor("error");
+            } else if (imcFinal > 40) {
+                setClasificacion("Obesidad Grado III")
+                setClasificacionColor("error");
+            } else {
+                setClasificacion('')
+            }
+        } catch (error) { }
+    }
 
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openHistory, setOpenHistory] = useState(false);
-    const [numHistory, setNumHistory] = useState('');
+    const [cadenaHistory, setCadenaHistory] = useState('');
 
     const [lsDeporte, setLsDeporte] = useState([]);
     const [lsTipoFobia, setLsTipoFobia] = useState([]);
@@ -237,7 +274,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                 title="VISTA DE HISTÓRICO"
                 handleClose={() => setOpenHistory(false)}
             >
-                <TableAntecedentes />
+                <TableAntecedentes documento={documento} param={cadenaHistory} />
             </FullScreenDialog>
 
 
@@ -593,9 +630,118 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => { setOpenHistory(true); setNumHistory('ANTECEDENTES_PATALOGICOS') }}
+                        onClick={() => { setOpenHistory(true); setCadenaHistory('ANTECEDENTES_PATALOGICOS') }}
                         icons={DetailIcons[2].icons}
                     />
+                </Grid>
+            </SubCard>
+            <Grid sx={{ pb: 2 }} />
+
+            <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES FAMILIAR</Typography>}>
+                <Grid container spacing={2}>
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="idParienteUno"
+                                label="Parentesco"
+                                defaultValue=""
+                                options={lsFrecuencia}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={9}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="descripcionParienteUno"
+                                label="Observación"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="idParienteDos"
+                                label="Parentesco"
+                                defaultValue=""
+                                options={lsFrecuencia}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={9}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="descripcionParienteTres"
+                                label="Observación"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="idParienteTres"
+                                label="Parentesco"
+                                defaultValue=""
+                                options={lsFrecuencia}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={9}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="descripcionParienteCuatro"
+                                label="Observación"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="idParienteCuatro"
+                                label="Parentesco"
+                                defaultValue=""
+                                options={lsFrecuencia}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={9}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="descripcionParienteCuatro"
+                                label="Observación"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
                 </Grid>
             </SubCard>
             <Grid sx={{ pb: 2 }} />
@@ -647,7 +793,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => { setOpenHistory(true); setNumHistory('ACCIDENTES_TRABAJO') }}
+                        onClick={() => { setOpenHistory(true); setCadenaHistory('ACCIDENTES_TRABAJO') }}
                         icons={DetailIcons[2].icons}
                     />
                 </Grid>
@@ -698,7 +844,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => { setOpenHistory(true); setNumHistory('ACCIDENTES_TRABAJO') }}
+                        onClick={() => { setOpenHistory(true); setCadenaHistory('ACCIDENTES_TRABAJO') }}
                         icons={DetailIcons[2].icons}
                     />
                 </Grid>
@@ -1141,7 +1287,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                     </Grid>
                 </Grid>
 
-                <Grid container spacing={2} sx={{ pb: 2 }}>
+                {/* <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2}>
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -1166,7 +1312,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                     <Grid item xs={5}>
                         <FormProvider {...methods}>
                             <InputText
-                                defaultValue=""
+                                defaultValue="SIN REGISTRO"
                                 fullWidth
                                 name="observacionHeredoFamiHB"
                                 label="Observación"
@@ -1175,7 +1321,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             />
                         </FormProvider>
                     </Grid>
-                </Grid>
+                </Grid> */}
 
             </SubCard>
             <Grid sx={{ pb: 2 }} />
@@ -1681,7 +1827,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => { setOpenHistory(true); setNumHistory('REVISION_SISTEMAS') }}
+                        onClick={() => { setOpenHistory(true); setCadenaHistory('REVISION_SISTEMAS') }}
                         icons={DetailIcons[2].icons}
                     />
                 </Grid>
@@ -1690,7 +1836,12 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
             <Grid sx={{ pb: 2 }} />
 
             <SubCard darkTitle title={<Typography variant="h4">EXAMEN FÍSICO</Typography>}>
-                <SubCard title="Signos Vitales" secondary={<Button><IconEdit stroke={1.5} size="1.3rem" /></Button>}>
+                <SubCard
+                    title="Signos Vitales"
+                    secondary={<Button onClick={() => { setOpenHistory(true); setCadenaHistory('SIGNOS_VITALES') }}>
+                        <IconEdit stroke={1.5} size="1.3rem" />
+                    </Button>}
+                >
                     <Grid container spacing={2} alignItems="center">
                         <Grid item xs={4} >
                             <FormProvider {...methods}>
@@ -1777,65 +1928,55 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                         </Grid>
                     </Grid>
                 </SubCard>
-
                 <Grid sx={{ pb: 2 }} />
 
-                <SubCard title="Antropometria" secondary={<Button><IconEdit stroke={1.5} size="1.3rem" /></Button>}>
+                <SubCard
+                    title="Antropometria"
+                    secondary={<Button onClick={() => { setOpenHistory(true); setCadenaHistory('ANTROPOMETRIA') }}>
+                        <IconEdit stroke={1.5} size="1.3rem" />
+                    </Button>}
+                >
                     <Grid container spacing={2}>
-                        <Grid item xs={2} >
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    type="number"
-                                    name="pesoEF"
-                                    label="Peso(Kilos)"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                        <Grid item xs={2}>
+                            <InputOnChange
+                                type="number"
+                                label="Peso(Kilos)"
+                                onChange={(e) => setPeso(e.target.value)}
+                                value={peso}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
                         </Grid>
 
-                        <Grid item xs={2} >
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    type="number"
-                                    name="tallaEF"
-                                    label="Talla(Metros)"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                        <Grid item xs={2}>
+                            <InputOnChange
+                                type="number"
+                                label="Talla(Metros)"
+                                onChange={handleChangeTalla}
+                                value={talla}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
                         </Grid>
 
-                        <Grid item xs={2} >
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    type="number"
-                                    name="iMCEF"
-                                    label="IMC"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                        <Grid item xs={2}>
+                            <InputOnChange
+                                type="number"
+                                label="IMC"
+                                disabled
+                                onChange={(e) => setIMC(e?.target.value)}
+                                value={imc}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
                         </Grid>
 
-                        <Grid item xs={3} >
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    type="number"
-                                    name="clasificacionEF"
-                                    label="Clasificación"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                        <Grid item xs={3}>
+                            <InputOnChange
+                                disabled
+                                color={clasificacionColor}
+                                label="Clasificación"
+                                onChange={(e) => setAntropometria(e.target.value)}
+                                value={clasificacion}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
                         </Grid>
 
                         <Grid item xs={3} >
@@ -1855,7 +1996,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                 <Grid sx={{ pb: 2 }} />
 
-                <SubCard title="Exploración Morfologica" secondary={<Button><IconEdit stroke={1.5} size="1.3rem" /></Button>}>
+                <SubCard title="Exploración Morfologica">
                     <Grid container spacing={1} sx={{ pb: 2 }}>
                         <Grid item xs={3}>
                             <FormProvider {...methods}>
@@ -2348,7 +2489,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => { setOpenHistory(true); setNumHistory('EXPLORACION_MORFOLOGICA') }}
+                            onClick={() => { setOpenHistory(true); setCadenaHistory('EXPLORACION_MORFOLOGICA') }}
                             icons={DetailIcons[2].icons}
                         />
                     </Grid>
@@ -2629,7 +2770,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                     <DetailedIcon
                         title={DetailIcons[2].title}
-                        onClick={() => { setOpenHistory(true); setNumHistory('EXPLORACION_FUNCIONAL') }}
+                        onClick={() => { setOpenHistory(true); setCadenaHistory('EXPLORACION_FUNCIONAL') }}
                         icons={DetailIcons[2].icons}
                     />
                 </Grid>
@@ -2693,7 +2834,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('RX_TORAX') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('RX_TORAX') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -2754,7 +2895,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('ESPIROMETRIA') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('ESPIROMETRIA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -2815,7 +2956,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('AUDIOMETRIA') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('AUDIOMETRIA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -2876,7 +3017,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('VISIOMETRIA') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('VISIOMETRIA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -2937,7 +3078,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('LABORATORIO_CLINICO') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('LABORATORIO_CLINICO') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -2998,7 +3139,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('CUESTIONARIO_SINTOMAS') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('CUESTIONARIO_SINTOMAS') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3059,7 +3200,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('EKG') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('EKG') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3119,7 +3260,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('RNM-COLUMNA_LUMBOSACRA') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('RNM-COLUMNA_LUMBOSACRA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3180,7 +3321,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <DetailedIcon
                                 xs={4}
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('RNM-COLUMNA_CERVICAL') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('RNM-COLUMNA_CERVICAL') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3216,7 +3357,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => { setOpenHistory(true); setNumHistory('EXAMENES_PARACLINICOS') }}
+                            onClick={() => { setOpenHistory(true); setCadenaHistory('EXAMENES_PARACLINICOS') }}
                             icons={DetailIcons[2].icons}
                         />
                     </Grid>
@@ -3266,7 +3407,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => { setOpenHistory(true); setNumHistory('IMPRESION_DIAGNOSTICA') }}
+                            onClick={() => { setOpenHistory(true); setCadenaHistory('IMPRESION_DIAGNOSTICA') }}
                             icons={DetailIcons[2].icons}
                         />
                     </Grid>
@@ -3301,7 +3442,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => { setOpenHistory(true); setNumHistory('IMPRESION_DIAGNOSTICA') }}
+                            onClick={() => { setOpenHistory(true); setCadenaHistory('IMPRESION_DIAGNOSTICA') }}
                             icons={DetailIcons[2].icons}
                         />
                     </Grid>
@@ -3331,7 +3472,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
                             <FormProvider {...methods}>
                                 <InputDatePicker
                                     label="Fecha Del Concepto"
-                                    name="fechaRnmCervicalEPA"
+                                    name="fechaConceptoNETA"
                                     defaultValue={new Date()}
                                 />
                             </FormProvider>
@@ -3393,7 +3534,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('NOTIFICACION_EMPRESA') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('NOTIFICACION_EMPRESA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3428,7 +3569,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('NOTIFICACION_EMPRESA') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('NOTIFICACION_EMPRESA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3463,7 +3604,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('NOTIFICACION_EMPRESA') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('NOTIFICACION_EMPRESA') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -3881,7 +4022,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('NOTIFICACION_EMPLEADO') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('NOTIFICACION_EMPLEADO') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -4101,7 +4242,7 @@ const Emo = ({ errors, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arr
 
                             <DetailedIcon
                                 title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setNumHistory('INFORMACION_CARDIOVASCULAR') }}
+                                onClick={() => { setOpenHistory(true); setCadenaHistory('INFORMACION_CARDIOVASCULAR') }}
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
@@ -4285,9 +4426,12 @@ export default Emo;
 
 Emo.propTypes = {
     lsEmployee: PropTypes.any,
+    documento: PropTypes.any,
     errors: PropTypes.any,
     setArrays: PropTypes.func,
     arrays: PropTypes.any,
+    setAntropometria: PropTypes.func,
+    antropometria: PropTypes.object,
     setEstadoVacuna: PropTypes.func,
     estadoVacuna: PropTypes.any,
 };
