@@ -2,245 +2,38 @@ import PropTypes from 'prop-types';
 import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
-    Button, useMediaQuery,
-    Grid, Typography, Divider
+    useMediaQuery,
+    Grid, Typography,
 } from '@mui/material';
 
-import InputOnChange from 'components/input/InputOnChange';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import InputCheckBox from 'components/input/InputCheckBox';
-import InputCheck from 'components/input/InputCheck';
-import Accordion from 'components/accordion/Accordion';
 import { FormProvider } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import InputDatePicker from 'components/input/InputDatePicker';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import { IconEdit } from '@tabler/icons';
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
-import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import { CodCatalogo } from 'components/helpers/Enums';
 import FullScreenDialog from 'components/controllers/FullScreenDialog'
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import TableAntecedentes from './TableEmo/TableAntecedentes';
 
-const DetailIcons = [
-    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-    { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
-]
-
-const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometria, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arrays, ...methods }) => {
+const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [peso, setPeso] = useState('');
-    const [talla, setTalla] = useState('');
-    const [imc, setIMC] = useState('');
-    const [clasificacion, setClasificacion] = useState('');
-    const [clasificacionColor, setClasificacionColor] = useState('');
-
-    const handleChangeTalla = (event) => {
-        try {
-            setTalla(event.target.value);
-            var tallaPaci = event.target.value;
-            var imcFinal = peso / Math.pow(tallaPaci, 2);
-            setIMC(imcFinal.toFixed(1));
-
-            if (imcFinal < 18.4) {
-                setClasificacion("Bajo de Peso")
-                setClasificacionColor("info");
-            } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
-                setClasificacion("Normal")
-                setClasificacionColor("success");
-            } else if (imcFinal >= 25 && imcFinal <= 29.9) {
-                setClasificacion("Sobrepeso")
-                setClasificacionColor("warning");
-            } else if (imcFinal >= 25 && imcFinal <= 34.9) {
-                setClasificacion("Obesidad Grado I")
-                setClasificacionColor("error");
-            } else if (imcFinal >= 35 && imcFinal <= 39.9) {
-                setClasificacion("Obesidad Grado II")
-                setClasificacionColor("error");
-            } else if (imcFinal > 40) {
-                setClasificacion("Obesidad Grado III")
-                setClasificacionColor("error");
-            } else {
-                setClasificacion('')
-            }
-        } catch (error) { }
-    }
 
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [openHistory, setOpenHistory] = useState(false);
-    const [cadenaHistory, setCadenaHistory] = useState('');
-
-    const [lsDeporte, setLsDeporte] = useState([]);
-    const [lsTipoFobia, setLsTipoFobia] = useState([]);
-    const [lsFrecuencia, setLsFrecuencia] = useState([]);
-
-    const [lsPariente, setLsPariente] = useState([]);
-    const [lsGineMetodo, setLsGineMetodo] = useState([]);
-    const [lsBiotipo, setLsBiotipo] = useState([]);
-    const [lsResultado, setLsResultado] = useState([]);
-    const [lsConceptoActitud, setLsConceptoActitud] = useState([]);
-    const [lsCie11, setLsCie11] = useState([]);
-    const [lsCiclos, setLsCiclos] = useState([]);
-
-    const [lsNeConceptoActi, setLsNeConceptoActi] = useState([]);
-    const [lsOpcion, setLsOpcion] = useState([]);
-    const [lsNeADonde, setLsNeADonde] = useState([]);
-    const [lsRiesClasifi, setLsRiesClasifi] = useState([]);
-
     const [lsFramDeporte, setLsFramDeporte] = useState([]);
-    const [lsFramBebida, setLsFramBebida] = useState([]);
-    const [lsFramDxMetabolismo, setLsFramDxMetabolismo] = useState([]);
-    const [lsFramDxTension, setLsFramDxTension] = useState([]);
-    const [lsFramAntecedentesCardiovascular, setLsFramAntecedentesCardiovascular] = useState([]);
 
     async function GetAll() {
         try {
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
-
-            const lsServerRiesClasifi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RIES_CLASI);
-            var resultRiesClasifi = lsServerRiesClasifi.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsRiesClasifi(resultRiesClasifi);
-
             const lsServerFramDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_FRAM_DEPOR);
             var resultFramDeporte = lsServerFramDeporte.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsFramDeporte(resultFramDeporte);
-
-            const lsServerFramBebida = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_FRAM_BEBIDAS);
-            var resultFramBebida = lsServerFramBebida.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsFramBebida(resultFramBebida);
-
-            const lsServerFramDxMetabolismo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_DXMETA);
-            var resultFramDxMetabolismo = lsServerFramDxMetabolismo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsFramDxMetabolismo(resultFramDxMetabolismo);
-
-            const lsServerFramDxTension = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_DXTENSI);
-            var resultFramDxTension = lsServerFramDxTension.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-
-            setLsFramDxTension(resultFramDxTension);
-
-            const lsServerFramAntecedentesCardiovascular = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_ANTE_CARDIOVAS);
-            var resultFramAntecedentesCardiovascular = lsServerFramAntecedentesCardiovascular.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsFramAntecedentesCardiovascular(resultFramAntecedentesCardiovascular);
-
-            const lsServerNeConceptoActi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_NECONCEPTOAC);
-            var resultNeConceptoActi = lsServerNeConceptoActi.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsNeConceptoActi(resultNeConceptoActi);
-
-            const lsServerOpcion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.OPT_SINO);
-            var resultOpcion = lsServerOpcion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsOpcion(resultOpcion);
-
-            const lsServerNeADonde = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_NEADONDE);
-            var resultNeADonde = lsServerNeADonde.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsNeADonde(resultNeADonde);
-
-            const lsServerCiclos = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_GINECOCICLO);
-            var resultCiclos = lsServerCiclos.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCiclos(resultCiclos);
-
-            const lsServerPariente = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_PARENTES);
-            var resultPariente = lsServerPariente.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsPariente(resultPariente);
-
-            const lsServerGineMetodo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_GINECOMETO);
-            var resultGineMetodo = lsServerGineMetodo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsGineMetodo(resultGineMetodo);
-
-            const lsServerBiotipo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_BIOTIPO);
-            var resultBiotipo = lsServerBiotipo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsBiotipo(resultBiotipo);
-
-            const lsServerResultado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULT);
-            var resultResultado = lsServerResultado.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsResultado(resultResultado);
-
-            const lsServerConceptoActitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_ACTIPSI);
-            var resultConceptoActitud = lsServerConceptoActitud.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConceptoActitud(resultConceptoActitud);
-
-            const lsServerDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HC_DEPOR);
-            var resultDeporte = lsServerDeporte.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsDeporte(resultDeporte);
-
-            const lsServerFrecuencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_FRECUENCIAS);
-            var resultFrecuencia = lsServerFrecuencia.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsFrecuencia(resultFrecuencia);
-
-            const lsServerTipoFobia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HC_TIFOBIA);
-            var resultTipoFobia = lsServerTipoFobia.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTipoFobia(resultTipoFobia);
-
         } catch (error) {
             console.log(error);
         }
@@ -267,14 +60,6 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                 handleClose={() => setOpenTemplate(false)}
             >
                 <ListPlantillaAll />
-            </FullScreenDialog>
-
-            <FullScreenDialog
-                open={openHistory}
-                title="VISTA DE HISTÓRICO"
-                handleClose={() => setOpenHistory(false)}
-            >
-                <TableAntecedentes documento={documento} param={cadenaHistory} />
             </FullScreenDialog>
 
             <SubCard darkTitle title={<Typography variant="h4">TOS</Typography>}>
@@ -449,6 +234,7 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                     </Grid>
                 </SubCard>
                 <Grid sx={{ pb: 2 }} />
+
                 <SubCard darkTitle title="Sibilancias">
                     <Grid container spacing={1} alignItems="center">
                         <Grid item xs={12}>
@@ -745,14 +531,14 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                             <FormProvider {...methods}>
                                 <InputCheckBox
                                     label="A. ¿Tuvo alguna enfermedad pulmonar antes de los 16 años?"
-                                    name="otrasEnfInhaASintR"
+                                    name="antecedentesASintR"
                                     size={25}
                                     defaultValue={false}
                                 />
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={10}>
+                        <Grid item xs={12}>
                             <Typography variant="h4">B. ¿Ha tenido alguna de las siguientes enfermedades (confirmadas por el medico)?</Typography>
                         </Grid>
 
@@ -760,20 +546,20 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                             <FormProvider {...methods}>
                                 <InputCheckBox
                                     label="1. ¿Ataques de bronquitis?"
-                                    name="otrasEnfInhaBSintR"
+                                    name="antecedentesB1SintR"
                                     size={25}
                                     defaultValue={false}
                                 />
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={6}>
+                        <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
                                     defaultValue=""
                                     fullWidth
-                                    name="otrasEnfInhaDescriSintR"
+                                    name="antecedentesB1ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
                                     size="small"
                                     bug={errors}
@@ -785,7 +571,7 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                             <FormProvider {...methods}>
                                 <InputCheckBox
                                     label="2. ¿Neumonía o bronconeumonía?"
-                                    name="otrasEnfInhaBSintR"
+                                    name="antecedentesB2Sintr"
                                     size={25}
                                     defaultValue={false}
                                 />
@@ -798,7 +584,7 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                                     type="number"
                                     defaultValue=""
                                     fullWidth
-                                    name="otrasEnfInhaDescriSintR"
+                                    name="antecedentesB2ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
                                     size="small"
                                     bug={errors}
@@ -810,7 +596,7 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                             <FormProvider {...methods}>
                                 <InputCheckBox
                                     label="3. ¿Bronquitis Crónica?"
-                                    name="otrasEnfInhaBSintR"
+                                    name="antecedentesB3SintR"
                                     size={25}
                                     defaultValue={false}
                                 />
@@ -823,7 +609,7 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                                     type="number"
                                     defaultValue=""
                                     fullWidth
-                                    name="otrasEnfInhaDescriSintR"
+                                    name="antecedentesB3ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
                                     size="small"
                                     bug={errors}
@@ -835,7 +621,7 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                             <FormProvider {...methods}>
                                 <InputCheckBox
                                     label="3.1 ¿Aún presenta esta enfermedad?"
-                                    name="otrasEnfInhaBSintR"
+                                    name="antecedentesB3BSintR"
                                     size={25}
                                     defaultValue={false}
                                 />
@@ -848,7 +634,7 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                                     type="number"
                                     defaultValue=""
                                     fullWidth
-                                    name="otrasEnfInhaDescriSintR"
+                                    name="antecedentesB3CSintR"
                                     label="Edad de Inicio"
                                     size="small"
                                     bug={errors}
@@ -860,7 +646,7 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                             <FormProvider {...methods}>
                                 <InputCheckBox
                                     label="4. ¿Enfisema Pulmonar?"
-                                    name="otrasEnfInhaBSintR"
+                                    name="antecdentesB4SintR"
                                     size={25}
                                     defaultValue={false}
                                 />
@@ -873,7 +659,7 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                                     type="number"
                                     defaultValue=""
                                     fullWidth
-                                    name="otrasEnfInhaDescriSintR"
+                                    name="antecedenteB4ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
                                     size="small"
                                     bug={errors}
@@ -885,7 +671,7 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                             <FormProvider {...methods}>
                                 <InputCheckBox
                                     label="4.1 ¿Aún presenta esta enfermedad?"
-                                    name="otrasEnfInhaBSintR"
+                                    name="antecedentesB4BSintR"
                                     size={25}
                                     defaultValue={false}
                                 />
@@ -898,8 +684,349 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                                     type="number"
                                     defaultValue=""
                                     fullWidth
-                                    name="otrasEnfInhaDescriSintR"
+                                    name="antecedentesB4CSintR"
                                     label="Edad de Inicio"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="5. ¿Asma?"
+                                    name="antecedentesB5SintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="antecedentesB5ASintR"
+                                    label="¿A qué edad presentó el primer ataque?"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="5.1 ¿Aun Presenta esta enfermedad?"
+                                    name="antecedentesB5BSintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="antecedentesB5CSintR"
+                                    label="¿Edad de Inicio?"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="6. Otras enfermedades del tórax"
+                                    name="otrasEnfToraxA"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={8}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="otrasEnfToraxB"
+                                    label="Especifique"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="7. ¿Alguna Cirugía del tórax?"
+                                    name="ciruToraxASintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={8}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="ciruToraxBSintR"
+                                    label="Especifique"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="8. HISTORIA (algún accidente) del tórax"
+                                    name="traumaToraxASintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={8}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="traumaToraxBSintR"
+                                    label="Especifique"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="9. ¿Problemas del corazón?"
+                                    name="problemCoraASintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={8}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="problemCoraBSintR"
+                                    label="Especifique"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="¿Ha recibido tratamiento por esta causa los últimos 10 años?"
+                                    name="problemaCoraCSintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="10. Presión Alta(Recuerde que debe ser confirmada por el médico)"
+                                    name="presionAltaASintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="10.1 ¿Ha recibido tratamiento por esta causa en los últimos diez años?"
+                                    name="presionAltaBSintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+                    </Grid>
+                </SubCard>
+            </SubCard>
+            <Grid sx={{ pb: 2 }} />
+
+            <SubCard darkTitle title={<Typography variant="h4">HISTORIA</Typography>}>
+                <SubCard darkTitle title="Historia Ocupacional">
+                    <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={12}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="A. ¿Ha trabajado tiempo completo (8 horas a la semana o más) por 6 meses o más?"
+                                    name="historiaOcupASintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="B. ¿Ha trabajado al menos durante 6 meses en un empleo donde tuvo exposición a polvos?"
+                                    name="historiaOcupBSintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="historiaOcupB1SintR"
+                                    label="Especifique empleo o Industria"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="historiaOcupB2SintR"
+                                    label="¿Total años trabajados?"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="historiaOcupB3SintR"
+                                    label="La exposición fue:"
+                                    defaultValue=""
+                                    options={lsFramDeporte}
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="C. ¿Ha trabajado en un empleo donde haya exposición a humos y gases químicos?"
+                                    name="historiaOcupCSintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="historiaOcupC1SintR"
+                                    label="Especifique empleo y ocupación o industria"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="historiaOcupC2SintR"
+                                    label="Total años trabajados"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="historiaOcupC3SintR"
+                                    label="La exposición fue:"
+                                    defaultValue=""
+                                    options={lsFramDeporte}
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography variant="h5">D. ¿Cual ha sido su ocupación o trabajo usual en el que ha laborado por más tiempo?</Typography>
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="historiaOcupD1SintR"
+                                    label="Empleo y Ocupación"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="historiaOcupD2SintR"
+                                    label="Total años trabajados"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="historiaOcupD3"
+                                    label="Negocio, campo o Industria"
                                     size="small"
                                     bug={errors}
                                 />
@@ -908,8 +1035,166 @@ const RespiratorySymptoms = ({ errors, documento, setAntropometria, antropometri
                     </Grid>
                 </SubCard>
                 <Grid sx={{ pb: 2 }} />
-            </SubCard>
 
+                <SubCard darkTitle title="Tabaquismo">
+                    <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={6}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="A. ¿Ha fumado cigarrillos, pipa o tabaco (al menos uno(a) al día por un año o 12 onzas de tabaco durante la vida)?"
+                                    name="tabaquismoASintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="B. ¿Fuma ahora (incluye un mes atrás)?"
+                                    name="tabaquismoBSintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="tabaquismoCSintR"
+                                    label="C. ¿A qué edad comenzó a fumar en forma regular"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="tabaquismoDSintR"
+                                    label="D. ¿Si ya dejo de fumar totalmente, ¿A que edad lo dejó?"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="tabaquismoESintR"
+                                    label="E. ¿Cuantos cigarrillos fuma al día o fumaba?"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                    </Grid>
+                </SubCard>
+                <Grid sx={{ pb: 2 }} />
+
+                <SubCard darkTitle title="Actividad Deportiva">
+                    <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={12}>
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="A. ¿Realiza algún deporte?"
+                                    name="actDeportASintR"
+                                    size={25}
+                                    defaultValue={false}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="actDeporA1SintR"
+                                    label="¿Cual deporte o actividad?"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="actDeporA2SintR"
+                                    label="¿Cual deporte o actividad?"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="actDeporA3SintR"
+                                    label="¿Cual deporte o actividad?"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    fullWidth
+                                    name="actDeporA4SintR"
+                                    label="¿Cual deporte o actividad?"
+                                    size="small"
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                    </Grid>
+                </SubCard>
+            </SubCard>
+            <Grid sx={{ pb: 2 }} />
+
+            <SubCard darkTitle title={<Typography variant="h4">RECOMENDACIONES</Typography>}>
+                <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                multiline
+                                rows={10}
+                                defaultValue=""
+                                fullWidth
+                                name="recoSintR"
+                                label="Recomendaciones/Observaciones"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                </Grid>
+            </SubCard>
         </Fragment>
     );
 };
@@ -920,10 +1205,4 @@ RespiratorySymptoms.propTypes = {
     lsEmployee: PropTypes.any,
     documento: PropTypes.any,
     errors: PropTypes.any,
-    setArrays: PropTypes.func,
-    arrays: PropTypes.any,
-    setAntropometria: PropTypes.func,
-    antropometria: PropTypes.object,
-    setEstadoVacuna: PropTypes.func,
-    estadoVacuna: PropTypes.any,
 };

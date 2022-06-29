@@ -24,7 +24,7 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others 
                 defaultValue={defaultValue}
                 render={({ field }) => (
                     <FormControl fullWidth error={isError}>
-                        <InputLabel htmlFor="my-input" id="demo-simple-select-label" sx={{ fontSize: 14 }}>
+                        <InputLabel htmlFor="my-input" id="demo-simple-select-label" /* sx={{ fontSize: 14 }} */>
                             {label}
                         </InputLabel>
                         <Select

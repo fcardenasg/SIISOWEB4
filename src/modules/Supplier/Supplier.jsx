@@ -126,7 +126,7 @@ const Supplier = () => {
     return (
         <MainCard title="Registrar Proveedor">
             <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -137,7 +137,7 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-       <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -148,7 +148,7 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-       <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -159,7 +159,7 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-       <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -171,7 +171,7 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-       <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -183,7 +183,7 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-       <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="ciudProv"
@@ -195,7 +195,7 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-       <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <InputMultiSelects
                         onChange={(event, value) => setSupplierArray(value)}
                         value={supplierArray}
@@ -214,9 +214,10 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
+                
                 <Grid item xs={12} md={6} lg={4}>
                     <Grid container spacing={2}>
-                    <Grid item xs={12} md={6} lg={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <AnimateButton>
                                 <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                     {TitleButton.Guardar}

@@ -30,6 +30,7 @@ import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import FullScreenDialog from 'components/controllers/FullScreenDialog'
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import TableAntecedentes from './TableEmo/TableAntecedentes';
+import RespiratorySymptoms from './RespiratorySymptoms';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -37,14 +38,29 @@ const DetailIcons = [
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacuna, estadoVacuna, lsEmployee, setArrays, arrays, ...methods }) => {
+const Emo = ({
+    setPeso, peso,
+    setTalla, talla,
+    setIMC, imc,
+    setClasificacion, clasificacion,
+    setClasificacionColor, clasificacionColor,
+
+    errors,
+    documento,
+    setEstadoVacuna,
+    estadoVacuna,
+    lsEmployee,
+    setArrays,
+    arrays,
+    ...methods
+}) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [peso, setPeso] = useState('');
-    const [talla, setTalla] = useState('');
-    const [imc, setIMC] = useState('');
-    const [clasificacion, setClasificacion] = useState('');
-    const [clasificacionColor, setClasificacionColor] = useState('');
+    /*     const [peso, setPeso] = useState('');
+        const [talla, setTalla] = useState('');
+        const [imc, setIMC] = useState('');
+        const [clasificacion, setClasificacion] = useState('');
+        const [clasificacionColor, setClasificacionColor] = useState(''); */
 
     const handleChangeTalla = (event) => {
         try {
@@ -642,10 +658,10 @@ const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacu
                     <Grid item xs={3}>
                         <FormProvider {...methods}>
                             <InputSelect
-                                name="idParienteUno"
+                                name="parentesco1ANFA"
                                 label="Parentesco"
                                 defaultValue=""
-                                options={lsFrecuencia}
+                                options={lsPariente}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -657,7 +673,7 @@ const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacu
                             <InputText
                                 defaultValue=""
                                 fullWidth
-                                name="descripcionParienteUno"
+                                name="parentesco1ObserANFA"
                                 label="Observación"
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
@@ -668,10 +684,10 @@ const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacu
                     <Grid item xs={3}>
                         <FormProvider {...methods}>
                             <InputSelect
-                                name="idParienteDos"
+                                name="parentesco2ANFA"
                                 label="Parentesco"
                                 defaultValue=""
-                                options={lsFrecuencia}
+                                options={lsPariente}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -683,7 +699,7 @@ const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacu
                             <InputText
                                 defaultValue=""
                                 fullWidth
-                                name="descripcionParienteTres"
+                                name="parentesco2ObserANFA"
                                 label="Observación"
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
@@ -694,10 +710,10 @@ const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacu
                     <Grid item xs={3}>
                         <FormProvider {...methods}>
                             <InputSelect
-                                name="idParienteTres"
+                                name="parentesco3ANFA"
                                 label="Parentesco"
                                 defaultValue=""
-                                options={lsFrecuencia}
+                                options={lsPariente}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -709,7 +725,7 @@ const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacu
                             <InputText
                                 defaultValue=""
                                 fullWidth
-                                name="descripcionParienteCuatro"
+                                name="parentesco3ObserANFA"
                                 label="Observación"
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
@@ -720,10 +736,10 @@ const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacu
                     <Grid item xs={3}>
                         <FormProvider {...methods}>
                             <InputSelect
-                                name="idParienteCuatro"
+                                name="parentesco4ANFA"
                                 label="Parentesco"
                                 defaultValue=""
-                                options={lsFrecuencia}
+                                options={lsPariente}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
                             />
@@ -735,7 +751,7 @@ const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacu
                             <InputText
                                 defaultValue=""
                                 fullWidth
-                                name="descripcionParienteCuatro"
+                                name="parentesco4ObserANFA"
                                 label="Observación"
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors}
@@ -1973,7 +1989,7 @@ const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacu
                                 disabled
                                 color={clasificacionColor}
                                 label="Clasificación"
-                                onChange={(e) => setAntropometria(e.target.value)}
+                                onChange={(e) => setClasificacionColor(e.target.value)}
                                 value={clasificacion}
                                 size={matchesXS ? 'small' : 'medium'}
                             />
@@ -4418,6 +4434,13 @@ const Emo = ({ errors, documento, setAntropometria, antropometria, setEstadoVacu
                 </SubCard>
             </Accordion>
             <Divider />
+            <Grid sx={{ pb: 2 }} />
+
+            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+                <Typography align='right' variant="h4" color="inherit">SINTOMAS RESPIRATORIOS</Typography></>}>
+                <RespiratorySymptoms documento={documento} errors={errors} lsEmployee={lsEmployee} {...methods} />
+            </Accordion>
+            <Divider />
         </Fragment>
     );
 };
@@ -4430,8 +4453,17 @@ Emo.propTypes = {
     errors: PropTypes.any,
     setArrays: PropTypes.func,
     arrays: PropTypes.any,
-    setAntropometria: PropTypes.func,
-    antropometria: PropTypes.object,
     setEstadoVacuna: PropTypes.func,
     estadoVacuna: PropTypes.any,
+
+    setPeso: PropTypes.func,
+    peso: PropTypes.string,
+    setTalla: PropTypes.func,
+    talla: PropTypes.string,
+    setIMC: PropTypes.func,
+    imc: PropTypes.string,
+    setClasificacion: PropTypes.func,
+    clasificacion: PropTypes.string,
+    setClasificacionColor: PropTypes.func,
+    clasificacionColor: PropTypes.string,
 };

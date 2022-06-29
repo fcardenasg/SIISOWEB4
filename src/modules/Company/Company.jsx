@@ -36,9 +36,10 @@ const Company = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const methods = useForm({
+    const methods = useForm();
+    /* {
         resolver: yupResolver(validationSchema)
-    });
+    } */
 
     const { handleSubmit, errors, reset } = methods;
 

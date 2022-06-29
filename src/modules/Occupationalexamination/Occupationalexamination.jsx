@@ -78,11 +78,7 @@ const tabsOption = [
     {
         label: 'Historia Ocupacional',
         icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Sintomas Respiratorios',
-        icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-    },
+    }
 ];
 
 const OccupationalExamination = () => {
@@ -100,7 +96,6 @@ const OccupationalExamination = () => {
     const [lsEmployee, setLsEmployee] = useState([]);
     const [arrays, setArrays] = useState({
         tipoFobia: [],
-        parentesco: [],
         dx: [],
         antecedentesCardio: [],
         metabolico: [],
@@ -111,13 +106,6 @@ const OccupationalExamination = () => {
     const [imc, setIMC] = useState('');
     const [clasificacion, setClasificacion] = useState('');
     const [clasificacionColor, setClasificacionColor] = useState('');
-
-    const [antropometria, setAntropometria] = useState({
-        peso: '',
-        imc: '',
-        clasificacion: '',
-        clasificacionColor: '',
-    });
 
     const [estadoVacuna, setEstadoVacuna] = useState({
         tetanoIM: false,
@@ -191,8 +179,8 @@ const OccupationalExamination = () => {
                 datos.cabezaRS, datos.ojosRS, datos.oidosRS, datos.narizRS, datos.bocaRS, datos.gargantaRS, datos.cuellosRS, datos.cardioRS, datos.gastrointestinalRS,
                 datos.genitoUrinarioRS, datos.osteoRS, datos.neuroRS, datos.pielRS, datos.psiquiatricoRS, datos.observacionRS,
 
-                datos.tASentadoEF, datos.tAAcostadoEF, datos.pulsoEF, datos.fCEF, datos.fREF, datos.temperaturaEF, datos.pesoEF, datos.tallaEF, datos.iMCEF,
-                datos.clasificacionEF, datos.idBiotipoEF, datos.estadoNitricionalEF, datos.pielFaneraEF, datos.craneoEF, datos.parpadoEF, datos.conjuntivasEF,
+                datos.tASentadoEF, datos.tAAcostadoEF, datos.pulsoEF, datos.fCEF, datos.fREF, datos.temperaturaEF, peso, talla, imc,
+                clasificacion, datos.idBiotipoEF, datos.estadoNitricionalEF, datos.pielFaneraEF, datos.craneoEF, datos.parpadoEF, datos.conjuntivasEF,
                 datos.corniasEF, datos.pupilasEF, datos.reflejoFotomotorEF, datos.reflejoCornialEF, datos.fondoOjosEF, datos.inspeccionEF, datos.otoscopiaEF,
                 datos.inspeccionNarizEF, datos.rinoscopioEF, datos.labiosEF, datos.mucosaEF, datos.enciasEF, datos.paladarEF, datos.dientesEF, datos.lenguaEF,
                 datos.faringeEF, datos.amigdalasEF, datos.cuellosEF, datos.inspeccionToraxEF, datos.auscultacionCardiacaEF, datos.auscultacionRespiratoriaEF,
@@ -230,7 +218,27 @@ const OccupationalExamination = () => {
                 FormatDate(datos.fechaLaboratorioFRA), datos.colesterolTotalFRA, datos.hDLFRA, datos.triglicericosFRA, JSON.stringify(arrays.metabolico), datos.glisemiaFRA,
                 datos.fumaFRA, datos.observacionFRA, datos.lDLFRA, datos.relacionFRA, datos.fRLEdadFRA, datos.fRLColesterolFRA, datos.fRHDLFRA, datos.fRGlisemiaFRA,
                 datos.fRTencionFRA, datos.fRTabaquismoFRA, datos.puntajeFRA, datos.riesgoAbsolutoFRA, datos.riesgoRelativoFRA, datos.interpretacionFRA,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date())
+                user.email, FormatDate(new Date()), '', FormatDate(new Date()),
+
+                datos.tosAUsualSin, datos.tosEnLaSemanaSintR, datos.tosMananaSintR, datos.tosConsecutivaSintR, datos.anosConTosSintR, datos.esputoASintR,
+                datos.esputoBSintR, datos.esputoCSintR, datos.esputoDSintR, datos.esputoESintR, datos.episoTosEspuASintR, datos.episoTosEsputoBSintR,
+                datos.sibilanciasASintR, datos.sibilanciasA1SintR, datos.sibilanciasA2SintR, datos.sibilanciasA3SintR, datos.sibilanciasBSintR,
+                datos.ataquesSilbiASintR, datos.ataquesSilbiBSintR, datos.ataquesSilbiCSintR, datos.ataquesSilbiDSintR, datos.otrasEnfInhaASintR,
+                datos.otrasEnfInhaBSintR, datos.otrasEnfInhaDescriSintR, datos.disneaASintR, datos.disneaBSintR, datos.disneaCSintR, datos.disneaDSintR,
+                datos.disneaESintR, datos.enferToraxASintR, datos.enferToraxBSintR, datos.enferToraxCSintR, datos.enferToraxD, datos.antecedentesASintR,
+                datos.antecedentesB1SintR, datos.antecedentesB1ASintR, datos.antecedentesB2Sintr, datos.antecedentesB2ASintR,
+                datos.antecedentesB3SintR, datos.antecedentesB3ASintR, datos.antecedentesB3BSintR, datos.antecedentesB3CSintR, datos.antecdentesB4SintR,
+                datos.antecedenteB4ASintR, datos.antecedentesB4BSintR, datos.antecedentesB4CSintR, datos.antecedentesB5SintR, datos.antecedentesB5ASintR,
+                datos.antecedentesB5BSintR, datos.antecedentesB5CSintR, datos.otrasEnfToraxA, datos.otrasEnfToraxB,
+                datos.ciruToraxASintR, datos.ciruToraxBSintR, datos.traumaToraxASintR, datos.traumaToraxBSintR, datos.problemCoraASintR, datos.problemCoraBSintR,
+                datos.problemaCoraCSintR, datos.presionAltaASintR, datos.presionAltaBSintR, datos.historiaOcupASintR, datos.historiaOcupBSintR,
+                datos.historiaOcupB1SintR, datos.historiaOcupB2SintR, datos.historiaOcupB3SintR, datos.historiaOcupCSintR, datos.historiaOcupC1SintR,
+                datos.historiaOcupC2SintR, datos.historiaOcupC3SintR, datos.historiaOcupD1SintR, datos.historiaOcupD2SintR, datos.historiaOcupD3,
+                datos.tabaquismoASintR, datos.tabaquismoBSintR, datos.tabaquismoCSintR, datos.tabaquismoDSintR, datos.tabaquismoESintR, datos.actDeportASintR,
+                datos.actDeporA1SintR, datos.actDeporA2SintR, datos.actDeporA3SintR, datos.actDeporA4SintR, datos.recoSintR,
+
+                datos.parentesco1ANFA, datos.parentesco1ObserANFA, datos.parentesco2ANFA, datos.parentesco2ObserANFA, datos.parentesco3ANFA,
+                datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA,
             );
 
             console.log("Datos = ", DataToInset);
@@ -251,7 +259,6 @@ const OccupationalExamination = () => {
                     setLsEmployee([]);
                     setArrays({
                         tipoFobia: [],
-                        parentesco: [],
                         dx: [],
                         antecedentesCardio: [],
                         metabolico: [],
@@ -379,20 +386,27 @@ const OccupationalExamination = () => {
             </Tabs>
 
             <TabPanel value={value} index={0}>
-                <PersonalData key={166991} lsEmployee={lsEmployee} />
+                <PersonalData lsEmployee={lsEmployee} />
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <WorkHistory
-                    key={564564645}
                     lsEmpleado={lsEmployee}
                     documento={document}
                     atencion={atencion} />
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <Emo
-                    setAntropometria={setAntropometria}
-                    antropometria={antropometria}
-                    key={12645646}
+                    setPeso={setPeso}
+                    peso={peso}
+                    setTalla={setTalla}
+                    talla={talla}
+                    setIMC={setIMC}
+                    imc={imc}
+                    setClasificacion={setClasificacion}
+                    clasificacion={clasificacion}
+                    setClasificacionColor={setClasificacionColor}
+                    clasificacionColor={clasificacionColor}
+
                     documento={document}
                     errors={errors}
                     setArrays={setArrays}
@@ -400,21 +414,8 @@ const OccupationalExamination = () => {
                     setEstadoVacuna={setEstadoVacuna}
                     estadoVacuna={estadoVacuna}
                     lsEmployee={lsEmployee}
-                    {...methods} />
-            </TabPanel>
-            <TabPanel value={value} index={3}>
-                <RespiratorySymptoms
-                    setAntropometria={setAntropometria}
-                    antropometria={antropometria}
-                    key={12645646}
-                    documento={document}
-                    errors={errors}
-                    setArrays={setArrays}
-                    arrays={arrays}
-                    setEstadoVacuna={setEstadoVacuna}
-                    estadoVacuna={estadoVacuna}
-                    lsEmployee={lsEmployee}
-                    {...methods} />
+                    {...methods}
+                />
             </TabPanel>
 
             <Grid container spacing={1} sx={{ pt: 5 }}>

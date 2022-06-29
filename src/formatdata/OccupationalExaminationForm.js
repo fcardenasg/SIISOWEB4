@@ -47,7 +47,26 @@ export function PostOccupationalExamination(
     conceptoActitudMedicoNEMTA, fechaFRA, tencionFRA, idTencionArterialFRA, idAntecedenteCardiovascularFRA, idDeporteFRA,
     idBebidaFRA, fechaLaboratorioFRA, colesterolTotalFRA, hdlfra, triglicericosFRA, idMetabolicoFRA, glisemiaFRA,
     fumaFRA, observacionFRA, ldlfra, relacionFRA, frlEdadFRA, frlColesterolFRA, frhdlfra, frGlisemiaFRA, frTencionFRA, frTabaquismoFRA,
-    puntajeFRA, riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
+    puntajeFRA, riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico,
+
+    /* SINTOMAS RESPIRATORIOS */
+    tosAUsualSin = false, tosEnLaSemanaSintR = false, tosMananaSintR = false, tosConsecutivaSintR = false, anosConTosSintR = 0, esputoASintR = false,
+    esputoBSintR = false, esputoCSintR = false, esputoDSintR = false, esputoESintR = 0, episoTosEspuASintR = false, episoTosEsputoBSintR = 0,
+    sibilanciasASintR = false, sibilanciasA1SintR = false, sibilanciasA2SintR = false, sibilanciasA3SintR = false, sibilanciasBSintR = 0, ataquesSilbiASintR = false,
+    ataquesSilbiBSintR = 0, ataquesSilbiCSintR = false, ataquesSilbiDSintR = false, otrasEnfInhaASintR = false, otrasEnfInhaBSintR = false,
+    otrasEnfInhaDescriSintR, disneaASintR = false, disneaBSintR = false, disneaCSintR = false, disneaDSintR = false, disneaESintR = false,
+    enferToraxASintR = false, enferToraxBSintR = false, enferToraxCSintR = false, enferToraxD = 0, antecedentesASintR = false,
+    antecedentesB1SintR = false, antecedentesB1ASintR = 0, antecedentesB2Sintr = false, antecedentesB2ASintR = 0, antecedentesB3SintR = false, antecedentesB3ASintR = 0,
+    antecedentesB3BSintR = false, antecedentesB3CSintR = 0, antecdentesB4SintR = false, antecedenteB4ASintR = 0, antecedentesB4BSintR = false,
+    antecedentesB4CSintR = 0, antecedentesB5SintR = false, antecedentesB5ASintR = 0, antecedentesB5BSintR = false, antecedentesB5CSintR = 0,
+    otrasEnfToraxA = false, otrasEnfToraxB, ciruToraxASintR = false, ciruToraxBSintR, traumaToraxASintR = false,
+    traumaToraxBSintR, problemCoraASintR = false, problemCoraBSintR, problemaCoraCSintR = false, presionAltaASintR = false, presionAltaBSintR = false,
+    historiaOcupASintR = false, historiaOcupBSintR = false, historiaOcupB1SintR, historiaOcupB2SintR = 0, historiaOcupB3SintR = 0, historiaOcupCSintR = false,
+    historiaOcupC1SintR, historiaOcupC2SintR = 0, historiaOcupC3SintR = 0, historiaOcupD1SintR, historiaOcupD2SintR = 0, historiaOcupD3,
+    tabaquismoASintR = false, tabaquismoBSintR = false, tabaquismoCSintR = 0, tabaquismoDSintR = 0, tabaquismoESintR = 0, actDeportASintR = false, actDeporA1SintR,
+    actDeporA2SintR = 0, actDeporA3SintR = 0, actDeporA4SintR = 0, recoSintR, parentesco1ANFA = 0, parentesco1ObserANFA, parentesco2ANFA = 0,
+    parentesco2ObserANFA, parentesco3ANFA = 0, parentesco3ObserANFA, parentesco4ANFA = 0, parentesco4ObserANFA,
+) {
     return {
         idHistoriaLaboral, documento, fecha, idAtencion, congenitosAP, inmunoPrevenibleAP, infecciososAP,
         ojoAP, agudezaVisualAP, oidosAP, nasoFaringeAP, cardiovascularAP, pulmonarAP, gastrointestinalAP, gimitoUrinarioAP,
@@ -92,7 +111,27 @@ export function PostOccupationalExamination(
         conceptoActitudMedicoNEMTA, fechaFRA, tencionFRA, idTencionArterialFRA, idAntecedenteCardiovascularFRA, idDeporteFRA,
         idBebidaFRA, fechaLaboratorioFRA, colesterolTotalFRA, hdlfra, triglicericosFRA, idMetabolicoFRA, glisemiaFRA,
         fumaFRA, observacionFRA, ldlfra, relacionFRA, frlEdadFRA, frlColesterolFRA, frhdlfra, frGlisemiaFRA, frTencionFRA, frTabaquismoFRA,
-        puntajeFRA, riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+        puntajeFRA, riesgoAbsolutoFRA, riesgoRelativoFRA, interpretacionFRA, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico,
+
+        /* SINTOMAS RESPIRATORIOS */
+        tosAUsualSin, tosEnLaSemanaSintR, tosMananaSintR, tosConsecutivaSintR, anosConTosSintR, esputoASintR,
+        esputoBSintR, esputoCSintR, esputoDSintR, esputoESintR, episoTosEspuASintR, episoTosEsputoBSintR,
+        sibilanciasASintR, sibilanciasA1SintR, sibilanciasA2SintR, sibilanciasA3SintR, sibilanciasBSintR,
+        ataquesSilbiASintR, ataquesSilbiBSintR, ataquesSilbiCSintR, ataquesSilbiDSintR, otrasEnfInhaASintR,
+        otrasEnfInhaBSintR, otrasEnfInhaDescriSintR, disneaASintR, disneaBSintR, disneaCSintR, disneaDSintR,
+        disneaESintR, enferToraxASintR, enferToraxBSintR, enferToraxCSintR, enferToraxD, antecedentesASintR,
+        antecedentesB1SintR, antecedentesB1ASintR, antecedentesB2Sintr, antecedentesB2ASintR,
+        antecedentesB3SintR, antecedentesB3ASintR, antecedentesB3BSintR, antecedentesB3CSintR, antecdentesB4SintR,
+        antecedenteB4ASintR, antecedentesB4BSintR, antecedentesB4CSintR, antecedentesB5SintR, antecedentesB5ASintR,
+        antecedentesB5BSintR, antecedentesB5CSintR, otrasEnfToraxA, otrasEnfToraxB,
+        ciruToraxASintR, ciruToraxBSintR, traumaToraxASintR, traumaToraxBSintR, problemCoraASintR, problemCoraBSintR,
+        problemaCoraCSintR, presionAltaASintR, presionAltaBSintR, historiaOcupASintR, historiaOcupBSintR,
+        historiaOcupB1SintR, historiaOcupB2SintR, historiaOcupB3SintR, historiaOcupCSintR, historiaOcupC1SintR,
+        historiaOcupC2SintR, historiaOcupC3SintR, historiaOcupD1SintR, historiaOcupD2SintR, historiaOcupD3,
+        tabaquismoASintR, tabaquismoBSintR, tabaquismoCSintR, tabaquismoDSintR, tabaquismoESintR, actDeportASintR,
+        actDeporA1SintR, actDeporA2SintR, actDeporA3SintR, actDeporA4SintR, recoSintR, parentesco1ANFA,
+        parentesco1ObserANFA, parentesco2ANFA, parentesco2ObserANFA, parentesco3ANFA, parentesco3ObserANFA,
+        parentesco4ANFA, parentesco4ObserANFA,
     };
 }
 
