@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -27,13 +26,12 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
-import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-
 import { GetAllAlcoholAndDrugTesting, DeleteAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
-
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
@@ -45,7 +43,6 @@ import { IconFileExport } from '@tabler/icons';
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -72,12 +69,6 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'idPruebasAlcoholDroga',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
@@ -89,7 +80,7 @@ const headCells = [
         label: 'Nombre',
         align: 'left'
     },
-    
+
     {
         id: 'celularEmpleado',
         numeric: false,
@@ -217,8 +208,9 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListAlcoholAndDrugTesting = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [openDelete, setOpenDelete] = useState(false);
+    const [idCheck, setIdCheck] = useState('');
     const [lsAlcoholAndDrugTesting, setLsAlcoholAndDrugTesting] = useState([]);
 
     const theme = useTheme();
@@ -254,7 +246,7 @@ const ListAlcoholAndDrugTesting = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idPruebasAlcoholDroga', 'documento', 'nameEmpleado', 'celularEmpleado','emailEmpleado' ,'fecha'];
+                const properties = ['documento', 'nameEmpleado', 'celularEmpleado', 'emailEmpleado', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -317,24 +309,19 @@ const ListAlcoholAndDrugTesting = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
-
     const handleDelete = async () => {
         try {
-            const result = await DeleteAlcoholAndDrugTesting(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteAlcoholAndDrugTesting(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSelected([]);
+                    GetAll();
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
             console.log(error);
         }
@@ -345,6 +332,7 @@ const ListAlcoholAndDrugTesting = () => {
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -362,6 +350,7 @@ const ListAlcoholAndDrugTesting = () => {
                             size="small"
                         />
                     </Grid>
+
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
                         <ExcelFile element={
                             <Tooltip title="Exportar">
@@ -383,7 +372,7 @@ const ListAlcoholAndDrugTesting = () => {
                                 <ExcelColumn label="Sustancia" value="sustancia1" />
                                 <ExcelColumn label="Muestra" value="nameMuestra1" />
                                 <ExcelColumn label="Resultados" value="nameResultado1" />
-                               
+
                                 <ExcelColumn label="Sustancia" value="sustancia2" />
                                 <ExcelColumn label="Muestra" value="nameMuestra2" />
                                 <ExcelColumn label="Resultados" value="nameResultado2" />
@@ -406,10 +395,10 @@ const ListAlcoholAndDrugTesting = () => {
 
                                 <ExcelColumn label="Realizada" value="nameRemitido" />
                                 <ExcelColumn label="Nombre del Solicitante" value="nameEmpleadoSolicita" />
-                                <ExcelColumn label="Concepto Aptitud" value="nameConcepto" />                 
+                                <ExcelColumn label="Concepto Aptitud" value="nameConcepto" />
                                 <ExcelColumn label="Motivo de No Asistencia" value="nameMotivoAsis" />
                                 <ExcelColumn label="Observaciones y/o Medicamentos Actuales" value="observaciones" />
-                             
+
                                 <ExcelColumn label="Usuario" value="usuario" />
                                 <ExcelColumn label="Fecha del Sistema" value="fechaSistema" />
 
@@ -432,7 +421,6 @@ const ListAlcoholAndDrugTesting = () => {
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -450,7 +438,7 @@ const ListAlcoholAndDrugTesting = () => {
                         {stableSort(lsAlcoholAndDrugTesting, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
+
                                 if (typeof row === 'string') return null;
 
                                 const isItemSelected = isSelected(row.idPruebasAlcoholDroga);
@@ -481,25 +469,12 @@ const ListAlcoholAndDrugTesting = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.idPruebasAlcoholDroga)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
-                                        >
-                                            {' '}
-                                            {row.idPruebasAlcoholDroga}{' '}
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.idPruebasAlcoholDroga)}
-                                            sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.documento}{' '}
+                                                {row.documento}
                                             </Typography>
                                         </TableCell>
 
@@ -514,8 +489,7 @@ const ListAlcoholAndDrugTesting = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.nameEmpleado}{' '}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -530,8 +504,7 @@ const ListAlcoholAndDrugTesting = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.celularEmpleado}{' '}
+                                                {row.celularEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -546,8 +519,7 @@ const ListAlcoholAndDrugTesting = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.emailEmpleado}{' '}
+                                                {row.emailEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -562,25 +534,7 @@ const ListAlcoholAndDrugTesting = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.fecha}{' '}
-                                            </Typography>
-                                        </TableCell>
-
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.idPruebasAlcoholDroga)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {ViewFormat(row.fecha)}{' '}
+                                                {ViewFormat(row.fecha)}
                                             </Typography>
                                         </TableCell>
 

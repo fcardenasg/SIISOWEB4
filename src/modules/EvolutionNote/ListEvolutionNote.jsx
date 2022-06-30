@@ -1,9 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
-// Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
@@ -28,45 +26,20 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-// Import de proyectos
-import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { DeleteEvolutionNote, GetAllEvolutionNote } from 'api/clients/EvolutionNoteClient';
-import { FormatDate, ViewFormat } from 'components/helpers/Format';
+import { ViewFormat } from 'components/helpers/Format';
 
-// Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
-
-function getModalStyle() {
-    const top = 50;
-    const left = 50;
-
-    return {
-        top: `${top}%`,
-        margin: 'auto'
-    };
-}
-
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -80,7 +53,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -91,7 +63,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
         id: 'documento',
@@ -118,16 +89,12 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'usuarioCreacion',
+        id: 'usuarioRegistro',
         numeric: false,
         label: 'Usuario Que Atiende',
         align: 'left'
     }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -199,11 +166,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -240,13 +202,12 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
 const ListEvolutionNote = () => {
-    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [idCheck, setIdCheck] = useState('');
+    const [openDelete, setOpenDelete] = useState(false);
     const [evolutionNote, setEvolutionNote] = useState([]);
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -256,7 +217,6 @@ const ListEvolutionNote = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
             const lsServer = await GetAllEvolutionNote(0, 0);
@@ -267,23 +227,10 @@ const ListEvolutionNote = () => {
         }
     }
 
-    const [modalStyle] = useState(getModalStyle);
-
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
         GetAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -292,7 +239,7 @@ const ListEvolutionNote = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nombres', 'celular', 'email', 'nameSede', 'nameCompany'];
+                const properties = ['documento', 'idContingencia', 'idAtencion', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -312,14 +259,12 @@ const ListEvolutionNote = () => {
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
@@ -330,7 +275,6 @@ const ListEvolutionNote = () => {
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
         setIdCheck(id);
 
@@ -359,35 +303,30 @@ const ListEvolutionNote = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
-
-    /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
-        const result = await DeleteEvolutionNote(idCheck);
-        if (result.status === 200) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${Message.Eliminar}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
-            setSelected([]);
-            GetAll();
+        try {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteEvolutionNote(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSelected([]);
+                    GetAll();
+                } else
+                    setSelected([]);
+            });
+        } catch (error) {
+            console.log(error);
         }
     }
-
-    const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - evolutionNote.length) : 0;
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
-
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -418,7 +357,6 @@ const ListEvolutionNote = () => {
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/evolution-note/add")}>
                             {TitleButton.Agregar}
@@ -428,7 +366,6 @@ const ListEvolutionNote = () => {
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -446,7 +383,7 @@ const ListEvolutionNote = () => {
                         {stableSort(evolutionNote, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
+
                                 if (typeof row === 'string') return null;
 
                                 const isItemSelected = isSelected(row.id);
@@ -461,9 +398,6 @@ const ListEvolutionNote = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
-
                                         <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                             <Checkbox
                                                 color="primary"
@@ -482,8 +416,7 @@ const ListEvolutionNote = () => {
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
-                                            {' '}
-                                            {row.documento}{' '}
+                                            {row.documento}
                                         </TableCell>
 
                                         <TableCell
@@ -497,8 +430,7 @@ const ListEvolutionNote = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.idContingencia}{' '}
+                                                {row.idContingencia}
                                             </Typography>
                                         </TableCell>
 
@@ -513,8 +445,7 @@ const ListEvolutionNote = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.idAtencion}{' '}
+                                                {row.idAtencion}
                                             </Typography>
                                         </TableCell>
 
@@ -529,8 +460,7 @@ const ListEvolutionNote = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {ViewFormat(row.fecha)}{' '}
+                                                {ViewFormat(row.fecha)}
                                             </Typography>
                                         </TableCell>
 
@@ -545,25 +475,17 @@ const ListEvolutionNote = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.usuarioCreacion}{' '}
+                                                {row.usuarioRegistro}
                                             </Typography>
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Detalles"/*  onClick={() => setOpenUpdate(true)} */>
-                                                <IconButton disabled={idCheck === '' ? true : false} color="primary" size="large">
-                                                    <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
-
                                             <Tooltip title="Actualizar" onClick={() => navigate(`/evolution-note/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
                                         </TableCell>
-                                        {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
                                     </TableRow>
                                 );
                             })}
@@ -580,7 +502,6 @@ const ListEvolutionNote = () => {
                 </Table>
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
@@ -590,8 +511,6 @@ const ListEvolutionNote = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-
-
         </MainCard>
     );
 };

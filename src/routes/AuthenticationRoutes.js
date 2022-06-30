@@ -68,7 +68,6 @@ const AuthenticationRoutes = {
             path: '/pages/code-verification/code-verification1',
             element: <AuthCodeVerification1 />
         },
-
         {
             path: '/pages/login/login2',
             element: <AuthLogin2 />

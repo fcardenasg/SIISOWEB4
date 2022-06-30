@@ -20,7 +20,6 @@ import { MessageSuccess, MessageDelete, ParamDelete } from 'components/alert/Ale
 import useAuth from 'hooks/useAuth';
 import { PostWorkHistoryDLTD, PostWorkHistoryEmpresa } from 'formatdata/WorkHistoryForm';
 import { useDispatch } from 'react-redux';
-import { Message } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import Transitions from 'ui-component/extended/Transitions';
 import InputSelect from 'components/input/InputSelect';

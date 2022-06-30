@@ -6,6 +6,9 @@ import useAuth from 'hooks/useAuth';
 import config from 'config';
 import { useEffect } from 'react';
 
+/* Validate */
+import firebase from 'firebase/app';
+
 // ==============================|| GUEST GUARD ||============================== //
 
 /**
@@ -18,9 +21,41 @@ const GuestGuard = ({ children }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (isLoggedIn) {
-            navigate(config.defaultPath, { replace: true });
+        async function getAuth() {
+            try {
+                if (isLoggedIn) {
+                    var docRef = firebase.firestore().doc(`Usuarios/${user.id}`);
+
+                    const datosFin = await docRef.get().then((doc) => {
+                        if (doc.exists) {
+                            /* console.log("Documento datos:", doc.data()); */
+                            return doc.data();
+                        } else {
+                            // doc.data() will be undefined in this case
+                            console.log("No such document!");
+                        }
+                    }).catch((error) => {
+                        console.log("Error getting document:", error);
+                    });
+
+                    const userData = {
+                        uid: user.uid,
+                        email: user.email,
+                        rol: datosFin.rol
+                    }
+
+                    if (userData.rol === "visitante") {
+                        return navigate("/dashboard/questionnaire", { replace: true });
+                    } else {
+                        return navigate(config.defaultPath, { replace: true });
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
         }
+
+        getAuth();
     }, [isLoggedIn, navigate]);
 
     return children;

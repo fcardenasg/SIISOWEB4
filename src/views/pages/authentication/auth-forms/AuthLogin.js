@@ -30,6 +30,7 @@ import { Formik } from 'formik';
 import firebase from 'firebase/app';
 
 // project imports
+import config from 'config';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -161,11 +162,12 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                                 }
                             }
                         );
+
                         var docRef = firebase.firestore().doc(`Usuarios/${logueado.user.uid}`);
 
                         const datosFin = await docRef.get().then((doc) => {
                             if (doc.exists) {
-                                console.log("Documento datos:", doc.data());
+                                /* console.log("Documento datos:", doc.data()); */
                                 return doc.data();
                             } else {
                                 // doc.data() will be undefined in this case
@@ -182,10 +184,12 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                         }
 
                         if (userData.rol === "visitante") {
-                            navigate("/dashboard/questionnaire");
+                            navigate("/dashboard/questionnaire", { replace: true });
+                        } else if (userData.rol === 'admin') {
+                            navigate(config.defaultPath, { replace: true });
                         }
 
-                        console.log(userData);
+                        /* console.log(userData); */
 
                     } catch (err) {
                         console.error(err);

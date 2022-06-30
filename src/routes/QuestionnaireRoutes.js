@@ -22,7 +22,6 @@ const QuestionnaireRoutes = {
         </AuthGuard>
     ),
     children: [
-        /* Render de Tipo Catalogo */
         {
             path: '/dashboard/questionnaire',
             element: <DashboardQuestionnaire />

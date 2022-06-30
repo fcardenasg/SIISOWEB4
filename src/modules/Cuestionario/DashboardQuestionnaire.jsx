@@ -10,11 +10,10 @@ import {
 } from '@mui/material';
 
 // Terceros
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
-import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useDispatch } from 'react-redux';
+import { FormProvider, useForm } from 'react-hook-form';
 import { IconReportMedical } from '@tabler/icons';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 

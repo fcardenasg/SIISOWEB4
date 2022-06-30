@@ -255,7 +255,7 @@ const ViewEmployee = ({ lsEmployee = [], documento, disabled = false, onChange, 
                         <CardMedia
                             component="img"
                             image={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : user}
-                            sx={{ width: 260, borderRadius: '150px' }}
+                            sx={{ width: 200, borderRadius: '150px' }}
                         />
                     </Grid>
 

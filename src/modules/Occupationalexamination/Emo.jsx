@@ -180,7 +180,7 @@ const Emo = ({
             }));
             setLsNeConceptoActi(resultNeConceptoActi);
 
-            const lsServerOpcion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.OPT_SINO);
+            const lsServerOpcion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
             var resultOpcion = lsServerOpcion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -222,7 +222,7 @@ const Emo = ({
             }));
             setLsBiotipo(resultBiotipo);
 
-            const lsServerResultado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULT);
+            const lsServerResultado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
             var resultResultado = lsServerResultado.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -1302,43 +1302,6 @@ const Emo = ({
                         </FormProvider>
                     </Grid>
                 </Grid>
-
-                {/* <Grid container spacing={2} sx={{ pb: 2 }}>
-                    <Grid item xs={2}>
-                        <FormProvider {...methods}>
-                            <InputCheckBox
-                                label="Heredo familiar"
-                                name="heredoFamiliarHB"
-                                size={30}
-                                defaultValue={false}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={5} >
-                        <InputMultiSelects
-                            fullWidth
-                            onChange={(event, value) => setArrays({ ...arrays, parentesco: value })}
-                            value={arrays.parentesco}
-                            label="Parentesco"
-                            options={lsPariente}
-                        />
-                    </Grid>
-
-                    <Grid item xs={5}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue="SIN REGISTRO"
-                                fullWidth
-                                name="observacionHeredoFamiHB"
-                                label="Observación"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                </Grid> */}
-
             </SubCard>
             <Grid sx={{ pb: 2 }} />
 

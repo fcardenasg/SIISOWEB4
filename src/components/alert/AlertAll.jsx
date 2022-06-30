@@ -92,3 +92,20 @@ export const MessageDelete = ({ open, onClose }) => {
         </Snackbar>
     )
 }
+
+export const MessageError = ({ open, onClose, error }) => {
+    return (
+        <Snackbar
+            TransitionComponent={SlideTransition}
+            key={'alert'}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right', }}
+            open={open}
+            autoHideDuration={2500}
+            onClose={onClose}
+        >
+            <Alert severity="error" sx={{ width: '100%' }}>
+                {error}
+            </Alert>
+        </Snackbar>
+    )
+}

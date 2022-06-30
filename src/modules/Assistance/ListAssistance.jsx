@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -23,45 +22,31 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-    Button,
-    Modal
+    Button
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-import BodyEmployee from './ViewAssistance';
-import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { DeleteMedicalHistory, GetAllMedicalHistory } from 'api/clients/MedicalHistoryClient';
-import { FormatDate, ViewFormat } from 'components/helpers/Format';
+import { ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import FullScreenDialogs from 'components/controllers/FullScreenDialog';
 import Assistance from './Assistance';
-import ViewUpdateAssistance from './ViewUpdateAssistance';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-function getModalStyle() {
-    const top = 50;
-    const left = 50;
-
-    return {
-        top: `${top}%`,
-        margin: 'auto'
-    };
-}
-
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -75,7 +60,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -86,7 +70,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
         id: 'documento',
@@ -113,16 +96,12 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'usuarioCreacion',
+        id: 'usuarioRegistro',
         numeric: false,
         label: 'Usuario Que Atiende',
         align: 'left'
     }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -231,11 +210,11 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListAssistance = () => {
-    const dispatch = useDispatch();
-    const [idCheck, setIdCheck] = useState('');
-    const [openUpdate, setOpenUpdate] = useState(false);
-    const [assistance, setAssistance] = useState([]);
     const navigate = useNavigate();
+    const [idCheck, setIdCheck] = useState('');
+    const [assistance, setAssistance] = useState([]);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -256,17 +235,6 @@ const ListAssistance = () => {
         }
     }
 
-    const [modalStyle] = useState(getModalStyle);
-
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
     useEffect(() => {
         GetAll();
     }, [])
@@ -279,7 +247,7 @@ const ListAssistance = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'idContingencia', 'idAtencion', 'fecha', 'usuarioCreacion'];
+                const properties = ['documento', 'idContingencia', 'idAtencion', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -346,20 +314,17 @@ const ListAssistance = () => {
 
     const handleDelete = async () => {
         try {
-            const result = await DeleteMedicalHistory(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteMedicalHistory(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSelected([]);
+                    GetAll();
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
             console.log(error);
         }
@@ -370,6 +335,7 @@ const ListAssistance = () => {
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -484,8 +450,7 @@ const ListAssistance = () => {
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
-                                            {' '}
-                                            {row.documento}{' '}
+                                            {row.documento}
                                         </TableCell>
 
                                         <TableCell
@@ -499,8 +464,7 @@ const ListAssistance = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.idContingencia}{' '}
+                                                {row.idContingencia}
                                             </Typography>
                                         </TableCell>
 
@@ -515,8 +479,7 @@ const ListAssistance = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.idAtencion}{' '}
+                                                {row.idAtencion}
                                             </Typography>
                                         </TableCell>
 
@@ -531,8 +494,7 @@ const ListAssistance = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {ViewFormat(row.fecha)}{' '}
+                                                {ViewFormat(row.fecha)}
                                             </Typography>
                                         </TableCell>
 
@@ -547,25 +509,17 @@ const ListAssistance = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.usuarioCreacion}{' '}
+                                                {row.usuarioRegistro}
                                             </Typography>
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Detalles" onClick={() => setOpenUpdate(true)}>
-                                                <IconButton disabled={idCheck === '' ? true : false} color="primary" size="large">
-                                                    <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
-
                                             <Tooltip title="Actualizar" onClick={() => navigate(`/assistance/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
                                         </TableCell>
-                                        {/* AQUI ESTA EL MODAL RENDERIZANDOSE */}
                                     </TableRow>
                                 );
                             })}
@@ -590,15 +544,6 @@ const ListAssistance = () => {
                 <Assistance />
             </FullScreenDialogs>
 
-            <FullScreenDialogs
-                open={openUpdate}
-                title="Vista de Actualizar"
-                handleClose={() => setOpenUpdate(false)}
-            >
-                <ViewUpdateAssistance idAssistance={idCheck} />
-            </FullScreenDialogs>
-
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"

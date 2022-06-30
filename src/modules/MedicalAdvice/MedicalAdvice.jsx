@@ -13,6 +13,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { MessageSuccess, MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import InputText from 'components/input/InputText';
 import DetailedIcon from 'components/controllers/DetailedIcon';
@@ -48,6 +49,8 @@ const MedicalAdvice = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
 
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
 
@@ -142,15 +145,7 @@ const MedicalAdvice = () => {
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertAdvice(DataToInsert);
                 if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Guardar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+                    setOpenSuccess(true);
                     setDocumento('');
                     setLsEmployee([]);
                     reset();
@@ -171,6 +166,9 @@ const MedicalAdvice = () => {
 
     return (
         <Fragment>
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <FullScreenDialog
                 open={openTemplate}
                 title="LISTADO DE PLANTILLA"

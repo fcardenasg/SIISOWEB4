@@ -34,15 +34,15 @@ export const CodCatalogo = {
     PANO_GRADO_CONSINEPP: 131,
 
     HCO_VACUNAS: 8,
-    HCO_FRECUENCIAS: 8,
+    HCO_FRECUENCIAS: 32,
     HC_DEPOR: 8,
-    HC_TIFOBIA: 8,
-    HCO_PARENTES: 8,
+    HC_TIFOBIA: 39,
+    HCO_PARENTES: 123,
     HCO_GINECOMETO: 8,
     HCO_GINECOCICLO: 8,
     HCO_GINECORESULT: 8,
-    HCO_BIOTIPO: 8,
-    HCO_RESULT: 8,
+    HCO_BIOTIPO: 37,
+    HCO_RESULTADO: 140,
     HCO_CONCEP_ACTIPSI: 8,
     HCO_NECONCEPTOAC: 8,
     OPT_SINO: 8,
@@ -72,6 +72,7 @@ export const CodCatalogo = {
     TIPO_PROVEEDOR: 8,
     CIUDADES: 8,
 
+    AHC_ATENCION_NOTA_ENFERMERIA: 136,
     Contingencia: 74,
     DiaTurno: 76,
     JornadaTurno: 139,
@@ -90,9 +91,9 @@ export const CodCatalogo = {
     SaludOcupacional_Motivo: 8,
     TipoAtencion_Item: 8,
 
-    AHC_ATENCION: 8,
-    Opciones_SINO: 8,
-    AHC_CONCEP_ACTITUD: 8,
+    AHC_ATENCION: 135,
+    Opciones_SINO: 88,
+    AHC_CONCEP_ACTITUD: 43,
     AUSLAB_INC: 8,
     AUSLAB_TIPOINCA: 8,
     AUSLAB_CONT: 8,
@@ -146,8 +147,8 @@ export const DefaultValue = {
     RiesgoErgonomicoCargaFisica_Fuerza: 4065,
     RiesgoErgonomicoCargaFisica_Movimiento: 4066,
 
-    Opcion_SI: 1,
-    Opcion_NO: 1,
+    Opcion_SI: 4005,
+    Opcion_NO: 4006,
 }
 
 export const TitleButton = {

@@ -171,6 +171,7 @@ const FirebaseRegister = ({ ...others }) => {
                             correo: values.email,
                             rol: visitante
                         });
+                        
                     } catch (err) {
                         console.error(err);
                         if (scriptedRef.current) {
