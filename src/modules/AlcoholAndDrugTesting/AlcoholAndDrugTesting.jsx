@@ -63,6 +63,11 @@ const AlcoholAndDrugTesting = () => {
     const [documentSolicitante, setDocumentoSolicitante] = useState('');
     const [realizada, setRealizada] = useState(DefaultValue.Opcion_NO);
 
+    const [cocaina, setCocaina] = useState(1);
+    const [marihuana, setMarihuana] = useState(1);
+    const [alcohol, setAlcohol] = useState(1);
+    const [conceptoAptitud, setConceptoAptitud] = useState(1);
+
     const [lsEmployee, setLsEmployee] = useState([]);
     const [lsOpciones, setLsOpciones] = useState([]);
     const [lsTipoMotivo, setLsTipoMotivo] = useState([]);
@@ -186,9 +191,9 @@ const AlcoholAndDrugTesting = () => {
             var Observacion = realizada == DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
 
             const DataToInsert = PostAlcoholAndDrugTesting(documento, FormatDate(datos.fecha), datos.idMotivoPrueba, datos.sustancia1,
-                datos.idMuestra1, datos.idResultado1, datos.sustancia2, datos.idMuestra2, datos.idResultado2, datos.sustancia3, datos.idMuestra3,
+                datos.idMuestra1, cocaina, datos.sustancia2, datos.idMuestra2, marihuana, datos.sustancia3, datos.idMuestra3,
                 datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5, datos.idResultado5,
-                datos.sustancia6, datos.idMuestra6, datos.idResultado6, datos.idRemitido, documentSolicitante, 0, datos.idConcepto,
+                datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentSolicitante, 0, conceptoAptitud,
                 realizada, MotivoAsistencia, Observacion, user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (documento !== '') {
@@ -287,17 +292,15 @@ const AlcoholAndDrugTesting = () => {
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
-                                    <SelectOnChange
-                                        name="idRealizada"
-                                        label="Realizada"
-                                        value={realizada}
-                                        onChange={(e) => setRealizada(e.target.value)}
-                                        options={lsOpciones}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
+                                <SelectOnChange
+                                    name="idRealizada"
+                                    label="Realizada"
+                                    value={realizada}
+                                    onChange={(e) => setRealizada(e.target.value)}
+                                    options={lsOpciones}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
                             </Grid>
 
                             {realizada == DefaultValue.Opcion_NO ?
@@ -358,16 +361,21 @@ const AlcoholAndDrugTesting = () => {
                                                 </Grid>
 
                                                 <Grid item xs={12} md={6} lg={4}>
-                                                    <FormProvider {...methods}>
-                                                        <InputSelect
-                                                            name="idResultado1"
-                                                            label="Resultados"
-                                                            defaultValue={1}
-                                                            options={lsResultado}
-                                                            size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
-                                                        />
-                                                    </FormProvider>
+                                                    <SelectOnChange
+                                                        name="idResultado1"
+                                                        label="Resultados"
+                                                        value={cocaina}
+                                                        onChange={(e) => {
+                                                            setCocaina(e.target.value);
+                                                            if (e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO)
+                                                                setConceptoAptitud(DefaultValue.CONCEPTO_PAD_NOAPTO);
+                                                            else
+                                                                setConceptoAptitud(DefaultValue.CONCEPTO_PAD_APTO);
+                                                        }}
+                                                        options={lsResultado}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        bug={errors}
+                                                    />
                                                 </Grid>
 
                                                 <Grid item xs={12} md={6} lg={4}>
@@ -395,16 +403,21 @@ const AlcoholAndDrugTesting = () => {
                                                 </Grid>
 
                                                 <Grid item xs={12} md={6} lg={4}>
-                                                    <FormProvider {...methods}>
-                                                        <InputSelect
-                                                            name="idResultado2"
-                                                            label="Resultados"
-                                                            defaultValue={1}
-                                                            options={lsResultado}
-                                                            size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
-                                                        />
-                                                    </FormProvider>
+                                                    <SelectOnChange
+                                                        name="idResultado2"
+                                                        label="Resultados"
+                                                        value={marihuana}
+                                                        onChange={(e) => {
+                                                            setMarihuana(e.target.value);
+                                                            if (e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO)
+                                                                setConceptoAptitud(DefaultValue.CONCEPTO_PAD_NOAPTO);
+                                                            else
+                                                                setConceptoAptitud(DefaultValue.CONCEPTO_PAD_APTO);
+                                                        }}
+                                                        options={lsResultado}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        bug={errors}
+                                                    />
                                                 </Grid>
 
                                                 <Grid item xs={12} md={6} lg={4}>
@@ -543,16 +556,21 @@ const AlcoholAndDrugTesting = () => {
                                                 </Grid>
 
                                                 <Grid item xs={12} md={6} lg={4}>
-                                                    <FormProvider {...methods}>
-                                                        <InputSelect
-                                                            name="idResultado6"
-                                                            label="Resultados"
-                                                            defaultValue={1}
-                                                            options={lsResultado}
-                                                            size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
-                                                        />
-                                                    </FormProvider>
+                                                    <SelectOnChange
+                                                        name="idResultado6"
+                                                        label="Resultados"
+                                                        value={alcohol}
+                                                        onChange={(e) => {
+                                                            setAlcohol(e.target.value);
+                                                            if (e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO)
+                                                                setConceptoAptitud(DefaultValue.CONCEPTO_PAD_NOAPTO);
+                                                            else
+                                                                setConceptoAptitud(DefaultValue.CONCEPTO_PAD_APTO);
+                                                        }}
+                                                        options={lsResultado}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        bug={errors}
+                                                    />
                                                 </Grid>
 
                                                 <Divider />
@@ -578,16 +596,16 @@ const AlcoholAndDrugTesting = () => {
                                                 </Grid>
 
                                                 <Grid item xs={12} md={6} lg={4}>
-                                                    <FormProvider {...methods}>
-                                                        <InputSelect
-                                                            name="idConcepto"
-                                                            label="Concepto Aptitud"
-                                                            defaultValue={1}
-                                                            options={lsConceptoA}
-                                                            size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
-                                                        />
-                                                    </FormProvider>
+                                                    <SelectOnChange
+                                                        disabled
+                                                        name="idConcepto"
+                                                        label="Concepto Aptitud"
+                                                        value={conceptoAptitud}
+                                                        onChange={(e) => setConceptoAptitud(e.target.value)}
+                                                        options={lsConceptoA}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        bug={errors}
+                                                    />
                                                 </Grid>
 
                                                 <Grid item xs={12}>
