@@ -1,16 +1,13 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
-// Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -30,23 +27,19 @@ import {
 import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 
-// Import de proyectos
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import swal from 'sweetalert';
 import { GetAllWorkAbsenteeism, DeleteWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
-import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
-// Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
-import { FormatDate } from 'components/helpers/Format';
+import { ViewFormat } from 'components/helpers/Format';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -226,15 +219,15 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
 const ListWorkAbsenteeism = () => {
-    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [openDelete, setOpenDelete] = useState(false);
+    const [idCheck, setIdCheck] = useState('');
     const [lsWorkAbsenteeism, setLsWorkAbsenteeism] = useState([]);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -283,14 +276,12 @@ const ListWorkAbsenteeism = () => {
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
@@ -301,7 +292,6 @@ const ListWorkAbsenteeism = () => {
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
         setIdCheck(id);
 
@@ -330,36 +320,32 @@ const ListWorkAbsenteeism = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
 
     const handleDelete = async () => {
         try {
-            const result = await DeleteWorkAbsenteeism(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteWorkAbsenteeism(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSelected([]);
+                    GetAll();
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
             console.log(error);
         }
     }
 
-    const navigate = useNavigate();
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsWorkAbsenteeism.length) : 0;
 
     return (
         <MainCard title="Lista de Ausentismo Laboral" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -400,7 +386,6 @@ const ListWorkAbsenteeism = () => {
                             </IconButton>
                         </Tooltip>
 
-                        {/* product add & dialog */}
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/work-absenteeism/add")}>
                             {TitleButton.Agregar}
@@ -427,7 +412,7 @@ const ListWorkAbsenteeism = () => {
                         {stableSort(lsWorkAbsenteeism, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
+
                                 if (typeof row === 'string') return null;
 
                                 const isItemSelected = isSelected(row.id_Inc);
@@ -464,8 +449,7 @@ const ListWorkAbsenteeism = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.id_Inc}{' '}
+                                                {row.id_Inc}
                                             </Typography>
                                         </TableCell>
 
@@ -480,8 +464,7 @@ const ListWorkAbsenteeism = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.cedula}{' '}
+                                                {row.cedula}
                                             </Typography>
                                         </TableCell>
 
@@ -496,8 +479,7 @@ const ListWorkAbsenteeism = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.diasSinLaborar}{' '}
+                                                {row.diasSinLaborar}
                                             </Typography>
                                         </TableCell>
 
@@ -512,8 +494,7 @@ const ListWorkAbsenteeism = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {FormatDate(row.fechaInicio)}{' '}
+                                                {ViewFormat(row.fechaInicio)}
                                             </Typography>
                                         </TableCell>
 
@@ -528,8 +509,7 @@ const ListWorkAbsenteeism = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {FormatDate(row.fechaFin)}{' '}
+                                                {ViewFormat(row.fechaFin)}
                                             </Typography>
                                         </TableCell>
 
@@ -544,8 +524,7 @@ const ListWorkAbsenteeism = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {FormatDate(row.fechaRegistro)}{' '}
+                                                {ViewFormat(row.fechaRegistro)}
                                             </Typography>
                                         </TableCell>
 
@@ -560,16 +539,11 @@ const ListWorkAbsenteeism = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.usuarioRegistro}{' '}
+                                                {row.usuarioRegistro}
                                             </Typography>
                                         </TableCell>
-
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <IconButton color="primary" size="large">
-                                                <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                            </IconButton>
                                             <Tooltip title="Actualizar" onClick={() => navigate(`/work-absenteeism/update/${row.id_Inc}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
@@ -592,7 +566,6 @@ const ListWorkAbsenteeism = () => {
                 </Table>
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"

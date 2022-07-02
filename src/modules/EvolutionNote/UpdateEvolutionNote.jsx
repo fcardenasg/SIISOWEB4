@@ -34,7 +34,6 @@ import { CodCatalogo } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutEvolutionNote } from 'formatdata/EvolutionNoteForm';
 import { GetByIdEvolutionNote, UpdateEvolutionNotes } from 'api/clients/EvolutionNoteClient';
@@ -76,7 +75,7 @@ const UpdateEvolutionNote = () => {
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
 
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, errors } = methods;
 
     const handleLoadingDocument = async (idEmployee) => {
         try {

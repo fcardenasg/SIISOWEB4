@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,12 +16,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
 import { PutCatalog } from 'formatdata/CatalogForm';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { GetByIdCatalog, UpdateCatalogs } from 'api/clients/CatalogClient';
 import { GetAllTypeCatalog } from 'api/clients/TypeCatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import {  TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Cargando from 'components/loading/Cargando';
@@ -35,25 +34,33 @@ const validationSchema = yup.object().shape({
 const UpdateCatalog = () => {
     const { user } = useAuth();
     const { id } = useParams();
-    const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
+
     const [typecatalogo, setTypeCatalog] = useState([]);
     const [lsCatalog, setLsCatalog] = useState([]);
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [openError, setOpenError] = useState(false);
 
     useEffect(() => {
         async function GetAll() {
-            const lsServer = await GetAllTypeCatalog(0, 0);
-            var result = lsServer.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setTypeCatalog(result);
+            try {
+                const lsServer = await GetAllTypeCatalog(0, 0);
+                var result = lsServer.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
+                setTypeCatalog(result);
 
-            const lsServerCatalog = await GetByIdCatalog(id);
-            if (lsServerCatalog.status === 200)
-                setLsCatalog(lsServerCatalog.data);
+                const lsServerCatalog = await GetByIdCatalog(id);
+                if (lsServerCatalog.status === 200)
+                    setLsCatalog(lsServerCatalog.data);
+            } catch (error) {
+                setOpenError(true);
+                setErrorMessage(`${error}`);
+            }
         }
 
         GetAll();
@@ -72,36 +79,24 @@ const UpdateCatalog = () => {
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateCatalogs(DataToUpdate);
                 if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Actualizar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+                    setOpenUpdate(true);
                 }
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: 'Este código ya existe',
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     };
 
     return (
         <MainCard title="Actualizar Catálogo">
+            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             {lsCatalog.length != 0 ?
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
-                    <Grid item xs={12} md={6} lg={4}>
+                        <Grid item xs={12} md={6}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idTipoCatalogo"
@@ -114,7 +109,7 @@ const UpdateCatalog = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} md={6} lg={4}>
+                        <Grid item xs={12} md={6}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={lsCatalog.codigo}
@@ -127,7 +122,7 @@ const UpdateCatalog = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} md={6} lg={4}>
+                        <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={lsCatalog.nombre}

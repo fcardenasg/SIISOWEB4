@@ -144,14 +144,14 @@ const AlcoholAndDrugTesting = () => {
             }));
             setLsMotivoNoAsistencia(resultContingencia);
 
-            const lsServerMuestraAD = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PAD_MUESTRAAD);
+            const lsServerMuestraAD = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PAD_MUESTRA_AD);
             var resultMuestraAD = lsServerMuestraAD.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsMuestraAD(resultMuestraAD);
 
-            const lsServerMuestraA = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PAD_MUESTRAAL);
+            const lsServerMuestraA = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PAD_MUESTRA_AL);
             var resultMuestraA = lsServerMuestraA.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre

@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import * as yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,10 +16,10 @@ import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { InsertCIE11 } from 'api/clients/CIE11Client';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
@@ -34,11 +33,13 @@ const validationSchema = yup.object().shape({
 
 const CIE11 = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState('');
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
@@ -97,7 +98,8 @@ const CIE11 = () => {
             }));
             setLsSegmentoAgrupado(resultSegAgrupado);
         } catch (error) {
-            console.log(error);
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     }
 
@@ -113,15 +115,7 @@ const CIE11 = () => {
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertCIE11(DataToInsert);
                 if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Guardar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+                    setOpenSuccess(true);
                     setLsSegmentoAfectado([]);
                     setSegmentoAgrupado('');
                     setSegmentoAfectado('');
@@ -130,22 +124,18 @@ const CIE11 = () => {
                 }
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     };
 
     return (
         <MainCard title="Registrar CIE11">
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <Grid container spacing={2}>
-             <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12}>
                     <SelectOnChange
                         name="segmentoAgrupado"
                         label="Capitulo CIE11"
@@ -156,7 +146,7 @@ const CIE11 = () => {
                     />
                 </Grid>
 
-             <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12}>
                     <SelectOnChange
                         name="segmentoAfectado"
                         label="Segmento Afectado"
@@ -168,7 +158,7 @@ const CIE11 = () => {
                     />
                 </Grid>
 
-             <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="idSubsegmento"
@@ -182,7 +172,7 @@ const CIE11 = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -195,7 +185,7 @@ const CIE11 = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -207,23 +197,23 @@ const CIE11 = () => {
                         />
                     </FormProvider>
                 </Grid>
+            </Grid>
 
-             <Grid item xs={12} md={6} lg={4}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <AnimateButton>
-                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/cie11/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
+            <Grid item sx={{ pt: 4 }} xs={12}>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                {TitleButton.Guardar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button variant="outlined" fullWidth onClick={() => navigate("/cie11/list")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
                     </Grid>
                 </Grid>
             </Grid>

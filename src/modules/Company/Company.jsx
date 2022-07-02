@@ -4,18 +4,18 @@ import {
     Grid,
     useMediaQuery
 } from '@mui/material';
+import { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostCompany } from 'formatdata/CompanyForm';
@@ -31,16 +31,17 @@ const validationSchema = yup.object().shape({
 
 const Company = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const methods = useForm();
-    /* {
-        resolver: yupResolver(validationSchema)
-    } */
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
+    const methods = useForm({
+        resolver: yupResolver(validationSchema)
+    });
     const { handleSubmit, errors, reset } = methods;
 
     const handleClick = async (datos) => {
@@ -51,34 +52,21 @@ const Company = () => {
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertCompany(DataToInsert);
                 if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Guardar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+                    setOpenSuccess(true);
                     reset();
                 }
             }
         } catch (error) {
-            console.log(error);
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: 'Esta Empresa ya existe',
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage('Este código ya existe');
         }
     };
 
     return (
         <MainCard title="Registrar Empresas">
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <Grid container spacing={2}>
                 <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>

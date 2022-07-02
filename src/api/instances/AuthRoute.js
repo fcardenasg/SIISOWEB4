@@ -97,6 +97,7 @@ export const Url = {
     HistoriaClinicaOcupacional: 'api/HistoriaClinicaOcupacional',
     HCOGetAllByDocumento: 'api/HistoriaClinicaOcupacional/GetAllByDocumento',
     HistoriaClinicaOcupacionalId: 'api/HistoriaClinicaOcupacional/id',
+    GetLastRecordHisCliOcu: 'api/HistoriaClinicaOcupacional/GetLastRecord',
 
     TipoAtencion: 'api/TipoAtencion',
     AtencionGetAllByTipoAtencion: 'api/Atencion/GetAllByTipoAtencion',

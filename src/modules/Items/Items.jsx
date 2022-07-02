@@ -10,16 +10,15 @@ import {
 import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import * as yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
-import { SNACKBAR_OPEN } from 'store/actions';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostItems } from 'formatdata/ItemsForm';
@@ -33,11 +32,13 @@ const validationSchema = yup.object().shape({
 
 const Items = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [tipoAtencion, setTipoAtencion] = useState('');
     const [lsAtencion, setLsAtencion] = useState([]);
@@ -90,48 +91,29 @@ const Items = () => {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await InsertItems(DataToInsert);
                     if (result.status === 200) {
-                        dispatch({
-                            type: SNACKBAR_OPEN,
-                            open: true,
-                            message: `${Message.Guardar}`,
-                            variant: 'alert',
-                            alertSeverity: 'success',
-                            close: false,
-                            transition: 'SlideUp'
-                        })
+                        setOpenSuccess(true);
                         setTipoAtencion('');
                         setLsAtencion([]);
                         reset();
                     }
                 }
             } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Por favor, seleccione un tipo de atención',
-                    variant: 'alert',
-                    alertSeverity: 'success',
-                    close: false,
-                    transition: 'SlideUp'
-                })
+                setOpenError(true);
+                setErrorMessage('Por favor, seleccione un tipo de atención');
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     };
 
     return (
         <MainCard title="Registrar Items">
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <SelectOnChange
                         name="idTipoAtencion"
                         label="Tipo de Atención"
@@ -142,7 +124,7 @@ const Items = () => {
                     />
                 </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="idAtencion"
@@ -156,7 +138,7 @@ const Items = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} sx={{ pb: 2 }}>
+                <Grid item xs={12}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -169,23 +151,23 @@ const Items = () => {
                         />
                     </FormProvider>
                 </Grid>
+            </Grid>
 
-                <Grid item xs={12}>
-                    <Grid container spacing={2}>
-                    <Grid item xs={12} md={6} lg={4}>
-                            <AnimateButton>
-                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/item/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
+            <Grid item sx={{ pt: 4 }} xs={12}>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                {TitleButton.Guardar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button variant="outlined" fullWidth onClick={() => navigate("/item/list")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
                     </Grid>
                 </Grid>
             </Grid>

@@ -11,7 +11,6 @@ import SubCard from 'ui-component/cards/SubCard';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 
-// Terceros
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -52,8 +51,8 @@ const EvolutionNote = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [openSuccess, setOpenSuccess] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openExamen, setOpenExamen] = useState(false);

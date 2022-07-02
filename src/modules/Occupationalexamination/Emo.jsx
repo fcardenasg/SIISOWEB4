@@ -44,6 +44,7 @@ const Emo = ({
     setIMC, imc,
     setClasificacion, clasificacion,
     setClasificacionColor, clasificacionColor,
+    lsLastRecord,
 
     errors,
     documento,
@@ -56,11 +57,6 @@ const Emo = ({
 }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    /*     const [peso, setPeso] = useState('');
-        const [talla, setTalla] = useState('');
-        const [imc, setIMC] = useState('');
-        const [clasificacion, setClasificacion] = useState('');
-        const [clasificacionColor, setClasificacionColor] = useState(''); */
 
     const handleChangeTalla = (event) => {
         try {
@@ -130,14 +126,14 @@ const Emo = ({
             }));
             setLsCie11(resultCie11);
 
-            const lsServerRiesClasifi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RIES_CLASI);
+            const lsServerRiesClasifi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RIESGO_CLASIFICACION);
             var resultRiesClasifi = lsServerRiesClasifi.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsRiesClasifi(resultRiesClasifi);
 
-            const lsServerFramDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_FRAM_DEPOR);
+            const lsServerFramDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HC_DEPORTE);
             var resultFramDeporte = lsServerFramDeporte.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -151,14 +147,14 @@ const Emo = ({
             }));
             setLsFramBebida(resultFramBebida);
 
-            const lsServerFramDxMetabolismo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_DXMETA);
+            const lsServerFramDxMetabolismo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_DX_METABOLICO);
             var resultFramDxMetabolismo = lsServerFramDxMetabolismo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsFramDxMetabolismo(resultFramDxMetabolismo);
 
-            const lsServerFramDxTension = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_DXTENSI);
+            const lsServerFramDxTension = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_DX_TENSION_ARTERIAL);
             var resultFramDxTension = lsServerFramDxTension.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -166,14 +162,14 @@ const Emo = ({
 
             setLsFramDxTension(resultFramDxTension);
 
-            const lsServerFramAntecedentesCardiovascular = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_ANTE_CARDIOVAS);
+            const lsServerFramAntecedentesCardiovascular = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_ANTECEDENTE_CARDIOVASCULAR);
             var resultFramAntecedentesCardiovascular = lsServerFramAntecedentesCardiovascular.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsFramAntecedentesCardiovascular(resultFramAntecedentesCardiovascular);
 
-            const lsServerNeConceptoActi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_NECONCEPTOAC);
+            const lsServerNeConceptoActi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEPTO_APTI_MEDICA);
             var resultNeConceptoActi = lsServerNeConceptoActi.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -229,14 +225,14 @@ const Emo = ({
             }));
             setLsResultado(resultResultado);
 
-            const lsServerConceptoActitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_ACTIPSI);
+            const lsServerConceptoActitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_APTI_PSICO);
             var resultConceptoActitud = lsServerConceptoActitud.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsConceptoActitud(resultConceptoActitud);
 
-            const lsServerDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HC_DEPOR);
+            const lsServerDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HC_DEPORTE);
             var resultDeporte = lsServerDeporte.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -295,7 +291,7 @@ const Emo = ({
 
 
             <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES PATALÓGICOS</Typography>}>
-                <Grid container spacing={2} sx={{ pb: 2 }}>
+                <Grid container spacing={2}>
                     <Grid item xs={2} >
                         <FormProvider {...methods}>
                             <InputCheckBox
@@ -616,7 +612,7 @@ const Emo = ({
                     </Grid>
                 </Grid>
 
-                <Grid item xs={12} sx={{ pt: 2 }}>
+                <Grid item xs={12} sx={{ pt: 4 }}>
                     <FormProvider {...methods}>
                         <InputText
                             multiline
@@ -4412,6 +4408,7 @@ export default Emo;
 
 Emo.propTypes = {
     lsEmployee: PropTypes.any,
+    lsLastRecord: PropTypes.any,
     documento: PropTypes.any,
     errors: PropTypes.any,
     setArrays: PropTypes.func,

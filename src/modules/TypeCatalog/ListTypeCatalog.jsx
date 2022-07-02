@@ -29,7 +29,9 @@ import {
 import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 
-import { Message, TitleButton } from 'components/helpers/Enums';
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllTypeCatalog, DeleteTypeCatalog } from 'api/clients/TypeCatalogClient';
@@ -192,6 +194,7 @@ const ListTypeCatalog = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [typeCatalog, setTypeCatalog] = useState([]);
+    const [openDelete, setOpenDelete] = useState(false);
     const [idCheck, setIdCheck] = useState('');
 
     const theme = useTheme();
@@ -299,31 +302,19 @@ const ListTypeCatalog = () => {
 
     const handleDelete = async () => {
         try {
-            const result = await DeleteTypeCatalog(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-                setSearch('');
-                setSelected([]);
-                GetAll();
-            }
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteTypeCatalog(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSelected([]);
+                    GetAll();
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: 'ERROR: No sé pudo eliminar este Tipo de Catálogo',
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            console.log(error);
         }
     }
 
@@ -332,6 +323,7 @@ const ListTypeCatalog = () => {
 
     return (
         <MainCard title="Lista de Tipo Catálogo" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Grid, InputAdornment, OutlinedInput, TablePagination, Typography } from '@mui/material';
 
 import { useDispatch } from 'react-redux';
-import { Message } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import ViewProgramming from './ViewProgramming';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
@@ -40,8 +40,7 @@ const ListProgramming = () => {
     const [lsProgramming, setLsProgramming] = useState([]);
     const [rows, setRows] = useState([]);
     const [search, setSearch] = useState('');
-    const [open, setOpen] = useState(false);
-    const [clickDelete, setClickDelete] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(12);
@@ -70,28 +69,15 @@ const ListProgramming = () => {
 
     const onClickDelete = async (id) => {
         try {
-
-            setOpen(true);
-
-            if (open) {
-                if (clickDelete) {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
                     const result = await DeleteAttention(id);
                     if (result.status === 200) {
-                        dispatch({
-                            type: SNACKBAR_OPEN,
-                            open: true,
-                            message: `${Message.Eliminar}`,
-                            variant: 'alert',
-                            alertSeverity: 'error',
-                            close: false,
-                            transition: 'SlideUp'
-                        })
-                        GetAll();
+                        setOpenDelete(true);
                     }
+                    GetAll();
                 }
-            }
-
-
+            });
         } catch (error) {
             console.log(error);
         }
@@ -141,7 +127,7 @@ const ListProgramming = () => {
         <MainCard
             title={
                 <Grid container alignItems="center" justifyContent="space-between" spacing={gridSpacing}>
-                      <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <Typography variant="h3">Lista de Programación</Typography>
                     </Grid>
                     <Grid item xs={12} md={6} lg={4}>
@@ -161,13 +147,13 @@ const ListProgramming = () => {
                 </Grid>
             }
         >
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <Grid container spacing={gridSpacing}>
                 {usersResult}
 
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12}>
                     <Grid container justifyContent="space-between" spacing={gridSpacing}>
-
-                    <Grid item xs={12} md={6} lg={4}>
+                        <Grid item xs={12}>
                             <TablePagination
                                 rowsPerPageOptions={[12, 24, 36]}
                                 component="div"

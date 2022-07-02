@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -28,10 +27,10 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 import { ViewFormat } from 'components/helpers/Format';
-import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { TitleButton } from 'components/helpers/Enums';
+import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
-
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { GetAllMedicalFormula, DeleteMedicalFormula } from 'api/clients/MedicalFormulaClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -209,8 +208,8 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListMedicalFormula = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [openDelete, setOpenDelete] = useState(false);
     const [lsMedicalFormula, setLsMedicalFormula] = useState([]);
 
     const theme = useTheme();
@@ -313,20 +312,17 @@ const ListMedicalFormula = () => {
 
     const handleDelete = async () => {
         try {
-            const result = await DeleteMedicalFormula(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteMedicalFormula(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSelected([]);
+                    GetAll();
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
             console.log(error);
         }
@@ -337,6 +333,7 @@ const ListMedicalFormula = () => {
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -393,7 +390,6 @@ const ListMedicalFormula = () => {
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -411,7 +407,7 @@ const ListMedicalFormula = () => {
                         {stableSort(lsMedicalFormula, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
+
                                 if (typeof row === 'string') return null;
 
                                 const isItemSelected = isSelected(row.idRecetario);
@@ -444,8 +440,7 @@ const ListMedicalFormula = () => {
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
-                                            {' '}
-                                            {row.idRecetario}{' '}
+                                            {row.idRecetario}
                                         </TableCell>
 
                                         <TableCell
@@ -459,8 +454,7 @@ const ListMedicalFormula = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.documento}{' '}
+                                                {row.documento}
                                             </Typography>
                                         </TableCell>
 
@@ -475,8 +469,7 @@ const ListMedicalFormula = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.nameEmpleado}{' '}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -491,8 +484,7 @@ const ListMedicalFormula = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.medico}{' '}
+                                                {row.medico}
                                             </Typography>
                                         </TableCell>
 
@@ -507,8 +499,7 @@ const ListMedicalFormula = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {ViewFormat(row.fecha)}{' '}
+                                                {ViewFormat(row.fecha)}
                                             </Typography>
                                         </TableCell>
 

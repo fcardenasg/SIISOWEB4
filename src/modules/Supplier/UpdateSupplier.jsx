@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useTheme } from '@mui/material/styles';
@@ -9,20 +9,19 @@ import {
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import Cargando from 'components/loading/Cargando';
 import { PutSupplier } from 'formatdata/SupplierForm';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { UpdateSuppliers, GetByIdSupplier } from 'api/clients/SupplierClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputMultiSelects from 'components/input/InputMultiSelects';
@@ -30,7 +29,6 @@ import { FormatDate } from 'components/helpers/Format';
 
 const UpdateSupplier = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const { id } = useParams();
@@ -40,6 +38,9 @@ const UpdateSupplier = () => {
     const [lsSupplier, setLsSupplier] = useState([]);
     const [lsPais, setLsPais] = useState([]);
     const [supplierArray, setSupplierArray] = useState([]);
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [openError, setOpenError] = useState(false);
 
     async function GetAll() {
         try {
@@ -84,140 +85,129 @@ const UpdateSupplier = () => {
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateSuppliers(DataToUpdate);
                 if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Actualizar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+                    setOpenUpdate(true);
                 }
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: 'Este Proveedor ya existe',
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
-            console.log(error);
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     };
 
     return (
         <MainCard title="Actualizar Proveedor">
+            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             {supplier.length != 0 ? (
-                <Grid container spacing={2}>
-              <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={supplier.codiProv}
+                <Fragment>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={supplier.codiProv}
+                                    fullWidth
+                                    disabled
+                                    name="codiProv"
+                                    label="Código"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={supplier.nombProv}
+                                    fullWidth
+                                    name="nombProv"
+                                    label="Nombre"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={supplier.teleProv}
+                                    fullWidth
+                                    name="teleProv"
+                                    label="Teléfono"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={supplier.emaiProv}
+                                    fullWidth
+                                    name="emaiProv"
+                                    label="Email"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={supplier.contaProv}
+                                    fullWidth
+                                    name="contaProv"
+                                    label="Contacto"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="ciudProv"
+                                    label="Ciudad"
+                                    defaultValue={supplier.ciudProv}
+                                    options={lsPais}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <InputMultiSelects
                                 fullWidth
-                                disabled
-                                name="codiProv"
-                                label="Código"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                onChange={(event, value) => setSupplierArray(value)}
+                                value={supplierArray}
+                                label="Tipo Proveedor"
+                                options={lsSupplier}
                             />
-                        </FormProvider>
-                    </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={supplier.nombProv}
-                                fullWidth
-                                name="nombProv"
-                                label="Nombre"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={supplier.teleProv}
-                                fullWidth
-                                name="teleProv"
-                                label="Teléfono"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={supplier.emaiProv}
-                                fullWidth
-                                name="emaiProv"
-                                label="Email"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={supplier.contaProv}
-                                fullWidth
-                                name="contaProv"
-                                label="Contacto"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="ciudProv"
-                                label="Ciudad"
-                                defaultValue={supplier.ciudProv}
-                                options={lsPais}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                        <InputMultiSelects
-                            fullWidth
-                            onChange={(event, value) => setSupplierArray(value)}
-                            value={supplierArray}
-                            label="Tipo Proveedor"
-                            options={lsSupplier}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={supplier.direProv}
-                                fullWidth
-                                name="direProv"
-                                label="Dirrección"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={supplier.direProv}
+                                    fullWidth
+                                    name="direProv"
+                                    label="Dirrección"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12} sx={{ pt: 4 }}>
                         <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={6}>
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={6}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/supplier/list")}>
                                         {TitleButton.Cancelar}
@@ -226,7 +216,7 @@ const UpdateSupplier = () => {
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
+                </Fragment>
             ) : <Cargando />}
         </MainCard>
     );

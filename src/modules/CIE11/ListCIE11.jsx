@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import ReactExport from "react-export-excel";
 
 import { useTheme } from '@mui/material/styles';
@@ -28,10 +27,10 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
-
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { GetAllCIE11, DeleteCIE11 } from 'api/clients/CIE11Client';
-import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -195,14 +194,14 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListCIE11 = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
+    const [openDelete, setOpenDelete] = useState(false);
     const [cie11, setCie11] = useState([]);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -297,20 +296,17 @@ const ListCIE11 = () => {
 
     const handleDelete = async () => {
         try {
-            const result = await DeleteCIE11(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteCIE11(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSelected([]);
+                    GetAll();
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
             console.log(error);
         }
@@ -321,6 +317,7 @@ const ListCIE11 = () => {
 
     return (
         <MainCard title="Lista de CIE11" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>

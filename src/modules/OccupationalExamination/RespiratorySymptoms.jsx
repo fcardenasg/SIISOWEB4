@@ -24,16 +24,16 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
 
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [lsFramDeporte, setLsFramDeporte] = useState([]);
+    const [lsExposicion, setLsExpocision] = useState([]);
 
     async function GetAll() {
         try {
-            const lsServerFramDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_FRAM_DEPOR);
+            const lsServerFramDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_SINTOMAS_RESPIRATORIO);
             var resultFramDeporte = lsServerFramDeporte.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsFramDeporte(resultFramDeporte);
+            setLsExpocision(resultFramDeporte);
         } catch (error) {
             console.log(error);
         }
@@ -931,7 +931,7 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="historiaOcupB3SintR"
                                     label="La exposición fue:"
                                     defaultValue=""
-                                    options={lsFramDeporte}
+                                    options={lsExposicion}
                                     size="small"
                                     bug={errors}
                                 />
@@ -982,7 +982,7 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="historiaOcupC3SintR"
                                     label="La exposición fue:"
                                     defaultValue=""
-                                    options={lsFramDeporte}
+                                    options={lsExposicion}
                                     size="small"
                                     bug={errors}
                                 />

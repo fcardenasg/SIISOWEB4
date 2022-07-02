@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useTheme } from '@mui/material/styles';
@@ -14,6 +14,7 @@ import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import { FormatDate } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import Cargando from 'components/loading/Cargando';
@@ -21,10 +22,9 @@ import { PutCIE11 } from 'formatdata/CIE11';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import InputSelect from 'components/input/InputSelect';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { UpdateCIE11s, GetByIdCIE11 } from 'api/clients/CIE11Client';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
@@ -37,10 +37,13 @@ const validationSchema = yup.object().shape({
 const UpdateCIE11 = () => {
     const { user } = useAuth();
     const { id } = useParams();
-    const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
+
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [openError, setOpenError] = useState(false);
 
     const [cie11, setCie11] = useState([]);
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
@@ -135,97 +138,87 @@ const UpdateCIE11 = () => {
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateCIE11s(DataToUpdate);
                 if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Actualizar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+                    setOpenUpdate(true);
                 }
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     };
 
     return (
         <MainCard title="Actualizar CIE11">
-            {cie11.length != 0 ? (<>
-                <Grid container spacing={2}>
-                 <Grid item xs={12} md={6} lg={4}>
-                        <SelectOnChange
-                            name="segmentoAgrupado"
-                            label="Segmento Agrupado"
-                            options={lsSegmentoAgrupado}
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={segmentoAgrupado}
-                            onChange={handleChangeSegAgrupado}
-                        />
-                    </Grid>
+            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                 <Grid item xs={12} md={6} lg={4}>
-                        <SelectOnChange
-                            name="segmentoAfectado"
-                            label="Segmento Afectado"
-                            options={lsSegmentoAfectado}
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={segmentoAfectado}
-                            onChange={handleChangeSegAfectado}
-                        />
-                    </Grid>
-
-                 <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idSubsegmento"
-                                label="Subsegmento"
-                                defaultValue={cie11.idSubsegmento}
-                                options={subsegmento}
+            {cie11.length != 0 ? (
+                <Fragment>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <SelectOnChange
+                                name="segmentoAgrupado"
+                                label="Segmento Agrupado"
+                                options={lsSegmentoAgrupado}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                value={segmentoAgrupado}
+                                onChange={handleChangeSegAgrupado}
                             />
-                        </FormProvider>
-                    </Grid>
+                        </Grid>
 
-                    <Grid item xs={6}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={cie11.id}
-                                fullWidth
-                                disabled
-                                name="id"
-                                label="ID"
+                        <Grid item xs={12}>
+                            <SelectOnChange
+                                name="segmentoAfectado"
+                                label="Segmento Afectado"
+                                options={lsSegmentoAfectado}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                value={segmentoAfectado}
+                                onChange={handleChangeSegAfectado}
                             />
-                        </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="idSubsegmento"
+                                    label="Subsegmento"
+                                    defaultValue={cie11.idSubsegmento}
+                                    options={subsegmento}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={12} md={6}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={cie11.id}
+                                    fullWidth
+                                    disabled
+                                    name="id"
+                                    label="ID"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={6} md={6}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={cie11.dx}
+                                    fullWidth
+                                    name="dx"
+                                    label="Nombre"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
                     </Grid>
 
-                    <Grid item xs={6} sx={{ pb: 2 }}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={cie11.dx}
-                                fullWidth
-                                name="dx"
-                                label="Nombre"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12} sx={{ pt: 4 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <AnimateButton>
@@ -243,8 +236,8 @@ const UpdateCIE11 = () => {
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-            </>) : <Cargando />}
+                </Fragment>
+            ) : <Cargando />}
         </MainCard>
     );
 };

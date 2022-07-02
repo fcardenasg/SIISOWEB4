@@ -28,8 +28,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import RespiratorySymptoms from './RespiratorySymptoms';
-import { InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import { InsertOccupationalExamination, GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { Message } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { TitleButton } from 'components/helpers/Enums';
@@ -90,10 +89,11 @@ const OccupationalExamination = () => {
 
     const [value, setValue] = useState(0);
 
-    const [document, setDocument] = useState('');
+    const [documento, setDocumento] = useState('');
     const [atencion, setAtencion] = useState('');
     const [lsAtencionEMO, setLsAtencionEMO] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
+    const [lsLastRecord, setLsLastRecord] = useState([]);
     const [arrays, setArrays] = useState({
         tipoFobia: [],
         dx: [],
@@ -118,10 +118,15 @@ const OccupationalExamination = () => {
 
     const handleDocumento = async (event) => {
         try {
-            setDocument(event.target.value);
-            const lsServer = await GetByIdEmployee(event.target.value);
-            if (lsServer.status === 200)
-                setLsEmployee(lsServer.data);
+            setDocumento(event.target.value);
+            const lsServerDataEmployee = await GetByIdEmployee(event.target.value);
+            if (lsServerDataEmployee.status === 200)
+                setLsEmployee(lsServerDataEmployee.data);
+
+            const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(event.target.value);
+            if (lsServerUltimoRegistro.status === 200)
+                setLsLastRecord(lsServerDataEmployee.data);
+
         } catch (error) {
             setLsEmployee([]);
             console.log(error);
@@ -129,9 +134,8 @@ const OccupationalExamination = () => {
     }
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-
     const { handleSubmit, errors, reset } = methods;
+    /* { resolver: yupResolver(validationSchema) } */
 
     useEffect(() => {
         async function GetAll() {
@@ -153,7 +157,7 @@ const OccupationalExamination = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInset = PostOccupationalExamination(
-                101010, document, FormatDate(datos.fecha), atencion,
+                101010, documento, FormatDate(datos.fecha), atencion,
 
                 datos.congenitosAP, datos.inmunoPrevenibleAP, datos.infecciososAP, datos.ojoAP, datos.agudezaVisualAP, datos.oidosAP, datos.nasoFaringeAP,
                 datos.cardiovascularAP, datos.pulmonarAP, datos.gastrointestinalAP, datos.gimitoUrinarioAP, datos.neurologicoAP, datos.transtornoPielAP,
@@ -264,7 +268,7 @@ const OccupationalExamination = () => {
                         metabolico: [],
                     });
                     setAtencion('');
-                    setDocument('');
+                    setDocumento('');
                     setEstadoVacuna({
                         tetanoIM: false,
                         influenzaIM: false,
@@ -299,7 +303,7 @@ const OccupationalExamination = () => {
                                 <Avatar sx={{ width: 100, height: 100 }} src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
                             </Grid>
                             <Grid item xs={4}>
-                                <TextField value={document} onChange={(e) => setDocument(e.target.value)} onKeyDown={handleDocumento} fullWidth id="standard-basic" label="Documento" variant="standard" />
+                                <TextField value={documento} onChange={(e) => setDocumento(e.target.value)} onKeyDown={handleDocumento} fullWidth id="standard-basic" label="Documento" variant="standard" />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -391,7 +395,7 @@ const OccupationalExamination = () => {
             <TabPanel value={value} index={1}>
                 <WorkHistory
                     lsEmpleado={lsEmployee}
-                    documento={document}
+                    documento={documento}
                     atencion={atencion} />
             </TabPanel>
             <TabPanel value={value} index={2}>
@@ -406,8 +410,8 @@ const OccupationalExamination = () => {
                     clasificacion={clasificacion}
                     setClasificacionColor={setClasificacionColor}
                     clasificacionColor={clasificacionColor}
-
-                    documento={document}
+                    lsLastRecord={lsLastRecord}
+                    documento={documento}
                     errors={errors}
                     setArrays={setArrays}
                     arrays={arrays}

@@ -43,7 +43,7 @@ const Supplier = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [lsSupplier, setLsSupplier] = useState([]);
-    const [lsPais, setLsPais] = useState([]);
+    const [lsCiudad, setLsCiudad] = useState([]);
     const [supplierArray, setSupplierArray] = useState([]);
 
     const methods = useForm({
@@ -66,7 +66,7 @@ const Supplier = () => {
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsPais(resultPais);
+            setLsCiudad(resultPais);
         } catch (error) {
             console.log(error);
         }
@@ -126,7 +126,7 @@ const Supplier = () => {
     return (
         <MainCard title="Registrar Proveedor">
             <Grid container spacing={2}>
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -137,7 +137,7 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -148,7 +148,7 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -159,7 +159,7 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -171,7 +171,7 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -183,19 +183,19 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="ciudProv"
                             label="Ciudad"
                             defaultValue=""
-                            options={lsPais}
+                            options={lsCiudad}
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors}
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <InputMultiSelects
                         onChange={(event, value) => setSupplierArray(value)}
                         value={supplierArray}
@@ -203,7 +203,7 @@ const Supplier = () => {
                         options={lsSupplier}
                     />
                 </Grid>
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -214,23 +214,23 @@ const Supplier = () => {
                         />
                     </FormProvider>
                 </Grid>
-                
-                <Grid item xs={12} md={6} lg={4}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <AnimateButton>
-                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/supplier/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
+            </Grid>
+
+            <Grid item xs={12} sx={{ pt: 4 }}>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                {TitleButton.Guardar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button variant="outlined" fullWidth onClick={() => navigate("/supplier/list")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
                     </Grid>
                 </Grid>
             </Grid>

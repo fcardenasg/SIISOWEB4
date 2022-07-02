@@ -8,7 +8,6 @@ import {
 
 import useAuth from 'hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -23,11 +22,11 @@ import {
     GetAllTipoAtencion,
     GetAllByTipoAtencion
 } from 'api/clients/OthersClients';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { InsertTemplate } from 'api/clients/TemplateClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllByAtencion } from 'api/clients/ItemsClient';
@@ -41,10 +40,13 @@ const validationSchema = yup.object().shape({
 
 const Template = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState('');
@@ -193,35 +195,23 @@ const Template = () => {
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertTemplate(DataToInsert);
                 if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Guardar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+                    setOpenSuccess(true);
                     CleanData();
                 }
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     };
 
     return (
         <MainCard title="Registrar Plantilla">
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <Grid container spacing={2}>
-         <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="segmentoAgrupado"
                         label="Segmento Agrupado"
@@ -231,7 +221,7 @@ const Template = () => {
                         onChange={handleChangeSegAgrupado}
                     />
                 </Grid>
-         <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="segmentoAfectado"
                         label="Segmento Afectado"
@@ -242,7 +232,7 @@ const Template = () => {
                         disabled={lsSegmentoAfectado.length != 0 ? false : true}
                     />
                 </Grid>
-         <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="idSubsegmento"
                         label="Subsegmento"
@@ -253,7 +243,7 @@ const Template = () => {
                         disabled={lsSubsegmento.length != 0 ? false : true}
                     />
                 </Grid>
-         <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="idCIE11"
@@ -266,7 +256,7 @@ const Template = () => {
                         />
                     </FormProvider>
                 </Grid>
-         <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="idTipoAtencion"
                         label="Tipo de Atención"
@@ -277,7 +267,7 @@ const Template = () => {
                         disabled={lsTipoAtencion.length != 0 ? false : true}
                     />
                 </Grid>
-         <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="idAtencion"
                         label="Atención"
@@ -301,7 +291,7 @@ const Template = () => {
                         />
                     </FormProvider>
                 </Grid>
-                <Grid item xs={12} sx={{ pb: 2 }}>
+                <Grid item xs={12}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -315,23 +305,23 @@ const Template = () => {
                         />
                     </FormProvider>
                 </Grid>
+            </Grid>
 
-                <Grid item xs={12}>
-                    <Grid container spacing={2}>
-                 <Grid item xs={12} md={6} lg={4}>
-                            <AnimateButton>
-                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                 <Grid item xs={12} md={6} lg={4}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/template/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
+            <Grid item sx={{ pt: 4 }} xs={12}>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                {TitleButton.Guardar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button variant="outlined" fullWidth onClick={() => navigate("/template/list")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
                     </Grid>
                 </Grid>
             </Grid>

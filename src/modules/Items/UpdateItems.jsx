@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import * as yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -40,6 +40,9 @@ const Items = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [openError, setOpenError] = useState(false);
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [tipoAtencion, setTipoAtencion] = useState('');
     const [lsAtencion, setLsAtencion] = useState([]);
@@ -106,94 +109,77 @@ const Items = () => {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await UpdateItem(DataToUpdate);
                     if (result.status === 200) {
-                        dispatch({
-                            type: SNACKBAR_OPEN,
-                            open: true,
-                            message: `${Message.Guardar}`,
-                            variant: 'alert',
-                            alertSeverity: 'success',
-                            close: false,
-                            transition: 'SlideUp'
-                        })
+                        setOpenUpdate(true);
                     }
                 }
             } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Por favor, seleccione un tipo de atención',
-                    variant: 'alert',
-                    alertSeverity: 'success',
-                    close: false,
-                    transition: 'SlideUp'
-                })
+                setOpenError(true);
+                setErrorMessage('Por favor, seleccione un tipo de atención');
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     };
 
     return (
         <MainCard title="Registrar Items">
-            {lsItems.length != 0 ? <>
-                <Grid container spacing={2}>
-                 <Grid item xs={12} md={6} lg={4}>
-                        <SelectOnChange
-                            name="idTipoAtencion"
-                            label="Tipo de Atención"
-                            options={lsTipoAtencion}
-                            size={matchesXS ? 'small' : 'medium'}
-                            value={tipoAtencion}
-                            onChange={handleChangeTipoAtencion}
-                        />
-                    </Grid>
+            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                 <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idAtencion"
-                                label="Atención"
-                                defaultValue={lsItems.idAtencion}
-                                options={lsAtencion}
+            {lsItems.length != 0 ?
+                <Fragment>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <SelectOnChange
+                                name="idTipoAtencion"
+                                label="Tipo de Atención"
+                                options={lsTipoAtencion}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                value={tipoAtencion}
+                                onChange={handleChangeTipoAtencion}
                             />
-                        </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={12} md={6}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="idAtencion"
+                                    label="Atención"
+                                    defaultValue={lsItems.idAtencion}
+                                    options={lsAtencion}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={lsItems.descripcion}
+                                    fullWidth
+                                    multiline
+                                    rows={2}
+                                    name="descripcion"
+                                    label="Descripción"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
                     </Grid>
 
-                    <Grid item xs={12} sx={{ pb: 2 }}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={lsItems.descripcion}
-                                fullWidth
-                                multiline
-                                rows={2}
-                                name="descripcion"
-                                label="Descripción"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={12}>
+                    <Grid item sx={{ pt: 4 }} xs={12}>
                         <Grid container spacing={2}>
-                         <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={6}>
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                         <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={6}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/item/list")}>
                                         {TitleButton.Cancelar}
@@ -202,8 +188,8 @@ const Items = () => {
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-            </> : <Cargando />}
+                </Fragment> : <Cargando />
+            }
         </MainCard>
     );
 };
