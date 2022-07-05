@@ -43,16 +43,6 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { DeleteOccupationalExamination, GetAllOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { ViewFormat } from 'components/helpers/Format';
 
-function getModalStyle() {
-    const top = 50;
-    const left = 50;
-
-    return {
-        top: `${top}%`,
-        margin: 'auto'
-    };
-}
-
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -221,7 +211,7 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListOccupationalExamination = () => {
+const ListOrdersIndividual = () => {
     const dispatch = useDispatch();
     const [lsOccupationalExamination, setLsOccupationalExamination] = useState([]);
 
@@ -243,17 +233,6 @@ const ListOccupationalExamination = () => {
             console.log(error);
         }
     }
-
-    const [modalStyle] = useState(getModalStyle);
-
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     useEffect(() => {
         GetAll();
@@ -293,7 +272,6 @@ const ListOccupationalExamination = () => {
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
@@ -360,7 +338,7 @@ const ListOccupationalExamination = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsOccupationalExamination.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
+        <MainCard title="Lista de Ordenes Individuales" content={false}>
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -393,7 +371,7 @@ const ListOccupationalExamination = () => {
                         </Tooltip>
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/occupational-examination/add")}>
+                            onClick={() => navigate("/orders-individual/add")}>
                             {TitleButton.Agregar}
                         </Button>
 
@@ -569,4 +547,4 @@ const ListOccupationalExamination = () => {
     );
 };
 
-export default ListOccupationalExamination;
+export default ListOrdersIndividual;

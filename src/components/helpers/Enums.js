@@ -144,6 +144,7 @@ export const DefaultValue = {
     /* RIESGOS */
     RiesgoEnOtrasEmpresas: 4067,
     RiesgoQuimico: 3949,
+    RiesgoQuimico_MPI: 3955,
     RiesgoFisico: 3950,
     RiesgoPsicosocial: 3952,
     RiesgoBiologico: 3953,

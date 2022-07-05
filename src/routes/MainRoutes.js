@@ -241,6 +241,10 @@ const ListItems = Loadable(lazy(() => import('modules/Items/ListItems')));
 const Items = Loadable(lazy(() => import('modules/Items/Items')));
 const UpdateItems = Loadable(lazy(() => import('modules/Items/UpdateItems')));
 
+const ViewOrders = Loadable(lazy(() => import('modules/Orders/ViewOrders')));
+const ListOrdersIndividual = Loadable(lazy(() => import('modules/Orders/ListOrdersIndividual')));
+const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdersIndividual')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -606,6 +610,18 @@ const MainRoutes = {
         {
             path: '/item/update/:id',
             element: <UpdateItems />
+        },
+        {
+            path: '/orders/view',
+            element: <ViewOrders />
+        },
+        {
+            path: '/orders-individual/list',
+            element: <ListOrdersIndividual />
+        },
+        {
+            path: '/orders-individual/add',
+            element: <OrdersIndividual />
         },
 
 

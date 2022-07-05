@@ -238,7 +238,7 @@ const application = {
                     id: 'autocomplete',
                     title: <FormattedMessage id="Ordenes" />,
                     type: 'item',
-                    url: '/components/autocomplete',
+                    url: '/orders/view',
                     breadcrumbs: false
                 },
                 {

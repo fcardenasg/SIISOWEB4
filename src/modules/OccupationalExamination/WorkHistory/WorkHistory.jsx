@@ -27,7 +27,7 @@ import Transitions from 'ui-component/extended/Transitions';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo } from 'components/helpers/Enums';
+import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import { FormProvider, useForm } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetAllCompany } from 'api/clients/CompanyClient';
@@ -44,12 +44,21 @@ import RowCompany from './Row/RowCompany';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import { ColorDrummondltd } from 'themes/colors';
+import { GetAllByHistorico } from 'api/clients/WorkHistoryRiskClient';
 
 const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const theme = useTheme();
     const { user } = useAuth();
     const dispatch = useDispatch();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [mpiAnioDTLD, setMpiAnioDTLD] = useState(0);
+    const [mpiMesDTLD, setMpiMesDTLD] = useState(0);
+    const [mpiAnioOtraEm, setMpiAnioOtraEm] = useState(0);
+    /*     const [mpiAnio, setMpiAnio] = useState(0);
+        const [mpiAnio, setMpiAnio] = useState(0);
+        const [mpiAnio, setMpiAnio] = useState(0);
+        const [mpiAnio, setMpiAnio] = useState(0); */
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
@@ -67,6 +76,34 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
     async function GetAll() {
         try {
+            const lsServerOtherCompany = await GetAllByHistorico(0, 0, documento);
+            if (lsServerOtherCompany.status === 200) {
+                var array = lsServerOtherCompany.data.entities;
+
+                if (array.length != 0) {
+                    var arrayReady = array.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    var aniosMpi = 0;
+                    var mesMpi = 0;
+
+                    for (let index = 0; index < arrayReady.length; index++) {
+                        const datos = arrayReady[index];
+                        aniosMpi = aniosMpi + datos.anio;
+                        setMpiAnioDTLD(aniosMpi);
+                    }
+
+                    for (let index = 0; index < arrayReady.length; index++) {
+                        const datos = arrayReady[index];
+                        mesMpi = mesMpi + datos.mes;
+                        setMpiMesDTLD(mesMpi);
+                    }
+                }
+            }
+
             const lsServerWorkHistory = await GetAllByDocumentWorkHistory(0, 0, documento);
             if (lsServerWorkHistory.status === 200)
                 setLsWorkHistory(lsServerWorkHistory.data.entities);
@@ -419,7 +456,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <SideIconCard
                                 bgcolor={theme.palette.grey[200]}
                                 iconPrimary={RecordVoiceOverIcon}
-                                primary="Años: 10"
+                                primary={`Años: ${mpiAnioDTLD}`}
                                 secondary="Ruido en DLTD"
                                 color={ColorDrummondltd.RedDrummond}
                             />
@@ -429,7 +466,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <SideIconCard
                                 bgcolor={theme.palette.grey[200]}
                                 iconPrimary={RecordVoiceOverIcon}
-                                primary="Meses: 10"
+                                primary={`Meses: ${mpiMesDTLD}`}
                                 secondary="Ruido en DLTD"
                                 color={ColorDrummondltd.RedDrummond}
                             />

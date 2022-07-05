@@ -401,7 +401,8 @@ const OccupationalExamination = () => {
                 <WorkHistory
                     lsEmpleado={lsEmployee}
                     documento={documento}
-                    atencion={atencion} />
+                    atencion={atencion}
+                />
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <Emo
