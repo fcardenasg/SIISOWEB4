@@ -111,6 +111,7 @@ export default function DisabledTabs() {
                     {...a11yProps(2)}
                 />
             </Tabs>
+            
             <TabPanel value={value} index={0}>
                 Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
                 non cupidatat skateboard dolor brunch.

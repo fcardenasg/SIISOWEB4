@@ -13,8 +13,10 @@ import {
     TableRow,
     Button,
     Stack,
+    Typography,
 } from '@mui/material';
 
+import SideIconCard from 'ui-component/cards/SideIconCard';
 import swal from 'sweetalert';
 import { MessageSuccess, MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
@@ -38,6 +40,10 @@ import {
 import { FormatDate } from 'components/helpers/Format';
 import RowDLTD from './Row/RowDLTD';
 import RowCompany from './Row/RowCompany';
+
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
+import { ColorDrummondltd } from 'themes/colors';
 
 const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const theme = useTheme();
@@ -131,9 +137,8 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
     const handleClickEmpresa = async (datos) => {
         try {
-            const DataToInsert = PostWorkHistoryEmpresa(FormatDate(new Date()), atencion, documento, datos.empresa,
-                datos.cargoEmpresa, datos.anioEmpresa, datos.mesesEmpresa,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PostWorkHistoryEmpresa(FormatDate(new Date()), atencion, documento, datos.empresa, datos.cargoEmpresa,
+                datos.anioEmpresa, datos.mesesEmpresa, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (atencion !== '') {
                 if (Object.keys(datos.length !== 0)) {
@@ -206,7 +211,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                     <TableCell sx={{ pl: 3 }} />
                                     <TableCell>Empresa</TableCell>
                                     <TableCell>Cargo</TableCell>
-                                    <TableCell>Fecha</TableCell>
+                                    {/* <TableCell>Fecha</TableCell> */}
                                     <TableCell>Años</TableCell>
                                     <TableCell>
                                         Meses
@@ -311,7 +316,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                     <TableCell sx={{ pl: 3 }} />
                                     <TableCell>Empresa</TableCell>
                                     <TableCell>Cargo</TableCell>
-                                    <TableCell>Fecha</TableCell>
+                                    {/* <TableCell>Fecha</TableCell> */}
                                     <TableCell>Años</TableCell>
                                     <TableCell>
                                         Meses
@@ -404,6 +409,98 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                 + Agregar Cargo
                             </Button>
                         </Grid> : <></>}
+                </SubCard>
+            </Grid>
+
+            <Grid item xs={12}>
+                <SubCard title={<Typography variant="h4">Exposición Acumulada de Factores de Riesgo - DLTD</Typography>}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} lg={3} sm={6}>
+                            <SideIconCard
+                                bgcolor={theme.palette.grey[200]}
+                                iconPrimary={RecordVoiceOverIcon}
+                                primary="Años: 10"
+                                secondary="Ruido en DLTD"
+                                color={ColorDrummondltd.RedDrummond}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} lg={3} sm={6}>
+                            <SideIconCard
+                                bgcolor={theme.palette.grey[200]}
+                                iconPrimary={RecordVoiceOverIcon}
+                                primary="Meses: 10"
+                                secondary="Ruido en DLTD"
+                                color={ColorDrummondltd.RedDrummond}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} lg={3} sm={6}>
+                            <SideIconCard
+                                bgcolor={theme.palette.grey[200]}
+                                iconPrimary={ReportProblemIcon}
+                                primary="Años: 10"
+                                secondary="Exposición MPI DLTD"
+                                color={ColorDrummondltd.RedDrummond}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} lg={3} sm={6}>
+                            <SideIconCard
+                                bgcolor={theme.palette.grey[200]}
+                                iconPrimary={ReportProblemIcon}
+                                primary="Meses: 10"
+                                secondary="Exposición MPI DLTD"
+                                color={ColorDrummondltd.RedDrummond}
+                            />
+                        </Grid>
+                    </Grid>
+                </SubCard>
+            </Grid>
+
+            <Grid item xs={12}>
+                <SubCard title={<Typography variant="h4">Exposición Acumulada de Factores de Riesgo - Otras Empresas</Typography>}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} lg={3} sm={6}>
+                            <SideIconCard
+                                bgcolor={theme.palette.grey[200]}
+                                iconPrimary={RecordVoiceOverIcon}
+                                primary="Años: 10"
+                                secondary="Ruido en Otras Empresas"
+                                color={ColorDrummondltd.BlueDrummond}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} lg={3} sm={6}>
+                            <SideIconCard
+                                bgcolor={theme.palette.grey[200]}
+                                iconPrimary={RecordVoiceOverIcon}
+                                primary="Meses: 10"
+                                secondary="Ruido en Otras Empresas"
+                                color={ColorDrummondltd.BlueDrummond}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} lg={3} sm={6}>
+                            <SideIconCard
+                                bgcolor={theme.palette.grey[200]}
+                                iconPrimary={ReportProblemIcon}
+                                primary="Años: 10"
+                                secondary="Exposición MPI Otras Empresas"
+                                color={ColorDrummondltd.BlueDrummond}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} lg={3} sm={6}>
+                            <SideIconCard
+                                bgcolor={theme.palette.grey[200]}
+                                iconPrimary={ReportProblemIcon}
+                                primary="Meses: 10"
+                                secondary="Exposición MPI Otras Empresas"
+                                color={ColorDrummondltd.BlueDrummond}
+                            />
+                        </Grid>
+                    </Grid>
                 </SubCard>
             </Grid>
         </Grid>

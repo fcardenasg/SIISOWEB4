@@ -29,7 +29,7 @@ import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo } from 'components/helpers/Enums';
+import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
@@ -159,7 +159,7 @@ const EvolutionNote = () => {
         try {
 
             const DataToInsert = PostEvolutionNote(documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
-                datos.nota, JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, datos.idRemitido, user.email,
+                datos.nota, JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.email,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -347,7 +347,7 @@ const EvolutionNote = () => {
                                         defaultValue=""
                                         fullWidth
                                         name="planManejo"
-                                        label="Plan de Manejo"
+                                        label="Plan de Manejo/Observaciones"
                                         size={matchesXS ? 'small' : 'medium'}
                                         multiline
                                         rows={6}
@@ -375,7 +375,7 @@ const EvolutionNote = () => {
                 <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">CONCEPTO DE APTITUD PSICOFÍSICA</Typography>}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idConceptoActitud"
@@ -388,7 +388,7 @@ const EvolutionNote = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={6}>
+                            {/* <Grid item xs={6}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idRemitido"
@@ -399,7 +399,7 @@ const EvolutionNote = () => {
                                         bug={errors}
                                     />
                                 </FormProvider>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
 
                         <Grid item xs={12} sx={{ pt: 4 }}>

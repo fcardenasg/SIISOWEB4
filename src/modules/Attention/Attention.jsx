@@ -281,9 +281,10 @@ const Attention = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), datos.sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones,
-                0, "PENDIENTE POR ATENCIÓN", datos.contingencia, datos.turno, datos.diaTurno, datos.motivo, datos.medico, documentoSolicita, talla, peso,
-                imc, '', FormatDate(new Date()), FormatDate(new Date()), 0, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), datos.sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
+                "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                datos.motivo, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
+                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertAttention(DataToInsert);
@@ -364,7 +365,7 @@ const Attention = () => {
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="sede"
-                                        label="Sede"
+                                        label="Sede de Atención"
                                         defaultValue=""
                                         options={lsSede}
                                         size={matchesXS ? 'small' : 'medium'}
@@ -400,7 +401,7 @@ const Attention = () => {
 
                             {tipoAtencion == DefaultValue.TIP_AT_TRIAGE ?
                                 <Fragment>
-                                    <Grid item xs={3}>
+                                    {/* <Grid item xs={3}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="contingencia"
@@ -411,7 +412,7 @@ const Attention = () => {
                                                 bug={errors}
                                             />
                                         </FormProvider>
-                                    </Grid>
+                                    </Grid> */}
 
                                     <Grid item xs={3}>
                                         <FormProvider {...methods}>
@@ -426,7 +427,7 @@ const Attention = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={3}>
+                                    {/* <Grid item xs={3}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="turno"
@@ -450,11 +451,11 @@ const Attention = () => {
                                                 bug={errors}
                                             />
                                         </FormProvider>
-                                    </Grid>
+                                    </Grid> */}
                                 </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ENFERME && atencion == DefaultValue.AT_ENFERMERIA ?
                                     <Fragment>
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
+                                            {/* <FormProvider {...methods}>
                                                 <InputSelect
                                                     name="contingencia"
                                                     label="Contingencia"
@@ -463,7 +464,7 @@ const Attention = () => {
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
                                                 />
-                                            </FormProvider>
+                                            </FormProvider> */}
                                         </Grid>
 
                                         <Grid item xs={3}>
@@ -479,7 +480,7 @@ const Attention = () => {
                                             </FormProvider>
                                         </Grid>
 
-                                        <Grid item xs={3}>
+                                        {/* <Grid item xs={3}>
                                             <FormProvider {...methods}>
                                                 <InputSelect
                                                     name="turno"
@@ -503,7 +504,7 @@ const Attention = () => {
                                                     bug={errors}
                                                 />
                                             </FormProvider>
-                                        </Grid>
+                                        </Grid> */}
                                     </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ENFERME && atencion == DefaultValue.AT_PAD ?
                                         <Fragment>
                                             <Grid item xs={3}>
@@ -601,7 +602,7 @@ const Attention = () => {
                                                 </Grid>
                                             </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && atencion == DefaultValue.AT_PSICO ?
                                                 <Fragment>
-                                                    <Grid item xs={3}>
+                                                    {/* <Grid item xs={3}>
                                                         <FormProvider {...methods}>
                                                             <InputSelect
                                                                 name="contingencia"
@@ -612,7 +613,7 @@ const Attention = () => {
                                                                 bug={errors}
                                                             />
                                                         </FormProvider>
-                                                    </Grid>
+                                                    </Grid> */}
 
                                                     <Grid item xs={3}>
                                                         <FormProvider {...methods}>
@@ -627,7 +628,7 @@ const Attention = () => {
                                                         </FormProvider>
                                                     </Grid>
 
-                                                    <Grid item xs={3}>
+                                                    {/* <Grid item xs={3}>
                                                         <FormProvider {...methods}>
                                                             <InputSelect
                                                                 name="turno"
@@ -651,7 +652,7 @@ const Attention = () => {
                                                                 bug={errors}
                                                             />
                                                         </FormProvider>
-                                                    </Grid>
+                                                    </Grid> */}
 
                                                     <Grid item xs={3}>
                                                         <FormProvider {...methods}>
@@ -680,7 +681,7 @@ const Attention = () => {
                                                     </Grid>
                                                 </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && atencion == DefaultValue.AT_ASESORIA_MEDICA ?
                                                     <Fragment>
-                                                        <Grid item xs={3}>
+                                                        {/* <Grid item xs={3}>
                                                             <FormProvider {...methods}>
                                                                 <InputSelect
                                                                     name="contingencia"
@@ -691,7 +692,7 @@ const Attention = () => {
                                                                     bug={errors}
                                                                 />
                                                             </FormProvider>
-                                                        </Grid>
+                                                        </Grid> */}
 
                                                         <Grid item xs={3}>
                                                             <FormProvider {...methods}>
@@ -720,7 +721,7 @@ const Attention = () => {
                                                         </Grid>
                                                     </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && (atencion != DefaultValue.AT_ASESORIA_MEDICA || atencion != DefaultValue.AT_PSICO) ?
                                                         <Fragment>
-                                                            <Grid item xs={3}>
+                                                            {/* <Grid item xs={3}>
                                                                 <FormProvider {...methods}>
                                                                     <InputSelect
                                                                         name="contingencia"
@@ -731,7 +732,7 @@ const Attention = () => {
                                                                         bug={errors}
                                                                     />
                                                                 </FormProvider>
-                                                            </Grid>
+                                                            </Grid> */}
 
                                                             <Grid item xs={3}>
                                                                 <FormProvider {...methods}>
@@ -746,7 +747,7 @@ const Attention = () => {
                                                                 </FormProvider>
                                                             </Grid>
 
-                                                            <Grid item xs={3}>
+                                                            {/* <Grid item xs={3}>
                                                                 <FormProvider {...methods}>
                                                                     <InputSelect
                                                                         name="turno"
@@ -770,7 +771,7 @@ const Attention = () => {
                                                                         bug={errors}
                                                                     />
                                                                 </FormProvider>
-                                                            </Grid>
+                                                            </Grid> */}
                                                         </Fragment> : <></>
                             }
 

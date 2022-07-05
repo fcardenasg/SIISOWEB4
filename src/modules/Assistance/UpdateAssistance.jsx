@@ -28,7 +28,7 @@ import InputMultiSelects from 'components/input/InputMultiSelects';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -162,7 +162,7 @@ const UpdateAssistance = () => {
         try {
             const DataToUpdate = PutAssistance(id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
                 datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico, datos.examenParaclinico,
-                JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, datos.idRemitido, user.email, FormatDate(new Date()), '',
+                JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()), '',
                 FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -230,7 +230,7 @@ const UpdateAssistance = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                        <SubCard darkTitle>
                             <Grid container spacing={2}>
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
@@ -298,7 +298,7 @@ const UpdateAssistance = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">HISTORIA</Typography>}>
+                        <SubCard darkTitle>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
@@ -530,7 +530,7 @@ const UpdateAssistance = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">CONCEPTO DE APTITUD PSICOFÍSICA</Typography>}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idConceptoActitud"
@@ -542,7 +542,7 @@ const UpdateAssistance = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={6}>
+                                {/* <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idRemitido"
@@ -553,7 +553,7 @@ const UpdateAssistance = () => {
                                             bug={errors}
                                         />
                                     </FormProvider>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
 
                             <Grid item xs={12} sx={{ pt: 4 }}>

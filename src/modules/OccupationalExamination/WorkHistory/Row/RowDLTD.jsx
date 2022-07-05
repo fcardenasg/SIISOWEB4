@@ -319,7 +319,7 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
                     {row.nameEmpresa}
                 </TableCell>
                 <TableCell>{row.nameCargo}</TableCell>
-                <TableCell>{ViewFormat(row.fecha)}</TableCell>
+                {/* <TableCell>{ViewFormat(row.fecha)}</TableCell> */}
                 <TableCell>{row.anio}</TableCell>
                 <TableCell>{row.meses}</TableCell>
                 <TableCell>

@@ -73,7 +73,6 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
 
             if (lsServerRiesgo.status === 200) {
                 var arrayInsert = lsServerRiesgo.data.entities;
-                console.log("Datos Riesgo = ", arrayInsert);
 
                 for (let index = 0; index < arrayInsert.length; index++) {
                     const riesgo = arrayInsert[index];
@@ -81,8 +80,6 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                     const DataToInsert = PostWorkHistoryRiskCompany(row.id, row.fecha, row.documento, numRiesgo,
                         row.cargo, riesgo.clase, riesgo.exposicion, riesgo.gradosinEPP, riesgo.gradoconEPP,
                         riesgo.medidascontrol, 0, 0, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
-
-                    console.log("Datos = ", DataToInsert);
 
                     if (DataToInsert) {
                         const result = await InsertWorkHistoryRiskCompany(DataToInsert);
@@ -198,7 +195,6 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                     if (id == 1) {
                         const lsRiesgoQuimico = await DeleteAndInsertRisk(lsQuimico, DefaultValue.RiesgoQuimico);
                         setLsQuimico(lsRiesgoQuimico);
-                        console.log("Datos = ", lsRiesgoQuimico);
                     }
 
                     if (id == 2) {
@@ -321,7 +317,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                     {row.empresa}
                 </TableCell>
                 <TableCell>{row.cargo}</TableCell>
-                <TableCell>{ViewFormat(row.fecha)}</TableCell>
+                {/* <TableCell>{ViewFormat(row.fecha)}</TableCell> */}
                 <TableCell>{row.anio}</TableCell>
                 <TableCell>{row.meses}</TableCell>
                 <TableCell>

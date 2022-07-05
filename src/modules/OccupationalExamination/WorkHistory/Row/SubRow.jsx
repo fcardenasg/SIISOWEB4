@@ -66,9 +66,9 @@ export const SubRow = ({ title, getAll, diferen, onClickDelete, row }) => {
                             <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
                                 <TableCell>Consecutivo</TableCell>
                                 <TableCell>Clase</TableCell>
-                                <TableCell>Exposición</TableCell>
-                                <TableCell >Grado sin EPP</TableCell>
-                                <TableCell >Grado con EPP</TableCell>
+                                {/* <TableCell>Exposición</TableCell> */}
+                                {diferen === 'COMPANY' ? <></> : <TableCell>Grado sin EPP</TableCell>}
+                                {diferen === 'COMPANY' ? <></> : <TableCell>Grado con EPP</TableCell>}
                                 <TableCell >Medidas de Control</TableCell>
                                 <TableCell >Año</TableCell>
                                 <TableCell >Mes</TableCell>
@@ -81,9 +81,17 @@ export const SubRow = ({ title, getAll, diferen, onClickDelete, row }) => {
                                 <TableRow hover key={historyRow.id}>
                                     <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.id}</TableCell>
                                     <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.nameClase}</TableCell>
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.nameExpocision}</TableCell>
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}> {historyRow.nameGradoSinEPP} </TableCell>
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.nameGradoConEPP}</TableCell>
+                                    {/* <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.nameExpocision}</TableCell> */}
+                                    {diferen === 'COMPANY' ? <></> :
+                                        <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>
+                                            {historyRow.nameGradoSinEPP}
+                                        </TableCell>
+                                    }
+                                    {diferen === 'COMPANY' ? <></> :
+                                        <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>
+                                            {historyRow.nameGradoConEPP}
+                                        </TableCell>
+                                    }
                                     <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>
                                         {FormatArray(historyRow.medidasControl)}
                                     </TableCell>

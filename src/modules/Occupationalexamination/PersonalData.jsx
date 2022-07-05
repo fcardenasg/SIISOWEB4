@@ -2,7 +2,8 @@ import {
     Button,
     Grid,
     List,
-    Typography
+    Typography,
+    Tooltip
 } from '@mui/material';
 
 import PropTypes from 'prop-types';
@@ -11,7 +12,7 @@ import User from 'assets/img/user.png'
 import Avatar from 'ui-component/extended/Avatar';
 import SubCard from 'ui-component/cards/SubCard';
 import { gridSpacing } from 'store/constant';
-
+import FullScreenDialog from 'components/controllers/FullScreenDialog'
 import { IconEdit } from '@tabler/icons';
 import PhonelinkRingTwoToneIcon from '@mui/icons-material/PhonelinkRingTwoTone';
 import PinDropTwoToneIcon from '@mui/icons-material/PinDropTwoTone';
@@ -22,7 +23,8 @@ import BusinessIcon from '@mui/icons-material/Business';
 import ElderlyIcon from '@mui/icons-material/Elderly';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import { ListDetailsAll, ListDetails } from 'components/components/ListDetails';
-import { handleBreakpoints } from '@mui/system';
+import UpdateEmployee from './Update/UpdateEmployee';
+import { useState } from 'react';
 
 const DetailsViewOne = [
     {
@@ -69,19 +71,27 @@ const DetailsViewTwo = [
     { name: 'Turno', }, { name: 'Tipo Contrato', }, { name: 'Fecha Contrato', }, { name: 'Antiguedad', }, { name: 'GES', },
 ]
 
-const handleUpdateEmployee = (idEmployee) => {
-    return (
-        <>
-            HOLA MUNDO
-        </>
-    );
-}
-
 const PersonalData = ({ lsEmployee = [] }) => {
+    const [openUpdate, setOpenUpdate] = useState(false);
+
     return (
         <Grid container spacing={gridSpacing}>
+            <FullScreenDialog
+                open={openUpdate}
+                title="ACTUALIZAR EMPLEADO"
+                handleClose={() => setOpenUpdate(false)}
+            >
+                <UpdateEmployee idEmpleado={lsEmployee.documento} setOpenUpdate={setOpenUpdate} key={1} />
+            </FullScreenDialog>
+
             <Grid item lg={6} xs={12}>
-                <SubCard title="Datos Personales" secondary={<Button onClick={handleUpdateEmployee(lsEmployee.documento)}><IconEdit stroke={1.5} size="1.3rem" /></Button>}>
+                <SubCard title="Datos Personales" secondary={
+                    <Tooltip title="Actualizar Empleado">
+                        <Button disabled={lsEmployee.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
+                            <IconEdit stroke={1.5} size="1.3rem" />
+                        </Button>
+                    </Tooltip>
+                }>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item>
                             <Avatar sx={{ width: 60, height: 60 }} alt="Foto del Empleado" src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
@@ -118,14 +128,18 @@ const PersonalData = ({ lsEmployee = [] }) => {
                         <ListDetailsAll icons={DetailsViewOne[8].icons} name={DetailsViewOne[8].name} campoRender={lsEmployee.nameArl} />
                     </List>
                 </SubCard>
-            </Grid>
+            </Grid >
 
             <Grid item lg={6} xs={12}>
-                <SubCard title="Información de la Empresa y Cargo" secondary={<Button><IconEdit stroke={1.5} /></Button>}>
+                <SubCard title="Información de la Empresa y Cargo" secondary={
+                    <Button disabled={lsEmployee.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
+                        <IconEdit stroke={1.5} />
+                    </Button>
+                }>
                     <Grid container direction="column" spacing={2}>
                         <ListDetails name={DetailsViewTwo[0].name} campoRender={lsEmployee.nameSede} />
-                        <ListDetails name={DetailsViewTwo[1].name} campoRender={lsEmployee.direccionResidencia} />
-                        <ListDetails name={DetailsViewTwo[2].name} campoRender={lsEmployee.nameMunicipioResidencia} />
+                        <ListDetails name={DetailsViewTwo[1].name} campoRender={lsEmployee.direccionResidenciaTrabaja} />
+                        <ListDetails name={DetailsViewTwo[2].name} campoRender={lsEmployee.nameMunicipioResidenciaTrabaja} />
                         <ListDetails name={DetailsViewTwo[3].name} campoRender={lsEmployee.nameDepartamento} />
                         <ListDetails name={DetailsViewTwo[4].name} campoRender={lsEmployee.nameArea} />
                         <ListDetails name={DetailsViewTwo[5].name} campoRender={lsEmployee.nameRosterPosition} />
@@ -137,7 +151,7 @@ const PersonalData = ({ lsEmployee = [] }) => {
                     </Grid>
                 </SubCard>
             </Grid>
-        </Grid>
+        </Grid >
     );
 };
 

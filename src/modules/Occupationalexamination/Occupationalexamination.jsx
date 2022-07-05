@@ -116,6 +116,16 @@ const OccupationalExamination = () => {
         otrasIM: false,
     });
 
+    const handleLastRecord = async (documento = '') => {
+        try {
+            const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(documento);
+            if (lsServerUltimoRegistro.status === 200)
+                setLsLastRecord(lsServerUltimoRegistro.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handleDocumento = async (event) => {
         try {
             setDocumento(event.target.value);
@@ -123,10 +133,7 @@ const OccupationalExamination = () => {
             if (lsServerDataEmployee.status === 200)
                 setLsEmployee(lsServerDataEmployee.data);
 
-            const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(event.target.value);
-            if (lsServerUltimoRegistro.status === 200)
-                setLsLastRecord(lsServerDataEmployee.data);
-
+            handleLastRecord(event.target.value);
         } catch (error) {
             setLsEmployee([]);
             console.log(error);
@@ -320,13 +327,11 @@ const OccupationalExamination = () => {
                                     <Typography variant="h5">{GetEdad(new Date(lsEmployee.fechaNaci))}</Typography>
                                 </Grid>
                             </Grid>
-                        </Grid> : <Grid item xs={7}></Grid>}
+                        </Grid> : <Grid item xs={7}></Grid>
+                    }
                 </Grid>
-            </SubCard>
-            <Grid sx={{ pb: 2 }} />
 
-            <SubCard darkTitle title={<Typography variant="h3">REGISTRAR LA  ATENCIÓN</Typography>}>
-                <Grid container spacing={2}>
+                <Grid container sx={{ pt: 6 }} spacing={2}>
                     <Grid item xs={6}>
                         <FormProvider {...methods}>
                             <InputDatePicker
@@ -385,7 +390,7 @@ const OccupationalExamination = () => {
                 }}
             >
                 {tabsOption.map((tab, index) => (
-                    <Tab key={index} component={Link} to="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
+                    <Tab disabled={atencion === '' ? true : false} key={index} component={Link} to="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
                 ))}
             </Tabs>
 

@@ -54,7 +54,7 @@ const application = {
                 },
                 {
                     id: 'evolutionnotes',
-                    title: <FormattedMessage id="Nota de Evolución" />,
+                    title: <FormattedMessage id="Nota de Médica" />,
                     type: 'item',
                     url: '/evolution-note/list'
                 },
@@ -113,7 +113,7 @@ const application = {
                         }
                     ]
                 },
-              
+
             ]
         },
 
@@ -128,7 +128,6 @@ const application = {
                     title: <FormattedMessage id="Historia Clínica Ocupacional" />,
                     type: 'item',
                     url: '/occupational-examination/list',
-                    breadcrumbs: true
                 },
                 {
                     id: 'work-absenteeism',
@@ -144,7 +143,7 @@ const application = {
                     url: '/customer/product-review',
                     breadcrumbs: false
                 },
-            
+
                 {
                     id: 'product',
                     title: <FormattedMessage id="Medicina Laboral" />,

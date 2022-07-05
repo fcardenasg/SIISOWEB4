@@ -6,10 +6,9 @@ import { GetAllByHistorico } from 'api/clients/WorkHistoryRiskClient';
 const columns = [
     { field: 'id', headerName: 'ID', width: 60 },
     { field: 'fecha', headerName: 'Fecha', width: 100 },
-    { field: 'nameRiesgo', headerName: 'Riesgo', width: 250 },
-    { field: 'nameClase', headerName: 'Clase', width: 250 },
+    { field: 'nameRiesgo', headerName: 'Riesgo', width: 300 },
+    { field: 'nameClase', headerName: 'Clase', width: 300 },
     { field: 'nameCargo', headerName: 'Cargo', width: 150 },
-    { field: 'nameExpocision', headerName: 'Expocisión', width: 130 },
     { field: 'nameGradoConEPP', headerName: 'Grado Con EPP', width: 130 },
     { field: 'nameGradoSinEPP', headerName: 'Grado Sin EPP', width: 130 },
     {
