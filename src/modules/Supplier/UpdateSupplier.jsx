@@ -24,7 +24,6 @@ import InputSelect from 'components/input/InputSelect';
 import { TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import { FormatDate } from 'components/helpers/Format';
 
 const UpdateSupplier = () => {
@@ -37,7 +36,6 @@ const UpdateSupplier = () => {
     const [supplier, setSupplier] = useState([]);
     const [lsSupplier, setLsSupplier] = useState([]);
     const [lsPais, setLsPais] = useState([]);
-    const [supplierArray, setSupplierArray] = useState([]);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
@@ -45,10 +43,8 @@ const UpdateSupplier = () => {
     async function GetAll() {
         try {
             const lsServerSupplierId = await GetByIdSupplier(id);
-            if (lsServerSupplierId.status === 200) {
+            if (lsServerSupplierId.status === 200)
                 setSupplier(lsServerSupplierId.data);
-                setSupplierArray(JSON.parse(lsServerSupplierId.data.tipoProv));
-            }
 
             const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPO_PROVEEDOR);
             var resultSupplier = lsServerSupplier.data.entities.map((item) => ({
@@ -79,7 +75,7 @@ const UpdateSupplier = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PutSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
-                datos.contaProv, datos.ciudProv, JSON.stringify(supplierArray), datos.direProv,
+                datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
                 supplier.usuarioRegistro, supplier.fechaRegistro, user.email, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -176,13 +172,16 @@ const UpdateSupplier = () => {
                             </FormProvider>
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <InputMultiSelects
-                                fullWidth
-                                onChange={(event, value) => setSupplierArray(value)}
-                                value={supplierArray}
-                                label="Tipo Proveedor"
-                                options={lsSupplier}
-                            />
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="idTipoProveedor"
+                                    label="Tipo Proveedor"
+                                    defaultValue={supplier.tipoProv}
+                                    options={lsSupplier}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <FormProvider {...methods}>

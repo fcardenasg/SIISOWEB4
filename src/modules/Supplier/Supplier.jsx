@@ -22,7 +22,7 @@ import { Message, TitleButton, ValidationMessage, CodCatalogo } from 'components
 import MainCard from 'ui-component/cards/MainCard';
 import { FormatDate } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import InputMultiSelects from 'components/input/InputMultiSelects';
+import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { PostSupplier } from 'formatdata/SupplierForm';
 
 const validationSchema = yup.object().shape({
@@ -37,14 +37,16 @@ const validationSchema = yup.object().shape({
 
 const Supplier = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
     const [lsSupplier, setLsSupplier] = useState([]);
     const [lsCiudad, setLsCiudad] = useState([]);
-    const [supplierArray, setSupplierArray] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema)
@@ -79,52 +81,27 @@ const Supplier = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
-                datos.contaProv, datos.ciudProv, JSON.stringify(supplierArray), datos.direProv,
+                datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (supplierArray.length != 0) {
-                if (Object.keys(datos.length !== 0)) {
-                    const result = await InsertSupplier(DataToInsert);
-                    if (result.status === 200) {
-                        dispatch({
-                            type: SNACKBAR_OPEN,
-                            open: true,
-                            message: `${Message.Guardar}`,
-                            variant: 'alert',
-                            alertSeverity: 'success',
-                            close: false,
-                            transition: 'SlideUp'
-                        })
-                        reset();
-                        setSupplierArray([]);
-                    }
+            if (Object.keys(datos.length !== 0)) {
+                const result = await InsertSupplier(DataToInsert);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                    reset();
                 }
-            } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Por favor, seleccione por lo menos un proveedor',
-                    variant: 'alert',
-                    alertSeverity: 'warning',
-                    close: false,
-                    transition: 'SlideUp'
-                })
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: 'Esta Proveedor ya existe',
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage('No se pudo guardar el registro');
         }
     };
 
     return (
         <MainCard title="Registrar Proveedor">
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
@@ -196,12 +173,16 @@ const Supplier = () => {
                     </FormProvider>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <InputMultiSelects
-                        onChange={(event, value) => setSupplierArray(value)}
-                        value={supplierArray}
-                        label="Tipo Proveedor"
-                        options={lsSupplier}
-                    />
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="idTipoProveedor"
+                            label="Tipo Proveedor"
+                            defaultValue=""
+                            options={lsSupplier}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors}
+                        />
+                    </FormProvider>
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <FormProvider {...methods}>
