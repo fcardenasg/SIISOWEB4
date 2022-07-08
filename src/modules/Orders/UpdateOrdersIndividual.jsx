@@ -21,7 +21,7 @@ import { GetAllSupplier } from 'api/clients/SupplierClient';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -43,7 +43,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { PostOrders } from 'formatdata/OrdersForm';
-import { InsertOrders } from 'api/clients/OrdersClient';
+import { GetByIdOrders, InsertOrders } from 'api/clients/OrdersClient';
 
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -82,6 +82,7 @@ const tabsOption = [
 
 const OrdersIndividual = () => {
     const { user } = useAuth();
+    const { id } = useParams();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -441,6 +442,36 @@ const OrdersIndividual = () => {
     useEffect(() => {
         async function GetAll() {
             try {
+                const lsServerUpdate = await GetByIdOrders(id);
+                if (lsServerUpdate.status === 200) {
+                    setDocumento(lsServerUpdate.data.documento);
+
+                    setLsEmployee([]);
+                    setTipoExamen(lsServerUpdate.data.idTipoExamen);
+                    setLsProveedorCombo({
+                        lsProveedorCombo1: [], lsProveedorCombo2: [], lsProveedorCombo3: [], lsProveedorCombo4: [], lsProveedorCombo5: [],
+                        lsProveedorCombo6: [], lsProveedorCombo7: [], lsProveedorCombo8: [], lsProveedorCombo9: [], lsProveedorCombo10: [],
+                    });
+                    setParaclinicos({
+                        paraclinicos1: lsServerUpdate.data.idParaclinico1, paraclinicos2: lsServerUpdate.data.idParaclinico2,
+                        paraclinicos3: lsServerUpdate.data.idParaclinico3, paraclinicos4: lsServerUpdate.data.idParaclinico4,
+                        paraclinicos5: lsServerUpdate.data.idParaclinico5, paraclinicos6: lsServerUpdate.data.idParaclinico6,
+                        paraclinicos7: lsServerUpdate.data.idParaclinico7, paraclinicos8: lsServerUpdate.data.idParaclinico8,
+                        paraclinicos9: lsServerUpdate.data.idParaclinico9, paraclinicos10: lsServerUpdate.data.idParaclinico10,
+                    });
+                    setProveedor({
+                        proveedor1: lsServerUpdate.data.idProveedor1, proveedor2: lsServerUpdate.data.idProveedor2,
+                        proveedor3: lsServerUpdate.data.idProveedor3, proveedor4: lsServerUpdate.data.idProveedor4,
+                        proveedor5: lsServerUpdate.data.idProveedor5, proveedor6: lsServerUpdate.data.idProveedor6,
+                        proveedor7: lsServerUpdate.data.idProveedor7, proveedor8: lsServerUpdate.data.idProveedor8,
+                        proveedor9: lsServerUpdate.data.idProveedor9, proveedor10: lsServerUpdate.data.idProveedor10,
+                    });
+                    setCiudad({
+                        ciudad1: '', ciudad2: '', ciudad3: '', ciudad4: '', ciudad5: '',
+                        ciudad6: '', ciudad7: '', ciudad8: '', ciudad9: '', ciudad10: '',
+                    });
+                }
+
                 const lsServerLaboratorio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.LABORATORIO_ORDENES_PARACLINICOS);
                 var resultLaboratorio = lsServerLaboratorio.data.entities.map((item) => ({
                     value: item.idCatalogo,

@@ -47,7 +47,7 @@ const GuestGuard = ({ children }) => {
                     if (userData.rol === "visitante") {
                         return navigate("/dashboard/questionnaire", { replace: true });
                     } else {
-                        return navigate(config.defaultPath, { replace: true });
+                        return navigate("/dashboard/select", { replace: true });
                     }
                 }
             } catch (error) {

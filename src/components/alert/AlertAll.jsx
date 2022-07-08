@@ -49,7 +49,7 @@ export const MessageSuccess = ({ open, onClose }) => {
             key={'alert'}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right', }}
             open={open}
-            autoHideDuration={2000}
+            autoHideDuration={2500}
             onClose={onClose}
         >
             <Alert severity="success" sx={{ width: '100%' }}>
@@ -66,7 +66,7 @@ export const MessageUpdate = ({ open, onClose }) => {
             key={'alert'}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right', }}
             open={open}
-            autoHideDuration={2000}
+            autoHideDuration={2500}
             onClose={onClose}
         >
             <Alert severity="success" sx={{ width: '100%' }}>

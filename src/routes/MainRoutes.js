@@ -6,6 +6,7 @@ import Loadable from 'ui-component/Loadable';
 import AuthGuard from 'utils/route-guard/AuthGuard';
 
 // dashboard routing
+const SelectionView = Loadable(lazy(() => import('views/dashboard/SelectionView/SelectionView')));
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const DashboardAnalytics = Loadable(lazy(() => import('views/dashboard/Analytics')));
 
@@ -974,6 +975,10 @@ const MainRoutes = {
         {
             path: '/dashboard/default',
             element: <DashboardDefault />
+        },
+        {
+            path: '/dashboard/select',
+            element: <SelectionView />
         },
         {
             path: '/dashboard/analytics',
