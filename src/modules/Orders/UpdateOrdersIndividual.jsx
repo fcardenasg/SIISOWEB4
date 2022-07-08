@@ -456,6 +456,10 @@ const UpdateOrdersIndividual = () => {
     useEffect(() => {
         async function GetAll() {
             try {
+                const lsServerProveedor = await GetAllSupplier(0, 0);
+                if (lsServerProveedor.status === 200)
+                    setLsProveedor(lsServerProveedor.data.entities);
+
                 const lsServerUpdate = await GetByIdOrders(id);
                 if (lsServerUpdate.status === 200) {
                     setLsOrders(lsServerUpdate.data);
@@ -464,6 +468,14 @@ const UpdateOrdersIndividual = () => {
 
                     setLsEmployee([]);
                     setTipoExamen(lsServerUpdate.data.idTipoExamen);
+
+                    var arrayReady = lsServerProveedor.data.entities.filter(tipo => tipo.tipoProv == lsServerUpdate.data.idProveedor1)
+                        .map((para) => ({
+                            value: para.codiProv,
+                            label: para.nombProv
+                        }));
+                    setLsProveedorCombo({ ...lsProveedorCombo, lsProveedorCombo1: arrayReady });
+
                     setLsProveedorCombo({
                         lsProveedorCombo1: [], lsProveedorCombo2: [], lsProveedorCombo3: [], lsProveedorCombo4: [], lsProveedorCombo5: [],
                         lsProveedorCombo6: [], lsProveedorCombo7: [], lsProveedorCombo8: [], lsProveedorCombo9: [], lsProveedorCombo10: [],
@@ -510,10 +522,6 @@ const UpdateOrdersIndividual = () => {
                     }));
                     setLsCiudad(resultCiudad);
                 }
-
-                const lsServerProveedor = await GetAllSupplier(0, 0);
-                if (lsServerProveedor.status === 200)
-                    setLsProveedor(lsServerProveedor.data.entities);
 
                 const lsServerTipoExamen = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPO_EXAMEN_PARACLINICOS);
                 var resultTipoExamen = lsServerTipoExamen.data.entities.map((item) => ({

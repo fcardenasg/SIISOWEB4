@@ -107,7 +107,7 @@ const HeaderPage = () => {
                                         <AnimateButton>
                                             <Button
                                                 component={RouterLink}
-                                                to="/dashboard/default"
+                                                to="/dashboard/select"
                                                 target="_blank"
                                                 size="large"
                                                 variant="contained"
@@ -120,7 +120,7 @@ const HeaderPage = () => {
                                 </Grid>
                             </motion.div>
                         </Grid>
-                        
+
                         <Grid item xs={12}>
                             <motion.div
                                 initial={{ opacity: 0, translateY: 550 }}

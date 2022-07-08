@@ -5,7 +5,8 @@ import MainLayout from 'modules/Cuestionario/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import NavMotion from 'layout/NavMotion';
 import GuestGuard from 'utils/route-guard/GuestGuard';
-// dashboard routing
+
+
 const SelectionView = Loadable(lazy(() => import('views/dashboard/SelectionView/SelectionView')));
 
 
@@ -20,12 +21,12 @@ const QuestionnaireRoutes = {
             </GuestGuard>
         </NavMotion>
     ),
-    children: [
+    /* children: [
         {
             path: '/dashboard/select',
             element: <SelectionView />
         },
-    ]
+    ] */
 };
 
 export default QuestionnaireRoutes;

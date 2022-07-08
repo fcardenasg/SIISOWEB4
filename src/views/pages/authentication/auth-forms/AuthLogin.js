@@ -186,7 +186,7 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                         if (userData.rol === "visitante") {
                             navigate("/dashboard/questionnaire", { replace: true });
                         } else if (userData.rol === 'admin') {
-                            navigate(config.defaultPath, { replace: true });
+                            navigate("/dashboard/select", { replace: true });
                         }
 
                         /* console.log(userData); */

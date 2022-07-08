@@ -3,7 +3,7 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'modules/Cuestionario/MainLayout';
 import Loadable from 'ui-component/Loadable';
-import AuthGuard from 'utils/route-guard/AuthGuard';
+import GuestGuard from 'utils/route-guard/GuestGuard';
 
 // dashboard routing
 const DashboardQuestionnaire = Loadable(lazy(() => import('modules/Cuestionario/DashboardQuestionnaire')));
@@ -17,9 +17,9 @@ const ViewfinderQR = Loadable(lazy(() => import('modules/Cuestionario/Viewfinder
 const QuestionnaireRoutes = {
     path: '/',
     element: (
-        <AuthGuard>
+        <GuestGuard>
             <MainLayout />
-        </AuthGuard>
+        </GuestGuard>
     ),
     children: [
         {
