@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useTheme } from '@mui/material/styles';
@@ -28,7 +28,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import Transitions from 'ui-component/extended/Transitions';
 import InputText from 'components/input/InputText';
-import { TitleButton } from 'components/helpers/Enums';
+import { TitleButton, Message } from 'components/helpers/Enums';
 import { FormatDate, GetEdad } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
@@ -47,6 +47,7 @@ import { GetByIdOrders, InsertOrders } from 'api/clients/OrdersClient';
 
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import Cargando from 'components/loading/Cargando';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -80,13 +81,14 @@ const tabsOption = [
     }
 ];
 
-const OrdersIndividual = () => {
+const UpdateOrdersIndividual = () => {
     const { user } = useAuth();
     const { id } = useParams();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [lsOrders, setLsOrders] = useState([]);
     const [value, setValue] = useState(0);
     const [moreFive, setMoreFive] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -422,7 +424,6 @@ const OrdersIndividual = () => {
             console.log(error);
         }
     }
-
     const handleDocumento = async (event) => {
         try {
             setDocumento(event.target.value);
@@ -439,11 +440,26 @@ const OrdersIndividual = () => {
     const { handleSubmit, errors, reset } = methods;
     /* { resolver: yupResolver(validationSchema) } */
 
+    const handleLoadingDocument = async (idEmployee) => {
+        try {
+            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+
+            if (lsServerEmployee.status === 200) {
+                setLsEmployee(lsServerEmployee.data);
+            }
+        } catch (error) {
+            setLsEmployee([]);
+            setErrorMessage(Message.ErrorDeDatos);
+        }
+    }
+
     useEffect(() => {
         async function GetAll() {
             try {
                 const lsServerUpdate = await GetByIdOrders(id);
                 if (lsServerUpdate.status === 200) {
+                    setLsOrders(lsServerUpdate.data);
+                    handleLoadingDocument(lsServerUpdate.data.documento);
                     setDocumento(lsServerUpdate.data.documento);
 
                     setLsEmployee([]);
@@ -621,917 +637,920 @@ const OrdersIndividual = () => {
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}>
-                <Grid container justifyContent="left" alignItems="center" spacing={2}>
-                    <Grid item xs={5}>
-                        <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                            <Grid item xs={4}>
-                                <Avatar sx={{ width: 100, height: 100 }} src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
+            {lsOrders.length != 0 ?
+                <Fragment>
+                    <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}>
+                        <Grid container justifyContent="left" alignItems="center" spacing={2}>
+                            <Grid item xs={5}>
+                                <Grid container justifyContent="center" alignItems="center" spacing={2}>
+                                    <Grid item xs={4}>
+                                        <Avatar sx={{ width: 100, height: 100 }} src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField value={documento} disabled={true} onChange={(e) => setDocumento(e.target.value)} onKeyDown={handleDocumento} fullWidth id="standard-basic" label="Documento" variant="standard" />
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={4}>
-                                <TextField value={documento} onChange={(e) => setDocumento(e.target.value)} onKeyDown={handleDocumento} fullWidth id="standard-basic" label="Documento" variant="standard" />
+                            {lsEmployee.length != 0 ?
+                                <Grid item xs={7}>
+                                    <Typography variant="h2" component="div">
+                                        {lsEmployee.nombres}
+                                    </Typography>
+                                    <Grid container spacing={1} direction="row" justifyContent="left" alignItems="center">
+                                        <Grid item>
+                                            <Typography variant="h5">{lsEmployee.nameGenero}</Typography>
+                                        </Grid>
+                                        <Grid item>
+                                            <Typography variant="h5">{GetEdad(new Date(lsEmployee.fechaNaci))}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                </Grid> : <Grid item xs={7}></Grid>
+                            }
+                        </Grid>
+
+                        <Grid container sx={{ pt: 6 }} spacing={2}>
+                            <Grid item xs={6}>
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha"
+                                        name="fecha"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <SelectOnChange
+                                    name="idTipoExamen"
+                                    label="Tipo Examen"
+                                    value={tipoExamen}
+                                    onChange={(e) => setTipoExamen(e.target.value)}
+                                    options={lsTipoExamen}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
                             </Grid>
                         </Grid>
-                    </Grid>
-                    {lsEmployee.length != 0 ?
-                        <Grid item xs={7}>
-                            <Typography variant="h2" component="div">
-                                {lsEmployee.nombres}
-                            </Typography>
-                            <Grid container spacing={1} direction="row" justifyContent="left" alignItems="center">
-                                <Grid item>
-                                    <Typography variant="h5">{lsEmployee.nameGenero}</Typography>
-                                </Grid>
-                                <Grid item>
-                                    <Typography variant="h5">{GetEdad(new Date(lsEmployee.fechaNaci))}</Typography>
-                                </Grid>
-                            </Grid>
-                        </Grid> : <Grid item xs={7}></Grid>
-                    }
-                </Grid>
+                    </SubCard>
+                    <Grid sx={{ pb: 2 }} />
 
-                <Grid container sx={{ pt: 6 }} spacing={2}>
-                    <Grid item xs={6}>
-                        <FormProvider {...methods}>
-                            <InputDatePicker
-                                label="Fecha"
-                                name="fecha"
-                                defaultValue={new Date()}
-                            />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <SelectOnChange
-                            name="idTipoExamen"
-                            label="Tipo Examen"
-                            value={tipoExamen}
-                            onChange={(e) => setTipoExamen(e.target.value)}
-                            options={lsTipoExamen}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
-                        />
-                    </Grid>
-                </Grid>
-            </SubCard>
-            <Grid sx={{ pb: 2 }} />
+                    <Tabs
+                        value={value}
+                        indicatorColor="primary"
+                        textColor="primary"
+                        onChange={(event, newValue) => setValue(newValue)}
+                        aria-label="simple tabs example"
+                        variant="scrollable"
+                        sx={{
+                            mb: 3,
+                            '& a': {
+                                minHeight: 'auto',
+                                minWidth: 10,
+                                py: 1.5,
+                                px: 1,
+                                mr: 2.25,
+                                color: theme.palette.grey[600],
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            },
+                            '& a.Mui-selected': {
+                                color: theme.palette.primary.main
+                            },
+                            '& .MuiTabs-indicator': {
+                                bottom: 2
+                            },
+                            '& a > svg': {
+                                marginBottom: '0px !important',
+                                mr: 1.25
+                            }
+                        }}
+                    >
+                        {tabsOption.map((tab, index) => (
+                            <Tab disabled={tipoExamen === '' ? true : false} key={index} component={Link} to="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
+                        ))}
+                    </Tabs>
 
-            <Tabs
-                value={value}
-                indicatorColor="primary"
-                textColor="primary"
-                onChange={(event, newValue) => setValue(newValue)}
-                aria-label="simple tabs example"
-                variant="scrollable"
-                sx={{
-                    mb: 3,
-                    '& a': {
-                        minHeight: 'auto',
-                        minWidth: 10,
-                        py: 1.5,
-                        px: 1,
-                        mr: 2.25,
-                        color: theme.palette.grey[600],
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    },
-                    '& a.Mui-selected': {
-                        color: theme.palette.primary.main
-                    },
-                    '& .MuiTabs-indicator': {
-                        bottom: 2
-                    },
-                    '& a > svg': {
-                        marginBottom: '0px !important',
-                        mr: 1.25
-                    }
-                }}
-            >
-                {tabsOption.map((tab, index) => (
-                    <Tab disabled={tipoExamen === '' ? true : false} key={index} component={Link} to="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
-                ))}
-            </Tabs>
-
-            <TabPanel value={value} index={0}>
-                <PersonalData lsEmployee={lsEmployee} />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <SubCard title="Datos Ordenes de Paraclinicos">
-                            <Grid container spacing={2}>
-                                {/* PRIMERA */}
-                                <Grid item xs={xsGrid1}>
-                                    <SelectOnChange
-                                        name="idParaclinico"
-                                        label="Paraclínicos"
-                                        value={paraclinicos.paraclinicos1}
-                                        onChange={handleParaclinicos1}
-                                        options={lsEstudioParaclinico}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-
-                                {tipoExamenLabor1 ?
-                                    <Grid item xs={xsGrid1}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idTipoExamenLaboratorio"
-                                                label="Tipo Examen"
-                                                defaultValue=""
-                                                options={lsLaboratorio}
+                    <TabPanel value={value} index={0}>
+                        <PersonalData lsEmployee={lsEmployee} />
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <SubCard title="Datos Ordenes de Paraclinicos">
+                                    <Grid container spacing={2}>
+                                        {/* PRIMERA */}
+                                        <Grid item xs={xsGrid1}>
+                                            <SelectOnChange
+                                                name="idParaclinico"
+                                                label="Paraclínicos"
+                                                value={paraclinicos.paraclinicos1}
+                                                onChange={handleParaclinicos1}
+                                                options={lsEstudioParaclinico}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />
-                                        </FormProvider>
-                                    </Grid> : tipoExamenRNM1 ?
-                                        <Grid item xs={xsGrid1}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipoExamenRNM"
-                                                    label="Tipo Examen"
-                                                    defaultValue=""
-                                                    options={lsTipoRNM}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
-                                        </Grid> : fechaExmaneFisico1 ?
+                                        </Grid>
+
+                                        {tipoExamenLabor1 ?
                                             <Grid item xs={xsGrid1}>
                                                 <FormProvider {...methods}>
-                                                    <InputDatePicker
-                                                        label="fechaExamenFisico"
-                                                        name="fecha"
-                                                        defaultValue={new Date()}
+                                                    <InputSelect
+                                                        name="idTipoExamenLaboratorio"
+                                                        label="Tipo Examen"
+                                                        defaultValue=""
+                                                        options={lsLaboratorio}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        bug={errors}
                                                     />
                                                 </FormProvider>
-                                            </Grid> : <></>
-                                }
+                                            </Grid> : tipoExamenRNM1 ?
+                                                <Grid item xs={xsGrid1}>
+                                                    <FormProvider {...methods}>
+                                                        <InputSelect
+                                                            name="idTipoExamenRNM"
+                                                            label="Tipo Examen"
+                                                            defaultValue=""
+                                                            options={lsTipoRNM}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                            bug={errors}
+                                                        />
+                                                    </FormProvider>
+                                                </Grid> : fechaExmaneFisico1 ?
+                                                    <Grid item xs={xsGrid1}>
+                                                        <FormProvider {...methods}>
+                                                            <InputDatePicker
+                                                                label="fechaExamenFisico"
+                                                                name="fecha"
+                                                                defaultValue={new Date()}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid> : <></>
+                                        }
 
-                                <Grid item xs={xsGrid1}>
-                                    <SelectOnChange
-                                        name="idProveedor"
-                                        label="Proveedor"
-                                        value={proveedor.proveedor1}
-                                        onChange={handleProveedor1}
-                                        options={lsProveedorCombo.lsProveedorCombo1}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={xsGrid1}>
-                                    <SelectOnChange
-                                        disabled
-                                        name="idCiudad"
-                                        label="Ciudad"
-                                        value={ciudad.ciudad1}
-                                        onChange={(e) => setCiudad({ ...ciudad, ciudad1: e.target.value })}
-                                        options={lsCiudad}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-                                {/* SEGUNDA */}
-                                <Grid item xs={xsGrid2}>
-                                    <SelectOnChange
-                                        name="idParaclinico"
-                                        label="Paraclínicos"
-                                        value={paraclinicos.paraclinicos2}
-                                        onChange={handleParaclinicos2}
-                                        options={lsEstudioParaclinico}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-
-                                {tipoExamenLabor2 ?
-                                    <Grid item xs={xsGrid2}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idTipoExamenLaboratorio"
-                                                label="Tipo Examen"
-                                                defaultValue=""
-                                                options={lsLaboratorio}
+                                        <Grid item xs={xsGrid1}>
+                                            <SelectOnChange
+                                                name="idProveedor"
+                                                label="Proveedor"
+                                                value={proveedor.proveedor1}
+                                                onChange={handleProveedor1}
+                                                options={lsProveedorCombo.lsProveedorCombo1}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />
-                                        </FormProvider>
-                                    </Grid> : tipoExamenRNM2 ?
+                                        </Grid>
+
+                                        <Grid item xs={xsGrid1}>
+                                            <SelectOnChange
+                                                disabled
+                                                name="idCiudad"
+                                                label="Ciudad"
+                                                value={ciudad.ciudad1}
+                                                onChange={(e) => setCiudad({ ...ciudad, ciudad1: e.target.value })}
+                                                options={lsCiudad}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </Grid>
+                                        {/* SEGUNDA */}
                                         <Grid item xs={xsGrid2}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipoExamenRNM"
-                                                    label="Tipo Examen"
-                                                    defaultValue=""
-                                                    options={lsTipoRNM}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
-                                        </Grid> : fechaExmaneFisico2 ?
+                                            <SelectOnChange
+                                                name="idParaclinico"
+                                                label="Paraclínicos"
+                                                value={paraclinicos.paraclinicos2}
+                                                onChange={handleParaclinicos2}
+                                                options={lsEstudioParaclinico}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </Grid>
+
+                                        {tipoExamenLabor2 ?
                                             <Grid item xs={xsGrid2}>
                                                 <FormProvider {...methods}>
-                                                    <InputDatePicker
-                                                        label="fechaExamenFisico"
-                                                        name="fecha"
-                                                        defaultValue={new Date()}
+                                                    <InputSelect
+                                                        name="idTipoExamenLaboratorio"
+                                                        label="Tipo Examen"
+                                                        defaultValue=""
+                                                        options={lsLaboratorio}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        bug={errors}
                                                     />
                                                 </FormProvider>
-                                            </Grid> : <></>
-                                }
+                                            </Grid> : tipoExamenRNM2 ?
+                                                <Grid item xs={xsGrid2}>
+                                                    <FormProvider {...methods}>
+                                                        <InputSelect
+                                                            name="idTipoExamenRNM"
+                                                            label="Tipo Examen"
+                                                            defaultValue=""
+                                                            options={lsTipoRNM}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                            bug={errors}
+                                                        />
+                                                    </FormProvider>
+                                                </Grid> : fechaExmaneFisico2 ?
+                                                    <Grid item xs={xsGrid2}>
+                                                        <FormProvider {...methods}>
+                                                            <InputDatePicker
+                                                                label="fechaExamenFisico"
+                                                                name="fecha"
+                                                                defaultValue={new Date()}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid> : <></>
+                                        }
 
-                                <Grid item xs={xsGrid2}>
-                                    <SelectOnChange
-                                        name="idProveedor"
-                                        label="Proveedor"
-                                        value={proveedor.proveedor2}
-                                        onChange={handleProveedor2}
-                                        options={lsProveedorCombo.lsProveedorCombo2}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={xsGrid2}>
-                                    <SelectOnChange
-                                        disabled
-                                        name="idCiudad"
-                                        label="Ciudad"
-                                        value={ciudad.ciudad2}
-                                        onChange={(e) => setCiudad({ ...ciudad, ciudad2: e.target.value })}
-                                        options={lsCiudad}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-                                {/* TERCERA */}
-                                <Grid item xs={xsGrid3}>
-                                    <SelectOnChange
-                                        name="idParaclinico"
-                                        label="Paraclínicos"
-                                        value={paraclinicos.paraclinicos3}
-                                        onChange={handleParaclinicos3}
-                                        options={lsEstudioParaclinico}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-
-                                {tipoExamenLabor3 ?
-                                    <Grid item xs={xsGrid3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idTipoExamenLaboratorio"
-                                                label="Tipo Examen"
-                                                defaultValue=""
-                                                options={lsLaboratorio}
+                                        <Grid item xs={xsGrid2}>
+                                            <SelectOnChange
+                                                name="idProveedor"
+                                                label="Proveedor"
+                                                value={proveedor.proveedor2}
+                                                onChange={handleProveedor2}
+                                                options={lsProveedorCombo.lsProveedorCombo2}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />
-                                        </FormProvider>
-                                    </Grid> : tipoExamenRNM3 ?
+                                        </Grid>
+
+                                        <Grid item xs={xsGrid2}>
+                                            <SelectOnChange
+                                                disabled
+                                                name="idCiudad"
+                                                label="Ciudad"
+                                                value={ciudad.ciudad2}
+                                                onChange={(e) => setCiudad({ ...ciudad, ciudad2: e.target.value })}
+                                                options={lsCiudad}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </Grid>
+                                        {/* TERCERA */}
                                         <Grid item xs={xsGrid3}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipoExamenRNM"
-                                                    label="Tipo Examen"
-                                                    defaultValue=""
-                                                    options={lsTipoRNM}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
-                                        </Grid> : fechaExmaneFisico3 ?
+                                            <SelectOnChange
+                                                name="idParaclinico"
+                                                label="Paraclínicos"
+                                                value={paraclinicos.paraclinicos3}
+                                                onChange={handleParaclinicos3}
+                                                options={lsEstudioParaclinico}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </Grid>
+
+                                        {tipoExamenLabor3 ?
                                             <Grid item xs={xsGrid3}>
                                                 <FormProvider {...methods}>
-                                                    <InputDatePicker
-                                                        label="fechaExamenFisico"
-                                                        name="fecha"
-                                                        defaultValue={new Date()}
+                                                    <InputSelect
+                                                        name="idTipoExamenLaboratorio"
+                                                        label="Tipo Examen"
+                                                        defaultValue=""
+                                                        options={lsLaboratorio}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        bug={errors}
                                                     />
                                                 </FormProvider>
-                                            </Grid> : <></>
-                                }
+                                            </Grid> : tipoExamenRNM3 ?
+                                                <Grid item xs={xsGrid3}>
+                                                    <FormProvider {...methods}>
+                                                        <InputSelect
+                                                            name="idTipoExamenRNM"
+                                                            label="Tipo Examen"
+                                                            defaultValue=""
+                                                            options={lsTipoRNM}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                            bug={errors}
+                                                        />
+                                                    </FormProvider>
+                                                </Grid> : fechaExmaneFisico3 ?
+                                                    <Grid item xs={xsGrid3}>
+                                                        <FormProvider {...methods}>
+                                                            <InputDatePicker
+                                                                label="fechaExamenFisico"
+                                                                name="fecha"
+                                                                defaultValue={new Date()}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid> : <></>
+                                        }
 
-                                <Grid item xs={xsGrid3}>
-                                    <SelectOnChange
-                                        name="idProveedor"
-                                        label="Proveedor"
-                                        value={proveedor.proveedor3}
-                                        onChange={handleProveedor3}
-                                        options={lsProveedorCombo.lsProveedorCombo3}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={xsGrid3}>
-                                    <SelectOnChange
-                                        disabled
-                                        name="idCiudad"
-                                        label="Ciudad"
-                                        value={ciudad.ciudad3}
-                                        onChange={(e) => setCiudad({ ...ciudad, ciudad3: e.target.value })}
-                                        options={lsCiudad}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-                                {/* CUARTA */}
-                                <Grid item xs={xsGrid4}>
-                                    <SelectOnChange
-                                        name="idParaclinico"
-                                        label="Paraclínicos"
-                                        value={paraclinicos.paraclinicos4}
-                                        onChange={handleParaclinicos4}
-                                        options={lsEstudioParaclinico}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-
-                                {tipoExamenLabor4 ?
-                                    <Grid item xs={xsGrid4}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idTipoExamenLaboratorio"
-                                                label="Tipo Examen"
-                                                defaultValue=""
-                                                options={lsLaboratorio}
+                                        <Grid item xs={xsGrid3}>
+                                            <SelectOnChange
+                                                name="idProveedor"
+                                                label="Proveedor"
+                                                value={proveedor.proveedor3}
+                                                onChange={handleProveedor3}
+                                                options={lsProveedorCombo.lsProveedorCombo3}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />
-                                        </FormProvider>
-                                    </Grid> : tipoExamenRNM4 ?
+                                        </Grid>
+
+                                        <Grid item xs={xsGrid3}>
+                                            <SelectOnChange
+                                                disabled
+                                                name="idCiudad"
+                                                label="Ciudad"
+                                                value={ciudad.ciudad3}
+                                                onChange={(e) => setCiudad({ ...ciudad, ciudad3: e.target.value })}
+                                                options={lsCiudad}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </Grid>
+                                        {/* CUARTA */}
                                         <Grid item xs={xsGrid4}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipoExamenRNM"
-                                                    label="Tipo Examen"
-                                                    defaultValue=""
-                                                    options={lsTipoRNM}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
-                                        </Grid> : fechaExmaneFisico4 ?
+                                            <SelectOnChange
+                                                name="idParaclinico"
+                                                label="Paraclínicos"
+                                                value={paraclinicos.paraclinicos4}
+                                                onChange={handleParaclinicos4}
+                                                options={lsEstudioParaclinico}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </Grid>
+
+                                        {tipoExamenLabor4 ?
                                             <Grid item xs={xsGrid4}>
                                                 <FormProvider {...methods}>
-                                                    <InputDatePicker
-                                                        label="fechaExamenFisico"
-                                                        name="fecha"
-                                                        defaultValue={new Date()}
+                                                    <InputSelect
+                                                        name="idTipoExamenLaboratorio"
+                                                        label="Tipo Examen"
+                                                        defaultValue=""
+                                                        options={lsLaboratorio}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        bug={errors}
                                                     />
                                                 </FormProvider>
-                                            </Grid> : <></>
-                                }
+                                            </Grid> : tipoExamenRNM4 ?
+                                                <Grid item xs={xsGrid4}>
+                                                    <FormProvider {...methods}>
+                                                        <InputSelect
+                                                            name="idTipoExamenRNM"
+                                                            label="Tipo Examen"
+                                                            defaultValue=""
+                                                            options={lsTipoRNM}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                            bug={errors}
+                                                        />
+                                                    </FormProvider>
+                                                </Grid> : fechaExmaneFisico4 ?
+                                                    <Grid item xs={xsGrid4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputDatePicker
+                                                                label="fechaExamenFisico"
+                                                                name="fecha"
+                                                                defaultValue={new Date()}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid> : <></>
+                                        }
 
-                                <Grid item xs={xsGrid4}>
-                                    <SelectOnChange
-                                        name="idProveedor"
-                                        label="Proveedor"
-                                        value={proveedor.proveedor4}
-                                        onChange={handleProveedor4}
-                                        options={lsProveedorCombo.lsProveedorCombo4}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={xsGrid4}>
-                                    <SelectOnChange
-                                        disabled
-                                        name="idCiudad"
-                                        label="Ciudad"
-                                        value={ciudad.ciudad4}
-                                        onChange={(e) => setCiudad({ ...ciudad, ciudad4: e.target.value })}
-                                        options={lsCiudad}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-                                {/* QUINTA */}
-                                <Grid item xs={xsGrid5}>
-                                    <SelectOnChange
-                                        name="idParaclinico"
-                                        label="Paraclínicos"
-                                        value={paraclinicos.paraclinicos5}
-                                        onChange={handleParaclinicos5}
-                                        options={lsEstudioParaclinico}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-
-                                {tipoExamenLabor5 ?
-                                    <Grid item xs={xsGrid5}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idTipoExamenLaboratorio"
-                                                label="Tipo Examen"
-                                                defaultValue=""
-                                                options={lsLaboratorio}
+                                        <Grid item xs={xsGrid4}>
+                                            <SelectOnChange
+                                                name="idProveedor"
+                                                label="Proveedor"
+                                                value={proveedor.proveedor4}
+                                                onChange={handleProveedor4}
+                                                options={lsProveedorCombo.lsProveedorCombo4}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />
-                                        </FormProvider>
-                                    </Grid> : tipoExamenRNM5 ?
+                                        </Grid>
+
+                                        <Grid item xs={xsGrid4}>
+                                            <SelectOnChange
+                                                disabled
+                                                name="idCiudad"
+                                                label="Ciudad"
+                                                value={ciudad.ciudad4}
+                                                onChange={(e) => setCiudad({ ...ciudad, ciudad4: e.target.value })}
+                                                options={lsCiudad}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </Grid>
+                                        {/* QUINTA */}
                                         <Grid item xs={xsGrid5}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipoExamenRNM"
-                                                    label="Tipo Examen"
-                                                    defaultValue=""
-                                                    options={lsTipoRNM}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
-                                        </Grid> : fechaExmaneFisico5 ?
+                                            <SelectOnChange
+                                                name="idParaclinico"
+                                                label="Paraclínicos"
+                                                value={paraclinicos.paraclinicos5}
+                                                onChange={handleParaclinicos5}
+                                                options={lsEstudioParaclinico}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </Grid>
+
+                                        {tipoExamenLabor5 ?
                                             <Grid item xs={xsGrid5}>
                                                 <FormProvider {...methods}>
-                                                    <InputDatePicker
-                                                        label="fechaExamenFisico"
-                                                        name="fecha"
-                                                        defaultValue={new Date()}
-                                                    />
-                                                </FormProvider>
-                                            </Grid> : <></>
-                                }
-
-                                <Grid item xs={xsGrid5}>
-                                    <SelectOnChange
-                                        name="idProveedor"
-                                        label="Proveedor"
-                                        value={proveedor.proveedor5}
-                                        onChange={handleProveedor5}
-                                        options={lsProveedorCombo.lsProveedorCombo5}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={xsGrid5}>
-                                    <SelectOnChange
-                                        disabled
-                                        name="idCiudad"
-                                        label="Ciudad"
-                                        value={ciudad.ciudad5}
-                                        onChange={(e) => setCiudad({ ...ciudad, ciudad5: e.target.value })}
-                                        options={lsCiudad}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </Grid>
-
-                                {moreFive ?
-                                    <Grid item xs={12}>
-                                        <Tooltip title="Ver menos" onClick={() => setMoreFive(true)}>
-                                            <IconButton size="large">
-                                                <KeyboardArrowUpIcon />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Grid>
-                                    :
-                                    <Grid item xs={12}>
-                                        <Tooltip title="Ver mas" onClick={() => setMoreFive(false)}>
-                                            <IconButton size="large">
-                                                <KeyboardArrowDownIcon />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Grid>
-                                }
-
-                                <Transitions type="collapse" in={moreFive} position="top-left" direction="up">
-                                    {/* SEXTA */}
-                                    <Grid item xs={xsGrid6}>
-                                        <SelectOnChange
-                                            name="idParaclinico"
-                                            label="Paraclínicos"
-                                            value={paraclinicos.paraclinicos6}
-                                            onChange={handleParaclinicos6}
-                                            options={lsEstudioParaclinico}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    {tipoExamenLabor6 ?
-                                        <Grid item xs={xsGrid6}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipoExamenLaboratorio"
-                                                    label="Tipo Examen"
-                                                    defaultValue=""
-                                                    options={lsLaboratorio}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
-                                        </Grid> : tipoExamenRNM6 ?
-                                            <Grid item xs={xsGrid6}>
-                                                <FormProvider {...methods}>
                                                     <InputSelect
-                                                        name="idTipoExamenRNM"
+                                                        name="idTipoExamenLaboratorio"
                                                         label="Tipo Examen"
                                                         defaultValue=""
-                                                        options={lsTipoRNM}
+                                                        options={lsLaboratorio}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                         bug={errors}
                                                     />
                                                 </FormProvider>
-                                            </Grid> : fechaExmaneFisico6 ?
+                                            </Grid> : tipoExamenRNM5 ?
+                                                <Grid item xs={xsGrid5}>
+                                                    <FormProvider {...methods}>
+                                                        <InputSelect
+                                                            name="idTipoExamenRNM"
+                                                            label="Tipo Examen"
+                                                            defaultValue=""
+                                                            options={lsTipoRNM}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                            bug={errors}
+                                                        />
+                                                    </FormProvider>
+                                                </Grid> : fechaExmaneFisico5 ?
+                                                    <Grid item xs={xsGrid5}>
+                                                        <FormProvider {...methods}>
+                                                            <InputDatePicker
+                                                                label="fechaExamenFisico"
+                                                                name="fecha"
+                                                                defaultValue={new Date()}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid> : <></>
+                                        }
+
+                                        <Grid item xs={xsGrid5}>
+                                            <SelectOnChange
+                                                name="idProveedor"
+                                                label="Proveedor"
+                                                value={proveedor.proveedor5}
+                                                onChange={handleProveedor5}
+                                                options={lsProveedorCombo.lsProveedorCombo5}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={xsGrid5}>
+                                            <SelectOnChange
+                                                disabled
+                                                name="idCiudad"
+                                                label="Ciudad"
+                                                value={ciudad.ciudad5}
+                                                onChange={(e) => setCiudad({ ...ciudad, ciudad5: e.target.value })}
+                                                options={lsCiudad}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </Grid>
+
+                                        {moreFive ?
+                                            <Grid item xs={12}>
+                                                <Tooltip title="Ver menos" onClick={() => setMoreFive(true)}>
+                                                    <IconButton size="large">
+                                                        <KeyboardArrowUpIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Grid>
+                                            :
+                                            <Grid item xs={12}>
+                                                <Tooltip title="Ver mas" onClick={() => setMoreFive(false)}>
+                                                    <IconButton size="large">
+                                                        <KeyboardArrowDownIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Grid>
+                                        }
+
+                                        <Transitions type="collapse" in={moreFive} position="top-left" direction="up">
+                                            {/* SEXTA */}
+                                            <Grid item xs={xsGrid6}>
+                                                <SelectOnChange
+                                                    name="idParaclinico"
+                                                    label="Paraclínicos"
+                                                    value={paraclinicos.paraclinicos6}
+                                                    onChange={handleParaclinicos6}
+                                                    options={lsEstudioParaclinico}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                            {tipoExamenLabor6 ?
                                                 <Grid item xs={xsGrid6}>
                                                     <FormProvider {...methods}>
-                                                        <InputDatePicker
-                                                            label="fechaExamenFisico"
-                                                            name="fecha"
-                                                            defaultValue={new Date()}
+                                                        <InputSelect
+                                                            name="idTipoExamenLaboratorio"
+                                                            label="Tipo Examen"
+                                                            defaultValue=""
+                                                            options={lsLaboratorio}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                            bug={errors}
                                                         />
                                                     </FormProvider>
-                                                </Grid> : <></>
-                                    }
-                                    <Grid item xs={xsGrid6}>
-                                        <SelectOnChange
-                                            name="idProveedor"
-                                            label="Proveedor"
-                                            value={proveedor.proveedor6}
-                                            onChange={handleProveedor6}
-                                            options={lsProveedorCombo.lsProveedorCombo6}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={xsGrid6}>
-                                        <SelectOnChange
-                                            disabled
-                                            name="idCiudad"
-                                            label="Ciudad"
-                                            value={ciudad.ciudad6}
-                                            onChange={(e) => setCiudad({ ...ciudad, ciudad6: e.target.value })}
-                                            options={lsCiudad}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    {/* SEPTIMA */}
-                                    <Grid item xs={xsGrid7}>
-                                        <SelectOnChange
-                                            name="idParaclinico"
-                                            label="Paraclínicos"
-                                            value={paraclinicos.paraclinicos7}
-                                            onChange={handleParaclinicos7}
-                                            options={lsEstudioParaclinico}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    {tipoExamenLabor7 ?
-                                        <Grid item xs={xsGrid7}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipoExamenLaboratorio"
-                                                    label="Tipo Examen"
-                                                    defaultValue=""
-                                                    options={lsLaboratorio}
+                                                </Grid> : tipoExamenRNM6 ?
+                                                    <Grid item xs={xsGrid6}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idTipoExamenRNM"
+                                                                label="Tipo Examen"
+                                                                defaultValue=""
+                                                                options={lsTipoRNM}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                                bug={errors}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid> : fechaExmaneFisico6 ?
+                                                        <Grid item xs={xsGrid6}>
+                                                            <FormProvider {...methods}>
+                                                                <InputDatePicker
+                                                                    label="fechaExamenFisico"
+                                                                    name="fecha"
+                                                                    defaultValue={new Date()}
+                                                                />
+                                                            </FormProvider>
+                                                        </Grid> : <></>
+                                            }
+                                            <Grid item xs={xsGrid6}>
+                                                <SelectOnChange
+                                                    name="idProveedor"
+                                                    label="Proveedor"
+                                                    value={proveedor.proveedor6}
+                                                    onChange={handleProveedor6}
+                                                    options={lsProveedorCombo.lsProveedorCombo6}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
                                                 />
-                                            </FormProvider>
-                                        </Grid> : tipoExamenRNM7 ?
+                                            </Grid>
+                                            <Grid item xs={xsGrid6}>
+                                                <SelectOnChange
+                                                    disabled
+                                                    name="idCiudad"
+                                                    label="Ciudad"
+                                                    value={ciudad.ciudad6}
+                                                    onChange={(e) => setCiudad({ ...ciudad, ciudad6: e.target.value })}
+                                                    options={lsCiudad}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                            {/* SEPTIMA */}
                                             <Grid item xs={xsGrid7}>
-                                                <FormProvider {...methods}>
-                                                    <InputSelect
-                                                        name="idTipoExamenRNM"
-                                                        label="Tipo Examen"
-                                                        defaultValue=""
-                                                        options={lsTipoRNM}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
-                                                    />
-                                                </FormProvider>
-                                            </Grid> : fechaExmaneFisico7 ?
+                                                <SelectOnChange
+                                                    name="idParaclinico"
+                                                    label="Paraclínicos"
+                                                    value={paraclinicos.paraclinicos7}
+                                                    onChange={handleParaclinicos7}
+                                                    options={lsEstudioParaclinico}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                            {tipoExamenLabor7 ?
                                                 <Grid item xs={xsGrid7}>
                                                     <FormProvider {...methods}>
-                                                        <InputDatePicker
-                                                            label="fechaExamenFisico"
-                                                            name="fecha"
-                                                            defaultValue={new Date()}
+                                                        <InputSelect
+                                                            name="idTipoExamenLaboratorio"
+                                                            label="Tipo Examen"
+                                                            defaultValue=""
+                                                            options={lsLaboratorio}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                            bug={errors}
                                                         />
                                                     </FormProvider>
-                                                </Grid> : <></>
-                                    }
+                                                </Grid> : tipoExamenRNM7 ?
+                                                    <Grid item xs={xsGrid7}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idTipoExamenRNM"
+                                                                label="Tipo Examen"
+                                                                defaultValue=""
+                                                                options={lsTipoRNM}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                                bug={errors}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid> : fechaExmaneFisico7 ?
+                                                        <Grid item xs={xsGrid7}>
+                                                            <FormProvider {...methods}>
+                                                                <InputDatePicker
+                                                                    label="fechaExamenFisico"
+                                                                    name="fecha"
+                                                                    defaultValue={new Date()}
+                                                                />
+                                                            </FormProvider>
+                                                        </Grid> : <></>
+                                            }
 
-                                    <Grid item xs={xsGrid7}>
-                                        <SelectOnChange
-                                            name="idProveedor"
-                                            label="Proveedor"
-                                            value={proveedor.proveedor7}
-                                            onChange={handleProveedor7}
-                                            options={lsProveedorCombo.lsProveedorCombo7}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={xsGrid7}>
-                                        <SelectOnChange
-                                            disabled
-                                            name="idCiudad"
-                                            label="Ciudad"
-                                            value={ciudad.ciudad7}
-                                            onChange={(e) => setCiudad({ ...ciudad, ciudad7: e.target.value })}
-                                            options={lsCiudad}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    {/* OCTAVA */}
-                                    <Grid item xs={xsGrid8}>
-                                        <SelectOnChange
-                                            name="idParaclinico"
-                                            label="Paraclínicos"
-                                            value={paraclinicos.paraclinicos8}
-                                            onChange={handleParaclinicos8}
-                                            options={lsEstudioParaclinico}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    {tipoExamenLabor8 ?
-                                        <Grid item xs={xsGrid8}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipoExamenLaboratorio"
-                                                    label="Tipo Examen"
-                                                    defaultValue=""
-                                                    options={lsLaboratorio}
+                                            <Grid item xs={xsGrid7}>
+                                                <SelectOnChange
+                                                    name="idProveedor"
+                                                    label="Proveedor"
+                                                    value={proveedor.proveedor7}
+                                                    onChange={handleProveedor7}
+                                                    options={lsProveedorCombo.lsProveedorCombo7}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
                                                 />
-                                            </FormProvider>
-                                        </Grid> : tipoExamenRNM8 ?
+                                            </Grid>
+                                            <Grid item xs={xsGrid7}>
+                                                <SelectOnChange
+                                                    disabled
+                                                    name="idCiudad"
+                                                    label="Ciudad"
+                                                    value={ciudad.ciudad7}
+                                                    onChange={(e) => setCiudad({ ...ciudad, ciudad7: e.target.value })}
+                                                    options={lsCiudad}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                            {/* OCTAVA */}
                                             <Grid item xs={xsGrid8}>
-                                                <FormProvider {...methods}>
-                                                    <InputSelect
-                                                        name="idTipoExamenRNM"
-                                                        label="Tipo Examen"
-                                                        defaultValue=""
-                                                        options={lsTipoRNM}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
-                                                    />
-                                                </FormProvider>
-                                            </Grid> : fechaExmaneFisico8 ?
+                                                <SelectOnChange
+                                                    name="idParaclinico"
+                                                    label="Paraclínicos"
+                                                    value={paraclinicos.paraclinicos8}
+                                                    onChange={handleParaclinicos8}
+                                                    options={lsEstudioParaclinico}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                            {tipoExamenLabor8 ?
                                                 <Grid item xs={xsGrid8}>
                                                     <FormProvider {...methods}>
-                                                        <InputDatePicker
-                                                            label="fechaExamenFisico"
-                                                            name="fecha"
-                                                            defaultValue={new Date()}
+                                                        <InputSelect
+                                                            name="idTipoExamenLaboratorio"
+                                                            label="Tipo Examen"
+                                                            defaultValue=""
+                                                            options={lsLaboratorio}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                            bug={errors}
                                                         />
                                                     </FormProvider>
-                                                </Grid> : <></>
-                                    }
+                                                </Grid> : tipoExamenRNM8 ?
+                                                    <Grid item xs={xsGrid8}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idTipoExamenRNM"
+                                                                label="Tipo Examen"
+                                                                defaultValue=""
+                                                                options={lsTipoRNM}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                                bug={errors}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid> : fechaExmaneFisico8 ?
+                                                        <Grid item xs={xsGrid8}>
+                                                            <FormProvider {...methods}>
+                                                                <InputDatePicker
+                                                                    label="fechaExamenFisico"
+                                                                    name="fecha"
+                                                                    defaultValue={new Date()}
+                                                                />
+                                                            </FormProvider>
+                                                        </Grid> : <></>
+                                            }
 
-                                    <Grid item xs={xsGrid8}>
-                                        <SelectOnChange
-                                            name="idProveedor"
-                                            label="Proveedor"
-                                            value={proveedor.proveedor8}
-                                            onChange={handleProveedor8}
-                                            options={lsProveedorCombo.lsProveedorCombo8}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={xsGrid8}>
-                                        <SelectOnChange
-                                            disabled
-                                            name="idCiudad"
-                                            label="Ciudad"
-                                            value={ciudad.ciudad8}
-                                            onChange={(e) => setCiudad({ ...ciudad, ciudad8: e.target.value })}
-                                            options={lsCiudad}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    {/* NOVENA */}
-                                    <Grid item xs={xsGrid9}>
-                                        <SelectOnChange
-                                            name="idParaclinico"
-                                            label="Paraclínicos"
-                                            value={paraclinicos.paraclinicos9}
-                                            onChange={handleParaclinicos9}
-                                            options={lsEstudioParaclinico}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    {tipoExamenLabor9 ?
-                                        <Grid item xs={xsGrid9}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipoExamenLaboratorio"
-                                                    label="Tipo Examen"
-                                                    defaultValue=""
-                                                    options={lsLaboratorio}
+                                            <Grid item xs={xsGrid8}>
+                                                <SelectOnChange
+                                                    name="idProveedor"
+                                                    label="Proveedor"
+                                                    value={proveedor.proveedor8}
+                                                    onChange={handleProveedor8}
+                                                    options={lsProveedorCombo.lsProveedorCombo8}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
                                                 />
-                                            </FormProvider>
-                                        </Grid> : tipoExamenRNM9 ?
+                                            </Grid>
+                                            <Grid item xs={xsGrid8}>
+                                                <SelectOnChange
+                                                    disabled
+                                                    name="idCiudad"
+                                                    label="Ciudad"
+                                                    value={ciudad.ciudad8}
+                                                    onChange={(e) => setCiudad({ ...ciudad, ciudad8: e.target.value })}
+                                                    options={lsCiudad}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                            {/* NOVENA */}
                                             <Grid item xs={xsGrid9}>
-                                                <FormProvider {...methods}>
-                                                    <InputSelect
-                                                        name="idTipoExamenRNM"
-                                                        label="Tipo Examen"
-                                                        defaultValue=""
-                                                        options={lsTipoRNM}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
-                                                    />
-                                                </FormProvider>
-                                            </Grid> : fechaExmaneFisico9 ?
+                                                <SelectOnChange
+                                                    name="idParaclinico"
+                                                    label="Paraclínicos"
+                                                    value={paraclinicos.paraclinicos9}
+                                                    onChange={handleParaclinicos9}
+                                                    options={lsEstudioParaclinico}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                            {tipoExamenLabor9 ?
                                                 <Grid item xs={xsGrid9}>
                                                     <FormProvider {...methods}>
-                                                        <InputDatePicker
-                                                            label="fechaExamenFisico"
-                                                            name="fecha"
-                                                            defaultValue={new Date()}
+                                                        <InputSelect
+                                                            name="idTipoExamenLaboratorio"
+                                                            label="Tipo Examen"
+                                                            defaultValue=""
+                                                            options={lsLaboratorio}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                            bug={errors}
                                                         />
                                                     </FormProvider>
-                                                </Grid> : <></>
-                                    }
-                                    <Grid item xs={xsGrid9}>
-                                        <SelectOnChange
-                                            name="idProveedor"
-                                            label="Proveedor"
-                                            value={proveedor.proveedor9}
-                                            onChange={handleProveedor9}
-                                            options={lsProveedorCombo.lsProveedorCombo9}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={xsGrid9}>
-                                        <SelectOnChange
-                                            disabled
-                                            name="idCiudad"
-                                            label="Ciudad"
-                                            value={ciudad.ciudad9}
-                                            onChange={(e) => setCiudad({ ...ciudad, ciudad9: e.target.value })}
-                                            options={lsCiudad}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    {/* DECIMA */}
-                                    <Grid item xs={xsGrid10}>
-                                        <SelectOnChange
-                                            name="idParaclinico"
-                                            label="Paraclínicos"
-                                            value={paraclinicos.paraclinicos10}
-                                            onChange={handleParaclinicos10}
-                                            options={lsEstudioParaclinico}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                    {tipoExamenLabor10 ?
-                                        <Grid item xs={xsGrid10}>
+                                                </Grid> : tipoExamenRNM9 ?
+                                                    <Grid item xs={xsGrid9}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idTipoExamenRNM"
+                                                                label="Tipo Examen"
+                                                                defaultValue=""
+                                                                options={lsTipoRNM}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                                bug={errors}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid> : fechaExmaneFisico9 ?
+                                                        <Grid item xs={xsGrid9}>
+                                                            <FormProvider {...methods}>
+                                                                <InputDatePicker
+                                                                    label="fechaExamenFisico"
+                                                                    name="fecha"
+                                                                    defaultValue={new Date()}
+                                                                />
+                                                            </FormProvider>
+                                                        </Grid> : <></>
+                                            }
+                                            <Grid item xs={xsGrid9}>
+                                                <SelectOnChange
+                                                    name="idProveedor"
+                                                    label="Proveedor"
+                                                    value={proveedor.proveedor9}
+                                                    onChange={handleProveedor9}
+                                                    options={lsProveedorCombo.lsProveedorCombo9}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={xsGrid9}>
+                                                <SelectOnChange
+                                                    disabled
+                                                    name="idCiudad"
+                                                    label="Ciudad"
+                                                    value={ciudad.ciudad9}
+                                                    onChange={(e) => setCiudad({ ...ciudad, ciudad9: e.target.value })}
+                                                    options={lsCiudad}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                            {/* DECIMA */}
+                                            <Grid item xs={xsGrid10}>
+                                                <SelectOnChange
+                                                    name="idParaclinico"
+                                                    label="Paraclínicos"
+                                                    value={paraclinicos.paraclinicos10}
+                                                    onChange={handleParaclinicos10}
+                                                    options={lsEstudioParaclinico}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                            {tipoExamenLabor10 ?
+                                                <Grid item xs={xsGrid10}>
+                                                    <FormProvider {...methods}>
+                                                        <InputSelect
+                                                            name="idTipoExamenLaboratorio"
+                                                            label="Tipo Examen"
+                                                            defaultValue=""
+                                                            options={lsLaboratorio}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                            bug={errors}
+                                                        />
+                                                    </FormProvider>
+                                                </Grid> : tipoExamenRNM10 ?
+                                                    <Grid item xs={xsGrid10}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idTipoExamenRNM"
+                                                                label="Tipo Examen"
+                                                                defaultValue=""
+                                                                options={lsTipoRNM}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                                bug={errors}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid> : fechaExmaneFisico10 ?
+                                                        <Grid item xs={xsGrid10}>
+                                                            <FormProvider {...methods}>
+                                                                <InputDatePicker
+                                                                    label="fechaExamenFisico"
+                                                                    name="fecha"
+                                                                    defaultValue={new Date()}
+                                                                />
+                                                            </FormProvider>
+                                                        </Grid> : <></>
+                                            }
+                                            <Grid item xs={xsGrid10}>
+                                                <SelectOnChange
+                                                    name="idProveedor"
+                                                    label="Proveedor"
+                                                    value={proveedor.proveedor10}
+                                                    onChange={handleProveedor10}
+                                                    options={lsProveedorCombo.lsProveedorCombo10}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={xsGrid10}>
+                                                <SelectOnChange
+                                                    disabled
+                                                    name="idCiudad"
+                                                    label="Ciudad"
+                                                    value={ciudad.ciudad10}
+                                                    onChange={(e) => setCiudad({ ...ciudad, ciudad10: e.target.value })}
+                                                    options={lsCiudad}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </Grid>
+                                        </Transitions>
+
+                                        <Grid item xs={4}>
                                             <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipoExamenLaboratorio"
-                                                    label="Tipo Examen"
+                                                <InputCheckBox
+                                                    label="Asistio"
+                                                    name="asistio"
+                                                    size={30}
+                                                    defaultValue={false}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={4}>
+                                            <FormProvider {...methods}>
+                                                <InputCheckBox
+                                                    disabled={
+                                                        paraclinicos.paraclinicos1 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
+                                                            paraclinicos.paraclinicos2 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
+                                                                paraclinicos.paraclinicos3 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
+                                                                    paraclinicos.paraclinicos4 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
+                                                                        paraclinicos.paraclinicos5 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
+                                                                            paraclinicos.paraclinicos6 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
+                                                                                paraclinicos.paraclinicos7 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
+                                                                                    paraclinicos.paraclinicos8 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
+                                                                                        paraclinicos.paraclinicos9 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
+                                                                                            paraclinicos.paraclinicos10 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false : true
+                                                    }
+                                                    label="Consentimiento Informado"
+                                                    name="consentimientoInformado"
+                                                    size={30}
+                                                    defaultValue={false}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    multiline
+                                                    rows={4}
                                                     defaultValue=""
-                                                    options={lsLaboratorio}
+                                                    fullWidth
+                                                    name="observaciones"
+                                                    label="Observaciones Generales"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
                                                 />
                                             </FormProvider>
-                                        </Grid> : tipoExamenRNM10 ?
-                                            <Grid item xs={xsGrid10}>
-                                                <FormProvider {...methods}>
-                                                    <InputSelect
-                                                        name="idTipoExamenRNM"
-                                                        label="Tipo Examen"
-                                                        defaultValue=""
-                                                        options={lsTipoRNM}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
-                                                    />
-                                                </FormProvider>
-                                            </Grid> : fechaExmaneFisico10 ?
-                                                <Grid item xs={xsGrid10}>
-                                                    <FormProvider {...methods}>
-                                                        <InputDatePicker
-                                                            label="fechaExamenFisico"
-                                                            name="fecha"
-                                                            defaultValue={new Date()}
-                                                        />
-                                                    </FormProvider>
-                                                </Grid> : <></>
-                                    }
-                                    <Grid item xs={xsGrid10}>
-                                        <SelectOnChange
-                                            name="idProveedor"
-                                            label="Proveedor"
-                                            value={proveedor.proveedor10}
-                                            onChange={handleProveedor10}
-                                            options={lsProveedorCombo.lsProveedorCombo10}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={xsGrid10}>
-                                        <SelectOnChange
-                                            disabled
-                                            name="idCiudad"
-                                            label="Ciudad"
-                                            value={ciudad.ciudad10}
-                                            onChange={(e) => setCiudad({ ...ciudad, ciudad10: e.target.value })}
-                                            options={lsCiudad}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </Grid>
-                                </Transitions>
-
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Asistio"
-                                            name="asistio"
-                                            size={30}
-                                            defaultValue={false}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            disabled={
-                                                paraclinicos.paraclinicos1 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
-                                                    paraclinicos.paraclinicos2 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
-                                                        paraclinicos.paraclinicos3 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
-                                                            paraclinicos.paraclinicos4 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
-                                                                paraclinicos.paraclinicos5 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
-                                                                    paraclinicos.paraclinicos6 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
-                                                                        paraclinicos.paraclinicos7 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
-                                                                            paraclinicos.paraclinicos8 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
-                                                                                paraclinicos.paraclinicos9 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false :
-                                                                                    paraclinicos.paraclinicos10 === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? false : true
-                                            }
-                                            label="Consentimiento Informado"
-                                            name="consentimientoInformado"
-                                            size={30}
-                                            defaultValue={false}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            multiline
-                                            rows={4}
-                                            defaultValue=""
-                                            fullWidth
-                                            name="observaciones"
-                                            label="Observaciones Generales"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
+                                </SubCard>
                             </Grid>
-                        </SubCard>
-                    </Grid>
-                </Grid>
-            </TabPanel>
+                        </Grid>
+                    </TabPanel>
 
-            <Grid container spacing={1} sx={{ pt: 5 }}>
-                <Grid item xs={6}>
-                    <AnimateButton>
-                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                            {TitleButton.Guardar}
-                        </Button>
-                    </AnimateButton>
-                </Grid>
-                <Grid item xs={6}>
-                    <AnimateButton>
-                        <Button variant="outlined" fullWidth onClick={() => navigate("/occupational-examination/list")}>
-                            {TitleButton.Cancelar}
-                        </Button>
-                    </AnimateButton>
-                </Grid>
-            </Grid>
+                    <Grid container spacing={1} sx={{ pt: 5 }}>
+                        <Grid item xs={6}>
+                            <AnimateButton>
+                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                    {TitleButton.Guardar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/occupational-examination/list")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+                    </Grid>
+                </Fragment> : <Cargando />}
         </MainCard>
     );
 };
 
-export default OrdersIndividual;
+export default UpdateOrdersIndividual;

@@ -1493,7 +1493,7 @@ const OrdersIndividual = () => {
                 </Grid>
                 <Grid item xs={6}>
                     <AnimateButton>
-                        <Button variant="outlined" fullWidth onClick={() => navigate("/occupational-examination/list")}>
+                        <Button variant="outlined" fullWidth onClick={() => navigate("/orders-individual/list")}>
                             {TitleButton.Cancelar}
                         </Button>
                     </AnimateButton>

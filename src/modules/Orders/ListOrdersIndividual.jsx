@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -24,13 +23,12 @@ import {
     Tooltip,
     Typography,
     Button,
-    Avatar,
-    Modal
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { TitleButton } from 'components/helpers/Enums';
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -38,10 +36,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { DeleteOccupationalExamination, GetAllOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { ViewFormat } from 'components/helpers/Format';
+import { DeleteOrders, GetAllOrders } from 'api/clients/OrdersClient';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -76,19 +73,19 @@ const headCells = [
     {
         id: 'nameEmpleado',
         numeric: false,
-        label: 'Nombre',
-        align: 'left'
-    },
-    {
-        id: 'idAtencion',
-        numeric: false,
-        label: 'Estado Caso',
+        label: 'Empleado',
         align: 'left'
     },
     {
         id: 'fecha',
         numeric: false,
         label: 'Fecha',
+        align: 'left'
+    },
+    {
+        id: 'idTipoExamen',
+        numeric: false,
+        label: 'Tipo de Examen',
         align: 'left'
     },
     {
@@ -212,12 +209,14 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListOrdersIndividual = () => {
-    const dispatch = useDispatch();
-    const [lsOccupationalExamination, setLsOccupationalExamination] = useState([]);
+    const navigate = useNavigate();
+    const [idCheck, setIdCheck] = useState('');
+    const [openDelete, setOpenDelete] = useState(false);
+    const [lsOrders, setLsOrders] = useState([]);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -226,8 +225,8 @@ const ListOrdersIndividual = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllOccupationalExamination(0, 0);
-            setLsOccupationalExamination(lsServer.data.entities);
+            const lsServer = await GetAllOrders(0, 0);
+            setLsOrders(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
@@ -246,7 +245,7 @@ const ListOrdersIndividual = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nombres', 'celular', 'email', 'nameSede', 'nameCompany'];
+                const properties = ['documento', 'nameEmpleado', 'fecha', 'idTipoExamen', 'nameSede', 'usuarioCreacion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -260,9 +259,9 @@ const ListOrdersIndividual = () => {
                 }
                 return matches;
             });
-            setLsOccupationalExamination(newRows);
+            setLsOrders(newRows);
         } else {
-            setLsOccupationalExamination(rows);
+            setLsOrders(rows);
         }
     };
 
@@ -275,7 +274,7 @@ const ListOrdersIndividual = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = lsOccupationalExamination.map((n) => n.id);
+            const newSelectedId = lsOrders.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -310,36 +309,30 @@ const ListOrdersIndividual = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
     const handleDelete = async () => {
         try {
-            const result = await DeleteOccupationalExamination(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteOrders(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSelected([]);
+                    GetAll();
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
             console.log(error);
         }
     }
 
-    const navigate = useNavigate();
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsOccupationalExamination.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsOrders.length) : 0;
 
     return (
         <MainCard title="Lista de Ordenes Individuales" content={false}>
-
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -387,13 +380,13 @@ const ListOrdersIndividual = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsOccupationalExamination.length}
+                        rowCount={lsOrders.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(lsOccupationalExamination, getComparator(order, orderBy))
+                        {stableSort(lsOrders, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
@@ -447,22 +440,7 @@ const ListOrdersIndividual = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.documento}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.idAtencion}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -492,7 +470,7 @@ const ListOrdersIndividual = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idAtencion}
+                                                {row.nameTipoExamen}
                                             </Typography>
                                         </TableCell>
 
@@ -507,12 +485,27 @@ const ListOrdersIndividual = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idAtencion}
+                                                {row.sedeEmpleado}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.usuarioRegistro}
                                             </Typography>
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/Occupational-examination/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/orders-individual/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -537,7 +530,7 @@ const ListOrdersIndividual = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsOccupationalExamination.length}
+                count={lsOrders.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
