@@ -1,4 +1,6 @@
-export function PostMedicalAdvice(documento, fecha, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno, idDiaTurno, idTipoAsesoria,
+import { DefaultValue } from "components/helpers/Enums";
+
+export function PostMedicalAdvice(documento, fecha, idTipoAtencion, idSede, idContingencia = DefaultValue.SINREGISTRO_GLOBAL, idEstadoCaso, idTurno, idDiaTurno, idTipoAsesoria,
     idMotivo, idCausa, motivo, recomdaciones, pautas, idEstadoAsesoria, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
         documento, fecha, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno, idDiaTurno, idTipoAsesoria,
@@ -6,7 +8,7 @@ export function PostMedicalAdvice(documento, fecha, idTipoAtencion, idSede, idCo
     };
 }
 
-export function PutMedicalAdvice(id, documento, fecha, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno, idDiaTurno, idTipoAsesoria,
+export function PutMedicalAdvice(id, documento, fecha, idTipoAtencion, idSede, idContingencia = DefaultValue.SINREGISTRO_GLOBAL, idEstadoCaso, idTurno, idDiaTurno, idTipoAsesoria,
     idMotivo, idCausa, motivo, recomdaciones, pautas, idEstadoAsesoria, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
         id, documento, fecha, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno, idDiaTurno, idTipoAsesoria,

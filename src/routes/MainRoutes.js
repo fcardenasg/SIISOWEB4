@@ -247,6 +247,12 @@ const ListOrdersIndividual = Loadable(lazy(() => import('modules/Orders/ListOrde
 const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdersIndividual')));
 const UpdateOrdersIndividual = Loadable(lazy(() => import('modules/Orders/UpdateOrdersIndividual')));
 
+const UpdateAssistanceProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateAssistance')));
+const UpdateEvolutionNoteProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateEvolutionNote')));
+const UpdateCounselingProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateCounseling')));
+const UpdateMedicalAdviceProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateMedicalAdvice')));
+const UpdateNoteInfirmaryProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateNoteInfirmary')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -629,6 +635,52 @@ const MainRoutes = {
             path: '/orders-individual/update/:id',
             element: <UpdateOrdersIndividual />
         },
+        /* ATENCIONES DE PROGRAMACIÓN */
+
+        {
+            path: '/programming/psychological/:id',
+            element: <UpdateCounselingProgra />
+        },
+        {
+            path: '/programming/attention-new/:id',
+            element: <UpdateAssistanceProgra />
+        },
+        {
+            path: '/programming/attention-control/:id',
+            element: <UpdateEvolutionNoteProgra />
+        },
+        {
+            path: '/programming/medica/:id',
+            element: <UpdateMedicalAdviceProgra />
+        },
+        {
+            path: '/programming/other/:id',
+            element: <UpdateCounselingProgra />
+        },
+        {
+            path: '/programming/medical-attention/:id',
+            element: <UpdateMedicalAdviceProgra />
+        },
+        {
+            path: '/programming/infirmary/:id',
+            element: <UpdateNoteInfirmaryProgra />
+        },
+        {
+            path: '/programming/emo/:id',
+            element: <UpdateOrdersIndividual />
+        },
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         {

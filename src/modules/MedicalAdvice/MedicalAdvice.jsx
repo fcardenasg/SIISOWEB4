@@ -13,7 +13,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { MessageSuccess, MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { MessageSuccess, MessageDelete } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import InputText from 'components/input/InputText';
 import DetailedIcon from 'components/controllers/DetailedIcon';
@@ -200,7 +200,7 @@ const MedicalAdvice = () => {
                 <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
                         <Grid container spacing={2}>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputDatePicker
                                         label="Fecha"
@@ -210,7 +210,7 @@ const MedicalAdvice = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={3}>
+                            {/* <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idContingencia"
@@ -221,9 +221,9 @@ const MedicalAdvice = () => {
                                         bug={errors}
                                     />
                                 </FormProvider>
-                            </Grid>
+                            </Grid> */}
 
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idMotivo"
@@ -236,7 +236,7 @@ const MedicalAdvice = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idTipoAsesoria"

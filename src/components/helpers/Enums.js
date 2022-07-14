@@ -70,7 +70,7 @@ export const CodCatalogo = {
     PAD_RESULTADO: 116,
     PAD_CONCEPTOA: 147,
 
-    ASME_TIPOASESORIA: 8,
+    ASME_TIPOASESORIA: 119,
     ASME_MOT_ASESORIA: 8,
 
     TIPO_PROVEEDOR: 22,
@@ -83,7 +83,7 @@ export const CodCatalogo = {
     MotivoPsicologia: 53,
     MotivoMedica: 52,
 
-    TipoAsesoria: 8,
+    TipoAsesoria: 119,
     CausaAsesoria: 8,
     EstadoAsesoria: 8,
     EstadoCaso: 48,
@@ -129,6 +129,16 @@ export const DefaultValue = {
     SINREGISTRO_TEXTO: 'REGISTRO NO APLICA',
     GeneroWomen: 2,
 
+    /* TIPO ATENCIÓN */
+    TIPO_ATENCION_EMO: 3900,
+    TIPO_ATENCION_ASESORIAS: 3899,
+    TIPO_ATENCION_ASESORIAS_PSICO: 3909,
+    TIPO_ATENCION_ASESORIAS_MEDICA: 3911,
+    TIPO_ATENCION_ENFERMERIA: 3898,
+    TIPO_ATENCION_ATENCIONMEDICA: 3897,
+    TIPO_ATENCION_ATENCIONMEDICA_NUEVO: 3931,
+    TIPO_ATENCION_ATENCIONMEDICA_CONTROL: 3932,
+
     ORDENES_LABORATORIO: 3533,
     ORDENES_FECHA_EXAM_FISICO: 3541,
     ORDENES_RNM: 3537,
@@ -152,7 +162,8 @@ export const DefaultValue = {
     /* RIESGOS */
     RiesgoEnOtrasEmpresas: 4067,
     RiesgoQuimico: 3949,
-    RiesgoQuimico_MPI: 3955,
+    RiesgoQuimico_MPI_DLTD: 3955,
+    RiesgoQuimico_RUIDO_DLTD: 3960,
     RiesgoFisico: 3950,
     RiesgoPsicosocial: 3952,
     RiesgoBiologico: 3953,

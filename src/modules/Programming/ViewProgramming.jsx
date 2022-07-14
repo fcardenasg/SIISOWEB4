@@ -9,10 +9,43 @@ import { ColorDrummondltd } from 'themes/colors';
 import Avatar from 'ui-component/extended/Avatar';
 import { gridSpacing } from 'store/constant';
 import { IconEye, IconCircleMinus } from '@tabler/icons';
+import { DefaultValue } from 'components/helpers/Enums';
 
 const ViewProgramming = ({ programming, onClickDelete }) => {
     const navigate = useNavigate();
     const theme = useTheme();
+
+    const handleClick = () => {
+        try {
+            if (programming.tipo === DefaultValue.TIPO_ATENCION_EMO)
+                navigate(`/programming/emo/${programming.id}`);
+            if (programming.atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO)
+                navigate(`/programming/psychological/${programming.id}`);
+            if (programming.atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA)
+                navigate(`/programming/medica/${programming.id}`);
+            if (programming.atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO)
+                navigate(`/programming/psychological/${programming.id}`);
+
+            if (programming.tipo === DefaultValue.TIPO_ATENCION_ASESORIAS &&
+                programming.atencion != DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO &&
+                programming.atencion != DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA)
+                navigate(`/programming/other/${programming.id}`);
+
+            if (programming.tipo === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA &&
+                programming.estadoCaso == DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_NUEVO)
+                navigate(`/programming/attention-new/${programming.id}`);
+
+            if (programming.tipo === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA &&
+                programming.estadoCaso == DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_CONTROL)
+                navigate(`/programming/attention-control/${programming.id}`);
+
+            if (programming.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA)
+                navigate(`/programming/infirmary/${programming.id}`)
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const ColorCard = programming.nameAtencion === 'TRIAGE I' ? ColorDrummondltd.RedDrummond :
         programming.nameAtencion === 'TRIAGE II' ? ColorDrummondltd.RedDrummond :
@@ -93,7 +126,7 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
                     </Grid>
 
                     <Grid item xs={12}>     {/* /${programming.id} */}
-                        <Button variant="outlined" onClick={() => navigate(`/occupational-examination/add`)} fullWidth startIcon={<IconEye />}>
+                        <Button variant="outlined" onClick={handleClick} fullWidth startIcon={<IconEye />}>
                             Atender
                         </Button>
                     </Grid>

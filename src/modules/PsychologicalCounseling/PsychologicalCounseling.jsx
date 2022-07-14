@@ -25,19 +25,16 @@ import ControlModal from 'components/controllers/ControlModal';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import InputDatePicker from 'components/input/InputDatePicker';
-import InputArea from 'components/input/InputArea';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertAdvice } from 'api/clients/AdviceClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { GetAllCompany } from 'api/clients/CompanyClient';
 import InputSelect from 'components/input/InputSelect';
 import { CodCatalogo, Message, TitleButton, DefaultData } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
-import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 
 const DetailIcons = [
@@ -142,6 +139,8 @@ const PsychologicalCounseling = () => {
                 label: item.nombre
             }));
             setEstadoCaso(resultEstadoCaso);
+            console.log("lsServerEstadoCaso = ", lsServerEstadoCaso, resultEstadoCaso)
+
 
             const lsServerDiaTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DiaTurno);
             var resultDiaTurno = lsServerDiaTurno.data.entities.map((item) => ({

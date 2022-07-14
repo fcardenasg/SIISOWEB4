@@ -44,7 +44,7 @@ import RowCompany from './Row/RowCompany';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import { ColorDrummondltd } from 'themes/colors';
-import { GetAllByHistorico } from 'api/clients/WorkHistoryRiskClient';
+import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
 
 const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const theme = useTheme();
@@ -54,7 +54,14 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
     const [mpiAnioDTLD, setMpiAnioDTLD] = useState(0);
     const [mpiMesDTLD, setMpiMesDTLD] = useState(0);
-    const [mpiAnioOtraEm, setMpiAnioOtraEm] = useState(0);
+    const [anioRuidoDTLD, setAnioRuidoDTLD] = useState(0);
+    const [mesRuidoDTLD, setMesRuidoDTLD] = useState(0);
+
+    const [mpiAnioOtrasEmpresas, setMpiAnioOtrasEmpresas] = useState(0);
+    const [mpiMesOtrasEmpresas, setMpiMesOtrasEmpresas] = useState(0);
+    const [anioRuidoOtrasEmpresas, setAnioRuidoOtrasEmpresas] = useState(0);
+    const [mesRuidoOtrasEmpresas, setMesRuidoOtrasEmpresas] = useState(0);
+
     /*     const [mpiAnio, setMpiAnio] = useState(0);
         const [mpiAnio, setMpiAnio] = useState(0);
         const [mpiAnio, setMpiAnio] = useState(0);
@@ -76,12 +83,71 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
     async function GetAll() {
         try {
-            const lsServerOtherCompany = await GetAllByHistorico(0, 0, documento);
-            if (lsServerOtherCompany.status === 200) {
-                var array = lsServerOtherCompany.data.entities;
+            const lsServerDTLD = await GetAllByHistorico(0, 0, documento);
+            if (lsServerDTLD.status === 200) {
+                var arrayMPI = lsServerDTLD.data.entities;
+                var arrayRUIDO = lsServerDTLD.data.entities;
 
-                if (array.length != 0) {
-                    var arrayReady = array.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI)
+                if (arrayMPI.length != 0 || arrayRUIDO.length != 0) {
+                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI_DLTD)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo == DefaultValue.RiesgoFisico && code.idClase == DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    console.log("arrayMPI = ", arrayMPI);
+                    console.log("arrayRUIDO = ", arrayRUIDO);
+
+                    var aniosMpi = 0;
+                    var mesMpi = 0;
+                    var aniosRuido = 0;
+                    var mesRuido = 0;
+
+                    for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                        const datos = arrayReadyRUIDO[index];
+                        aniosRuido = aniosRuido + datos.anio;
+                        setAnioRuidoDTLD(aniosRuido);
+                    }
+
+                    for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                        const datos = arrayReadyRUIDO[index];
+                        mesRuido = mesRuido + datos.mes;
+                        setMesRuidoDTLD(mesRuido);
+                    }
+
+                    for (let index = 0; index < arrayReadyMPI.length; index++) {
+                        const datos = arrayReadyMPI[index];
+                        aniosMpi = aniosMpi + datos.anio;
+                        setMpiAnioDTLD(aniosMpi);
+                    }
+
+                    for (let index = 0; index < arrayReadyMPI.length; index++) {
+                        const datos = arrayReadyMPI[index];
+                        mesMpi = mesMpi + datos.mes;
+                        setMpiMesDTLD(mesMpi);
+                    }
+                }
+            }
+
+            const lsServerOtrasEmpresas = await GetAllByHistoricoCompany(0, 0, documento);
+            if (lsServerOtrasEmpresas.status === 200) {
+                var arrayMPI = lsServerOtrasEmpresas.data.entities;
+                var arrayRUIDO = lsServerOtrasEmpresas.data.entities;
+
+                if (arrayMPI.length != 0 || arrayRUIDO.length != 0) {
+                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI_DLTD)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo == DefaultValue.RiesgoFisico && code.idClase == DefaultValue.RiesgoQuimico_RUIDO_DLTD)
                         .map((riesgo) => ({
                             anio: riesgo.anio,
                             mes: riesgo.mes
@@ -89,17 +155,31 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
                     var aniosMpi = 0;
                     var mesMpi = 0;
+                    var aniosRuido = 0;
+                    var mesRuido = 0;
 
-                    for (let index = 0; index < arrayReady.length; index++) {
-                        const datos = arrayReady[index];
-                        aniosMpi = aniosMpi + datos.anio;
-                        setMpiAnioDTLD(aniosMpi);
+                    for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                        const datos = arrayReadyRUIDO[index];
+                        aniosRuido = aniosRuido + datos.anio;
+                        setAnioRuidoOtrasEmpresas(aniosRuido);
                     }
 
-                    for (let index = 0; index < arrayReady.length; index++) {
-                        const datos = arrayReady[index];
+                    for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                        const datos = arrayReadyRUIDO[index];
+                        mesRuido = mesRuido + datos.mes;
+                        setMesRuidoOtrasEmpresas(mesRuido);
+                    }
+
+                    for (let index = 0; index < arrayReadyMPI.length; index++) {
+                        const datos = arrayReadyMPI[index];
+                        aniosMpi = aniosMpi + datos.anio;
+                        setMpiAnioOtrasEmpresas(aniosMpi);
+                    }
+
+                    for (let index = 0; index < arrayReadyMPI.length; index++) {
+                        const datos = arrayReadyMPI[index];
                         mesMpi = mesMpi + datos.mes;
-                        setMpiMesDTLD(mesMpi);
+                        setMpiMesOtrasEmpresas(mesMpi);
                     }
                 }
             }
@@ -456,7 +536,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <SideIconCard
                                 bgcolor={theme.palette.grey[200]}
                                 iconPrimary={RecordVoiceOverIcon}
-                                primary={`Años: ${mpiAnioDTLD}`}
+                                primary={`Años: ${anioRuidoDTLD}`}
                                 secondary="Ruido en DLTD"
                                 color={ColorDrummondltd.RedDrummond}
                             />
@@ -466,7 +546,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <SideIconCard
                                 bgcolor={theme.palette.grey[200]}
                                 iconPrimary={RecordVoiceOverIcon}
-                                primary={`Meses: ${mpiMesDTLD}`}
+                                primary={`Meses: ${mesRuidoDTLD}`}
                                 secondary="Ruido en DLTD"
                                 color={ColorDrummondltd.RedDrummond}
                             />
@@ -476,7 +556,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <SideIconCard
                                 bgcolor={theme.palette.grey[200]}
                                 iconPrimary={ReportProblemIcon}
-                                primary="Años: 10"
+                                primary={`Años: ${mpiAnioDTLD}`}
                                 secondary="Exposición MPI DLTD"
                                 color={ColorDrummondltd.RedDrummond}
                             />
@@ -486,7 +566,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <SideIconCard
                                 bgcolor={theme.palette.grey[200]}
                                 iconPrimary={ReportProblemIcon}
-                                primary="Meses: 10"
+                                primary={`Meses: ${mpiMesDTLD}`}
                                 secondary="Exposición MPI DLTD"
                                 color={ColorDrummondltd.RedDrummond}
                             />
@@ -502,7 +582,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <SideIconCard
                                 bgcolor={theme.palette.grey[200]}
                                 iconPrimary={RecordVoiceOverIcon}
-                                primary="Años: 10"
+                                primary={`Años: ${anioRuidoOtrasEmpresas}`}
                                 secondary="Ruido en Otras Empresas"
                                 color={ColorDrummondltd.BlueDrummond}
                             />
@@ -512,7 +592,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <SideIconCard
                                 bgcolor={theme.palette.grey[200]}
                                 iconPrimary={RecordVoiceOverIcon}
-                                primary="Meses: 10"
+                                primary={`Meses: ${mesRuidoOtrasEmpresas}`}
                                 secondary="Ruido en Otras Empresas"
                                 color={ColorDrummondltd.BlueDrummond}
                             />
@@ -522,7 +602,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <SideIconCard
                                 bgcolor={theme.palette.grey[200]}
                                 iconPrimary={ReportProblemIcon}
-                                primary="Años: 10"
+                                primary={`Años: ${mpiAnioOtrasEmpresas}`}
                                 secondary="Exposición MPI Otras Empresas"
                                 color={ColorDrummondltd.BlueDrummond}
                             />
@@ -532,7 +612,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <SideIconCard
                                 bgcolor={theme.palette.grey[200]}
                                 iconPrimary={ReportProblemIcon}
-                                primary="Meses: 10"
+                                primary={`Meses: ${mpiAnioOtrasEmpresas}`}
                                 secondary="Exposición MPI Otras Empresas"
                                 color={ColorDrummondltd.BlueDrummond}
                             />

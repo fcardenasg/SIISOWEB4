@@ -36,11 +36,11 @@ function stableSort(array, comparator) {
 }
 
 const ListProgramming = () => {
-    const dispatch = useDispatch();
     const [lsProgramming, setLsProgramming] = useState([]);
     const [rows, setRows] = useState([]);
     const [search, setSearch] = useState('');
     const [openDelete, setOpenDelete] = useState(false);
+    console.log("Datos = ", lsProgramming);
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(12);
