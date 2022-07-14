@@ -157,7 +157,6 @@ const EvolutionNote = () => {
 
     const handleClick = async (datos) => {
         try {
-
             const DataToInsert = PostEvolutionNote(documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
                 datos.nota, JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.email,
                 FormatDate(new Date()), '', FormatDate(new Date()));

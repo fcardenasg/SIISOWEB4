@@ -19,6 +19,7 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
         try {
             if (programming.tipo === DefaultValue.TIPO_ATENCION_EMO)
                 navigate(`/programming/emo/${programming.id}`);
+
             if (programming.atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO)
                 navigate(`/programming/psychological/${programming.id}`);
             if (programming.atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA)
@@ -125,7 +126,7 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
                         </Grid>
                     </Grid>
 
-                    <Grid item xs={12}>     {/* /${programming.id} */}
+                    <Grid item xs={12}>
                         <Button variant="outlined" onClick={handleClick} fullWidth startIcon={<IconEye />}>
                             Atender
                         </Button>

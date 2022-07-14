@@ -177,6 +177,7 @@ export const DefaultValue = {
 
 export const TitleButton = {
     Guardar: 'Guardar',
+    CerrarCaso: 'Cerrar Caso',
     Programacion: 'Programación',
     Imprimir: 'Imprimir',
     Cancelar: 'Cerrar',

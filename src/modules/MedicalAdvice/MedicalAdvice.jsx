@@ -13,7 +13,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { MessageSuccess, MessageDelete } from 'components/alert/AlertAll';
+import { MessageSuccess } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import InputText from 'components/input/InputText';
 import DetailedIcon from 'components/controllers/DetailedIcon';
@@ -50,7 +50,6 @@ const MedicalAdvice = () => {
     const [documento, setDocumento] = useState('');
 
     const [openSuccess, setOpenSuccess] = useState(false);
-    const [openDelete, setOpenDelete] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
 
@@ -167,7 +166,6 @@ const MedicalAdvice = () => {
     return (
         <Fragment>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <FullScreenDialog
                 open={openTemplate}

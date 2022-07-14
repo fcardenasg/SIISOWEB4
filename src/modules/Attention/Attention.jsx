@@ -36,6 +36,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ViewEmployee from 'components/views/ViewEmployee';
+import Chip from '@mui/material/Chip';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -48,6 +49,7 @@ const Attention = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
     const [documento, setDocumento] = useState('');
     const [tipoAtencion, setTipoAtencion] = useState('');
     const [atencion, setAtencion] = useState('');
@@ -57,8 +59,8 @@ const Attention = () => {
     const [peso, setPeso] = useState('');
     const [talla, setTalla] = useState('');
     const [imc, setIMC] = useState('');
-    const [clasificacion, setClasificacion] = useState('');
-    const [clasificacionColor, setClasificacionColor] = useState('');
+    const [clasificacion, setClasificacion] = useState('Clasificación');
+    const [clasificacionColor, setClasificacionColor] = useState('info');
 
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
@@ -275,6 +277,36 @@ const Attention = () => {
         } catch (error) { }
     }
 
+    const handleChangePeso = (event) => {
+        try {
+            setPeso(event.target.value);
+
+            /* var talla = event.target.value; */
+            var imcFinal = event.target.value / Math.pow(talla, 2);
+            setIMC(imcFinal.toFixed(1));
+
+            if (imcFinal < 18.4) {
+                setClasificacion("Bajo de Peso")
+                setClasificacionColor("info");
+            } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
+                setClasificacion("Normal")
+                setClasificacionColor("success");
+            } else if (imcFinal >= 25 && imcFinal <= 29.9) {
+                setClasificacion("Sobrepeso")
+                setClasificacionColor("warning");
+            } else if (imcFinal >= 30 && imcFinal <= 34.9) {
+                setClasificacion("Obesidad Grado I")
+                setClasificacionColor("error");
+            } else if (imcFinal >= 35 && imcFinal <= 39.9) {
+                setClasificacion("Obesidad Grado II")
+                setClasificacionColor("error");
+            } else if (imcFinal > 40) {
+                setClasificacion("Obesidad Grado III")
+                setClasificacionColor("error");
+            }
+        } catch (error) { }
+    }
+
     useEffect(() => {
         GetAll();
     }, [])
@@ -356,7 +388,7 @@ const Attention = () => {
                                     <InputDatePicker
                                         label="Fecha"
                                         name="fecha"
-                                        defaultValue={null}
+                                        defaultValue={new Date()}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -454,8 +486,8 @@ const Attention = () => {
                                     </Grid> */}
                                 </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ENFERME && atencion == DefaultValue.AT_ENFERMERIA ?
                                     <Fragment>
-                                        <Grid item xs={3}>
-                                            {/* <FormProvider {...methods}>
+                                        {/* <Grid item xs={3}>
+                                            <FormProvider {...methods}>
                                                 <InputSelect
                                                     name="contingencia"
                                                     label="Contingencia"
@@ -464,8 +496,8 @@ const Attention = () => {
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
                                                 />
-                                            </FormProvider> */}
-                                        </Grid>
+                                            </FormProvider>
+                                        </Grid> */}
 
                                         <Grid item xs={3}>
                                             <FormProvider {...methods}>
@@ -564,7 +596,7 @@ const Attention = () => {
                                                     <InputOnChange
                                                         type="number"
                                                         label="Peso(Kilos)"
-                                                        onChange={(e) => setPeso(e?.target.value)}
+                                                        onChange={handleChangePeso}
                                                         value={peso}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
@@ -582,6 +614,7 @@ const Attention = () => {
 
                                                 <Grid item xs={3}>
                                                     <InputOnChange
+                                                        disabled
                                                         type="number"
                                                         label="IMC"
                                                         onChange={(e) => setIMC(e?.target.value)}
@@ -590,7 +623,7 @@ const Attention = () => {
                                                     />
                                                 </Grid>
 
-                                                <Grid item xs={3}>
+                                                {/* <Grid item xs={3}>
                                                     <InputOnChange
                                                         disabled
                                                         color={clasificacionColor}
@@ -598,6 +631,15 @@ const Attention = () => {
                                                         onChange={(e) => setClasificacion(e.target.value)}
                                                         value={clasificacion}
                                                         size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid> */}
+
+                                                <Grid item xs={3}>
+                                                    <Chip
+                                                        size="medium"
+                                                        label={clasificacion}
+                                                        color={clasificacionColor}
+                                                        sx={{ fontSize: '20px', width: '300px', height: '50px' }}
                                                     />
                                                 </Grid>
                                             </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && atencion == DefaultValue.AT_PSICO ?
@@ -776,36 +818,34 @@ const Attention = () => {
                             }
 
                             <Grid item xs={12}>
-                                <SubCard darkTitle title={<><Typography variant="h4">NOTA</Typography></>}>
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue=""
-                                                fullWidth
-                                                name="observaciones"
-                                                label="Nota"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                        <DetailedIcon
-                                            title={DetailIcons[0].title}
-                                            onClick={() => setOpenTemplate(true)}
-                                            icons={DetailIcons[0].icons}
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue=""
+                                            fullWidth
+                                            name="observaciones"
+                                            label="Nota"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
                                         />
+                                    </FormProvider>
+                                </Grid>
 
-                                        <DetailedIcon
-                                            title={DetailIcons[1].title}
-                                            onClick={() => setOpen(true)}
-                                            icons={DetailIcons[1].icons}
-                                        />
-                                    </Grid>
-                                </SubCard>
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[1].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[1].icons}
+                                    />
+                                </Grid>
                             </Grid>
                         </Grid>
 

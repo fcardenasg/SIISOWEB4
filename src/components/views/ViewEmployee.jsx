@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import { Fragment, } from "react";
-import { useSelector } from 'react-redux';
+import { Fragment, useState } from "react";
 import { Grid, CardMedia } from '@mui/material'
 import user from 'assets/img/user.png'
 import { useTheme } from "@mui/material/styles";
@@ -19,6 +18,8 @@ import {
 } from '@mui/material';
 
 import Chip from 'ui-component/extended/Chip';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import UpdateEmployee from 'modules/OccupationalExamination/Update/UpdateEmployee';
 
 import {
     IconEdit,
@@ -93,8 +94,19 @@ ViewDataDetails.propTypes = {
 };
 
 const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, handleDocumento }) => {
+    const [openUpdate, setOpenUpdate] = useState(false);
+
+
     return (
         <Grid container spacing={1}>
+            <FullScreenDialog
+                open={openUpdate}
+                title="ACTUALIZAR EMPLEADO"
+                handleClose={() => setOpenUpdate(false)}
+            >
+                <UpdateEmployee idEmpleado={documento} setOpenUpdate={setOpenUpdate} key={1} />
+            </FullScreenDialog>
+
             <Grid item xs={12} sx={{ pb: 4 }}>
                 <Stack direction="row" alignItems="center" alignContent="center" justifyContent="space-between">
                     <TextField
@@ -132,7 +144,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
 
                     {/* AQUI VA EL ACTUALIZAR */}
                     <AnimateButton>
-                        <Button>
+                        <Button disabled={documento === '' && lsEmployee.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
                             <IconEdit stroke={2} size="1.3rem" />
                         </Button>
                     </AnimateButton>

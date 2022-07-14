@@ -247,6 +247,7 @@ const ListOrdersIndividual = Loadable(lazy(() => import('modules/Orders/ListOrde
 const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdersIndividual')));
 const UpdateOrdersIndividual = Loadable(lazy(() => import('modules/Orders/UpdateOrdersIndividual')));
 
+const OccupationalExaminationProgra = Loadable(lazy(() => import('modules/Programming/Attention/OccupationalExamination/OccupationalExamination')));
 const UpdateAssistanceProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateAssistance')));
 const UpdateEvolutionNoteProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateEvolutionNote')));
 const UpdateCounselingProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateCounseling')));
@@ -636,7 +637,6 @@ const MainRoutes = {
             element: <UpdateOrdersIndividual />
         },
         /* ATENCIONES DE PROGRAMACIÓN */
-
         {
             path: '/programming/psychological/:id',
             element: <UpdateCounselingProgra />
@@ -667,7 +667,7 @@ const MainRoutes = {
         },
         {
             path: '/programming/emo/:id',
-            element: <UpdateOrdersIndividual />
+            element: <OccupationalExaminationProgra />
         },
 
 
