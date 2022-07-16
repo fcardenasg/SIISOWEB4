@@ -6,6 +6,8 @@ import {
     Grid, Typography,
 } from '@mui/material';
 
+import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
+import Accordion from 'components/accordion/Accordion';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import InputCheckBox from 'components/input/InputCheckBox';
@@ -62,7 +64,8 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
-            <SubCard darkTitle title={<Typography variant="h4">TOS</Typography>}>
+            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+                <Typography align='right' variant="h4" color="inherit">TOS</Typography></>}>
                 <SubCard darkTitle title="Tos">
                     <Grid container spacing={1} alignItems="center">
                         <Grid item xs={12}>
@@ -300,10 +303,11 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                         </Grid>
                     </Grid>
                 </SubCard>
-            </SubCard>
+            </Accordion>
             <Grid sx={{ pb: 2 }} />
 
-            <SubCard darkTitle title={<Typography variant="h4">ATAQUES</Typography>}>
+            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+                <Typography align='right' variant="h4" color="inherit">ATAQUES</Typography></>}>
                 <SubCard darkTitle title="Ataques De Silbidos">
                     <Grid container spacing={1} alignItems="center">
                         <Grid item xs={12}>
@@ -465,10 +469,12 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                     </Grid>
                 </SubCard>
                 <Grid sx={{ pb: 2 }} />
-            </SubCard>
+            </Accordion>
             <Grid sx={{ pb: 2 }} />
 
-            <SubCard darkTitle title={<Typography variant="h4">GRIPAS</Typography>}>
+            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+                <Typography align='right' variant="h4" color="inherit">GRIPAS</Typography></>}>
+
                 <SubCard darkTitle title="Gripas y Enfermedades del Torax">
                     <Grid container spacing={1} alignItems="center">
                         <Grid item xs={12}>
@@ -870,10 +876,12 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                         </Grid>
                     </Grid>
                 </SubCard>
-            </SubCard>
+            </Accordion>
             <Grid sx={{ pb: 2 }} />
 
-            <SubCard darkTitle title={<Typography variant="h4">HISTORIA</Typography>}>
+            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+                <Typography align='right' variant="h4" color="inherit">HISTORIA</Typography></>}>
+
                 <SubCard darkTitle title="Historia Ocupacional">
                     <Grid container spacing={2} alignItems="center">
                         <Grid item xs={12}>
@@ -1174,10 +1182,11 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                         </Grid>
                     </Grid>
                 </SubCard>
-            </SubCard>
+            </Accordion>
             <Grid sx={{ pb: 2 }} />
 
-            <SubCard darkTitle title={<Typography variant="h4">RECOMENDACIONES</Typography>}>
+            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+                <Typography align='right' variant="h4" color="inherit">RECOMENDACIONES</Typography></>}>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12}>
                         <FormProvider {...methods}>
@@ -1194,7 +1203,7 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                         </FormProvider>
                     </Grid>
                 </Grid>
-            </SubCard>
+            </Accordion>
         </Fragment>
     );
 };
