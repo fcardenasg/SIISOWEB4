@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { ColorDrummondltd } from 'themes/colors';
 import LogoDrummondLTD from 'assets/img/LogoDrummondLTD.png';
 import LogoDrummondEnergy from 'assets/img/LogoDrummondEnergy.png';
-import config from "config";
 
 const SelectionView = () => {
     const navigate = useNavigate();
@@ -49,7 +48,7 @@ const SelectionView = () => {
                     </Grid>
 
                     <Grid item xs={6}>
-                        <Button variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }}>
+                        <Button onClick={() => navigate("/dashboard/energy", { replace: true })} variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }}>
                             <CardMedia
                                 component="img"
                                 height="100"

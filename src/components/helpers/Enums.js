@@ -39,6 +39,7 @@ export const CodCatalogo = {
 
     HCO_VACUNAS: 8,
     HCO_FRECUENCIAS: 32,
+    HCO_REFUERZO: 150,
     HC_DEPORTE: 143,
     HC_TIFOBIA: 39,
     HCO_PARENTES: 123,
@@ -47,7 +48,9 @@ export const CodCatalogo = {
     HCO_GINECORESULT: 8,
     HCO_BIOTIPO: 37,
     HCO_RESULTADO: 140,
-    HCO_CONCEP_APTI_PSICO: 144,
+    HCO_CONCEP_APTI_PSICO_INGRESO: 151,
+    HCO_CONCEP_APTI_PSICO_CONTROL: 152,
+    HCO_CONCEP_APTI_PSICO_PROMO: 153,
     HCO_CONCEPTO_APTI_MEDICA: 42,
     OPT_SINO: 8,
     HCO_NEADONDE: 145,
@@ -139,6 +142,12 @@ export const DefaultValue = {
     TIPO_ATENCION_ATENCIONMEDICA_NUEVO: 3931,
     TIPO_ATENCION_ATENCIONMEDICA_CONTROL: 3932,
 
+    /* ATENCIÓN EMO */
+    EMO_ATENCION_INGRESO: 3918,
+    EMO_ATENCION_CONTRO: 3921,
+    EMO_ATENCION_PROMO: 3922,
+
+
     ORDENES_LABORATORIO: 3533,
     ORDENES_FECHA_EXAM_FISICO: 3541,
     ORDENES_RNM: 3537,
@@ -178,6 +187,7 @@ export const DefaultValue = {
 export const TitleButton = {
     Guardar: 'Guardar',
     CerrarCaso: 'Cerrar Caso',
+    OrdenesMedicas: 'Ordenes Medicas',
     Programacion: 'Programación',
     Imprimir: 'Imprimir',
     Cancelar: 'Cerrar',

@@ -315,9 +315,9 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
                     </IconButton>
                 </TableCell>
 
-                <TableCell component="th" scope="row">
+                {/* <TableCell component="th" scope="row">
                     {row.nameEmpresa}
-                </TableCell>
+                </TableCell> */}
                 <TableCell>{row.nameCargo}</TableCell>
                 {/* <TableCell>{ViewFormat(row.fecha)}</TableCell> */}
                 <TableCell>{row.anio}</TableCell>

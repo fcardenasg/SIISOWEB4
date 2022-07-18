@@ -1,16 +1,13 @@
 import { lazy } from 'react';
 
 // project imports
-import MainLayout from 'modules/Cuestionario/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import NavMotion from 'layout/NavMotion';
 import GuestGuard from 'utils/route-guard/GuestGuard';
 
-
 const SelectionView = Loadable(lazy(() => import('views/dashboard/SelectionView/SelectionView')));
+const DashboardEnergy = Loadable(lazy(() => import('views/dashboard/SelectionView/DashboardEnergy')));
 
-
-// ==============================|| MAIN ROUTING ||============================== //
 
 const QuestionnaireRoutes = {
     path: '/dashboard/select',
@@ -23,8 +20,8 @@ const QuestionnaireRoutes = {
     ),
     /* children: [
         {
-            path: '/dashboard/select',
-            element: <SelectionView />
+            path: '/dashboard/energy',
+            element: <DashboardEnergy />
         },
     ] */
 };

@@ -33,7 +33,7 @@ import { IconStairsDown, IconStairsUp } from '@tabler/icons';
 import MarketSaleChartCard from './ChartData/MarketSaleChartCard';
 import chartData from './ChartData/market-sale-chart';
 import { InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
-import { Message } from 'components/helpers/Enums';
+import { DefaultValue, Message } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { TitleButton } from 'components/helpers/Enums';
 import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
@@ -114,8 +114,11 @@ const OccupationalExamination = () => {
         metabolico: [],
     });
 
-    const [peso, setPeso] = useState('');
+    const [edad, setEdad] = useState('');
+    const [sexo, setSexo] = useState('');
+
     const [talla, setTalla] = useState('');
+    const [peso, setPeso] = useState('');
     const [imc, setIMC] = useState('');
     const [clasificacion, setClasificacion] = useState('Clasificación');
     const [clasificacionColor, setClasificacionColor] = useState('info');
@@ -161,6 +164,8 @@ const OccupationalExamination = () => {
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
+                setEdad(GetEdad(new Date(lsServerEmployee.data.fechaNaci)));
+                setSexo(lsServerEmployee.data.nameGenero);
             }
         } catch (error) {
             setLsEmployee([]);
@@ -253,7 +258,8 @@ const OccupationalExamination = () => {
                 datos.anioAT, datos.especifiqueAT, datos.anio1AT, datos.especifique1AT,
 
                 estadoVacuna.tetanoIM, estadoVacuna.influenzaIM, estadoVacuna.fiebreAmarillaIM, estadoVacuna.rubeolaSarampionIM, estadoVacuna.covid19IM,
-                estadoVacuna.otrasIM, datos.anioVacuna1IM, datos.anioVacuna2IM, datos.anioVacuna3IM, datos.anioVacuna4IM, datos.anioVacuna5IM, datos.anioVacuna6IM,
+                estadoVacuna.otrasIM, datos.anioVacuna1IM, datos.anioVacuna2IM, datos.anioVacuna3IM, datos.anioVacuna4IM, datos.anioVacuna5IM,
+                datos.idRefuerzoIM, datos.anioVacuna6IM,
 
                 datos.fumaHB, datos.cigarrillosDiasFumaHB, datos.aniosCigaFumaHB, datos.mesesCigaFumaHB, datos.observacionFumaHB, datos.fumabaHB,
                 datos.cigarrillosDiasFumabaHB, datos.aniosCigaFumabaHB, datos.mesesCigaFumabaHB, datos.observacionFumabaHB, datos.practicaDeporteHB,
@@ -301,7 +307,7 @@ const OccupationalExamination = () => {
                 datos.idDiabetesNEMTA, datos.idDislipidemiaNEMTA, datos.idDiagnosticoNEMTA, datos.idRiesgoCardiovascular1NEMTA, datos.idRiesgoCardiovascular2NEMTA,
                 datos.idHipertiroidismoNEMTA, datos.idAlteracionAuditivaNEMTA, datos.idVertigoAlteracionesNEMTA, datos.idEpilegsiaNEMTA, datos.idCegueraTemporalNEMTA,
                 datos.idHistoriaFobiasNEMTA, datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA,
-                datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, datos.conceptoActitudMedicoNEMTA,
+                datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, DefaultValue.SINREGISTRO_GLOBAL,
 
                 FormatDate(datos.fechaFRA), datos.tencionFRA, datos.idTencionArterialFRA, JSON.stringify(arrays.antecedentesCardio), datos.idDeporteFRA, datos.idBebidaFRA,
                 FormatDate(datos.fechaLaboratorioFRA), datos.colesterolTotalFRA, datos.hDLFRA, datos.triglicericosFRA, JSON.stringify(arrays.metabolico), datos.glisemiaFRA,
@@ -377,7 +383,6 @@ const OccupationalExamination = () => {
                 <Fragment>
                     <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
                     <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
 
                     <Transitions type="collapse" in={viewChart} position="top-left" direction="up">
                         <MarketSaleChartCard chartData={chartData} />
@@ -511,16 +516,22 @@ const OccupationalExamination = () => {
                     </TabPanel>
                     <TabPanel value={value} index={2}>
                         <Emo
-                            setPeso={setPeso}
+                            atencion={atencion}
+                            edad={edad}
+                            setEdad={setEdad}
+                            sexo={sexo}
+                            setSexo={setSexo}
                             peso={peso}
-                            setTalla={setTalla}
+                            setPeso={setPeso}
                             talla={talla}
-                            setIMC={setIMC}
+                            setTalla={setTalla}
                             imc={imc}
-                            setClasificacion={setClasificacion}
+                            setIMC={setIMC}
                             clasificacion={clasificacion}
-                            setClasificacionColor={setClasificacionColor}
+                            setClasificacion={setClasificacion}
                             clasificacionColor={clasificacionColor}
+                            setClasificacionColor={setClasificacionColor}
+
                             documento={documento}
                             errors={errors}
                             setArrays={setArrays}
@@ -559,6 +570,14 @@ const OccupationalExamination = () => {
                                     handleUpdateAttentionClose("ATENDIDO");
                                 }}>
                                     {TitleButton.CerrarCaso}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth /* onClick={} */>
+                                    {TitleButton.OrdenesMedicas}
                                 </Button>
                             </AnimateButton>
                         </Grid>

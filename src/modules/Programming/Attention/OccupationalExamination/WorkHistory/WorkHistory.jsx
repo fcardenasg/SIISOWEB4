@@ -280,7 +280,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
     const handleClickDLTD = async (datos) => {
         try {
-            const DataToInsert = PostWorkHistoryDLTD(FormatDate(new Date()), atencion, documento, datos.idEmpresa,
+            const DataToInsert = PostWorkHistoryDLTD(FormatDate(new Date()), atencion, documento, DefaultValue.SINREGISTRO_GLOBAL,
                 datos.idCargo, datos.anio, datos.meses, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (atencion !== '') {
@@ -413,7 +413,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                     {!addItemClickedEmpresa ?
                         <Grid item sx={{ pl: 2, pt: 3 }}>
                             <Button disabled={lsEmpleado.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedEmpresa(true)}>
-                                + Agregar Cargo
+                                + Agregar Empresa
                             </Button>
                         </Grid> : <></>}
                 </SubCard>
@@ -426,7 +426,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell sx={{ pl: 3 }} />
-                                    <TableCell>Empresa</TableCell>
+                                    {/* <TableCell>Empresa</TableCell> */}
                                     <TableCell>Cargo</TableCell>
                                     {/* <TableCell>Fecha</TableCell> */}
                                     <TableCell>Años</TableCell>
@@ -448,20 +448,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
                     <Transitions type="collapse" in={addItemClickedDLTD} position="top-left" direction="up">
                         <Grid container sx={{ pt: 5 }} spacing={2}>
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idEmpresa"
-                                        label="Empresa"
-                                        defaultValue=""
-                                        options={lsEmpresa}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
+                            <Grid item xs={6}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idCargo"
@@ -474,7 +461,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         type="number"
@@ -488,7 +475,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         type="number"
@@ -529,7 +516,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} lg={3} sm={6}>
                             <SideIconCard
-                                bgcolor={theme.palette.grey[200]}
+                                bgcolor={theme.palette.grey[100]}
                                 iconPrimary={RecordVoiceOverIcon}
                                 primary={`Años: ${anioRuidoDTLD}`}
                                 secondary="Ruido en DLTD"
@@ -539,7 +526,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
                         <Grid item xs={12} lg={3} sm={6}>
                             <SideIconCard
-                                bgcolor={theme.palette.grey[200]}
+                                bgcolor={theme.palette.grey[100]}
                                 iconPrimary={RecordVoiceOverIcon}
                                 primary={`Meses: ${mesRuidoDTLD}`}
                                 secondary="Ruido en DLTD"
@@ -549,7 +536,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
                         <Grid item xs={12} lg={3} sm={6}>
                             <SideIconCard
-                                bgcolor={theme.palette.grey[200]}
+                                bgcolor={theme.palette.grey[100]}
                                 iconPrimary={ReportProblemIcon}
                                 primary={`Años: ${mpiAnioDTLD}`}
                                 secondary="Exposición MPI DLTD"
@@ -559,7 +546,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
                         <Grid item xs={12} lg={3} sm={6}>
                             <SideIconCard
-                                bgcolor={theme.palette.grey[200]}
+                                bgcolor={theme.palette.grey[100]}
                                 iconPrimary={ReportProblemIcon}
                                 primary={`Meses: ${mpiMesDTLD}`}
                                 secondary="Exposición MPI DLTD"
@@ -575,7 +562,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} lg={3} sm={6}>
                             <SideIconCard
-                                bgcolor={theme.palette.grey[200]}
+                                bgcolor={theme.palette.grey[100]}
                                 iconPrimary={RecordVoiceOverIcon}
                                 primary={`Años: ${anioRuidoOtrasEmpresas}`}
                                 secondary="Ruido en Otras Empresas"
@@ -585,7 +572,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
                         <Grid item xs={12} lg={3} sm={6}>
                             <SideIconCard
-                                bgcolor={theme.palette.grey[200]}
+                                bgcolor={theme.palette.grey[100]}
                                 iconPrimary={RecordVoiceOverIcon}
                                 primary={`Meses: ${mesRuidoOtrasEmpresas}`}
                                 secondary="Ruido en Otras Empresas"
@@ -595,7 +582,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
                         <Grid item xs={12} lg={3} sm={6}>
                             <SideIconCard
-                                bgcolor={theme.palette.grey[200]}
+                                bgcolor={theme.palette.grey[100]}
                                 iconPrimary={ReportProblemIcon}
                                 primary={`Años: ${mpiAnioOtrasEmpresas}`}
                                 secondary="Exposición MPI Otras Empresas"
@@ -605,7 +592,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
                         <Grid item xs={12} lg={3} sm={6}>
                             <SideIconCard
-                                bgcolor={theme.palette.grey[200]}
+                                bgcolor={theme.palette.grey[100]}
                                 iconPrimary={ReportProblemIcon}
                                 primary={`Meses: ${mpiMesOtrasEmpresas}`}
                                 secondary="Exposición MPI Otras Empresas"

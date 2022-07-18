@@ -1034,10 +1034,6 @@ const MainRoutes = {
             element: <DashboardDefault />
         },
         {
-            path: '/dashboard/select',
-            element: <SelectionView />
-        },
-        {
             path: '/dashboard/analytics',
             element: <DashboardAnalytics />
         }

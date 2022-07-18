@@ -8,7 +8,7 @@ export function PostOccupationalExamination(
     traumaticosAP, tranfuccionesAP, etsAP, deformidadesAP, psiquiatricosAP, farmacoDependenciaAP, emAP, renalAP,
     asmaAP, orlAP, cancerAP, especifiqueAP, anioAT, especifiqueAT, anio1AT, especifique1AT, tetanoIM, influenzaIM,
     fiebreAmarillaIM, rubeolaSarampionIM, covid19IM, otrasIM, anioVacuna1IM = 0, anioVacuna2IM = 0, anioVacuna3IM = 0,
-    anioVacuna4IM = 0, anioVacuna5IM = 0, anioVacuna6IM = 0, fumaHB, cigarrillosDiasFumaHB, aniosCigaFumaHB, mesesCigaFumaHB,
+    anioVacuna4IM = 0, anioVacuna5IM = 0, idRefuerzoIM, anioVacuna6IM, fumaHB, cigarrillosDiasFumaHB, aniosCigaFumaHB, mesesCigaFumaHB,
     observacionFumaHB, fumabaHB, cigarrillosDiasFumabaHB, aniosCigaFumabaHB, mesesCigaFumabaHB, observacionFumabaHB,
     practicaDeporteHB, idFrecuenciaDeporteHB, idCualDeporteHB, observacionPracticaDeporHB, hobbiesPasatiempoHB, cualHobbiesHB,
     consumeBebidasAlcoholicasHB, idFrecuenciaBebidaAlHB, cualBebidasAlHB, fobiasHB, tipoFobiaHB, cualFobiaHB,
@@ -74,7 +74,7 @@ export function PostOccupationalExamination(
         traumaticosAP, tranfuccionesAP, etsAP, deformidadesAP, psiquiatricosAP, farmacoDependenciaAP, emAP, renalAP,
         asmaAP, orlAP, cancerAP, especifiqueAP, anioAT, especifiqueAT, anio1AT, especifique1AT, tetanoIM, influenzaIM,
         fiebreAmarillaIM, rubeolaSarampionIM, covid19IM, otrasIM, anioVacuna1IM, anioVacuna2IM, anioVacuna3IM,
-        anioVacuna4IM, anioVacuna5IM, anioVacuna6IM, fumaHB, cigarrillosDiasFumaHB, aniosCigaFumaHB, mesesCigaFumaHB,
+        anioVacuna4IM, anioVacuna5IM, idRefuerzoIM, anioVacuna6IM, fumaHB, cigarrillosDiasFumaHB, aniosCigaFumaHB, mesesCigaFumaHB,
         observacionFumaHB, fumabaHB, cigarrillosDiasFumabaHB, aniosCigaFumabaHB, mesesCigaFumabaHB, observacionFumabaHB,
         practicaDeporteHB, idFrecuenciaDeporteHB, idCualDeporteHB, observacionPracticaDeporHB, hobbiesPasatiempoHB, cualHobbiesHB,
         consumeBebidasAlcoholicasHB, idFrecuenciaBebidaAlHB, cualBebidasAlHB, fobiasHB, tipoFobiaHB, cualFobiaHB,
@@ -144,7 +144,7 @@ export function PutOccupationalExamination(id, idHistoriaLaboral, documento, fec
     anioAT, especifiqueAT, anio1AT, especifique1AT,
 
     tetanoIM, influenzaIM, fiebreAmarillaIM, rubeolaSarampionIM, covid19IM,
-    otrasIM, anioVacuna1IM, anioVacuna2IM, anioVacuna3IM, anioVacuna4IM, anioVacuna5IM, anioVacuna6IM,
+    otrasIM, anioVacuna1IM, anioVacuna2IM, anioVacuna3IM, anioVacuna4IM, anioVacuna5IM, idRefuerzoIM, anioVacuna6IM,
 
     fumaHB, cigarrillosDiasFumaHB, aniosCigaFumaHB, mesesCigaFumaHB, observacionFumaHB, fumabaHB, cigarrillosDiasFumabaHB, aniosCigaFumabaHB, mesesCigaFumabaHB,
     observacionFumabaHB, practicaDeporteHB, idFrecuenciaDeporteHB, idCualDeporteHB, observacionPracticaDeporHB, hobbiesPasatiempoHB, cualHobbiesHB,
@@ -194,7 +194,7 @@ export function PutOccupationalExamination(id, idHistoriaLaboral, documento, fec
         anioAT, especifiqueAT, anio1AT, especifique1AT,
 
         tetanoIM, influenzaIM, fiebreAmarillaIM, rubeolaSarampionIM, covid19IM,
-        otrasIM, anioVacuna1IM, anioVacuna2IM, anioVacuna3IM, anioVacuna4IM, anioVacuna5IM, anioVacuna6IM,
+        otrasIM, anioVacuna1IM, anioVacuna2IM, anioVacuna3IM, anioVacuna4IM, anioVacuna5IM, idRefuerzoIM, anioVacuna6IM,
 
         fumaHB, cigarrillosDiasFumaHB, aniosCigaFumaHB, mesesCigaFumaHB, observacionFumaHB, fumabaHB, cigarrillosDiasFumabaHB, aniosCigaFumabaHB, mesesCigaFumabaHB,
         observacionFumabaHB, practicaDeporteHB, idFrecuenciaDeporteHB, idCualDeporteHB, observacionPracticaDeporHB, hobbiesPasatiempoHB, cualHobbiesHB,

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
+    Divider,
     useMediaQuery,
     Grid, Typography,
 } from '@mui/material';
@@ -65,7 +66,7 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
             </FullScreenDialog>
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                <Typography align='right' variant="h4" color="inherit">TOS</Typography></>}>
+                <Typography align='right' variant="h5" color="inherit">TOS</Typography></>}>
                 <SubCard darkTitle title="Tos">
                     <Grid container spacing={1} alignItems="center">
                         <Grid item xs={12}>
@@ -304,10 +305,11 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                     </Grid>
                 </SubCard>
             </Accordion>
+            <Divider />
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                <Typography align='right' variant="h4" color="inherit">ATAQUES</Typography></>}>
+                <Typography align='right' variant="h5" color="inherit">ATAQUES</Typography></>}>
                 <SubCard darkTitle title="Ataques De Silbidos">
                     <Grid container spacing={1} alignItems="center">
                         <Grid item xs={12}>
@@ -470,10 +472,11 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                 </SubCard>
                 <Grid sx={{ pb: 2 }} />
             </Accordion>
+            <Divider />
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                <Typography align='right' variant="h4" color="inherit">GRIPAS</Typography></>}>
+                <Typography align='right' variant="h5" color="inherit">GRIPAS</Typography></>}>
 
                 <SubCard darkTitle title="Gripas y Enfermedades del Torax">
                     <Grid container spacing={1} alignItems="center">
@@ -877,10 +880,11 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                     </Grid>
                 </SubCard>
             </Accordion>
+            <Divider />
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                <Typography align='right' variant="h4" color="inherit">HISTORIA</Typography></>}>
+                <Typography align='right' variant="h5" color="inherit">HISTORIA</Typography></>}>
 
                 <SubCard darkTitle title="Historia Ocupacional">
                     <Grid container spacing={2} alignItems="center">
@@ -1183,10 +1187,11 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                     </Grid>
                 </SubCard>
             </Accordion>
+            <Divider />
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                <Typography align='right' variant="h4" color="inherit">RECOMENDACIONES</Typography></>}>
+                <Typography align='right' variant="h5" color="inherit">RECOMENDACIONES</Typography></>}>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12}>
                         <FormProvider {...methods}>
@@ -1204,6 +1209,7 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                     </Grid>
                 </Grid>
             </Accordion>
+            <Divider />
         </Fragment>
     );
 };
