@@ -6,6 +6,8 @@ import {
     Grid, Typography, Divider
 } from '@mui/material';
 
+import { IconLungs, IconFall } from '@tabler/icons';
+
 import Chip from '@mui/material/Chip';
 import InputOnChange from 'components/input/InputOnChange';
 import ControllerListen from 'components/controllers/ControllerListen';
@@ -26,14 +28,12 @@ import { IconEdit } from '@tabler/icons';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
-import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
-import FullScreenDialog from 'components/controllers/FullScreenDialog'
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import TableAntecedentes from './TableEmo/TableAntecedentes';
 import RespiratorySymptoms from './RespiratorySymptoms';
 import { GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
-import LoadingLine from 'components/loading/LoadingLine';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -43,7 +43,6 @@ const DetailIcons = [
 
 const Emo = ({
     atencion,
-    sexo, setSexo, edad, setEdad,
     setPeso, peso,
     setTalla, talla,
     setIMC, imc,
@@ -85,12 +84,9 @@ const Emo = ({
     const [lsNeADonde, setLsNeADonde] = useState([]);
     const [lsRiesClasifi, setLsRiesClasifi] = useState([]);
 
-    const [lsConcepPsico, setLsConcepPsico] = useState({
-        lsIngreso: [],
-        lsControlPeriodico: [],
-        lsPromo: [],
-        lsDefecto: []
-    });
+    const [lsIngreso, setLsIngreso] = useState([]);
+    const [lsControlPeriodico, setLsControlPeriodico] = useState([]);
+    const [lsPromo, setLsPromo] = useState([]);
 
 
     const [lsLastRecord, setLsLastRecord] = useState([]);
@@ -175,29 +171,6 @@ const Emo = ({
             }));
             setLsConceptoActitud(resultConceptoActitud);
 
-
-            const lsServerConceptoActitudIngreso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_APTI_PSICO_INGRESO);
-            var resultConceptoActitudIngreso = lsServerConceptoActitudIngreso.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConcepPsico({ ...lsConcepPsico, lsIngreso: resultConceptoActitudIngreso });
-
-            const lsServerConceptoActitudControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_APTI_PSICO_CONTROL);
-            var resultConceptoActitudControl = lsServerConceptoActitudControl.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConcepPsico({ ...lsConcepPsico, lsIngreso: resultConceptoActitudControl });
-
-            const lsServerPromo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_APTI_PSICO_PROMO);
-            var resultPromo = lsServerPromo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConcepPsico({ ...lsConcepPsico, lsIngreso: resultPromo });
-
-
             const lsServerDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HC_DEPORTE);
             var resultDeporte = lsServerDeporte.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -260,21 +233,21 @@ const Emo = ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsConcepPsico({ ...lsConcepPsico, lsIngreso: resultConceptoActitudIngreso });
+            setLsIngreso(resultConceptoActitudIngreso);
 
             const lsServerConceptoActitudControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_APTI_PSICO_CONTROL);
             var resultConceptoActitudControl = lsServerConceptoActitudControl.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsConcepPsico({ ...lsConcepPsico, lsControlPeriodico: resultConceptoActitudControl });
+            setLsControlPeriodico(resultConceptoActitudControl);
 
             const lsServerPromo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_APTI_PSICO_PROMO);
             var resultPromo = lsServerPromo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsConcepPsico({ ...lsConcepPsico, lsPromo: resultPromo });
+            setLsPromo(resultPromo);
         } catch (error) {
             console.log(error);
         }
@@ -2793,7 +2766,7 @@ const Emo = ({
                 <Grid sx={{ pb: 2 }} />
 
                 <SubCard darkTitle title={<Typography variant="h4">EXÁMENES PARACLÍNICOS</Typography>}>
-                    <Grid container spacing={2} sx={{ pb: 2 }}>
+                    <Grid container spacing={2}>
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputDatePicker
@@ -3469,9 +3442,9 @@ const Emo = ({
                                     label="Concepto de Aptitud PsicoFisica"
                                     defaultValue={lsLastRecord.idConceptoActitudID}
                                     options={
-                                        atencion == DefaultValue.EMO_ATENCION_INGRESO ? lsConcepPsico.lsIngreso :
-                                            atencion == DefaultValue.EMO_ATENCION_CONTRO ? lsConcepPsico.lsControlPeriodico :
-                                                atencion == DefaultValue.EMO_ATENCION_PROMO ? lsConcepPsico.lsPromo : []
+                                        atencion === DefaultValue.EMO_ATENCION_INGRESO ? lsIngreso :
+                                            atencion === DefaultValue.EMO_ATENCION_CONTRO ? lsControlPeriodico :
+                                                atencion === DefaultValue.EMO_ATENCION_PROMO ? lsPromo : []
                                     }
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors}
@@ -3482,15 +3455,15 @@ const Emo = ({
                 </SubCard>
                 <Grid sx={{ pb: 2 }} />
 
-                <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                    <Typography align='right' variant="h5" color="inherit">SINTOMAS RESPIRATORIOS</Typography></>}>
+                <Accordion title={<><IconLungs />
+                    <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">SINTOMAS RESPIRATORIOS</Typography></>}>
                     <RespiratorySymptoms documento={documento} errors={errors} lsEmployee={lsEmployee} {...methods} />
                 </Accordion>
                 <Divider />
                 <Grid sx={{ pb: 2 }} />
 
-                <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                    <Typography variant="h5" color="inherit">TRABAJO EN ALTURA</Typography></>}>
+                <Accordion title={<><IconFall />
+                    <Typography sx={{ pl: 2 }} variant="h5" color="inherit">TRABAJO EN ALTURA</Typography></>}>
 
                     <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIÓN EMPRESA</Typography>}>
                         <Grid container spacing={2}>
@@ -4055,402 +4028,7 @@ const Emo = ({
                 <Divider />
                 <Grid sx={{ pb: 2 }} />
 
-                <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                    <Typography align='right' variant="h5" color="inherit">FRAMINGHAM</Typography></>}>
 
-                    <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN CARDIOVASCULAR</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha"
-                                        name="fechaFRA"
-                                        defaultValue={new Date()}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    disabled
-                                    label="Edad"
-                                    onChange={(e) => setEdad(e.target.value)}
-                                    value={edad}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    disabled
-                                    label="Sexo"
-                                    onChange={(e) => setSexo(e.target.value)}
-                                    value={sexo}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        disabled
-                                        name="fumaFRA"
-                                        label="Fuma"
-                                        defaultValue={lsLastRecord.fumaHB ? DefaultValue.Opcion_SI : DefaultValue.Opcion_NO}
-                                        options={lsOpcion}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="tencionFRA"
-                                        label="Tensión Arterial"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            {/* <Grid item xs={4} >
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idTencionArterialFRA"
-                                        label="Dx Tensión Arterial"
-                                        defaultValue=""
-                                        options={lsFramDxTension}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid> */}
-
-                            {/* <Grid item xs={4}>
-                                <InputMultiSelects
-                                    fullWidth
-                                    onChange={(event, value) => setArrays({ ...arrays, antecedentesCardio: value })}
-                                    value={arrays.antecedentesCardio}
-                                    label="Antecedentes Cardiovascular"
-                                    options={lsFramAntecedentesCardiovascular}
-                                />
-                            </Grid> */}
-
-                            {/* <Grid item xs={4} >
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        disabled
-                                        name="idDeporteFRA"
-                                        label="Deporte"
-                                        defaultValue={lsLastRecord.idFrecuenciaDeporteHB}
-                                        options={lsFrecuencia}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid> */}
-
-                            {/* <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        disabled
-                                        name="idBebidaFRA"
-                                        label="Bebidas"
-                                        defaultValue={lsLastRecord.idFrecuenciaBebidaAlHB}
-                                        options={lsFrecuencia}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid> */}
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha Laboratorio"
-                                        name="fechaLaboratorioFRA"
-                                        defaultValue={new Date()}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2.4} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="colesterolTotalFRA"
-                                        label="Colesterol Total"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2.4} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="hDLFRA"
-                                        label="HDL"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2.4} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="triglicericosFRA"
-                                        label="Trigliceridos"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="lDLFRA"
-                                        label="LDL"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            {/* <Grid item xs={4}>
-                                <InputMultiSelects
-                                    fullWidth
-                                    onChange={(event, value) => setArrays({ ...arrays, metabolico: value })}
-                                    value={arrays.metabolico}
-                                    label="Dx Metabólico"
-                                    options={lsFramDxMetabolismo}
-                                />
-                            </Grid> */}
-
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="glisemiaFRA"
-                                        label="Glicemia"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        multiline
-                                        rows={4}
-                                        defaultValue=""
-                                        fullWidth
-                                        name="observacionFRA"
-                                        label="Observación"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                <DetailedIcon
-                                    title={DetailIcons[0].title}
-                                    onClick={() => setOpenTemplate(true)}
-                                    icons={DetailIcons[0].icons}
-                                />
-
-                                <DetailedIcon
-                                    title={DetailIcons[1].title}
-                                    onClick={() => setOpen(true)}
-                                    icons={DetailIcons[1].icons}
-                                />
-
-                                <DetailedIcon
-                                    title={DetailIcons[2].title}
-                                    onClick={() => { setOpenHistory(true); setCadenaHistory('INFORMACION_CARDIOVASCULAR') }}
-                                    icons={DetailIcons[2].icons}
-                                />
-                            </Grid>
-
-                            {/* <Grid item xs={2} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="relacionFRA"
-                                        label="Relación"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid> */}
-
-                            {/* <Grid item xs={2} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="fRLEdadFRA"
-                                        label="FR Edad"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="fRLColesterolFRA"
-                                        label="Fr Colesterol"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="fRHDLFRA"
-                                        label="Fr HDL"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="fRGlisemiaFRA"
-                                        label="FR Glicemia"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="fRTencionFRA"
-                                        label="Fr Tensión Arterial"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2} >
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="fRTabaquismoFRA"
-                                        label="FR Tabaquismo"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid> */}
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="puntajeFRA"
-                                        label="Puntaje"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="riesgoAbsolutoFRA"
-                                        label="Riesgo Absoluto  "
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="riesgoRelativoFRA"
-                                        label="Riesgo Relativo  "
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="interpretacionFRA"
-                                        label="Interpretación  "
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-
-                </Accordion>
-                <Divider />
 
             </Fragment>
         </Fragment>
@@ -4468,10 +4046,6 @@ Emo.propTypes = {
     setEstadoVacuna: PropTypes.func,
     estadoVacuna: PropTypes.any,
 
-    edad: PropTypes.string,
-    setEdad: PropTypes.func,
-    sexo: PropTypes.string,
-    setSexo: PropTypes.func,
     peso: PropTypes.string,
     setPeso: PropTypes.func,
     talla: PropTypes.string,

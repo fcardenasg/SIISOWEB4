@@ -147,7 +147,7 @@ const PersonalData = ({ lsEmployee = [] }) => {
                         <ListDetails name={DetailsViewTwo[7].name} campoRender={lsEmployee.nameTurno} />
                         <ListDetails name={DetailsViewTwo[8].name} campoRender={lsEmployee.nameTipoContrato} />
                         <ListDetails name={DetailsViewTwo[9].name} campoRender={ViewFormat(lsEmployee.fechaContrato)} />
-                        <ListDetails name={DetailsViewTwo[11].name} campoRender={lsEmployee.ges} />
+                        <ListDetails name={DetailsViewTwo[11].name} campoRender={lsEmployee.nameGes} />
                     </Grid>
                 </SubCard>
             </Grid>

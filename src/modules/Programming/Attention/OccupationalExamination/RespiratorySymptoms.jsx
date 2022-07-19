@@ -7,6 +7,7 @@ import {
     Grid, Typography,
 } from '@mui/material';
 
+
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import Accordion from 'components/accordion/Accordion';
 import ControllerListen from 'components/controllers/ControllerListen';
@@ -66,7 +67,7 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
             </FullScreenDialog>
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                <Typography align='right' variant="h5" color="inherit">TOS</Typography></>}>
+                <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">TOS</Typography></>}>
                 <SubCard darkTitle title="Tos">
                     <Grid container spacing={1} alignItems="center">
                         <Grid item xs={12}>
@@ -309,7 +310,7 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                <Typography align='right' variant="h5" color="inherit">ATAQUES</Typography></>}>
+                <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">ATAQUES</Typography></>}>
                 <SubCard darkTitle title="Ataques De Silbidos">
                     <Grid container spacing={1} alignItems="center">
                         <Grid item xs={12}>
@@ -476,7 +477,7 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                <Typography align='right' variant="h5" color="inherit">GRIPAS</Typography></>}>
+                <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">GRIPAS</Typography></>}>
 
                 <SubCard darkTitle title="Gripas y Enfermedades del Torax">
                     <Grid container spacing={1} alignItems="center">
@@ -884,7 +885,7 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                <Typography align='right' variant="h5" color="inherit">HISTORIA</Typography></>}>
+                <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">HISTORIA</Typography></>}>
 
                 <SubCard darkTitle title="Historia Ocupacional">
                     <Grid container spacing={2} alignItems="center">
@@ -1191,7 +1192,7 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
-                <Typography align='right' variant="h5" color="inherit">RECOMENDACIONES</Typography></>}>
+                <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">RECOMENDACIONES</Typography></>}>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12}>
                         <FormProvider {...methods}>

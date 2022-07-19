@@ -1,4 +1,4 @@
-// ===========================|| WIDGET - MARKET SHARE CHART ||=========================== //
+
 
 const chartData = {
     height: 200,

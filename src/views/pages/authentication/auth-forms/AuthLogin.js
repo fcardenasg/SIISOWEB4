@@ -189,8 +189,6 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                             navigate("/dashboard/select", { replace: true });
                         }
 
-                        /* console.log(userData); */
-
                     } catch (err) {
                         console.error(err);
                         if (scriptedRef.current) {

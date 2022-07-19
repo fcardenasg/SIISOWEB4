@@ -37,7 +37,7 @@ const SelectionView = () => {
 
                 <Grid container sx={{ pt: 8, textAlign: 'center' }}>
                     <Grid item xs={6}>
-                        <Button onClick={() => navigate("/dashboard/default", { replace: true })} variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }}>
+                        <Button onClick={() => navigate("/dashboard/ltd", { replace: true })} variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }}>
                             <CardMedia
                                 component="img"
                                 height="100"

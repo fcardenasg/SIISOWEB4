@@ -2,7 +2,7 @@ const config = {
     // basename: only at build time to set, and Don't add '/' at end off BASENAME for breadcrumbs, also Don't put only '/' use blank('') instead,
     // like '/berry-material-react/react/default'
     basename: '',
-    defaultPath: '/dashboard/default',
+    defaultPath: '/dashboard/ltd',
     fontFamily: `'Roboto', sans-serif`,
     borderRadius: 12,
     outlinedFilled: true,
@@ -15,13 +15,13 @@ const config = {
         timeout: '1 days'
     },
     firebase: {
-    /*  apiKey: 'AIzaSyBernKzdSojh_vWXBHt0aRhf5SC9VLChbM',
-        authDomain: 'berry-material-react.firebaseapp.com',
-        projectId: 'berry-material-react',
-        storageBucket: 'berry-material-react.appspot.com',
-        messagingSenderId: '901111229354',
-        appId: '1:901111229354:web:a5ae5aa95486297d69d9d3',
-        measurementId: 'G-MGJHSL8XW3' */
+        /*  apiKey: 'AIzaSyBernKzdSojh_vWXBHt0aRhf5SC9VLChbM',
+            authDomain: 'berry-material-react.firebaseapp.com',
+            projectId: 'berry-material-react',
+            storageBucket: 'berry-material-react.appspot.com',
+            messagingSenderId: '901111229354',
+            appId: '1:901111229354:web:a5ae5aa95486297d69d9d3',
+            measurementId: 'G-MGJHSL8XW3' */
 
         apiKey: "AIzaSyCH-K9RO9vKLLP5KaLexNpU3QAlR-eLHxc",
         authDomain: "siisoweb4.firebaseapp.com",
