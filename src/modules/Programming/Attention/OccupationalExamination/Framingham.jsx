@@ -28,6 +28,7 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import ViewFramingham from './Framingham/ViewFramingham';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -36,32 +37,29 @@ const DetailIcons = [
 ]
 
 const Framingham = ({
-    atencion,
-    setSexo, sexo,
-    setEdad, edad,
-    setFrFuma, frFuma,
-    setFrColesterol, frColesterol,
-    setFrTencion, frTencion,
-
-    handleFuma,
-    handleColesterol,
-    handleGlicemia,
-
-    handleFrPuntaje,
-    handleFrEdad,
-    handleFrHdl,
-    setFrGlicemia,
-    handleTencion,
-
-    fuma,
-    colesterol,
-    glicemia,
-    tencion,
+    frFuma,
+    frColesterol,
+    frTencion,
     frEdad,
-    frHdl,
     frGlicemia,
-    frTabaquismo,
     frPuntaje,
+    frLdl,
+    relacion,
+    frHdl,
+    riesgo,
+
+    handleHdl,
+    hdl,
+    handleColesterol,
+    colesterol,
+    handleTrigliceridos,
+    trigliceridos,
+    handleFuma,
+    fuma,
+    handleGlicemia,
+    glicemia,
+    handleTencion,
+    tencion,
 
     errors,
     documento,
@@ -136,17 +134,7 @@ const Framingham = ({
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={4}>
-                            <InputOnChange
-                                disabled
-                                label="Fr Edad"
-                                onChange={(e) => setEdad(e.target.value)}
-                                value={edad}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
-
-                        <Grid item xs={4}>
+                        {/* <Grid item xs={4}>
                             <InputOnChange
                                 disabled
                                 label="Sexo"
@@ -154,7 +142,7 @@ const Framingham = ({
                                 value={sexo}
                                 size={matchesXS ? 'small' : 'medium'}
                             />
-                        </Grid>
+                        </Grid> */}
 
                         <Grid item xs={4}>
                             <SelectOnChange
@@ -188,7 +176,7 @@ const Framingham = ({
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={2.4}>
+                        <Grid item xs={4}>
                             <InputOnChange
                                 type="number"
                                 name="colesterolTotalFRA"
@@ -199,46 +187,27 @@ const Framingham = ({
                             />
                         </Grid>
 
-                        <Grid item xs={2.4}>
+                        <Grid item xs={4}>
                             <InputOnChange
-                                disabled
                                 name="hDLFRA"
                                 label="HDL"
-                                onChange={handleFrHdl}
-                                value={frHdl}
+                                onChange={handleHdl}
+                                value={hdl}
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
 
-                        <Grid item xs={2.4} >
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    type="number"
-                                    name="triglicericosFRA"
-                                    label="Trigliceridos"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
+                        <Grid item xs={4}>
+                            <InputOnChange
+                                name="triglicericosFRA"
+                                label="Trigliceridos"
+                                onChange={handleTrigliceridos}
+                                value={trigliceridos}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
                         </Grid>
 
-                        <Grid item xs={2.4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    type="number"
-                                    name="lDLFRA"
-                                    label="LDL"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={2.4}>
+                        <Grid item xs={4}>
                             <InputOnChange
                                 type="number"
                                 name="glisemiaFRA"
@@ -246,6 +215,23 @@ const Framingham = ({
                                 onChange={handleGlicemia}
                                 value={glicemia}
                                 size={matchesXS ? 'small' : 'medium'}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <ViewFramingham
+                                ldl={frLdl}
+                                relacion={relacion}
+                                frEdad={frEdad}
+                                frColesterol={frColesterol}
+                                frHdl={frHdl}
+                                frGlicemia={frGlicemia}
+                                frTensionArterial={frTencion}
+                                frTabaquismo={frFuma}
+                                puntaje={frPuntaje}
+                                riesgoAbsoluto={riesgo.riesgoAbsoluto}
+                                riesgoRelativo={riesgo.riesgoRelativo}
+                                interpretacion={riesgo.dxRiesgo}
                             />
                         </Grid>
 
@@ -283,137 +269,6 @@ const Framingham = ({
                                 icons={DetailIcons[2].icons}
                             />
                         </Grid>
-
-                        <Grid item xs={2} >
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    type="number"
-                                    name="relacionFRA"
-                                    label="Relación"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <InputOnChange
-                                disabled
-                                label="Fr Edad"
-                                onChange={handleFrEdad}
-                                value={frEdad}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <InputOnChange
-                                disabled
-                                name="fRHDLFRA"
-                                label="Fr Colesterol"
-                                onChange={(e) => setFrColesterol(e.target.value)}
-                                value={frColesterol}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <InputOnChange
-                                disabled
-                                name="fRHDLFRA"
-                                label="Fr HDL"
-                                onChange={handleFrHdl}
-                                value={frHdl}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <InputOnChange
-                                disabled
-                                label="FR Glicemia"
-                                onChange={(e) => setFrGlicemia(e.target.value)}
-                                value={frGlicemia}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <InputOnChange
-                                disabled
-                                label="Fr Tención Arterial"
-                                onChange={(e) => setFrTencion(e.target.value)}
-                                value={frTencion}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <InputOnChange
-                                disabled
-                                label="Fr Tabaquismo"
-                                onChange={(e) => setFrFuma(e.target.value)}
-                                value={frFuma}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    type="number"
-                                    name="puntajeFRA"
-                                    label="Puntaje"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    type="number"
-                                    name="riesgoAbsolutoFRA"
-                                    label="Riesgo Absoluto  "
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    type="number"
-                                    name="riesgoRelativoFRA"
-                                    label="Riesgo Relativo  "
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="interpretacionFRA"
-                                    label="Interpretación  "
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
                     </Grid>
                 </SubCard>
 
@@ -427,34 +282,30 @@ const Framingham = ({
 export default Framingham;
 
 Framingham.propTypes = {
-    atencion: PropTypes.string,
-    setSexo: PropTypes.any, sexo: PropTypes.any,
-    setEdad: PropTypes.any, edad: PropTypes.any,
-    setFrFuma: PropTypes.any, frFuma: PropTypes.any,
-    setFrColesterol: PropTypes.any, frColesterol: PropTypes.any,
-    setFrTencion: PropTypes.any, frTencion: PropTypes.any,
-
-    handleFuma: PropTypes.func,
-    handleFrPuntaje: PropTypes.func,
-    handleFrEdad: PropTypes.func,
-    handleColesterol: PropTypes.func,
-    handleFrHdl: PropTypes.func,
-    setFrGlicemia: PropTypes.func,
-    handleTencion: PropTypes.func,
-    handleGlicemia: PropTypes.func,
-
+    frFuma: PropTypes.any,
+    frColesterol: PropTypes.any,
+    frTencion: PropTypes.any,
     frEdad: PropTypes.any,
-    colesterol: PropTypes.any,
-    frHdl: PropTypes.any,
     frGlicemia: PropTypes.any,
-    tencion: PropTypes.any,
-    frTabaquismo: PropTypes.any,
     frPuntaje: PropTypes.any,
-    glicemia: PropTypes.any,
+    relacion: PropTypes.any,
+    frLdl: PropTypes.any,
+    frHdl: PropTypes.any,
+    riesgo: PropTypes.any,
+
+    handleHdl: PropTypes.any,
+    hdl: PropTypes.any,
+    handleColesterol: PropTypes.any,
+    colesterol: PropTypes.any,
+    handleTrigliceridos: PropTypes.any,
+    trigliceridos: PropTypes.any,
+    handleFuma: PropTypes.any,
     fuma: PropTypes.any,
-
-
+    handleGlicemia: PropTypes.any,
+    glicemia: PropTypes.any,
+    handleTencion: PropTypes.any,
+    tencion: PropTypes.any,
 
     errors: PropTypes.any,
-    documento: PropTypes.string,
+    documento: PropTypes.any,
 };

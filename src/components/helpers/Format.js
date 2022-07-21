@@ -142,6 +142,8 @@ function FrHdl(edad = 0, genero = '') {
                 return 1;
             else if (edad >= 45 && edad < 50)
                 return 0;
+            else if (edad >= 50 && edad < 60)
+                return 0;
             else if (edad >= 60)
                 return -2;
         }
@@ -154,7 +156,7 @@ function FrHdl(edad = 0, genero = '') {
                 return 1;
             else if (edad >= 50 && edad < 60)
                 return 0;
-            else if (edad > 60)
+            else if (edad >= 60)
                 return -3;
         }
     } catch (error) { }
@@ -207,9 +209,9 @@ function FrTension(tension = '', genero = '') {
 
         return r;
     } catch (error) { }
-}
+}////
 
-function GetRiesgos(puntaje, edad = 0, sexo = '') {
+function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
     var riesgoAbsolutoM = 0;
     var riesgoAbsolutoH = 0;
     var riesgoRelativo = '';
@@ -297,11 +299,11 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else {
                     riesgoRelativo = "0";
@@ -311,11 +313,11 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else {
                     riesgoRelativo = "0";
@@ -327,29 +329,29 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "1.5";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else {
                     riesgoRelativo = "0";
@@ -361,37 +363,37 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "2.0";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "1.3";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "1.3";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 45) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "1.5";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             break;
@@ -399,41 +401,41 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "2.5";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "1.7";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "1.7";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "1.3";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 50) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "1.5";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             break;
@@ -441,45 +443,45 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "3.5";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "2.3";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "2.3";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "1.3";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "1.4";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "2.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "1.3";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             break;
@@ -487,49 +489,49 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "4.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "2.6";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "2.6";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "2.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "1.6";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "1.1";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "2.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "1.3";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             break;
@@ -537,57 +539,57 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "5.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "3.3";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "3.3";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "2.5";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "2.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "1.4";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "1.3";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "2.5";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "1.7";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             break;
@@ -595,61 +597,61 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "6.5";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "4.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "4.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "3.3";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "2.6";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "1.9";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "1.6";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "1.3";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "3.0";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "2.0";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "1.2";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             break;
@@ -657,65 +659,65 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "8.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "5.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "5.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "4.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "3.2";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "2.3";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "2.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "1.6";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "1.2";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "3.5";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "2.3";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "1.4";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             break;
@@ -724,77 +726,77 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "10.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "6.7";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "6.7";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "5.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "4.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "2.9";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "2.5";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "2.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "1.5";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "4.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "2.7";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "1.6";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "1.1";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "1.0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
 
@@ -803,77 +805,77 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "12.5";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "8.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "8.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "6.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "5.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "3.6";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "3.1";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "2.5";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "1.9";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "5.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "3.3";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "2.0";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "1.4";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "1.3";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "1.3";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "1.3";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
 
@@ -882,77 +884,77 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "15.5";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "10.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "10.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "7.8";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "6.1";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "4.4";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "3.9";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "3.1";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "2.3";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "5.5";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "3.7";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "2.2";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "1.6";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "1.4";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "1.4";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "1.4";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             break;
@@ -960,77 +962,77 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "18.5";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "12.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "12.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "9.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "7.4";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "5.2";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "4.6";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "3.7";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "2.8";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "6.5";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "4.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "2.6";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "1.9";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "1.6";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "1.6";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "1.6";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             break;
@@ -1038,77 +1040,77 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
             if (sexo == "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 30 && edad <= 34) {
                     riesgoRelativo = "22.5";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 35 && edad <= 39) {
                     riesgoRelativo = "15.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "15.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "11.3";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "9.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "6.4";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "5.6";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "4.5";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "3.5";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
             }
             else {
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "7.5";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "5.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "3.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "2.1";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "1.9";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "1.9";
-                    dxRiesgo = "Riesgo promedio";
+                    dxRiesgo = "RIESGO PROMEDIO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "1.9";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
             }
             break;
@@ -1117,35 +1119,35 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
 
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "9.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "6.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "3.6";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "2.6";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "2.3";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "2.3";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "2.3";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
             }
             break;
@@ -1154,35 +1156,35 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
 
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "10.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "6.7";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "4.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "2.9";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "2.5";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "2.5";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "2.5";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
             }
             break;
@@ -1192,35 +1194,35 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
 
                 if (edad < 40) {
                     riesgoRelativo = "0";
-                    dxRiesgo = "Por debajo del riesgo promedio";
+                    dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
                 }
                 else if (edad >= 40 && edad <= 44) {
                     riesgoRelativo = "12.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 45 && edad <= 49) {
                     riesgoRelativo = "8.0";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 50 && edad <= 54) {
                     riesgoRelativo = "4.8";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 55 && edad <= 59) {
                     riesgoRelativo = "3.4";
-                    dxRiesgo = "Riesgo Alto";
+                    dxRiesgo = "RIESGO ALTO";
                 }
                 else if (edad >= 60 && edad <= 64) {
                     riesgoRelativo = "3.0";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 65 && edad <= 69) {
                     riesgoRelativo = "3.0";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
                 else if (edad >= 70 && edad <= 74) {
                     riesgoRelativo = "3.0";
-                    dxRiesgo = "Riesgo moderado";
+                    dxRiesgo = "RIESGO MODERADO";
                 }
             }
             break;
@@ -1230,11 +1232,11 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
         if (sexo == "HOMBRE") {
             if (edad < 30) {
                 riesgoRelativo = "0";
-                dxRiesgo = "Por debajo del riesgo promedio";
+                dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
             }
             else if (edad >= 30 && edad <= 34) {
                 riesgoRelativo = "1.0";
-                dxRiesgo = "Por debajo del riesgo promedio";
+                dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
             }
             else {
                 riesgoRelativo = "0";
@@ -1244,11 +1246,11 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
         else {
             if (edad < 40) {
                 riesgoRelativo = "0";
-                dxRiesgo = "Por debajo del riesgo promedio";
+                dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
             }
             else if (edad >= 40 && edad <= 44) {
                 riesgoRelativo = "1.0";
-                dxRiesgo = "Por debajo del riesgo promedio";
+                dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
             }
             else {
                 riesgoRelativo = "0";
@@ -1261,43 +1263,43 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
         if (sexo == "HOMBRE") {
             if (edad < 30) {
                 riesgoRelativo = "0";
-                dxRiesgo = "Por debajo del riesgo promedio";
+                dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
             }
             else if (edad >= 30 && edad <= 34) {
                 riesgoRelativo = "26.5";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 35 && edad <= 39) {
                 riesgoRelativo = "17.7";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 40 && edad <= 44) {
                 riesgoRelativo = "17.7";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 45 && edad <= 49) {
                 riesgoRelativo = "13.3";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 50 && edad <= 54) {
                 riesgoRelativo = "10.6";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 55 && edad <= 59) {
                 riesgoRelativo = "7.6";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 60 && edad <= 64) {
                 riesgoRelativo = "6.6";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 65 && edad <= 69) {
                 riesgoRelativo = "5.3";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 70 && edad <= 74) {
                 riesgoRelativo = "4.1";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
         }
     }
@@ -1307,29 +1309,28 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
 
             if (edad < 40) {
                 riesgoRelativo = "0";
-                dxRiesgo = "Por debajo del riesgo promedio";
+                dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
             }
             else if (edad >= 40 && edad <= 44) {
                 riesgoRelativo = "13.5";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 45 && edad <= 49) {
                 riesgoRelativo = "9.0";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 50 && edad <= 54) {
                 riesgoRelativo = "5.4";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 55 && edad <= 59) {
                 riesgoRelativo = "3.9";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
             else if (edad >= 60) {
                 riesgoRelativo = "5.4";
-                dxRiesgo = "Riesgo Alto";
+                dxRiesgo = "RIESGO ALTO";
             }
-
         }
     }
 
@@ -1341,33 +1342,39 @@ function GetRiesgos(puntaje, edad = 0, sexo = '') {
     };
 }
 
-function PuntajeFr(frEdad, frColesterol, frHdl, frGlicemia, frTensionArterial, frTabaquismo) {
+function PuntajeFr(frEdad = 0, frColesterol = 0, frHdl = 0, frGlicemia = 0, frTensionArterial = 0, frTabaquismo = 0) {
     try {
-        var puntaje = (parseInt(frEdad) + parseInt(frColesterol) + parseInt(frHdl) +
-            parseInt(frGlicemia) + parseInt(frTensionArterial) + parseInt(frTabaquismo));
-        return puntaje;
-    } catch (error) { }
-}
+        if (frEdad != 0 && frColesterol != 0 && frHdl != 0 && frGlicemia != 0 && frTensionArterial != 0 && frTabaquismo != 0) {
+
+            var puntaje = (frEdad + frColesterol + frHdl + frGlicemia + frTensionArterial + frTabaquismo);
+            console.log("puntaje = ", puntaje);
+            return puntaje;
+
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}////
 
 function FrFuma(fuma = '') {
     try {
         if (fuma == DefaultValue.Opcion_NO) {
             return 0;
         }
-        else {
+        else if (fuma == DefaultValue.Opcion_SI) {
             return 2;
         }
     } catch (error) { }
 }////
 
-function CalcularLdl(hdl = 0, colesterol = 0, triglicerios = 0) {
+function FrLdl_FrRelacion(hdl = 0, colesterol = 0, triglicerios = 0) {
     if (hdl != 0 && colesterol != 0 && triglicerios != 0) {
-        var ldl = (parseInt(colesterol) - ((parseInt(triglicerios) / 5) + parseInt(hdl))).ToString();
+        var ldl = Math.ceil(parseInt(colesterol) - ((parseInt(triglicerios) / 5) + parseInt(hdl)));
         var relacion = (colesterol / hdl).toFixed(1);
 
         return { ldl, relacion }
     }
-}
+}////
 
 export {
     FormatDate,
@@ -1381,5 +1388,5 @@ export {
     GetRiesgos,
     PuntajeFr,
     FrFuma,
-    CalcularLdl
+    FrLdl_FrRelacion
 }

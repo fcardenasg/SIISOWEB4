@@ -1,10 +1,12 @@
-  function CalcularFr(frEdad, FrColesterol,FrHdl,FrGlicemia,FrTensionArterial,FrTabaquismo)
-        {
-            Puntaje= (parseInt(frEdad) + parseInt(FrColesterol)+ parseInt(FrHdl)+
-            parseInt(FrGlicemia)+ parseInt(FrTensionArterial)+ parseInt(FrTabaquismo)).ToString();
-
-            var r = Metodos.GetRiesgos(parseInt(Puntaje),parseInt(Edad),Type,DxRiesgo);
-            RiesgoAbsoluto=r.RiesgoAbsolutoH.ToString();
-            RiesgoRelativo=r.RiesgoRelativo;
-            DxRiesgo=r.DxRiesgo;
-        }
+ldl,
+relacion,
+frEdad,
+frColesterol,
+frHdl,
+frGlicemia,
+frTencionArterial,
+frTabaquismo,
+puntaje,
+riesgoAbsoluto,
+riesgoRelativo,
+interpretacion,

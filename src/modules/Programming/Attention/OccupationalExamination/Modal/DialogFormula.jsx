@@ -31,7 +31,7 @@ const DialogFormula = ({ open, handleCloseDialog, children, title }) => {
                     '&>div': {
                         m: 0,
                         borderRadius: '0px',
-                        maxWidth: 450,
+                        maxWidth: 300,
                         maxHeight: '100%'
                     }
                 }

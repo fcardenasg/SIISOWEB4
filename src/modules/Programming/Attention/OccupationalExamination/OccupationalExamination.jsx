@@ -29,6 +29,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import HoverSocialCard from './Framingham/HoverSocialCard';
 import ControlModal from 'components/controllers/ControlModal';
 import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -41,7 +42,7 @@ import chartData from './ChartData/market-sale-chart';
 import { InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { DefaultValue, Message } from 'components/helpers/Enums';
 import { TitleButton } from 'components/helpers/Enums';
-import { FormatDate, GetEdad, EdadFramigan, PuntajeFr, FrHdl, FrGlicemia, FrFuma, FrColesterol, FrTension } from 'components/helpers/Format';
+import { FormatDate, GetEdad, EdadFramigan, GetRiesgos, FrHdl, FrGlicemia, FrFuma, FrColesterol, FrTension, FrLdl_FrRelacion } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import User from 'assets/img/user.png'
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -56,6 +57,7 @@ import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient'
 import Cargando from 'components/loading/Cargando';
 import { PutAttention } from 'formatdata/AttentionForm';
 import Framingham from './Framingham';
+import { ColorDrummondltd } from 'themes/colors';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -90,8 +92,42 @@ const tabsOption = [
     {
         label: 'Historia Ocupacional',
         icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+    },
+    {
+        label: 'Framingham',
+        icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
     }
 ];
+
+const calculateImc = (peso, talla) => {
+    var imcFinal = peso / Math.pow(talla, 2);
+    var imc = imcFinal.toFixed(1);
+
+    var clasificacion = '';
+    var clasificacionColor = '';
+
+    if (imcFinal < 18.4) {
+        clasificacion = "Bajo de Peso";
+        clasificacionColor = "info";
+    } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
+        clasificacion = "Normal";
+        clasificacionColor = "success";
+    } else if (imcFinal >= 25 && imcFinal <= 29.9) {
+        clasificacion = "Sobrepeso";
+        clasificacionColor = "warning";
+    } else if (imcFinal >= 30 && imcFinal <= 34.9) {
+        clasificacion = "Normal";
+        clasificacionColor = "error";
+    } else if (imcFinal >= 35 && imcFinal <= 39.9) {
+        clasificacion = "besidad Grado II";
+        clasificacionColor = "error";
+    } else if (imcFinal > 40) {
+        clasificacion = "besidad Grado III";
+        clasificacionColor = "error";
+    }
+
+    return { imc, clasificacion, clasificacionColor }
+}
 
 const OccupationalExamination = () => {
     const { user } = useAuth();
@@ -128,18 +164,25 @@ const OccupationalExamination = () => {
     const [glicemia, setGlicemia] = useState('');
     const [tencion, setTencion] = useState('');
 
-    const [frFuma, setFrFuma] = useState('');
+    const [frFuma, setFrFuma] = useState(null);
+    const [hdl, setHdl] = useState(null);
+    const [trigliceridos, setTrigliceridos] = useState(null);
+    const [frLdl, setFrLdl] = useState(null);
+    const [relacion, setRelacion] = useState(null);
 
-    const [frEdad, setFrEdad] = useState('');
-    const [frColesterol, setFrColesterol] = useState('');
-    const [frHdl, setFrHdl] = useState('');
-    const [frGlicemia, setFrGlicemia] = useState('');
-    const [frTencion, setFrTencion] = useState('');
-    const [frTabaquismo, setFrTabaquismo] = useState('');
-    const [frPuntaje, setFrPuntaje] = useState('');
+    const [frEdad, setFrEdad] = useState(null);
+    const [frColesterol, setFrColesterol] = useState(null);
+    const [frHdl, setFrHdl] = useState(null);
+    const [frGlicemia, setFrGlicemia] = useState(null);
+    const [frTencion, setFrTencion] = useState(null);
+    const [frPuntaje, setFrPuntaje] = useState(null);
 
-    const [edad, setEdad] = useState('');
-    const [sexo, setSexo] = useState('');
+    const [riesgo, setRiesgo] = useState({
+        riesgoAbsoluto: '',
+        riesgoRelativo: '',
+        dxRiesgo: ''
+    });
+
     const [talla, setTalla] = useState('');
     const [peso, setPeso] = useState('');
     const [imc, setIMC] = useState('');
@@ -155,12 +198,66 @@ const OccupationalExamination = () => {
         otrasIM: false,
     });
 
+    const handleHdl = (event) => {
+        try {
+            setHdl(event.target.value);
+            var result = FrLdl_FrRelacion(event.target.value, colesterol, trigliceridos);
+            setFrLdl(result.ldl);
+            setRelacion(result.relacion);
+
+        } catch (error) { }
+    }
+
+    const handleColesterol = (event) => {
+        try {
+            setColesterol(event.target.value);
+            var resultColes = FrColesterol(event.target.value, lsEmployee.nameGenero);
+            setFrColesterol(resultColes);
+
+            var result = FrLdl_FrRelacion(hdl, event.target.value, trigliceridos);
+            setFrLdl(result.ldl);
+            setRelacion(result.relacion);
+
+            /* PUNTAJE */
+            var puntajeFR = parseInt(frEdad) + parseInt(resultColes) + parseInt(frHdl) + parseInt(frGlicemia) + parseInt(frTencion) + parseInt(frFuma);
+            setFrPuntaje(puntajeFR);
+
+            var datos = GetRiesgos(puntajeFR, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
+            setRiesgo({
+                dxRiesgo: datos.dxRiesgo,
+                riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? datos.riesgoAbsolutoH : datos.riesgoAbsolutoM,
+                riesgoRelativo: datos.riesgoRelativo
+            });
+        } catch (error) { }
+    }
+
+    const handleTrigliceridos = (event) => {
+        try {
+            setTrigliceridos(event.target.value);
+
+            var result = FrLdl_FrRelacion(hdl, colesterol, event.target.value);
+            setFrLdl(result.ldl);
+            setRelacion(result.relacion);
+        } catch (error) { }
+    }
+
     const handleTencion = (event) => {
         try {
             setTencion(event.target.value);
 
             var tencionResul = FrTension(event.target.value, lsEmployee.nameGenero);
             setFrTencion(tencionResul);
+
+            /* PUNTAJE */
+            var puntajeFR = parseInt(frEdad) + parseInt(frColesterol) + parseInt(frHdl) + parseInt(frGlicemia) + parseInt(tencionResul) + parseInt(frFuma);
+            setFrPuntaje(puntajeFR);
+
+            var datos = GetRiesgos(puntajeFR, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
+            setRiesgo({
+                dxRiesgo: datos.dxRiesgo,
+                riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? datos.riesgoAbsolutoH : datos.riesgoAbsolutoM,
+                riesgoRelativo: datos.riesgoRelativo
+            });
         } catch (error) { }
     }
 
@@ -172,8 +269,15 @@ const OccupationalExamination = () => {
             setFrGlicemia(glicemiaResul);
 
             /* PUNTAJE */
-            var puntajeFR = PuntajeFr(frEdad, frColesterol, frHdl, event.target.value, frTencion, frTabaquismo);
+            var puntajeFR = parseInt(frEdad) + parseInt(frColesterol) + parseInt(frHdl) + parseInt(glicemiaResul) + parseInt(frTencion) + parseInt(frFuma);
             setFrPuntaje(puntajeFR);
+
+            var datos = GetRiesgos(puntajeFR, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
+            setRiesgo({
+                dxRiesgo: datos.dxRiesgo,
+                riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? datos.riesgoAbsolutoH : datos.riesgoAbsolutoM,
+                riesgoRelativo: datos.riesgoRelativo
+            });
         } catch (error) { }
     }
 
@@ -184,65 +288,15 @@ const OccupationalExamination = () => {
             setFrFuma(fumaResult);
 
             /* PUNTAJE */
-        } catch (error) { }
-    }
-
-    const handleFrPuntaje = (event) => {
-        try {
-            setFrPuntaje(event.target.value);
-
-            /* PUNTAJE */
-        } catch (error) { }
-    }
-
-    const handleFrEdad = (event) => {
-        try {
-            setFrEdad(event.target.value);
-
-            /* PUNTAJE */
-            var puntajeFR = PuntajeFr(event.target.value, frColesterol, frHdl, glicemia, frTencion, frTabaquismo);
+            var puntajeFR = parseInt(frEdad) + parseInt(frColesterol) + parseInt(frHdl) + parseInt(frGlicemia) + parseInt(frTencion) + parseInt(fumaResult);
             setFrPuntaje(puntajeFR);
-        } catch (error) { }
-    }
 
-    const handleColesterol = (event) => {
-        try {
-            setColesterol(event.target.value);
-            var resultColes = FrColesterol(event.target.value, lsEmployee.nameGenero);
-            setFrColesterol(resultColes);
-
-            /* PUNTAJE */
-            var puntajeFR = PuntajeFr(frEdad, event.target.value, frHdl, glicemia, frTencion, frTabaquismo);
-            setFrPuntaje(puntajeFR);
-        } catch (error) { }
-    }
-
-    const handleFrHdl = (event) => {
-        try {
-            setFrHdl(event.target.value);
-
-            /* PUNTAJE */
-            var puntajeFR = PuntajeFr(frEdad, frColesterol, event.target.value, glicemia, frTencion, frTabaquismo);
-            setFrPuntaje(puntajeFR);
-        } catch (error) { }
-    }
-
-    const handleFrTensionArterial = (event) => {
-        try {
-
-            /* PUNTAJE */
-            var puntajeFR = PuntajeFr(frEdad, frColesterol, frHdl, glicemia, event.target.value, frTabaquismo);
-            setFrPuntaje(puntajeFR);
-        } catch (error) { }
-    }
-
-    const handleFrTabaquismo = (event) => {
-        try {
-            setFrTabaquismo(event.target.value);
-
-            /* PUNTAJE */
-            var puntajeFR = PuntajeFr(frEdad, frColesterol, frHdl, glicemia, frTencion, event.target.value);
-            setFrPuntaje(puntajeFR);
+            var datos = GetRiesgos(puntajeFR, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
+            setRiesgo({
+                dxRiesgo: datos.dxRiesgo,
+                riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? datos.riesgoAbsolutoH : datos.riesgoAbsolutoM,
+                riesgoRelativo: datos.riesgoRelativo
+            });
         } catch (error) { }
     }
 
@@ -280,7 +334,6 @@ const OccupationalExamination = () => {
                 setLsEmployee(lsServerEmployee.data);
                 setFrEdad(EdadFramigan(GetEdad(new Date(lsServerEmployee.data.fechaNaci)), lsServerEmployee.data.nameGenero));
                 setFrHdl(FrHdl(GetEdad(new Date(lsServerEmployee.data.fechaNaci)), lsServerEmployee.data.nameGenero));
-                setSexo(lsServerEmployee.data.nameGenero);
             }
         } catch (error) {
             setLsEmployee([]);
@@ -290,32 +343,6 @@ const OccupationalExamination = () => {
 
     const methods = useForm();
     const { handleSubmit, errors, reset } = methods;
-    /* { resolver: yupResolver(validationSchema) } */
-
-    const calculateImc = (peso, talla) => {
-        var imcFinal = peso / Math.pow(talla, 2);
-        setIMC(imcFinal.toFixed(1));
-
-        if (imcFinal < 18.4) {
-            setClasificacion("Bajo de Peso")
-            setClasificacionColor("info");
-        } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
-            setClasificacion("Normal")
-            setClasificacionColor("success");
-        } else if (imcFinal >= 25 && imcFinal <= 29.9) {
-            setClasificacion("Sobrepeso")
-            setClasificacionColor("warning");
-        } else if (imcFinal >= 30 && imcFinal <= 34.9) {
-            setClasificacion("Obesidad Grado I")
-            setClasificacionColor("error");
-        } else if (imcFinal >= 35 && imcFinal <= 39.9) {
-            setClasificacion("Obesidad Grado II")
-            setClasificacionColor("error");
-        } else if (imcFinal > 40) {
-            setClasificacion("Obesidad Grado III")
-            setClasificacionColor("error");
-        }
-    }
 
     useEffect(() => {
         async function GetAll() {
@@ -342,7 +369,10 @@ const OccupationalExamination = () => {
                     handleLoadingDocument(lsServerAtencion.data.documento);
                     setAtencion(lsServerAtencion.data.atencion);
 
-                    calculateImc(lsServerAtencion.data.peso, lsServerAtencion.data.talla);
+                    var resultImc = calculateImc(lsServerAtencion.data.peso, lsServerAtencion.data.talla);
+                    setIMC(resultImc.imc);
+                    setClasificacion(resultImc.clasificacion);
+                    setClasificacionColor(resultImc.clasificacionColor);
                 }
 
                 const lsServerAtencionEMO = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
@@ -516,35 +546,39 @@ const OccupationalExamination = () => {
                         handleCloseDialog={() => setOpenFormula(false)}
                     >
                         <Grid item xs={12}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => setOpenForm(true)} startIcon={<AssignmentIcon />}>
-                                    Formula
-                                </Button>
-                            </AnimateButton>
+                            <HoverSocialCard
+                                onClick={() => setOpenForm(true)}
+                                secondary="Formula"
+                                iconPrimary={AssignmentIcon}
+                                color={ColorDrummondltd.RedDrummond}
+                            />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <AnimateButton>
-                                <Button variant="outlined" onClick={() => setOpenForm(true)} fullWidth startIcon={<BiotechIcon />}>
-                                    Laboratorio
-                                </Button>
-                            </AnimateButton>
+                            <HoverSocialCard
+                                onClick={() => setOpenForm(true)}
+                                secondary="Laboratorio"
+                                iconPrimary={BiotechIcon}
+                                color={ColorDrummondltd.RedDrummond}
+                            />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <AnimateButton>
-                                <Button variant="outlined" onClick={() => setOpenForm(true)} fullWidth startIcon={<ImageIcon />}>
-                                    Imagenes
-                                </Button>
-                            </AnimateButton>
+                            <HoverSocialCard
+                                onClick={() => setOpenForm(true)}
+                                secondary="Imagenes"
+                                iconPrimary={ImageIcon}
+                                color={ColorDrummondltd.RedDrummond}
+                            />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <AnimateButton>
-                                <Button variant="outlined" onClick={() => setOpenForm(true)} fullWidth startIcon={<FolderOpenIcon />}>
-                                    Examenes
-                                </Button>
-                            </AnimateButton>
+                            <HoverSocialCard
+                                onClick={() => setOpenForm(true)}
+                                secondary="Examenes"
+                                iconPrimary={FolderOpenIcon}
+                                color={ColorDrummondltd.RedDrummond}
+                            />
                         </Grid>
                     </DialogFormula>
 
@@ -703,36 +737,65 @@ const OccupationalExamination = () => {
                         />
 
                         <Framingham
-                            handleFrHdl={handleFrHdl}
-                            frHdl={frHdl}
-                            handleFrEdad={handleFrEdad}
-                            frEdad={frEdad}
-                            handleGlicemia={handleGlicemia}
-                            glicemia={glicemia}
-                            handleFrGlicemia={setFrGlicemia}
-                            frGlicemia={frGlicemia}
-                            handleFuma={handleFuma}
-                            fuma={fuma}
-                            setFrFuma={setFrFuma}
                             frFuma={frFuma}
+                            frColesterol={frColesterol}
+                            frTencion={frTencion}
+                            frEdad={frEdad}
+                            frGlicemia={frGlicemia}
+                            frPuntaje={frPuntaje}
+                            relacion={relacion}
+                            frLdl={frLdl}
+                            frHdl={frHdl}
+                            riesgo={riesgo}
+
+                            handleHdl={handleHdl}
+                            hdl={hdl}
                             handleColesterol={handleColesterol}
                             colesterol={colesterol}
-                            setFrColesterol={setFrColesterol}
-                            frColesterol={frColesterol}
+                            handleTrigliceridos={handleTrigliceridos}
+                            trigliceridos={trigliceridos}
+                            handleFuma={handleFuma}
+                            fuma={fuma}
+                            handleGlicemia={handleGlicemia}
+                            glicemia={glicemia}
                             handleTencion={handleTencion}
                             tencion={tencion}
-                            setFrTencion={setFrTencion}
-                            frTencion={frTencion}
 
-
-                            atencion={atencion}
-                            edad={edad}
-                            setEdad={setEdad}
-                            sexo={sexo}
-                            setSexo={setSexo}
-
-                            documento={documento}
                             errors={errors}
+                            documento={documento}
+                            {...methods}
+                        />
+                    </TabPanel>
+
+                    <TabPanel value={value} index={3}>
+                        <Framingham
+                            atencion={atencion}
+                            frFuma={frFuma}
+                            frColesterol={frColesterol}
+                            frTencion={frTencion}
+                            frEdad={frEdad}
+                            frGlicemia={frGlicemia}
+                            frPuntaje={frPuntaje}
+                            relacion={relacion}
+                            frLdl={frLdl}
+                            frHdl={frHdl}
+                            riesgo={riesgo}
+
+                            handleHdl={handleHdl}
+                            hdl={hdl}
+                            handleColesterol={handleColesterol}
+                            colesterol={colesterol}
+                            handleTrigliceridos={handleTrigliceridos}
+                            trigliceridos={trigliceridos}
+                            handleFuma={handleFuma}
+                            fuma={fuma}
+                            handleGlicemia={handleGlicemia}
+                            glicemia={glicemia}
+                            handleTencion={handleTencion}
+                            tencion={tencion}
+
+                            errors={errors}
+                            documento={documento}
                             {...methods}
                         />
                     </TabPanel>
@@ -742,6 +805,14 @@ const OccupationalExamination = () => {
                             <AnimateButton>
                                 <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                     {TitleButton.Guardar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
+                                    {TitleButton.OrdenesMedicas}
                                 </Button>
                             </AnimateButton>
                         </Grid>
@@ -764,14 +835,6 @@ const OccupationalExamination = () => {
                                     handleUpdateAttentionClose("ATENDIDO");
                                 }}>
                                     {TitleButton.CerrarCaso}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
-                                    {TitleButton.OrdenesMedicas}
                                 </Button>
                             </AnimateButton>
                         </Grid>

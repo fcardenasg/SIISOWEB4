@@ -1826,7 +1826,7 @@ const Emo = ({
 
                 <SubCard darkTitle title={<Typography variant="h4">EXAMEN FÍSICO</Typography>}>
                     <SubCard
-                        title="Signos Vitales"
+                        title="Signos Vitales/Tensión Arterial"
                         secondary={<Button onClick={() => { setOpenHistory(true); setCadenaHistory('SIGNOS_VITALES') }}>
                             <IconEdit stroke={1.5} size="1.3rem" />
                         </Button>}
