@@ -44,7 +44,7 @@ import { DefaultValue, Message } from 'components/helpers/Enums';
 import { TitleButton } from 'components/helpers/Enums';
 import { FormatDate, GetEdad, EdadFramigan, GetRiesgos, FrHdl, FrGlicemia, FrFuma, FrColesterol, FrTension, FrLdl_FrRelacion } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
-import User from 'assets/img/user.png'
+import User from 'assets/img/user.png';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePicker from 'components/input/InputDatePicker';
@@ -58,6 +58,9 @@ import Cargando from 'components/loading/Cargando';
 import { PutAttention } from 'formatdata/AttentionForm';
 import Framingham from './Framingham';
 import { ColorDrummondltd } from 'themes/colors';
+import ListMedicalFormula from './MedicalOrder/ListMedicalFormula';
+import MedicalFormula from './MedicalOrder/MedicalFormula';
+import UpdateMedicalFormula from './MedicalOrder/UpdateMedicalFormula';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -91,10 +94,6 @@ const tabsOption = [
     },
     {
         label: 'Historia Ocupacional',
-        icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Framingham',
         icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
     }
 ];
@@ -138,6 +137,11 @@ const OccupationalExamination = () => {
 
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
+    const [newMedicalFormula, setNewMedicalFormula] = useState(false);
+    const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
+    const [listMedicalFormula, setListMedicalFormula] = useState(true);
+    const [titleModal, setTitleModal] = useState('');
+    const [numberId, setNumberId] = useState('');
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -347,7 +351,6 @@ const OccupationalExamination = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-
                 const lsServerAtencion = await GetByIdAttention(id);
                 if (lsServerAtencion.status === 200) {
                     const DataToUpdate = PutAttention(id, lsServerAtencion.data.documento, lsServerAtencion.data.fecha, lsServerAtencion.data.sede,
@@ -530,24 +533,56 @@ const OccupationalExamination = () => {
                     <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
                     <ControlModal
-                        title="Vista segundaria"
+                        title={"Ordenes Medicas - " + titleModal}
                         open={openForm}
-                        onClose={() => setOpenForm(false)}
-                        maxWidth="lg"
+                        onClose={() => {
+                            setOpenForm(false);
+                            setListMedicalFormula(true);
+                            setNewMedicalFormula(false);
+                            setUpdateMedicalFormula(false);
+                            setNewMedicalFormula(false)
+                        }}
+                        maxWidth="md"
                     >
-                        <Typography variant="h1" component="div">
-                            HOLA MUNDO
-                        </Typography>
+                        {newMedicalFormula ?
+                            <MedicalFormula
+                                setUpdateMedicalFormula={setUpdateMedicalFormula}
+                                setListMedicalFormula={setListMedicalFormula}
+                                setNewMedicalFormula={setNewMedicalFormula}
+                                tipoOrden={titleModal}
+                                lsEmployee={lsEmployee}
+                                setDocumento={setDocumento}
+                                documento={documento}
+                                lsAtencion={lsAtencion}
+                            />
+                            : listMedicalFormula ?
+                                <ListMedicalFormula
+                                    setListMedicalFormula={setListMedicalFormula}
+                                    setNewMedicalFormula={setNewMedicalFormula}
+                                    setUpdateMedicalFormula={setUpdateMedicalFormula}
+                                    setNumberId={setNumberId}
+                                />
+                                : updateMedicalFormula ?
+                                    <UpdateMedicalFormula
+                                        setListMedicalFormula={setListMedicalFormula}
+                                        setNewMedicalFormula={setNewMedicalFormula}
+                                        setUpdateMedicalFormula={setUpdateMedicalFormula}
+                                        numberId={numberId}
+                                        lsEmployee={lsEmployee}
+                                        lsAtencion={lsAtencion}
+                                        tipoOrden={titleModal}
+                                    /> : ''
+                        }
                     </ControlModal>
 
                     <DialogFormula
-                        title="ORDENES MEDICAS"
+                        title="Ordenes Medicas"
                         open={openFormula}
                         handleCloseDialog={() => setOpenFormula(false)}
                     >
                         <Grid item xs={12}>
                             <HoverSocialCard
-                                onClick={() => setOpenForm(true)}
+                                onClick={() => { setOpenForm(true); setTitleModal('Formula') }}
                                 secondary="Formula"
                                 iconPrimary={AssignmentIcon}
                                 color={ColorDrummondltd.RedDrummond}
@@ -556,7 +591,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={12}>
                             <HoverSocialCard
-                                onClick={() => setOpenForm(true)}
+                                onClick={() => { setOpenForm(true); setTitleModal('Laboratorio') }}
                                 secondary="Laboratorio"
                                 iconPrimary={BiotechIcon}
                                 color={ColorDrummondltd.RedDrummond}
@@ -565,7 +600,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={12}>
                             <HoverSocialCard
-                                onClick={() => setOpenForm(true)}
+                                onClick={() => { setOpenForm(true); setTitleModal('Imagenes') }}
                                 secondary="Imagenes"
                                 iconPrimary={ImageIcon}
                                 color={ColorDrummondltd.RedDrummond}
@@ -574,7 +609,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={12}>
                             <HoverSocialCard
-                                onClick={() => setOpenForm(true)}
+                                onClick={() => { setOpenForm(true); setTitleModal('Examenes') }}
                                 secondary="Examenes"
                                 iconPrimary={FolderOpenIcon}
                                 color={ColorDrummondltd.RedDrummond}
@@ -737,39 +772,6 @@ const OccupationalExamination = () => {
                         />
 
                         <Framingham
-                            frFuma={frFuma}
-                            frColesterol={frColesterol}
-                            frTencion={frTencion}
-                            frEdad={frEdad}
-                            frGlicemia={frGlicemia}
-                            frPuntaje={frPuntaje}
-                            relacion={relacion}
-                            frLdl={frLdl}
-                            frHdl={frHdl}
-                            riesgo={riesgo}
-
-                            handleHdl={handleHdl}
-                            hdl={hdl}
-                            handleColesterol={handleColesterol}
-                            colesterol={colesterol}
-                            handleTrigliceridos={handleTrigliceridos}
-                            trigliceridos={trigliceridos}
-                            handleFuma={handleFuma}
-                            fuma={fuma}
-                            handleGlicemia={handleGlicemia}
-                            glicemia={glicemia}
-                            handleTencion={handleTencion}
-                            tencion={tencion}
-
-                            errors={errors}
-                            documento={documento}
-                            {...methods}
-                        />
-                    </TabPanel>
-
-                    <TabPanel value={value} index={3}>
-                        <Framingham
-                            atencion={atencion}
                             frFuma={frFuma}
                             frColesterol={frColesterol}
                             frTencion={frTencion}
