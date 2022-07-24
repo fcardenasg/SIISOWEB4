@@ -182,7 +182,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
 
                                 {lsEmployee.length != 0 ?
                                     <Grid item xs={7}>
-                                        <Typography variant="h2" component="div">
+                                        <Typography variant="h3" component="div">
                                             {lsEmployee.nombres}
                                         </Typography>
                                         <Grid container spacing={1} direction="row" justifyContent="left" alignItems="center">

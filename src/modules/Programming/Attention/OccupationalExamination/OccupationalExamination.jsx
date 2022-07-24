@@ -62,6 +62,17 @@ import ListMedicalFormula from './MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './MedicalOrder/UpdateMedicalFormula';
 
+/* ANIMACIONES */
+import { motion } from "framer-motion";
+
+const item = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+        y: 0,
+        opacity: 1
+    }
+};
+
 function TabPanel({ children, value, index, ...other }) {
     return (
         <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
@@ -545,16 +556,18 @@ const OccupationalExamination = () => {
                         maxWidth="md"
                     >
                         {newMedicalFormula ?
-                            <MedicalFormula
-                                setUpdateMedicalFormula={setUpdateMedicalFormula}
-                                setListMedicalFormula={setListMedicalFormula}
-                                setNewMedicalFormula={setNewMedicalFormula}
-                                tipoOrden={titleModal}
-                                lsEmployee={lsEmployee}
-                                setDocumento={setDocumento}
-                                documento={documento}
-                                lsAtencion={lsAtencion}
-                            />
+                            <motion.div variants={item}>
+                                <MedicalFormula
+                                    setUpdateMedicalFormula={setUpdateMedicalFormula}
+                                    setListMedicalFormula={setListMedicalFormula}
+                                    setNewMedicalFormula={setNewMedicalFormula}
+                                    tipoOrden={titleModal}
+                                    lsEmployee={lsEmployee}
+                                    setDocumento={setDocumento}
+                                    documento={documento}
+                                    lsAtencion={lsAtencion}
+                                />
+                            </motion.div>
                             : listMedicalFormula ?
                                 <ListMedicalFormula
                                     setListMedicalFormula={setListMedicalFormula}
