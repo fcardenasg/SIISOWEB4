@@ -39,6 +39,7 @@ import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { PutMedicalFormula } from 'formatdata/MedicalFormulaForm';
 import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
+import SkeletonMedical from '../Modal/SkeletonMedical';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -152,21 +153,19 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
 
             </FullScreenDialog>
 
-            <Grid container spacing={2}>
-                {timeWait != 0 ?
+            {timeWait != 0 ?
+                <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}>
                             <Grid container justifyContent="left" alignItems="center" spacing={2}>
 
-                                <Grid item xs={5}>
+                                <Grid item xs={12}>
                                     <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                                        <Grid item xs={4}>
-                                            <Avatar sx={{ width: 100, height: 100 }} src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
+                                        <Grid item xs={2}>
+                                            <Avatar sx={{ width: 80, height: 80 }} src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
                                         </Grid>
 
-                                        <Grid item xs={2} />
-
-                                        <Grid item xs={4}>
+                                        <Grid item xs={2}>
                                             <TextField
                                                 value={documento}
                                                 onChange={(e) => setDocumento(e.target.value)}
@@ -177,43 +176,41 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
                                                 variant="standard"
                                             />
                                         </Grid>
-                                    </Grid>
-                                </Grid>
 
-                                {lsEmployee.length != 0 ?
-                                    <Grid item xs={7}>
-                                        <Typography variant="h3" component="div">
-                                            {lsEmployee.nombres}
-                                        </Typography>
-                                        <Grid container spacing={1} direction="row" justifyContent="left" alignItems="center">
-                                            <Grid item>
-                                                <Typography variant="h5">{lsEmployee.nameGenero}</Typography>
-                                            </Grid>
-                                            <Grid item>
-                                                <Typography variant="h5">{GetEdad(new Date(lsEmployee.fechaNaci))} AÑOS</Typography>
+                                        <Grid item xs={5}>
+                                            <Typography variant="h4" component="div">
+                                                {lsEmployee.nombres}
+                                            </Typography>
+                                            <Grid container spacing={1} direction="row" justifyContent="left" alignItems="center">
+                                                <Grid item>
+                                                    <Typography variant="h6">{lsEmployee.nameGenero}</Typography>
+                                                </Grid>
+                                                <Grid item>
+                                                    <Typography variant="h6">{GetEdad(new Date(lsEmployee.fechaNaci))} AÑOS</Typography>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
-                                    </Grid> : <Grid item xs={7} />
-                                }
+
+                                        <Grid item xs={3}>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12}>
+                                                    <Typography variant="h5" align="left"><b>Fecha:</b> {ViewFormat(new Date())}</Typography>
+                                                </Grid>
+
+                                                <Grid item xs={12}>
+                                                    <Typography variant="h5" align="left"><b>Tipo Orden:</b> {tipoOrden.toUpperCase()}</Typography>
+                                                </Grid>
+
+                                                <Grid item xs={12}>
+                                                    <Typography variant="h5" align="left"><b>Atención:</b> {lsAtencion.nameAtencion}</Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
 
                                 <Grid item xs={12}>
                                     <Divider />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                                        <Grid item xs={4}>
-                                            <Typography variant="h5" align="center">Fecha: {ViewFormat(new Date())}</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h5" align="center">Tipo Orden: {tipoOrden}</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h5" align="center">Atención: {lsAtencion.nameAtencion}</Typography>
-                                        </Grid>
-                                    </Grid>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -232,7 +229,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
                                             <FormProvider {...methods}>
                                                 <InputText
                                                     multiline
-                                                    rows={2}
+                                                    rows={4}
                                                     defaultValue={lsMedicalFormula.descripcion}
                                                     fullWidth
                                                     name="descripcion"
@@ -296,10 +293,10 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
                                 </Grid>
                             </Grid>
                         </SubCard>
-                    </Grid> : <Cargando />
-                }
-            </Grid>
-        </Fragment >
+                    </Grid>
+                </Grid> : <SkeletonMedical />
+            }
+        </Fragment>
     );
 };
 

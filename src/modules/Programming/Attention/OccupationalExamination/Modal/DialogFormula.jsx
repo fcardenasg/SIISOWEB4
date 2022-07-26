@@ -24,7 +24,6 @@ const DialogFormula = ({ open, handleCloseDialog, children, title }) => {
             open={open}
             TransitionComponent={Transition}
             keepMounted
-            onClose={handleCloseDialog}
             sx={{
                 '&>div:nth-child(3)': {
                     justifyContent: 'flex-end',
@@ -47,7 +46,7 @@ const DialogFormula = ({ open, handleCloseDialog, children, title }) => {
             <DialogActions>
                 <AnimateButton>
                     <Button variant="text" color="error" onClick={handleCloseDialog}>
-                        Close
+                        Cerrar
                     </Button>
                 </AnimateButton>
             </DialogActions>

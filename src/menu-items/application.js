@@ -434,6 +434,13 @@ const application = {
                     url: '/template/list',
                     breadcrumbs: false
                 },
+                {
+                    id: 'medicines',
+                    title: <FormattedMessage id="Medicamentos" />,
+                    type: 'item',
+                    url: '/medicines/list',
+                    breadcrumbs: false
+                },
             ]
         },
     ]

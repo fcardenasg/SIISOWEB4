@@ -10,23 +10,6 @@ import { GetByIdQuestionnaire } from 'api/clients/QuestionnaireClient';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { useDispatch } from 'react-redux';
 import { GetAllCatalog } from 'api/clients/CatalogClient';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import CustomDateTime from 'views/forms/components/DateTime/CustomDateTime';
-
-const datosDosis = [
-    {
-        label: 'Primera dosis',
-        value: 1
-    },
-    {
-        label: 'Segunda dosis',
-        value: 2
-    },
-    {
-        label: 'Tercera dosis',
-        value: 3
-    }
-]
 
 const Vaccination = () => {
     const theme = useTheme();
@@ -35,7 +18,6 @@ const Vaccination = () => {
     const [form, setForm] = useState(false);
     const [document, setDocument] = useState('');
     const [catalog, setCatalog] = useState([]);
-    const [lsQuestionnaire, setLsQuestionnaire] = useState([]);
 
     const [laboratorioPrimera, setLaboratorioPrimera] = useState(73);
     const [dosisPrimera, setDosisPrimera] = useState(73);

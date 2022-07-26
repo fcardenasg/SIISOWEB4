@@ -556,18 +556,16 @@ const OccupationalExamination = () => {
                         maxWidth="md"
                     >
                         {newMedicalFormula ?
-                            <motion.div variants={item}>
-                                <MedicalFormula
-                                    setUpdateMedicalFormula={setUpdateMedicalFormula}
-                                    setListMedicalFormula={setListMedicalFormula}
-                                    setNewMedicalFormula={setNewMedicalFormula}
-                                    tipoOrden={titleModal}
-                                    lsEmployee={lsEmployee}
-                                    setDocumento={setDocumento}
-                                    documento={documento}
-                                    lsAtencion={lsAtencion}
-                                />
-                            </motion.div>
+                            <MedicalFormula
+                                setUpdateMedicalFormula={setUpdateMedicalFormula}
+                                setListMedicalFormula={setListMedicalFormula}
+                                setNewMedicalFormula={setNewMedicalFormula}
+                                tipoOrden={titleModal}
+                                lsEmployee={lsEmployee}
+                                setDocumento={setDocumento}
+                                documento={documento}
+                                lsAtencion={lsAtencion}
+                            />
                             : listMedicalFormula ?
                                 <ListMedicalFormula
                                     setListMedicalFormula={setListMedicalFormula}

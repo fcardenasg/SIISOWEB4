@@ -254,6 +254,10 @@ const UpdateCounselingProgra = Loadable(lazy(() => import('modules/Programming/A
 const UpdateMedicalAdviceProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateMedicalAdvice')));
 const UpdateNoteInfirmaryProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateNoteInfirmary')));
 
+const ListMedicines = Loadable(lazy(() => import('modules/Medicines/ListMedicines')));
+const UpdateMedicines = Loadable(lazy(() => import('modules/Medicines/UpdateMedicines')));
+const Medicines = Loadable(lazy(() => import('modules/Medicines/Medicines')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -484,6 +488,20 @@ const MainRoutes = {
         {
             path: '/otheradvice/report',
             element: <ReportOtherAdvice />
+        },
+
+        /* Render de Medicamentos */
+        {
+            path: '/medicines/list',
+            element: <ListMedicines />
+        },
+        {
+            path: '/medicines/add',
+            element: <Medicines />
+        },
+        {
+            path: '/medicines/update/:id',
+            element: <UpdateMedicines />
         },
         /* Render de ASESORÍAS PSICOLÓGICA */
         {

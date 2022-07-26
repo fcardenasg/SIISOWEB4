@@ -16,7 +16,6 @@ const ControlModal = ({ open, onClose, maxWidth, title, children }) => {
                 fullWidth={true}
                 maxWidth={maxWidth}
                 open={open}
-                onClose={onClose}
             >
                 <Grid container>
                     <Grid item xs={9.9}>
