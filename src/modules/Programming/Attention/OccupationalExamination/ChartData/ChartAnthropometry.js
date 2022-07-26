@@ -1,47 +1,29 @@
 import PropTypes from 'prop-types';
 
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Box, Typography } from '@mui/material';
 
-// third party
 import Chart from 'react-apexcharts';
 
-// project imports
 import MainCard from 'ui-component/cards/MainCard';
 
-// assets
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import { IconStethoscope, IconHeartbeat, IconLungs } from '@tabler/icons';
+import { IconScaleOutline, IconCreativeCommonsBy, IconHeartbeat } from '@tabler/icons';
 
-// ===========================|| MARKET SHARE CHART CARD ||=========================== //
-
-const MarketChartCard = ({ chartData }) => {
+const ChartAnthropometry = ({ datos, lastRecord }) => {
     const theme = useTheme();
 
     return (
         <MainCard sx={{ '&>div': { p: 0, pb: '0px !important' } }}>
-            <Box
-                sx={{
-                    p: 3
-                }}
-            >
+            <Box sx={{ p: 3 }}>
                 <Grid container direction="column" spacing={3}>
                     <Grid item container spacing={1} alignItems="center">
                         <Grid item>
                             <Typography variant="h3">Concepto De Aptitud Psicofísico</Typography>
                         </Grid>
-                        <Grid item xs zeroMinWidth />
-                        <Grid item>
-                            <TrendingDownIcon fontSize="large" color="error" />
-                        </Grid>
-                        <Grid item>
-                            <Typography variant="h3">27, 695.65</Typography>
-                        </Grid>
                     </Grid>
                     <Grid item xs={12}>
                         <Typography sx={{ mt: -2.5, fontWeight: 400 }} color="inherit" variant="h5">
-                            APTO PARA DESEMPEÑAR EL CARGO
+                            {lastRecord.nameIdConceptoActitudID}
                         </Typography>
                     </Grid>
                     <Grid item container justifyContent="space-around" alignItems="center" spacing={3}>
@@ -61,14 +43,15 @@ const MarketChartCard = ({ chartData }) => {
                                                     : theme.palette.secondary.light
                                         }}
                                     >
-                                        <IconStethoscope stroke={1.5} />
+                                        <IconScaleOutline stroke={1.5} />
                                     </Typography>
                                 </Grid>
                                 <Grid item sm zeroMinWidth>
-                                    <Typography variant="h4">+45.36%</Typography>
+                                    <Typography variant="h4">PESO: {lastRecord.pesoEF}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
+
                         <Grid item>
                             <Grid container alignItems="center" spacing={1}>
                                 <Grid item>
@@ -85,14 +68,15 @@ const MarketChartCard = ({ chartData }) => {
                                                     : theme.palette.primary.light
                                         }}
                                     >
-                                        <IconLungs stroke={1.5} />
+                                        <IconCreativeCommonsBy stroke={1.5} />
                                     </Typography>
                                 </Grid>
                                 <Grid item sm zeroMinWidth>
-                                    <Typography variant="h4">- 50.69%</Typography>
+                                    <Typography variant="h4">IMC: {lastRecord.imcef}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
+
                         <Grid item>
                             <Grid container alignItems="center" spacing={1}>
                                 <Grid item>
@@ -110,7 +94,7 @@ const MarketChartCard = ({ chartData }) => {
                                     </Typography>
                                 </Grid>
                                 <Grid item sm zeroMinWidth>
-                                    <Typography variant="h4">+ 16.85%</Typography>
+                                    <Typography variant="h4">{lastRecord.interpretacionFRA}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -118,13 +102,14 @@ const MarketChartCard = ({ chartData }) => {
                     </Grid>
                 </Grid>
             </Box>
-            <Chart {...chartData} />
-        </MainCard>
+            <Chart {...datos} />
+        </MainCard >
     );
 };
 
-MarketChartCard.propTypes = {
-    chartData: PropTypes.object
+ChartAnthropometry.propTypes = {
+    datos: PropTypes.any,
+    lastRecord: PropTypes.any,
 };
 
-export default MarketChartCard;
+export default ChartAnthropometry;

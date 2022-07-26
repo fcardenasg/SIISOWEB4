@@ -37,9 +37,9 @@ import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
 
 import { IconStairsDown, IconStairsUp } from '@tabler/icons';
-import MarketSaleChartCard from './ChartData/MarketSaleChartCard';
-import chartData from './ChartData/market-sale-chart';
-import { InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import ChartAnthropometry from './ChartData/ChartAnthropometry';
+import { GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import { GetAllOccupationalExamination, InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { DefaultValue, Message } from 'components/helpers/Enums';
 import { TitleButton } from 'components/helpers/Enums';
 import { FormatDate, GetEdad, EdadFramigan, GetRiesgos, FrHdl, FrGlicemia, FrFuma, FrColesterol, FrTension, FrLdl_FrRelacion } from 'components/helpers/Format';
@@ -61,17 +61,6 @@ import { ColorDrummondltd } from 'themes/colors';
 import ListMedicalFormula from './MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './MedicalOrder/UpdateMedicalFormula';
-
-/* ANIMACIONES */
-import { motion } from "framer-motion";
-
-const item = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-        y: 0,
-        opacity: 1
-    }
-};
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -139,6 +128,7 @@ const calculateImc = (peso, talla) => {
     return { imc, clasificacion, clasificacionColor }
 }
 
+
 const OccupationalExamination = () => {
     const { user } = useAuth();
     const { id } = useParams();
@@ -164,7 +154,9 @@ const OccupationalExamination = () => {
 
     const [documento, setDocumento] = useState('');
     const [atencion, setAtencion] = useState('');
+    const [lastRecord, setLastRecord] = useState([]);
     const [lsAtencion, setLsAtencion] = useState([]);
+    const [lsAnthropometry, setLsAnthropometry] = useState([]);
     const [lsAtencionEMO, setLsAtencionEMO] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [arrays, setArrays] = useState({
@@ -387,6 +379,60 @@ const OccupationalExamination = () => {
                     setIMC(resultImc.imc);
                     setClasificacion(resultImc.clasificacion);
                     setClasificacionColor(resultImc.clasificacionColor);
+                }
+
+                const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(lsServerAtencion.data.documento);
+                if (lsServerUltimoRegistro.status === 200)
+                    setLastRecord(lsServerUltimoRegistro.data);
+
+                const lsAnthropometry = await GetAllOccupationalExamination(0, 0);
+                if (lsAnthropometry.status === 200) {
+                    var resultPeso = lsAnthropometry.data.entities.map((item) => (
+                        item.pesoEF
+                    ));
+
+                    var resultImc = lsAnthropometry.data.entities.map((item) => (
+                        item.imcef
+                    ));
+
+                    var resultAnio = lsAnthropometry.data.entities.map((item) => (
+                        new Date(item.fecha).getFullYear()
+                    ));
+
+                    const chartData = {
+                        height: 250,
+                        series: [
+                            {
+                                name: 'PESO',
+                                data: resultPeso
+                            },
+                            {
+                                name: 'IMC',
+                                data: resultImc
+                            }
+                        ],
+                        options: {
+                            chart: {
+                                height: 350,
+                                type: 'area'
+                            },
+                            dataLabels: {
+                                enabled: true
+                            },
+                            stroke: {
+                                curve: 'smooth'
+                            },
+                            xaxis: {
+                                categories: resultAnio
+                            },
+                            tooltip: {
+                                x: {
+                                    format: 'dd/MM/yy HH:mm'
+                                },
+                            },
+                        },
+                    };
+                    setLsAnthropometry(chartData);
                 }
 
                 const lsServerAtencionEMO = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
@@ -629,7 +675,7 @@ const OccupationalExamination = () => {
                     </DialogFormula>
 
                     <Transitions type="collapse" in={viewChart} position="top-left" direction="up">
-                        <MarketSaleChartCard chartData={chartData} />
+                        <ChartAnthropometry datos={lsAnthropometry} lastRecord={lastRecord} />
                         <Grid sx={{ pb: 2 }} />
                     </Transitions>
 

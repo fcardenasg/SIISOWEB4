@@ -75,7 +75,6 @@ const Emo = ({
     const [lsGineMetodo, setLsGineMetodo] = useState([]);
     const [lsBiotipo, setLsBiotipo] = useState([]);
     const [lsResultado, setLsResultado] = useState([]);
-    const [lsConceptoActitud, setLsConceptoActitud] = useState([]);
     const [lsCie11, setLsCie11] = useState([]);
     const [lsCiclos, setLsCiclos] = useState([]);
 
@@ -163,13 +162,6 @@ const Emo = ({
                 label: item.nombre
             }));
             setLsResultado(resultResultado);
-
-            const lsServerConceptoActitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_APTI_PSICO);
-            var resultConceptoActitud = lsServerConceptoActitud.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConceptoActitud(resultConceptoActitud);
 
             const lsServerDeporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HC_DEPORTE);
             var resultDeporte = lsServerDeporte.data.entities.map((item) => ({
