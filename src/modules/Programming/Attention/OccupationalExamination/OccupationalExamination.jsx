@@ -61,6 +61,7 @@ import { ColorDrummondltd } from 'themes/colors';
 import ListMedicalFormula from './MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './MedicalOrder/UpdateMedicalFormula';
+import ViewReport from './Report/ViewReport';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -128,7 +129,6 @@ const calculateImc = (peso, talla) => {
     return { imc, clasificacion, clasificacionColor }
 }
 
-
 const OccupationalExamination = () => {
     const { user } = useAuth();
     const { id } = useParams();
@@ -136,6 +136,12 @@ const OccupationalExamination = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [disabledButton, setDisabledButton] = useState({
+        buttonSave: false,
+        buttonReport: false
+    });
+
+    const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
     const [newMedicalFormula, setNewMedicalFormula] = useState(false);
@@ -451,6 +457,8 @@ const OccupationalExamination = () => {
 
     const handleClick = async (datos) => {
         try {
+            setDisabledButton({ ...disabledButton, buttonSave: true });
+
             const DataToInset = PostOccupationalExamination(
                 101010, documento, FormatDate(datos.fecha), atencion,
 
@@ -548,26 +556,10 @@ const OccupationalExamination = () => {
                 if (result.status === 200) {
                     setOpenSuccess(true);
                     await handleUpdateAttention("ATENDIDO");
-
-                    reset();
-                    setLsEmployee([]);
-                    setArrays({
-                        tipoFobia: [],
-                        dx: [],
-                        antecedentesCardio: [],
-                        metabolico: [],
-                    });
-                    setAtencion('');
-                    setDocumento('');
-                    setEstadoVacuna({
-                        tetanoIM: false,
-                        influenzaIM: false,
-                        fiebreAmarillaIM: false,
-                        rubeolaSarampionIM: false,
-                        covid19IM: false,
-                        otrasIM: false,
-                    });
-                    setValue(0);
+                    setDisabledButton(false);
+                    setTimeout(() => {
+                        setDisabledButton({ ...disabledButton, buttonSave: false, buttonReport: true });
+                    }, 1500);
                 }
             }
         } catch (error) {
@@ -630,6 +622,15 @@ const OccupationalExamination = () => {
                                         tipoOrden={titleModal}
                                     /> : ''
                         }
+                    </ControlModal>
+
+                    <ControlModal
+                        title={"VISTA DE REPORTE"}
+                        open={openReport}
+                        onClose={() => setOpenReport(false)}
+                        maxWidth="xl"
+                    >
+                        <ViewReport />
                     </ControlModal>
 
                     <DialogFormula
@@ -862,8 +863,16 @@ const OccupationalExamination = () => {
                     <Grid container spacing={2} sx={{ pt: 5 }}>
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                     {TitleButton.Guardar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                    {TitleButton.Imprimir}
                                 </Button>
                             </AnimateButton>
                         </Grid>

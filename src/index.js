@@ -1,5 +1,7 @@
 import ReactDOM from 'react-dom';
 
+import './globals';
+
 // third party
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';

@@ -1231,6 +1231,28 @@
   "resolved" "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   "version" "0.2.3"
 
+"@boldreports/global@4.1.86":
+  "integrity" "sha512-V+nuLxdEBAHimYa+0M4W6sp5BA+fnef6jh/IUtpA+Cp276MkKIwITyseFjjs8kO9rNb0Xc9ZYr6ldZQcDegoyg=="
+  "resolved" "https://registry.npmjs.org/@boldreports/global/-/global-4.1.86.tgz"
+  "version" "4.1.86"
+
+"@boldreports/javascript-reporting-controls@4.1.86":
+  "integrity" "sha512-+gZLIbty+cVi1b7T8DWuDKHll9N9atx6OjvV+gwJHKfy+USuXvKtgAd8HupaycY9JuEKb84i+HeV7aOBzZ8jBQ=="
+  "resolved" "https://registry.npmjs.org/@boldreports/javascript-reporting-controls/-/javascript-reporting-controls-4.1.86.tgz"
+  "version" "4.1.86"
+  dependencies:
+    "@boldreports/global" "4.1.86"
+    "jquery" "*"
+    "jquery-validation" "*"
+    "jsrender" "*"
+
+"@boldreports/react-reporting-components@^4.1.86":
+  "integrity" "sha512-Xj9XNVIPL1R6stHncsia897X3Ucx3pkN8GEJRcNNootQdv64H66gDdXZJZav1CJWCZo+aZiP6yejNeFiPFyVhw=="
+  "resolved" "https://registry.npmjs.org/@boldreports/react-reporting-components/-/react-reporting-components-4.1.86.tgz"
+  "version" "4.1.86"
+  dependencies:
+    "@boldreports/javascript-reporting-controls" "4.1.86"
+
 "@cnakazawa/watch@^1.0.3":
   "integrity" "sha512-v9kIhKwjeZThiWrLmj0y17CWoyddASLj9O2yvbZkbvw/N3rWOYy9zkV66ursAoVr0mV15bL8g0c4QZUE6cdDoQ=="
   "resolved" "https://registry.npmjs.org/@cnakazawa/watch/-/watch-1.0.4.tgz"
@@ -4860,7 +4882,7 @@
     "safe-buffer" "^5.0.1"
     "sha.js" "^2.4.8"
 
-"create-react-class@^15.6.0":
+"create-react-class@^15.6.0", "create-react-class@^15.7.0":
   "integrity" "sha512-QZv4sFWG9S5RUvkTYWbflxeZX+JG7Cz0Tn33rQBJ+WFQTqTfUTjMjiv9tnfXazjsO5r0KhPs+AqCjyrQX6h2ng=="
   "resolved" "https://registry.npmjs.org/create-react-class/-/create-react-class-15.7.0.tgz"
   "version" "15.7.0"
@@ -8483,6 +8505,16 @@
     "import-local" "^3.0.2"
     "jest-cli" "^26.6.0"
 
+"jquery-validation@*":
+  "integrity" "sha512-X2SmnPq1mRiDecVYL8edWx+yTBZDyC8ohWXFhXdtqFHgU9Wd4KHkvcbCoIZ0JaSaumzS8s2gXSkP8F7ivg/8ZQ=="
+  "resolved" "https://registry.npmjs.org/jquery-validation/-/jquery-validation-1.19.5.tgz"
+  "version" "1.19.5"
+
+"jquery@*", "jquery@^1.7 || ^2.0 || ^3.1", "jquery@>=1.8.0":
+  "integrity" "sha512-JVzAR/AjBvVt2BmYhxRCSYysDsPcssdmTFnzyLEts9qNwmjmu4JTAMYubEfwVOSwpQ1I1sKKFcxhZCI2buerfw=="
+  "resolved" "https://registry.npmjs.org/jquery/-/jquery-3.6.0.tgz"
+  "version" "3.6.0"
+
 "js-tokens@^3.0.0 || ^4.0.0", "js-tokens@^4.0.0":
   "integrity" "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="
   "resolved" "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz"
@@ -8621,6 +8653,13 @@
     "lodash.once" "^4.0.0"
     "ms" "^2.1.1"
     "semver" "^5.6.0"
+
+"jsrender@*":
+  "integrity" "sha512-1BFRSKCgO8T1o3QB16/CYqnxLVxgIdXnXBmZcyLQOlEwxVfktCHXcC7n2o9lziI//pKEc5QzI92vglvBnoddRw=="
+  "resolved" "https://registry.npmjs.org/jsrender/-/jsrender-1.0.11.tgz"
+  "version" "1.0.11"
+  dependencies:
+    "through2" "^3.0.1"
 
 "jss-plugin-camel-case@^10.8.1":
   "integrity" "sha512-2INyxR+1UdNuKf4v9It3tNfPvf7IPrtkiwzofeKuMd5D58/dxDJVUQYRVg/n460rTlHUfsEQx43hDrcxi9dSPA=="
@@ -12077,7 +12116,7 @@
     "parse-json" "^5.0.0"
     "type-fest" "^0.6.0"
 
-"readable-stream@^2.0.0", "readable-stream@^2.0.1", "readable-stream@^2.0.2", "readable-stream@^2.1.5", "readable-stream@^2.2.2", "readable-stream@^2.3.3", "readable-stream@^2.3.6", "readable-stream@~2.3.6", "readable-stream@1 || 2":
+"readable-stream@^2.0.0", "readable-stream@^2.0.1", "readable-stream@^2.0.2", "readable-stream@^2.1.5", "readable-stream@^2.2.2", "readable-stream@^2.3.3", "readable-stream@^2.3.6", "readable-stream@~2.3.6", "readable-stream@1 || 2", "readable-stream@2 || 3":
   "integrity" "sha512-Ebho8K4jIbHAxnuxi7o42OrZgF/ZTNcsZj6nRKyUmkhLFq8CHItp/fy6hQZuZmP/n3yZ9VBUbp4zz/mX8hmYPw=="
   "resolved" "https://registry.npmjs.org/readable-stream/-/readable-stream-2.3.7.tgz"
   "version" "2.3.7"
@@ -13646,6 +13685,14 @@
   dependencies:
     "readable-stream" "~2.3.6"
     "xtend" "~4.0.1"
+
+"through2@^3.0.1":
+  "integrity" "sha512-enaDQ4MUyP2W6ZyT6EsMzqBPZaM/avg8iuo+l2d3QCs0J+6RaqkHV/2/lOwDTueBHeJ/2LG9lrLW3d5rWPucuQ=="
+  "resolved" "https://registry.npmjs.org/through2/-/through2-3.0.2.tgz"
+  "version" "3.0.2"
+  dependencies:
+    "inherits" "^2.0.4"
+    "readable-stream" "2 || 3"
 
 "thunky@^1.0.2":
   "integrity" "sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA=="
