@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
     Grid,
-    IconButton,
     InputAdornment,
     Table,
     TableBody,
@@ -18,17 +16,12 @@ import {
     TableRow,
     TableSortLabel,
     TextField,
-    Tooltip,
     Typography,
 } from '@mui/material';
 
 import { visuallyHidden } from '@mui/utils';
-import { SNACKBAR_OPEN } from 'store/actions';
-import { GetAllTemplate } from 'api/clients/TemplateClient';
-
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import SearchIcon from '@mui/icons-material/Search';
+import { GetAllMedicines } from 'api/clients/MedicinesClient';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -55,27 +48,27 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'id',
+        id: 'descripcion',
         numeric: false,
-        label: 'ID',
+        label: 'Descripción',
         align: 'center'
     },
     {
-        id: 'nameCIE11',
+        id: 'idUnidad',
         numeric: false,
-        label: 'CIE11',
+        label: 'Unidad',
         align: 'left'
     },
     {
-        id: 'nameTipoAtencion',
+        id: 'cantidad',
         numeric: false,
-        label: 'Tipo de Atención',
+        label: 'Cantidad',
         align: 'left'
     },
     {
-        id: 'nameAtencion',
+        id: 'existencia',
         numeric: false,
-        label: 'Atención',
+        label: 'Existencia',
         align: 'left'
     }
 ];
@@ -110,13 +103,6 @@ function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }
                             </TableSortLabel>
                         </TableCell>
                     ))}
-                {numSelected <= 0 && (
-                    <TableCell sortDirection={false} align="center" sx={{ pr: 3 }}>
-                        <Typography variant="subtitle1" sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}>
-                            Acción
-                        </Typography>
-                    </TableCell>
-                )}
             </TableRow>
         </TableHead>
     );
@@ -130,30 +116,29 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const ListPlantillaAll = () => {
-    const dispatch = useDispatch();
-    const [lsTemplate, setLsTemplate] = useState([]);
+const ListMedicalFormula = () => {
+    const [lsMedical, setLsMedical] = useState([]);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('descripcion');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function GetAll() {
-        try {
-            const lsServer = await GetAllTemplate(0, 0);
-            setLsTemplate(lsServer.data.entities);
-            setRows(lsServer.data.entities);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetAllMedicines(0, 0);
+                setLsMedical(lsServer.data.entities);
+                setRows(lsServer.data.entities);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         GetAll();
     }, [])
 
@@ -165,7 +150,7 @@ const ListPlantillaAll = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion'];
+                const properties = ['descripcion', 'idUnidad', 'cantidad', 'existencia'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -179,9 +164,9 @@ const ListPlantillaAll = () => {
                 }
                 return matches;
             });
-            setLsTemplate(newRows);
+            setLsMedical(newRows);
         } else {
-            setLsTemplate(rows);
+            setLsMedical(rows);
         }
     };
 
@@ -200,7 +185,7 @@ const ListPlantillaAll = () => {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedical.length) : 0;
 
     return (
         <>
@@ -231,12 +216,12 @@ const ListPlantillaAll = () => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsTemplate.length}
+                        rowCount={lsMedical.length}
                         theme={theme}
                         selected={selected}
                     />
                     <TableBody>
-                        {stableSort(lsTemplate, getComparator(order, orderBy))
+                        {stableSort(lsMedical, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
@@ -249,7 +234,6 @@ const ListPlantillaAll = () => {
                                         tabIndex={-1}
                                         key={index}
                                     >
-
                                         <TableCell
                                             component="th"
                                             id={labelId}
@@ -261,8 +245,7 @@ const ListPlantillaAll = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                #{row.id}{' '}
+                                                {row.descripcion}
                                             </Typography>
                                         </TableCell>
 
@@ -276,8 +259,7 @@ const ListPlantillaAll = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.nameCIE11}{' '}
+                                                {row.idUnidad}
                                             </Typography>
                                         </TableCell>
 
@@ -291,8 +273,7 @@ const ListPlantillaAll = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.nameTipoAtencion}{' '}
+                                                {row.cantidad}
                                             </Typography>
                                         </TableCell>
 
@@ -306,34 +287,8 @@ const ListPlantillaAll = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.nameAtencion}{' '}
+                                                {row.existencia}
                                             </Typography>
-                                        </TableCell>
-
-
-                                        <TableCell align="center" sx={{ pr: 3 }}>
-                                            <CopyToClipboard
-                                                text={row.descripcion}
-                                                onCopy={() =>
-                                                    dispatch({
-                                                        type: SNACKBAR_OPEN,
-                                                        anchorOrigin: { vertical: 'top', horizontal: 'right' },
-                                                        transition: 'SlideLeft',
-                                                        open: true,
-                                                        message: 'Texto Copiado',
-                                                        variant: 'alert',
-                                                        alertSeverity: 'success',
-                                                        close: false
-                                                    })
-                                                }
-                                            >
-                                                <Tooltip title="Copiar">
-                                                    <IconButton size="large">
-                                                        <ContentCopyIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </CopyToClipboard>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -354,7 +309,7 @@ const ListPlantillaAll = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsTemplate.length}
+                count={lsMedical.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -364,4 +319,4 @@ const ListPlantillaAll = () => {
     );
 };
 
-export default ListPlantillaAll;
+export default ListMedicalFormula;

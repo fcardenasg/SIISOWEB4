@@ -48,6 +48,10 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
         }
     }
 
+    var disabledButon = programming.estadoPac === 'PENDIENTE POR ATENCIÓN' ? false :
+        programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' ? true :
+            programming.estadoPac === 'ATENDIDO' ? true : false;
+
     const ColorCard = programming.nameAtencion === 'TRIAGE I' ? ColorDrummondltd.RedDrummond :
         programming.nameAtencion === 'TRIAGE II' ? ColorDrummondltd.RedDrummond :
             programming.nameTipoAtencion === 'ENFERMERIA' ? ColorDrummondltd.BlueDrummond :
@@ -127,12 +131,12 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Button variant="outlined" onClick={handleClick} fullWidth startIcon={<IconEye />}>
+                        <Button disabled={disabledButon} variant="outlined" onClick={handleClick} fullWidth startIcon={<IconEye />}>
                             Atender
                         </Button>
                     </Grid>
                     <Grid item xs={12}>
-                        <Button variant="outlined" color="error" onClick={() => onClickDelete(programming.id)} fullWidth startIcon={<IconCircleMinus />}>
+                        <Button disabled={disabledButon} variant="outlined" color="error" onClick={() => onClickDelete(programming.id)} fullWidth startIcon={<IconCircleMinus />}>
                             Anular
                         </Button>
                     </Grid>

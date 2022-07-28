@@ -24,6 +24,7 @@ import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ListMedicalFormula from 'components/template/ListMedicalFormula';
 
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import InputMultiSelects from 'components/input/InputMultiSelects';
@@ -42,7 +43,7 @@ import { FormatDate } from 'components/helpers/Format';
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-    { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
+    { title: 'Ver Medicamentos', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
 const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdateMedicalFormula, tipoOrden, lsEmployee, setDocumento, documento, lsAtencion }) => {
@@ -131,10 +132,10 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
 
             <FullScreenDialog
                 open={openViewPdf}
-                title="VISTA DE PDF"
+                title="LISTA DE MEDICAMENTOS"
                 handleClose={() => setOpenViewPdf(false)}
             >
-
+                <ListMedicalFormula />
             </FullScreenDialog>
 
             <Grid container spacing={2}>

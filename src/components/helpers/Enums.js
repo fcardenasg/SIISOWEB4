@@ -37,7 +37,7 @@ export const CodCatalogo = {
     PANO_RIESGO: 128,
     PANO_GRADO_CONSINEPP: 131,
 
-    HCO_VACUNAS: 8,
+    VACUNAS: 154,
     HCO_FRECUENCIAS: 32,
     HCO_REFUERZO: 150,
     HC_DEPORTE: 143,
