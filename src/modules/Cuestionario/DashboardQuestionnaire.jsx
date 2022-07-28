@@ -1,5 +1,5 @@
 // Import de Material-ui
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -24,16 +24,14 @@ import SubCard from 'ui-component/cards/SubCard';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertQuestionnaire, UpdateQuestionnaires } from 'api/clients/QuestionnaireClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
-import { GetAllCatalog } from 'api/clients/CatalogClient';
-import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import { GetAllCatalog, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { PostQuestionnaire } from 'formatdata/QuestionnaireForm';
 import { GetByIdQuestionnaire } from 'api/clients/QuestionnaireClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, CodCatalogo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import SideIconCard from 'ui-component/cards/SideIconCard';
 import InputCheck from 'components/input/InputCheck';
 import InputOnChange from 'components/input/InputOnChange';
 import InputDatePick from 'components/input/InputDatePick';
@@ -48,6 +46,7 @@ const DashboardQuestionnaire = () => {
     const [company, setCompany] = useState([]);
     const [catalog, setCatalog] = useState([]);
     const [lsQuestionnaire, setLsQuestionnaire] = useState([]);
+    const [lsRefuerzo, setLsRefuerzo] = useState([]);
 
     /* Estados de controles al llegar datos */
     const [nombre, setNombre] = useState('');
@@ -82,8 +81,8 @@ const DashboardQuestionnaire = () => {
     const [censoProfesion, setCensoProfesion] = useState(73);
     const [censoContactoCon, setCensoContactoCon] = useState(73);
 
-    const [laboratorioPrimera, setLaboratorioPrimera] = useState(73);
-    const [dosisPrimera, setDosisPrimera] = useState(73);
+    const [laboratorioPrimera, setLaboratorioPrimera] = useState('');
+    const [dosisPrimera, setDosisPrimera] = useState('');
     const [laboratorioSegunda, setLaboratorioSegunda] = useState(73);
     const [dosisSegunda, setDosisSegunda] = useState(73);
     const [laboratorioTercera, setLaboratorioTercera] = useState(73);
@@ -242,6 +241,13 @@ const DashboardQuestionnaire = () => {
                 label: item.nombre
             }));
             setCatalog(resultCatalog);
+
+            const lsServerRefuerzo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_REFUERZO);
+            var resultRefuerzo = lsServerRefuerzo.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsRefuerzo(resultRefuerzo);
         } catch (error) {
             console.log(error);
         }
@@ -270,10 +276,6 @@ const DashboardQuestionnaire = () => {
     const ordenAislamiento = noSymptoms ? false : true;
     const marcarSintoma = noSymptoms || fiebre || congestionNasal || dolorGarganta || dificultadRespiratoria ||
         malestarGeneral || escalofrios || vomito || tos || otrosSintomas ? true : false;
-    const mensajeMarcoSintoma = marcarSintoma ? <></> :
-        <Grid item xs={12}><Typography sx={{ color: 'error.main' }} align="justify" variant="caption">
-            Si no presenta sintomar, marcar esta opción*
-        </Typography></Grid>;
 
     const handleClickSubmit = async (datos) => {
         try {
@@ -293,72 +295,61 @@ const DashboardQuestionnaire = () => {
                 noSymptoms, date, ordenAislamiento, livePerson, censoProfesion,
                 censoContactoCon, censoViveAdultoM, censoObservacion);
 
-            if (marcarSintoma) {
-                if (lsQuestionnaire.length !== 0) {
-                    if (Object.keys(datos.length !== 0)) {
-                        const result = await UpdateQuestionnaires(InsertToData);
-                        if (result.status === 200) {
-                            dispatch({
-                                type: SNACKBAR_OPEN,
-                                open: true,
-                                message: `${Message.Guardar}`,
-                                variant: 'alert',
-                                alertSeverity: 'success',
-                                close: false,
-                                transition: 'SlideUp'
-                            })
-                            reset();
-                            handleClearController();
-                        }
-                    } else {
+            if (lsQuestionnaire.length !== 0) {
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await UpdateQuestionnaires(InsertToData);
+                    if (result.status === 200) {
                         dispatch({
                             type: SNACKBAR_OPEN,
                             open: true,
-                            message: 'Hubo un error al guardar los Datos',
+                            message: `${Message.Guardar}`,
                             variant: 'alert',
-                            alertSeverity: 'error',
+                            alertSeverity: 'success',
                             close: false,
                             transition: 'SlideUp'
                         })
+                        reset();
+                        handleClearController();
                     }
                 } else {
-                    if (Object.keys(datos.length !== 0)) {
-                        const result = await InsertQuestionnaire(InsertToData);
-                        if (result.status === 200) {
-                            dispatch({
-                                type: SNACKBAR_OPEN,
-                                open: true,
-                                message: `${Message.Guardar}`,
-                                variant: 'alert',
-                                alertSeverity: 'success',
-                                close: false,
-                                transition: 'SlideUp'
-                            })
-                            reset();
-                            handleClearController();
-                        }
-                    } else {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: 'Hubo un error al guardar los Datos',
+                        variant: 'alert',
+                        alertSeverity: 'error',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
+                }
+            } else {
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await InsertQuestionnaire(InsertToData);
+                    if (result.status === 200) {
                         dispatch({
                             type: SNACKBAR_OPEN,
                             open: true,
-                            message: 'Hubo un error al guardar los Datos',
+                            message: `${Message.Guardar}`,
                             variant: 'alert',
-                            alertSeverity: 'error',
+                            alertSeverity: 'success',
                             close: false,
                             transition: 'SlideUp'
                         })
+                        reset();
+                        handleClearController();
                     }
+                } else {
+                    dispatch({
+                        type: SNACKBAR_OPEN,
+                        open: true,
+                        message: 'Hubo un error al guardar los Datos',
+                        variant: 'alert',
+                        alertSeverity: 'error',
+                        close: false,
+                        transition: 'SlideUp'
+                    })
                 }
-            } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Por favor, debe seleccionar algún síntoma',
-                    variant: 'alert',
-                    alertSeverity: 'warning',
-                    close: false,
-                    transition: 'SlideUp'
-                })
+
             }
         } catch (error) {
             dispatch({
@@ -377,7 +368,7 @@ const DashboardQuestionnaire = () => {
         <MainCard title="Cuestionario De Salud">
             <Grid xs={12} sx={{ pt: 3 }}>
                 <form onSubmit={handleSubmit(handleClickSubmit)}>
-                    {/* Controles del Form */}
+
                     <Grid container spacing={2} sx={{ pb: 4 }}>
 
                         <Grid item xs={2.4}>
@@ -520,31 +511,16 @@ const DashboardQuestionnaire = () => {
                     {btnReport ?
                         (
                             <Grid container sx={{ pt: 5 }} justifyContent="left" alignItems="flex-start" spacing={2}>
-                                <Grid item xs={4}>
+                                <Grid item xs={6}>
                                     <InputCheck
                                         label="No presenta ningún síntoma"
                                         size={40}
                                         checked={noSymptoms}
                                         onChange={handleNoSymptoms}
                                     />
-                                    {mensajeMarcoSintoma}
                                 </Grid>
-                                <Grid item xs={4}>
-                                    <Grid container>
-                                        <InputCheck
-                                            label="Contacto estrecho"
-                                            size={40}
-                                            checked={contactoEstrecho}
-                                            onChange={(event) => setContactoEstrecho(event.target.checked)}
-                                        />
-                                        <Typography align="justify" variant="caption">
-                                            En los últimos 14 días ha tenido contacto con alguna
-                                            persona con síntomas o que haya sido declarada enferma o
-                                            sospechosa para COVID-19, en las siguientes condiciones:
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={4}>
+
+                                <Grid item xs={6}>
                                     <InputCheck
                                         label="Vacunado"
                                         size={40}
@@ -553,572 +529,125 @@ const DashboardQuestionnaire = () => {
                                     />
                                 </Grid>
 
-                                <Grid container xs={12} sx={{ pb: 5 }}></Grid>
-
-                                {
-                                    noSymptoms ? (
-                                        <>
-                                            <Grid sx={{ pb: 5 }} item xs={12}>
-                                                <SubCard title="AUTORIZACIÓN DE INGRESO">
-                                                    <Grid container spacing={2} direction="row"
-                                                        justifyContent="space-evenly"
-                                                        alignItems="center" xs={12}>
-                                                        <Grid item xs={4}>
-                                                            <SideIconCard
-                                                                iconPrimary={ThumbUpOffAltIcon}
-                                                                primary="APTO"
-                                                                secondary="Se autoriza el ingreso al turno"
-                                                                color={theme.palette.success.dark}
-                                                                bgcolor={theme.palette.grey[200]}
-                                                            />
-                                                        </Grid>
-                                                        <Divider />
-                                                        <Grid item xs={4}>
-                                                            <SideIconCard
-                                                                iconPrimary={LocalHospitalIcon}
-                                                                primary="NO"
-                                                                secondary="No se ordena iniciar aislamiento y consultar a la EPS"
-                                                                color={theme.palette.error.dark}
-                                                                bgcolor={theme.palette.grey[200]}
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                                </SubCard>
-                                            </Grid>
-
-                                            {contactoEstrecho ? (
-                                                <>
-                                                    <Grid sx={{ pb: 5 }} item xs={12}>
-                                                        <SubCard title="SI LA RESPUESTA ES SÍ, RESPONDA LAS SIGUIENTES:">
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    label="Alguno de los dos estaba sin protección respiratoria (tapabocas)"
-                                                                    size={25}
-                                                                    checked={contactoSinTapabocas}
-                                                                    onChange={(event) => setContactoSinTapabocas(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    label="Estaban a una distancia menor de 2 metros"
-                                                                    size={25}
-                                                                    checked={contactoPocaDistancia}
-                                                                    onChange={(event) => setContactoPocaDistancia(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    label="Por más de 15 minutos"
-                                                                    size={25}
-                                                                    checked={contactoTiempo}
-                                                                    onChange={(event) => setContactoTiempo(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    label="Sin haberse lavado las manos minuciosamente después"
-                                                                    size={25}
-                                                                    checked={contactoMano}
-                                                                    onChange={(event) => setContactoMano(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                        </SubCard>
-                                                    </Grid>
-                                                    <Grid sx={{ pb: 5 }} item xs={12}>
-                                                        <SubCard title="PREGUNTAS SOLO PARA CASOS CON RESPUESTAS POSITIVAS">
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    label="Ha consultado a su EPS por los síntomas o por los contactos positivos"
-                                                                    size={25}
-                                                                    checked={consultaEps}
-                                                                    onChange={(event) => setConsultaEps(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    label="Ha cumplido el tiempo de aislamiento requerido para contactos o síntomas"
-                                                                    size={25}
-                                                                    checked={cumplirTiempoAislamiento}
-                                                                    onChange={(event) => setCumplirTiempoAislamiento(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                        </SubCard>
-                                                    </Grid>
-                                                </>
-                                            ) : (<></>)}
-
-                                            {vacuna ? (
-                                                <>
-                                                    <Grid sx={{ pb: 5 }} item xs={12}>
-                                                        <SubCard title="SECCIÓN DE VACUNACIÓN">
-                                                            <Grid container>
-                                                                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="laboratorioPrimera"
-                                                                            label="Laboratorio"
-                                                                            value={laboratorioPrimera}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setLaboratorioPrimera(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="dosisPrimera"
-                                                                            label="Dosis"
-                                                                            value={dosisPrimera}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setDosisPrimera(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <InputDatePick
-                                                                            label="Fecha 1era dosis"
-                                                                            value={fechaPrimera}
-                                                                            onChange={(e) => setFechaPrimera(e)}
-                                                                        />
-                                                                    </Grid>
-                                                                </Grid>
-
-                                                                <Grid container xs={12} spacing={2} sx={{ pb: 3 }}>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="laboratorioSegunda"
-                                                                            label="Laboratorio"
-                                                                            value={laboratorioSegunda}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setLaboratorioSegunda(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="dosisSegunda"
-                                                                            label="Dosis"
-                                                                            value={dosisSegunda}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setDosisSegunda(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <InputDatePick
-                                                                            label="Fecha 2era dosis"
-                                                                            value={fechaSegunda}
-                                                                            onChange={(e) => setFechaSegunda(e)}
-                                                                        />
-                                                                    </Grid>
-                                                                </Grid>
-
-                                                                <Grid container xs={12} spacing={2} sx={{ pb: 3 }}>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="laboratorioTercera"
-                                                                            label="Laboratorio"
-                                                                            value={laboratorioTercera}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setLaboratorioTercera(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="dosisTercera"
-                                                                            label="Dosis"
-                                                                            value={dosisTercera}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setDosisTercera(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <InputDatePick
-                                                                            label="Fecha 3era dosis"
-                                                                            value={fechaTercera}
-                                                                            onChange={(e) => setFechaTercera(e)}
-                                                                        />
-                                                                    </Grid>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </SubCard>
-                                                    </Grid>
-                                                </>
-                                            ) : (<></>)}
-
-                                            <Grid item xs={12} sx={{ pb: 2, pt: 4 }}>
-                                                <Grid container spacing={1}>
-                                                    <Grid item xs={6}>
-                                                        <AnimateButton>
-                                                            <Button variant="contained" fullWidth type="submit">
-                                                                {TitleButton.Guardar}
-                                                            </Button>
-                                                        </AnimateButton>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <AnimateButton>
-                                                            <Button variant="outlined" fullWidth onClick={() => { setBtnReport(false); setDocument('') }}>
-                                                                {TitleButton.Cancelar}
-                                                            </Button>
-                                                        </AnimateButton>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Grid sx={{ pb: 5, pt: 5 }} item xs={12}>
-                                                <SubCard title="CENSO">
-                                                    <Grid spacing={2} container>
-                                                        <Grid item xs={4}>
-                                                            <InputCheck
-                                                                checked={livePerson}
-                                                                label="¿Vive con personas que presten servicios de salud?"
-                                                                size={25}
-                                                                onChange={(event) => setLivePerson(event.target.checked)}
-                                                            />
-                                                        </Grid>
-
-                                                        {livePerson ? (
-                                                            <>
-                                                                <Grid item xs={4}>
-                                                                    <SelectOnChange
-                                                                        name="censoProfesion"
-                                                                        label="Profesión"
-                                                                        value={censoProfesion}
-                                                                        options={catalog}
-                                                                        onChange={(e) => setCensoProfesion(e?.target.value)}
-                                                                        size={matchesXS ? 'small' : 'medium'}
-                                                                    />
-                                                                </Grid>
-                                                                <Grid item xs={4}>
-                                                                    <SelectOnChange
-                                                                        name="censoContactoCon"
-                                                                        label="Contacto Con:"
-                                                                        value={censoContactoCon}
-                                                                        options={catalog}
-                                                                        onChange={(e) => setCensoContactoCon(e?.target.value)}
-                                                                        size={matchesXS ? 'small' : 'medium'}
-                                                                    />
-                                                                </Grid>
-                                                            </>
-                                                        ) : (<><Grid item xs={8}></Grid></>)}
-
+                                {vacuna ? (
+                                    <Fragment>
+                                        <Grid sx={{ pb: 5 }} item xs={12}>
+                                            <SubCard title="SECCIÓN DE VACUNACIÓN">
+                                                <Grid container>
+                                                    <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
                                                         <Grid item xs={6}>
-                                                            <InputCheck
-                                                                checked={censoViveAdultoM}
-                                                                label="¿Vive con adultos mayores de 65 años, o personas con enfermedades preexistentes?"
-                                                                size={25}
-                                                                onChange={(event) => setCensoViveAdultoM(event.target.checked)}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={6}>
-                                                            <InputOnChange
-                                                                label="Observación"
-                                                                onChange={(e) => setObservacion(e?.target.value)}
-                                                                value={censoObservacion}
+                                                            <SelectOnChange
+                                                                name="dosisPrimera"
+                                                                label="Refuerzo"
+                                                                value={dosisPrimera}
+                                                                options={lsRefuerzo}
+                                                                onChange={(e) => setDosisPrimera(e?.target.value)}
                                                                 size={matchesXS ? 'small' : 'medium'}
-                                                                required={true}
                                                             />
                                                         </Grid>
-                                                    </Grid>
-                                                </SubCard>
-                                            </Grid>
 
-                                            <Grid sx={{ pb: 5 }} item xs={12}>
-                                                <SubCard title="SÍNTOMAS ACTUALES">
-                                                    <Grid container>
                                                         <Grid item xs={4}>
-                                                            <InputCheck
-                                                                checked={fiebre}
-                                                                label="Fiebre"
-                                                                size={25}
-                                                                onChange={(event) => setFiebre(event.target.checked)}
+                                                            <SelectOnChange
+                                                                name="laboratorioPrimera"
+                                                                label="Laboratorio"
+                                                                value={laboratorioPrimera}
+                                                                options={catalog}
+                                                                onChange={(e) => setLaboratorioPrimera(e?.target.value)}
+                                                                size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
-                                                        <Grid item xs={4}>
-                                                            <InputCheck
-                                                                checked={dificultadRespiratoria}
-                                                                label="Dificultad respiratoria"
-                                                                size={25}
-                                                                onChange={(event) => setDificultadRespiratoria(event.target.checked)}
+                                                        {/* <Grid item xs={6}>
+                                                            <InputDatePick
+                                                                label="Fecha"
+                                                                value={fechaPrimera}
+                                                                onChange={(e) => setFechaPrimera(e)}
                                                             />
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <InputCheck
-                                                                checked={vomito}
-                                                                label="Vomito"
-                                                                size={25}
-                                                                onChange={(event) => setVomito(event.target.checked)}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <InputCheck
-                                                                checked={congestionNasal}
-                                                                label="Congestión Nasal"
-                                                                size={25}
-                                                                onChange={(event) => setCongestionNasal(event.target.checked)}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <InputCheck
-                                                                checked={malestarGeneral}
-                                                                label="Malestar general"
-                                                                size={25}
-                                                                onChange={(event) => setMalestarGeneral(event.target.checked)}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <InputCheck
-                                                                checked={tos}
-                                                                label="Tos"
-                                                                size={25}
-                                                                onChange={(event) => setTos(event.target.checked)}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <InputCheck
-                                                                checked={dolorGarganta}
-                                                                label="Dolor de garganta"
-                                                                size={25}
-                                                                onChange={(event) => setDolorGarganta(event.target.checked)}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <InputCheck
-                                                                checked={escalofrios}
-                                                                label="Escalofríos"
-                                                                size={25}
-                                                                onChange={(event) => setEscalofrios(event.target.checked)}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={4}>
-                                                            <InputCheck
-                                                                checked={otrosSintomas}
-                                                                label="Otros síntomas:"
-                                                                size={25}
-                                                                onChange={(event) => setOtrosSintomas(event.target.checked)}
-                                                            />
-                                                        </Grid>
+                                                        </Grid> */}
                                                     </Grid>
-                                                </SubCard>
-                                            </Grid>
 
-                                            {contactoEstrecho ? (
-                                                <>
-                                                    <Grid sx={{ pb: 5 }} item xs={12}>
-                                                        <SubCard title="SI LA RESPUESTA ES SÍ, RESPONDA LAS SIGUIENTES:">
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    checked={contactoSinTapabocas}
-                                                                    label="Alguno de los dos estaba sin protección respiratoria (tapabocas)"
-                                                                    size={25}
-                                                                    onChange={(event) => setContactoSinTapabocas(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    checked={contactoPocaDistancia}
-                                                                    label="Alguno de los dos estaba sin protección respiratoria (tapabocas)"
-                                                                    size={25}
-                                                                    onChange={(event) => setContactoPocaDistancia(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    checked={contactoTiempo}
-                                                                    label="Por más de 15 minutos"
-                                                                    size={25}
-                                                                    onChange={(event) => setContactoTiempo(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    checked={contactoMano}
-                                                                    label="Sin haberse lavado las manos minuciosamente después"
-                                                                    size={25}
-                                                                    onChange={(event) => setContactoMano(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                        </SubCard>
-                                                    </Grid>
-                                                    <Grid sx={{ pb: 5 }} item xs={12}>
-                                                        <SubCard title="PREGUNTAS SOLO PARA CASOS CON RESPUESTAS POSITIVAS">
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    checked={consultaEps}
-                                                                    label="Ha consultado a su EPS por los síntomas o por los contactos positivos"
-                                                                    size={25}
-                                                                    onChange={(event) => setConsultaEps(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                            <Grid container justifyContent="left" alignItems="center">
-                                                                <InputCheck
-                                                                    checked={cumplirTiempoAislamiento}
-                                                                    label="Ha cumplido el tiempo de aislamiento requerido para contactos o síntomas"
-                                                                    size={25}
-                                                                    onChange={(event) => setCumplirTiempoAislamiento(event.target.checked)}
-                                                                />
-                                                            </Grid>
-                                                        </SubCard>
-                                                    </Grid>
-                                                </>
-                                            ) : (<></>)}
+                                                    {/*  <Grid container xs={12} spacing={2} sx={{ pb: 3 }}>
+                                                        <Grid item xs={4}>
+                                                            <SelectOnChange
+                                                                name="laboratorioSegunda"
+                                                                label="Laboratorio"
+                                                                value={laboratorioSegunda}
+                                                                options={catalog}
+                                                                onChange={(e) => setLaboratorioSegunda(e?.target.value)}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <SelectOnChange
+                                                                name="dosisSegunda"
+                                                                label="Dosis"
+                                                                value={dosisSegunda}
+                                                                options={catalog}
+                                                                onChange={(e) => setDosisSegunda(e?.target.value)}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <InputDatePick
+                                                                label="Fecha 2era dosis"
+                                                                value={fechaSegunda}
+                                                                onChange={(e) => setFechaSegunda(e)}
+                                                            />
+                                                        </Grid>
+                                                    </Grid> */}
 
-                                            {vacuna ? (
-                                                <>
-                                                    <Grid sx={{ pb: 5 }} item xs={12}>
-                                                        <SubCard title="SECCIÓN DE VACUNACIÓN">
-                                                            <Grid container>
-                                                                <Grid container xs={12} spacing={2} sx={{ pb: 2 }}>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="laboratorioPrimera"
-                                                                            label="Laboratorio"
-                                                                            value={laboratorioPrimera}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setLaboratorioPrimera(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="dosisPrimera"
-                                                                            label="Dosis"
-                                                                            value={dosisPrimera}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setDosisPrimera(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <InputDatePick
-                                                                            label="Fecha 1era dosis"
-                                                                            value={fechaPrimera}
-                                                                            onChange={(e) => setFechaPrimera(e)}
-                                                                        />
-                                                                    </Grid>
-                                                                </Grid>
-
-                                                                <Grid container xs={12} spacing={2} sx={{ pb: 3 }}>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="laboratorioSegunda"
-                                                                            label="Laboratorio"
-                                                                            value={laboratorioSegunda}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setLaboratorioSegunda(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="dosisSegunda"
-                                                                            label="Dosis"
-                                                                            value={dosisSegunda}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setDosisSegunda(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <InputDatePick
-                                                                            label="Fecha 2era dosis"
-                                                                            value={fechaSegunda}
-                                                                            onChange={(e) => setFechaSegunda(e)}
-                                                                        />
-                                                                    </Grid>
-                                                                </Grid>
-
-                                                                <Grid container xs={12} spacing={2} sx={{ pb: 3 }}>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="laboratorioTercera"
-                                                                            label="Laboratorio"
-                                                                            value={laboratorioTercera}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setLaboratorioTercera(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <SelectOnChange
-                                                                            name="dosisTercera"
-                                                                            label="Dosis"
-                                                                            value={dosisTercera}
-                                                                            options={catalog}
-                                                                            onChange={(e) => setDosisTercera(e?.target.value)}
-                                                                            size={matchesXS ? 'small' : 'medium'}
-                                                                        />
-                                                                    </Grid>
-                                                                    <Grid item xs={4}>
-                                                                        <InputDatePick
-                                                                            label="Fecha 3era dosis"
-                                                                            value={fechaTercera}
-                                                                            onChange={(e) => setFechaTercera(e)}
-                                                                        />
-                                                                    </Grid>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </SubCard>
-                                                    </Grid>
-                                                </>
-                                            ) : (<></>)}
-
-
-                                            {fiebre || congestionNasal || dolorGarganta || dificultadRespiratoria ||
-                                                malestarGeneral || escalofrios || vomito || tos || otrosSintomas ? (
-                                                <>
-                                                    <Grid sx={{ pb: 5 }} item xs={12}>
-                                                        <SubCard title="AUTORIZACIÓN DE INGRESO">
-                                                            <Grid sx={{ pt: 2, pb: 2 }} container spacing={2} direction="row"
-                                                                justifyContent="space-evenly"
-                                                                alignItems="center" xs={12}>
-                                                                <Grid item xs={4}>
-                                                                    <SideIconCard
-                                                                        iconPrimary={ThumbUpOffAltIcon}
-                                                                        primary="NO APTO"
-                                                                        secondary="No se autoriza el ingreso al turno"
-                                                                        color={theme.palette.error.dark}
-                                                                        bgcolor={theme.palette.grey[200]}
-                                                                    />
-                                                                </Grid>
-                                                                <Grid item xs={4}>
-                                                                    <SideIconCard
-                                                                        iconPrimary={LocalHospitalIcon}
-                                                                        primary="SI"
-                                                                        secondary="Se ordena iniciar aislamiento y consultar a la EPS"
-                                                                        color={theme.palette.success.dark}
-                                                                        bgcolor={theme.palette.grey[200]}
-                                                                    />
-                                                                </Grid>
-                                                            </Grid>
-                                                        </SubCard>
-                                                    </Grid>
-                                                </>) : (<></>)}
-
-                                            <Grid item xs={12} sx={{ pb: 3, pt: 4 }}>
-                                                <Grid container spacing={1}>
-                                                    <Grid item xs={6}>
-                                                        <AnimateButton>
-                                                            <Button variant="contained" fullWidth type="submit">
-                                                                {TitleButton.Guardar}
-                                                            </Button>
-                                                        </AnimateButton>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <AnimateButton>
-                                                            <Button variant="outlined" fullWidth onClick={() => { setBtnReport(false); setDocument('') }}>
-                                                                {TitleButton.Cancelar}
-                                                            </Button>
-                                                        </AnimateButton>
-                                                    </Grid>
+                                                    {/* <Grid container xs={12} spacing={2} sx={{ pb: 3 }}>
+                                                        <Grid item xs={4}>
+                                                            <SelectOnChange
+                                                                name="laboratorioTercera"
+                                                                label="Laboratorio"
+                                                                value={laboratorioTercera}
+                                                                options={catalog}
+                                                                onChange={(e) => setLaboratorioTercera(e?.target.value)}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <SelectOnChange
+                                                                name="dosisTercera"
+                                                                label="Dosis"
+                                                                value={dosisTercera}
+                                                                options={catalog}
+                                                                onChange={(e) => setDosisTercera(e?.target.value)}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            <InputDatePick
+                                                                label="Fecha 3era dosis"
+                                                                value={fechaTercera}
+                                                                onChange={(e) => setFechaTercera(e)}
+                                                            />
+                                                        </Grid>
+                                                    </Grid> */}
                                                 </Grid>
-                                            </Grid>
-                                        </>
-                                    )
-                                }
+                                            </SubCard>
+                                        </Grid>
+                                    </Fragment>
+                                ) : (<></>)}
+
+                                <Grid item xs={12} sx={{ pt: 4 }}>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={6}>
+                                            <AnimateButton>
+                                                <Button variant="contained" fullWidth type="submit">
+                                                    {TitleButton.Guardar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" fullWidth onClick={() => { setBtnReport(false); setDocument('') }}>
+                                                    {TitleButton.Cancelar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
                             </Grid>
                         ) : (<></>)
                     }

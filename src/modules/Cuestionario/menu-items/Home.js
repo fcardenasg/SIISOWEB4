@@ -29,7 +29,7 @@ const home = {
             icon: icons.IconReportMedical,
             breadcrumbs: false
         },
-        {
+        /* {
             id: 'vacunacion',
             title: <FormattedMessage id="Vacunación" />,
             type: 'item',
@@ -52,7 +52,7 @@ const home = {
             url: '/dashboard/viewfinderqr',
             icon: icons.IconScan,
             breadcrumbs: false
-        }
+        } */
     ]
 };
 
