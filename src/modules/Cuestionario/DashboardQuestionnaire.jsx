@@ -207,9 +207,9 @@ const DashboardQuestionnaire = () => {
             <Grid xs={12} sx={{ pt: 3 }}>
                 <form onSubmit={handleSubmit(handleClickSubmit)}>
 
-                    <Grid container spacing={2} sx={{ pb: 4 }}>
+                    <Grid container spacing={1} sx={{ pb: 4 }}>
 
-                        <Grid item xs={2.4}>
+                    <Grid item xs={12} md={4}>
                             <InputOnChange
                                 label="N° Documento"
                                 onKeyDown={handleDocument}
@@ -224,7 +224,8 @@ const DashboardQuestionnaire = () => {
 
                         {lsQuestionnaire.length === 0 ? (
                             <>
-                                <Grid item xs={2.4}>
+                              <Grid item xs={12} md={4}>
+                               
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
@@ -235,8 +236,11 @@ const DashboardQuestionnaire = () => {
                                             bug={errors}
                                         />
                                     </FormProvider>
+                             
                                 </Grid>
-                                <Grid item xs={2.4}>
+
+                                <Grid item xs={12} md={4}>
+                        
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
@@ -247,8 +251,11 @@ const DashboardQuestionnaire = () => {
                                             bug={errors}
                                         />
                                     </FormProvider>
+                          
                                 </Grid>
-                                <Grid item xs={2.4}>
+
+                                <Grid item xs={12} md={4}>
+                          
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
@@ -259,8 +266,10 @@ const DashboardQuestionnaire = () => {
                                             bug={errors}
                                         />
                                     </FormProvider>
+                            
                                 </Grid>
-                                <Grid item xs={2.4}>
+                                <Grid item xs={12} md={4}>
+                   
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="empresa"
@@ -271,11 +280,13 @@ const DashboardQuestionnaire = () => {
                                             bug={errors}
                                         />
                                     </FormProvider>
+                       
                                 </Grid>
                             </>
                         ) : (
                             <>
-                                <Grid item xs={2.4}>
+                                <Grid item xs={12} md={4}>
+                            
                                     <InputOnChange
                                         label="Apellidos y Nombres"
                                         onChange={(e) => setNombre(e?.target.value)}
@@ -285,7 +296,8 @@ const DashboardQuestionnaire = () => {
                                         disabled
                                     />
                                 </Grid>
-                                <Grid item xs={2.4}>
+                                
+                                <Grid item xs={12} md={4}>
                                     <InputOnChange
                                         label="Teléfono"
                                         onChange={(e) => setTelefono(e?.target.value)}
@@ -295,7 +307,7 @@ const DashboardQuestionnaire = () => {
                                         disabled
                                     />
                                 </Grid>
-                                <Grid item xs={2.4}>
+                                <Grid item xs={12} md={4}>
                                     <InputOnChange
                                         label="Email"
                                         onChange={(e) => setEmail(e?.target.value)}
@@ -305,7 +317,7 @@ const DashboardQuestionnaire = () => {
                                         disabled
                                     />
                                 </Grid>
-                                <Grid item xs={2.4}>
+                                <Grid item xs={12} md={4}>
                                     <SelectOnChange
                                         name="empresa"
                                         label="Empresa"
@@ -339,7 +351,7 @@ const DashboardQuestionnaire = () => {
                                 <Grid item xs={6}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={handleClick} fullWidth>
-                                            Reportar
+                                        Registrar declaración de salud
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
@@ -348,15 +360,30 @@ const DashboardQuestionnaire = () => {
 
                     {btnReport ?
                         (
-                            <Grid container sx={{ pt: 5 }} justifyContent="left" alignItems="flex-start" spacing={2}>
+                               <Grid item xs={12}>
+                              <SubCard title="DECLARACIÓN DE SALUD">
+                                            <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <InputCheck
-                                        label="No presenta ningún síntoma"
+                                        label="Presenta síntomas"
                                         size={40}
                                         checked={noSymptoms}
                                         onChange={(event) => setNoSymptoms(event.target.checked)}
                                     />
                                 </Grid>
+
+
+                                {noSymptoms ? (
+                                <Grid item xs={12}>
+                                                    <InputOnChange
+                                                        label="Cuales síntomas"
+                                                        onChange={(e) => setObservacionVacuna(e?.target.value)}
+                                                        value={observacionVacuna}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                ) : (<></>)}
 
                                 <Grid item xs={6}>
                                     <InputCheck
@@ -366,10 +393,13 @@ const DashboardQuestionnaire = () => {
                                         onChange={(event) => setVacunado(event.target.checked)}
                                     />
                                 </Grid>
+                                </Grid>
+                                        </SubCard>
+                    
 
                                 {vacunado ? (
                                     <Grid item xs={12}>
-                                        <SubCard title="SECCIÓN DE VACUNACIÓN">
+                                        <SubCard title="INFORMACIÓN DE VACUNACIÓN">
                                             <Grid container spacing={2}>
                                                 <Grid item xs={12}>
                                                     <InputMultiSelects
@@ -392,14 +422,7 @@ const DashboardQuestionnaire = () => {
                                                     />
                                                 </Grid>
 
-                                                <Grid item xs={6}>
-                                                    <InputOnChange
-                                                        label="Observación de Vacuna"
-                                                        onChange={(e) => setObservacionVacuna(e?.target.value)}
-                                                        value={observacionVacuna}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </Grid>
+                                             
                                             </Grid>
                                         </SubCard>
                                     </Grid>
