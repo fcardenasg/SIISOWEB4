@@ -28,6 +28,7 @@ import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 
 import swal from 'sweetalert';
+import Chip from 'ui-component/extended/Chip';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
@@ -481,7 +482,10 @@ const ListMedicines = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.existencia}
+                                                {row.existencia === true ?
+                                                    <Chip label="EXISTENCIA" size="small" chipcolor="success" /> :
+                                                    <Chip label="SIN EXISTENCIA" size="small" chipcolor="error" />
+                                                }
                                             </Typography>
                                         </TableCell>
 

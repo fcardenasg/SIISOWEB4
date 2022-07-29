@@ -17,7 +17,6 @@ import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import Cargando from 'components/loading/Cargando';
 import { PutMedicamentos } from 'formatdata/MedicinesForm';
-import { UpdateSuppliers, GetByIdSupplier } from 'api/clients/SupplierClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
@@ -26,7 +25,7 @@ import { TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdMedicines } from 'api/clients/MedicinesClient';
+import { GetByIdMedicines, UpdateMediciness } from 'api/clients/MedicinesClient';
 
 const UpdateMedicines = () => {
     const { user } = useAuth();
@@ -50,7 +49,7 @@ const UpdateMedicines = () => {
                 setExistencia(lsServerSupplierId.data.existencia);
             }
 
-            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPO_PROVEEDOR);
+            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.UNIDAD);
             var resultSupplier = lsServerSupplier.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -75,7 +74,7 @@ const UpdateMedicines = () => {
                 existencia, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateSuppliers(DataToUpdate);
+                const result = await UpdateMediciness(DataToUpdate);
                 if (result.status === 200) {
                     setOpenUpdate(true);
                 }
@@ -87,7 +86,7 @@ const UpdateMedicines = () => {
     };
 
     return (
-        <MainCard title="Actualizar Proveedor">
+        <MainCard title="Actualizar Medicamento">
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

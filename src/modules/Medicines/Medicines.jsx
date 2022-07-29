@@ -43,7 +43,7 @@ const Medicines = () => {
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    const [lsSupplier, setLsSupplier] = useState([]);
+    const [lsUnidad, setLsUnidad] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema)
@@ -53,12 +53,12 @@ const Medicines = () => {
 
     async function GetAll() {
         try {
-            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPO_PROVEEDOR);
+            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.UNIDAD);
             var resultSupplier = lsServerSupplier.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsSupplier(resultSupplier);
+            setLsUnidad(resultSupplier);
         } catch (error) {
             console.log(error);
         }
@@ -88,7 +88,7 @@ const Medicines = () => {
     };
 
     return (
-        <MainCard title="Registrar Proveedor">
+        <MainCard title="Registrar Medicamento">
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -123,7 +123,7 @@ const Medicines = () => {
                             name="idUnidad"
                             label="Unidad"
                             defaultValue=""
-                            options={lsSupplier}
+                            options={lsUnidad}
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors}
                         />

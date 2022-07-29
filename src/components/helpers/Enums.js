@@ -68,6 +68,8 @@ export const CodCatalogo = {
     PAD_MOTIVO: 50,
     PAD_MOTIVO_NO_ASIS: 54,
 
+    UNIDAD: 36,
+
     PAD_MUESTRA_AD: 115,
     PAD_MUESTRA_AL: 117,
     PAD_RESULTADO: 116,
