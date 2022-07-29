@@ -32,7 +32,7 @@ const LoginRoutes = {
             element: <AuthRegister />
         },
         {
-            path: '/forgot',
+            path: '/ForgotPassword',
             element: <AuthForgotPassword />
         }
     ]
