@@ -1,6 +1,6 @@
-import { useTheme} from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
-import { Button, Card,TextField, CardActions,useMediaQuery, CardContent, CardHeader, CardMedia, Divider, Grid, Typography, IconButton, Modal, } from '@mui/material';
+import { Button, Card, TextField, CardActions, useMediaQuery, CardContent, CardHeader, CardMedia, Divider, Grid, Typography, IconButton, Modal, } from '@mui/material';
 import { QrReader } from 'react-qr-reader';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -32,7 +32,7 @@ const Turner = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const dispatch = useDispatch();
 
-  
+
     /* NUESTROS USESTATE */
     const [typeCatalog, setTypeCatalog] = useState([]);
     const [btnReport, setBtnReport] = useState(false);
@@ -120,7 +120,7 @@ const Turner = () => {
                                         <Grid container spacing={1} justifyContent="center" alignItems="center">
                                             <Grid item>
                                                 <Typography variant="subtitle1">
-                                                    
+
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -163,64 +163,64 @@ const Turner = () => {
                         </SubCard>
                     </Grid>
                     <Divider />
-{/* 
+                    {/* 
                     Resultado de la consulta */}
                     <Grid item xs={12}>
                         <SubCard title="Información personal">
                             {/* <Grid container spacing={gridSpacing}> */}
-                        
+
                             <Grid container spacing={2} sx={{ pb: 4 }}>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="codigo"
-                                    label="N° Documento"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="codigo"
-                                    label="Apellidos y Nombres"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="codigo"
-                                    label="Teléfono"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue=""
-                                    fullWidth
-                                    name="codigo"
-                                    label="Email"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                    
-                    </Grid>
-                                   
+                                <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="codigo"
+                                            label="N° Documento"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="codigo"
+                                            label="Apellidos y Nombres"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="codigo"
+                                            label="Teléfono"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="codigo"
+                                            label="Email"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                            </Grid>
+
                             {/* </Grid> */}
                         </SubCard>
                     </Grid>
@@ -241,21 +241,23 @@ const Turner = () => {
                                         <Divider />
                                         <CardContent>
                                             <Grid container spacing={1}>
-                                            <Grid container justifyContent="center">
-                                                <Grid item>
-                                                <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
-                                    Solicitar turno
-                                </Button>
+                                                <Grid container justifyContent="center">
+                                                    <Grid item>
+                                                        <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
+                                                            Solicitar turno
+                                                        </Button>
 
-                                </Grid>
+                                                    </Grid>
                                                 </Grid>
 
-                                 
+
                                             </Grid>
 
                                         </CardContent>
                                     </Card>
                                 </Grid>
+
+                                
                                 <Grid item sm={6} md={4}>
                                     <Card sx={{ bgcolor: theme.palette.secondary.main, color: theme.palette.secondary.light }}>
                                         <CardHeader
@@ -268,16 +270,16 @@ const Turner = () => {
                                         <Divider />
                                         <CardContent>
                                             <Grid container spacing={1}>
-                                            <Grid container justifyContent="center">
-                                                <Grid item>
-                                                <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
-                                    Solicitar turno
-                                </Button>
+                                                <Grid container justifyContent="center">
+                                                    <Grid item>
+                                                        <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
+                                                            Solicitar turno
+                                                        </Button>
 
-                                </Grid>
+                                                    </Grid>
                                                 </Grid>
 
-                                 
+
                                             </Grid>
 
                                         </CardContent>
@@ -295,16 +297,16 @@ const Turner = () => {
                                         <Divider />
                                         <CardContent>
                                             <Grid container spacing={1}>
-                                            <Grid container justifyContent="center">
-                                                <Grid item>
-                                                <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
-                                    Solicitar turno
-                                </Button>
+                                                <Grid container justifyContent="center">
+                                                    <Grid item>
+                                                        <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
+                                                            Solicitar turno
+                                                        </Button>
 
-                                </Grid>
+                                                    </Grid>
                                                 </Grid>
 
-                                 
+
                                             </Grid>
 
                                         </CardContent>
@@ -322,16 +324,16 @@ const Turner = () => {
                                         <Divider />
                                         <CardContent>
                                             <Grid container spacing={1}>
-                                            <Grid container justifyContent="center">
-                                                <Grid item>
-                                                <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
-                                    Solicitar turno
-                                </Button>
+                                                <Grid container justifyContent="center">
+                                                    <Grid item>
+                                                        <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
+                                                            Solicitar turno
+                                                        </Button>
 
-                                </Grid>
+                                                    </Grid>
                                                 </Grid>
 
-                                 
+
                                             </Grid>
 
                                         </CardContent>
@@ -348,17 +350,17 @@ const Turner = () => {
                                         />
                                         <Divider />
                                         <CardContent>
-                                        <Grid container spacing={1}>
-                                            <Grid container justifyContent="center">
-                                                <Grid item>
-                                                <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
-                                    Solicitar turno
-                                </Button>
+                                            <Grid container spacing={1}>
+                                                <Grid container justifyContent="center">
+                                                    <Grid item>
+                                                        <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
+                                                            Solicitar turno
+                                                        </Button>
 
-                                </Grid>
+                                                    </Grid>
                                                 </Grid>
 
-                                 
+
                                             </Grid>
                                         </CardContent>
                                     </Card>
@@ -374,17 +376,17 @@ const Turner = () => {
                                         />
                                         <Divider />
                                         <CardContent>
-                                        <Grid container spacing={1}>
-                                            <Grid container justifyContent="center">
-                                                <Grid item>
-                                                <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
-                                    Solicitar turno
-                                </Button>
+                                            <Grid container spacing={1}>
+                                                <Grid container justifyContent="center">
+                                                    <Grid item>
+                                                        <Button component={Link} to="/e-commerce/products" variant="contained" fullWidth>
+                                                            Solicitar turno
+                                                        </Button>
 
-                                </Grid>
+                                                    </Grid>
                                                 </Grid>
 
-                                 
+
                                             </Grid>
                                         </CardContent>
                                     </Card>
@@ -393,7 +395,7 @@ const Turner = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
-                  
+
                 </Grid>
             </MainCard>
         </>

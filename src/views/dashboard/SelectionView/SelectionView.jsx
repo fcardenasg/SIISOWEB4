@@ -1,4 +1,4 @@
-import { Grid, Box, Typography, Button, CardMedia } from "@mui/material";
+import { Grid, Box, Typography, Button, CardMedia, Divider } from "@mui/material";
 import { Fragment } from "react";
 import { useNavigate } from 'react-router-dom';
 import { ColorDrummondltd } from 'themes/colors';
@@ -35,8 +35,8 @@ const SelectionView = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container sx={{ pt: 8, textAlign: 'center' }}>
-                    <Grid item xs={6}>
+                <Grid container sx={{ pt: 10, textAlign: 'center' }}>
+                    <Grid item xs={12} md={12}>
                         <Button onClick={() => navigate("/dashboard/ltd", { replace: true })} variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }}>
                             <CardMedia
                                 component="img"
@@ -47,7 +47,11 @@ const SelectionView = () => {
                         </Button>
                     </Grid>
 
-                    <Grid item xs={6}>
+                </Grid>
+
+                <Divider />
+                <Grid container sx={{ pt: 2, textAlign: 'center' }}>
+                    <Grid item xs={12} md={12}>
                         <Button onClick={() => navigate("/dashboard/energy", { replace: true })} variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }}>
                             <CardMedia
                                 component="img"
@@ -61,7 +65,7 @@ const SelectionView = () => {
 
                 <Grid container sx={{ pt: 17 }}>
                     <Grid item xs={12}>
-                        <Typography sx={{ color: ColorDrummondltd.GrayDrummond }} align="center" variant="h3">
+                        <Typography sx={{ color: ColorDrummondltd.GrayDrummond }} align="center" variant="h6">
                             © Copyright 2022 Drummond Ltd. Colombia - V 4.0.
                         </Typography>
                     </Grid>
