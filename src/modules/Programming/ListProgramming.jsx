@@ -9,8 +9,9 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 import { IconSearch } from '@tabler/icons';
-import { GetAllAttention, DeleteAttention } from 'api/clients/AttentionClient';
+import { GetAllAttention, GetAllAtencion, DeleteAttention } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
+import { DefaultValue } from 'components/helpers/Enums';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -56,7 +57,7 @@ const ListProgramming = () => {
 
     const GetAll = async () => {
         try {
-            const response = await GetAllAttention(0, 0);
+            const response = await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO);
             if (response.status === 200) { setLsProgramming(response.data.entities); setRows(response.data.entities) }
         } catch (error) {
             console.log(error);

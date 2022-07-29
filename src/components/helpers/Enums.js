@@ -133,6 +133,7 @@ export const DefaultValue = {
     SINREGISTRO_GLOBAL: 1,
     SINREGISTRO_TEXTO: 'REGISTRO NO APLICA',
     GeneroWomen: 2,
+    ATENCION_ATENDIDO: 'ATENDIDO',
 
     /* TIPO DE ORDEN */
     TIPO_ORDEN_FORMULA: 4023,
