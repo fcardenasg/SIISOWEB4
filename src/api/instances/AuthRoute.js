@@ -1,5 +1,5 @@
 export const Url = {
-    Base: 'https://localhost:44347/',
+    Base: 'https://localhost:8020/',
 
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
