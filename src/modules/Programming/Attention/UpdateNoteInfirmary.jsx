@@ -11,6 +11,23 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import swal from 'sweetalert';
+import { ParamCloseCase } from 'components/alert/AlertAll';
+
+import HoverSocialCard from './OccupationalExamination/Framingham/HoverSocialCard';
+import BiotechIcon from '@mui/icons-material/Biotech';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import ImageIcon from '@mui/icons-material/Image';
+import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient';
+import { PutAttention } from 'formatdata/AttentionForm';
+
+import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
+import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
+import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
+import ViewReport from './OccupationalExamination/Report/ViewReport';
+import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
+import { ColorDrummondltd } from 'themes/colors';
 
 import ViewEmployee from 'components/views/ViewEmployee';
 import InputDatePicker from 'components/input/InputDatePicker';
@@ -29,12 +46,11 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { InsertNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
 import Cargando from 'components/loading/Cargando';
-import { GetByIdAttention } from 'api/clients/AttentionClient';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -47,7 +63,22 @@ const UpdateNoteInfirmary = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [lsNoteInfirmary, setLsNoteInfirmary] = useState([]);
+    const [lsAtencion, setLsAtencion] = useState([]);
+    const [lsAtencionn, setLsAtencionn] = useState([]);
+
+    const [disabledButton, setDisabledButton] = useState({
+        buttonSave: false,
+        buttonReport: false
+    });
+
+    const [openReport, setOpenReport] = useState(false);
+    const [openFormula, setOpenFormula] = useState(false);
+    const [openForm, setOpenForm] = useState(false);
+    const [titleModal, setTitleModal] = useState('');
+    const [listMedicalFormula, setListMedicalFormula] = useState(true);
+    const [newMedicalFormula, setNewMedicalFormula] = useState(false);
+    const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
+    const [numberId, setNumberId] = useState('');
 
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -55,20 +86,34 @@ const UpdateNoteInfirmary = () => {
     const [open, setOpen] = useState(false);
     const [documento, setDocumento] = useState('');
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [buttonReport, setButtonReport] = useState(false);
-    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
+    const [procedimiento, setProcedimiento] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
 
-    const [lsCie11, setLsCie11] = useState([]);
-    const [lsAtencion, setLsAtencion] = useState([]);
-    const [lsDiaTurno, setLsDiaTurno] = useState([]);
-    const [lsTurno, setLsTurno] = useState([]);
+    const [lsProcedimiento, setLsProcedimiento] = useState([]);
     const [lsContingencia, setLsContingencia] = useState([]);
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors } = methods;
+
+    const handleUpdateAttention = async (DataToUpdate) => {
+        try {
+            await UpdateAttentions(DataToUpdate);
+        } catch (error) { }
+    }
+
+    const handleUpdateAttentionClose = async (estadoPac = '') => {
+        try {
+            const DataToUpdate = PutAttention(id, lsAtencion.documento, lsAtencion.fecha, lsAtencion.sede, lsAtencion.tipo, lsAtencion.atencion,
+                lsAtencion.estadoCaso, lsAtencion.observaciones, lsAtencion.numeroHistoria, estadoPac, lsAtencion.contingencia,
+                lsAtencion.turno, lsAtencion.diaTurno, lsAtencion.motivo, lsAtencion.medico, lsAtencion.docSolicitante, lsAtencion.talla, lsAtencion.peso,
+                lsAtencion.iMC, lsAtencion.usuarioCierreAtencion, lsAtencion.fechaDigitacion, lsAtencion.fechaCierreAtencion, lsAtencion.duracion,
+                lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, lsAtencion.usuarioModifico, lsAtencion.fechaModifico);
+
+            await UpdateAttentions(DataToUpdate);
+        } catch (error) { }
+    }
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -79,32 +124,37 @@ const UpdateNoteInfirmary = () => {
             }
         } catch (error) {
             setLsEmployee([]);
+            setOpenError(true);
             setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
     async function GetAll() {
         try {
-            const serverData = await GetByIdAttention(id);
-            if (serverData.status === 200) {
-                setLsNoteInfirmary(serverData.data);
-                setDocumento(serverData.data.documento);
-                handleLoadingDocument(serverData.data.documento);
+            const lsServerAtencion = await GetByIdAttention(id);
+            if (lsServerAtencion.status === 200) {
+                const DataToUpdate = PutAttention(id, lsServerAtencion.data.documento, lsServerAtencion.data.fecha, lsServerAtencion.data.sede,
+                    lsServerAtencion.data.tipo, lsServerAtencion.data.atencion, lsServerAtencion.data.estadoCaso, lsServerAtencion.data.observaciones,
+                    lsServerAtencion.data.numeroHistoria, "ESTÁ SIENDO ATENDIDO", lsServerAtencion.data.contingencia, lsServerAtencion.data.turno,
+                    lsServerAtencion.data.diaTurno, lsServerAtencion.data.motivo, lsServerAtencion.data.medico, lsServerAtencion.data.docSolicitante,
+                    lsServerAtencion.data.talla, lsServerAtencion.data.peso, lsServerAtencion.data.iMC, lsServerAtencion.data.usuarioCierreAtencion,
+                    lsServerAtencion.data.fechaDigitacion, lsServerAtencion.data.fechaCierreAtencion, lsServerAtencion.data.duracion,
+                    lsServerAtencion.data.usuarioRegistro, lsServerAtencion.data.fechaRegistro, lsServerAtencion.data.usuarioModifico,
+                    lsServerAtencion.data.fechaModifico);
+
+                await handleUpdateAttention(DataToUpdate);
+
+                setLsAtencion(lsServerAtencion.data);
+                setDocumento(lsServerAtencion.data.documento);
+                handleLoadingDocument(lsServerAtencion.data.documento);
             }
 
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
-
-            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION_NOTA_ENFERMERIA);
-            var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
+            const lsServerAtencionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION_NOTA_ENFERMERIA);
+            var resultAtencion = lsServerAtencionn.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsAtencion(resultAtencion);
+            setLsAtencionn(resultAtencion);
 
             const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
             var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
@@ -113,19 +163,12 @@ const UpdateNoteInfirmary = () => {
             }));
             setLsContingencia(resultContingencia);
 
-            const lsServerTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Turno);
-            var resultTurno = lsServerTurno.data.entities.map((item) => ({
+            const lsServerProcedimiento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PROCEDIMIENTO_ENFERMERIA);
+            var resultProcedimiento = lsServerProcedimiento.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsTurno(resultTurno);
-
-            const lsServerDiaTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DiaTurno);
-            var resultDiaTurno = lsServerDiaTurno.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsDiaTurno(resultDiaTurno);
+            setLsProcedimiento(resultProcedimiento);
         } catch (error) {
             console.log(error);
         }
@@ -133,19 +176,30 @@ const UpdateNoteInfirmary = () => {
 
     useEffect(() => {
         GetAll();
-    }, [])
+    }, []);
+
+    const handleCerrarCaso = () => {
+        try {
+            swal(ParamCloseCase).then(async (willDelete) => {
+                if (willDelete) {
+                    handleUpdateAttentionClose("ATENDIDO");
+                    navigate("/programming/list");
+                }
+            });
+
+        } catch (error) { }
+    }
 
     const handleClick = async (datos) => {
         try {
-            const UpdateToInsert = PostNoteInfirmary(documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
-                JSON.stringify(diagnosticoArray), datos.notaEnfermedad, lsNoteInfirmary.usuarioRegistro, lsNoteInfirmary.fechaRegistro,
-                user.email, FormatDate(new Date()));
+            const UpdateToInsert = PostNoteInfirmary(documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia,
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, JSON.stringify(procedimiento), datos.notaEnfermedad,
+                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertNoteInfirmary(UpdateToInsert);
                 if (result.status === 200) {
                     setOpenUpdate(true);
-                    setButtonReport(true);
                 }
             }
         } catch (error) {
@@ -176,7 +230,101 @@ const UpdateNoteInfirmary = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
-            {lsNoteInfirmary.length != 0 ?
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewReport />
+            </ControlModal>
+
+            <ControlModal
+                title={"Ordenes Medicas - " + titleModal}
+                open={openForm}
+                onClose={() => {
+                    setOpenForm(false);
+                    setListMedicalFormula(true);
+                    setNewMedicalFormula(false);
+                    setUpdateMedicalFormula(false);
+                    setNewMedicalFormula(false)
+                }}
+                maxWidth="md"
+            >
+                {newMedicalFormula ?
+                    <MedicalFormula
+                        setUpdateMedicalFormula={setUpdateMedicalFormula}
+                        setListMedicalFormula={setListMedicalFormula}
+                        setNewMedicalFormula={setNewMedicalFormula}
+                        tipoOrden={titleModal}
+                        lsEmployee={lsEmployee}
+                        setDocumento={setDocumento}
+                        documento={documento}
+                        lsAtencion={lsAtencion}
+                    />
+                    : listMedicalFormula ?
+                        <ListMedicalFormula
+                            setListMedicalFormula={setListMedicalFormula}
+                            setNewMedicalFormula={setNewMedicalFormula}
+                            setUpdateMedicalFormula={setUpdateMedicalFormula}
+                            setNumberId={setNumberId}
+                        />
+                        : updateMedicalFormula ?
+                            <UpdateMedicalFormula
+                                setListMedicalFormula={setListMedicalFormula}
+                                setNewMedicalFormula={setNewMedicalFormula}
+                                setUpdateMedicalFormula={setUpdateMedicalFormula}
+                                numberId={numberId}
+                                lsEmployee={lsEmployee}
+                                lsAtencion={lsAtencion}
+                                tipoOrden={titleModal}
+                            /> : ''
+                }
+            </ControlModal>
+
+            <DialogFormula
+                title="Ordenes Medicas"
+                open={openFormula}
+                handleCloseDialog={() => setOpenFormula(false)}
+            >
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Formula') }}
+                        secondary="Formula"
+                        iconPrimary={AssignmentIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Laboratorio') }}
+                        secondary="Laboratorio"
+                        iconPrimary={BiotechIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Imagenes') }}
+                        secondary="Imagenes"
+                        iconPrimary={ImageIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Examenes') }}
+                        secondary="Examenes"
+                        iconPrimary={FolderOpenIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+            </DialogFormula>
+
+            {lsAtencion.length != 0 ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
@@ -197,7 +345,7 @@ const UpdateNoteInfirmary = () => {
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={lsNoteInfirmary.fecha}
+                                            defaultValue={lsAtencion.fecha}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -207,8 +355,8 @@ const UpdateNoteInfirmary = () => {
                                         <InputSelect
                                             name="idAtencion"
                                             label="Atención"
-                                            defaultValue={lsNoteInfirmary.atencion}
-                                            options={lsAtencion}
+                                            defaultValue={lsAtencion.atencion}
+                                            options={lsAtencionn}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -227,32 +375,6 @@ const UpdateNoteInfirmary = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-                                {/* <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idTurno"
-                                            label="Turno"
-                                            defaultValue=""
-                                            options={lsTurno}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idDiaTurno"
-                                            label="Día del Turno"
-                                            defaultValue=""
-                                            options={lsDiaTurno}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid> */}
                             </Grid>
                         </SubCard>
                     </Grid>
@@ -263,10 +385,10 @@ const UpdateNoteInfirmary = () => {
                                 <Grid item xs={12}>
                                     <InputMultiSelects
                                         fullWidth
-                                        onChange={(event, value) => setDiagnosticoArray(value)}
-                                        value={diagnosticoArray}
+                                        onChange={(event, value) => setProcedimiento(value)}
+                                        value={procedimiento}
                                         label="Procedimientos"
-                                        options={lsCie11}
+                                        options={lsProcedimiento}
                                     />
                                 </Grid>
 
@@ -299,30 +421,48 @@ const UpdateNoteInfirmary = () => {
                                 </Grid>
                             </Grid>
 
-                            <Grid item xs={12} sx={{ pt: 4 }}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={buttonReport ? 4 : 6}>
-                                        <AnimateButton>
-                                            <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                                {TitleButton.Guardar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-                                    {buttonReport ?
-                                        <Grid item xs={buttonReport ? 4 : 6}>
-                                            <AnimateButton>
-                                                <Button variant="contained" fullWidth onClick={() => setOpen(true)}>
-                                                    Imprimir
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid> : <></>}
-                                    <Grid item xs={buttonReport ? 4 : 6}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/programming/list")}>
-                                                {TitleButton.Cancelar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                            <Grid container spacing={2} sx={{ pt: 4 }}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
+                                            {TitleButton.OrdenesMedicas}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => {
+                                            navigate("/programming/list");
+                                            handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN");
+                                        }}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={handleCerrarCaso}>
+                                            {TitleButton.CerrarCaso}
+                                        </Button>
+                                    </AnimateButton>
                                 </Grid>
                             </Grid>
                         </SubCard>

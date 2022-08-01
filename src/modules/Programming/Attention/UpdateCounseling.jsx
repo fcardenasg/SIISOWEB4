@@ -7,11 +7,17 @@ import {
     Typography,
 } from '@mui/material';
 
+import swal from 'sweetalert';
+import { ParamCloseCase } from 'components/alert/AlertAll';
+
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+
+import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient';
+import { PutAttention } from 'formatdata/AttentionForm';
+import ViewReport from './OccupationalExamination/Report/ViewReport';
 
 import useAuth from 'hooks/useAuth';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
@@ -25,7 +31,6 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertAdvice } from 'api/clients/AdviceClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -35,7 +40,6 @@ import { FormatDate } from 'components/helpers/Format';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import { GetByIdAttention } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
 
 const DetailIcons = [
@@ -46,11 +50,17 @@ const DetailIcons = [
 const UpdateCounseling = () => {
     const { user } = useAuth();
     const { id } = useParams();
-    const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
+
+    const [disabledButton, setDisabledButton] = useState({
+        buttonSave: false,
+        buttonReport: false
+    });
+
+    const [openReport, setOpenReport] = useState(false);
 
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -66,32 +76,21 @@ const UpdateCounseling = () => {
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
     const [causaAsesoria, setCausaAsesoria] = useState([]);
 
-    useEffect(() => {
-        GetAll();
-    }, [])
-
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-
-    const { handleSubmit, errors, reset } = methods;
-
-    const handleLoadingDocument = async (idEmployee) => {
-        try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
-
-            if (lsServerEmployee.status === 200) {
-                setLsEmployee(lsServerEmployee.data);
-            }
-        } catch (error) {
-            setLsEmployee([]);
-            setErrorMessage(Message.ErrorDeDatos);
-        }
-    }
-
     async function GetAll() {
         try {
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
+                const DataToUpdate = PutAttention(id, lsServerAtencion.data.documento, lsServerAtencion.data.fecha, lsServerAtencion.data.sede,
+                    lsServerAtencion.data.tipo, lsServerAtencion.data.atencion, lsServerAtencion.data.estadoCaso, lsServerAtencion.data.observaciones,
+                    lsServerAtencion.data.numeroHistoria, "ESTÁ SIENDO ATENDIDO", lsServerAtencion.data.contingencia, lsServerAtencion.data.turno,
+                    lsServerAtencion.data.diaTurno, lsServerAtencion.data.motivo, lsServerAtencion.data.medico, lsServerAtencion.data.docSolicitante,
+                    lsServerAtencion.data.talla, lsServerAtencion.data.peso, lsServerAtencion.data.iMC, lsServerAtencion.data.usuarioCierreAtencion,
+                    lsServerAtencion.data.fechaDigitacion, lsServerAtencion.data.fechaCierreAtencion, lsServerAtencion.data.duracion,
+                    lsServerAtencion.data.usuarioRegistro, lsServerAtencion.data.fechaRegistro, lsServerAtencion.data.usuarioModifico,
+                    lsServerAtencion.data.fechaModifico);
+
+                await handleUpdateAttention(DataToUpdate);
+
                 setLsAtencion(lsServerAtencion.data);
                 setDocumento(lsServerAtencion.data.documento);
                 handleLoadingDocument(lsServerAtencion.data.documento);
@@ -136,7 +135,57 @@ const UpdateCounseling = () => {
         }
     }
 
-    console.log("lsAtencion = ", lsAtencion);
+    useEffect(() => {
+        GetAll();
+    }, [])
+
+    const methods = useForm();
+    /* { resolver: yupResolver(validationSchema) } */
+
+    const { handleSubmit, errors, reset } = methods;
+
+    const handleUpdateAttention = async (DataToUpdate) => {
+        try {
+            await UpdateAttentions(DataToUpdate);
+        } catch (error) { }
+    }
+
+    const handleUpdateAttentionClose = async (estadoPac = '') => {
+        try {
+            const DataToUpdate = PutAttention(id, lsAtencion.documento, lsAtencion.fecha, lsAtencion.sede, lsAtencion.tipo, lsAtencion.atencion,
+                lsAtencion.estadoCaso, lsAtencion.observaciones, lsAtencion.numeroHistoria, estadoPac, lsAtencion.contingencia,
+                lsAtencion.turno, lsAtencion.diaTurno, lsAtencion.motivo, lsAtencion.medico, lsAtencion.docSolicitante, lsAtencion.talla, lsAtencion.peso,
+                lsAtencion.iMC, lsAtencion.usuarioCierreAtencion, lsAtencion.fechaDigitacion, lsAtencion.fechaCierreAtencion, lsAtencion.duracion,
+                lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, lsAtencion.usuarioModifico, lsAtencion.fechaModifico);
+
+            await UpdateAttentions(DataToUpdate);
+        } catch (error) { }
+    }
+
+    const handleLoadingDocument = async (idEmployee) => {
+        try {
+            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+
+            if (lsServerEmployee.status === 200) {
+                setLsEmployee(lsServerEmployee.data);
+            }
+        } catch (error) {
+            setLsEmployee([]);
+            setErrorMessage(Message.ErrorDeDatos);
+        }
+    }
+
+    const handleCerrarCaso = () => {
+        try {
+            swal(ParamCloseCase).then(async (willDelete) => {
+                if (willDelete) {
+                    handleUpdateAttentionClose("ATENDIDO");
+                    navigate("/programming/list");
+                }
+            });
+
+        } catch (error) { }
+    }
 
     const handleClick = async (datos) => {
         try {
@@ -150,9 +199,6 @@ const UpdateCounseling = () => {
                 const result = await InsertAdvice(DataToInsert);
                 if (result.status === 200) {
                     setOpenUpdate(true);
-                    reset();
-                    setLsEmployee([]);
-                    setDocumento('');
                 }
             }
         } catch (error) {
@@ -183,6 +229,15 @@ const UpdateCounseling = () => {
                 <ControllerListen />
             </ControlModal>
 
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewReport />
+            </ControlModal>
+
             {lsAtencion.length != 0 ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -209,19 +264,6 @@ const UpdateCounseling = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                {/* <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idContingencia"
-                                            label="Contingencia"
-                                            defaultValue=""
-                                            options={contingencia}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid> */}
-
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
@@ -234,32 +276,6 @@ const UpdateCounseling = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-                                {/* <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idTurno"
-                                            label="Turno"
-                                            defaultValue=""
-                                            options={lsTurno}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid> */}
-
-                                {/* <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idDiaTurno"
-                                            label="Día Turno"
-                                            defaultValue=""
-                                            options={diaTurno}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid> */}
 
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
@@ -311,7 +327,7 @@ const UpdateCounseling = () => {
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={lsAtencion.observaciones}
+                                            defaultValue=""
                                             name="motivoConsulta"
                                             label="Motivo de consulta"
                                             size={matchesXS ? 'small' : 'medium'}
@@ -404,22 +420,40 @@ const UpdateCounseling = () => {
                                 </Grid>
                             </Grid>
 
-                            <Grid item xs={12} sx={{ pt: 4 }}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={6}>
-                                        <AnimateButton>
-                                            <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                                {TitleButton.Guardar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/programming/list")}>
-                                                {TitleButton.Cancelar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                            <Grid container spacing={2} sx={{ pt: 4 }}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => {
+                                            navigate("/programming/list");
+                                            handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN");
+                                        }}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={handleCerrarCaso}>
+                                            {TitleButton.CerrarCaso}
+                                        </Button>
+                                    </AnimateButton>
                                 </Grid>
                             </Grid>
                         </SubCard>

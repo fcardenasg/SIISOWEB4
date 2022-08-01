@@ -1,5 +1,8 @@
-export function PostAttention(documento, fecha, sede, tipo, atencion, estadoCaso = 1, observaciones, numeroHistoria,
-    estadoPac, contingencia = 1, turno = 1, diaTurno = 1, motivo = 1, medico = 1, docSolicitante, talla, peso, iMC,
+import { DefaultValue } from "components/helpers/Enums";
+
+export function PostAttention(documento, fecha, sede, tipo, atencion, estadoCaso = DefaultValue.SINREGISTRO_GLOBAL, observaciones, numeroHistoria,
+    estadoPac, contingencia = DefaultValue.SINREGISTRO_GLOBAL, turno = DefaultValue.SINREGISTRO_GLOBAL, diaTurno = DefaultValue.SINREGISTRO_GLOBAL,
+    motivo = DefaultValue.SINREGISTRO_GLOBAL, medico = DefaultValue.SINREGISTRO_GLOBAL, docSolicitante, talla, peso, iMC,
     usuarioCierreAtencion, fechaDigitacion, fechaCierreAtencion, duracion, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
         documento, fecha, sede, tipo, atencion, estadoCaso, observaciones, numeroHistoria,

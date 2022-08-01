@@ -56,13 +56,10 @@ const SkeletonMedical = () => (
 
                         <Grid item xs={12}>
                             <Grid container spacing={2}>
-                                <Grid item xs={4}>
+                                <Grid item xs={6}>
                                     <Skeleton variant="text" height={70} />
                                 </Grid>
-                                <Grid item xs={4}>
-                                    <Skeleton variant="text" height={70} />
-                                </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xs={6}>
                                     <Skeleton variant="text" height={70} />
                                 </Grid>
                             </Grid>

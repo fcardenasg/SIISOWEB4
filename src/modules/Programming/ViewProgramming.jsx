@@ -20,10 +20,9 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
             if (programming.tipo === DefaultValue.TIPO_ATENCION_EMO)
                 navigate(`/programming/emo/${programming.id}`);
 
-            if (programming.atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO)
-                navigate(`/programming/psychological/${programming.id}`);
             if (programming.atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA)
                 navigate(`/programming/medica/${programming.id}`);
+
             if (programming.atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO)
                 navigate(`/programming/psychological/${programming.id}`);
 
@@ -40,8 +39,13 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
                 programming.estadoCaso == DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_CONTROL)
                 navigate(`/programming/attention-control/${programming.id}`);
 
-            if (programming.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA)
-                navigate(`/programming/infirmary/${programming.id}`)
+            if (programming.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA &&
+                programming.atencion === DefaultValue.ATENCION_ENFERMERIA)
+                navigate(`/programming/infirmary/${programming.id}`);
+
+            if (programming.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA &&
+                programming.atencion === DefaultValue.ATENCION_PRUEBA_ALCOHOL)
+                navigate(`/programming/alcoholanddrugtesting/${programming.id}`);
 
         } catch (error) {
             console.log(error);

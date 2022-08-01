@@ -15,6 +15,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import ListMedicalFormula from 'components/template/ListMedicalFormula';
 import User from 'assets/img/user.png';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
@@ -150,7 +151,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
                 title="VISTA DE PDF"
                 handleClose={() => setOpenViewPdf(false)}
             >
-
+                <ListMedicalFormula />
             </FullScreenDialog>
 
             {timeWait != 0 ?
@@ -264,21 +265,15 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={2}>
-                                        <Grid item xs={4}>
+                                        <Grid item xs={6}>
                                             <AnimateButton>
                                                 <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                                     {TitleButton.Actualizar}
                                                 </Button>
                                             </AnimateButton>
                                         </Grid>
-                                        <Grid item xs={4}>
-                                            <AnimateButton>
-                                                <Button variant="outlined" fullWidth>
-                                                    {TitleButton.Imprimir}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={4}>
+
+                                        <Grid item xs={6}>
                                             <AnimateButton>
                                                 <Button variant="outlined" fullWidth onClick={() => {
                                                     setUpdateMedicalFormula(false);

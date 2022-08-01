@@ -248,21 +248,15 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
 
                             <Grid item xs={12}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={4}>
+                                    <Grid item xs={6}>
                                         <AnimateButton>
                                             <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                                 {TitleButton.Guardar}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
-                                    <Grid item xs={4}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth>
-                                                {TitleButton.Imprimir}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-                                    <Grid item xs={4}>
+
+                                    <Grid item xs={6}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => {
                                                 setUpdateMedicalFormula(false);

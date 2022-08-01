@@ -18,6 +18,7 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
+import Chip from 'ui-component/extended/Chip';
 
 import { visuallyHidden } from '@mui/utils';
 import SearchIcon from '@mui/icons-material/Search';
@@ -287,7 +288,10 @@ const ListMedicalFormula = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.existencia}
+                                                {row.existencia === true ?
+                                                    <Chip label="EXISTENCIA" size="small" chipcolor="success" /> :
+                                                    <Chip label="SIN EXISTENCIA" size="small" chipcolor="error" />
+                                                }
                                             </Typography>
                                         </TableCell>
                                     </TableRow>

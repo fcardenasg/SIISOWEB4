@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Grid, InputAdornment, OutlinedInput, TablePagination, Typography } from '@mui/material';
 
-import { useDispatch } from 'react-redux';
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import ViewProgramming from './ViewProgramming';
@@ -9,7 +8,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 import { IconSearch } from '@tabler/icons';
-import { GetAllAttention, GetAllAtencion, DeleteAttention } from 'api/clients/AttentionClient';
+import { GetAllAtencion, DeleteAttention } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
 import { DefaultValue } from 'components/helpers/Enums';
 
@@ -41,7 +40,6 @@ const ListProgramming = () => {
     const [rows, setRows] = useState([]);
     const [search, setSearch] = useState('');
     const [openDelete, setOpenDelete] = useState(false);
-    console.log("Datos = ", lsProgramming);
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(12);

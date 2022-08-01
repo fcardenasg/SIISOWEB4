@@ -83,6 +83,7 @@ export const CodCatalogo = {
 
     AHC_ATENCION_NOTA_ENFERMERIA: 136,
     Contingencia: 74,
+    PROCEDIMIENTO_ENFERMERIA: 156,
     DiaTurno: 76,
     JornadaTurno: 139,
     MotivoPsicologia: 53,
@@ -124,8 +125,8 @@ export const CodCatalogo = {
 
 export const DefaultData = {
     SINREGISTRO_GLOBAL: 1,
-    AsesoriaPsicologica: 1,
-    ASESORIA_MEDICA: 1,
+    AsesoriaPsicologica: 3909,
+    ASESORIA_MEDICA: 3911,
     SinRegistro: 1,
 }
 
@@ -144,6 +145,8 @@ export const DefaultValue = {
 
     /* TIPO ATENCIÓN */
     TIPO_ATENCION_EMO: 3900,
+    ATENCION_PRUEBA_ALCOHOL: 3908,
+    ATENCION_ENFERMERIA: 3907,
     TIPO_ATENCION_ASESORIAS: 3899,
     TIPO_ATENCION_ASESORIAS_PSICO: 3909,
     TIPO_ATENCION_ASESORIAS_MEDICA: 3911,
@@ -222,6 +225,9 @@ export const Message = {
 
     TituloEliminar: '¿Estas seguro?',
     TextoEliminar: 'Este registro se eliminara, ¿esta seguro de eliminarlo?',
+
+    TituloCerrarCaso: '¿Estas seguro de Cerrar Caso?',
+    TextoCerrarCaso: 'Este caso será cerrado, ¿esta seguro de hacerlo?',
 
     TituloCargar: '¿Desea cargar la exposición ocupacional?',
     TextoCargar: 'Se cargaran los riesgos, esto puede demorar un poco',

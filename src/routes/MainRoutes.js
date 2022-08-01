@@ -253,6 +253,7 @@ const UpdateEvolutionNoteProgra = Loadable(lazy(() => import('modules/Programmin
 const UpdateCounselingProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateCounseling')));
 const UpdateMedicalAdviceProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateMedicalAdvice')));
 const UpdateNoteInfirmaryProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateNoteInfirmary')));
+const UpdateAlcoholAndDrugTestings = Loadable(lazy(() => import('modules/Programming/Attention/UpdateAlcoholAndDrugTesting')));
 
 const ListMedicines = Loadable(lazy(() => import('modules/Medicines/ListMedicines')));
 const UpdateMedicines = Loadable(lazy(() => import('modules/Medicines/UpdateMedicines')));
@@ -686,6 +687,10 @@ const MainRoutes = {
         {
             path: '/programming/emo/:id',
             element: <OccupationalExaminationProgra />
+        },
+        {
+            path: '/programming/alcoholanddrugtesting/:id',
+            element: <UpdateAlcoholAndDrugTestings />
         },
 
 

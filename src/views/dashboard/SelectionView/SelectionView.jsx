@@ -23,7 +23,7 @@ const SelectionView = () => {
                     </Box>
                 </Grid>
 
-                <Grid container sx={{ pt: 12 }}>
+                <Grid container sx={{ pt: 10 }}>
                     <Grid item xs={12}>
                         <Typography sx={{ color: ColorDrummondltd.RedDrummond }} align="center" variant="h2">
                             Sistema integral de información de salud ocupacional.
@@ -63,7 +63,7 @@ const SelectionView = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container sx={{ pt: 17 }}>
+                <Grid container sx={{ pt: 10 }}>
                     <Grid item xs={12}>
                         <Typography sx={{ color: ColorDrummondltd.GrayDrummond }} align="center" variant="h6">
                             © Copyright 2022 Drummond Ltd. Colombia - V 4.0.
@@ -71,7 +71,7 @@ const SelectionView = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container sx={{ pt: 16 }}>
+                <Grid container sx={{ pt: 8 }}>
                     <Grid item xs={12}>
                         <Typography sx={{ pr: 2, color: ColorDrummondltd.GrayDrummond }} align="right" variant="h5">
                             © Copyright 2022 Drummond Ltd. Colombia - V 4.0.

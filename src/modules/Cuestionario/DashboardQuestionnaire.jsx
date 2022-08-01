@@ -209,7 +209,7 @@ const DashboardQuestionnaire = () => {
 
                     <Grid container spacing={1} sx={{ pb: 4 }}>
 
-                    <Grid item xs={12} md={4}>
+                        <Grid item xs={12} md={4}>
                             <InputOnChange
                                 label="N° Documento"
                                 onKeyDown={handleDocument}
@@ -224,8 +224,8 @@ const DashboardQuestionnaire = () => {
 
                         {lsQuestionnaire.length === 0 ? (
                             <>
-                              <Grid item xs={12} md={4}>
-                               
+                                <Grid item xs={12} md={4}>
+
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
@@ -236,11 +236,11 @@ const DashboardQuestionnaire = () => {
                                             bug={errors}
                                         />
                                     </FormProvider>
-                             
+
                                 </Grid>
 
                                 <Grid item xs={12} md={4}>
-                        
+
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
@@ -251,11 +251,11 @@ const DashboardQuestionnaire = () => {
                                             bug={errors}
                                         />
                                     </FormProvider>
-                          
+
                                 </Grid>
 
                                 <Grid item xs={12} md={4}>
-                          
+
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
@@ -266,10 +266,10 @@ const DashboardQuestionnaire = () => {
                                             bug={errors}
                                         />
                                     </FormProvider>
-                            
+
                                 </Grid>
                                 <Grid item xs={12} md={4}>
-                   
+
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="empresa"
@@ -280,13 +280,13 @@ const DashboardQuestionnaire = () => {
                                             bug={errors}
                                         />
                                     </FormProvider>
-                       
+
                                 </Grid>
                             </>
                         ) : (
-                            <>
+                            <Fragment>
                                 <Grid item xs={12} md={4}>
-                            
+
                                     <InputOnChange
                                         label="Apellidos y Nombres"
                                         onChange={(e) => setNombre(e?.target.value)}
@@ -296,7 +296,7 @@ const DashboardQuestionnaire = () => {
                                         disabled
                                     />
                                 </Grid>
-                                
+
                                 <Grid item xs={12} md={4}>
                                     <InputOnChange
                                         label="Teléfono"
@@ -328,7 +328,7 @@ const DashboardQuestionnaire = () => {
                                         disabled
                                     />
                                 </Grid>
-                            </>
+                            </Fragment>
                         )}
                     </Grid>
 
@@ -351,109 +351,107 @@ const DashboardQuestionnaire = () => {
                                 <Grid item xs={6}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={handleClick} fullWidth>
-                                        Registrar declaración de salud
+                                            Registrar declaración de salud
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
                             </Grid>
-                        </Grid>)}
+                        </Grid>)
+                    }
 
                     {btnReport ?
-                        (
-                               <Grid item xs={12}>
-                              <SubCard title="DECLARACIÓN DE SALUD">
-                                            <Grid container spacing={2}>
-                                <Grid item xs={6}>
-                                    <InputCheck
-                                        label="Presenta síntomas"
-                                        size={40}
-                                        checked={noSymptoms}
-                                        onChange={(event) => setNoSymptoms(event.target.checked)}
-                                    />
-                                </Grid>
-
-
-                                {noSymptoms ? (
-                                <Grid item xs={12}>
-                                                    <InputOnChange
-                                                        label="Cuales síntomas"
-                                                        onChange={(e) => setObservacionVacuna(e?.target.value)}
-                                                        value={observacionVacuna}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </Grid>
-
-                                                ) : (<></>)}
-
-                                <Grid item xs={6}>
-                                    <InputCheck
-                                        label="Vacunado"
-                                        size={40}
-                                        checked={vacunado}
-                                        onChange={(event) => setVacunado(event.target.checked)}
-                                    />
-                                </Grid>
-                                </Grid>
-                                        </SubCard>
-                    
-
-                                {vacunado ? (
-                                    <Grid item xs={12}>
-                                        <SubCard title="INFORMACIÓN DE VACUNACIÓN">
-                                            <Grid container spacing={2}>
-                                                <Grid item xs={12}>
-                                                    <InputMultiSelects
-                                                        fullWidth
-                                                        onChange={(event, value) => setVacunas(value)}
-                                                        value={vacunas}
-                                                        label="Vacunas"
-                                                        options={lsVacunas}
-                                                    />
-                                                </Grid>
-
-                                                <Grid item xs={6}>
-                                                    <SelectOnChange
-                                                        name="refuerzo"
-                                                        label="Refuerzo"
-                                                        value={refuerzo}
-                                                        options={lsRefuerzo}
-                                                        onChange={(e) => setRefuerzo(e?.target.value)}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </Grid>
-
-                                             
-                                            </Grid>
-                                        </SubCard>
-                                    </Grid>
-
-                                ) : (<></>)}
-
-                                <Grid item xs={12}>
+                        <Grid container spacing={3} sx={{ pt: 4 }}>
+                            <Grid item xs={12}>
+                                <SubCard title="DECLARACIÓN DE SALUD">
                                     <Grid container spacing={2}>
                                         <Grid item xs={6}>
-                                            <AnimateButton>
-                                                <Button variant="contained" fullWidth type="submit">
-                                                    {TitleButton.Guardar}
-                                                </Button>
-                                            </AnimateButton>
+                                            <InputCheck
+                                                label="Presenta síntomas"
+                                                size={40}
+                                                checked={noSymptoms}
+                                                onChange={(event) => setNoSymptoms(event.target.checked)}
+                                            />
                                         </Grid>
+
+                                        {noSymptoms ? (
+                                            <Grid item xs={12}>
+                                                <InputOnChange
+                                                    label="Cuales síntomas"
+                                                    onChange={(e) => setObservacionVacuna(e?.target.value)}
+                                                    value={observacionVacuna}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                        ) : (<></>)}
+
                                         <Grid item xs={6}>
-                                            <AnimateButton>
-                                                <Button variant="outlined" fullWidth onClick={() => {
-                                                    setBtnReport(false);
-                                                    setDocumento('');
-                                                    setOcultarBoton(false);
-                                                    setLsQuestionnaire([]);
-                                                }}>
-                                                    {TitleButton.Cancelar}
-                                                </Button>
-                                            </AnimateButton>
+                                            <InputCheck
+                                                label="Vacunado"
+                                                size={40}
+                                                checked={vacunado}
+                                                onChange={(event) => setVacunado(event.target.checked)}
+                                            />
                                         </Grid>
+                                    </Grid>
+                                </SubCard>
+                            </Grid>
+
+                            {vacunado ? (
+                                <Grid item xs={12}>
+                                    <SubCard title="INFORMACIÓN DE VACUNACIÓN">
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <InputMultiSelects
+                                                    fullWidth
+                                                    onChange={(event, value) => setVacunas(value)}
+                                                    value={vacunas}
+                                                    label="Vacunas"
+                                                    options={lsVacunas}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={6}>
+                                                <SelectOnChange
+                                                    name="refuerzo"
+                                                    label="Refuerzo"
+                                                    value={refuerzo}
+                                                    options={lsRefuerzo}
+                                                    onChange={(e) => setRefuerzo(e?.target.value)}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+
+                                        </Grid>
+                                    </SubCard>
+                                </Grid>
+                            ) : (<></>)}
+
+                            <Grid item xs={12}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6}>
+                                        <AnimateButton>
+                                            <Button variant="contained" fullWidth type="submit">
+                                                {TitleButton.Guardar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={() => {
+                                                setBtnReport(false);
+                                                setDocumento('');
+                                                setOcultarBoton(false);
+                                                setLsQuestionnaire([]);
+                                            }}>
+                                                {TitleButton.Cancelar}
+                                            </Button>
+                                        </AnimateButton>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        ) : (<></>)
+                        </Grid> : <></>
                     }
                 </form>
             </Grid>

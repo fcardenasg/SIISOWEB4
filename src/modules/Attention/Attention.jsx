@@ -74,7 +74,6 @@ const Attention = () => {
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [lsMotivoPAD, setLsMotivoPAD] = useState([]);
     const [lsTurno, setLsTurno] = useState([]);
-    const [lsDiaTurno, setLsDiaTurno] = useState([]);
     const [lsEstadoCaso, setLsEstadoCaso] = useState([]);
     const [lsMotivoMedica, setLsMotivoMedica] = useState([]);
     const [lsMotivoPsico, setLsMotivoPsico] = useState([]);
@@ -99,13 +98,6 @@ const Attention = () => {
                 label: item.nombre
             }));
             setLsTurno(resultTurno);
-
-            const lsServerDiaTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DiaTurno);
-            var resultDiaTurno = lsServerDiaTurno.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsDiaTurno(resultDiaTurno);
 
             const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCaso);
             var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
@@ -315,7 +307,7 @@ const Attention = () => {
         try {
             const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), datos.sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                datos.motivo, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
+                motivo, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -330,11 +322,6 @@ const Attention = () => {
                         close: false,
                         transition: 'SlideUp'
                     })
-                    setDocumento('');
-                    setTipoAtencion('');
-                    setAtencion('');
-                    setLsEmployee([]);
-                    reset();
                 }
             }
         } catch (error) {
@@ -433,19 +420,6 @@ const Attention = () => {
 
                             {tipoAtencion == DefaultValue.TIP_AT_TRIAGE ?
                                 <Fragment>
-                                    {/* <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="contingencia"
-                                                label="Contingencia"
-                                                defaultValue={1}
-                                                options={lsContingencia}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid> */}
-
                                     <Grid item xs={3}>
                                         <FormProvider {...methods}>
                                             <InputSelect
@@ -458,47 +432,8 @@ const Attention = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
-
-                                    {/* <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="turno"
-                                                label="Turno"
-                                                defaultValue=""
-                                                options={lsTurno}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="diaTurno"
-                                                label="Día Turno"
-                                                defaultValue={1}
-                                                options={lsDiaTurno}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid> */}
                                 </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ENFERME && atencion == DefaultValue.AT_ENFERMERIA ?
                                     <Fragment>
-                                        {/* <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="contingencia"
-                                                    label="Contingencia"
-                                                    defaultValue={1}
-                                                    options={lsContingencia}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
-                                        </Grid> */}
-
                                         <Grid item xs={3}>
                                             <FormProvider {...methods}>
                                                 <InputSelect
@@ -511,32 +446,6 @@ const Attention = () => {
                                                 />
                                             </FormProvider>
                                         </Grid>
-
-                                        {/* <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="turno"
-                                                    label="Turno"
-                                                    defaultValue=""
-                                                    options={lsTurno}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-
-                                        <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="diaTurno"
-                                                    label="Día Turno"
-                                                    defaultValue={1}
-                                                    options={lsDiaTurno}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
-                                        </Grid> */}
                                     </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ENFERME && atencion == DefaultValue.AT_PAD ?
                                         <Fragment>
                                             <Grid item xs={3}>
@@ -567,7 +476,7 @@ const Attention = () => {
                                                 />
                                             </Grid>
 
-                                            {motivo == DefaultValue.AT_PAD_MOTIVO ?
+                                            {motivo === DefaultValue.AT_PAD_MOTIVO ?
                                                 <Fragment>
                                                     <Grid item xs={3}>
                                                         <InputOnChange
@@ -623,17 +532,6 @@ const Attention = () => {
                                                     />
                                                 </Grid>
 
-                                                {/* <Grid item xs={3}>
-                                                    <InputOnChange
-                                                        disabled
-                                                        color={clasificacionColor}
-                                                        label="Clasificación"
-                                                        onChange={(e) => setClasificacion(e.target.value)}
-                                                        value={clasificacion}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </Grid> */}
-
                                                 <Grid item xs={3}>
                                                     <Chip
                                                         size="medium"
@@ -644,19 +542,6 @@ const Attention = () => {
                                                 </Grid>
                                             </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && atencion == DefaultValue.AT_PSICO ?
                                                 <Fragment>
-                                                    {/* <Grid item xs={3}>
-                                                        <FormProvider {...methods}>
-                                                            <InputSelect
-                                                                name="contingencia"
-                                                                label="Contingencia"
-                                                                defaultValue={1}
-                                                                options={lsContingencia}
-                                                                size={matchesXS ? 'small' : 'medium'}
-                                                                bug={errors}
-                                                            />
-                                                        </FormProvider>
-                                                    </Grid> */}
-
                                                     <Grid item xs={3}>
                                                         <FormProvider {...methods}>
                                                             <InputSelect
@@ -669,32 +554,6 @@ const Attention = () => {
                                                             />
                                                         </FormProvider>
                                                     </Grid>
-
-                                                    {/* <Grid item xs={3}>
-                                                        <FormProvider {...methods}>
-                                                            <InputSelect
-                                                                name="turno"
-                                                                label="Turno"
-                                                                defaultValue=""
-                                                                options={lsTurno}
-                                                                size={matchesXS ? 'small' : 'medium'}
-                                                                bug={errors}
-                                                            />
-                                                        </FormProvider>
-                                                    </Grid>
-
-                                                    <Grid item xs={3}>
-                                                        <FormProvider {...methods}>
-                                                            <InputSelect
-                                                                name="diaTurno"
-                                                                label="Día Turno"
-                                                                defaultValue={1}
-                                                                options={lsDiaTurno}
-                                                                size={matchesXS ? 'small' : 'medium'}
-                                                                bug={errors}
-                                                            />
-                                                        </FormProvider>
-                                                    </Grid> */}
 
                                                     <Grid item xs={3}>
                                                         <FormProvider {...methods}>
@@ -723,19 +582,6 @@ const Attention = () => {
                                                     </Grid>
                                                 </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && atencion == DefaultValue.AT_ASESORIA_MEDICA ?
                                                     <Fragment>
-                                                        {/* <Grid item xs={3}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="contingencia"
-                                                                    label="Contingencia"
-                                                                    defaultValue={1}
-                                                                    options={lsContingencia}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid> */}
-
                                                         <Grid item xs={3}>
                                                             <FormProvider {...methods}>
                                                                 <InputSelect
@@ -763,19 +609,6 @@ const Attention = () => {
                                                         </Grid>
                                                     </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && (atencion != DefaultValue.AT_ASESORIA_MEDICA || atencion != DefaultValue.AT_PSICO) ?
                                                         <Fragment>
-                                                            {/* <Grid item xs={3}>
-                                                                <FormProvider {...methods}>
-                                                                    <InputSelect
-                                                                        name="contingencia"
-                                                                        label="Contingencia"
-                                                                        defaultValue={1}
-                                                                        options={lsContingencia}
-                                                                        size={matchesXS ? 'small' : 'medium'}
-                                                                        bug={errors}
-                                                                    />
-                                                                </FormProvider>
-                                                            </Grid> */}
-
                                                             <Grid item xs={3}>
                                                                 <FormProvider {...methods}>
                                                                     <InputSelect
@@ -788,32 +621,6 @@ const Attention = () => {
                                                                     />
                                                                 </FormProvider>
                                                             </Grid>
-
-                                                            {/* <Grid item xs={3}>
-                                                                <FormProvider {...methods}>
-                                                                    <InputSelect
-                                                                        name="turno"
-                                                                        label="Turno"
-                                                                        defaultValue=""
-                                                                        options={lsTurno}
-                                                                        size={matchesXS ? 'small' : 'medium'}
-                                                                        bug={errors}
-                                                                    />
-                                                                </FormProvider>
-                                                            </Grid>
-
-                                                            <Grid item xs={3}>
-                                                                <FormProvider {...methods}>
-                                                                    <InputSelect
-                                                                        name="diaTurno"
-                                                                        label="Día Turno"
-                                                                        defaultValue={1}
-                                                                        options={lsDiaTurno}
-                                                                        size={matchesXS ? 'small' : 'medium'}
-                                                                        bug={errors}
-                                                                    />
-                                                                </FormProvider>
-                                                            </Grid> */}
                                                         </Fragment> : <></>
                             }
 

@@ -8,10 +8,24 @@ export const ParamDelete = {
     title: `${Message.TituloEliminar}`,
     text: `${Message.TextoEliminar}`,
     icon: "error",
-    buttons: ["Cancelar", "SI"],
+    buttons: ["Cancelar", "Si"],
     dangerMode: true,
     confirm: {
-        text: "SI",
+        text: "Si",
+    },
+    cancel: {
+        text: "Cancelar",
+    },
+}
+
+export const ParamCloseCase = {
+    title: `${Message.TituloCerrarCaso}`,
+    text: `${Message.TextoCerrarCaso}`,
+    icon: "warning",
+    buttons: ["Cancelar", "Si"],
+    dangerMode: true,
+    confirm: {
+        text: "Si",
     },
     cancel: {
         text: "Cancelar",
@@ -22,10 +36,10 @@ export const ParamLoadingData = {
     title: `${Message.TituloCargar}`,
     text: `${Message.TextoCargar}`,
     icon: "warning",
-    buttons: ["Cancelar", "SI"],
+    buttons: ["Cancelar", "Si"],
     dangerMode: true,
     confirm: {
-        text: "SI",
+        text: "Si",
     },
     cancel: {
         text: "Cancelar",

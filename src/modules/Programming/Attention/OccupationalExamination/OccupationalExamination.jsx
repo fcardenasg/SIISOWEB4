@@ -15,6 +15,8 @@ import {
 import PersonalData from './PersonalData';
 import WorkHistory from './WorkHistory/WorkHistory';
 import Emo from './Emo';
+import swal from 'sweetalert';
+import { ParamCloseCase } from 'components/alert/AlertAll';
 
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
@@ -144,6 +146,7 @@ const OccupationalExamination = () => {
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
+
     const [newMedicalFormula, setNewMedicalFormula] = useState(false);
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
     const [listMedicalFormula, setListMedicalFormula] = useState(true);
@@ -453,7 +456,19 @@ const OccupationalExamination = () => {
         }
 
         GetAll();
-    }, [])
+    }, []);
+
+    const handleCerrarCaso = () => {
+        try {
+            swal(ParamCloseCase).then(async (willDelete) => {
+                if (willDelete) {
+                    handleUpdateAttentionClose("ATENDIDO");
+                    navigate("/programming/list");
+                }
+            });
+
+        } catch (error) { }
+    }
 
     const handleClick = async (datos) => {
         try {
@@ -625,7 +640,7 @@ const OccupationalExamination = () => {
                     </ControlModal>
 
                     <ControlModal
-                        title={"VISTA DE REPORTE"}
+                        title="VISTA DE REPORTE"
                         open={openReport}
                         onClose={() => setOpenReport(false)}
                         maxWidth="xl"
@@ -898,10 +913,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => {
-                                    navigate("/programming/list");
-                                    handleUpdateAttentionClose("ATENDIDO");
-                                }}>
+                                <Button variant="outlined" fullWidth onClick={handleCerrarCaso}>
                                     {TitleButton.CerrarCaso}
                                 </Button>
                             </AnimateButton>
