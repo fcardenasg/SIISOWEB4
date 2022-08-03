@@ -1,7 +1,5 @@
-// third-party
 import { FormattedMessage } from 'react-intl';
 
-// assets
 import {
     IconUserCheck,
     IconBasket,
@@ -17,7 +15,6 @@ import {
     IconEyeglass
 } from '@tabler/icons';
 
-// constant
 const icons = {
     IconEyeglass,
     IconUserCheck,
@@ -32,8 +29,6 @@ const icons = {
     IconMessageReport,
     IconVirus
 };
-
-// ==============================|| APPLICATION MENU ITEMS ||============================== //
 
 const application = {
     id: 'application',
@@ -81,33 +76,9 @@ const application = {
                     title: <FormattedMessage id="Taxi" />,
                     type: 'collapse',
                     children: [
-                        // {
-                        //     id: 'profile1',
-                        //     title: (
-                        //         <>
-                        //             <FormattedMessage id="Rutas de Taxis" />
-                        //         </>
-                        //     ),
-                        //     type: 'item',
-                        //     url: '/user/account-profile/profile1'
-                        // },
-                        // {
-                        //     id: 'profile2',
-                        //     title: (
-                        //         <>
-                        //             <FormattedMessage id="Destino de Taxis" />
-                        //         </>
-                        //     ),
-                        //     type: 'item',
-                        //     url: '/user/account-profile/profile2'
-                        // },
                         {
                             id: 'profile3',
-                            title: (
-                                <>
-                                    <FormattedMessage id="Solicitud de Taxi" />
-                                </>
-                            ),
+                            title: <FormattedMessage id="Solicitud de Taxi" />,
                             type: 'item',
                             url: '/user/account-profile/profile3'
                         }
@@ -196,7 +167,7 @@ const application = {
             children: [
                 {
                     id: 'medicalAdvice',
-                    title: <FormattedMessage id="Asesoría Médica" />,
+                    title: <FormattedMessage id="Asesoría Médica Especializada" />,
                     type: 'item',
                     url: '/medicaladvice/list'
                 },

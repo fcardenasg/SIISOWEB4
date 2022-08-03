@@ -1,12 +1,7 @@
 import { FormattedMessage } from 'react-intl';
-
-// assets
 import { IconChartArcs, IconClipboardList, IconChartInfographic } from '@tabler/icons';
 
-// constant
 const icons = { IconChartArcs, IconClipboardList, IconChartInfographic };
-
-// ===========================|| WIDGET MENU ITEMS ||=========================== //
 
 const widget = {
     id: 'widget',

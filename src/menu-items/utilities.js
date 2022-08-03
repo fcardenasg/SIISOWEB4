@@ -1,9 +1,6 @@
 import { FormattedMessage } from 'react-intl';
-
-// assets
 import { IconBrandFramer, IconTypography, IconPalette, IconShadow, IconWindmill, IconLayoutGridAdd } from '@tabler/icons';
 
-// constant
 const icons = {
     IconTypography,
     IconPalette,
@@ -12,8 +9,6 @@ const icons = {
     IconBrandFramer,
     IconLayoutGridAdd
 };
-
-// ==============================|| UTILITIES MENU ITEMS ||============================== //
 
 const utilities = {
     id: 'utilities',

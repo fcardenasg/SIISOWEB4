@@ -13,7 +13,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { MessageSuccess } from 'components/alert/AlertAll';
+import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import InputText from 'components/input/InputText';
 import DetailedIcon from 'components/controllers/DetailedIcon';
@@ -21,7 +21,6 @@ import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertAdvice } from 'api/clients/AdviceClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -49,29 +48,22 @@ const MedicalAdvice = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
 
+    const [errorMessage, setErrorMessage] = useState('');
+    const [openError, setOpenError] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
 
     const [lsMotivo, setLsMotivo] = useState([]);
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
-    const [contingencia, setContingencia] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors, reset } = methods;
 
     async function GetAll() {
         try {
-            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
-            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setContingencia(resultContingencia);
-
             const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_TIPOASESORIA);
             var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -79,14 +71,15 @@ const MedicalAdvice = () => {
             }));
             setTipoAsesoria(resultTipoAsesoria);
 
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_MOT_ASESORIA);
+            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoMedica);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsMotivo(resultMotivo);
         } catch (error) {
-            console.log(error);
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     }
 
@@ -101,28 +94,14 @@ const MedicalAdvice = () => {
                         setLsEmployee(lsServerEmployee.data);
                     }
                 } else {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.ErrorDocumento}`,
-                        variant: 'alert',
-                        alertSeverity: 'error',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+                    setOpenError(true);
+                    setErrorMessage(`${Message.ErrorDocumento}`);
                 }
             }
         } catch (error) {
+            setOpenError(true);
+            setErrorMessage(`${Message.ErrorDeDatos}`);
             setLsEmployee([]);
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${Message.ErrorDeDatos}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
         }
     }
 
@@ -134,10 +113,10 @@ const MedicalAdvice = () => {
         try {
             const DatosVacios = "Sin Registro";
 
-            const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), DefaultData.ASESORIA_MEDICA, lsEmployee.sede, datos.idContingencia,
-                DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo,
-                DefaultData.SINREGISTRO_GLOBAL, datos.observaciones, DatosVacios, DatosVacios, DefaultData.SINREGISTRO_GLOBAL,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), DefaultData.ASESORIA_MEDICA, lsEmployee.sede,
+                datos.idContingencia, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
+                datos.idTipoAsesoria, datos.idMotivo, datos.recomendaciones, datos.observaciones, DatosVacios, DatosVacios,
+                DefaultData.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             console.log("Datos = ", DataToInsert);
 
@@ -151,21 +130,15 @@ const MedicalAdvice = () => {
                 }
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     };
 
     return (
         <Fragment>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <FullScreenDialog
                 open={openTemplate}
@@ -208,19 +181,6 @@ const MedicalAdvice = () => {
                                 </FormProvider>
                             </Grid>
 
-                            {/* <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idContingencia"
-                                        label="Contingencia"
-                                        defaultValue=""
-                                        options={contingencia}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid> */}
-
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -248,7 +208,7 @@ const MedicalAdvice = () => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <SubCard darkTitle title={<><Typography variant="h4">NOTA</Typography></>}>
+                                <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
                                     <Grid item xs={12}>
                                         <FormProvider {...methods}>
                                             <InputText
@@ -257,7 +217,36 @@ const MedicalAdvice = () => {
                                                 defaultValue=""
                                                 fullWidth
                                                 name="observaciones"
-                                                label="Observaciones"
+                                                label="Descripción"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                        <DetailedIcon
+                                            title={DetailIcons[0].title}
+                                            onClick={() => setOpenTemplate(true)}
+                                            icons={DetailIcons[0].icons}
+                                        />
+
+                                        <DetailedIcon
+                                            title={DetailIcons[1].title}
+                                            onClick={() => setOpen(true)}
+                                            icons={DetailIcons[1].icons}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} sx={{ pt: 2 }}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                multiline
+                                                rows={4}
+                                                defaultValue=""
+                                                fullWidth
+                                                name="recomendaciones"
+                                                label="Recomendaciones"
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />

@@ -35,63 +35,63 @@ function GetEdad(dateString) {
 function EdadFramigan(edad = 0, genero = '') {
     try {
         if (edad > 0 && edad <= 34) {
-            if (genero == "HOMBRE")
+            if (genero === "HOMBRE")
                 return -1;
             else
                 return -9;
         }
 
         if (edad >= 35 && edad <= 39) {
-            if (genero == "HOMBRE")
+            if (genero === "HOMBRE")
                 return 0;
             else
                 return -4;
         }
 
         if (edad >= 40 && edad <= 44) {
-            if (genero == "HOMBRE")
+            if (genero === "HOMBRE")
                 return 1;
             else
                 return 0;
         }
 
         if (edad >= 45 && edad <= 49) {
-            if (genero == "HOMBRE")
+            if (genero === "HOMBRE")
                 return 2;
             else
                 return 3;
         }
 
         if (edad >= 50 && edad <= 54) {
-            if (genero == "HOMBRE")
+            if (genero === "HOMBRE")
                 return 3;
             else
                 return 6;
         }
 
         if (edad >= 55 && edad <= 59) {
-            if (genero == "HOMBRE")
+            if (genero === "HOMBRE")
                 return 4;
             else
                 return 7;
         }
 
         if (edad >= 60 && edad <= 64) {
-            if (genero == "HOMBRE")
+            if (genero === "HOMBRE")
                 return 5;
             else
                 return 8;
         }
 
         if (edad >= 65 && edad <= 69) {
-            if (genero == "HOMBRE")
+            if (genero === "HOMBRE")
                 return 6;
             else
                 return 8;
         }
 
         if (edad >= 70 && edad <= 74) {
-            if (genero == "HOMBRE")
+            if (genero === "HOMBRE")
                 return 7;
             else
                 return 8;
@@ -100,7 +100,7 @@ function EdadFramigan(edad = 0, genero = '') {
 }////
 
 function FrColesterol(colesterol = 0, genero = '') {
-    if (genero == "HOMBRE") {
+    if (genero === "HOMBRE") {
         if (colesterol < 160) {
             return -3;
         }
@@ -135,7 +135,7 @@ function FrColesterol(colesterol = 0, genero = '') {
 
 function FrHdl(edad = 0, genero = '') {
     try {
-        if (genero == "HOMBRE") {
+        if (genero === "HOMBRE") {
             if (edad < 35)
                 return 2;
             else if (edad >= 35 && edad < 45)
@@ -164,7 +164,7 @@ function FrHdl(edad = 0, genero = '') {
 
 function FrGlicemia(glicemia = 0, genero = '') {
     try {
-        if (genero == "HOMBRE") {
+        if (genero === "HOMBRE") {
             if (glicemia < 110)
                 return 0;
             else if (glicemia >= 110)
@@ -185,7 +185,7 @@ function FrTension(tension = '', genero = '') {
         var r = 0;
 
         if (parseInt(tensi[0]) < 120 || parseInt(tensi[1]) < 80) {
-            if (genero == "HOMBRE")
+            if (genero === "HOMBRE")
                 r = 0;
             else
                 r = -3;
@@ -195,7 +195,7 @@ function FrTension(tension = '', genero = '') {
             r = 0;
 
         if ((parseInt(tensi[0]) >= 130 && parseInt(tensi[0]) <= 139) || (parseInt(tensi[1]) >= 85 && parseInt(tensi[0]) <= 89)) {
-            if (genero == "HOMBRE")
+            if (genero === "HOMBRE")
                 r = 1;
             else
                 r = 0;
@@ -221,7 +221,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
         riesgoAbsolutoM = 1;
         riesgoAbsolutoH = 2;
     }
-    else if (puntaje == -1) {
+    else if (puntaje === -1) {
         riesgoAbsolutoM = 2;
         riesgoAbsolutoH = 2;
     }
@@ -229,63 +229,63 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
         riesgoAbsolutoM = 2;
         riesgoAbsolutoH = 3;
     }
-    else if (puntaje == 2) {
+    else if (puntaje === 2) {
         riesgoAbsolutoM = 3;
         riesgoAbsolutoH = 4;
     }
-    else if (puntaje == 3) {
+    else if (puntaje === 3) {
         riesgoAbsolutoM = 3;
         riesgoAbsolutoH = 5;
     }
-    else if (puntaje == 4) {
+    else if (puntaje === 4) {
         riesgoAbsolutoM = 4;
         riesgoAbsolutoH = 7;
     }
-    else if (puntaje == 5) {
+    else if (puntaje === 5) {
         riesgoAbsolutoM = 4;
         riesgoAbsolutoH = 8;
     }
-    else if (puntaje == 6) {
+    else if (puntaje === 6) {
         riesgoAbsolutoM = 5;
         riesgoAbsolutoH = 10;
     }
-    else if (puntaje == 7) {
+    else if (puntaje === 7) {
         riesgoAbsolutoM = 6;
         riesgoAbsolutoH = 13;
     }
-    else if (puntaje == 8) {
+    else if (puntaje === 8) {
         riesgoAbsolutoM = 7;
         riesgoAbsolutoH = 16;
     }
-    else if (puntaje == 9) {
+    else if (puntaje === 9) {
         riesgoAbsolutoM = 8;
         riesgoAbsolutoH = 20;
     }
-    else if (puntaje == 10) {
+    else if (puntaje === 10) {
         riesgoAbsolutoM = 10;
         riesgoAbsolutoH = 25;
     }
-    else if (puntaje == 11) {
+    else if (puntaje === 11) {
         riesgoAbsolutoM = 11;
         riesgoAbsolutoH = 31;
     }
-    else if (puntaje == 12) {
+    else if (puntaje === 12) {
         riesgoAbsolutoM = 13;
         riesgoAbsolutoH = 37;
     }
-    else if (puntaje == 13) {
+    else if (puntaje === 13) {
         riesgoAbsolutoM = 15;
         riesgoAbsolutoH = 45;
     }
-    else if (puntaje == 14) {
+    else if (puntaje === 14) {
         riesgoAbsolutoM = 18;
         riesgoAbsolutoH = 53;
     }
-    else if (puntaje == 15) {
+    else if (puntaje === 15) {
         riesgoAbsolutoM = 20;
         riesgoAbsolutoH = 53;
     }
-    else if (puntaje == 16) {
+    else if (puntaje === 16) {
         riesgoAbsolutoM = 24;
         riesgoAbsolutoH = 53;
     }
@@ -296,7 +296,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
 
     switch (puntaje) {
         case 0:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -326,7 +326,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
             }
             break;
         case 1:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -360,7 +360,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
             }
             break;
         case 2:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -398,7 +398,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
             }
             break;
         case 3:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -440,7 +440,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
             }
             break;
         case 4:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -486,7 +486,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
             }
             break;
         case 5:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -536,7 +536,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
             }
             break;
         case 6:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -594,7 +594,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
             }
             break;
         case 7:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -656,7 +656,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
             }
             break;
         case 8:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -723,7 +723,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
             break;
 
         case 9:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -802,7 +802,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
 
             break;
         case 10:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -881,7 +881,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
 
             break;
         case 11:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -959,7 +959,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
             }
             break;
         case 12:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -1037,7 +1037,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
             }
             break;
         case 13:
-            if (sexo == "HOMBRE") {
+            if (sexo === "HOMBRE") {
                 if (edad < 30) {
                     riesgoRelativo = "0";
                     dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -1229,7 +1229,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
     }
 
     if (puntaje < 0) {
-        if (sexo == "HOMBRE") {
+        if (sexo === "HOMBRE") {
             if (edad < 30) {
                 riesgoRelativo = "0";
                 dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -1260,7 +1260,7 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
     }
 
     if (puntaje >= 14) {
-        if (sexo == "HOMBRE") {
+        if (sexo === "HOMBRE") {
             if (edad < 30) {
                 riesgoRelativo = "0";
                 dxRiesgo = "POR DEBAJO DEL RIESGO PROMEDIO";
@@ -1358,10 +1358,10 @@ function PuntajeFr(frEdad = 0, frColesterol = 0, frHdl = 0, frGlicemia = 0, frTe
 
 function FrFuma(fuma = '') {
     try {
-        if (fuma == DefaultValue.Opcion_NO) {
+        if (fuma === DefaultValue.Opcion_NO) {
             return 0;
         }
-        else if (fuma == DefaultValue.Opcion_SI) {
+        else if (fuma === DefaultValue.Opcion_SI) {
             return 2;
         }
     } catch (error) { }

@@ -257,7 +257,9 @@ const ListMedicines = Loadable(lazy(() => import('modules/Medicines/ListMedicine
 const UpdateMedicines = Loadable(lazy(() => import('modules/Medicines/UpdateMedicines')));
 const Medicines = Loadable(lazy(() => import('modules/Medicines/Medicines')));
 
-// ==============================|| MAIN ROUTING ||============================== //
+const ListUser = Loadable(lazy(() => import('modules/User/ListUser')));
+const UpdateUser = Loadable(lazy(() => import('modules/User/UpdateUser')));
+const User = Loadable(lazy(() => import('modules/User/User')));
 
 const MainRoutes = {
     path: '/',
@@ -693,6 +695,19 @@ const MainRoutes = {
         {
             path: '/programming/alcoholanddrugtesting/:id',
             element: <UpdateAlcoholAndDrugTestings />
+        },
+
+        {
+            path: '/user/list',
+            element: <ListUser />
+        },
+        {
+            path: '/user/add',
+            element: <User />
+        },
+        {
+            path: '/user/update/:id',
+            element: <UpdateUser />
         },
 
 

@@ -1,4 +1,3 @@
-// Import de Material-ui
 import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -20,12 +19,11 @@ import { IconReportMedical } from '@tabler/icons';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { FormatDate } from 'components/helpers/Format';
-import InputCheckBox from 'components/input/InputCheckBox';
 import SubCard from 'ui-component/cards/SubCard';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertQuestionnaire, UpdateQuestionnaires } from 'api/clients/QuestionnaireClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
-import { GetAllCatalog, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { PostQuestionnaire } from 'formatdata/QuestionnaireForm';
 import { GetByIdQuestionnaire } from 'api/clients/QuestionnaireClient';
 import InputText from 'components/input/InputText';

@@ -1,10 +1,7 @@
-// third-party
 import { FormattedMessage } from 'react-intl';
 
-// assets
 import { IconClipboardCheck, IconPictureInPicture, IconForms, IconBorderAll, IconChartDots, IconStairsUp } from '@tabler/icons';
 
-// constant
 const icons = {
     IconClipboardCheck,
     IconPictureInPicture,
@@ -14,16 +11,11 @@ const icons = {
     IconStairsUp
 };
 
-// ==============================|| UI FORMS MENU ITEMS ||============================== //
-
 const forms = {
     id: 'ui-forms',
     title: <FormattedMessage id="Otros" />,
     type: 'group',
     children: [
-        
-
-
         {
             id: 'apexchart',
             title: <FormattedMessage id="apexchart" />,

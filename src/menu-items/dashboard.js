@@ -1,16 +1,10 @@
-// third-party
 import { FormattedMessage } from 'react-intl';
-
-// assets
 import { IconDashboard, IconDeviceAnalytics } from '@tabler/icons';
 
-// constant
 const icons = {
     IconDashboard,
     IconDeviceAnalytics
 };
-
-// ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
 const dashboard = {
     id: 'dashboard',
