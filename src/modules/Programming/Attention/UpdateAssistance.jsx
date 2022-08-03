@@ -4,7 +4,6 @@ import {
     Button,
     Grid,
     useMediaQuery,
-    Typography
 } from '@mui/material';
 
 import * as yup from 'yup';
@@ -361,6 +360,7 @@ const UpdateAssistance = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
+                            title="ATENCIÓN MEDICA - ESTADO CASO NUEVO"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -371,7 +371,7 @@ const UpdateAssistance = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle>
+                        <SubCard>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
@@ -413,7 +413,7 @@ const UpdateAssistance = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle>
+                        <SubCard>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
@@ -599,7 +599,7 @@ const UpdateAssistance = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">DIAGNOSTICOS</Typography>}>
+                        <SubCard>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <InputMultiSelects
@@ -643,7 +643,7 @@ const UpdateAssistance = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">CONCEPTO DE APTITUD PSICOFÍSICA</Typography>}>
+                        <SubCard>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>

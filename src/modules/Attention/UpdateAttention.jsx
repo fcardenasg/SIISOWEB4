@@ -42,7 +42,7 @@ const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
-const Attention = () => {
+const UpdateAttention = () => {
     const { user } = useAuth();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -55,7 +55,7 @@ const Attention = () => {
     const [documento, setDocumento] = useState('');
     const [tipoAtencion, setTipoAtencion] = useState('');
     const [atencion, setAtencion] = useState('');
-    const [motivo, setMotivo] = useState(1);
+    const [motivo, setMotivo] = useState('');
     const [documentoSolicita, setDocumentoSolicita] = useState('');
     const [nombreSolicitante, setNombreSolicitante] = useState('');
     const [peso, setPeso] = useState('');
@@ -284,18 +284,11 @@ const Attention = () => {
                 motivo, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            console.log("DATOS => ", DataToInsert);
-
             if (documento !== '' && lsEmployee.length !== 0) {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await InsertAttention(DataToInsert);
                     if (result.status === 200) {
                         setOpenSuccess(true);
-                        setDocumento('');
-                        setTipoAtencion('');
-                        setAtencion('');
-                        setLsEmployee([]);
-                        reset();
                     }
                 }
             } else {
@@ -333,7 +326,6 @@ const Attention = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="REGISTRAR ATENCIÓN"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -343,7 +335,7 @@ const Attention = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard>
+                    <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -387,7 +379,7 @@ const Attention = () => {
                                     options={lsAtencion}
                                     onChange={(e) => {
                                         setAtencion(e.target.value);
-                                        setMotivo(1);
+                                        setMotivo('');
                                     }}
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
@@ -665,4 +657,4 @@ const Attention = () => {
     );
 };
 
-export default Attention;
+export default UpdateAttention;

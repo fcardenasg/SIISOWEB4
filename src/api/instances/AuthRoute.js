@@ -1,5 +1,5 @@
 export const Url = {
-    Base: 'https://localhost:8020/',
+    Base: 'https://localhost:44347/',
 
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
@@ -49,6 +49,10 @@ export const Url = {
     RegistroAtencion: 'api/RegistroAtencion',
     RegistroAtencio_GetAllAtencion: 'api/RegistroAtencion/GetAllAtencion',
     RegistroAtencionId: 'api/RegistroAtencion/id',
+
+    Paraclinicos: 'api/Paraclinicos',
+    Paraclinicos_GetAllByTypeParaclinico: 'api/Paraclinicos/GetAllByTipoParaclinico',
+    ParaclinicosId: 'api/Paraclinicos/id',
 
     Ordenes: 'api/Ordenes',
     OrdenesId: 'api/Ordenes/id',

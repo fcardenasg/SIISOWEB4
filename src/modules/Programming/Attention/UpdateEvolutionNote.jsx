@@ -353,6 +353,7 @@ const UpdateEvolutionNote = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
+                            title="ATENCIÓN MEDICA - ESTADO CASO CONTROL"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -363,7 +364,7 @@ const UpdateEvolutionNote = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                        <SubCard>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
@@ -405,7 +406,7 @@ const UpdateEvolutionNote = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">NOTA</Typography>}>
+                        <SubCard>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
@@ -445,7 +446,7 @@ const UpdateEvolutionNote = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">IMPRESIÓN DIAGNÓSTICA</Typography>}>
+                        <SubCard>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <InputMultiSelects
@@ -489,7 +490,7 @@ const UpdateEvolutionNote = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">CONCEPTO DE APTITUD PSICOFÍSICA</Typography>}>
+                        <SubCard>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
@@ -553,7 +554,7 @@ const UpdateEvolutionNote = () => {
                     </Grid>
                 </Grid> : <Cargando />
             }
-        </Fragment >
+        </Fragment>
     );
 };
 

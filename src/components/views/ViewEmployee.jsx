@@ -256,12 +256,12 @@ EmployeeInfo.propTypes = {
     onChange: PropTypes.object,
 };
 
-const ViewEmployee = ({ lsEmployee = [], documento, disabled = false, onChange, handleDocumento }) => {
+const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onChange, handleDocumento }) => {
     const theme = useTheme();
 
     return (
         <Fragment>
-            <SubCard>
+            <SubCard title={<Typography variant="h4">{title}</Typography>}>
                 <Grid container justifyContent="center" alignItems="center">
                     <Grid item xs={3.2}>
                         <CardMedia
@@ -325,6 +325,7 @@ export default ViewEmployee;
 
 ViewEmployee.propTypes = {
     lsEmployee: PropTypes.object,
+    title: PropTypes.string,
     documento: PropTypes.string,
     disabled: PropTypes.bool,
     handleDocumento: PropTypes.object,

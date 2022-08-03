@@ -177,18 +177,15 @@ const PsychologicalCounseling = Loadable(lazy(() => import('modules/Psychologica
 const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/UpdatePsychologicalCounseling')));
 const ReportPsychologicalCounseling = Loadable(lazy(() => import('components/report/ReportPsychologicalCounseling')));
 
-
 const ListNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/ListNoteInfirmary')));
 const NoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/NoteInfirmary')));
 const UpdateNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/UpdateNoteInfirmary')));
 const ReportInfirmary = Loadable(lazy(() => import('components/report/ReportInfirmary')));
 
-
 const ListMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/ListMedicalFormula')));
 const MedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/MedicalFormula')));
 const UpdateMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/UpdateMedicalFormula')));
 const ReportMedicalFormula = Loadable(lazy(() => import('components/report/ReportMedicalFormula')));
-
 
 const ListAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/ListAlcoholAndDrugTesting')));
 const AlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/AlcoholAndDrugTesting')));
@@ -198,6 +195,7 @@ const ReportAlcoholAndDrugTesting = Loadable(lazy(() => import('components/repor
 const Turner = Loadable(lazy(() => import('modules/Turner/Turner')));
 
 const Attention = Loadable(lazy(() => import('modules/Attention/Attention')));
+const UpdateAttention = Loadable(lazy(() => import('modules/Attention/UpdateAttention')));
 const ListAttention = Loadable(lazy(() => import('modules/Attention/ListAttention')));
 
 const ListOccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/ListOccupationalExamination')));
@@ -439,6 +437,10 @@ const MainRoutes = {
         {
             path: '/attention/add',
             element: <Attention />
+        },
+        {
+            path: '/attention/update/:id',
+            element: <UpdateAttention />
         },
         /* Render de Pruebas de Alcohol y Droga */
         {
