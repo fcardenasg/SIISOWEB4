@@ -1,4 +1,5 @@
 import { FormattedMessage } from 'react-intl';
+
 import { IconChartArcs, IconClipboardList, IconChartInfographic } from '@tabler/icons';
 
 const icons = { IconChartArcs, IconClipboardList, IconChartInfographic };
@@ -19,7 +20,7 @@ const widget = {
             id: 'data',
             title: <FormattedMessage id="data" />,
             type: 'item',
-            url: '/widget/data',
+            url: '/sg-sst/list',
             icon: icons.IconClipboardList
         },
         {

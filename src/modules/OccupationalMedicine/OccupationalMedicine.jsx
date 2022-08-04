@@ -1203,17 +1203,22 @@ const OccupationalMedicine = () => {
                         <Grid xs={12} sx={{ pl: 4, pt: 4 }} container spacing={2}>
                             <input type="file" onChange={handleFile} />
                         </Grid>
-                        {/* <object type="application/pdf"
-                    data={pdfFile}
-                    width="1020"
-                    height="500">
-                </object> */}
 
-                        <iframe
+                        <object type="application/pdf"
+                            data={pdfFile}
+                            width="1020"
+                            height="500">
+                        </object>
+
+                        {/* <iframe
                             width="1020"
                             height="500"
                             src={pdfFile}
-                        />
+                        /> */}
+
+                        {/* <object data={pdfFile} type="application/pdf">
+                            <iframe src={pdfFile}></iframe>
+                        </object> */}
 
                         <Grid item sx={{ pt: 4 }} xs={12}>
                             <Grid container spacing={1}>

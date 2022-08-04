@@ -261,6 +261,10 @@ const ListUser = Loadable(lazy(() => import('modules/User/ListUser')));
 const UpdateUser = Loadable(lazy(() => import('modules/User/UpdateUser')));
 const User = Loadable(lazy(() => import('modules/User/User')));
 
+const ListSGSST = Loadable(lazy(() => import('modules/SGSST/ListSGSST')));
+const UpdateSGSST = Loadable(lazy(() => import('modules/SGSST/UpdateSGSST')));
+const SGSST = Loadable(lazy(() => import('modules/SGSST/SGSST')));
+
 const MainRoutes = {
     path: '/',
     element: (
@@ -696,7 +700,6 @@ const MainRoutes = {
             path: '/programming/alcoholanddrugtesting/:id',
             element: <UpdateAlcoholAndDrugTestings />
         },
-
         {
             path: '/user/list',
             element: <ListUser />
@@ -708,6 +711,18 @@ const MainRoutes = {
         {
             path: '/user/update/:id',
             element: <UpdateUser />
+        },
+        {
+            path: '/sg-sst/list',
+            element: <ListSGSST />
+        },
+        {
+            path: '/sg-sst/add',
+            element: <SGSST />
+        },
+        {
+            path: '/sg-sst/update/:id',
+            element: <UpdateSGSST />
         },
 
 

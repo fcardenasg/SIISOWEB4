@@ -12,7 +12,21 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+
+import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
+import ControlModal from 'components/controllers/ControlModal';
+import BiotechIcon from '@mui/icons-material/Biotech';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import ImageIcon from '@mui/icons-material/Image';
+
+import ListMedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/ListMedicalFormula';
+import MedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/MedicalFormula';
+import UpdateMedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
+import ViewReport from 'modules/Programming/Attention/OccupationalExamination/Report/ViewReport';
+import DialogFormula from 'modules/Programming/Attention/OccupationalExamination/Modal/DialogFormula';
+import { ColorDrummondltd } from 'themes/colors';
+
 import { FormProvider, useForm } from 'react-hook-form';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
@@ -20,7 +34,6 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 
 import InputDatePicker from 'components/input/InputDatePicker';
-import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
@@ -28,7 +41,6 @@ import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format'
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import InputText from 'components/input/InputText';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
@@ -49,15 +61,27 @@ const DetailIcons = [
 
 const Assistance = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [disabledButton, setDisabledButton] = useState({
+        buttonSave: false,
+        buttonReport: false
+    });
+
+    const [openReport, setOpenReport] = useState(false);
+    const [openFormula, setOpenFormula] = useState(false);
+    const [openForm, setOpenForm] = useState(false);
+    const [titleModal, setTitleModal] = useState('');
+    const [listMedicalFormula, setListMedicalFormula] = useState(true);
+    const [newMedicalFormula, setNewMedicalFormula] = useState(false);
+    const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
+    const [numberId, setNumberId] = useState('');
+
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
-    const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openExamenParaclinico, setOpenExamenParaclinico] = useState(false);
@@ -175,7 +199,6 @@ const Assistance = () => {
                     setLsEmployee([]);
                     setDiagnosticoArray([]);
                     reset();
-                    setButtonReport(true);
                 }
             }
         } catch (error) {
@@ -221,6 +244,100 @@ const Assistance = () => {
             >
 
             </FullScreenDialog>
+
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewReport />
+            </ControlModal>
+
+            <ControlModal
+                title={"Ordenes Medicas - " + titleModal}
+                open={openForm}
+                onClose={() => {
+                    setOpenForm(false);
+                    setListMedicalFormula(true);
+                    setNewMedicalFormula(false);
+                    setUpdateMedicalFormula(false);
+                    setNewMedicalFormula(false)
+                }}
+                maxWidth="md"
+            >
+                {newMedicalFormula ?
+                    <MedicalFormula
+                        setUpdateMedicalFormula={setUpdateMedicalFormula}
+                        setListMedicalFormula={setListMedicalFormula}
+                        setNewMedicalFormula={setNewMedicalFormula}
+                        tipoOrden={titleModal}
+                        lsEmployee={lsEmployee}
+                        setDocumento={setDocumento}
+                        documento={documento}
+                        lsAtencion={lsAtencion}
+                    />
+                    : listMedicalFormula ?
+                        <ListMedicalFormula
+                            setListMedicalFormula={setListMedicalFormula}
+                            setNewMedicalFormula={setNewMedicalFormula}
+                            setUpdateMedicalFormula={setUpdateMedicalFormula}
+                            setNumberId={setNumberId}
+                        />
+                        : updateMedicalFormula ?
+                            <UpdateMedicalFormula
+                                setListMedicalFormula={setListMedicalFormula}
+                                setNewMedicalFormula={setNewMedicalFormula}
+                                setUpdateMedicalFormula={setUpdateMedicalFormula}
+                                numberId={numberId}
+                                lsEmployee={lsEmployee}
+                                lsAtencion={lsAtencion}
+                                tipoOrden={titleModal}
+                            /> : ''
+                }
+            </ControlModal>
+
+            <DialogFormula
+                title="Ordenes Medicas"
+                open={openFormula}
+                handleCloseDialog={() => setOpenFormula(false)}
+            >
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Formula') }}
+                        secondary="Formula"
+                        iconPrimary={AssignmentIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Laboratorio') }}
+                        secondary="Laboratorio"
+                        iconPrimary={BiotechIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Imagenes') }}
+                        secondary="Imagenes"
+                        iconPrimary={ImageIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Examenes') }}
+                        secondary="Examenes"
+                        iconPrimary={FolderOpenIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+            </DialogFormula>
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -532,52 +649,49 @@ const Assistance = () => {
 
                 <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">CONCEPTO DE APTITUD PSICOFÍSICA</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idConceptoActitud"
-                                        label="Concepto De Aptitud Psicofísica"
-                                        defaultValue=""
-                                        options={lsConceptoAptitud}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
+
+                        <Grid item xs={12}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idConceptoActitud"
+                                            label="Concepto De Aptitud Psicofísica"
+                                            defaultValue=""
+                                            options={lsConceptoAptitud}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
                             </Grid>
 
-                            {/* <Grid item xs={6}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idRemitido"
-                                        label="Remitido"
-                                        defaultValue=""
-                                        options={lsRemitido}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid> */}
-                        </Grid>
-
-                        <Grid item xs={12} sx={{ pt: 4 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={buttonReport ? 4 : 6}>
+                            <Grid container spacing={2} sx={{ pt: 4 }}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                        <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-                                {buttonReport ?
-                                    <Grid item xs={buttonReport ? 4 : 6}>
-                                        <AnimateButton>
-                                            <Button variant="contained" fullWidth onClick={() => setOpen(true)}>
-                                                Imprimir
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid> : <></>}
-                                <Grid item xs={buttonReport ? 4 : 6}>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
+                                            {TitleButton.OrdenesMedicas}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/assistance/list")}>
                                             {TitleButton.Cancelar}

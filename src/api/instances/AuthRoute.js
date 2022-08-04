@@ -31,6 +31,9 @@ export const Url = {
     Empresa: 'api/Empresa',
     EmpresaId: 'api/Empresa/id',
 
+    SGSST: 'api/SistemaGestion',
+    SGSSTId: 'api/SistemaGestion/id',
+
     RiesgoHistoriaLaboral: 'api/RiesgoHistoriaLaboral',
     RiesgoHistoriaLaboralId: 'api/RiesgoHistoriaLaboral/id',
     RHLByChargeHistorico: 'api/RiesgoHistoriaLaboral/GetAllByChargeHistorico',
