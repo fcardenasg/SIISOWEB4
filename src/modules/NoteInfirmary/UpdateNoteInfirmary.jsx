@@ -12,6 +12,19 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
+import BiotechIcon from '@mui/icons-material/Biotech';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import ImageIcon from '@mui/icons-material/Image';
+
+import ListMedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/ListMedicalFormula';
+import MedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/MedicalFormula';
+import UpdateMedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
+import ViewReport from 'modules/Programming/Attention/OccupationalExamination/Report/ViewReport';
+import DialogFormula from 'modules/Programming/Attention/OccupationalExamination/Modal/DialogFormula';
+import { ColorDrummondltd } from 'themes/colors';
+
 import ViewEmployee from 'components/views/ViewEmployee';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
@@ -47,6 +60,20 @@ const UpdateNoteInfirmary = () => {
     const { id } = useParams();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [lsNoteInfirmary, setLsNoteInfirmary] = useState([]);
+
+    const [disabledButton, setDisabledButton] = useState({
+        buttonSave: false,
+        buttonReport: false
+    });
+
+    const [openReport, setOpenReport] = useState(false);
+    const [openFormula, setOpenFormula] = useState(false);
+    const [openForm, setOpenForm] = useState(false);
+    const [titleModal, setTitleModal] = useState('');
+    const [listMedicalFormula, setListMedicalFormula] = useState(true);
+    const [newMedicalFormula, setNewMedicalFormula] = useState(false);
+    const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
+    const [numberId, setNumberId] = useState('');
 
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -176,6 +203,100 @@ const UpdateNoteInfirmary = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewReport />
+            </ControlModal>
+
+            <ControlModal
+                title={"Ordenes Medicas - " + titleModal}
+                open={openForm}
+                onClose={() => {
+                    setOpenForm(false);
+                    setListMedicalFormula(true);
+                    setNewMedicalFormula(false);
+                    setUpdateMedicalFormula(false);
+                    setNewMedicalFormula(false)
+                }}
+                maxWidth="md"
+            >
+                {newMedicalFormula ?
+                    <MedicalFormula
+                        setUpdateMedicalFormula={setUpdateMedicalFormula}
+                        setListMedicalFormula={setListMedicalFormula}
+                        setNewMedicalFormula={setNewMedicalFormula}
+                        tipoOrden={titleModal}
+                        lsEmployee={lsEmployee}
+                        setDocumento={setDocumento}
+                        documento={documento}
+                        lsAtencion={lsAtencion}
+                    />
+                    : listMedicalFormula ?
+                        <ListMedicalFormula
+                            setListMedicalFormula={setListMedicalFormula}
+                            setNewMedicalFormula={setNewMedicalFormula}
+                            setUpdateMedicalFormula={setUpdateMedicalFormula}
+                            setNumberId={setNumberId}
+                        />
+                        : updateMedicalFormula ?
+                            <UpdateMedicalFormula
+                                setListMedicalFormula={setListMedicalFormula}
+                                setNewMedicalFormula={setNewMedicalFormula}
+                                setUpdateMedicalFormula={setUpdateMedicalFormula}
+                                numberId={numberId}
+                                lsEmployee={lsEmployee}
+                                lsAtencion={lsAtencion}
+                                tipoOrden={titleModal}
+                            /> : ''
+                }
+            </ControlModal>
+
+            <DialogFormula
+                title="Ordenes Medicas"
+                open={openFormula}
+                handleCloseDialog={() => setOpenFormula(false)}
+            >
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Formula') }}
+                        secondary="Formula"
+                        iconPrimary={AssignmentIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Laboratorio') }}
+                        secondary="Laboratorio"
+                        iconPrimary={BiotechIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Imagenes') }}
+                        secondary="Imagenes"
+                        iconPrimary={ImageIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <HoverSocialCard
+                        onClick={() => { setOpenForm(true); setTitleModal('Examenes') }}
+                        secondary="Examenes"
+                        iconPrimary={FolderOpenIcon}
+                        color={ColorDrummondltd.RedDrummond}
+                    />
+                </Grid>
+            </DialogFormula>
+
             {lsNoteInfirmary.length != 0 ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -299,30 +420,37 @@ const UpdateNoteInfirmary = () => {
                                 </Grid>
                             </Grid>
 
-                            <Grid item xs={12} sx={{ pt: 4 }}>
-                                <Grid container spacing={1}>
-                                    <Grid item xs={buttonReport ? 4 : 6}>
-                                        <AnimateButton>
-                                            <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                                {TitleButton.Guardar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-                                    {buttonReport ?
-                                        <Grid item xs={buttonReport ? 4 : 6}>
-                                            <AnimateButton>
-                                                <Button variant="contained" fullWidth onClick={() => setOpen(true)}>
-                                                    Imprimir
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid> : <></>}
-                                    <Grid item xs={buttonReport ? 4 : 6}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/note-infirmary/list")}>
-                                                {TitleButton.Cancelar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                            <Grid container spacing={2} sx={{ pt: 4 }}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
+                                            {TitleButton.OrdenesMedicas}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/note-infirmary/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
                                 </Grid>
                             </Grid>
                         </SubCard>
