@@ -126,8 +126,8 @@ const application = {
                     id: 'product-re',
                     title: <FormattedMessage id="Reintegro Laboral" />,
                     type: 'item',
-                    url: '/customer/product-review',
-                    breadcrumbs: false
+                    url: '/refund/list',
+                    breadcrumbs: true
                 },
                 {
                     id: 'work',

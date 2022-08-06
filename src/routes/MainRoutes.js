@@ -265,6 +265,10 @@ const ListSGSST = Loadable(lazy(() => import('modules/SGSST/ListSGSST')));
 const UpdateSGSST = Loadable(lazy(() => import('modules/SGSST/UpdateSGSST')));
 const SGSST = Loadable(lazy(() => import('modules/SGSST/SGSST')));
 
+const ListRefund = Loadable(lazy(() => import('modules/Refund/ListRefund')));
+const UpdateRefund = Loadable(lazy(() => import('modules/Refund/UpdateRefund')));
+const Refund = Loadable(lazy(() => import('modules/Refund/Refund')));
+
 const MainRoutes = {
     path: '/',
     element: (
@@ -723,6 +727,18 @@ const MainRoutes = {
         {
             path: '/sg-sst/update/:id',
             element: <UpdateSGSST />
+        },
+        {
+            path: '/refund/list',
+            element: <ListRefund />
+        },
+        {
+            path: '/refund/add',
+            element: <Refund />
+        },
+        {
+            path: '/refund/update/:id',
+            element: <UpdateRefund />
         },
 
 
