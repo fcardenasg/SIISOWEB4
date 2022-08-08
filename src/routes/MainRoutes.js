@@ -265,6 +265,14 @@ const ListSGSST = Loadable(lazy(() => import('modules/SGSST/ListSGSST')));
 const UpdateSGSST = Loadable(lazy(() => import('modules/SGSST/UpdateSGSST')));
 const SGSST = Loadable(lazy(() => import('modules/SGSST/SGSST')));
 
+const ListElectro = Loadable(lazy(() => import('modules/Paraclinics/Electro/ListElectro')));
+const Electro = Loadable(lazy(() => import('modules/Paraclinics/Electro/Electro')));
+const UpdateElectro = Loadable(lazy(() => import('modules/Paraclinics/Electro/UpdateElectro')));
+
+
+
+
+
 const MainRoutes = {
     path: '/',
     element: (
@@ -726,15 +734,19 @@ const MainRoutes = {
         },
 
 
-
-
-
-
-
-
-
-
-
+   /* Render de  Paraclinicos */
+   {
+    path: '/paraclinics/electro/list',
+    element: <ListElectro />
+},
+{
+    path: '/paraclinics/electro/add',
+    element: <Electro />
+},
+{
+    path: '/paraclinics/electro/update/:id',
+    element: <UpdateElectro />
+},
 
 
 

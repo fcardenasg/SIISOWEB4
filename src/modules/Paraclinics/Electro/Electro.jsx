@@ -35,8 +35,9 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { PostElectro } from 'formatdata/ElectroForm';
-import { InsertElectro } from 'api/clients/ElectroClient';
+import { PostParaclinics } from 'formatdata/ParaclinicsForm';
+import { InsertParaclinics } from 'api/clients/ParaclinicsClient';
+import { GetAllSupplier } from 'api/clients/SupplierClient';
 
 const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
@@ -62,7 +63,7 @@ const Electro = () => {
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
     const [lsConclusion, setLsConclusion] = useState([]);
-    const [lsConductaClasificacion, setLsConductaClasificacion] = useState([]);
+    const [lsConducta, setLsConducta] = useState([]);
 
 
     const methods = useForm();
@@ -94,39 +95,39 @@ const Electro = () => {
 
     async function GetAll() {
         try {
-      
 
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Motivo);
+
+            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsMotivo(resultMotivo);
 
-            const lsServerConductaClasificacion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ConductaClasificacion);
-            var resultConductaClasificacion = lsServerConductaClasificacion.data.entities.map((item) => ({
+            const lsServerConducta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
+            var resultConducta = lsServerConducta.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsConductaClasificacion(resultConductaClasificacion);
+            setLsConducta(resultConducta);
 
-            const lsServerConclusion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Conclusion);
+            const lsServerConclusion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
             var resultConclusion = lsServerConclusion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsConclusion(resultConclusion);
 
-            const lsServerProveedor = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Proveedor);
+            const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
+                value: item.codiProv,
+                label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
 
-    
 
-       
+
+
         } catch (error) {
             console.log(error);
         }
@@ -138,22 +139,25 @@ const Electro = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostElectro(0, documento, FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.iidProveedor,
-                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, '',
-                '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', False, False, False, False, False, False, '', False, False, False, False, False,
-                False, False, False, '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', user.email,
-                FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PostParaclinics( 0, documento,
+                FormatDate(datos.fecha),datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor, 
+                 datos.observacion ,DefaultValue.SINREGISTRO_GLOBAL,'','','','','',DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,false,
+                false,'',DefaultValue.SINREGISTRO_GLOBAL,'','','','','','','',DefaultValue.SINREGISTRO_GLOBAL,'','',
+                DefaultValue.SINREGISTRO_GLOBAL,'',false,'',DefaultValue.SINREGISTRO_GLOBAL,'','',DefaultValue.SINREGISTRO_GLOBAL,
+                '','',DefaultValue.SINREGISTRO_GLOBAL,'','',DefaultValue.SINREGISTRO_GLOBAL,'',DefaultValue.SINREGISTRO_GLOBAL,'',
+                DefaultValue.SINREGISTRO_GLOBAL,'',DefaultValue.SINREGISTRO_GLOBAL,'',DefaultValue.SINREGISTRO_GLOBAL,'',DefaultValue.SINREGISTRO_GLOBAL,
+                '',DefaultValue.SINREGISTRO_GLOBAL,'',false,false,false,false,false,false,false,false,false,false,false,false,
+                false,false,false,'',DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,
+                '',DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,
+                 DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,
+                '',DefaultValue.SINREGISTRO_GLOBAL,'','',user.email,FormatDate(new Date()),'',FormatDate(new Date())  );
+
+                console.log(DataToInsert)
 
 
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertElectro(DataToInsert);
+                const result = await InsertParaclinics(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
                     setDocumento('');
@@ -226,7 +230,7 @@ const Electro = () => {
                                         name="idConductaClasificacion"
                                         label="Conducta"
                                         defaultValue=""
-                                        options={lsConductaClasificacion}
+                                        options={lsConducta}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -249,7 +253,7 @@ const Electro = () => {
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="iidProveedor"
+                                        name="idProveedor"
                                         label="Proveedor"
                                         defaultValue=""
                                         options={lsProveedor}
@@ -286,17 +290,39 @@ const Electro = () => {
                                     icons={DetailIcons[0].icons}
                                 />
 
-                                <DetailedIcon
-                                    title={DetailIcons[1].title}
-                                    onClick={() => setOpen(true)}
-                                    icons={DetailIcons[1].icons}
-                                />
+
                             </Grid>
 
 
+
+
                         </Grid>
+
+                        <Grid container spacing={2} sx={{ pt: 4 }}>
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/electro/list")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                        </Grid>
+
                     </SubCard>
                 </Grid>
+
+
+
 
 
             </Grid>

@@ -36,7 +36,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { DeleteElectro, GetAllElectro } from 'api/clients/ElectroClient';
+import { DeleteParaclinics,GetAllParaclinics } from 'api/clients/ParaclinicsClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
@@ -227,7 +227,7 @@ const ListElectro = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllElectro(0, 0);
+            const lsServer = await GetAllParaclinics(0, 0);
             setElectro(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
@@ -316,7 +316,7 @@ const ListElectro = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteElectro(idCheck);
+                    const result = await DeleteParaclinics(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
                     }
@@ -385,7 +385,7 @@ const ListElectro = () => {
                         </Tooltip>
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/electro/add")}>
+                            onClick={() => navigate("/paraclinics/electro/add")}>
                             {TitleButton.Agregar}
                         </Button>
                     </Grid>
@@ -505,7 +505,7 @@ const ListElectro = () => {
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/electro/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/paraclinics/electro/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
