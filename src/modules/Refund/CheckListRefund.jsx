@@ -1,34 +1,30 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useEffect, Fragment } from 'react';
 
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
-    CardContent,
-    Grid,
     IconButton,
-    InputAdornment,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TablePagination,
     TableRow,
     TableSortLabel,
-    TextField,
     Tooltip,
     Typography,
 } from '@mui/material';
+import useAuth from 'hooks/useAuth';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { visuallyHidden } from '@mui/utils';
-import { SNACKBAR_OPEN } from 'store/actions';
-import { GetAllTemplate } from 'api/clients/TemplateClient';
-
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import SearchIcon from '@mui/icons-material/Search';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { PostListRefund } from 'formatdata/ListRefundForm';
+import { CodCatalogo } from 'components/helpers/Enums';
+import { InsertListRefund, GetAllReintegro } from 'api/clients/ListRefundClient';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -47,7 +43,7 @@ function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
         const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
+        if (order != 0) return order;
         return a[1] - b[1];
     });
     return stabilizedThis.map((el) => el[0]);
@@ -61,21 +57,27 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nameCIE11',
+        id: 'documento',
         numeric: false,
-        label: 'CIE11',
+        label: 'Documento',
         align: 'left'
     },
     {
-        id: 'nameTipoAtencion',
+        id: 'estado',
         numeric: false,
-        label: 'Tipo de Atención',
+        label: 'Estado',
         align: 'left'
     },
     {
-        id: 'nameAtencion',
+        id: 'usuarioModifico',
         numeric: false,
-        label: 'Atención',
+        label: 'Usuario',
+        align: 'left'
+    },
+    {
+        id: 'fechaModifico',
+        numeric: false,
+        label: 'Fecha',
         align: 'left'
     }
 ];
@@ -130,60 +132,50 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const CheckListRefund = () => {
-    const dispatch = useDispatch();
-    const [lsTemplate, setLsTemplate] = useState([]);
+const CheckListRefund = ({ idReintegro }) => {
+    const { user } = useAuth();
+    const [listRefund, setListRefund] = useState([]);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('id');
     const [selected, setSelected] = useState([]);
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(8);
-    const [search, setSearch] = useState('');
-    const [rows, setRows] = useState([]);
-
-    async function GetAll() {
-        try {
-            const lsServer = await GetAllTemplate(0, 0);
-            setLsTemplate(lsServer.data.entities);
-            setRows(lsServer.data.entities);
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     useEffect(() => {
-        GetAll();
-    }, [])
+        async function GetAll() {
+            try {
+                const lsServerCatalogo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.LISTA_CHEKEO_REINTEGRO);
+                if (lsServerCatalogo.status === 200) {
+                    var arrayInsert = lsServerCatalogo.data.entities;
 
-    const handleSearch = (event) => {
-        const newString = event?.target.value;
-        setSearch(newString || '');
+                    for (let index = 0; index < arrayInsert.length; index++) {
+                        const refund = arrayInsert[index];
 
-        if (newString) {
-            const newRows = rows.filter((row) => {
-                let matches = true;
+                        const DataToInsert = PostListRefund(idReintegro, refund.nombre, refund.idCatalogo, '', false,
+                            user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion'];
-                let containsQuery = false;
+                        console.log(DataToInsert);
 
-                properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
-                        containsQuery = true;
+                        if (DataToInsert) {
+                            const result = await InsertListRefund(DataToInsert);
+                            if (result.status === 200) {
+                                if (index < arrayInsert.length) {
+
+                                }
+                            }
+                        }
+
+                        const lsServer = await GetAllReintegro(0, 0, idReintegro);
+                        if (lsServer.status === 200) {
+                            setListRefund(lsServer.data.entities);
+                        }
                     }
-                });
-
-                if (!containsQuery) {
-                    matches = false;
                 }
-                return matches;
-            });
-            setLsTemplate(newRows);
-        } else {
-            setLsTemplate(rows);
+            } catch (error) { }
         }
-    };
+
+        GetAll();
+    }, [idReintegro])
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -191,39 +183,8 @@ const CheckListRefund = () => {
         setOrderBy(property);
     };
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        if (event?.target.value) setRowsPerPage(parseInt(event?.target.value, 10));
-        setPage(0);
-    };
-
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
-
     return (
-        <>
-            <CardContent>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon fontSize="small" />
-                                    </InputAdornment>
-                                )
-                            }}
-                            onChange={handleSearch}
-                            placeholder="Buscar"
-                            value={search}
-                            size="small"
-                        />
-                    </Grid>
-                </Grid>
-            </CardContent>
-
+        <Fragment>
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -231,13 +192,12 @@ const CheckListRefund = () => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsTemplate.length}
+                        rowCount={listRefund.length}
                         theme={theme}
                         selected={selected}
                     />
                     <TableBody>
-                        {stableSort(lsTemplate, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        {stableSort(listRefund, getComparator(order, orderBy))
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
 
@@ -258,7 +218,7 @@ const CheckListRefund = () => {
                                             align="left"
                                         >
                                             <Typography
-                                                variant="subtitle1"
+                                                variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 #{row.id}
@@ -272,10 +232,10 @@ const CheckListRefund = () => {
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
-                                                variant="subtitle1"
+                                                variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameCIE11}
+                                                {row.documento}
                                             </Typography>
                                         </TableCell>
 
@@ -286,10 +246,10 @@ const CheckListRefund = () => {
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
-                                                variant="subtitle1"
+                                                variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameTipoAtencion}
+                                                {row.estado}
                                             </Typography>
                                         </TableCell>
 
@@ -300,44 +260,53 @@ const CheckListRefund = () => {
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
-                                                variant="subtitle1"
+                                                variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameAtencion}
+                                                {row.usuarioModifico}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle2"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {ViewFormat(row.fechaModifico)}
                                             </Typography>
                                         </TableCell>
 
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
+                                            <Tooltip title="Subir Archico">
+                                                <IconButton size="large">
+                                                    <FileDownloadIcon sx={{ fontSize: '1.3rem' }} />
+                                                </IconButton>
+                                            </Tooltip>
 
+                                            <Tooltip title="Descargar Archivo">
+                                                <IconButton size="large">
+                                                    <FileUploadIcon sx={{ fontSize: '1.3rem' }} />
+                                                </IconButton>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );
                             })}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: 53 * emptyRows
-                                }}
-                            >
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
-
-            <TablePagination
-                rowsPerPageOptions={8}
-                component="div"
-                count={lsTemplate.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </>
+        </Fragment>
     );
 };
 
 export default CheckListRefund;
+
+CheckListRefund.propTypes = {
+    idReintegro: PropTypes.string,
+};

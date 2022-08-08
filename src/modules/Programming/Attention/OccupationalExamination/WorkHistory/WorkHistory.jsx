@@ -69,7 +69,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const [lsWorkHistory, setLsWorkHistory] = useState([]);
     const [lsWorkHistoryOtherCompany, setLsWorkHistoryOtherCompany] = useState([]);
     const [lsCargo, setLsCargo] = useState([]);
-    const [lsEmpresa, setLsEmpresa] = useState([]);
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
@@ -186,13 +185,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
             const lsServerWorkHistoryOtherCompany = await GetAllByDocumentWorkHistoryOtherCompany(0, 0, documento);
             if (lsServerWorkHistoryOtherCompany.status === 200)
                 setLsWorkHistoryOtherCompany(lsServerWorkHistoryOtherCompany.data.entities);
-
-            const lsServerEmpresa = await GetAllCompany(0, 0);
-            var resultEmpresa = lsServerEmpresa.data.entities.map((item) => ({
-                value: item.codigo,
-                label: item.descripcionSpa
-            }));
-            setLsEmpresa(resultEmpresa);
 
             const lsServerCargo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RosterPosition);
             var resultCargo = lsServerCargo.data.entities.map((item) => ({

@@ -15,6 +15,10 @@ export const Url = {
     Reintegro: 'api/Reintegro',
     ReintegroId: 'api/Reintegro/id',
 
+    ListaReintegro: 'api/ListaReintegro',
+    ListaReintegro_GetAllReintegro: 'api/ListaReintegro/GetAllReintegro',
+    ListaReintegroId: 'api/ListaReintegro/id',
+
     Cargo: 'api/Cargo',
     CargoId: 'api/Cargo/id',
 

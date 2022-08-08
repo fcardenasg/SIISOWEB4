@@ -15,8 +15,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import Transitions from 'ui-component/extended/Transitions';
+import InputOnChange from 'components/input/InputOnChange';
+import InputDatePick from 'components/input/InputDatePick';
 import ViewReport from 'modules/Programming/Attention/OccupationalExamination/Report/ViewReport';
-
 import useAuth from 'hooks/useAuth';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
@@ -30,15 +32,15 @@ import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostEvolutionNote } from 'formatdata/EvolutionNoteForm';
-import { InsertEvolutionNote } from 'api/clients/EvolutionNoteClient';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import CheckListRefund from './CheckListRefund';
+import { PostRefund } from 'formatdata/RefundForm';
+import { InsertRefund } from 'api/clients/RefundClient';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -52,12 +54,8 @@ const Refund = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [disabledButton, setDisabledButton] = useState({
-        buttonSave: false,
-        buttonReport: false
-    });
-
     const [openReport, setOpenReport] = useState(false);
+    const [viewListRefund, setViewListRefund] = useState(false);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -65,16 +63,24 @@ const Refund = () => {
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openExamen, setOpenExamen] = useState(false);
+    const [fechaFin, setFechaFin] = useState(null);
+    const [fechaInicio, setFechaInicio] = useState(null);
     const [diagnosticoArray, setDiagnosticoArray] = useState([]);
 
+    const [numeroDia, setNumeroDia] = useState('');
     const [documento, setDocumento] = useState('');
+    const [resultData, setResultData] = useState([]);
     const [lsCie11, setLsCie11] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [lsAtencion, setLsAtencion] = useState([]);
-    const [lsDiaTurno, setLsDiaTurno] = useState([]);
-    const [lsTurno, setLsTurno] = useState([]);
-    const [lsContingencia, setLsContingencia] = useState([]);
+    const [lsEstadoEmpleado, setLsEstadoEmpleado] = useState([]);
+    const [lsEstadoRestriccion, setLsEstadoRestriccion] = useState([]);
+    const [lsTipoRestriccion, setLsTipoRestriccion] = useState([]);
+
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
+    const [lsOrdenarPorHorario, setLsOrdenarPorHorario] = useState([]);
+    const [lsEstadoCaso, setLsEstadoCaso] = useState([]);
+    const [lsOrdenadoPor, setLsOrdenadoPor] = useState([]);
+    const [lsOrigenReintegro, setLsOrigenReintegro] = useState([]);
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
@@ -113,63 +119,103 @@ const Refund = () => {
             }));
             setLsCie11(resultCie11);
 
-            const lsServerAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION);
-            var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
+            const lsServerEstadoEmpleado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_EMPLEADO);
+            var resultEstadoEmpleado = lsServerEstadoEmpleado.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsAtencion(resultAtencion);
+            setLsEstadoEmpleado(resultEstadoEmpleado);
 
-            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
-            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
+            const lsServerEstadoRestriccion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_RESTRICCION);
+            var resultEstadoRestriccion = lsServerEstadoRestriccion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsContingencia(resultContingencia);
+            setLsEstadoRestriccion(resultEstadoRestriccion);
 
-            const lsServerTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Turno);
-            var resultTurno = lsServerTurno.data.entities.map((item) => ({
+            const lsServerTipoRestriccion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPO_RESTRICCION);
+            var resultTipoRestriccion = lsServerTipoRestriccion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsTurno(resultTurno);
+            setLsTipoRestriccion(resultTipoRestriccion);
 
-            const lsServerDiaTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DiaTurno);
-            var resultDiaTurno = lsServerDiaTurno.data.entities.map((item) => ({
+            const lsServerOrdenadoPor = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ORDENADO_POR);
+            var resultOrdenadoPor = lsServerOrdenadoPor.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsDiaTurno(resultDiaTurno);
+            setLsOrdenadoPor(resultOrdenadoPor);
 
-            const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_CONCEP_ACTITUD);
+            const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CONCEPTO_APTITUD_REINTEGRO);
             var resultConceptoAptitud = lsServerConceptoAptitud.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
-        } catch (error) {
-            console.log(error);
-        }
+
+            const lsServerOrdenarPorHorario = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ORDENADO_POR_HORARIO);
+            var resultOrdenarPorHorario = lsServerOrdenarPorHorario.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsOrdenarPorHorario(resultOrdenarPorHorario);
+
+            const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_CASO);
+            var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsEstadoCaso(resultEstadoCaso);
+
+            const lsServerOrigenReintegro = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ORIGEN_REINTEGRO);
+            var resultOrigenReintegro = lsServerOrigenReintegro.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsOrigenReintegro(resultOrigenReintegro);
+
+        } catch (error) { }
     }
 
     useEffect(() => {
         GetAll();
-    }, [])
+    }, []);
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostEvolutionNote(documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
-                datos.nota, JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.email,
-                FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PostRefund(documento, JSON.stringify(diagnosticoArray), datos.idOrigen, datos.resumen,
+                datos.idEstadoEmpleado, datos.idEstadoRestriccion, datos.idTipoRestriccion, FormatDate(fechaInicio),
+                FormatDate(fechaFin), numeroDia, datos.idOrdenadoPor, datos.idMedico, datos.porcentajePCL, datos.recomendaciones,
+                datos.idConceptoReintegro, FormatDate(datos.inicioReubicacion), FormatDate(datos.finReubicacion), datos.descripcion,
+                datos.idTipoHorario, datos.idOrdenadoPorHorario, FormatDate(datos.fechaInicioHorario), FormatDate(datos.fechaFinHorario),
+                datos.idEstadoCaso, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+
+            console.log(DataToInsert);
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertEvolutionNote(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    setDocumento('');
-                    setLsEmployee([]);
-                    setDiagnosticoArray([]);
-                    reset();
+                if (documento !== '' && lsEmployee.length !== 0) {
+                    const result = await InsertRefund(DataToInsert);
+                    if (result.status === 200) {
+                        setResultData(result.data);
+                        setOpenSuccess(true);
+                        setDocumento('');
+                        setLsEmployee([]);
+                        setDiagnosticoArray([]);
+                        setFechaInicio(null);
+                        setFechaFin(null);
+                        setNumeroDia('');
+                        reset();
+
+                        setTimeout(() => {
+                            if (result.status === 200) {
+                                setViewListRefund(true);
+                            }
+                        }, 2500);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(`${Message.ErrorNoHayDatos}`);
                 }
             }
         } catch (error) {
@@ -244,10 +290,10 @@ const Refund = () => {
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="idAtencion"
+                                        name="idOrigen"
                                         label="Origen"
                                         defaultValue=""
-                                        options={lsAtencion}
+                                        options={lsOrigenReintegro}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -259,7 +305,7 @@ const Refund = () => {
                                     <InputText
                                         defaultValue=""
                                         fullWidth
-                                        name="nota"
+                                        name="resumen"
                                         label="Resumen"
                                         size={matchesXS ? 'small' : 'medium'}
                                         multiline
@@ -272,10 +318,10 @@ const Refund = () => {
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="idAtencion"
+                                        name="idEstadoEmpleado"
                                         label="Estado del Empleado"
                                         defaultValue=""
-                                        options={lsAtencion}
+                                        options={lsEstadoEmpleado}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -285,10 +331,10 @@ const Refund = () => {
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="idAtencion"
+                                        name="idEstadoRestriccion"
                                         label="Estado de Restricción"
                                         defaultValue=""
-                                        options={lsAtencion}
+                                        options={lsEstadoRestriccion}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -298,10 +344,62 @@ const Refund = () => {
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="idAtencion"
+                                        name="idTipoRestriccion"
                                         label="Tipo de Restricción"
                                         defaultValue=""
-                                        options={lsAtencion}
+                                        options={lsTipoRestriccion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={2.4}>
+                                <InputDatePick
+                                    label="Inicio de Restricción"
+                                    value={fechaInicio}
+                                    onChange={(e) => {
+                                        setFechaInicio(e);
+                                        if (fechaFin) {
+                                            var result = NumeroDias(e, fechaFin);
+                                            setNumeroDia(result);
+                                        }
+                                    }}
+                                />
+                            </Grid>
+
+                            <Grid item xs={2.4}>
+                                <InputDatePick
+                                    label="Fin de Restricción"
+                                    value={fechaFin}
+                                    onChange={(e) => {
+                                        setFechaFin(e);
+                                        if (fechaInicio) {
+                                            var result = NumeroDias(fechaInicio, e);
+                                            setNumeroDia(result);
+                                        }
+                                    }}
+                                />
+                            </Grid>
+
+                            <Grid item xs={2.4}>
+                                <InputOnChange
+                                    label="# Días Restringido"
+                                    value={numeroDia}
+                                    onChange={(e) => setNumeroDia(e?.target.value)}
+                                    disabled
+                                    type="number"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+
+                            <Grid item xs={2.4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idOrdenadoPor"
+                                        label="Ordenado Por"
+                                        defaultValue=""
+                                        options={lsOrdenadoPor}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -310,20 +408,13 @@ const Refund = () => {
 
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Inicio de Restricción"
-                                        name="fecha"
-                                        defaultValue={new Date()}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fin de Restricción"
-                                        name="fecha"
-                                        defaultValue={new Date()}
+                                    <InputSelect
+                                        name="idMedico"
+                                        label="Médico"
+                                        defaultValue=""
+                                        options={lsEstadoEmpleado}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -334,47 +425,8 @@ const Refund = () => {
                                         type="number"
                                         defaultValue=""
                                         fullWidth
-                                        name="nota"
-                                        label="# Días Restringido"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idAtencion"
-                                        label="Ordenado Por"
-                                        defaultValue=""
-                                        options={lsAtencion}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idContingencia"
-                                        label="Médico"
-                                        defaultValue=""
-                                        options={lsContingencia}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idTurno"
+                                        name="porcentajePCL"
                                         label="% PCL"
-                                        defaultValue=""
-                                        options={lsTurno}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -389,7 +441,7 @@ const Refund = () => {
                                         rows={4}
                                         defaultValue=""
                                         fullWidth
-                                        name="nota"
+                                        name="recomendaciones"
                                         label="Recomendaciones / Modificaciones"
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -406,10 +458,10 @@ const Refund = () => {
                             <Grid item xs={8}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="idTurno"
+                                        name="idConceptoReintegro"
                                         label="Concepto de Aptitud"
                                         defaultValue=""
-                                        options={lsTurno}
+                                        options={lsConceptoAptitud}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -426,7 +478,7 @@ const Refund = () => {
                                 <FormProvider {...methods}>
                                     <InputDatePicker
                                         label="Inicio de Restricción"
-                                        name="fecha"
+                                        name="inicioReubicacion"
                                         defaultValue={new Date()}
                                     />
                                 </FormProvider>
@@ -436,7 +488,7 @@ const Refund = () => {
                                 <FormProvider {...methods}>
                                     <InputDatePicker
                                         label="Fin de Restricción"
-                                        name="fecha"
+                                        name="finReubicacion"
                                         defaultValue={new Date()}
                                     />
                                 </FormProvider>
@@ -447,7 +499,7 @@ const Refund = () => {
                                     <InputText
                                         defaultValue=""
                                         fullWidth
-                                        name="planManejo"
+                                        name="descripcion"
                                         label="Descripción de Funciones"
                                         size={matchesXS ? 'small' : 'medium'}
                                         multiline
@@ -477,10 +529,10 @@ const Refund = () => {
                                         <Grid item xs={3}>
                                             <FormProvider {...methods}>
                                                 <InputSelect
-                                                    name="idTurno"
+                                                    name="idTipoHorario"
                                                     label="Tipo"
                                                     defaultValue=""
-                                                    options={lsTurno}
+                                                    options={lsTipoRestriccion}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
                                                 />
@@ -490,10 +542,10 @@ const Refund = () => {
                                         <Grid item xs={3}>
                                             <FormProvider {...methods}>
                                                 <InputSelect
-                                                    name="idTurno"
+                                                    name="idOrdenadoPorHorario"
                                                     label="Ordenada Por"
                                                     defaultValue=""
-                                                    options={lsTurno}
+                                                    options={lsOrdenarPorHorario}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
                                                 />
@@ -504,7 +556,7 @@ const Refund = () => {
                                             <FormProvider {...methods}>
                                                 <InputDatePicker
                                                     label="Fecha Inicio"
-                                                    name="fecha"
+                                                    name="fechaInicioHorario"
                                                     defaultValue={new Date()}
                                                 />
                                             </FormProvider>
@@ -514,7 +566,7 @@ const Refund = () => {
                                             <FormProvider {...methods}>
                                                 <InputDatePicker
                                                     label="Fecha Fin"
-                                                    name="fecha"
+                                                    name="fechaFinHorario"
                                                     defaultValue={new Date()}
                                                 />
                                             </FormProvider>
@@ -527,10 +579,10 @@ const Refund = () => {
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="idTurno"
+                                        name="idEstadoCaso"
                                         label="Estado del Caso"
                                         defaultValue=""
-                                        options={lsTurno}
+                                        options={lsEstadoCaso}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
@@ -542,16 +594,15 @@ const Refund = () => {
 
                 <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">LISTA DE CHEQUEO</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <CheckListRefund />
-                            </Grid>
-                        </Grid>
+
+                        <Transitions type="collapse" in={viewListRefund} position="top-left" direction="up">
+                            <CheckListRefund idReintegro={resultData.id} />
+                        </Transitions>
 
                         <Grid container spacing={2} sx={{ pt: 4 }}>
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Guardar}
                                     </Button>
                                 </AnimateButton>

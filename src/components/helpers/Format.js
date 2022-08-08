@@ -1376,6 +1376,18 @@ function FrLdl_FrRelacion(hdl = 0, colesterol = 0, triglicerios = 0) {
     }
 }////
 
+function NumeroDias(fechaInicio, fechaFin) {
+    try {
+        let fechaIni = new Date(fechaInicio);
+        let fechaFinn = new Date(fechaFin);
+
+        let milisegundosDia = 24 * 60 * 60 * 1000;
+        let milisegundosTranscurridos = Math.abs(fechaIni.getTime() - fechaFinn.getTime());
+        let diasTranscurridos = Math.round(milisegundosTranscurridos / milisegundosDia);
+        return diasTranscurridos;
+    } catch (error) { }
+}
+
 export {
     FormatDate,
     ViewFormat,
@@ -1388,5 +1400,6 @@ export {
     GetRiesgos,
     PuntajeFr,
     FrFuma,
-    FrLdl_FrRelacion
+    FrLdl_FrRelacion,
+    NumeroDias
 }

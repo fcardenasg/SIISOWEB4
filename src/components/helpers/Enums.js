@@ -25,8 +25,6 @@ export const CodCatalogo = {
     ESTUDIO_EXAMEN_PARACLINICOS: 22,
     LABORATORIO_ORDENES_PARACLINICOS: 30,
     TIPORNM_ORDENES_PARACLINICOS: 114,
-    GradoconEPP: 8,
-    GradosinEPP: 8,
 
     TIPO_ATENCION: 107,
 
@@ -90,10 +88,19 @@ export const CodCatalogo = {
     MotivoPsicologia: 53,
     MotivoMedica: 52,
 
+    ESTADO_EMPLEADO: 162,
+    ESTADO_RESTRICCION: 163,
+    TIPO_RESTRICCION: 164,
+    ORDENADO_POR: 94,
+    CONCEPTO_APTITUD_REINTEGRO: 95,
+    ORDENADO_POR_HORARIO: 167,
+    ORIGEN_REINTEGRO: 90,
+
     TipoAsesoria: 119,
     CausaAsesoria: 8,
     EstadoAsesoria: 8,
     EstadoCaso: 48,
+    ESTADO_CASO: 38,
     TipoAtencion: 65,
     Desocupado_EraDe_Plantilla1: 8,
     Desocupado_EraDe_Plantilla2: 8,
@@ -105,6 +112,7 @@ export const CodCatalogo = {
     AHC_ATENCION: 135,
     Opciones_SINO: 88,
     AHC_CONCEP_ACTITUD: 43,
+
     AUSLAB_INC: 8,
     AUSLAB_TIPOINCA: 8,
     AUSLAB_CONT: 8,
@@ -122,6 +130,8 @@ export const CodCatalogo = {
     AUSLAB_CATEGORIA: 8,
     AUSLAB_TIPOATEN: 8,
     AUSLAB_REDEXP: 8,
+
+    LISTA_CHEKEO_REINTEGRO: 159,
 }
 
 export const DefaultData = {

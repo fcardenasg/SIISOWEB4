@@ -165,7 +165,7 @@ const Animation = () => {
                                         />
                                     </MainCard>
                                 </Transitions>
-                                
+
                             </Stack>
                         </Grid>
                     </Grid>
