@@ -52,7 +52,7 @@ const UpdateSGSST = () => {
             else {
                 setFilePdf('');
                 setOpenError(true);
-                setErrorMessage('Este forma no es un PDF');
+                setErrorMessage('Este formato no es un PDF');
             }
         }
     }
@@ -82,7 +82,7 @@ const UpdateSGSST = () => {
     };
 
     return (
-        <MainCard title="Registrar SG-SST">
+        <MainCard title="Actualizar SG-SST">
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

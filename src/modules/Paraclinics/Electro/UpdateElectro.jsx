@@ -38,11 +38,14 @@ import { UpdateParaclinicss, GetByIdParaclinics } from 'api/clients/ParaclinicsC
 import { GetAllSupplier } from 'api/clients/SupplierClient';
 import Cargando from 'components/loading/Cargando';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
+import MainCard from 'ui-component/cards/MainCard';
+import UploadIcon from '@mui/icons-material/Upload';
+
 
 const DetailIcons = [
 
-  { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-  
+    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
+
 
 ]
 
@@ -52,7 +55,8 @@ const UpdateElectro = () => {
     const theme = useTheme();
     const { id } = useParams();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-
+    const [filePdf, setFilePdf] = useState(null);
+    const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -77,6 +81,28 @@ const UpdateElectro = () => {
 
     const { handleSubmit, errors } = methods;
 
+    const allowedFiles = ['application/pdf'];
+    const handleFile = (event) => {
+        let selectedFile = event.target.files[0];
+
+        if (selectedFile) {
+            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
+                let reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onloadend = (e) => {
+                    setFilePdf(e.target.result);
+                }
+            }
+            else {
+                setFilePdf('');
+                setOpenError(true);
+                setErrorMessage('Este formato no es un PDF');
+            }
+        }
+    }
+
+
+
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
@@ -92,13 +118,14 @@ const UpdateElectro = () => {
 
     async function GetAll() {
         try {
-           const serverData = await GetByIdParaclinics(id);
+            const serverData = await GetByIdParaclinics(id);
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
                 setLsElectro(serverData.data);
                 handleLoadingDocument(serverData.data.documento);
+                setFilePdf(serverData.data.url);
             }
-  
+
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -127,7 +154,7 @@ const UpdateElectro = () => {
             }));
             setLsProveedor(resultProveedor);
 
-    
+
 
         } catch (error) {
             console.log(error);
@@ -141,199 +168,220 @@ const UpdateElectro = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PutParaclinics(id, 0, documento,
-                FormatDate(datos.fecha),datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor, 
-                 datos.observacion ,DefaultValue.SINREGISTRO_GLOBAL,'','','','','',DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,false,
-                false,'',DefaultValue.SINREGISTRO_GLOBAL,'','','','','','','',DefaultValue.SINREGISTRO_GLOBAL,'','',
-                DefaultValue.SINREGISTRO_GLOBAL,'',false,'',DefaultValue.SINREGISTRO_GLOBAL,'','',DefaultValue.SINREGISTRO_GLOBAL,
-                '','',DefaultValue.SINREGISTRO_GLOBAL,'','',DefaultValue.SINREGISTRO_GLOBAL,'',DefaultValue.SINREGISTRO_GLOBAL,'',
-                DefaultValue.SINREGISTRO_GLOBAL,'',DefaultValue.SINREGISTRO_GLOBAL,'',DefaultValue.SINREGISTRO_GLOBAL,'',DefaultValue.SINREGISTRO_GLOBAL,
-                '',DefaultValue.SINREGISTRO_GLOBAL,'',false,false,false,false,false,false,false,false,false,false,false,false,
-                false,false,false,'',DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,
-                '',DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,
-                 DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,DefaultValue.SINREGISTRO_GLOBAL,
-                '',DefaultValue.SINREGISTRO_GLOBAL,'','',user.email,FormatDate(new Date()),'',FormatDate(new Date())  );
+                FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
+                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
+                false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
+                DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
+                '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
+                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
+                '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
+                false, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                '', DefaultValue.SINREGISTRO_GLOBAL, '', filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
+
                 const result = await UpdateParaclinicss(DataToUpdate);
                 if (result.status === 200) {
                     setOpenUpdate(true);
+
                     setButtonReport(true);
                 }
             }
+
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage('Este código ya existe');
         }
     };
 
     return (
-        <Fragment>
-            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <MainCard title="Actualizar ElectroCardiograma">
+            <Fragment>
+                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <ControlModal
-                maxWidth="md"
-                open={open}
-                onClose={() => setOpen(false)}
-                title="DICTADO POR VOZ"
-            >
-                <ControllerListen />
-            </ControlModal>
-
-
-
-            {lsElectro.length != 0 ?
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <ViewEmployee
-                            disabled={true}
-                            key={lsEmployee.documento}
-                            documento={documento}
-                            onChange={(e) => setDocumento(e.target.value)}
-                            lsEmployee={lsEmployee}
-                            handleDocumento={handleLoadingDocument}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <SubCard darkTitle>
-                            <Grid container spacing={2}>
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputDatePicker
-                                            label="Fecha"
-                                            name="fecha"
-                                            defaultValue={lsElectro.fecha}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idMotivo"
-                                            label="Motivo"
-                                            defaultValue={lsElectro.idMotivo}
-                                            options={lsMotivo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idConductaClasificacion"
-                                            label="Conducta"
-                                            defaultValue={lsElectro.idConductaClasificacion}
-                                            options={lsConducta}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idConclusion"
-                                            label="Conclusión"
-                                            defaultValue={lsElectro.idConclusion}
-                                            options={lsConclusion}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idProveedor"
-                                            label="Proveedor"
-                                            defaultValue={lsElectro.idProveedor}
-                                            options={lsProveedor}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <SubCard darkTitle>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue={lsElectro.observacion}
-                                            fullWidth
-                                            name="observacion"
-                                            label="Observación"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            multiline
-                                            rows={6}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-                                
-                                </Grid>
-
-                            
-
-                      
-                            </Grid>
-                        </SubCard>
-                    </Grid>
+                <ControlModal
+                    maxWidth="md"
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    title="DICTADO POR VOZ"
+                >
+                    <ControllerListen />
+                </ControlModal>
 
 
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">CONCEPTO DE APTITUD PSICOFÍSICA</Typography>}>
-                        
 
-                            <Grid item xs={12} sx={{ pt: 4 }}>
+                {lsElectro.length != 0 ?
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <ViewEmployee
+                                disabled={true}
+                                key={lsEmployee.documento}
+                                documento={documento}
+                                onChange={(e) => setDocumento(e.target.value)}
+                                lsEmployee={lsEmployee}
+                                handleDocumento={handleLoadingDocument}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <SubCard darkTitle>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={buttonReport ? 4 : 6}>
-                                        <AnimateButton>
-                                            <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                                {TitleButton.Actualizar}
-                                            </Button>
-                                        </AnimateButton>
+                                    <Grid item xs={2.4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha"
+                                                name="fecha"
+                                                defaultValue={lsElectro.fecha}
+                                            />
+                                        </FormProvider>
                                     </Grid>
-                                    {buttonReport ?
-                                        <Grid item xs={buttonReport ? 4 : 6}>
-                                            <AnimateButton>
-                                                <Button variant="contained" fullWidth onClick={() => setOpen(true)}>
-                                                    {TitleButton.Imprimir}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid> : <></>}
-                                    <Grid item xs={buttonReport ? 4 : 6}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/electro/list")}>
-                                                {TitleButton.Cancelar}
-                                            </Button>
-                                        </AnimateButton>
+
+                                    <Grid item xs={2.4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idMotivo"
+                                                label="Motivo"
+                                                defaultValue={lsElectro.idMotivo}
+                                                options={lsMotivo}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2.4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idConductaClasificacion"
+                                                label="Conducta"
+                                                defaultValue={lsElectro.idConductaClasificacion}
+                                                options={lsConducta}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2.4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idConclusion"
+                                                label="Conclusión"
+                                                defaultValue={lsElectro.idConclusion}
+                                                options={lsConclusion}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2.4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idProveedor"
+                                                label="Proveedor"
+                                                defaultValue={lsElectro.idProveedor}
+                                                options={lsProveedor}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
                                     </Grid>
                                 </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-                </Grid> : <Cargando />
-            }
+                            </SubCard>
+                        </Grid>
 
-        </Fragment >
+                        <Grid item xs={12}>
+                            <SubCard darkTitle>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsElectro.observacion}
+                                                fullWidth
+                                                name="observacion"
+                                                label="Observación"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                multiline
+                                                rows={6}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                        <DetailedIcon
+                                            title={DetailIcons[0].title}
+                                            onClick={() => setOpenTemplate(true)}
+                                            icons={DetailIcons[0].icons}
+                                        />
+
+
+                                    </Grid>
+
+
+
+
+                                </Grid>
+                            </SubCard>
+                        </Grid>
+
+
+                        <Grid item xs={12} sx={{ pt: 2 }}>
+                            <MainCard title="Resultados">
+
+                                <Grid container spacing={12}>
+                                    <Grid textAlign="center" item xs={12}>
+                                        <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                            ACTUALIZAR RESULTADO EN PDF
+                                            <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid item xs={12} sx={{ pt: 4 }}>
+                                    {filePdf && (
+                                        <object type="application/pdf"
+                                            data={filePdf}
+                                            width="1180"
+                                            height="500"
+                                            onLoad={<Cargando />}
+                                        />
+                                    )}
+                                </Grid>
+
+                            </MainCard>
+                        </Grid>
+
+
+
+                        <Grid item xs={12} sx={{ pt: 4 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                            {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/electro/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                    </Grid> : <Cargando />
+                }
+
+            </Fragment >
+        </MainCard>
+
     );
 };
 
