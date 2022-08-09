@@ -21,6 +21,7 @@ export const CodCatalogo = {
     Cesantias: 19,
 
     AtencionEMO: 138,
+    
     TIPO_EXAMEN_PARACLINICOS: 68,
     ESTUDIO_EXAMEN_PARACLINICOS: 22,
     LABORATORIO_ORDENES_PARACLINICOS: 30,

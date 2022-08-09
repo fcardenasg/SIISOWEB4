@@ -220,10 +220,10 @@ const application = {
                     breadcrumbs: false
                 },
                 {
-                    id: 'checkbox',
+                    id: 'electro',
                     title: <FormattedMessage id="Electrocardiograma" />,
                     type: 'item',
-                    url: '/components/checkbox',
+                    url: '/Paraclinics/Electro/list',
                     breadcrumbs: false
                 },
                 {

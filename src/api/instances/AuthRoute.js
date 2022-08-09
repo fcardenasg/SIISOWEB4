@@ -67,6 +67,13 @@ export const Url = {
     Paraclinicos_GetAllByTypeParaclinico: 'api/Paraclinicos/GetAllByTipoParaclinico',
     ParaclinicosId: 'api/Paraclinicos/id',
 
+
+
+
+
+
+
+    
     Ordenes: 'api/Ordenes',
     OrdenesId: 'api/Ordenes/id',
 
@@ -129,4 +136,5 @@ export const Url = {
     Cuestionario: 'api/CuestionarioPrevencion',
     CuestionarioSave: 'api/CuestionarioPrevencion/Save',
     CuestionarioId: 'api/CuestionarioPrevencion/id',
+
 }
