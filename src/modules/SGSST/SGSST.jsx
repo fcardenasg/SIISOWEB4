@@ -7,8 +7,8 @@ import {
 import { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import UploadIcon from '@mui/icons-material/Upload';
@@ -16,7 +16,7 @@ import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import { InsertSGSST } from 'api/clients/SGSST';
 import InputText from 'components/input/InputText';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostSGSST } from 'formatdata/SGSST';
@@ -47,6 +47,8 @@ const SGSST = () => {
                 reader.readAsDataURL(selectedFile);
                 reader.onloadend = (e) => {
                     setFilePdf(e.target.result);
+
+
                 }
             }
             else {
