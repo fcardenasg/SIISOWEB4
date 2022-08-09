@@ -10,6 +10,7 @@ import {
     TableCell,
     TableContainer,
     TableHead,
+    Button,
     TableRow,
     TableSortLabel,
     Tooltip,
@@ -17,14 +18,16 @@ import {
 } from '@mui/material';
 import useAuth from 'hooks/useAuth';
 import { FormatDate, ViewFormat } from 'components/helpers/Format';
+import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import UploadIcon from '@mui/icons-material/Upload';
 import { visuallyHidden } from '@mui/utils';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { PostListRefund } from 'formatdata/ListRefundForm';
+import { PostListRefund, PutListRefund } from 'formatdata/ListRefundForm';
 import { CodCatalogo } from 'components/helpers/Enums';
-import { InsertListRefund, GetAllReintegro } from 'api/clients/ListRefundClient';
+import { InsertListRefund, GetAllReintegro, GetByIdListRefund, UpdateListRefunds } from 'api/clients/ListRefundClient';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -135,6 +138,9 @@ EnhancedTableHead.propTypes = {
 const CheckListRefund = ({ idReintegro }) => {
     const { user } = useAuth();
     const [listRefund, setListRefund] = useState([]);
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -177,14 +183,49 @@ const CheckListRefund = ({ idReintegro }) => {
         GetAll();
     }, [idReintegro])
 
+
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
+    const allowedFiles = ['application/pdf'];
+    const handleFile = async (event, idRefund) => {
+        let selectedFile = event.target.files[0];
+
+        if (selectedFile) {
+            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
+                let reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onloadend = async (e) => {
+
+                    const lsDataUpdate = await GetByIdListRefund(idRefund);
+                    if (lsDataUpdate.status === 200) {
+                        const DataToUpdate = PutListRefund(idRefund, lsDataUpdate.data.idReintegro, lsDataUpdate.data.documento,
+                            lsDataUpdate.data.idCatalogo, e.target.result, true,
+                            lsDataUpdate.data.usuarioRegistro, FormatDate(new Date()), user.email, FormatDate(new Date()));
+
+                        const result = await UpdateListRefunds(DataToUpdate);
+                        if (result.status === 200) {
+                            setOpenUpdate(true);
+                        }
+                    }
+
+                }
+            }
+            else {
+                setOpenError(true);
+                setErrorMessage('Este forma no es un PDF');
+            }
+        }
+    }
+
     return (
         <Fragment>
+            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -282,18 +323,11 @@ const CheckListRefund = ({ idReintegro }) => {
                                         </TableCell>
 
 
-                                        <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Subir Archico">
-                                                <IconButton size="large">
-                                                    <FileDownloadIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
-
-                                            <Tooltip title="Descargar Archivo">
-                                                <IconButton size="large">
-                                                    <FileUploadIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
+                                        <TableCell align="center">
+                                            <Button size="small" variant="contained" component="label">
+                                                <input hidden accept="application/pdf" type="file" onChange={(event) => handleFile(event, row.id)} />
+                                                <UploadIcon fontSize="small" />
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 );
