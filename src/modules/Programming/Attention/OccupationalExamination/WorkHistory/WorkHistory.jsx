@@ -45,6 +45,7 @@ import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import { ColorDrummondltd } from 'themes/colors';
 import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
+import DataExposition from './DataExposition';
 
 const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const theme = useTheme();
@@ -302,7 +303,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     };
 
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
@@ -504,95 +505,31 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
             </Grid>
 
             <Grid item xs={12}>
-                <SubCard title={<Typography variant="h4">Exposición Acumulada de Factores de Riesgo - DLTD</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} lg={3} sm={6}>
-                            <SideIconCard
-                                bgcolor={theme.palette.grey[100]}
-                                iconPrimary={RecordVoiceOverIcon}
-                                primary={`Años: ${anioRuidoDTLD}`}
-                                secondary="Ruido en DLTD"
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} lg={3} sm={6}>
-                            <SideIconCard
-                                bgcolor={theme.palette.grey[100]}
-                                iconPrimary={RecordVoiceOverIcon}
-                                primary={`Meses: ${mesRuidoDTLD}`}
-                                secondary="Ruido en DLTD"
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} lg={3} sm={6}>
-                            <SideIconCard
-                                bgcolor={theme.palette.grey[100]}
-                                iconPrimary={ReportProblemIcon}
-                                primary={`Años: ${mpiAnioDTLD}`}
-                                secondary="Exposición MPI DLTD"
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} lg={3} sm={6}>
-                            <SideIconCard
-                                bgcolor={theme.palette.grey[100]}
-                                iconPrimary={ReportProblemIcon}
-                                primary={`Meses: ${mpiMesDTLD}`}
-                                secondary="Exposición MPI DLTD"
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
-                    </Grid>
-                </SubCard>
+                <DataExposition
+                    title="Exposición Acumulada de Factores de Riesgo - DLTD"
+                    title1="Ruido en DLTD"
+                    anio1={`Años: ${anioRuidoDTLD}`}
+                    title2="Ruido en DLTD"
+                    mes1={`Meses: ${mesRuidoDTLD}`}
+                    title3="Exposición MPI DLTD"
+                    anio2={`Años: ${mpiAnioDTLD}`}
+                    title4="Exposición MPI DLTD"
+                    mes2={`Meses: ${mpiMesDTLD}`}
+                />
             </Grid>
 
             <Grid item xs={12}>
-                <SubCard title={<Typography variant="h4">Exposición Acumulada de Factores de Riesgo - Otras Empresas</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} lg={3} sm={6}>
-                            <SideIconCard
-                                bgcolor={theme.palette.grey[100]}
-                                iconPrimary={RecordVoiceOverIcon}
-                                primary={`Años: ${anioRuidoOtrasEmpresas}`}
-                                secondary="Ruido en Otras Empresas"
-                                color={ColorDrummondltd.BlueDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} lg={3} sm={6}>
-                            <SideIconCard
-                                bgcolor={theme.palette.grey[100]}
-                                iconPrimary={RecordVoiceOverIcon}
-                                primary={`Meses: ${mesRuidoOtrasEmpresas}`}
-                                secondary="Ruido en Otras Empresas"
-                                color={ColorDrummondltd.BlueDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} lg={3} sm={6}>
-                            <SideIconCard
-                                bgcolor={theme.palette.grey[100]}
-                                iconPrimary={ReportProblemIcon}
-                                primary={`Años: ${mpiAnioOtrasEmpresas}`}
-                                secondary="Exposición MPI Otras Empresas"
-                                color={ColorDrummondltd.BlueDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} lg={3} sm={6}>
-                            <SideIconCard
-                                bgcolor={theme.palette.grey[100]}
-                                iconPrimary={ReportProblemIcon}
-                                primary={`Meses: ${mpiMesOtrasEmpresas}`}
-                                secondary="Exposición MPI Otras Empresas"
-                                color={ColorDrummondltd.BlueDrummond}
-                            />
-                        </Grid>
-                    </Grid>
-                </SubCard>
+                <DataExposition
+                    title="Exposición Acumulada de Factores de Riesgo - Otras Empresas"
+                    title1="Ruido en Otras Empresas"
+                    anio1={`Años: ${anioRuidoOtrasEmpresas}`}
+                    title2="Ruido en Otras Empresas"
+                    mes1={`Meses: ${mesRuidoOtrasEmpresas}`}
+                    title3="Exposición MPI Otras Empresas"
+                    anio2={`Años: ${mpiAnioOtrasEmpresas}`}
+                    title4="Exposición MPI Otras Empresas"
+                    mes2={`Meses: ${mpiMesOtrasEmpresas}`}
+                />
             </Grid>
         </Grid>
     );

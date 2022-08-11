@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import { Box, Divider } from '@mui/material';
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
@@ -42,6 +42,7 @@ const Accordion = ({ defaultExpandedId = null, title, defaultExpand, id, disable
                 </MuiAccordionSummary>
                 <MuiAccordionDetails>{children}</MuiAccordionDetails>
             </MuiAccordion>
+            <Divider />
         </Box>
     );
 };

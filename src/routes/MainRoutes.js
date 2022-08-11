@@ -734,19 +734,19 @@ const MainRoutes = {
         },
 
 
-   /* Render de  Paraclinicos */
-   {
-    path: '/paraclinics/electro/list',
-    element: <ListElectro />
-},
-{
-    path: '/paraclinics/electro/add',
-    element: <Electro />
-},
-{
-    path: '/paraclinics/electro/update/:id',
-    element: <UpdateElectro />
-},
+        /* Render de  Paraclinicos */
+        {
+            path: '/paraclinics/electro/list',
+            element: <ListElectro />
+        },
+        {
+            path: '/paraclinics/electro/add',
+            element: <Electro />
+        },
+        {
+            path: '/paraclinics/electro/update/:id',
+            element: <UpdateElectro />
+        },
 
 
 

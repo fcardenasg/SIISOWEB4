@@ -25,7 +25,7 @@
         "@mui/x-date-pickers": "^5.0.0-alpha.3",
         "@react-pdf-viewer/core": "3.0.0",
         "@react-pdf-viewer/default-layout": "3.0.0",
-        "@tabler/icons": "^1.72",
+        "@tabler/icons": "^1.80",
         "apexcharts": "^3.26.1",
         "axios": "^0.21.1",
         "axios-mock-adapter": "^1.19.0",

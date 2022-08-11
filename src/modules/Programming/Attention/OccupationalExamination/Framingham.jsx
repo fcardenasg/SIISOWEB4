@@ -119,161 +119,154 @@ const Framingham = ({
                 <TableAntecedentes documento={documento} param={cadenaHistory} />
             </FullScreenDialog>
 
-            <Accordion title={<><IconHeartbeat />
-                <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">FRAMINGHAM</Typography></>}>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <Accordion title={<><IconHeartbeat />
+                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">FRAMINGHAM</Typography></>}>
 
-                <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN CARDIOVASCULAR</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputDatePicker
-                                    label="Fecha"
-                                    name="fechaFRA"
-                                    defaultValue={new Date()}
-                                />
-                            </FormProvider>
-                        </Grid>
+                        <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN CARDIOVASCULAR</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputDatePicker
+                                            label="Fecha"
+                                            name="fechaFRA"
+                                            defaultValue={new Date()}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                        {/* <Grid item xs={4}>
-                            <InputOnChange
-                                disabled
-                                label="Sexo"
-                                onChange={(e) => setSexo(e.target.value)}
-                                value={sexo}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid> */}
+                                <Grid item xs={4}>
+                                    <SelectOnChange
+                                        name="fumaFRA"
+                                        label="Fuma"
+                                        value={fuma}
+                                        onChange={handleFuma}
+                                        options={lsOpcion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </Grid>
 
-                        <Grid item xs={4}>
-                            <SelectOnChange
-                                name="fumaFRA"
-                                label="Fuma"
-                                value={fuma}
-                                onChange={handleFuma}
-                                options={lsOpcion}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </Grid>
+                                <Grid item xs={4}>
+                                    <InputOnChange
+                                        name="tencionFRA"
+                                        label="Tensión Arterial"
+                                        onChange={handleTencion}
+                                        value={tencion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                        <Grid item xs={4}>
-                            <InputOnChange
-                                name="tencionFRA"
-                                label="Tensión Arterial"
-                                onChange={handleTencion}
-                                value={tencion}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputDatePicker
+                                            label="Fecha Laboratorio"
+                                            name="fechaLaboratorioFRA"
+                                            defaultValue={new Date()}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputDatePicker
-                                    label="Fecha Laboratorio"
-                                    name="fechaLaboratorioFRA"
-                                    defaultValue={new Date()}
-                                />
-                            </FormProvider>
-                        </Grid>
+                                <Grid item xs={4}>
+                                    <InputOnChange
+                                        type="number"
+                                        name="colesterolTotalFRA"
+                                        label="Colesterol Total"
+                                        onChange={handleColesterol}
+                                        value={colesterol}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                        <Grid item xs={4}>
-                            <InputOnChange
-                                type="number"
-                                name="colesterolTotalFRA"
-                                label="Colesterol Total"
-                                onChange={handleColesterol}
-                                value={colesterol}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
+                                <Grid item xs={4}>
+                                    <InputOnChange
+                                        name="hDLFRA"
+                                        label="HDL"
+                                        onChange={handleHdl}
+                                        value={hdl}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                        <Grid item xs={4}>
-                            <InputOnChange
-                                name="hDLFRA"
-                                label="HDL"
-                                onChange={handleHdl}
-                                value={hdl}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
+                                <Grid item xs={4}>
+                                    <InputOnChange
+                                        name="triglicericosFRA"
+                                        label="Trigliceridos"
+                                        onChange={handleTrigliceridos}
+                                        value={trigliceridos}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                        <Grid item xs={4}>
-                            <InputOnChange
-                                name="triglicericosFRA"
-                                label="Trigliceridos"
-                                onChange={handleTrigliceridos}
-                                value={trigliceridos}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
+                                <Grid item xs={4}>
+                                    <InputOnChange
+                                        type="number"
+                                        name="glisemiaFRA"
+                                        label="Glicemia"
+                                        onChange={handleGlicemia}
+                                        value={glicemia}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                        <Grid item xs={4}>
-                            <InputOnChange
-                                type="number"
-                                name="glisemiaFRA"
-                                label="Glicemia"
-                                onChange={handleGlicemia}
-                                value={glicemia}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
+                                <Grid item xs={12}>
+                                    <ViewFramingham
+                                        ldl={frLdl}
+                                        relacion={relacion}
+                                        frEdad={frEdad}
+                                        frColesterol={frColesterol}
+                                        frHdl={frHdl}
+                                        frGlicemia={frGlicemia}
+                                        frTensionArterial={frTencion}
+                                        frTabaquismo={frFuma}
+                                        puntaje={frPuntaje}
+                                        riesgoAbsoluto={riesgo.riesgoAbsoluto}
+                                        riesgoRelativo={riesgo.riesgoRelativo}
+                                        interpretacion={riesgo.dxRiesgo}
+                                    />
+                                </Grid>
 
-                        <Grid item xs={12}>
-                            <ViewFramingham
-                                ldl={frLdl}
-                                relacion={relacion}
-                                frEdad={frEdad}
-                                frColesterol={frColesterol}
-                                frHdl={frHdl}
-                                frGlicemia={frGlicemia}
-                                frTensionArterial={frTencion}
-                                frTabaquismo={frFuma}
-                                puntaje={frPuntaje}
-                                riesgoAbsoluto={riesgo.riesgoAbsoluto}
-                                riesgoRelativo={riesgo.riesgoRelativo}
-                                interpretacion={riesgo.dxRiesgo}
-                            />
-                        </Grid>
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue=""
+                                            fullWidth
+                                            name="observacionFRA"
+                                            label="Observación"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                        <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    multiline
-                                    rows={4}
-                                    defaultValue=""
-                                    fullWidth
-                                    name="observacionFRA"
-                                    label="Observación"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
+                                    />
 
-                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                            <DetailedIcon
-                                title={DetailIcons[0].title}
-                                onClick={() => setOpenTemplate(true)}
-                                icons={DetailIcons[0].icons}
-                            />
+                                    <DetailedIcon
+                                        title={DetailIcons[1].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[1].icons}
+                                    />
 
-                            <DetailedIcon
-                                title={DetailIcons[1].title}
-                                onClick={() => setOpen(true)}
-                                icons={DetailIcons[1].icons}
-                            />
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => { setOpenHistory(true); setCadenaHistory('INFORMACION_CARDIOVASCULAR') }}
+                                        icons={DetailIcons[2].icons}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </SubCard>
 
-                            <DetailedIcon
-                                title={DetailIcons[2].title}
-                                onClick={() => { setOpenHistory(true); setCadenaHistory('INFORMACION_CARDIOVASCULAR') }}
-                                icons={DetailIcons[2].icons}
-                            />
-                        </Grid>
-                    </Grid>
-                </SubCard>
-
-            </Accordion>
-            <Divider />
+                    </Accordion>
+                </Grid>
+            </Grid>
         </Fragment>
     );
 

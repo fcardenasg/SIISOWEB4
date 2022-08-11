@@ -2660,10 +2660,10 @@
     "@svgr/plugin-svgo" "^5.5.0"
     "loader-utils" "^2.0.0"
 
-"@tabler/icons@^1.72":
-  "integrity" "sha512-QT/94Hufvzn4PxsEyN9NTh96XmNaGGgMh7sKcBZ2216pE9B+Ala98KpdNwTKKBlEvRvHw9y14zW4qFYzxGOhZw=="
-  "resolved" "https://registry.npmjs.org/@tabler/icons/-/icons-1.78.1.tgz"
-  "version" "1.78.1"
+"@tabler/icons@^1.80":
+  "integrity" "sha512-Ij+9AU8DMW68lO4Q2jpDdJNMMNg4B/3mI59K1+l/V0EbiDHTIifTZM/u2oUqWu1Y2Zx3HGnnMA9SeAddkzhQ3Q=="
+  "resolved" "https://registry.npmjs.org/@tabler/icons/-/icons-1.80.0.tgz"
+  "version" "1.80.0"
 
 "@tootallnate/once@1":
   "integrity" "sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw=="
@@ -14783,7 +14783,6 @@
   "version" "7.5.5"
 
 "xlsx@git+https://github.com/securedeveloper/js-xlsx.git":
-  "integrity" "sha512-kSQmHmUnADqqduFKXRcQKYlOYR06crhPpRK5JZHwkQBOIcAwq0xd7CxDy1J3nRRWk233rALl+J0N6sJVK01ikg=="
   "resolved" "git+ssh://git@github.com/securedeveloper/js-xlsx.git#32f550d3b3bdb1b781aabe100683311cd982c98e"
   "version" "0.8.20"
   dependencies:
