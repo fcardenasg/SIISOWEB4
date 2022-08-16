@@ -26,6 +26,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const ReportCatolog = () => {
+    const navigate = useNavigate();
     const componentRef = useRef(null);
 
     const [catalog, setCatalog] = useState([]);
@@ -42,8 +43,6 @@ const ReportCatolog = () => {
 
         GetAll();
     }, [catalog])
-
-    const navigate = useNavigate();
 
     return (
         <Grid container alignItems="center" justifyContent="center" spacing={gridSpacing}>

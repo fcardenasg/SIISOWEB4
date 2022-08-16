@@ -10,7 +10,7 @@ import { ColorDrummondltd } from 'themes/colors';
 export const itemsMenu = [
   {
     title: "Personal",
-    subtitle: "Empleados, Expats, Contratistas, Practicantes y Visitantes",
+    subtitle: "Empleados,Expats,Contratistas,Practicantes y Visitantes",
     icon: IconUser,
     selected: true,
     url: '/employee/list',

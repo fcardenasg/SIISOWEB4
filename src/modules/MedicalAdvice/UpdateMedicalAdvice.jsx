@@ -64,10 +64,7 @@ const UpdateMedicalAdvice = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
 
-    const [disabledButton, setDisabledButton] = useState({
-        buttonSave: false,
-        buttonReport: false
-    });
+    const [buttonReport, setButtonReport] = useState(false);
 
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -98,17 +95,11 @@ const UpdateMedicalAdvice = () => {
         try {
             const lsServerMedicalAdvice = await GetByIdAdvice(id);
             if (lsServerMedicalAdvice.status === 200) {
+                setButtonReport(true);
                 setMedicalAdvice(lsServerMedicalAdvice.data);
                 handleLoadingDocument(lsServerMedicalAdvice.data.documento);
                 setDocumento(lsServerMedicalAdvice.data.documento);
             }
-
-            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
-            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setContingencia(resultContingencia);
 
             const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_TIPOASESORIA);
             var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
@@ -117,7 +108,7 @@ const UpdateMedicalAdvice = () => {
             }));
             setTipoAsesoria(resultTipoAsesoria);
 
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_MOT_ASESORIA);
+            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoMedica);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -157,10 +148,11 @@ const UpdateMedicalAdvice = () => {
         try {
             const DatosVacios = "Sin Registro";
 
-            const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), DefaultData.ASESORIA_MEDICA, lsEmployee.sede, datos.idContingencia,
-                DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo,
-                DefaultData.SINREGISTRO_GLOBAL, datos.observaciones, DatosVacios, DatosVacios, DefaultData.SINREGISTRO_GLOBAL,
-                medicalAdvice.usuarioRegistro, medicalAdvice.fechaRegistro, user.email, FormatDate(new Date()));
+            const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), DefaultData.ASESORIA_MEDICA, lsEmployee.sede,
+                DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
+                DefaultData.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo, DefaultData.SINREGISTRO_GLOBAL,
+                datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()),
+                '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateAdvices(DataToUpdate);
@@ -208,15 +200,6 @@ const UpdateMedicalAdvice = () => {
                         title="DICTADO POR VOZ"
                     >
                         <ControllerListen />
-                    </ControlModal>
-
-                    <ControlModal
-                        title="VISTA DE REPORTE"
-                        open={openReport}
-                        onClose={() => setOpenReport(false)}
-                        maxWidth="xl"
-                    >
-                        <ViewReport />
                     </ControlModal>
 
                     <ControlModal
@@ -319,7 +302,7 @@ const UpdateMedicalAdvice = () => {
                         <Grid item xs={12}>
                             <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={3}>
+                                    <Grid item xs={4}>
                                         <FormProvider {...methods}>
                                             <InputDatePicker
                                                 label="Fecha"
@@ -329,20 +312,7 @@ const UpdateMedicalAdvice = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idContingencia"
-                                                label="Contingencia"
-                                                defaultValue={medicalAdvice.idContingencia}
-                                                options={contingencia}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
+                                    <Grid item xs={4}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="idMotivo"
@@ -355,7 +325,7 @@ const UpdateMedicalAdvice = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={3}>
+                                    <Grid item xs={4}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="idTipoAsesoria"
@@ -369,7 +339,7 @@ const UpdateMedicalAdvice = () => {
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <SubCard darkTitle title={<><Typography variant="h4">NOTA</Typography></>}>
+                                        <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
                                             <Grid item xs={12}>
                                                 <FormProvider {...methods}>
                                                     <InputText
@@ -378,7 +348,36 @@ const UpdateMedicalAdvice = () => {
                                                         defaultValue={medicalAdvice.motivo}
                                                         fullWidth
                                                         name="observaciones"
-                                                        label="Observaciones"
+                                                        label="Descripción"
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        bug={errors}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                                <DetailedIcon
+                                                    title={DetailIcons[0].title}
+                                                    onClick={() => setOpenTemplate(true)}
+                                                    icons={DetailIcons[0].icons}
+                                                />
+
+                                                <DetailedIcon
+                                                    title={DetailIcons[1].title}
+                                                    onClick={() => setOpen(true)}
+                                                    icons={DetailIcons[1].icons}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} sx={{ pt: 2 }}>
+                                                <FormProvider {...methods}>
+                                                    <InputText
+                                                        multiline
+                                                        rows={4}
+                                                        defaultValue={medicalAdvice.recomendaciones}
+                                                        fullWidth
+                                                        name="recomendaciones"
+                                                        label="Recomendaciones"
                                                         size={matchesXS ? 'small' : 'medium'}
                                                         bug={errors}
                                                     />
@@ -405,19 +404,21 @@ const UpdateMedicalAdvice = () => {
                                 <Grid container spacing={2} sx={{ pt: 4 }}>
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                                 {TitleButton.Guardar}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
-                                                {TitleButton.Imprimir}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                                    {buttonReport ?
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" fullWidth onClick={() => navigate(`/medicaladvice/report/${id}`)}>
+                                                    {TitleButton.Imprimir}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid> : <div />
+                                    }
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
@@ -429,7 +430,7 @@ const UpdateMedicalAdvice = () => {
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/evolution-note/list")}>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
                                                 {TitleButton.Cancelar}
                                             </Button>
                                         </AnimateButton>

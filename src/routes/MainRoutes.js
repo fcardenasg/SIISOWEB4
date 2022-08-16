@@ -395,7 +395,7 @@ const MainRoutes = {
         },
         /* Render de ASESORÍAS MÉDICA */
         {
-            path: '/medicaladvice/report',
+            path: '/medicaladvice/report/:id',
             element: <ReportMedicalAdvice />
         },
         {

@@ -58,6 +58,7 @@ export const Url = {
 
     Usuarios: 'api/Usuarios',
     UsuariosId: 'api/Usuarios/id',
+    UsuariosEmail: 'api/Usuarios/email',
 
     RegistroAtencion: 'api/RegistroAtencion',
     RegistroAtencio_GetAllAtencion: 'api/RegistroAtencion/GetAllAtencion',
