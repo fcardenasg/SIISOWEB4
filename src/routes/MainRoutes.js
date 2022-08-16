@@ -269,8 +269,9 @@ const ListElectro = Loadable(lazy(() => import('modules/Paraclinics/Electro/List
 const Electro = Loadable(lazy(() => import('modules/Paraclinics/Electro/Electro')));
 const UpdateElectro = Loadable(lazy(() => import('modules/Paraclinics/Electro/UpdateElectro')));
 
-
-
+const ListAccidentRate = Loadable(lazy(() => import('modules/AccidentRate/ListAccidentRate')));
+const AccidentRate = Loadable(lazy(() => import('modules/AccidentRate/AccidentRate')));
+const UpdateAccidentRate = Loadable(lazy(() => import('modules/AccidentRate/UpdateAccidentRate')));
 
 
 const MainRoutes = {
@@ -746,6 +747,19 @@ const MainRoutes = {
         {
             path: '/paraclinics/electro/update/:id',
             element: <UpdateElectro />
+        },
+        /* Render de  Paraclinicos */
+        {
+            path: '/accident-rate/list',
+            element: <ListAccidentRate />
+        },
+        {
+            path: '/accident-rate/add',
+            element: <AccidentRate />
+        },
+        {
+            path: '/accident-rate/update/:id',
+            element: <UpdateAccidentRate />
         },
 
 
