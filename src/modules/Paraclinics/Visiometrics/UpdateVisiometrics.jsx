@@ -49,7 +49,7 @@ const DetailIcons = [
 
 ]
 
-const UpdateElectro = () => {
+const UpdateVisiometrics = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
@@ -65,7 +65,7 @@ const UpdateElectro = () => {
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
 
-    const [lsElectro, setLsElectro] = useState([]);
+    const [lsVisiometrics, setLsVisiometrics] = useState([]);
 
 
     const [documento, setDocumento] = useState('');
@@ -121,7 +121,7 @@ const UpdateElectro = () => {
             const serverData = await GetByIdParaclinics(id);
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
-                setLsElectro(serverData.data);
+                setLsVisiometrics(serverData.data);
                 handleLoadingDocument(serverData.data.documento);
                 setFilePdf(serverData.data.url);
             }
@@ -167,7 +167,7 @@ const UpdateElectro = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_ELECTRO, documento,
+            const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_VISIOMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
                 false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
@@ -197,7 +197,7 @@ const UpdateElectro = () => {
     };
 
     return (
-        <MainCard title="Actualizar ElectroCardiograma">
+        <MainCard title="Actualizar Visiometria">
             <Fragment>
                 <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
@@ -213,7 +213,7 @@ const UpdateElectro = () => {
 
 
 
-                {lsElectro.length != 0 ?
+                {lsVisiometrics.length != 0 ?
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <ViewEmployee
@@ -234,7 +234,7 @@ const UpdateElectro = () => {
                                             <InputDatePicker
                                                 label="Fecha"
                                                 name="fecha"
-                                                defaultValue={lsElectro.fecha}
+                                                defaultValue={lsVisiometrics.fecha}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -244,7 +244,7 @@ const UpdateElectro = () => {
                                             <InputSelect
                                                 name="idMotivo"
                                                 label="Motivo"
-                                                defaultValue={lsElectro.idMotivo}
+                                                defaultValue={lsVisiometrics.idMotivo}
                                                 options={lsMotivo}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
@@ -257,7 +257,7 @@ const UpdateElectro = () => {
                                             <InputSelect
                                                 name="idConductaClasificacion"
                                                 label="Conducta"
-                                                defaultValue={lsElectro.idConductaClasificacion}
+                                                defaultValue={lsVisiometrics.idConductaClasificacion}
                                                 options={lsConducta}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
@@ -270,7 +270,7 @@ const UpdateElectro = () => {
                                             <InputSelect
                                                 name="idConclusion"
                                                 label="Conclusión"
-                                                defaultValue={lsElectro.idConclusion}
+                                                defaultValue={lsVisiometrics.idConclusion}
                                                 options={lsConclusion}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
@@ -283,7 +283,7 @@ const UpdateElectro = () => {
                                             <InputSelect
                                                 name="idProveedor"
                                                 label="Proveedor"
-                                                defaultValue={lsElectro.idProveedor}
+                                                defaultValue={lsVisiometrics.idProveedor}
                                                 options={lsProveedor}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
@@ -300,7 +300,7 @@ const UpdateElectro = () => {
                                     <Grid item xs={12}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsElectro.observacion}
+                                                defaultValue={lsVisiometrics.observacion}
                                                 fullWidth
                                                 name="observacion"
                                                 label="Observación"
@@ -368,7 +368,7 @@ const UpdateElectro = () => {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/electro/list")}>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/visiometrics/list")}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -385,4 +385,4 @@ const UpdateElectro = () => {
     );
 };
 
-export default UpdateElectro;
+export default UpdateVisiometrics;
