@@ -270,10 +270,27 @@ const ListElectro = Loadable(lazy(() => import('modules/Paraclinics/Electro/List
 const Electro = Loadable(lazy(() => import('modules/Paraclinics/Electro/Electro')));
 const UpdateElectro = Loadable(lazy(() => import('modules/Paraclinics/Electro/UpdateElectro')));
 
-const ListAccidentRate = Loadable(lazy(() => import('modules/AccidentRate/ListAccidentRate')));
-const AccidentRate = Loadable(lazy(() => import('modules/AccidentRate/AccidentRate')));
-const UpdateAccidentRate = Loadable(lazy(() => import('modules/AccidentRate/UpdateAccidentRate')));
+const ListRNM = Loadable(lazy(() => import('modules/Paraclinics/RMN/ListRNM')));
+const RNM = Loadable(lazy(() => import('modules/Paraclinics/RMN/RNM')));
+const UpdateRNM = Loadable(lazy(() => import('modules/Paraclinics/RMN/UpdateRNM')));
 
+const ListPSA = Loadable(lazy(() => import('modules/Paraclinics/PSA/ListPSA')));
+const PSA = Loadable(lazy(() => import('modules/Paraclinics/PSA/PSA')));
+const UpdatePSA = Loadable(lazy(() => import('modules/Paraclinics/PSA/UpdatePSA')));
+
+
+const ListRXTORAX = Loadable(lazy(() => import('modules/Paraclinics/RXTorax/ListRXTORAX')));
+const RXTORAX = Loadable(lazy(() => import('modules/Paraclinics/RXTorax/RXTORAX')));
+const UpdateRXTORAX = Loadable(lazy(() => import('modules/Paraclinics/RXTorax/UpdateRXTORAX')));
+
+
+const ListCytology = Loadable(lazy(() => import('modules/Paraclinics/Cytology/ListCytology')));
+const Cytology = Loadable(lazy(() => import('modules/Paraclinics/Cytology/Cytology')));
+const UpdateCytology = Loadable(lazy(() => import('modules/Paraclinics/Cytology/UpdateCytology')));
+
+const ListVisiometrics = Loadable(lazy(() => import('modules/Paraclinics/Visiometrics/ListVisiometrics')));
+const Visiometrics = Loadable(lazy(() => import('modules/Paraclinics/Visiometrics/Visiometrics')));
+const UpdateVisiometrics = Loadable(lazy(() => import('modules/Paraclinics/Visiometrics/UpdateVisiometrics')));
 
 const MainRoutes = {
     path: '/',
@@ -396,7 +413,7 @@ const MainRoutes = {
         },
         /* Render de ASESORÍAS MÉDICA */
         {
-            path: '/medicaladvice/report/:id',
+            path: '/medicaladvice/report',
             element: <ReportMedicalAdvice />
         },
         {
@@ -753,20 +770,75 @@ const MainRoutes = {
             path: '/paraclinics/electro/update/:id',
             element: <UpdateElectro />
         },
-        /* Render de  Paraclinicos */
+
         {
-            path: '/accident-rate/list',
-            element: <ListAccidentRate />
+            path: '/paraclinics/rnm/list',
+            element: <ListRNM />
         },
         {
-            path: '/accident-rate/add',
-            element: <AccidentRate />
+            path: '/paraclinics/rnm/add',
+            element: <RNM />
         },
         {
-            path: '/accident-rate/update/:id',
-            element: <UpdateAccidentRate />
+            path: '/paraclinics/rnm/update/:id',
+            element: <UpdateRNM />
         },
 
+        {
+            path: '/paraclinics/psa/list',
+            element: <ListPSA />
+        },
+        {
+            path: '/paraclinics/psa/add',
+            element: <PSA />
+        },
+        {
+            path: '/paraclinics/psa/update/:id',
+            element: <UpdatePSA />
+        },
+
+
+        {
+            path: '/paraclinics/rxtorax/list',
+            element: <ListRXTORAX />
+        },
+        {
+            path: '/paraclinics/rxtorax/add',
+            element: <RXTORAX />
+        },
+        {
+            path: '/paraclinics/rxtorax/update/:id',
+            element: <UpdateRXTORAX />
+        },
+
+
+        {
+            path: '/paraclinics/cytology/list',
+            element: <ListCytology />
+        },
+        {
+            path: '/paraclinics/cytology/add',
+            element: <Cytology />
+        },
+        {
+            path: '/paraclinics/cytology/update/:id',
+            element: <UpdateCytology />
+        },
+
+        {
+            path: '/paraclinics/visiometrics/list',
+            element: <ListVisiometrics />
+        },
+        {
+            path: '/paraclinics/visiometrics/add',
+            element: <Visiometrics />
+        },
+        {
+            path: '/paraclinics/visiometrics/update/:id',
+            element: <UpdateVisiometrics />
+        },
+
+        
 
 
         {

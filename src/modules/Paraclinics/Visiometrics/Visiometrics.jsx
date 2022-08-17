@@ -46,7 +46,7 @@ const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
-const Electro = () => {
+const Visiometrics = () => {
     const { user } = useAuth();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -164,7 +164,7 @@ const Electro = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_ELECTRO, documento,
+            const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_VISIOMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
                 false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
@@ -202,7 +202,7 @@ const Electro = () => {
     };
 
     return (
-        <MainCard title="Registrar ElectroCardiograma">
+        <MainCard title="Registrar Visiometria">
             <Fragment>
                 <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
@@ -230,8 +230,8 @@ const Electro = () => {
 
                     <Grid item xs={12}>
                         <SubCard darkTitle>
-                            <Grid container spacing={2}>
-                                <Grid item xs={2.4}>
+                            <Grid container spacing={1}>
+                                <Grid item xs={3.3}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
                                             label="Fecha"
@@ -241,7 +241,7 @@ const Electro = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2.4}>
+                                <Grid item xs={4.3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idMotivo"
@@ -254,7 +254,7 @@ const Electro = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2.4}>
+                                {/* <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idConductaClasificacion"
@@ -278,9 +278,9 @@ const Electro = () => {
                                             bug={errors}
                                         />
                                     </FormProvider>
-                                </Grid>
+                                </Grid> */}
 
-                                <Grid item xs={2.4}>
+                                <Grid item xs={4.3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idProveedor"
@@ -365,7 +365,7 @@ const Electro = () => {
 
                                     <Grid item xs={6}>
                                         <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/electro/list")}>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/visiometrics/list")}>
                                                 {TitleButton.Cancelar}
                                             </Button>
                                         </AnimateButton>
@@ -385,4 +385,4 @@ const Electro = () => {
     );
 };
 
-export default Electro;
+export default Visiometrics;

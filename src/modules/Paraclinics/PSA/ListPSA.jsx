@@ -41,7 +41,7 @@ import { ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import FullScreenDialogs from 'components/controllers/FullScreenDialog';
-import Electro from './Electro';
+import PSA from './PSA';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -209,10 +209,10 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListElectro = () => {
+const ListPSA = () => {
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
-    const [electro, setElectro] = useState([]);
+    const [psa, setPsa] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -227,8 +227,8 @@ const ListElectro = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllByTypeParaclinics(0, 0,DefaultValue.PARACLINICO_ELECTRO);
-            setElectro(lsServer.data.entities);
+            const lsServer = await GetAllByTypeParaclinics(0, 0,DefaultValue.PARACLINICO_PSA);
+            setPsa(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
@@ -261,9 +261,9 @@ const ListElectro = () => {
                 }
                 return matches;
             });
-            setElectro(newRows);
+            setPsa(newRows);
         } else {
-            setElectro(rows);
+            setPsa(rows);
         }
     };
 
@@ -276,7 +276,7 @@ const ListElectro = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = electro.map((n) => n.id);
+            const newSelectedId = psa.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -331,7 +331,7 @@ const ListElectro = () => {
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - electro.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - psa.length) : 0;
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
@@ -361,8 +361,8 @@ const ListElectro = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Electro Cardiograma">
-                            <ExcelSheet data={electro} name="Electro Cardiograma">
+                        } filename="PSA">
+                            <ExcelSheet data={psa} name="PSA">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombre" value="idConductaClasificacion" />
@@ -385,7 +385,7 @@ const ListElectro = () => {
                         </Tooltip>
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/paraclinics/electro/add")}>
+                            onClick={() => navigate("/paraclinics/psa/add")}>
                             {TitleButton.Agregar}
                         </Button>
                     </Grid>
@@ -400,13 +400,13 @@ const ListElectro = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={electro.length}
+                        rowCount={psa.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(electro, getComparator(order, orderBy))
+                        {stableSort(psa, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
@@ -505,7 +505,7 @@ const ListElectro = () => {
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/paraclinics/electro/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/paraclinics/psa/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -529,16 +529,16 @@ const ListElectro = () => {
 
             <FullScreenDialogs
                 open={open}
-                title="IMPRIMIR ELECTRO CARDIOGRAMA"
+                title="IMPRIMIR PSA"
                 handleClose={() => setOpen(false)}
             >
-                <Electro />
+                <PSA />
             </FullScreenDialogs>
 
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={electro.length}
+                count={psa.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -548,4 +548,4 @@ const ListElectro = () => {
     );
 };
 
-export default ListElectro;
+export default ListPSA;

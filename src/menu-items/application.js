@@ -241,38 +241,39 @@ const application = {
                     breadcrumbs: false
                 },
                 {
-                    id: 'slider',
+                    id: 'rxtorax',
                     title: <FormattedMessage id="RX de Torax" />,
                     type: 'item',
-                    url: '/components/slider',
+                    url: '/Paraclinics/Rxtorax/list',
                     breadcrumbs: false
                 },
                 {
-                    id: 'switch',
+                    id: 'visiometrics',
                     title: <FormattedMessage id="Visiometria" />,
                     type: 'item',
-                    url: '/components/switch',
+                    url: '/Paraclinics/Visiometrics/list',
                     breadcrumbs: false
                 },
+
                 {
-                    id: 'text-field',
+                    id: 'rnm',
                     title: <FormattedMessage id="RMN" />,
                     type: 'item',
-                    url: '/components/text-field',
+                    url: '/Paraclinics/Rnm/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'psa',
                     title: <FormattedMessage id="PSA" />,
                     type: 'item',
-                    url: '/components/text-field',
+                    url: '/Paraclinics/Psa/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'citologia',
                     title: <FormattedMessage id="Citología" />,
                     type: 'item',
-                    url: '/components/text-field',
+                    url: '/Paraclinics/Cytology/list',
                     breadcrumbs: false
                 },
             ]
