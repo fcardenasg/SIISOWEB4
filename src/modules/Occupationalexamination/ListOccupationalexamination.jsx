@@ -386,7 +386,7 @@ const ListOccupationalExamination = () => {
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/occupational-examination/report/${idCheck}`)}>
+                        <Tooltip title="Impresión" onClick={() => navigate(`/occupational-examination/report`)}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>

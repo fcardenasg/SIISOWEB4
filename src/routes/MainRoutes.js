@@ -200,6 +200,7 @@ const ListAttention = Loadable(lazy(() => import('modules/Attention/ListAttentio
 
 const ListOccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/ListOccupationalExamination')));
 const OccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/OccupationalExamination')));
+const ReportOccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/Report/ReportOccupationalExamination')));
 
 const ListOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/ListOtherAdvice')));
 const OtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/OtherAdvice')));
@@ -489,6 +490,10 @@ const MainRoutes = {
         {
             path: '/occupational-examination/add',
             element: <OccupationalExamination />
+        },
+        {
+            path: '/occupational-examination/report',
+            element: <ReportOccupationalExamination />
         },
         /* Render de Otras Asesorias */
         {

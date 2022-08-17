@@ -215,7 +215,7 @@ const ListMedicalAdvice = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -244,7 +244,7 @@ const ListMedicalAdvice = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'fecha', 'usuarioRegistro', 'motivo', 'idTipoAtencion', 'idEstadoCaso'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameMotivo ', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -381,12 +381,6 @@ const ListMedicalAdvice = () => {
                                 <ExcelColumn label="Fecha de Actualización" value="fechaActualizacion" />
                             </ExcelSheet>
                         </ExcelFile>
-
-                        <Tooltip title="Impresión" onClick={() => navigate('/medicaladvice/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/medicaladvice/add")}>
