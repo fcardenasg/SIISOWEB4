@@ -140,8 +140,8 @@ const application = {
                     id: 'history',
                     title: <FormattedMessage id="Accidente De Trabajo" />,
                     type: 'item',
-                    url: '/customer/product-review',
-                    breadcrumbs: false
+                    url: '/accident-rate/list',
+                    breadcrumbs: true
                 },
                 {
                     id: 'investigacion',

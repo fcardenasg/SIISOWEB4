@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -60,12 +59,8 @@ const MedicalAdvice = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
 
-    const [disabledButton, setDisabledButton] = useState({
-        buttonSave: false,
-        buttonReport: false
-    });
-
-    const [openReport, setOpenReport] = useState(false);
+    const [lsResult, setLsResult] = useState([]);
+    const [buttonReport, setButtonReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
     const [titleModal, setTitleModal] = useState('');
@@ -138,22 +133,21 @@ const MedicalAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DatosVacios = "Sin Registro";
-
             const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), DefaultData.ASESORIA_MEDICA, lsEmployee.sede,
-                datos.idContingencia, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
-                datos.idTipoAsesoria, datos.idMotivo, datos.recomendaciones, datos.observaciones, DatosVacios, DatosVacios,
-                DefaultData.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
-
-            console.log("Datos = ", DataToInsert);
+                DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
+                DefaultData.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo, DefaultData.SINREGISTRO_GLOBAL,
+                datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()),
+                '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertAdvice(DataToInsert);
                 if (result.status === 200) {
+                    setLsResult(result.data);
                     setOpenSuccess(true);
                     setDocumento('');
                     setLsEmployee([]);
                     reset();
+                    setButtonReport(true);
                 }
             }
         } catch (error) {
@@ -182,15 +176,6 @@ const MedicalAdvice = () => {
                 title="DICTADO POR VOZ"
             >
                 <ControllerListen />
-            </ControlModal>
-
-            <ControlModal
-                title="VISTA DE REPORTE"
-                open={openReport}
-                onClose={() => setOpenReport(false)}
-                maxWidth="xl"
-            >
-                <ViewReport />
             </ControlModal>
 
             <ControlModal
@@ -297,7 +282,7 @@ const MedicalAdvice = () => {
                                     <InputDatePicker
                                         label="Fecha"
                                         name="fecha"
-                                        defaultValue={null}
+                                        defaultValue={new Date()}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -394,19 +379,21 @@ const MedicalAdvice = () => {
                         <Grid container spacing={2} sx={{ pt: 4 }}>
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Guardar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
 
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
-                                        {TitleButton.Imprimir}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
+                            {buttonReport ?
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate(`/medicaladvice/report/${lsResult.id}`)}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid> : <div />
+                            }
 
                             <Grid item xs={2}>
                                 <AnimateButton>
@@ -418,7 +405,7 @@ const MedicalAdvice = () => {
 
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/evolution-note/list")}>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
                                         {TitleButton.Cancelar}
                                     </Button>
                                 </AnimateButton>

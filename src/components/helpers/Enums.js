@@ -21,7 +21,7 @@ export const CodCatalogo = {
     Cesantias: 19,
 
     AtencionEMO: 138,
-    
+
     TIPO_EXAMEN_PARACLINICOS: 68,
     ESTUDIO_EXAMEN_PARACLINICOS: 22,
     LABORATORIO_ORDENES_PARACLINICOS: 30,
@@ -80,6 +80,11 @@ export const CodCatalogo = {
     ROL_USUARIO: 157,
     ESPECIALIDAD_MEDICO: 158,
     CIUDADES: 5,
+
+    CLASE_AT: 98,
+    CAUSA_AT: 99,
+    SUBTIPO_AT: 100,
+    ESTADO_AT: 102,
 
     AHC_ATENCION_NOTA_ENFERMERIA: 136,
     Contingencia: 74,
@@ -222,6 +227,7 @@ export const TitleButton = {
     Guardar: 'Guardar',
     CerrarCaso: 'Cerrar Caso',
     OrdenesMedicas: 'Ordenes Medicas',
+    SubirArchivo: 'Subir Archivo',
     Programacion: 'Programación',
     Imprimir: 'Imprimir',
     Cancelar: 'Cerrar',

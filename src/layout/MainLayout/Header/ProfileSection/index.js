@@ -50,8 +50,8 @@ const ProfileSection = () => {
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const { logout, user } = useAuth();
     const [open, setOpen] = useState(false);
-    
-    
+
+
     const anchorRef = useRef(null);
     const handleLogout = async () => {
         try {
@@ -163,7 +163,7 @@ const ProfileSection = () => {
                                             <Stack direction="row" spacing={0.5} alignItems="center">
                                                 <Typography variant="h4">Buenos Días,</Typography>
                                                 <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                                                    {user?.name}
+                                                    {user?.email}
                                                 </Typography>
                                             </Stack>
                                             <Typography variant="subtitle2">Rol del Usuario</Typography>
