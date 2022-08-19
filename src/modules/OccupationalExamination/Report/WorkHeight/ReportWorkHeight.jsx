@@ -1,0 +1,225 @@
+import { Fragment, useEffect, useState } from 'react';
+import { Divider, Grid, Typography } from '@mui/material';
+import { useParams } from 'react-router-dom';
+
+import ImgWhite from 'assets/img/ImgWhite.png';
+import useAuth from 'hooks/useAuth';
+import SubCard from 'ui-component/cards/SubCard';
+import LogoReport from 'assets/img/LogoReport.png';
+import { gridSpacing } from 'store/constant';
+import { ColorDrummondltd } from 'themes/colors';
+import { GetByIdAdvice } from 'api/clients/AdviceClient';
+import { FormatDate, GetEdad } from 'components/helpers/Format';
+import { GetByMail } from 'api/clients/UserClient';
+
+const Pathological = ({ title = '', text = '' }) => {
+    return (
+        <Fragment>
+            <Grid item xs={4}>
+                <Typography variant="h6"><b>{title}</b></Typography>
+            </Grid>
+            <Grid item xs={8}>
+                <Typography variant="h6">{text}</Typography>
+            </Grid>
+        </Fragment>
+    )
+}
+
+const ReportWorkHeight = () => {
+    const { id } = useParams();
+    const { user } = useAuth();
+
+    const [timeWait, setTimeWait] = useState(false);
+    const [lsAdvice, setLsAdvice] = useState([]);
+    const [lsDataUser, setLsDataUser] = useState([]);
+
+    useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetByIdAdvice(id);
+                if (lsServer.status === 200) setLsAdvice(lsServer.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        GetAll();
+    }, [id]);
+
+    useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetByMail(user.email);
+                if (lsServer.status === 200) setLsDataUser(lsServer.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        GetAll();
+    }, [user.email]);
+
+    setTimeout(() => {
+        if (lsAdvice.length != 0 && lsDataUser.length != 0)
+            setTimeWait(true);
+    }, 1000);
+
+    return (
+        <SubCard>
+            <Grid container spacing={gridSpacing}>
+                <Grid item xs={12}>
+                    <Grid container spacing={1}>
+                        <Grid item xs={4}>
+                            <img src={LogoReport} height={50} />
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <Typography variant="h5" align="center"><b>DIVISION MÉDICA</b></Typography>
+                            <Typography variant="h5" align="center"><b>ANEXO DE APTITUD PARA TRABAJO EN ALTURAS</b></Typography>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <Typography variant="h5" align="center"><b>SIG-0409</b></Typography>
+                            <Typography variant="h6" align="center"><b>Versión 06</b></Typography>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Typography align="center" variant="h5"><b>NOTIFICACIÓN A LA EMPRESA</b></Typography>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Grid container spacing={1}>
+                                <Grid item xs={12} sx={{ mb: 2 }}>
+                                    <Typography variant="h5"><b>DATOS BÁSICOS DE LA ATENCIÓN</b></Typography>
+                                </Grid>
+
+                                <Pathological key={1} title="CONSECUTIVO:" text="10" />
+                                <Pathological key={2} title="FECHA DEL CONCEPTO:" text="2022-08-19" />
+                                <Pathological key={3} title="DOCUMENTO NRO:" text="12629179" />
+                                <Pathological key={4} title="NOMBRE:" text="IBARRA LOPEZ, MELQUIS LEONARDO" />
+                                <Pathological key={6} title="GENERO:" text="MASCULINO" />
+                                <Pathological key={7} title="AREA:" text="MARINE SERVICES" />
+                                <Pathological key={8} title="EDAD:" text="49" />
+                                <Pathological key={9} title="ANTIGUEDAD:" text="15" />
+                                <Pathological key={10} title="VIGENCIA DEL CONCEPTO:" text="1 AÑO" />
+                                <Pathological key={11} title="TIPO DE EXAMEN:" text="APTO PARA TRABAJAR EN ALTURAS RIESGO ALTO" />
+                                <Pathological key={12} title="CONCEPTO DE APTITUD:" text="APTO PARA TRABAJAR EN ALTURAS RIESGO ALTO" />
+                                <Pathological key={13} title="CONCEPTO APTITUD APLAZADO:" text="APTO PARA TRABAJAR EN ALTURAS RIESGO ALTO" />
+                                <Pathological key={14} title="MOTIVO DE APLAZO:" text="APTO PARA TRABAJAR EN ALTURAS RIESGO ALTO" />
+
+                                <Grid item xs={12} sx={{ mt: 2 }}>
+                                    <Typography variant="h6"><b>DESCRIPCIÓN DE RESULTADOS (RESUMEN DE LIMITACIONES O RESTRICCIONES)</b></Typography>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography align="justify" variant="h6">
+                                        SINDROME DE MANGUITO ROTADOR HOMBRO DERECHO, RECONOCIDO CON LABORAL, SUJETO A MANEJO.(RMN 30-07-2018 RUPTURA PARCIAL
+                                        EN LA CARA ARTICULAR DEL TENDON DEL SUPRAESPINOSO, TENDINOSIS DEL SUPRAESPINOSO, OSTEOARTROSIS ACROMIOCLAVICULAR)
+                                        HTA EN TTO CON LOSARTAN 2 VECES AL DÍA.
+                                        NIEGA ALERGIAS
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography variant="h6"><b>RECOMENDACIONES (EN TÉRMINOS SENCILLOS RESUMEN DE CUIDADOS Y CONTROLES REQUERIDOS)</b></Typography>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography align="justify" variant="h6">
+                                        SINDROME DE MANGUITO ROTADOR HOMBRO DERECHO, RECONOCIDO CON LABORAL, SUJETO A MANEJO.(RMN 30-07-2018 RUPTURA PARCIAL
+                                        EN LA CARA ARTICULAR DEL TENDON DEL SUPRAESPINOSO, TENDINOSIS DEL SUPRAESPINOSO, OSTEOARTROSIS ACROMIOCLAVICULAR)
+                                        HTA EN TTO CON LOSARTAN 2 VECES AL DÍA.
+                                        NIEGA ALERGIAS
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item sx={{ mt: 2 }} xs={12}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12}>
+                                            <Divider />
+                                        </Grid>
+
+                                        <Grid item xs={2}>
+                                            <Typography variant="h6"><b>REMITIDO:</b></Typography>
+                                        </Grid>
+
+                                        <Grid item xs={4}>
+                                            <Typography variant="h6">SI</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={2}>
+                                            <Typography variant="h6"><b>A DONDE:</b></Typography>
+                                        </Grid>
+
+                                        <Grid item xs={4}>
+                                            <Typography variant="h6">CLINICA</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <Divider />
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item sx={{ mt: 7 }} xs={12}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <img src={lsDataUser.firma} height={50} />
+
+                                    <Divider sx={{ border: 1, background: 'black', color: 'black', mt: 1 }} />
+                                    <Typography variant="h6"><b>{lsDataUser.nombre}.</b></Typography>
+                                    <Typography variant="h6"><b>{lsDataUser.tarjetaProfesional}</b></Typography>
+                                    <Typography variant="h6"><b>{lsDataUser.licencia}</b></Typography>
+                                    <Typography variant="h6"><b>{lsDataUser.registroMedico}</b></Typography>
+                                </Grid>
+
+                                <Grid item xs={6}>
+                                    <img src={ImgWhite} height={50} />
+
+
+                                    <Divider sx={{ border: 1, mt: 1, background: 'black', color: 'black' }} />
+                                    <Typography variant="h6"><b>Ibarra Lopez,Melquis Leonardo</b></Typography>
+                                    <Typography variant="h6"><b>FIRMA EMPLEADO</b></Typography>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <Grid sx={{ pt: 2 }} textAlign="center" justifyContent="center" container spacing={1}>
+                <Grid item xs={12}>
+                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                </Grid>
+
+                <Grid item xs={4}>
+                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
+                </Grid>
+
+                <Grid item xs={4}>
+                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
+                </Grid>
+
+                <Grid item xs={4}>
+                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                </Grid>
+            </Grid>
+        </SubCard>
+    );
+};
+
+export default ReportWorkHeight;
