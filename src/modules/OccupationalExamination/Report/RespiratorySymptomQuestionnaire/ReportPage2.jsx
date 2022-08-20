@@ -39,7 +39,7 @@ const DataInfo = ({ title = '', text = '' }) => {
     )
 }
 
-const ReportPage1 = () => {
+const ReportPage2 = () => {
     const { id } = useParams();
     const { user } = useAuth();
 
@@ -109,7 +109,11 @@ const ReportPage1 = () => {
                         <Grid item xs={12}>
                             <Grid container spacing={1}>
                                 <Grid item xs={12}>
-                                    <Typography align="center" variant="h5"><b>DATOS DEL EMPLEADO</b></Typography>
+                                    <Divider />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography variant='h6'><b>6. OTRAS ENFERMEDADES INHABILITANTES</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -118,52 +122,14 @@ const ReportPage1 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <DataInfo key={1} title="DOCUMENTO NRO:" text="12629179" />
-                                        <DataInfo key={2} title="NOMBRES:" text="IBARRA LOPEZ, MELQUIS LEONARDO" />
-                                        <DataInfo key={3} title="GÉNERO:" text="MASCULINO" />
-                                        <DataInfo key={4} title="ÁREA:" text="MARINE SERVICES" />
-                                        <DataInfo key={5} title="GRUPO:" text="6X1" />
-                                        <DataInfo key={6} title="CARGO:" text="DECKHAND" />
-                                        <DataInfo key={7} title="EDAD:" text="49" />
-                                        <DataInfo key={8} title="ANTIGÜEDAD:" text="15" />
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Typography variant="h6"><b>RESULTADOS DEL CUESTIONARIO</b></Typography>
-                                </Grid>
-
-                                <DataInfo key={1} title="CONSECUTIVO:" text="5800" />
-                                <DataInfo key={2} title="FECHA:" text="31/01/2019" />
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Typography variant='h6'><b>1. TOS</b></Typography>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. ¿TIENE TOS USUALMENTE (INCLUYE CON EL PRIMER CIGARRILLO O LA PRIMERA SALIDA A LA CALLE, EXCLUYE CARRASPEO)?" text="NO" />
-                                        <QuestionnaireTos key={2} title="B. TOSE 4 A 6 VECES AL DÍA, ¿DURANTE CUATRO O MÁS DÍAS DE LA SEMANA?" text="NO" />
-                                        <QuestionnaireTos key={3} title="C. ¿SUELE TOSER LEVANTÁNDOSE POR LA MAÑANA A PRIMERA HORA, DURANTE EL RESTO DEL DÍA O LA NOCHE?" text="NO" />
-
-                                        <Grid item xs={12}>
-                                            <Typography fontSize={11}><b>SI CONTESTO SI A ALGUNAS DE LAS PREGUNTAS ANTERIORES, TENGA EN CUENTA ESTAS 2 SIGUIENTES, EN CASO CONTRARIO NO APLICA.</b></Typography>
+                                        <QuestionnaireTos key={1} title="A. ¿PRESENTA INHABILIDAD POR UNA CONDICIÓN DIFERENTE A ENFERMEDAD DE PULMÓN O CORAZÓN?" text="NO" />
+                                        <QuestionnaireTos key={2} title="B. ¿USTED SUELE TOSER ASÍ CASI TODOS LOS DÍAS POR 3 MESES CONSECUTIVOS O POR MÁS DE UN AÑO?" text="NO" />
+                                        <Grid item xs={4}>
+                                            <Typography fontSize={10}><b>DESCRIBA LA NATURALEZA DE ESTA CONDICIÓN:</b></Typography>
                                         </Grid>
-
-                                        <QuestionnaireTos key={4} title="D. ¿USTED SUELE TOSER ASÍ CASI TODOS LOS DÍAS POR 3 MESES CONSECUTIVOS O POR MÁS DE UN AÑO?" text="NO" />
-                                        <QuestionnaireTos key={5} title="E. ¿HA PRESENTADO TOS POR CUANTOS AÑOS?" text="0" />
+                                        <Grid item xs={8}>
+                                            <Typography fontSize={10}>DESCRIBA LA NATURALEZA DE ESTA CONDICIÓN</Typography>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -176,7 +142,7 @@ const ReportPage1 = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography variant='h6'><b>2. ESPUTO</b></Typography>
+                                    <Typography variant='h6'><b>7. DISNEA (DIFICULTAD PARA RESPIRAR)</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -185,11 +151,11 @@ const ReportPage1 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. SUELE EXPECTORAR DESDE EL PECHO (INCLUYE FLEMA CON EL 1ER CIGARRILLO, 1ERA SALIDA A LA CALLE Y LA QUE SE TRAGA, EXCLUYE MOCO O FLEMA DE LA NARIZ)" text="NO" />
-                                        <QuestionnaireTos key={2} title="B. EXPECTORA ASÍ DOS VECES AL DÍA, AL MENOS CUATRO DÍAS A LA SEMANA?" text="NO" />
-                                        <QuestionnaireTos key={3} title="C. SUELE EXPECTORAR AL LEVANTARSE O A PRIMERA HORA DE LA MAÑANA, DURANTE EL RESTO DEL DÍA O DE LA NOCHE?" text="NO" />
-                                        <QuestionnaireTos key={4} title="D. EXPECTORA ASÍ LA MAYORÍA DE LOS DÍAS POR 3 MESES CONSECUTIVOS O MÁS O DURANTE UN AÑO?" text="NO" />
-                                        <QuestionnaireTos key={5} title="E. RELACIONE NÚMERO DE AÑOS QUE HA EXPECTORADO?" text="0" />
+                                        <QuestionnaireTos key={1} title="A. ¿SE AHOGA AL SUBIR DE UN NIVEL A OTRO AL CAMINAR POR UNA CUESTA SUAVE?" text="NO" />
+                                        <QuestionnaireTos key={2} title="B. ¿POR CAUSA DEL AHOGO TIENE QUE CAMINAR MÁS DESPACIO QUE LA GENTE DE SU EDAD, EN UNA CUESTA SUAVE?" text="NO" />
+                                        <QuestionnaireTos key={3} title="C. ¿TIENE QUE DETENERSE A RESPIRAR CUANDO CAMINA A SU PASO POR UNA CUESTA SUAVE?" text="NO" />
+                                        <QuestionnaireTos key={4} title="D. ¿TIENE QUE PARAR A RESPIRAR LUEGO DE CAMINAR 100 YARDAS (O LUEGO DE ALGUNOS MINUTOS) POR UNA CUESTA SUAVE?" text="NO" />
+                                        <QuestionnaireTos key={5} title="E. ¿EL AHOGO LE DIFICULTA DEJAR SU CASA, VESTIRSE O DESVESTIRTE?" text="NO" />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -202,7 +168,7 @@ const ReportPage1 = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography variant='h6'><b>3. EPISODIOS DE TOS Y ESPUTO</b></Typography>
+                                    <Typography variant='h6'><b>8. GRIPAS Y ENFERMEDADES DEL TÓRAX</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -211,8 +177,10 @@ const ReportPage1 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. ¿HA TENIDO EPISODIOS DE TOS Y FLEMA (O AUMENTO, SI USUALMENTE LOS PRESENTA) QUE DUREN 3 O MÁS DE UN AÑO?" text="NO" />
-                                        <QuestionnaireTos key={2} title="B. ¿CUANTOS AÑOS HA TENIDO AL MENOS UN EPISODIO AL AÑO?" text="0" />
+                                        <QuestionnaireTos key={1} title="A. ¿SI SE RESFRÍA SE LE AFECTA EL PECHO?" text="NO" />
+                                        <QuestionnaireTos key={2} title="B. ¿EN LOS ÚLTIMOS 3 AÑOS HA PRESENTADO ENFERMEDAD QUE LO ALEJE DE SU TRABAJO, LO MANTENGA EN CASA O EN CAMA?" text="NO" />
+                                        <QuestionnaireTos key={3} title="C. ¿EXPECTORÓ CON ALGUNA DE ESTAS ENFERMEDADES?" text="NO" />
+                                        <QuestionnaireTos key={4} title="D. EN LOS ÚLTIMOS AÑOS ¿CUÁNTAS DE ESTAS ENFERMEDADES CON ESPUTO LE HAN DURADO UNA SEMANA O MÁS?, ¿NÚMERO DE ENFERMEDADES?" text="0" />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -225,7 +193,7 @@ const ReportPage1 = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography variant='h6'><b>4. SIBILANCIAS</b></Typography>
+                                    <Typography variant='h6'><b>9. ANTECEDENTES</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -234,41 +202,48 @@ const ReportPage1 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. SU PECHO PITA, SILBA O SUENA" text="NO" />
-                                        <QuestionnaireTos key={2} title="1. CUANDO TIENE GRIPA" text="NO" />
-                                        <QuestionnaireTos key={3} title="2. OCASIONALMENTE APARTE DE LAS GRIPAS" text="NO" />
-                                        <QuestionnaireTos key={4} title="3. LA MAYORÍA DE DÍAS Y NOCHES" text="NO" />
-                                        <QuestionnaireTos key={5} title="B. POR CUANTOS AÑOS HA PRESENTADO ESTA SITUACIÓN?" text="0" />
+                                        <QuestionnaireTos key={1} title="A. TUVO ALGUNA ENFERMEDAD PULMONAR ANTES DE LOS 16 AÑOS?" text="NO" />
+                                        <QuestionnaireTos key={2} title="B. ¿HA TENIDO ALGUNA DE LAS SIGUIENTES ENFERMEDADES (CONFIRMADAS POR EL MEDICO)?" text="NO" />
+                                        <QuestionnaireTos key={3} title="1. ¿ATAQUES DE BRONQUITIS?" text="NO" />
+                                        <QuestionnaireTos key={4} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text="0" />
+                                        <QuestionnaireTos key={5} title="2. ¿NEUMONÍA O BRONCONEUMONÍA?" text="NO" />
+                                        <QuestionnaireTos key={5} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text="0" />
+                                        <QuestionnaireTos key={5} title="3. ¿BRONQUITIS CRÓNICA?" text="NO" />
+                                        <QuestionnaireTos key={5} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text="0" />
+                                        <QuestionnaireTos key={5} title="- ¿AUN PRESENTA ESTA ENFERMEDAD?" text="NO" />
+                                        <QuestionnaireTos key={5} title="- EDAD DE INICIO" text="0" />
+                                        <QuestionnaireTos key={5} title="4. ¿ENFISEMA PULMONAR?" text="NO" />
+                                        <QuestionnaireTos key={5} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text="0" />
+                                        <QuestionnaireTos key={5} title="- ¿AUN PRESENTA ESTA ENFERMEDAD?" text="NO" />
+                                        <QuestionnaireTos key={5} title="- EDAD DE INICIO" text="0" />
+                                        <QuestionnaireTos key={5} title="5. ¿ASMA?" text="NO" />
+                                        <QuestionnaireTos key={5} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text="0" />
+                                        <QuestionnaireTos key={5} title="- ¿AUN PRESENTA ESTA ENFERMEDAD?" text="0" />
+                                        <QuestionnaireTos key={5} title="6. OTRAS ENFERMEDADES DEL TÓRAX" text="NO" />
+                                        <Grid item xs={3}>
+                                            <Typography fontSize={10}><b>- ESPECIFIQUE:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography align='right' fontSize={10}>ESPECIFIQUE</Typography>
+                                        </Grid>
+                                        <QuestionnaireTos key={5} title="7. ¿ALGUNA CIRUGÍA DEL TÓRAX?" text="NO" />
+                                        <Grid item xs={3}>
+                                            <Typography fontSize={10}><b>- ESPECIFIQUE:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography align='right' fontSize={10}>ESPECIFIQUE</Typography>
+                                        </Grid>
+                                        <QuestionnaireTos key={5} title="8. TRAUMA (ALGÚN ACCIDENTE) DEL TÓRAX" text="NO" />
+                                        <Grid item xs={3}>
+                                            <Typography fontSize={10}><b>- ESPECIFIQUE:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography align='right' fontSize={10}>ESPECIFIQUE</Typography>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
-
-                        <Grid item xs={12}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Typography variant='h6'><b>5. ATAQUES DE SILBIDOS</b></Typography>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. HA TENIDO EPISODIOS DE TOS Y FLEMA (O AUMENTO, SI USUALMENTE LOS PRESENTA) QUE DUREN 3 O MÁS DE UN AÑO?" text="NO" />
-                                        <QuestionnaireTos key={2} title="B. ¿QUÉ EDAD TENÍA CUANDO LE DIO EL PRIMER ATAQUE?" text="NO" />
-                                        <QuestionnaireTos key={3} title="C. HA TENIDO DOS O MÁS EPISODIOS" text="NO" />
-                                        <QuestionnaireTos key={4} title="D. ¿HA NECESITADO DROGAS O TRATAMIENTOS PARA ESTOS ATAQUES?" text="NO" />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
                     </Grid>
                 </Grid>
             </Grid>
@@ -294,4 +269,4 @@ const ReportPage1 = () => {
     );
 };
 
-export default ReportPage1;
+export default ReportPage2;

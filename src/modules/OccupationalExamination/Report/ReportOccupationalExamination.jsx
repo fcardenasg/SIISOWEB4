@@ -22,6 +22,8 @@ import ReportEmployeeNotification from './WorkHeight/ReportEmployeeNotification'
 
 /* REPORTE DE CUESTIONARIO DE SISTOMAS RESPIRATORIOS */
 import ReportPage1 from './RespiratorySymptomQuestionnaire/ReportPage1';
+import ReportPage2 from './RespiratorySymptomQuestionnaire/ReportPage2';
+import ReportPage3 from './RespiratorySymptomQuestionnaire/ReportPage3';
 
 /* REPORTE DE EMO */
 import ReportConceptAptitude from './ReportConceptAptitude';
@@ -82,6 +84,14 @@ const ReportOccupationalExamination = () => {
                     <Grid container spacing={gridSpacing}>
                         <Grid item xs={12}>
                             <ReportPage1 />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <ReportPage2 />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <ReportPage3 />
                         </Grid>
 
                         {/* <Grid item xs={12}>
