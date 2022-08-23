@@ -325,7 +325,7 @@ const ReportWHDrummondLtd = () => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 7 }} textAlign="center" justifyContent="center" container spacing={1}>
+            <Grid sx={{ pt: 41 }} textAlign="center" justifyContent="center" container spacing={1}>
                 <Grid item xs={12}>
                     <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
                 </Grid>

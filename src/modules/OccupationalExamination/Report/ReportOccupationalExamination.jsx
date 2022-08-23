@@ -16,10 +16,25 @@ import { ViewFormat, GetEdad, FormatDate } from 'components/helpers/Format';
 import { GetByMail } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
 
+/* REPORTE DE TRABAJO EN ALTURA */
+import ReportWorkHeight from './WorkHeight/ReportWorkHeight';
+import ReportEmployeeNotification from './WorkHeight/ReportEmployeeNotification';
+
+/* REPORTE DE CUESTIONARIO DE SISTOMAS RESPIRATORIOS */
+import ReportPage1 from './RespiratorySymptomQuestionnaire/ReportPage1';
+import ReportPage2 from './RespiratorySymptomQuestionnaire/ReportPage2';
+import ReportPage3 from './RespiratorySymptomQuestionnaire/ReportPage3';
+
+/* REPORTE DE EMO */
 import ReportConceptAptitude from './ReportConceptAptitude';
 import ReportDiagnostics from './ReportDiagnostics';
 import ReportWHOtherCompanies from './ReportWHOtherCompanies';
 import ReportWHDrummondLtd from './ReportWHDrummondLtd';
+import ReportPersonalHistory from './ReportPersonalHistory';
+import ReportHabits from './ReportHabits';
+import ReportSystemsReview from './ReportSystemsReview';
+import ReportFunctionalExploration from './ReportFunctionalExploration';
+import ReportDefinitiveDiagnosis from './ReportDefinitiveDiagnosis';
 
 const ReportOccupationalExamination = () => {
     const { id } = useParams();
@@ -68,6 +83,27 @@ const ReportOccupationalExamination = () => {
                 <Grid item xs={12} md={10} lg={8} ref={componentRef}>
                     <Grid container spacing={gridSpacing}>
                         <Grid item xs={12}>
+                            <ReportPage1 />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <ReportPage2 />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <ReportPage3 />
+                        </Grid>
+
+                        {/* <Grid item xs={12}>
+                            <ReportWorkHeight />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <ReportEmployeeNotification />
+                        </Grid> */}
+
+
+                        {/* <Grid item xs={12}>
                             <ReportConceptAptitude />
                         </Grid>
 
@@ -82,6 +118,26 @@ const ReportOccupationalExamination = () => {
                         <Grid item xs={12}>
                             <ReportWHDrummondLtd />
                         </Grid>
+
+                        <Grid item xs={12}>
+                            <ReportPersonalHistory />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <ReportHabits />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <ReportSystemsReview />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <ReportFunctionalExploration />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <ReportDefinitiveDiagnosis />
+                        </Grid> */}
                     </Grid>
                 </Grid>
 

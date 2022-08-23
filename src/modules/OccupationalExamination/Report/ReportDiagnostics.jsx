@@ -9,6 +9,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import MainCard from 'ui-component/cards/MainCard';
 import LogoReport from 'assets/img/LogoReport.png';
+import ImgWhite from 'assets/img/ImgWhite.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import { GetByIdAdvice } from 'api/clients/AdviceClient';
@@ -262,7 +263,10 @@ const ReportDiagnostics = () => {
                 </Grid>
 
                 <Grid item xs={6}>
-                    <Divider sx={{ border: 1, background: 'black', color: 'black', mt: 7.8 }} />
+                    <img src={ImgWhite} height={50} />
+
+
+                    <Divider sx={{ border: 1, mt: 1, background: 'black', color: 'black' }} />
                     <Typography variant="h6"><b>Ibarra Lopez,Melquis Leonardo</b></Typography>
                     <Typography variant="h6"><b>FIRMA EMPLEADO</b></Typography>
                 </Grid>
