@@ -78,17 +78,18 @@ const headCells = [
         align: 'center'
     },
     {
+        id: 'documento',
+        numeric: false,
+        label: 'Nombres',
+        align: 'center'
+    }, 
+    {
         id: 'idMotivo',
         numeric: false,
         label: 'Motivo',
         align: 'left'
     },
-    {
-        id: 'idConductaClasificacion',
-        numeric: false,
-        label: 'Conducta',
-        align: 'left'
-    },
+    
     {
         id: 'fecha',
         numeric: false,

@@ -14,11 +14,12 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
+import InputCheckBox from 'components/input/InputCheckBox';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-
+import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import InputDatePicker from 'components/input/InputDatePicker';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
@@ -42,6 +43,9 @@ import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 
+import InputMultiSelects from 'components/input/InputMultiSelects';
+
+
 const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
@@ -52,6 +56,9 @@ const Visiometrics = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
+    const [diagnosticoArray1, setDiagnosticoArray1] = useState([]);
+    const [diagnosticoArray2, setDiagnosticoArray2] = useState([]);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -60,14 +67,15 @@ const Visiometrics = () => {
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
-
+    const [lsCie11, setLsCie11] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [documento, setDocumento] = useState('');
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
     const [lsConclusion, setLsConclusion] = useState([]);
+    const [lsLectura, setLsLectura] = useState([]);
     const [lsConducta, setLsConducta] = useState([]);
-
+    const [lsControl, setLsControl] = useState([]);
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
@@ -121,6 +129,13 @@ const Visiometrics = () => {
     async function GetAll() {
         try {
 
+            const lsServerCie11 = await GetAllCIE11(0, 0);
+            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                value: item.id,
+                label: item.dx
+            }));
+            setLsCie11(resultCie11);
+
 
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
@@ -142,6 +157,23 @@ const Visiometrics = () => {
                 label: item.nombre
             }));
             setLsConclusion(resultConclusion);
+
+
+            const lsServerLectura = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_LECTURA);
+            var resultLectura = lsServerLectura.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsLectura(resultLectura);
+
+       
+
+            const lsServerControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONTROL);
+            var resultControl = lsServerControl.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsControl(resultControl);
 
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
@@ -166,8 +198,8 @@ const Visiometrics = () => {
         try {
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_VISIOMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
-                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
-                false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
+                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, JSON.stringify(diagnosticoArray), datos.ojoIzquierdo, JSON.stringify(diagnosticoArray1), datos.add1, datos.idLecturaAdd, datos.idControl, datos.remitidoOftalmo,
+                datos.requiereLentes, JSON.stringify(diagnosticoArray2), DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
@@ -254,32 +286,6 @@ const Visiometrics = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                {/* <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idConductaClasificacion"
-                                            label="Conducta"
-                                            defaultValue=""
-                                            options={lsConducta}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idConclusion"
-                                            label="Conclusión"
-                                            defaultValue=""
-                                            options={lsConclusion}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid> */}
-
                                 <Grid item xs={4.3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
@@ -292,9 +298,157 @@ const Visiometrics = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
+
+
+
                             </Grid>
                         </SubCard>
                     </Grid>
+
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">ESTADO REFRACTIVO</Typography>}>
+                            <Grid container spacing={2}>
+
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="ojoDerecho"
+                                            label="Ojo Derecho"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <InputMultiSelects
+                                        fullWidth
+                                        onChange={(event, value) => setDiagnosticoArray(value)}
+                                        value={diagnosticoArray}
+                                        label="Diagnósticos"
+                                        options={lsCie11}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="ojoIzquierdo"
+                                            label="Ojo Izquierdo"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <InputMultiSelects
+                                        fullWidth
+                                        onChange={(event, value) => setDiagnosticoArray1(value)}
+                                        value={diagnosticoArray1}
+                                        label="Diagnósticos"
+                                        options={lsCie11}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">LECTURA ADD</Typography>}>
+                            <Grid container spacing={2}>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="add1"
+                                            label="ADD"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idLecturaAdd"
+                                            label="Lectura ADD"
+                                            defaultValue=""
+                                            options={lsLectura}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idControl"
+                                            label="Control"
+                                            defaultValue=""
+                                            options={lsControl}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Remitodo a Oftalmologia"
+                                            name="remitidoOftalmo"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Requiere Lentes"
+                                            name="requiereLentes"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">IMPRESIÓN DIAGNÓSTICA</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={1} lg={6}>
+                                    <InputMultiSelects
+                                        fullWidth
+                                        onChange={(event, value) => setDiagnosticoArray2(value)}
+                                        value={diagnosticoArray2}
+                                        label="Diagnósticos"
+                                        options={lsCie11}
+                                    />
+                                </Grid>
+
+
+
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
 
                     <Grid item xs={12}>
                         <SubCard darkTitle>
