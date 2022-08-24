@@ -292,6 +292,13 @@ const ListVisiometrics = Loadable(lazy(() => import('modules/Paraclinics/Visiome
 const Visiometrics = Loadable(lazy(() => import('modules/Paraclinics/Visiometrics/Visiometrics')));
 const UpdateVisiometrics = Loadable(lazy(() => import('modules/Paraclinics/Visiometrics/UpdateVisiometrics')));
 
+const ListSpirometry = Loadable(lazy(() => import('modules/Paraclinics/Spirometry/ListSpirometry')));
+const Spirometry = Loadable(lazy(() => import('modules/Paraclinics/Spirometry/Spirometry')));
+const UpdateSpirometry = Loadable(lazy(() => import('modules/Paraclinics/Spirometry/UpdateSpirometry')));
+
+
+
+
 const MainRoutes = {
     path: '/',
     element: (
@@ -838,6 +845,19 @@ const MainRoutes = {
             element: <UpdateVisiometrics />
         },
 
+
+        {
+            path: '/paraclinics/spirometry/list',
+            element: <ListSpirometry />
+        },
+        {
+            path: '/paraclinics/spirometry/add',
+            element: <Spirometry />
+        },
+        {
+            path: '/paraclinics/spirometry/update/:id',
+            element: <UpdateSpirometry />
+        },
         
 
 
