@@ -12,44 +12,8 @@ import { GetByIdAdvice } from 'api/clients/AdviceClient';
 import { FormatDate, GetEdad } from 'components/helpers/Format';
 import { GetByMail } from 'api/clients/UserClient';
 
-const ReportDefinitiveDiagnosis = () => {
-    const { id } = useParams();
+const ReportDefinitiveDiagnosis = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
-
-    const [timeWait, setTimeWait] = useState(false);
-    const [lsAdvice, setLsAdvice] = useState([]);
-    const [lsDataUser, setLsDataUser] = useState([]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByIdAdvice(id);
-                if (lsServer.status === 200) setLsAdvice(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [id]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByMail(user.email);
-                if (lsServer.status === 200) setLsDataUser(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [user.email]);
-
-    setTimeout(() => {
-        if (lsAdvice.length != 0 && lsDataUser.length != 0)
-            setTimeWait(true);
-    }, 1000);
 
     return (
         <SubCard>
@@ -63,7 +27,7 @@ const ReportDefinitiveDiagnosis = () => {
                         <Grid item xs={4}>
                             <Typography variant="h5" align="center"><b>DIVISION MÉDICA</b></Typography>
                             <Typography variant="h5" align="center"><b>HISTORIA CLINICA OCUPACIONAL</b></Typography>
-                            <Typography variant="h5" align="center"><b>CONTROL PERIODICO</b></Typography>
+                            <Typography variant="h5" align="center"><b>{datos.nameAtencion}</b></Typography>
                         </Grid>
 
                         <Grid item xs={4}>
@@ -89,27 +53,20 @@ const ReportDefinitiveDiagnosis = () => {
 
                         <Grid item xs={12}>
                             <Grid container spacing={0.5}>
-                                <Grid item xs={2}>
-                                    <Typography variant="h6"><b>DX 1:</b></Typography>
-                                </Grid>
-                                <Grid item xs={10}>
-                                    <Typography variant="h6">HIPERTENSIÓN ARTERIAL</Typography>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Typography variant="h6"><b>DX 2:</b></Typography>
-                                </Grid>
-                                <Grid item xs={10}>
-                                    <Typography variant="h6">RINOFARINGITIS AGUDA (RESFRIADO COMÚN)</Typography>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <Typography variant="h6"><b>DX 3:</b></Typography>
-                                </Grid>
-                                <Grid item xs={10}>
-                                    <Typography variant="h6">LESIÓN HOMBRO DERECHO RUPTURA DE MANGUITO ROTADOR</Typography>
-                                </Grid>
-
+                                {datos.length != 0 ?
+                                    <Fragment>
+                                        {JSON.parse(datos.dxID).map((dx, index) => (
+                                            <Fragment>
+                                                <Grid item xs={2}>
+                                                    <Typography variant="h5"><b>DX {index = index + 1}:</b></Typography>
+                                                </Grid>
+                                                <Grid item xs={10}>
+                                                    <Typography variant="h5">{dx.label}</Typography>
+                                                </Grid>
+                                            </Fragment>
+                                        ))}
+                                    </Fragment> : ''
+                                }
 
                                 <Grid item xs={12} sx={{ mt: 2 }}>
                                     <Typography variant="h6"><b>OBSERVACIONES:</b></Typography>
@@ -117,22 +74,8 @@ const ReportDefinitiveDiagnosis = () => {
 
                                 <Grid item xs={12}>
                                     <Typography align="justify" variant="h6">
-                                        NO REALIZAR TAREAS EN ALTURAS
-                                        CONTINUAR CON LAS RECOMENDACIONES YA CONOCIDAS. <br /><br />
-
-
-                                        1.Se considera que podrá hacer uso de escaleras trasversales en ascenso y descenso y siempre usando los tres puntos de apoyo; esto incluye hacerlo de manera
-                                        segura y pausada.
-                                        2.Evitar trabajos que ameriten la elevación de los hombros por encima de los 110°.
-                                        3.Podrá levantar cargas de manera bimanual por debajo del hombro y está limitado para no exceder los 11 kg, para cargas que excedan este peso requerirá de
-                                        otras personas o en dado caso de equipos que suplan la demanda física (solicite el apoyo que requiera). Tenga en cuenta que estas cargas deberán estar
-                                        posicionadas cerca del plano sagital (cerca de su cuerpo).
-                                        4.Actividades como el empujar, traccionar y/o halar quedarán a disposición suya, entendiendo que la frecuencia debe este tipo de tareas deben ser bajas y
-                                        administradas por usted; tenga en cuenta que si al realizarlas presenta sintomatología alguna, deberá evitarlas y/o suspenderlas.
-                                        5.Para el uso de maletín o morral se sugiere no tenerlo muy cargado (menos de 5 kg), usarlo adecuadamente con ambos tirantes sobre los hombros.
-                                        6.Evitar realizar actividades que impliquen someterse a vibración del segmento mano-brazo-hombro.
-                                        7.Realizar pausas activas de manera auto administradas.
-                                        8.Acudir formalmente a sus citas ordenadas y retroalimentar a Salud Ocupacional Drummond LTD., acerca de su condición de salud.                                    </Typography>
+                                        {datos.observacionID}
+                                    </Typography>
                                 </Grid>
 
                                 <Grid item xs={12} sx={{ mt: 2 }}>
@@ -141,7 +84,7 @@ const ReportDefinitiveDiagnosis = () => {
 
                                 <Grid item xs={12}>
                                     <Typography align="justify" variant="h6">
-                                        APTO CON RECOMENDACIONES OCUPACIONALES ESPECIFICAS
+                                        {datos.nameConceptoActitudID}
                                     </Typography>
                                 </Grid>
 
@@ -151,11 +94,7 @@ const ReportDefinitiveDiagnosis = () => {
 
                                 <Grid item xs={12}>
                                     <Typography align="justify" variant="h6">
-                                        USAR LOS EPP CORRESPONDIENTES SEGÚN LO ESTABLECIDO EN LA MATRIZ DE RIESGOS.
-                                        REALIZAR PAUSAS ACTIVAS DE MANERA AUTOADMINISTRADA E INTERCALAR POSTURAS LIBREMENTE.
-                                        USO DE TÉCNICAS ADECUADAS PARA EL LEVANTAMIENTO Y DESPLAZAMIENTO DE CARGAS.
-                                        PROPENDER POR MANTENER UN ADECUADO PESO CORPORAL.
-                                        REALIZAR ACTIVIDAD FÍSICA AEROBICA DIRIGIDA Y PROGRESIVA DE SER NECESARIO.
+                                        {datos.recomendacionesID}
                                     </Typography>
                                 </Grid>
 

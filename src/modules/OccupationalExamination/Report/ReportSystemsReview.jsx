@@ -37,44 +37,8 @@ const Morphological = ({ title = '', text = '' }) => {
     )
 }
 
-const ReportSystemsReview = () => {
-    const { id } = useParams();
+const ReportSystemsReview = ({ datos = [] }) => {
     const { user } = useAuth();
-
-    const [timeWait, setTimeWait] = useState(false);
-    const [lsAdvice, setLsAdvice] = useState([]);
-    const [lsDataUser, setLsDataUser] = useState([]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByIdAdvice(id);
-                if (lsServer.status === 200) setLsAdvice(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [id]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByMail(user.email);
-                if (lsServer.status === 200) setLsDataUser(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [user.email]);
-
-    setTimeout(() => {
-        if (lsAdvice.length != 0 && lsDataUser.length != 0)
-            setTimeWait(true);
-    }, 1000);
 
     return (
         <SubCard>
@@ -88,7 +52,7 @@ const ReportSystemsReview = () => {
                         <Grid item xs={4}>
                             <Typography variant="h5" align="center"><b>DIVISION MÉDICA</b></Typography>
                             <Typography variant="h5" align="center"><b>HISTORIA CLINICA OCUPACIONAL</b></Typography>
-                            <Typography variant="h5" align="center"><b>CONTROL PERIODICO</b></Typography>
+                            <Typography variant="h5" align="center"><b>C{datos.nameAtencion}</b></Typography>
                         </Grid>
 
                         <Grid item xs={4}>
@@ -114,20 +78,20 @@ const ReportSystemsReview = () => {
 
                         <Grid item xs={12}>
                             <Grid container spacing={0.5}>
-                                <SystemsReview key={1} title="1. CABEZA - CEFALEA" text="NORMAL" />
-                                <SystemsReview key={2} title="2. OJOS (A. VISUAL, DOLOR, CONGESTIÓN, ETC.)" text="NORMAL" />
-                                <SystemsReview key={3} title="3. OÍDOS (A. AUDITIVA, DOLOR, SECRECIÓN, ETC.)" text="NORMAL" />
-                                <SystemsReview key={3} title="4. NARIZ (CONGESTIÓN, EPISTAXIS, RINORREA)" text="ANORMAL" />
-                                <SystemsReview key={4} title="5. BOCA (ULCERACIONES, SANGRADO DE ENCÍAS)" text="NORMAL" />
-                                <SystemsReview key={5} title="6. GARGANTA (DOLOR, ARDOR, DISFAGIA, DISFONÍA)" text="NORMAL" />
-                                <SystemsReview key={7} title="7. CUELLO (DOLOR, TORTICOLIS, ADENOPATÍAS)" text="NORMAL" />
-                                <SystemsReview key={8} title="8. CARDIO RESPIRATORIO" text="NORMAL" />
-                                <SystemsReview key={9} title="9. GASTROINTESTINAL" text="NORMAL" />
-                                <SystemsReview key={10} title="10. GENITOURINARIO" text="NORMAL" />
-                                <SystemsReview key={12} title="11. OSTEO - ARTICULAR" text="NORMAL" />
-                                <SystemsReview key={13} title="12. NEURO - MUSCULAR" text="NORMAL" />
-                                <SystemsReview key={14} title="13. PIEL Y ANEXOS" text="NORMAL" />
-                                <SystemsReview key={15} title="14. PSIQUIÁTRICO" text="NORMAL" />
+                                <SystemsReview key={1} title="1. CABEZA - CEFALEA" text={datos.cabezaRS} />
+                                <SystemsReview key={2} title="2. OJOS (A. VISUAL, DOLOR, CONGESTIÓN, ETC.)" text={datos.ojosRS} />
+                                <SystemsReview key={3} title="3. OÍDOS (A. AUDITIVA, DOLOR, SECRECIÓN, ETC.)" text={datos.oidosRS} />
+                                <SystemsReview key={3} title="4. NARIZ (CONGESTIÓN, EPISTAXIS, RINORREA)" text={datos.narizRS} />
+                                <SystemsReview key={4} title="5. BOCA (ULCERACIONES, SANGRADO DE ENCÍAS)" text={datos.bocaRS} />
+                                <SystemsReview key={5} title="6. GARGANTA (DOLOR, ARDOR, DISFAGIA, DISFONÍA)" text={datos.gargantaRS} />
+                                <SystemsReview key={7} title="7. CUELLO (DOLOR, TORTICOLIS, ADENOPATÍAS)" text={datos.cuellosRS} />
+                                <SystemsReview key={8} title="8. CARDIO RESPIRATORIO" text={datos.cardioRS} />
+                                <SystemsReview key={9} title="9. GASTROINTESTINAL" text={datos.gastrointestinalRS} />
+                                <SystemsReview key={10} title="10. GENITOURINARIO" text={datos.genitoUrinarioRS} />
+                                <SystemsReview key={12} title="11. OSTEO - ARTICULAR" text={datos.osteoRS} />
+                                <SystemsReview key={13} title="12. NEURO - MUSCULAR" text={datos.neuroRS} />
+                                <SystemsReview key={14} title="13. PIEL Y ANEXOS" text={datos.pielRS} />
+                                <SystemsReview key={15} title="14. PSIQUIÁTRICO" text={datos.psiquiatricoRS} />
 
                                 <Grid item xs={12} sx={{ mt: 2 }}>
                                     <Typography variant="h5"><b>OBSERVACIONES:</b></Typography>
@@ -135,8 +99,7 @@ const ReportSystemsReview = () => {
 
                                 <Grid item xs={12}>
                                     <Typography align="justify" variant="h6">
-                                        MANIFIESTA ESTAR CURSANDO CON CUADRO RESPIRATORIO AGUDO, REFERENTE AL HOMBRO ESTÁ CON EL MANEJO DEL DOLOR DE MANERA
-                                        SATISFACTORIA, SUS LABORES LAS ESSTÁ CUMPLIENDO SIN REPERCUSIÓN ALGUNA SOBRE SU SALUD.
+                                        {datos.observacionRS}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -186,22 +149,22 @@ const ReportSystemsReview = () => {
                                 </Grid>
 
                                 <Grid item xs={3}>
-                                    <Typography variant="h6">150/100</Typography>
+                                    <Typography variant="h6">{datos.taSentadoEF}</Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography variant="h6">150/100</Typography>
+                                    <Typography variant="h6">{datos.taAcostadoEF}</Typography>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <Typography variant="h6">74</Typography>
+                                    <Typography variant="h6">{datos.pulsoEF}</Typography>
                                 </Grid>
                                 <Grid item xs={1.5}>
-                                    <Typography variant="h6">74</Typography>
+                                    <Typography variant="h6">{datos.fcef}</Typography>
                                 </Grid>
                                 <Grid item xs={1}>
-                                    <Typography variant="h6">16</Typography>
+                                    <Typography variant="h6">{datos.fref}</Typography>
                                 </Grid>
                                 <Grid item xs={1.5}>
-                                    <Typography variant="h6">36</Typography>
+                                    <Typography variant="h6">{datos.temperaturaEF} °C</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -227,19 +190,19 @@ const ReportSystemsReview = () => {
                                 </Grid>
 
                                 <Grid item xs={2.1}>
-                                    <Typography align='center' variant="h6">79.00</Typography>
+                                    <Typography align='center' variant="h6">{datos.pesoEF}</Typography>
                                 </Grid>
                                 <Grid item xs={2.1}>
-                                    <Typography align='center' variant="h6">1.69</Typography>
+                                    <Typography align='center' variant="h6">{datos.tallaEF}</Typography>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <Typography align='center' variant="h6">27.66</Typography>
+                                    <Typography align='center' variant="h6">{datos.imcef}</Typography>
                                 </Grid>
                                 <Grid item xs={3.8}>
-                                    <Typography variant="h6">SobrePeso Grado II</Typography>
+                                    <Typography variant="h6">{datos.clasificacionEF}</Typography>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <Typography variant="h6">PICNICO</Typography>
+                                    <Typography variant="h6">{datos.nameBiotipoEF}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -262,48 +225,48 @@ const ReportSystemsReview = () => {
 
                         <Grid item xs={12}>
                             <Grid container spacing={0.5}>
-                                <Morphological key={1} title="1. ESTADO NUTRICIONAL" text="ANORMAL" />
-                                <Morphological key={2} title="2. PIEL FANERAS" text="ANORMAL" />
-                                <Morphological key={3} title="3. CRÁNEO" text="ANORMAL" />
-                                <Morphological key={4} title="4. PARPADOS" text="ANORMAL" />
-                                <Morphological key={5} title="5. CONJUNTIVAS" text="ANORMAL" />
-                                <Morphological key={6} title="6. CORNEAS" text="ANORMAL" />
-                                <Morphological key={7} title="7. PUPILAS" text="ANORMAL" />
-                                <Morphological key={8} title="8. REFLEJO FOTOMOTOR" text="ANORMAL" />
-                                <Morphological key={9} title="9. REFLEJO CORNEAL" text="ANORMAL" />
-                                <Morphological key={10} title="10. FONDO OJOS" text="ANORMAL" />
-                                <Morphological key={11} title="11. INS. EXTERNA OÍDOS" text="ANORMAL" />
-                                <Morphological key={12} title="12. OTOSCOPIA" text="ANORMAL" />
-                                <Morphological key={13} title="13. INS. EXTERNA NARIZ N" text="ANORMAL" />
-                                <Morphological key={14} title="14. RINOSCOPIA" text="ANORMAL" />
-                                <Morphological key={15} title="15. LABIOS" text="ANORMAL" />
-                                <Morphological key={16} title="16. MUCOSA ORAL" text="ANORMAL" />
-                                <Morphological key={17} title="17. ENCÍAS" text="ANORMAL" />
-                                <Morphological key={18} title="18. PALADAR" text="ANORMAL" />
-                                <Morphological key={19} title="19. DIENTES" text="ANORMAL" />
-                                <Morphological key={20} title="20. LENGUA" text="ANORMAL" />
-                                <Morphological key={21} title="21. FARINGE" text="ANORMAL" />
-                                <Morphological key={22} title="22. AMÍGDALAS" text="ANORMAL" />
-                                <Morphological key={23} title="23. CUELLO - TIROIDES" text="ANORMAL" />
-                                <Morphological key={24} title="24. INS. DE TORAXMAMAS" text="ANORMAL" />
-                                <Morphological key={25} title="25. AUSCULTACIÓN CARDIACA" text="ANORMAL" />
-                                <Morphological key={26} title="26. AUSCULTACIÓN RESPIRATORIA" text="ANORMAL" />
-                                <Morphological key={27} title="27. INSPECCIÓN ABDOMEN" text="ANORMAL" />
-                                <Morphological key={28} title="28. PALPACIÓN ABDOMEN" text="ANORMAL" />
-                                <Morphological key={29} title="29. EXPLORACIÓN DE HÍGADO" text="ANORMAL" />
-                                <Morphological key={30} title="30. EXPLORACIÓN DE BAZO" text="ANORMAL" />
-                                <Morphological key={31} title="31. EXPLORACIÓN DE RIÑONES" text="ANORMAL" />
-                                <Morphological key={32} title="32. ANILLOS INGUINALES" text="ANORMAL" />
-                                <Morphological key={33} title="33. ANILLO UMBILICAL" text="ANORMAL" />
-                                <Morphological key={34} title="34. GENITALES EXTERNOS" text="ANORMAL" />
-                                <Morphological key={35} title="35. REGIÓN ANAL" text="ANORMAL" />
-                                <Morphological key={36} title="36. TACTO RECTAL" text="ANORMAL" />
-                                <Morphological key={37} title="37. TACTO VAGINAL" text="ANORMAL" />
-                                <Morphological key={38} title="38. EXTRE SUPERIORES" text="ANORMAL" />
-                                <Morphological key={39} title="39. EXTRE INFERIORES" text="ANORMAL" />
-                                <Morphological key={40} title="40. PULSOS" text="ANORMAL" />
-                                <Morphological key={41} title="41. COLUMNA VERTEBRAL" text="ANORMAL" />
-                                <Morphological key={42} title="42. ARTICULACIONES" text="ANORMAL" />
+                                <Morphological key={1} title="1. ESTADO NUTRICIONAL" text={datos.estadoNitricionalEF} />
+                                <Morphological key={2} title="2. PIEL FANERAS" text={datos.pielFaneraEF} />
+                                <Morphological key={3} title="3. CRÁNEO" text={datos.craneoEF} />
+                                <Morphological key={4} title="4. PARPADOS" text={datos.parpadoEF} />
+                                <Morphological key={5} title="5. CONJUNTIVAS" text={datos.conjuntivasEF} />
+                                <Morphological key={6} title="6. CORNEAS" text={datos.corniasEF} />
+                                <Morphological key={7} title="7. PUPILAS" text={datos.pupilasEF} />
+                                <Morphological key={8} title="8. REFLEJO FOTOMOTOR" text={datos.reflejoFotomotorEF} />
+                                <Morphological key={9} title="9. REFLEJO CORNEAL" text={datos.reflejoCornialEF} />
+                                <Morphological key={10} title="10. FONDO OJOS" text={datos.fondoOjosEF} />
+                                <Morphological key={11} title="11. INS. EXTERNA OÍDOS" text={datos.inspeccionEF} />
+                                <Morphological key={12} title="12. OTOSCOPIA" text={datos.otoscopiaEF} />
+                                <Morphological key={13} title="13. INS. EXTERNA NARIZ N" text={datos.inspeccionNarizEF} />
+                                <Morphological key={14} title="14. RINOSCOPIA" text={datos.rinoscopioEF} />
+                                <Morphological key={15} title="15. LABIOS" text={datos.labiosEF} />
+                                <Morphological key={16} title="16. MUCOSA ORAL" text={datos.mucosaEF} />
+                                <Morphological key={17} title="17. ENCÍAS" text={datos.enciasEF} />
+                                <Morphological key={18} title="18. PALADAR" text={datos.paladarEF} />
+                                <Morphological key={19} title="19. DIENTES" text={datos.dientesEF} />
+                                <Morphological key={20} title="20. LENGUA" text={datos.lenguaEF} />
+                                <Morphological key={21} title="21. FARINGE" text={datos.faringeEF} />
+                                <Morphological key={22} title="22. AMÍGDALAS" text={datos.amigdalasEF} />
+                                <Morphological key={23} title="23. CUELLO - TIROIDES" text={datos.cuellosEF} />
+                                <Morphological key={24} title="24. INS. DE TORAXMAMAS" text={datos.inspeccionToraxEF} />
+                                <Morphological key={25} title="25. AUSCULTACIÓN CARDIACA" text={datos.auscultacionCardiacaEF} />
+                                <Morphological key={26} title="26. AUSCULTACIÓN RESPIRATORIA" text={datos.auscultacionRespiratoriaEF} />
+                                <Morphological key={27} title="27. INSPECCIÓN ABDOMEN" text={datos.inspeccionAbdomenEF} />
+                                <Morphological key={28} title="28. PALPACIÓN ABDOMEN" text={datos.palpacionAbdomenEF} />
+                                <Morphological key={29} title="29. EXPLORACIÓN DE HÍGADO" text={datos.exploracionHigadoEF} />
+                                <Morphological key={30} title="30. EXPLORACIÓN DE BAZO" text={datos.exploracionVasoEF} />
+                                <Morphological key={31} title="31. EXPLORACIÓN DE RIÑONES" text={datos.exploracionRinionesEF} />
+                                <Morphological key={32} title="32. ANILLOS INGUINALES" text={datos.anillosInguinalesEF} />
+                                <Morphological key={33} title="33. ANILLO UMBILICAL" text={datos.anilloUmbilicalEF} />
+                                <Morphological key={34} title="34. GENITALES EXTERNOS" text={datos.genitalesExternosEF} />
+                                <Morphological key={35} title="35. REGIÓN ANAL" text={datos.regionAnalEF} />
+                                <Morphological key={36} title="36. TACTO RECTAL" text={datos.tactoRectalEF} />
+                                <Morphological key={37} title="37. TACTO VAGINAL" text={datos.tactoVaginalEF} />
+                                <Morphological key={38} title="38. EXTRE SUPERIORES" text={datos.extremidadesSuperioresEF} />
+                                <Morphological key={39} title="39. EXTRE INFERIORES" text={datos.extremidadesInferioresEF} />
+                                <Morphological key={40} title="40. PULSOS" text={datos.pulsosEF} />
+                                <Morphological key={41} title="41. COLUMNA VERTEBRAL" text={datos.columnaVertebralEF} />
+                                <Morphological key={42} title="42. ARTICULACIONES" text={datos.articulacionesEF} />
 
                                 <Grid item xs={12} sx={{ mt: 2 }}>
                                     <Typography variant="h5"><b>OBSERVACIONES:</b></Typography>
@@ -311,9 +274,7 @@ const ReportSystemsReview = () => {
 
                                 <Grid item xs={12}>
                                     <Typography align="justify" variant="h6">
-                                        CIFRAS TENSIONALES ELVADAS,PACIENTE OBESO, RINORREA HIALINA, DIFICULTAD AL PASO DEL AIRE POR LAS NARINAS, ABUNDANTE
-                                        PANICULO ADIPOSO, DEBILIDAD DE MUSCULATURA ABDOMINAL, DOLOR A LA ELVACIÓN DE MSI POR ENCIAM DE LOS 110° DE LA ARTICULACIÓN
-                                        DEL HOMBRO, RETRACCIONES ISQUIOTIBIALES BILATERALES MODERADAS, RESTO DE EXAMEN FISICO NORMAL.
+                                        {datos.especifiqueEMEFU}
                                     </Typography>
                                 </Grid>
                             </Grid>

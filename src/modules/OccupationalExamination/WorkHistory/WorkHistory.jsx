@@ -62,11 +62,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const [anioRuidoOtrasEmpresas, setAnioRuidoOtrasEmpresas] = useState(0);
     const [mesRuidoOtrasEmpresas, setMesRuidoOtrasEmpresas] = useState(0);
 
-    /*     const [mpiAnio, setMpiAnio] = useState(0);
-        const [mpiAnio, setMpiAnio] = useState(0);
-        const [mpiAnio, setMpiAnio] = useState(0);
-        const [mpiAnio, setMpiAnio] = useState(0); */
-
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [addItemClickedEmpresa, setAddItemClickedEmpresa] = useState(false);
@@ -100,9 +95,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             anio: riesgo.anio,
                             mes: riesgo.mes
                         }));
-
-                    console.log("arrayMPI = ", arrayMPI);
-                    console.log("arrayRUIDO = ", arrayRUIDO);
 
                     var aniosMpi = 0;
                     var mesMpi = 0;
@@ -612,7 +604,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <SideIconCard
                                 bgcolor={theme.palette.grey[200]}
                                 iconPrimary={ReportProblemIcon}
-                                primary={`Meses: ${mpiAnioOtrasEmpresas}`}
+                                primary={`Meses: ${mpiMesOtrasEmpresas}`}
                                 secondary="Exposición MPI Otras Empresas"
                                 color={ColorDrummondltd.BlueDrummond}
                             />

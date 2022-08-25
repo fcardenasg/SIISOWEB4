@@ -9,7 +9,7 @@ import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import { GetByIdAdvice } from 'api/clients/AdviceClient';
-import { FormatDate, GetEdad } from 'components/helpers/Format';
+import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
 import { GetByMail } from 'api/clients/UserClient';
 
 const Pathological = ({ title = '', text = '' }) => {
@@ -25,44 +25,8 @@ const Pathological = ({ title = '', text = '' }) => {
     )
 }
 
-const ReportWorkHeight = () => {
-    const { id } = useParams();
+const ReportWorkHeight = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
-
-    const [timeWait, setTimeWait] = useState(false);
-    const [lsAdvice, setLsAdvice] = useState([]);
-    const [lsDataUser, setLsDataUser] = useState([]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByIdAdvice(id);
-                if (lsServer.status === 200) setLsAdvice(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [id]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByMail(user.email);
-                if (lsServer.status === 200) setLsDataUser(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [user.email]);
-
-    setTimeout(() => {
-        if (lsAdvice.length != 0 && lsDataUser.length != 0)
-            setTimeWait(true);
-    }, 1000);
 
     return (
         <SubCard>
@@ -100,24 +64,24 @@ const ReportWorkHeight = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Grid container spacing={1}>
+                            <Grid container spacing={0.5}>
                                 <Grid item xs={12} sx={{ mb: 2 }}>
                                     <Typography variant="h5"><b>DATOS BÁSICOS DE LA ATENCIÓN</b></Typography>
                                 </Grid>
 
-                                <Pathological key={1} title="CONSECUTIVO:" text="10" />
-                                <Pathological key={2} title="FECHA DEL CONCEPTO:" text="2022-08-19" />
-                                <Pathological key={3} title="DOCUMENTO NRO:" text="12629179" />
-                                <Pathological key={4} title="NOMBRE:" text="IBARRA LOPEZ, MELQUIS LEONARDO" />
-                                <Pathological key={6} title="GENERO:" text="MASCULINO" />
-                                <Pathological key={7} title="AREA:" text="MARINE SERVICES" />
-                                <Pathological key={8} title="EDAD:" text="49" />
-                                <Pathological key={9} title="ANTIGUEDAD:" text="15" />
+                                <Pathological key={1} title="CONSECUTIVO:" text={datos.id} />
+                                <Pathological key={2} title="FECHA DEL CONCEPTO:" text={ViewFormat(datos.fechaConceptoNETA)} />
+                                <Pathological key={3} title="DOCUMENTO NRO:" text={datos.documento} />
+                                <Pathological key={4} title="NOMBRE:" text={datos.nameEmpleado} />
+                                <Pathological key={6} title="GENERO:" text={datos.nameGenero} />
+                                <Pathological key={7} title="AREA:" text={datos.nameArea} />
+                                <Pathological key={8} title="EDAD:" text={GetEdad(datos.fechaNacimiento)} />
+                                <Pathological key={9} title="ANTIGUEDAD:" text={GetEdad(datos.fechaContratoEmpleado)} />
                                 <Pathological key={10} title="VIGENCIA DEL CONCEPTO:" text="1 AÑO" />
                                 <Pathological key={11} title="TIPO DE EXAMEN:" text="APTO PARA TRABAJAR EN ALTURAS RIESGO ALTO" />
-                                <Pathological key={12} title="CONCEPTO DE APTITUD:" text="APTO PARA TRABAJAR EN ALTURAS RIESGO ALTO" />
-                                <Pathological key={13} title="CONCEPTO APTITUD APLAZADO:" text="APTO PARA TRABAJAR EN ALTURAS RIESGO ALTO" />
-                                <Pathological key={14} title="MOTIVO DE APLAZO:" text="APTO PARA TRABAJAR EN ALTURAS RIESGO ALTO" />
+                                <Pathological key={12} title="CONCEPTO DE APTITUD:" text={datos.nameConceptoActitudNETA} />
+                                <Pathological key={13} title="CONCEPTO APTITUD APLAZADO:" text={datos.nameConceptoAplazadoNETA} />
+                                <Pathological key={14} title="MOTIVO DE APLAZO:" text={datos.motivoAplazoNETA} />
 
                                 <Grid item xs={12} sx={{ mt: 2 }}>
                                     <Typography variant="h6"><b>DESCRIPCIÓN DE RESULTADOS (RESUMEN DE LIMITACIONES O RESTRICCIONES)</b></Typography>
@@ -125,10 +89,7 @@ const ReportWorkHeight = () => {
 
                                 <Grid item xs={12}>
                                     <Typography align="justify" variant="h6">
-                                        SINDROME DE MANGUITO ROTADOR HOMBRO DERECHO, RECONOCIDO CON LABORAL, SUJETO A MANEJO.(RMN 30-07-2018 RUPTURA PARCIAL
-                                        EN LA CARA ARTICULAR DEL TENDON DEL SUPRAESPINOSO, TENDINOSIS DEL SUPRAESPINOSO, OSTEOARTROSIS ACROMIOCLAVICULAR)
-                                        HTA EN TTO CON LOSARTAN 2 VECES AL DÍA.
-                                        NIEGA ALERGIAS
+                                        {datos.descripcionResultadoNETA}
                                     </Typography>
                                 </Grid>
 
@@ -138,10 +99,7 @@ const ReportWorkHeight = () => {
 
                                 <Grid item xs={12}>
                                     <Typography align="justify" variant="h6">
-                                        SINDROME DE MANGUITO ROTADOR HOMBRO DERECHO, RECONOCIDO CON LABORAL, SUJETO A MANEJO.(RMN 30-07-2018 RUPTURA PARCIAL
-                                        EN LA CARA ARTICULAR DEL TENDON DEL SUPRAESPINOSO, TENDINOSIS DEL SUPRAESPINOSO, OSTEOARTROSIS ACROMIOCLAVICULAR)
-                                        HTA EN TTO CON LOSARTAN 2 VECES AL DÍA.
-                                        NIEGA ALERGIAS
+                                        {datos.recomendacionesNETA}
                                     </Typography>
                                 </Grid>
 
@@ -156,7 +114,7 @@ const ReportWorkHeight = () => {
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <Typography variant="h6">SI</Typography>
+                                            <Typography variant="h6">{datos.nameRemitidoNETA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
@@ -164,7 +122,7 @@ const ReportWorkHeight = () => {
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <Typography variant="h6">CLINICA</Typography>
+                                            <Typography variant="h6">{datos.nameRemididoDondeNETA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={12}>

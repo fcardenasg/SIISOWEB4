@@ -390,10 +390,6 @@ const OccupationalExamination = () => {
                     setClasificacionColor(resultImc.clasificacionColor);
                 }
 
-                const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(lsServerAtencion.data.documento);
-                if (lsServerUltimoRegistro.status === 200)
-                    setLastRecord(lsServerUltimoRegistro.data);
-
                 const lsAnthropometry = await GetAllOccupationalExamination(0, 0);
                 if (lsAnthropometry.status === 200) {
                     var resultPeso = lsAnthropometry.data.entities.map((item) => (
@@ -408,40 +404,44 @@ const OccupationalExamination = () => {
                         new Date(item.fecha).getFullYear()
                     ));
 
-                    const chartData = {
-                        height: 250,
-                        series: [
-                            {
-                                name: 'PESO',
-                                data: resultPeso
-                            },
-                            {
-                                name: 'IMC',
-                                data: resultImc
-                            }
-                        ],
-                        options: {
-                            chart: {
-                                height: 350,
-                                type: 'area'
-                            },
-                            dataLabels: {
-                                enabled: true
-                            },
-                            stroke: {
-                                curve: 'smooth'
-                            },
-                            xaxis: {
-                                categories: resultAnio
-                            },
-                            tooltip: {
-                                x: {
-                                    format: 'dd/MM/yy HH:mm'
+                    if (resultPeso && resultImc && resultAnio) {
+                        const chartData = {
+                            height: 250,
+                            series: [
+                                {
+                                    name: 'PESO',
+                                    data: resultPeso !== null ? resultPeso : null
+                                },
+                                {
+                                    name: 'IMC',
+                                    data: resultImc !== null ? resultImc : null
+                                }
+                            ],
+                            options: {
+                                chart: {
+                                    height: 350,
+                                    type: 'area'
+                                },
+                                dataLabels: {
+                                    enabled: true
+                                },
+                                stroke: {
+                                    curve: 'smooth'
+                                },
+                                xaxis: {
+                                    categories: resultAnio !== null ? resultAnio : new Date().getFullYear()
+                                },
+                                tooltip: {
+                                    x: {
+                                        format: 'dd/MM/yy HH:mm'
+                                    },
                                 },
                             },
-                        },
-                    };
-                    setLsAnthropometry(chartData);
+                        };
+                        setLsAnthropometry(chartData);
+                    } else {
+                        setLsAnthropometry([]);
+                    }
                 }
 
                 const lsServerAtencionEMO = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
@@ -458,6 +458,22 @@ const OccupationalExamination = () => {
         GetAll();
     }, []);
 
+    /*     useEffect(() => {
+            async function GetAll() {
+                try {
+    
+                    const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(documento);
+                    if (lsServerUltimoRegistro.status === 200)
+                        setLastRecord(lsServerUltimoRegistro.data);
+    
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+    
+            GetAll();
+        }, [documento]); */
+
     const handleCerrarCaso = () => {
         try {
             swal(ParamCloseCase).then(async (willDelete) => {
@@ -472,10 +488,9 @@ const OccupationalExamination = () => {
 
     const handleClick = async (datos) => {
         try {
-            setDisabledButton({ ...disabledButton, buttonSave: true });
 
             const DataToInset = PostOccupationalExamination(
-                101010, documento, FormatDate(datos.fecha), atencion,
+                id, documento, FormatDate(datos.fecha), atencion,
 
                 datos.congenitosAP, datos.inmunoPrevenibleAP, datos.infecciososAP, datos.ojoAP, datos.agudezaVisualAP, datos.oidosAP, datos.nasoFaringeAP,
                 datos.cardiovascularAP, datos.pulmonarAP, datos.gastrointestinalAP, datos.gimitoUrinarioAP, datos.neurologicoAP, datos.transtornoPielAP,
@@ -571,10 +586,6 @@ const OccupationalExamination = () => {
                 if (result.status === 200) {
                     setOpenSuccess(true);
                     await handleUpdateAttention("ATENDIDO");
-                    setDisabledButton(false);
-                    setTimeout(() => {
-                        setDisabledButton({ ...disabledButton, buttonSave: false, buttonReport: true });
-                    }, 1500);
                 }
             }
         } catch (error) {
@@ -691,7 +702,7 @@ const OccupationalExamination = () => {
                     </DialogFormula>
 
                     <Transitions type="collapse" in={viewChart} position="top-left" direction="up">
-                        <ChartAnthropometry datos={lsAnthropometry} lastRecord={lastRecord} />
+                        {lsAnthropometry.length != 0 ? <ChartAnthropometry datos={lsAnthropometry} lastRecord={lastRecord} /> : <></>}
                         <Grid sx={{ pb: 2 }} />
                     </Transitions>
 

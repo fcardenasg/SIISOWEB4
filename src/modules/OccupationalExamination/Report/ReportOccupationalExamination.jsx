@@ -35,6 +35,9 @@ import ReportHabits from './ReportHabits';
 import ReportSystemsReview from './ReportSystemsReview';
 import ReportFunctionalExploration from './ReportFunctionalExploration';
 import ReportDefinitiveDiagnosis from './ReportDefinitiveDiagnosis';
+import { GetByIdDataReport } from 'api/clients/OccupationalExaminationClient';
+import { GetAllByDocumentWorkHistoryOtherCompany } from 'api/clients/WorkHistoryOtherCompany';
+import { GetAllByDocumentWorkHistory } from 'api/clients/WorkHistoryClient';
 
 const ReportOccupationalExamination = () => {
     const { id } = useParams();
@@ -43,14 +46,42 @@ const ReportOccupationalExamination = () => {
     const componentRef = useRef(null);
 
     const [timeWait, setTimeWait] = useState(false);
-    const [lsAdvice, setLsAdvice] = useState([]);
+    const [lsDataReport, setLsDataReport] = useState([]);
+    const [lsWorkHistoryOther, setLsWorkHistoryOther] = useState([]);
+    const [lsWorkHistoryDLTD, setLsWorkHistoryDLTD] = useState([]);
     const [lsDataUser, setLsDataUser] = useState([]);
 
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetByIdAdvice(id);
-                if (lsServer.status === 200) setLsAdvice(lsServer.data);
+                const lsServer = await GetAllByDocumentWorkHistory(0, 0, 94367343);
+                if (lsServer.status === 200) setLsWorkHistoryDLTD(lsServer.data.entities);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        GetAll();
+    }, [id]);
+
+    useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetAllByDocumentWorkHistoryOtherCompany(0, 0, 94367343);
+                if (lsServer.status === 200) setLsWorkHistoryOther(lsServer.data.entities);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        GetAll();
+    }, [id]);
+
+    useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetByIdDataReport(15);
+                if (lsServer.status === 200) setLsDataReport(lsServer.data);
             } catch (error) {
                 console.log(error);
             }
@@ -73,7 +104,7 @@ const ReportOccupationalExamination = () => {
     }, [user.email]);
 
     setTimeout(() => {
-        if (lsAdvice.length != 0 && lsDataUser.length != 0)
+        if (lsDataReport.length != 0 && lsDataUser.length != 0)
             setTimeWait(true);
     }, 1000);
 
@@ -82,7 +113,7 @@ const ReportOccupationalExamination = () => {
             <Grid container justifyContent="center" spacing={gridSpacing}>
                 <Grid item xs={12} md={10} lg={8} ref={componentRef}>
                     <Grid container spacing={gridSpacing}>
-                        <Grid item xs={12}>
+                        {/* <Grid item xs={12}>
                             <ReportPage1 />
                         </Grid>
 
@@ -92,51 +123,61 @@ const ReportOccupationalExamination = () => {
 
                         <Grid item xs={12}>
                             <ReportPage3 />
-                        </Grid>
-
-                        {/* <Grid item xs={12}>
-                            <ReportWorkHeight />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <ReportEmployeeNotification />
                         </Grid> */}
 
+                        <Grid item xs={12}>
+                            <ReportWorkHeight key={10} datos={lsDataReport} lsDataUser={lsDataUser} />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <ReportEmployeeNotification key={11} datos={lsDataReport} lsDataUser={lsDataUser} />
+                        </Grid>
+
 
                         {/* <Grid item xs={12}>
-                            <ReportConceptAptitude />
+                            <ReportConceptAptitude key={1} datos={lsDataReport} lsDataUser={lsDataUser} />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <ReportDiagnostics />
+                            <ReportDiagnostics key={2} datos={lsDataReport} lsDataUser={lsDataUser} />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <ReportWHOtherCompanies />
+                            <ReportWHOtherCompanies
+                                key={3}
+                                datos={lsDataReport}
+                                lsDataUser={lsDataUser}
+                                lsWorkHistoryOther={lsWorkHistoryOther}
+                            />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <ReportWHDrummondLtd />
+                            <ReportWHDrummondLtd
+                                key={4}
+                                datos={lsDataReport}
+                                lsDataUser={lsDataUser}
+                                lsWorkHistoryDLTD={lsWorkHistoryDLTD}
+                            />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <ReportPersonalHistory />
+                            <ReportPersonalHistory key={5} datos={lsDataReport} />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <ReportHabits />
+                            <ReportHabits key={6} datos={lsDataReport} />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <ReportSystemsReview />
+                            <ReportSystemsReview key={7} datos={lsDataReport} />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <ReportFunctionalExploration />
+                            <ReportFunctionalExploration key={8} datos={lsDataReport} />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <ReportDefinitiveDiagnosis />
+                            <ReportDefinitiveDiagnosis key={9} datos={lsDataReport} lsDataUser={lsDataUser} />
                         </Grid> */}
                     </Grid>
                 </Grid>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Divider, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
@@ -9,7 +9,8 @@ import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import { GetByIdAdvice } from 'api/clients/AdviceClient';
 import { FormatDate, GetEdad } from 'components/helpers/Format';
-import { GetByMail } from 'api/clients/UserClient';
+import { DefaultValue } from 'components/helpers/Enums';
+import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
 
 function createData(riesgo, sugRiesgo, exp, anios, meses, sinEpp, conEpp, medidasControl) {
     return { riesgo, sugRiesgo, exp, anios, meses, sinEpp, conEpp, medidasControl };
@@ -21,44 +22,159 @@ const rows = [
     createData('QUÍMICO', 'MPI', 'F', 10, 6, "MEDIO", "BAJO", "PROTECCIÓN RESPIRATORIA")
 ];
 
-const ReportWHDrummondLtd = () => {
-    const { id } = useParams();
+const WorkHistoryAM = ({ mpiAnio = 0, mpiMes = 0, anioRuido = 0, mesRuido = 0 }) => {
+    return (
+        <Fragment>
+            <Grid item xs={4}>
+                <Typography variant="h6"><b>MPI:</b></Typography>
+            </Grid>
+
+            <Grid item xs={4}>
+                <Typography variant="h6">{mpiAnio} AÑOS</Typography>
+            </Grid>
+
+            <Grid item xs={4}>
+                <Typography variant="h6">{mpiMes} MESES</Typography>
+            </Grid>
+
+            <Grid item xs={4}>
+                <Typography variant="h6"><b>RUDIO:</b></Typography>
+            </Grid>
+
+            <Grid item xs={4}>
+                <Typography variant="h6">{anioRuido} AÑOS</Typography>
+            </Grid>
+
+            <Grid item xs={4}>
+                <Typography variant="h6">{mesRuido} MESES</Typography>
+            </Grid>
+        </Fragment>
+    )
+}
+
+const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = [] }) => {
     const { user } = useAuth();
 
-    const [timeWait, setTimeWait] = useState(false);
-    const [lsAdvice, setLsAdvice] = useState([]);
-    const [lsDataUser, setLsDataUser] = useState([]);
+    const [mpiAnioDTLD, setMpiAnioDTLD] = useState(0);
+    const [mpiMesDTLD, setMpiMesDTLD] = useState(0);
+    const [anioRuidoDTLD, setAnioRuidoDTLD] = useState(0);
+    const [mesRuidoDTLD, setMesRuidoDTLD] = useState(0);
+
+    const [mpiAnioOtrasEmpresas, setMpiAnioOtrasEmpresas] = useState(0);
+    const [mpiMesOtrasEmpresas, setMpiMesOtrasEmpresas] = useState(0);
+    const [anioRuidoOtrasEmpresas, setAnioRuidoOtrasEmpresas] = useState(0);
+    const [mesRuidoOtrasEmpresas, setMesRuidoOtrasEmpresas] = useState(0);
 
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetByIdAdvice(id);
-                if (lsServer.status === 200) setLsAdvice(lsServer.data);
+                const lsServerDTLD = await GetAllByHistorico(0, 0, 94367343);
+                if (lsServerDTLD.status === 200) {
+                    var arrayMPI = lsServerDTLD.data.entities;
+                    var arrayRUIDO = lsServerDTLD.data.entities;
+
+                    if (arrayMPI.length != 0 || arrayRUIDO.length != 0) {
+                        var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI_DLTD)
+                            .map((riesgo) => ({
+                                anio: riesgo.anio,
+                                mes: riesgo.mes
+                            }));
+
+                        var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo == DefaultValue.RiesgoFisico && code.idClase == DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                            .map((riesgo) => ({
+                                anio: riesgo.anio,
+                                mes: riesgo.mes
+                            }));
+
+                        var aniosMpi = 0;
+                        var mesMpi = 0;
+                        var aniosRuido = 0;
+                        var mesRuido = 0;
+
+                        for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                            const datos = arrayReadyRUIDO[index];
+                            aniosRuido = aniosRuido + datos.anio;
+                            setAnioRuidoDTLD(aniosRuido);
+                        }
+
+                        for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                            const datos = arrayReadyRUIDO[index];
+                            mesRuido = mesRuido + datos.mes;
+                            setMesRuidoDTLD(mesRuido);
+                        }
+
+                        for (let index = 0; index < arrayReadyMPI.length; index++) {
+                            const datos = arrayReadyMPI[index];
+                            aniosMpi = aniosMpi + datos.anio;
+                            setMpiAnioDTLD(aniosMpi);
+                        }
+
+                        for (let index = 0; index < arrayReadyMPI.length; index++) {
+                            const datos = arrayReadyMPI[index];
+                            mesMpi = mesMpi + datos.mes;
+                            setMpiMesDTLD(mesMpi);
+                        }
+                    }
+                }
+
+                const lsServerOtrasEmpresas = await GetAllByHistoricoCompany(0, 0, 94367343);
+                if (lsServerOtrasEmpresas.status === 200) {
+                    var arrayMPI = lsServerOtrasEmpresas.data.entities;
+                    var arrayRUIDO = lsServerOtrasEmpresas.data.entities;
+
+                    if (arrayMPI.length != 0 || arrayRUIDO.length != 0) {
+                        var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI_DLTD)
+                            .map((riesgo) => ({
+                                anio: riesgo.anio,
+                                mes: riesgo.mes
+                            }));
+
+                        var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo == DefaultValue.RiesgoFisico && code.idClase == DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                            .map((riesgo) => ({
+                                anio: riesgo.anio,
+                                mes: riesgo.mes
+                            }));
+
+                        var aniosMpi = 0;
+                        var mesMpi = 0;
+                        var aniosRuido = 0;
+                        var mesRuido = 0;
+
+                        for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                            const datos = arrayReadyRUIDO[index];
+                            aniosRuido = aniosRuido + datos.anio;
+                            setAnioRuidoOtrasEmpresas(aniosRuido);
+                        }
+
+                        for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                            const datos = arrayReadyRUIDO[index];
+                            mesRuido = mesRuido + datos.mes;
+                            setMesRuidoOtrasEmpresas(mesRuido);
+                        }
+
+                        for (let index = 0; index < arrayReadyMPI.length; index++) {
+                            const datos = arrayReadyMPI[index];
+                            aniosMpi = aniosMpi + datos.anio;
+                            setMpiAnioOtrasEmpresas(aniosMpi);
+                        }
+
+                        for (let index = 0; index < arrayReadyMPI.length; index++) {
+                            const datos = arrayReadyMPI[index];
+                            mesMpi = mesMpi + datos.mes;
+                            setMpiMesOtrasEmpresas(mesMpi);
+                        }
+                    }
+                }
+
+
+
             } catch (error) {
                 console.log(error);
             }
         }
 
         GetAll();
-    }, [id]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByMail(user.email);
-                if (lsServer.status === 200) setLsDataUser(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [user.email]);
-
-    setTimeout(() => {
-        if (lsAdvice.length != 0 && lsDataUser.length != 0)
-            setTimeWait(true);
-    }, 1000);
+    }, []);
 
     return (
         <SubCard>
@@ -72,7 +188,7 @@ const ReportWHDrummondLtd = () => {
                         <Grid item xs={4}>
                             <Typography variant="h5" align="center"><b>DIVISION MÉDICA</b></Typography>
                             <Typography variant="h5" align="center"><b>HISTORIA CLINICA OCUPACIONAL</b></Typography>
-                            <Typography variant="h5" align="center"><b>CONTROL PERIODICO</b></Typography>
+                            <Typography variant="h5" align="center"><b>{datos.nameAtencion}</b></Typography>
                         </Grid>
 
                         <Grid item xs={4}>
@@ -98,43 +214,29 @@ const ReportWHDrummondLtd = () => {
 
                         <Grid item xs={12}>
                             <Grid container spacing={1}>
-                                <Grid item xs={2}>
-                                    <Typography variant="h6"><b>SUCURSAL</b></Typography>
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <Typography variant="h6"><b>POSICIÓN</b></Typography>
+                                <Grid item xs={6}>
+                                    <Typography variant="h6"><b>CARGO</b></Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography variant="h6"><b>AREA</b></Typography>
+                                    <Typography align='center' variant="h6"><b>AÑOS</b></Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography variant="h6"><b>DEPARTAMENTO</b></Typography>
-                                </Grid>
-                                <Grid item xs={1}>
-                                    <Typography variant="h6"><b>AÑOS</b></Typography>
-                                </Grid>
-                                <Grid item xs={1}>
-                                    <Typography variant="h6"><b>MESES</b></Typography>
+                                    <Typography align='center' variant="h6"><b>MESES</b></Typography>
                                 </Grid>
 
-                                <Grid item xs={2}>
-                                    <Typography variant="h6">PUERTO</Typography>
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <Typography variant="h6">DECKHAND</Typography>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Typography variant="h6">MARINE SERVICES</Typography>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Typography variant="h6">MARINE SERVICES</Typography>
-                                </Grid>
-                                <Grid item xs={1}>
-                                    <Typography variant="h6">11</Typography>
-                                </Grid>
-                                <Grid item xs={1}>
-                                    <Typography variant="h6">7</Typography>
-                                </Grid>
+                                {lsWorkHistoryDLTD && lsWorkHistoryDLTD.map((work, index) => (
+                                    <Fragment>
+                                        <Grid item xs={6}>
+                                            <Typography variant="h6">{work.nameCargo}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography align='center' variant="h6">{work.anio}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography align='center' variant="h6">{work.meses}</Typography>
+                                        </Grid>
+                                    </Fragment>
+                                ))}
                             </Grid>
                         </Grid>
 
@@ -221,102 +323,54 @@ const ReportWHDrummondLtd = () => {
                         <Grid item xs={12}>
                             <Grid container spacing={1}>
                                 <Grid item xs>
-                                    <Grid container spacing={0}>
+                                    <Grid container spacing={0.5}>
                                         <Grid item xs={12}>
                                             <Typography align="center" variant="h6"><b>EN DLTD</b></Typography>
                                         </Grid>
 
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6"><b>MPI:</b></Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">10 AÑOS</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">6 MESES</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6"><b>RUDIO:</b></Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">15 AÑOS</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">0 MESES</Typography>
-                                        </Grid>
+                                        <WorkHistoryAM
+                                            key={1}
+                                            anioRuido={mpiAnioDTLD}
+                                            mesRuido={mpiMesDTLD}
+                                            mpiAnio={anioRuidoDTLD}
+                                            mpiMes={mesRuidoDTLD}
+                                        />
                                     </Grid>
                                 </Grid>
 
                                 <Divider orientation="vertical" flexItem sx={{ background: "black", border: 1, color: "black" }} />
 
                                 <Grid item xs>
-                                    <Grid container spacing={0}>
+                                    <Grid container spacing={0.5}>
                                         <Grid item xs={12}>
                                             <Typography align="center" variant="h6"><b>EN OTRAS EMPRESAS</b></Typography>
                                         </Grid>
 
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6"><b>MPI:</b></Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">0 AÑOS</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">0 MESES</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6"><b>RUDIO:</b></Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">0 AÑOS</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">0 MESES</Typography>
-                                        </Grid>
+                                        <WorkHistoryAM
+                                            key={1}
+                                            anioRuido={mpiAnioOtrasEmpresas}
+                                            mesRuido={mpiMesOtrasEmpresas}
+                                            mpiAnio={anioRuidoOtrasEmpresas}
+                                            mpiMes={mesRuidoOtrasEmpresas}
+                                        />
                                     </Grid>
                                 </Grid>
 
                                 <Divider orientation="vertical" flexItem sx={{ background: "black", border: 1, color: "black" }} />
 
                                 <Grid item xs>
-                                    <Grid container spacing={0}>
+                                    <Grid container spacing={0.5}>
                                         <Grid item xs={12}>
                                             <Typography align="center" variant="h6"><b>TOTALES</b></Typography>
                                         </Grid>
 
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6"><b>MPI:</b></Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">10 AÑOS</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">6 MESES</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6"><b>RUDIO:</b></Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">15 AÑOS</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">0 MESES</Typography>
-                                        </Grid>
+                                        <WorkHistoryAM
+                                            key={1}
+                                            anioRuido={mpiAnioDTLD + mpiAnioOtrasEmpresas}
+                                            mesRuido={mpiMesDTLD + mpiMesOtrasEmpresas}
+                                            mpiAnio={anioRuidoDTLD + anioRuidoOtrasEmpresas}
+                                            mpiMes={mesRuidoDTLD + mesRuidoOtrasEmpresas}
+                                        />
                                     </Grid>
                                 </Grid>
                             </Grid>

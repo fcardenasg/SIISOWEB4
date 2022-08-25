@@ -25,44 +25,8 @@ const EmployeeNotification = ({ title = '', text = '' }) => {
     )
 }
 
-const ReportEmployeeNotification = () => {
-    const { id } = useParams();
+const ReportEmployeeNotification = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
-
-    const [timeWait, setTimeWait] = useState(false);
-    const [lsAdvice, setLsAdvice] = useState([]);
-    const [lsDataUser, setLsDataUser] = useState([]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByIdAdvice(id);
-                if (lsServer.status === 200) setLsAdvice(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [id]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByMail(user.email);
-                if (lsServer.status === 200) setLsDataUser(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [user.email]);
-
-    setTimeout(() => {
-        if (lsAdvice.length != 0 && lsDataUser.length != 0)
-            setTimeWait(true);
-    }, 1000);
 
     return (
         <SubCard>
@@ -109,7 +73,7 @@ const ReportEmployeeNotification = () => {
                                     <Typography variant='h6'><b>SEDE:</b></Typography>
                                 </Grid>
                                 <Grid item xs={1.5}>
-                                    <Typography align="right" variant='h6'>VALLEDUPAR</Typography>
+                                    <Typography align="right" variant='h6'>{datos.nameSede}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2.5}>
@@ -165,32 +129,32 @@ const ReportEmployeeNotification = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0}>
-                                        <EmployeeNotification key={1} title="1. MENOR DE EDAD." text="SI" />
-                                        <EmployeeNotification key={2} title="2. MUJER EMBARAZADA CON CUALQUIER EDAD DE GESTACIÓN." text="SI" />
-                                        <EmployeeNotification key={3} title="3. ARRITMIAS CARDIACAS." text="SI" />
-                                        <EmployeeNotification key={4} title="4. ENFERMEDADES O MALFORMACIONES CARDIACAS ASINTOMÁTICAS." text="SI" />
-                                        <EmployeeNotification key={5} title="5. HISTORIA DE HIPOTENSIÓN ORTOSTÁTICA (NO BASTA PRESENTAR EPISODIOS AISLADOS)." text="SI" />
-                                        <EmployeeNotification key={6} title="6. HIPERTENSIÓN ARTERIAL NO CONTROLADA O RESISTENTE AL TRATAMIENTO." text="SI" />
-                                        <EmployeeNotification key={7} title="7. HIPERTRIGLICERIDEMIA AISLADA SEVERA, CON CIFRAS MAYORES A 500 MG/DL." text="SI" />
-                                        <EmployeeNotification key={8} title="8. CIFRAS LDL MAYORES A 190 MG/DL." text="SI" />
-                                        <EmployeeNotification key={9} title="9. DIABETES CONTROLADAS." text="SI" />
-                                        <EmployeeNotification key={10} title="10. DISLIPEMIA DE MODERADA A SEVERA ASOCIADA A DIABETES, HTA, OBESIDAD, HIPOTIROIDISMO." text="SI" />
-                                        <EmployeeNotification key={11} title="11. DIAGNÓSTICO O SOSPECHA DE DISLIPEMIA DE ORIGEN FAMILIAR (GENÉTICO)." text="SI" />
-                                        <EmployeeNotification key={12} title="12. RIESGO CARDIOVASCULAR A 10 AÑOS 20% SEGÚN MÉTODO DE FRAMINGHAM." text="SI" />
-                                        <EmployeeNotification key={13} title="13. RIESGO CARDIOVASCULAR ENTRE 10 Y 20% SI EXISTEN DOS O MÁS FACTORES MAYORES DE RIESGO." text="SI" />
-                                        <EmployeeNotification key={14} title="14. HIPERTIROIDISMO NO CONTROLADO O SINTOMÁTICO." text="SI" />
-                                        <EmployeeNotification key={15} title="15. ALTERACIÓN AUDITIVA SEVERA Y BILATERAL QUE COMPROMETA BANDAS CONVERSACIONALES (500 A 2000 HZ)." text="SI" />
-                                        <EmployeeNotification key={16} title="16. VÉRTIGO Y OTRAS ALTERACIONES DEL EQUILIBRIO." text="SI" />
-                                        <EmployeeNotification key={17} title="17. EPILEPSIA U OTRA ENFERMEDAD NEUROLÓGICA, QUE PUEDA GENERAR ALTERACIONES DE LA CONCIENCIA O EL EQUILIBRIO." text="SI" />
-                                        <EmployeeNotification key={18} title="18. CEGUERA TEMPORAL O PERMANENTE O ALTERACIONES VISUALES SIGNIFICATIVAS Y SEVERAS." text="SI" />
-                                        <EmployeeNotification key={19} title="19. HISTORIA DE FOBIAS O EPISODIOS DE PÁNICO RELACIONADOS CON ALTURA." text="SI" />
-                                        <EmployeeNotification key={20} title="20. TRASTORNOS PSIQUIÁTRICOS, INCLUYENDO ADICCIONES A SUSTANCIAS PSICOACTIVAS." text="SI" />
+                                        <EmployeeNotification key={1} title="1. MENOR DE EDAD." text={datos.idMenorEdadNEMTA} />
+                                        <EmployeeNotification key={2} title="2. MUJER EMBARAZADA CON CUALQUIER EDAD DE GESTACIÓN." text={datos.idMujerEmbarazadaNEMTA} />
+                                        <EmployeeNotification key={3} title="3. ARRITMIAS CARDIACAS." text={datos.idArimiaNEMTA} />
+                                        <EmployeeNotification key={4} title="4. ENFERMEDADES O MALFORMACIONES CARDIACAS ASINTOMÁTICAS." text={datos.idEnfermedadNEMTA} />
+                                        <EmployeeNotification key={5} title="5. HISTORIA DE HIPOTENSIÓN ORTOSTÁTICA (NO BASTA PRESENTAR EPISODIOS AISLADOS)." text={datos.idHistoriaNEMTA} />
+                                        <EmployeeNotification key={6} title="6. HIPERTENSIÓN ARTERIAL NO CONTROLADA O RESISTENTE AL TRATAMIENTO." text={datos.idHipertensionNEMTA} />
+                                        <EmployeeNotification key={7} title="7. HIPERTRIGLICERIDEMIA AISLADA SEVERA, CON CIFRAS MAYORES A 500 MG/DL." text={datos.idHipertrigliceridemiaNEMTA} />
+                                        <EmployeeNotification key={8} title="8. CIFRAS LDL MAYORES A 190 MG/DL." text={datos.idCifrasNEMTA} />
+                                        <EmployeeNotification key={9} title="9. DIABETES CONTROLADAS." text={datos.idDiabetesNEMTA} />
+                                        <EmployeeNotification key={10} title="10. DISLIPEMIA DE MODERADA A SEVERA ASOCIADA A DIABETES, HTA, OBESIDAD, HIPOTIROIDISMO." text={datos.idDislipidemiaNEMTA} />
+                                        <EmployeeNotification key={11} title="11. DIAGNÓSTICO O SOSPECHA DE DISLIPEMIA DE ORIGEN FAMILIAR (GENÉTICO)." text={datos.idDiagnosticoNEMTA} />
+                                        <EmployeeNotification key={12} title="12. RIESGO CARDIOVASCULAR A 10 AÑOS 20% SEGÚN MÉTODO DE FRAMINGHAM." text={datos.idRiesgoCardiovascular1NEMTA} />
+                                        <EmployeeNotification key={13} title="13. RIESGO CARDIOVASCULAR ENTRE 10 Y 20% SI EXISTEN DOS O MÁS FACTORES MAYORES DE RIESGO." text={datos.idRiesgoCardiovascular2NEMTA} />
+                                        <EmployeeNotification key={14} title="14. HIPERTIROIDISMO NO CONTROLADO O SINTOMÁTICO." text={datos.idHipertiroidismoNEMTA} />
+                                        <EmployeeNotification key={15} title="15. ALTERACIÓN AUDITIVA SEVERA Y BILATERAL QUE COMPROMETA BANDAS CONVERSACIONALES (500 A 2000 HZ)." text={datos.idAlteracionAuditivaNEMTA} />
+                                        <EmployeeNotification key={16} title="16. VÉRTIGO Y OTRAS ALTERACIONES DEL EQUILIBRIO." text={datos.idVertigoAlteracionesNEMTA} />
+                                        <EmployeeNotification key={17} title="17. EPILEPSIA U OTRA ENFERMEDAD NEUROLÓGICA, QUE PUEDA GENERAR ALTERACIONES DE LA CONCIENCIA O EL EQUILIBRIO." text={datos.idEpilegsiaNEMTA} />
+                                        <EmployeeNotification key={18} title="18. CEGUERA TEMPORAL O PERMANENTE O ALTERACIONES VISUALES SIGNIFICATIVAS Y SEVERAS." text={datos.idCegueraTemporalNEMTA} />
+                                        <EmployeeNotification key={19} title="19. HISTORIA DE FOBIAS O EPISODIOS DE PÁNICO RELACIONADOS CON ALTURA." text={datos.idHistoriaFobiasNEMTA} />
+                                        <EmployeeNotification key={20} title="20. TRASTORNOS PSIQUIÁTRICOS, INCLUYENDO ADICCIONES A SUSTANCIAS PSICOACTIVAS." text={datos.idTranstornoPsiquiatricoNEMTA} />
                                         <EmployeeNotification key={21} title="21. LIMITACIONES PERMANENTES PARA DEAMBULAR POR SUS PROPIOS MEDIOS O LESIONES CON COMPROMISO FUNCIONAL DEL CUELLO, 
-                                ESPALDA O EXTREMIDADES, QUE AFECTEN EL AGARRE REQUERIDO EN ESTAS LABORES." text="SI" />
-                                        <EmployeeNotification key={22} title="22. OBESIDAD MÓRBIDA (IMC MAYOR A 35) O PESO MAYOR DE 120 KG, POR LIMITACIONES DE SISTEMAS DE ARNESES." text="SI" />
-                                        <EmployeeNotification key={23} title="23. DE FORMA TEMPORAL, EL USO DE MEDICAMENTOS QUE PRODUZCAN SUEÑO O DEPRIVACIÓN DE SUEÑO MÁS DE UN TURNO." text="SI" />
+                                ESPALDA O EXTREMIDADES, QUE AFECTEN EL AGARRE REQUERIDO EN ESTAS LABORES." text={datos.idLimitacionesNEMTA} />
+                                        <EmployeeNotification key={22} title="22. OBESIDAD MÓRBIDA (IMC MAYOR A 35) O PESO MAYOR DE 120 KG, POR LIMITACIONES DE SISTEMAS DE ARNESES." text={datos.idObesidadMorbidaNEMTA} />
+                                        <EmployeeNotification key={23} title="23. DE FORMA TEMPORAL, EL USO DE MEDICAMENTOS QUE PRODUZCAN SUEÑO O DEPRIVACIÓN DE SUEÑO MÁS DE UN TURNO." text={datos.idDeformaTemporalNEMTA} />
                                         <EmployeeNotification key={24} title="24. OTRAS ALTERACIONES CARDIOVASCULARES, PULMONARES, MUSCULARES, HEPÁTICAS, SANGUÍNEAS O RENALES, QUE POR SU SEVERIDAD O
-                                 PROGRESO PUEDAN GENERAR ALTERACIONES DEL EQUILIBRIO O DE LA CONCIENCIA EN CONCEPTO DEL MÉDICO TRATANTE." text="SI" />
+                                 PROGRESO PUEDAN GENERAR ALTERACIONES DEL EQUILIBRIO O DE LA CONCIENCIA EN CONCEPTO DEL MÉDICO TRATANTE." text={datos.idOtrasAlteracionesNEMTA} />
                                     </Grid>
                                 </Grid>
 
@@ -200,8 +164,7 @@ const ReportEmployeeNotification = () => {
 
                                 <Grid item xs={12}>
                                     <Typography align="justify" variant='h6'>
-                                        SINDROME DE MANGUITO ROTADOR HOMBRO DERECHO, RECONOCIDO CON LABORAL, SUJETO A MANEJO.(RMN 30-07-2018 RUPTURA PARCIAL
-                                        EN LA CARA ARTICULAR DEL TENDON DEL SUPRAESPINOSO, TENDINOSIS DEL SUPRAESPINOSO, OSTEOARTROSIS ACROMIOCLAVICULAR)
+                                        {datos.observacionesNEMTA}
                                     </Typography>
                                 </Grid>
 
@@ -216,7 +179,7 @@ const ReportEmployeeNotification = () => {
                                         </Grid>
 
                                         <Grid item xs={5.5}>
-                                            <Typography align="right" variant='h6'>APTO PARA TRABAJAR EN ALTURAS RIESGO ALTO</Typography>
+                                            <Typography align="right" variant='h6'>{datos.nameConceptoActitudMedicoNEMTA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={3}>

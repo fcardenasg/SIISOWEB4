@@ -8,7 +8,7 @@ import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import { GetByIdAdvice } from 'api/clients/AdviceClient';
-import { FormatDate, GetEdad } from 'components/helpers/Format';
+import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
 import { GetByMail } from 'api/clients/UserClient';
 
 const FunctionalExploration = ({ title = '', text = '' }) => {
@@ -43,44 +43,8 @@ const ParaclinicalExaminations = ({ fecha = new Date(), estudio = "", resultado 
     )
 }
 
-const ReportFunctionalExploration = () => {
-    const { id } = useParams();
+const ReportFunctionalExploration = ({ datos = [] }) => {
     const { user } = useAuth();
-
-    const [timeWait, setTimeWait] = useState(false);
-    const [lsAdvice, setLsAdvice] = useState([]);
-    const [lsDataUser, setLsDataUser] = useState([]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByIdAdvice(id);
-                if (lsServer.status === 200) setLsAdvice(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [id]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByMail(user.email);
-                if (lsServer.status === 200) setLsDataUser(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [user.email]);
-
-    setTimeout(() => {
-        if (lsAdvice.length != 0 && lsDataUser.length != 0)
-            setTimeWait(true);
-    }, 1000);
 
     return (
         <SubCard>
@@ -94,7 +58,7 @@ const ReportFunctionalExploration = () => {
                         <Grid item xs={4}>
                             <Typography variant="h5" align="center"><b>DIVISION MÉDICA</b></Typography>
                             <Typography variant="h5" align="center"><b>HISTORIA CLINICA OCUPACIONAL</b></Typography>
-                            <Typography variant="h5" align="center"><b>CONTROL PERIODICO</b></Typography>
+                            <Typography variant="h5" align="center"><b>{datos.nameAtencion}</b></Typography>
                         </Grid>
 
                         <Grid item xs={4}>
@@ -120,28 +84,28 @@ const ReportFunctionalExploration = () => {
 
                         <Grid item xs={12}>
                             <Grid container spacing={0.5}>
-                                <FunctionalExploration key={1} title="1. MOVILIDAD OCULAR" text="NORMAL" />
-                                <FunctionalExploration key={2} title="2. EQUILIBRIO" text="NORMAL" />
-                                <FunctionalExploration key={3} title="3. MARCHA - COORDINACIÓN" text="NORMAL" />
-                                <FunctionalExploration key={3} title="4. MOVILIDAD HOMBRO" text="ANORMAL" />
-                                <FunctionalExploration key={4} title="5. MOVILIDAD - CODO" text="NORMAL" />
-                                <FunctionalExploration key={5} title="6. MOVILIDAD-MUÑECA" text="NORMAL" />
-                                <FunctionalExploration key={7} title="7. SIGNO TÚNEL" text="NORMAL" />
-                                <FunctionalExploration key={8} title="8. SIGNOPHALEN" text="NORMAL" />
-                                <FunctionalExploration key={9} title="9. MOVILIDAD MANOS" text="NORMAL" />
-                                <FunctionalExploration key={10} title="10. MOVILIDAD CADERA" text="NORMAL" />
-                                <FunctionalExploration key={12} title="11. MOVILIDAD RODILLA" text="NORMAL" />
-                                <FunctionalExploration key={13} title="12. MOVILIDAD TOBILLO" text="NORMAL" />
-                                <FunctionalExploration key={14} title="13. MOVILIDAD CUELLO (C1-C4)" text="NORMAL" />
-                                <FunctionalExploration key={15} title="14. ROT BICIPITAL(C5)" text="NORMAL" />
-                                <FunctionalExploration key={15} title="15. ROT ROTULIANO(L4)" text="NORMAL" />
-                                <FunctionalExploration key={15} title="16. EXTENSIÓN PRIMER ARTEJO (L)" text="NORMAL" />
-                                <FunctionalExploration key={15} title="17. SENSIBILIDAD CARA ANTERIOR" text="NORMAL" />
-                                <FunctionalExploration key={15} title="18. EVERSIÓN PIE(S1)" text="NORMAL" />
-                                <FunctionalExploration key={15} title="19. SENSIBILIDAD CARA LATERAL PIE (S1)" text="NORMAL" />
-                                <FunctionalExploration key={15} title="20. ROT AQUILIANO" text="NORMAL" />
-                                <FunctionalExploration key={15} title="21. SIGNO DE LASÉGUE" text="NORMAL" />
-                                <FunctionalExploration key={15} title="22. ÍNDICE DE WELLS" text="NORMAL" />
+                                <FunctionalExploration key={1} title="1. MOVILIDAD OCULAR" text={datos.movilidadEFU} />
+                                <FunctionalExploration key={2} title="2. EQUILIBRIO" text={datos.equilibrioEFU} />
+                                <FunctionalExploration key={3} title="3. MARCHA - COORDINACIÓN" text={datos.marchaEFU} />
+                                <FunctionalExploration key={4} title="4. MOVILIDAD HOMBRO" text={datos.movilidadHombroEFU} />
+                                <FunctionalExploration key={5} title="5. MOVILIDAD - CODO" text={datos.movilidadCodoEFU} />
+                                <FunctionalExploration key={6} title="6. MOVILIDAD-MUÑECA" text={datos.movilidadMuniecaEFU} />
+                                <FunctionalExploration key={7} title="7. SIGNO TÚNEL" text={datos.signoTinelEFU} />
+                                <FunctionalExploration key={8} title="8. SIGNOPHALEN" text={datos.signoPhalenEFU} />
+                                <FunctionalExploration key={9} title="9. MOVILIDAD MANOS" text={datos.movilidadManosEFU} />
+                                <FunctionalExploration key={10} title="10. MOVILIDAD CADERA" text={datos.movilidadCaderaEFU} />
+                                <FunctionalExploration key={11} title="11. MOVILIDAD RODILLA" text={datos.movilidadRodillaEFU} />
+                                <FunctionalExploration key={12} title="12. MOVILIDAD TOBILLO" text={datos.movilidadTobilloEFU} />
+                                <FunctionalExploration key={13} title="13. MOVILIDAD CUELLO (C1-C4)" text={datos.movilidadCuelloEFU} />
+                                <FunctionalExploration key={14} title="14. ROT BICIPITAL(C5)" text={datos.rotVisipitalEFU} />
+                                <FunctionalExploration key={15} title="15. ROT ROTULIANO(L4)" text={datos.rotRotuleanoEFU} />
+                                <FunctionalExploration key={16} title="16. EXTENSIÓN PRIMER ARTEJO (L)" text={datos.extencionEFU} />
+                                <FunctionalExploration key={17} title="17. SENSIBILIDAD CARA ANTERIOR" text={datos.sensibilidadCaraAnteriorEFU} />
+                                <FunctionalExploration key={18} title="18. EVERSIÓN PIE(S1)" text={datos.eversionPiesEFU} />
+                                <FunctionalExploration key={19} title="19. SENSIBILIDAD CARA LATERAL PIE (S1)" text={datos.sensibilidadCaraLateralEFU} />
+                                <FunctionalExploration key={20} title="20. ROT AQUILIANO" text={datos.rotAquileanoEFU} />
+                                <FunctionalExploration key={21} title="21. SIGNO DE LASÉGUE" text={datos.signoLasegueEFU} />
+                                <FunctionalExploration key={22} title="22. ÍNDICE DE WELLS" text={datos.indiceWellsEFU} />
 
                                 <Grid item xs={12} sx={{ mt: 2 }}>
                                     <Typography variant="h5"><b>OBSERVACIONES:</b></Typography>
@@ -149,7 +113,7 @@ const ReportFunctionalExploration = () => {
 
                                 <Grid item xs={12}>
                                     <Typography align="justify" variant="h6">
-                                        VER EXAMEN FÍSICO
+                                        {datos.observacionEFU}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -185,12 +149,68 @@ const ReportFunctionalExploration = () => {
                                     <Typography variant="h6"><b>OBSERVACIÓN:</b></Typography>
                                 </Grid>
 
-                                <ParaclinicalExaminations fecha={new Date()} estudio="RX TORAX" resultado="NORMAL" observacion="" />
-                                <ParaclinicalExaminations fecha={new Date()} estudio="ESPIROMETRIA" resultado="ANORMAL" observacion="FVC 79, FEV1 82, FVE1/FVC 102" />
-                                <ParaclinicalExaminations fecha={new Date()} estudio="AUDIÓMETRIA" resultado="NORMAL" observacion="NORMALIDAD AUTIVIDA BILATERAL" />
-                                <ParaclinicalExaminations fecha={new Date()} estudio="CUESTIONARIO DE SINTOMAS" resultado="NEGATIVO" observacion="APLICADO" />
+                                <ParaclinicalExaminations
+                                    fecha={ViewFormat(datos.fechaRxToraxEPA)}
+                                    estudio="RX TORAX"
+                                    resultado={datos.nameResultadoRxToraxEPA}
+                                    observacion={datos.observacionesRxToraxEPA}
+                                />
 
+                                <ParaclinicalExaminations
+                                    fecha={ViewFormat(datos.fechaEspirometriaEPA)}
+                                    estudio="ESPIROMETRIA"
+                                    resultado={datos.nameResultadoEspirometriaEPA}
+                                    observacion={datos.observacionesEspirometriaEPA}
+                                />
 
+                                <ParaclinicalExaminations
+                                    fecha={ViewFormat(datos.fechaAudiometriaEPA)}
+                                    estudio="AUDIOMETRIA"
+                                    resultado={datos.nameResultadoAudiometriaEPA}
+                                    observacion={datos.observacionesAudiometriaEPA}
+                                />
+
+                                <ParaclinicalExaminations
+                                    fecha={ViewFormat(datos.fechaVisiometriaEPA)}
+                                    estudio="VISIOMETRIA"
+                                    resultado={datos.nameResultadoVisiometriaEPA}
+                                    observacion={datos.observacionesVisiometriaEPA}
+                                />
+
+                                <ParaclinicalExaminations
+                                    fecha={ViewFormat(datos.fechaLaboratorioClinicoEPA)}
+                                    estudio="LABORATORIO CLINICO"
+                                    resultado={datos.nameResultadoLaboratorioClinicoEPA}
+                                    observacion={datos.observacionesLaboratorioClinicoEPA}
+                                />
+
+                                <ParaclinicalExaminations
+                                    fecha={ViewFormat(datos.fechaCuestionarioSintomaEPA)}
+                                    estudio="CUESTIONARIO DE SINTOMAS"
+                                    resultado={datos.nameResultadoCuestionarioSintomaEPA}
+                                    observacion={datos.observacionesCuestionarioSintomaEPA}
+                                />
+
+                                <ParaclinicalExaminations
+                                    fecha={ViewFormat(datos.fechaEkgEPA)}
+                                    estudio="EKG"
+                                    resultado={datos.nameResultadoEkgEPA}
+                                    observacion={datos.observacionesEkgEPA}
+                                />
+
+                                <ParaclinicalExaminations
+                                    fecha={ViewFormat(datos.fechaRnmLumbosacraEPA)}
+                                    estudio="RNM LUMBOSACRA"
+                                    resultado={datos.nameResultadoRnmLumbosacraEPA}
+                                    observacion={datos.observacionesRnmLumbosacraEPA}
+                                />
+
+                                <ParaclinicalExaminations
+                                    fecha={ViewFormat(datos.fechaRnmCervicalEPA)}
+                                    estudio="RNM CERVICAL"
+                                    resultado={datos.nameResultadoRnmCervicalEPA}
+                                    observacion={datos.observacionesRnmCervicalEPA}
+                                />
 
                                 <Grid item xs={12} sx={{ mt: 2 }}>
                                     <Typography variant="h5"><b>OBSERVACIONES:</b></Typography>
@@ -198,8 +218,7 @@ const ReportFunctionalExploration = () => {
 
                                 <Grid item xs={12}>
                                     <Typography align="justify" variant="h6">
-                                        PENDIENTE DEMÁS AYUDAS DIAGNOSTICAS.
-                                        ESPIROMETRÍA CON RESTRICCION LEVE CURSA CON CUADRO RESPIRATORIO.
+                                        {datos.observacionEPA}
                                     </Typography>
                                 </Grid>
                             </Grid>

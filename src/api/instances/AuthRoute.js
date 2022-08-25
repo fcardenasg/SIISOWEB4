@@ -1,5 +1,5 @@
 export const Url = {
-    Base: 'https://localhost:44347/',
+    Base: 'http://siiso4.westus3.cloudapp.azure.com/',
 
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
@@ -124,6 +124,7 @@ export const Url = {
     HistoriaClinicaOcupacional: 'api/HistoriaClinicaOcupacional',
     HCOGetAllByDocumento: 'api/HistoriaClinicaOcupacional/GetAllByDocumento',
     HistoriaClinicaOcupacionalId: 'api/HistoriaClinicaOcupacional/id',
+    HistoriaClinicaOcupacionalReport: 'api/HistoriaClinicaOcupacional/GetById',
     GetLastRecordHisCliOcu: 'api/HistoriaClinicaOcupacional/GetLastRecord',
 
     TipoAtencion: 'api/TipoAtencion',

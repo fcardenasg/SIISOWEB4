@@ -24,44 +24,8 @@ const Pathological = ({ title = '', text = '' }) => {
     )
 }
 
-const ReportPersonalHistory = () => {
-    const { id } = useParams();
+const ReportPersonalHistory = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
-
-    const [timeWait, setTimeWait] = useState(false);
-    const [lsAdvice, setLsAdvice] = useState([]);
-    const [lsDataUser, setLsDataUser] = useState([]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByIdAdvice(id);
-                if (lsServer.status === 200) setLsAdvice(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [id]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByMail(user.email);
-                if (lsServer.status === 200) setLsDataUser(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [user.email]);
-
-    setTimeout(() => {
-        if (lsAdvice.length != 0 && lsDataUser.length != 0)
-            setTimeWait(true);
-    }, 1000);
 
     return (
         <SubCard>
@@ -75,7 +39,7 @@ const ReportPersonalHistory = () => {
                         <Grid item xs={4}>
                             <Typography variant="h5" align="center"><b>DIVISION MÉDICA</b></Typography>
                             <Typography variant="h5" align="center"><b>HISTORIA CLINICA OCUPACIONAL</b></Typography>
-                            <Typography variant="h5" align="center"><b>CONTROL PERIODICO</b></Typography>
+                            <Typography variant="h5" align="center"><b>{datos.nameAtencion}</b></Typography>
                         </Grid>
 
                         <Grid item xs={4}>
@@ -100,40 +64,49 @@ const ReportPersonalHistory = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Grid container spacing={1}>
+                            <Grid container direction="row" spacing={1}>
                                 <Grid item xs={12} sx={{ mb: 2 }}>
                                     <Typography variant="h5"><b>PATOLÓGICOS</b></Typography>
                                 </Grid>
 
-                                <Pathological key={1} title="1. CONGÉNITOS:" text="NO REFIERE" />
-                                <Pathological key={2} title="11. GENITOURINARIO:" text="NO REFIERE" />
-                                <Pathological key={3} title="21. TRANSFUSIONES:" text="NO REFIERE" />
-                                <Pathological key={4} title="2. INMUNOPREVENIBLES:" text="NO REFIERE" />
-                                <Pathological key={5} title="12. NEUROLÓGICO:" text="NO REFIERE" />
-                                <Pathological key={6} title="22. VENÉREAS:" text="NO REFIERE" />
-                                <Pathological key={7} title="3. INFECCIOSOS:" text="NO REFIERE" />
-                                <Pathological key={8} title="13. DIABETES:" text="NO REFIERE" />
-                                <Pathological key={9} title="23. DEFORMIDADES:" text="NO REFIERE" />
-                                <Pathological key={10} title="4. OJOS:" text="NO REFIERE" />
-                                <Pathological key={11} title="14. PROBLEMAS DE PIEL:" text="NO REFIERE" />
-                                <Pathological key={12} title="24. PSIQUIÁTRICO:" text="NO REFIERE" />
-                                <Pathological key={13} title="5. AGUDEZA VISUAL:" text="NO REFIERE" />
-                                <Pathological key={14} title="15. OSTEOMUSCULARES:" text="REFIERE" />
-                                <Pathological key={15} title="25. FARMACODEPENCIA:" text="NO REFIERE" />
-                                <Pathological key={16} title="6. OIDOS:" text="NO REFIERE" />
-                                <Pathological key={17} title="16. ALÉRGICOS:" text="NO REFIERE" />
-                                <Pathological key={18} title="26. RENAL:" text="NO REFIERE" />
-                                <Pathological key={19} title="7. NASOFARINGE:" text="NO REFIERE" />
-                                <Pathological key={20} title="17. TÓXICOS:" text="NO REFIERE" />
-                                <Pathological key={21} title="27. ASMA:" text="NO REFIERE" />
-                                <Pathological key={22} title="8. CARDIOVASCULAR:" text="REFIERE" />
-                                <Pathological key={23} title="18. FARMACÓLOGICOS:" text="NO REFIERE" />
-                                <Pathological key={24} title="28. O.R.L.: " text="NO REFIERE" />
-                                <Pathological key={25} title="9. PULMONAR:" text="NO REFIERE" />
-                                <Pathological key={26} title="19. QUIRÚRGICOS:" text="NO REFIERE" />
-                                <Pathological key={27} title="29. ETS:" text="NO REFIERE" />
-                                <Pathological key={28} title="10. GASTROINTESTINAL:" text="NO REFIERE" />
-                                <Pathological key={29} title="20. TRAUMÁTICOS:" text="NO REFIERE" />
+                                <Pathological key={1} title="1. CONGÉNITOS:" text={datos.congenitosAP} />
+                                <Pathological key={2} title="11. GENITOURINARIO:" text={datos.gimitoUrinarioAP} />
+                                <Pathological key={3} title="21. ETS:" text={datos.etsAP} />
+
+                                <Pathological key={4} title="2. INMUNOPREVENIBLES:" text={datos.inmunoPrevenibleAP} />
+                                <Pathological key={5} title="12. NEUROLÓGICO:" text={datos.neurologicoAP} />
+                                <Pathological key={6} title="22. DEFORMIDADES:" text={datos.deformidadesAP} />
+
+                                <Pathological key={7} title="3. INFECCIOSOS:" text={datos.infecciososAP} />
+                                <Pathological key={8} title="13. PROBLEMAS DE PIEL:" text={datos.transtornoPielAP} />
+                                <Pathological key={9} title="23. PSIQUIÁTRICO:" text={datos.psiquiatricosAP} />
+
+                                <Pathological key={10} title="4. OJOS:" text={datos.ojoAP} />
+                                <Pathological key={11} title="14. OSTEOMUSCULARES:" text={datos.osteoMuscularAP} />
+                                <Pathological key={12} title="24. FARMACODEPENCIA:" text={datos.farmacoDependenciaAP} />
+
+                                <Pathological key={13} title="5. AGUDEZA VISUAL:" text={datos.agudezaVisualAP} />
+                                <Pathological key={14} title="15. ALÉRGICOS:" text={datos.alergicosAP} />
+                                <Pathological key={15} title="25. E.M.:" text={datos.emAP} />
+
+                                <Pathological key={16} title="6. OIDOS:" text={datos.oidosAP} />
+                                <Pathological key={17} title="16. TÓXICOS:" text={datos.toxicoAP} />
+                                <Pathological key={18} title="26. RENAL:" text={datos.renalAP} />
+
+                                <Pathological key={19} title="7. NASOFARINGE:" text={datos.nasoFaringeAP} />
+                                <Pathological key={20} title="17. FARMACÓLOGICOS:" text={datos.faRmacologicosAP} />
+                                <Pathological key={21} title="27. ASMA:" text={datos.asmaAP} />
+
+                                <Pathological key={22} title="8. CARDIOVASCULAR:" text={datos.cardiovascularAP} />
+                                <Pathological key={23} title="18. QUIRÚRGICOS:" text={datos.quirurgicosAP} />
+                                <Pathological key={24} title="28. O.R.L.: " text={datos.orlAP} />
+
+                                <Pathological key={25} title="9. PULMONAR:" text={datos.pulmonarAP} />
+                                <Pathological key={26} title="19. TRAUMÁTICOS:" text={datos.traumaticosAP} />
+                                <Pathological key={27} title="29. CANCER:" text={datos.cancerAP} />
+
+                                <Pathological key={28} title="10. GASTROINTESTINAL:" text={datos.gastrointestinalAP} />
+                                <Pathological key={29} title="20. TRANSFUSIONES:" text={datos.tranfuccionesAP} />
 
                                 <Grid item xs={12} sx={{ mt: 2 }}>
                                     <Typography variant="h5"><b>ESPECIFICACIONES</b></Typography>
@@ -141,10 +114,7 @@ const ReportPersonalHistory = () => {
 
                                 <Grid item xs={12}>
                                     <Typography align="justify" variant="h6">
-                                        SINDROME DE MANGUITO ROTADOR HOMBRO DERECHO, RECONOCIDO CON LABORAL, SUJETO A MANEJO.(RMN 30-07-2018 RUPTURA PARCIAL
-                                        EN LA CARA ARTICULAR DEL TENDON DEL SUPRAESPINOSO, TENDINOSIS DEL SUPRAESPINOSO, OSTEOARTROSIS ACROMIOCLAVICULAR)
-                                        HTA EN TTO CON LOSARTAN 2 VECES AL DÍA.
-                                        NIEGA ALERGIAS
+                                        {datos.especifiqueAP}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -174,10 +144,17 @@ const ReportPersonalHistory = () => {
                         </Grid>
 
                         <Grid item xs={2}>
-                            <Typography variant="h6">2017</Typography>
+                            <Typography variant="h6">{datos.anioAT}</Typography>
                         </Grid>
                         <Grid item xs={10}>
-                            <Typography variant="h6">SINDROME DE MANGUITO ROTADOR DERECHO</Typography>
+                            <Typography variant="h6">{datos.especifiqueAT}</Typography>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <Typography variant="h6">{datos.anio1AT}</Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Typography variant="h6">{datos.especifique1AT}</Typography>
                         </Grid>
 
                         <Grid item xs={12}>

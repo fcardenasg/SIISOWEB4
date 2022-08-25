@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { Divider, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import { GetByIdAdvice } from 'api/clients/AdviceClient';
-import { FormatDate, GetEdad } from 'components/helpers/Format';
+import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
 import { GetByMail } from 'api/clients/UserClient';
 
 function createData(riesgo, sugRiesgo, exp, anios, meses, sinEpp, conEpp, medidasControl) {
@@ -20,44 +20,8 @@ const rows = [
     createData('PSICOSOCIAL', 'Monotonia', 'O', 1, 6, "N/A", "N/A", "PAUSAS ACTIVAS AUTOADMINISTRADAS")
 ];
 
-const ReportWHOtherCompanies = () => {
-    const { id } = useParams();
+const ReportWHOtherCompanies = ({ datos = [], lsDataUser = [], lsWorkHistoryOther = [] }) => {
     const { user } = useAuth();
-
-    const [timeWait, setTimeWait] = useState(false);
-    const [lsAdvice, setLsAdvice] = useState([]);
-    const [lsDataUser, setLsDataUser] = useState([]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByIdAdvice(id);
-                if (lsServer.status === 200) setLsAdvice(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [id]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByMail(user.email);
-                if (lsServer.status === 200) setLsDataUser(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [user.email]);
-
-    setTimeout(() => {
-        if (lsAdvice.length != 0 && lsDataUser.length != 0)
-            setTimeWait(true);
-    }, 1000);
 
     return (
         <SubCard>
@@ -71,7 +35,7 @@ const ReportWHOtherCompanies = () => {
                         <Grid item xs={4}>
                             <Typography variant="h5" align="center"><b>DIVISION MÉDICA</b></Typography>
                             <Typography variant="h5" align="center"><b>HISTORIA CLINICA OCUPACIONAL</b></Typography>
-                            <Typography variant="h5" align="center"><b>CONTROL PERIODICO</b></Typography>
+                            <Typography variant="h5" align="center"><b>{datos.nameAtencion}</b></Typography>
                         </Grid>
 
                         <Grid item xs={4}>
@@ -88,11 +52,11 @@ const ReportWHOtherCompanies = () => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
-                            <Typography align="center" variant="h5">FECHA DE CONCEPTO: 31/01/2019</Typography>
+                            <Typography align="center" variant="h5">FECHA DE CONCEPTO: {ViewFormat(datos.fecha)}</Typography>
                         </Grid>
 
                         <Grid item xs={6}>
-                            <Typography align="center" variant="h5">Valoración Médica Nro: 7743</Typography>
+                            <Typography align="center" variant="h5">Valoración Médica Nro: {datos.id}</Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -117,42 +81,42 @@ const ReportWHOtherCompanies = () => {
                                     <Typography variant="h5">DOCUMENTO:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">12629179</Typography>
+                                    <Typography variant="h5">{datos.documento}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2.5}>
                                     <Typography variant="h5">NOMBRES:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">Ibarra Lopez,Melquis Leonardo</Typography>
+                                    <Typography variant="h5">{datos.nameEmpleado}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2.5}>
                                     <Typography variant="h5">GENERO:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">MASCULINO</Typography>
+                                    <Typography variant="h5">{datos.nameGenero}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2.5}>
                                     <Typography variant="h5">F. NACIMIENTO:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">12/02/1973</Typography>
+                                    <Typography variant="h5">{ViewFormat(datos.fechaNacimiento)}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2.5}>
                                     <Typography variant="h5">EDAD:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">{GetEdad(new Date())}</Typography>
+                                    <Typography variant="h5">{GetEdad(new Date(datos.fechaNacimiento))}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2.5}>
                                     <Typography variant="h5">DPTO. NACIMIENTO:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">MAGDALENA</Typography>
+                                    <Typography variant="h5">{datos.nameDptoNacimiento}</Typography>
                                 </Grid>
 
 
@@ -160,42 +124,42 @@ const ReportWHOtherCompanies = () => {
                                     <Typography variant="h5">CIUDAD NACIMIENTO:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">SANTA MARTA</Typography>
+                                    <Typography variant="h5">{datos.nameCiudadNacimiento}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2.5}>
                                     <Typography variant="h5">ESTADO CIVIL:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">CASADO(A)</Typography>
+                                    <Typography variant="h5">{datos.nameEstadoCivil}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2.5}>
                                     <Typography variant="h5">CELULAR PERSONAL:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">3016168671</Typography>
+                                    <Typography variant="h5">{datos.celularEmpleado}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2.5}>
                                     <Typography variant="h5">TURNO:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">6X1-5X2</Typography>
+                                    <Typography variant="h5">{datos.nameTurno}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2.5}>
                                     <Typography variant="h5">GRUPO:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">6X1</Typography>
+                                    <Typography variant="h5">{datos.nameGrupo}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2.5}>
                                     <Typography variant="h5">EMAIL:</Typography>
                                 </Grid>
                                 <Grid item xs={3.5}>
-                                    <Typography variant="h5">ibarramelquis@gmail.com</Typography>
+                                    <Typography variant="h5">{datos.correoEmpleado}</Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -208,56 +172,56 @@ const ReportWHOtherCompanies = () => {
                                             <Typography variant="h5">SEDE DE TRABAJO:</Typography>
                                         </Grid>
                                         <Grid item xs={3.5}>
-                                            <Typography variant="h5">PUERTO</Typography>
+                                            <Typography variant="h5">{datos.nameSede}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2.5}>
                                             <Typography variant="h5">DPTO. DE TRABAJO:</Typography>
                                         </Grid>
                                         <Grid item xs={3.5}>
-                                            <Typography variant="h5">MARINE SERVICES</Typography>
+                                            <Typography variant="h5">{datos.nameDepartamentoTrabajo}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2.5}>
                                             <Typography variant="h5">AREA:</Typography>
                                         </Grid>
                                         <Grid item xs={3.5}>
-                                            <Typography variant="h5">MARINE SERVICES</Typography>
+                                            <Typography variant="h5">{datos.nameArea}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2.5}>
                                             <Typography variant="h5">GRUPO:</Typography>
                                         </Grid>
                                         <Grid item xs={3.5}>
-                                            <Typography variant="h5">6X1</Typography>
+                                            <Typography variant="h5">{datos.nameGrupo}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2.5}>
                                             <Typography variant="h5">POSICIÓN:</Typography>
                                         </Grid>
                                         <Grid item xs={3.5}>
-                                            <Typography variant="h5">DECKHAND</Typography>
+                                            <Typography variant="h5">{datos.namePosicion}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2.5}>
                                             <Typography variant="h5">TIPO CONTRATO:</Typography>
                                         </Grid>
                                         <Grid item xs={3.5}>
-                                            <Typography variant="h5">DRUMMOND LTD</Typography>
+                                            <Typography variant="h5">{datos.nameTipoContrato}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2.5}>
                                             <Typography variant="h5">FECHA CONTRATO:</Typography>
                                         </Grid>
                                         <Grid item xs={3.5}>
-                                            <Typography variant="h5">19/07/2007</Typography>
+                                            <Typography variant="h5">{ViewFormat(datos.fechaContratoEmpleado)}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2.5}>
                                             <Typography variant="h5">ANTIGUEDAD:</Typography>
                                         </Grid>
                                         <Grid item xs={3.5}>
-                                            <Typography variant="h5">15 AÑOS</Typography>
+                                            <Typography variant="h5">{GetEdad(new Date(datos.fechaContratoEmpleado))} AÑOS</Typography>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -281,42 +245,42 @@ const ReportWHOtherCompanies = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <Typography variant="h5"><b>HISTORIA LABORAL EN OTRAS EMPRESAS</b></Typography>
-                                </Grid>
+                            <Typography variant="h5"><b>HISTORIA LABORAL EN OTRAS EMPRESAS</b></Typography>
+                        </Grid>
 
-                                <Grid item xs={3}>
+                        <Grid item xs={12}>
+                            <Grid container spacing={1}>
+                                <Grid item xs={4}>
                                     <Typography variant="h6"><b>NOMBRE DE LA EMPRESA</b></Typography>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <Typography variant="h6"><b>ACTIVIDAD ECONÓMICA</b></Typography>
-                                </Grid>
-                                <Grid item xs={2}>
                                     <Typography variant="h6"><b>CARGO</b></Typography>
                                 </Grid>
-                                <Grid item xs={1.5}>
-                                    <Typography variant="h6"><b>AÑOS</b></Typography>
-                                </Grid>
-                                <Grid item xs={1.5}>
-                                    <Typography variant="h6"><b>MESES</b></Typography>
-                                </Grid>
-
-                                <Grid item xs={3}>
-                                    <Typography variant="h6">CEPECOL</Typography>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <Typography variant="h6">SERVICIOS DE SEGURIDAD FÍSICA</Typography>
+                                <Grid item xs={2}>
+                                    <Typography align='center' variant="h6"><b>AÑOS</b></Typography>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <Typography variant="h6">VIGILANTE</Typography>
+                                    <Typography align='center' variant="h6"><b>MESES</b></Typography>
                                 </Grid>
-                                <Grid item xs={1.5}>
-                                    <Typography variant="h6">1</Typography>
-                                </Grid>
-                                <Grid item xs={1.5}>
-                                    <Typography variant="h6">6</Typography>
-                                </Grid>
+
+                                {lsWorkHistoryOther && lsWorkHistoryOther.map((work, index) => (
+                                    <Fragment>
+                                        <Grid item xs={4}>
+                                            <Typography variant="h6">{work.empresa}</Typography>
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <Typography variant="h6">{work.cargo}</Typography>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <Typography align='center' variant="h6">{work.anio}</Typography>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <Typography align='center' variant="h6">{work.meses}</Typography>
+                                        </Grid>
+                                    </Fragment>
+                                ))}
+
+
                             </Grid>
                         </Grid>
                     </Grid>
