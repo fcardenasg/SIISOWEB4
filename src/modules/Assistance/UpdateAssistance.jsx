@@ -120,6 +120,7 @@ const UpdateAssistance = () => {
 
     async function GetAll() {
         try {
+          
             const serverData = await GetByIdMedicalHistory(id);
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);

@@ -50,7 +50,7 @@ const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
-const Visiometrics = () => {
+const Spirometry = () => {
     const { user } = useAuth();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -72,6 +72,9 @@ const Visiometrics = () => {
     const [documento, setDocumento] = useState('');
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
+    const [lsTipoEPP, setLsTipoEPP] = useState([]);
+    const [lsResultado, setLsResultado] = useState([]);
+
     const [lsConclusion, setLsConclusion] = useState([]);
     const [lsLectura, setLsLectura] = useState([]);
     const [lsConducta, setLsConducta] = useState([]);
@@ -159,28 +162,31 @@ const Visiometrics = () => {
             setLsConclusion(resultConclusion);
 
 
-            const lsServerLectura = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_LECTURA);
-            var resultLectura = lsServerLectura.data.entities.map((item) => ({
+            const lsServerTipoEPP = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_TIPOEPP);
+            var resultTipoEPP = lsServerTipoEPP.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsLectura(resultLectura);
+            setLsTipoEPP(resultTipoEPP);
 
        
 
-            const lsServerControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONTROL);
-            var resultControl = lsServerControl.data.entities.map((item) => ({
+            const lsServerResultado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_RESULTADO);
+            var resultResultado = lsServerResultado.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsControl(resultControl);
+            setLsResultado(resultResultado);
 
+
+     
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
+
 
 
 
@@ -196,10 +202,10 @@ const Visiometrics = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_VISIOMETRIA, documento,
-                FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
-                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, JSON.stringify(diagnosticoArray), datos.ojoIzquierdo, JSON.stringify(diagnosticoArray1), datos.add1, datos.idLecturaAdd, datos.idControl, datos.remitidoOftalmo,
-                datos.requiereLentes, JSON.stringify(diagnosticoArray2), DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
+            const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_ESPIROMETRIA, documento,
+                FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
+                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
+                false, '', datos.idTipoEPP, datos.fvc,datos.feV1,datos.fevfvc, datos.feV2575, datos.pef,datos.resultado, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
@@ -234,7 +240,7 @@ const Visiometrics = () => {
     };
 
     return (
-        <MainCard title="Registrar Visiometria">
+        <MainCard title="Registrar Espirometría">
             <Fragment>
                 <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
@@ -263,7 +269,7 @@ const Visiometrics = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle>
                             <Grid container spacing={1}>
-                                <Grid item xs={3.3}>
+                                <Grid item xs={3.0}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
                                             label="Fecha"
@@ -273,7 +279,7 @@ const Visiometrics = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4.3}>
+                                <Grid item xs={3.0}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idMotivo"
@@ -286,7 +292,7 @@ const Visiometrics = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4.3}>
+                                <Grid item xs={3.0}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idProveedor"
@@ -299,128 +305,15 @@ const Visiometrics = () => {
                                     </FormProvider>
                                 </Grid>
 
-
-
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">ESTADO REFRACTIVO</Typography>}>
-                            <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="ojoDerecho"
-                                            label="Ojo Derecho"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={12} md={1} lg={3}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setDiagnosticoArray(value)}
-                                        value={diagnosticoArray}
-                                        label="Diagnósticos"
-                                        options={lsCie11}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={1} lg={3}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="ojoIzquierdo"
-                                            label="Ojo Izquierdo"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid item xs={12} md={1} lg={3}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setDiagnosticoArray1(value)}
-                                        value={diagnosticoArray1}
-                                        label="Diagnósticos"
-                                        options={lsCie11}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-
-
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">LECTURA ADD</Typography>}>
-                            <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="add1"
-                                            label="ADD"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={3}>
+                                <Grid item xs={3.0}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idLecturaAdd"
-                                            label="Lectura ADD"
+                                            name="idTipoEPP"
+                                            label="Tipo EPP"
                                             defaultValue=""
-                                            options={lsLectura}
+                                            options={lsTipoEPP}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idControl"
-                                            label="Control"
-                                            defaultValue=""
-                                            options={lsControl}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Remitodo a Oftalmologia"
-                                            name="remitidoOftalmo"
-                                            size={25}
-                                            defaultValue={false}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Requiere Lentes"
-                                            name="requiereLentes"
-                                            size={25}
-                                            defaultValue={false}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -430,21 +323,90 @@ const Visiometrics = () => {
                         </SubCard>
                     </Grid>
 
+
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">IMPRESIÓN DIAGNÓSTICA</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
                             <Grid container spacing={2}>
-                                <Grid item xs={12} md={1} lg={6}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setDiagnosticoArray2(value)}
-                                        value={diagnosticoArray2}
-                                        label="Diagnósticos"
-                                        options={lsCie11}
-                                    />
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="fvc"
+                                            label="FVC"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                              
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="feV1"
+                                            label="FEV1"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
                                 </Grid>
 
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="fevfvc"
+                                            label="FEV1/FVC"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="feV2575"
+                                            label="FEV25/75"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="pef"
+                                            label="PEF"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="resultado"
+                                            label="Resultado"
+                                            defaultValue=""
+                                            options={lsResultado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                               
                             </Grid>
                         </SubCard>
                     </Grid>
@@ -519,7 +481,7 @@ const Visiometrics = () => {
 
                                     <Grid item xs={6}>
                                         <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/visiometrics/list")}>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/spirometry/list")}>
                                                 {TitleButton.Cancelar}
                                             </Button>
                                         </AnimateButton>
@@ -539,4 +501,4 @@ const Visiometrics = () => {
     );
 };
 
-export default Visiometrics;
+export default Spirometry;

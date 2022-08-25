@@ -227,10 +227,10 @@ const application = {
                     breadcrumbs: false
                 },
                 {
-                    id: 'date-time',
+                    id: 'spirometry',
                     title: <FormattedMessage id="Espirometría" />,
                     type: 'item',
-                    url: '/components/date-time',
+                    url: '/Paraclinics/Spirometry/list',
                     breadcrumbs: false
                 },
                 {

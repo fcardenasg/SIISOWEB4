@@ -28,7 +28,7 @@ import { visuallyHidden } from '@mui/utils';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton,DefaultValue } from 'components/helpers/Enums';
+import { TitleButton, DefaultValue } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -36,12 +36,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { DeleteParaclinics,GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
+import { DeleteParaclinics, GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import FullScreenDialogs from 'components/controllers/FullScreenDialog';
-import Visiometrics from './Visiometrics';
+import Spirometry from './Spirometry';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -78,18 +78,18 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'documento',
+        id: 'nameEmpleado',
         numeric: false,
         label: 'Nombres',
         align: 'center'
-    }, 
+    },
     {
-        id: 'idMotivo',
+        id: 'nameMotivo',
         numeric: false,
         label: 'Motivo',
         align: 'left'
     },
-    
+
     {
         id: 'fecha',
         numeric: false,
@@ -210,10 +210,10 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListVisiometrics = () => {
+const ListSpirometry = () => {
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
-    const [visiometrics, setVisiometrics] = useState([]);
+    const [spirometry, setSpirometry] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -228,8 +228,8 @@ const ListVisiometrics = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllByTypeParaclinics(0, 0,DefaultValue.PARACLINICO_VISIOMETRIA);
-            setVisiometrics(lsServer.data.entities);
+            const lsServer = await GetAllByTypeParaclinics(0, 0, DefaultValue.PARACLINICO_ESPIROMETRIA);
+            setSpirometry(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
@@ -248,7 +248,7 @@ const ListVisiometrics = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'idMotivo', 'idConductaClasificacion', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'nameEmpleado', 'nameMotivo', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -262,9 +262,9 @@ const ListVisiometrics = () => {
                 }
                 return matches;
             });
-            setVisiometrics(newRows);
+            setSpirometry(newRows);
         } else {
-            setVisiometrics(rows);
+            setSpirometry(rows);
         }
     };
 
@@ -277,7 +277,7 @@ const ListVisiometrics = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = visiometrics.map((n) => n.id);
+            const newSelectedId = spirometry.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -332,7 +332,7 @@ const ListVisiometrics = () => {
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - visiometrics.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - spirometry.length) : 0;
 
     return (
         <MainCard title="Lista de Pacientes" content={false}>
@@ -362,15 +362,13 @@ const ListVisiometrics = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Visiometria">
-                            <ExcelSheet data={visiometrics} name="Visiometria">
+                        } filename="Espirometría">
+                            <ExcelSheet data={spirometry} name="Espirometría">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="idConductaClasificacion" />
-                                <ExcelColumn label="Conducta" value="idConductaClasificacion" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Conclusión" value="idConclusion" />
-                                <ExcelColumn label="Proveedor" value="iidProveedor" />
+                                <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                <ExcelColumn label="Motivo" value="nameMotivo" />
+                                <ExcelColumn label="Proveedor" value="idProveedor" />
                                 <ExcelColumn label="Observaciones" value="observacion" />
                                 <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
@@ -386,7 +384,7 @@ const ListVisiometrics = () => {
                         </Tooltip>
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/paraclinics/visiometrics/add")}>
+                            onClick={() => navigate("/paraclinics/spirometry/add")}>
                             {TitleButton.Agregar}
                         </Button>
                     </Grid>
@@ -401,13 +399,13 @@ const ListVisiometrics = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={visiometrics.length}
+                        rowCount={spirometry.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(visiometrics, getComparator(order, orderBy))
+                        {stableSort(spirometry, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
@@ -456,7 +454,7 @@ const ListVisiometrics = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idMotivo}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -471,7 +469,7 @@ const ListVisiometrics = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idConductaClasificacion}
+                                                {row.nameMotivo}
                                             </Typography>
                                         </TableCell>
 
@@ -506,7 +504,7 @@ const ListVisiometrics = () => {
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/paraclinics/visiometrics/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/paraclinics/spirometry/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -530,16 +528,16 @@ const ListVisiometrics = () => {
 
             <FullScreenDialogs
                 open={open}
-                title="IMPRIMIR VISIOMETRIA"
+                title="IMPRIMIR ESPIROMETRÍA"
                 handleClose={() => setOpen(false)}
             >
-                <Visiometrics />
+                <Spirometry />
             </FullScreenDialogs>
 
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={visiometrics.length}
+                count={spirometry.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -549,4 +547,4 @@ const ListVisiometrics = () => {
     );
 };
 
-export default ListVisiometrics;
+export default ListSpirometry;
