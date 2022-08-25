@@ -68,23 +68,12 @@ const UpdateSpirometry = () => {
     const [lsCie11, setLsCie11] = useState([]);
     const [lsSpirometry, setLsSpirometry] = useState([]);
 
-    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
-    const [diagnosticoArray1, setDiagnosticoArray1] = useState([]);
-    const [diagnosticoArray2, setDiagnosticoArray2] = useState([]);
-
     const [documento, setDocumento] = useState('');
 
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
     const [lsTipoEPP, setLsTipoEPP] = useState([]);
     const [lsResultado, setLsResultado] = useState([]);
-
-
-
-
-    const [lsOjoDerecho, setLsOjoDerecho] = useState([]);
-    const [lsOjoIzquierdo, setLsOjoIzquierdo] = useState([]);
-    const [lsAdd1, setLsAdd1] = useState([]);
 
 
 
@@ -119,6 +108,7 @@ const UpdateSpirometry = () => {
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            console.log(lsServerEmployee, idEmployee)
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -135,12 +125,10 @@ const UpdateSpirometry = () => {
 
 
             const serverData = await GetByIdParaclinics(id);
+            console.log(serverData)
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
                 setLsSpirometry(serverData.data);
-                setDiagnosticoArray(JSON.parse(serverData.data.dxDerecho));
-                setDiagnosticoArray1(JSON.parse(serverData.data.dxIzquierdo));
-                setDiagnosticoArray2(JSON.parse(serverData.data.dxDiagnostico));
                 handleLoadingDocument(serverData.data.documento);
                 setFilePdf(serverData.data.url);
             }
