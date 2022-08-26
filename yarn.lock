@@ -14783,6 +14783,7 @@
   "version" "7.5.5"
 
 "xlsx@git+https://github.com/securedeveloper/js-xlsx.git":
+  "integrity" "sha512-kSQmHmUnADqqduFKXRcQKYlOYR06crhPpRK5JZHwkQBOIcAwq0xd7CxDy1J3nRRWk233rALl+J0N6sJVK01ikg=="
   "resolved" "git+ssh://git@github.com/securedeveloper/js-xlsx.git#32f550d3b3bdb1b781aabe100683311cd982c98e"
   "version" "0.8.20"
   dependencies:

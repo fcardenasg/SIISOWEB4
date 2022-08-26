@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, Suspense } from 'react';
 import { Button, Divider, Grid, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -110,31 +110,32 @@ const ReportOccupationalExamination = () => {
 
     return (
         <MainCard>
-            <Grid container justifyContent="center" spacing={gridSpacing}>
-                <Grid item xs={12} md={10} lg={8} ref={componentRef}>
-                    <Grid container spacing={gridSpacing}>
-                        {/* <Grid item xs={12}>
-                            <ReportPage1 />
-                        </Grid>
+            {lsDataReport.length != 0 ?
+                <Grid container justifyContent="center" spacing={gridSpacing}>
+                    <Grid item xs={12} md={10} lg={8} ref={componentRef}>
+                        <Grid container spacing={gridSpacing}>
+                            <Grid item xs={12}>
+                                <ReportPage1 key={12} datos={lsDataReport} lsDataUser={lsDataUser} />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <ReportPage2 />
-                        </Grid>
+                            <Grid item xs={12}>
+                                <ReportPage2 key={13} datos={lsDataReport} lsDataUser={lsDataUser} />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <ReportPage3 />
-                        </Grid> */}
+                            <Grid item xs={12}>
+                                <ReportPage3 key={14} datos={lsDataReport} lsDataUser={lsDataUser} />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <ReportWorkHeight key={10} datos={lsDataReport} lsDataUser={lsDataUser} />
-                        </Grid>
+                            {/* <Grid item xs={12}>
+                                <ReportWorkHeight key={10} datos={lsDataReport} lsDataUser={lsDataUser} />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <ReportEmployeeNotification key={11} datos={lsDataReport} lsDataUser={lsDataUser} />
-                        </Grid>
+                            <Grid item xs={12}>
+                                <ReportEmployeeNotification key={11} datos={lsDataReport} lsDataUser={lsDataUser} />
+                            </Grid> */}
 
 
-                        {/* <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                             <ReportConceptAptitude key={1} datos={lsDataReport} lsDataUser={lsDataUser} />
                         </Grid>
 
@@ -179,27 +180,29 @@ const ReportOccupationalExamination = () => {
                         <Grid item xs={12}>
                             <ReportDefinitiveDiagnosis key={9} datos={lsDataReport} lsDataUser={lsDataUser} />
                         </Grid> */}
-                    </Grid>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Grid container alignItems="center" justifyContent="center" spacing={2}>
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <ReactToPrint trigger={() => <Button fullWidth variant="contained">Imprimir</Button>} content={() => componentRef.current} />
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button fullWidth variant="outlined" onClick={() => navigate('/medicaladvice/list')}>
-                                    Cerrar
-                                </Button>
-                            </AnimateButton>
                         </Grid>
                     </Grid>
+
+                    <Grid item xs={12}>
+                        <Grid container alignItems="center" justifyContent="center" spacing={2}>
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <ReactToPrint trigger={() => <Button fullWidth variant="contained">Imprimir</Button>} content={() => componentRef.current} />
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button fullWidth variant="outlined" onClick={() => navigate('/medicaladvice/list')}>
+                                        Cerrar
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Grid>
-            </Grid>
+                : <Cargando />
+            }
         </MainCard>
     );
 };

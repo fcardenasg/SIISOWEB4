@@ -9,7 +9,7 @@ import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import { GetByIdAdvice } from 'api/clients/AdviceClient';
-import { FormatDate, GetEdad } from 'components/helpers/Format';
+import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
 import { GetByMail } from 'api/clients/UserClient';
 
 const QuestionnaireTos = ({ title = '', text = '' }) => {
@@ -39,44 +39,8 @@ const DataInfo = ({ title = '', text = '' }) => {
     )
 }
 
-const ReportPage1 = () => {
-    const { id } = useParams();
+const ReportPage1 = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
-
-    const [timeWait, setTimeWait] = useState(false);
-    const [lsAdvice, setLsAdvice] = useState([]);
-    const [lsDataUser, setLsDataUser] = useState([]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByIdAdvice(id);
-                if (lsServer.status === 200) setLsAdvice(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [id]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByMail(user.email);
-                if (lsServer.status === 200) setLsDataUser(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [user.email]);
-
-    setTimeout(() => {
-        if (lsAdvice.length != 0 && lsDataUser.length != 0)
-            setTimeWait(true);
-    }, 1000);
 
     return (
         <SubCard>
@@ -90,7 +54,7 @@ const ReportPage1 = () => {
                         <Grid item xs={6}>
                             <Typography variant="h5" align="center"><b>DIVISIÓN MÉDICA</b></Typography>
                             <Typography variant="h5" align="center"><b>CUESTIONARIO DE SÍNTOMAS RESPIRATORIOS</b></Typography>
-                            <Typography variant="h5" align="center"><b>CONTROL PERIODICO</b></Typography>
+                            <Typography variant="h5" align="center"><b>{datos.nameAtencion}</b></Typography>
                         </Grid>
 
                         <Grid item xs={3}>
@@ -118,14 +82,14 @@ const ReportPage1 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <DataInfo key={1} title="DOCUMENTO NRO:" text="12629179" />
-                                        <DataInfo key={2} title="NOMBRES:" text="IBARRA LOPEZ, MELQUIS LEONARDO" />
-                                        <DataInfo key={3} title="GÉNERO:" text="MASCULINO" />
-                                        <DataInfo key={4} title="ÁREA:" text="MARINE SERVICES" />
-                                        <DataInfo key={5} title="GRUPO:" text="6X1" />
-                                        <DataInfo key={6} title="CARGO:" text="DECKHAND" />
-                                        <DataInfo key={7} title="EDAD:" text="49" />
-                                        <DataInfo key={8} title="ANTIGÜEDAD:" text="15" />
+                                        <DataInfo key={1} title="DOCUMENTO NRO:" text={datos.documento} />
+                                        <DataInfo key={2} title="NOMBRES:" text={datos.nameEmpleado} />
+                                        <DataInfo key={3} title="GÉNERO:" text={datos.nameGenero} />
+                                        <DataInfo key={4} title="ÁREA:" text={datos.nameArea} />
+                                        <DataInfo key={5} title="GRUPO:" text={datos.nameGrupo} />
+                                        <DataInfo key={6} title="CARGO:" text={datos.nameCargo} />
+                                        <DataInfo key={7} title="EDAD:" text={GetEdad(datos.fechaNacimiento)} />
+                                        <DataInfo key={8} title="ANTIGÜEDAD:" text={GetEdad(datos.fechaContratoEmpleado)} />
                                     </Grid>
                                 </Grid>
 
@@ -133,8 +97,8 @@ const ReportPage1 = () => {
                                     <Typography variant="h6"><b>RESULTADOS DEL CUESTIONARIO</b></Typography>
                                 </Grid>
 
-                                <DataInfo key={1} title="CONSECUTIVO:" text="5800" />
-                                <DataInfo key={2} title="FECHA:" text="31/01/2019" />
+                                <DataInfo key={1} title="CONSECUTIVO:" text={datos.id} />
+                                <DataInfo key={2} title="FECHA:" text={ViewFormat(datos.fecha)} />
                             </Grid>
                         </Grid>
 
@@ -154,16 +118,16 @@ const ReportPage1 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. ¿TIENE TOS USUALMENTE (INCLUYE CON EL PRIMER CIGARRILLO O LA PRIMERA SALIDA A LA CALLE, EXCLUYE CARRASPEO)?" text="NO" />
-                                        <QuestionnaireTos key={2} title="B. TOSE 4 A 6 VECES AL DÍA, ¿DURANTE CUATRO O MÁS DÍAS DE LA SEMANA?" text="NO" />
-                                        <QuestionnaireTos key={3} title="C. ¿SUELE TOSER LEVANTÁNDOSE POR LA MAÑANA A PRIMERA HORA, DURANTE EL RESTO DEL DÍA O LA NOCHE?" text="NO" />
+                                        <QuestionnaireTos key={1} title="A. ¿TIENE TOS USUALMENTE (INCLUYE CON EL PRIMER CIGARRILLO O LA PRIMERA SALIDA A LA CALLE, EXCLUYE CARRASPEO)?" text={datos.tosAUsualSin} />
+                                        <QuestionnaireTos key={2} title="B. TOSE 4 A 6 VECES AL DÍA, ¿DURANTE CUATRO O MÁS DÍAS DE LA SEMANA?" text={datos.tosEnLaSemanaSintR} />
+                                        <QuestionnaireTos key={3} title="C. ¿SUELE TOSER LEVANTÁNDOSE POR LA MAÑANA A PRIMERA HORA, DURANTE EL RESTO DEL DÍA O LA NOCHE?" text={datos.tosMananaSintR} />
 
                                         <Grid item xs={12}>
                                             <Typography fontSize={11}><b>SI CONTESTO SI A ALGUNAS DE LAS PREGUNTAS ANTERIORES, TENGA EN CUENTA ESTAS 2 SIGUIENTES, EN CASO CONTRARIO NO APLICA.</b></Typography>
                                         </Grid>
 
-                                        <QuestionnaireTos key={4} title="D. ¿USTED SUELE TOSER ASÍ CASI TODOS LOS DÍAS POR 3 MESES CONSECUTIVOS O POR MÁS DE UN AÑO?" text="NO" />
-                                        <QuestionnaireTos key={5} title="E. ¿HA PRESENTADO TOS POR CUANTOS AÑOS?" text="0" />
+                                        <QuestionnaireTos key={4} title="D. ¿USTED SUELE TOSER ASÍ CASI TODOS LOS DÍAS POR 3 MESES CONSECUTIVOS O POR MÁS DE UN AÑO?" text={datos.tosConsecutivaSintR} />
+                                        <QuestionnaireTos key={5} title="E. ¿HA PRESENTADO TOS POR CUANTOS AÑOS?" text={datos.anosConTosSintR} />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -185,11 +149,11 @@ const ReportPage1 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. SUELE EXPECTORAR DESDE EL PECHO (INCLUYE FLEMA CON EL 1ER CIGARRILLO, 1ERA SALIDA A LA CALLE Y LA QUE SE TRAGA, EXCLUYE MOCO O FLEMA DE LA NARIZ)" text="NO" />
-                                        <QuestionnaireTos key={2} title="B. EXPECTORA ASÍ DOS VECES AL DÍA, AL MENOS CUATRO DÍAS A LA SEMANA?" text="NO" />
-                                        <QuestionnaireTos key={3} title="C. SUELE EXPECTORAR AL LEVANTARSE O A PRIMERA HORA DE LA MAÑANA, DURANTE EL RESTO DEL DÍA O DE LA NOCHE?" text="NO" />
-                                        <QuestionnaireTos key={4} title="D. EXPECTORA ASÍ LA MAYORÍA DE LOS DÍAS POR 3 MESES CONSECUTIVOS O MÁS O DURANTE UN AÑO?" text="NO" />
-                                        <QuestionnaireTos key={5} title="E. RELACIONE NÚMERO DE AÑOS QUE HA EXPECTORADO?" text="0" />
+                                        <QuestionnaireTos key={1} title="A. SUELE EXPECTORAR DESDE EL PECHO (INCLUYE FLEMA CON EL 1ER CIGARRILLO, 1ERA SALIDA A LA CALLE Y LA QUE SE TRAGA, EXCLUYE MOCO O FLEMA DE LA NARIZ)" text={datos.esputoASintR} />
+                                        <QuestionnaireTos key={2} title="B. EXPECTORA ASÍ DOS VECES AL DÍA, AL MENOS CUATRO DÍAS A LA SEMANA?" text={datos.esputoBSintR} />
+                                        <QuestionnaireTos key={3} title="C. SUELE EXPECTORAR AL LEVANTARSE O A PRIMERA HORA DE LA MAÑANA, DURANTE EL RESTO DEL DÍA O DE LA NOCHE?" text={datos.esputoCSintR} />
+                                        <QuestionnaireTos key={4} title="D. EXPECTORA ASÍ LA MAYORÍA DE LOS DÍAS POR 3 MESES CONSECUTIVOS O MÁS O DURANTE UN AÑO?" text={datos.esputoDSintR} />
+                                        <QuestionnaireTos key={5} title="E. RELACIONE NÚMERO DE AÑOS QUE HA EXPECTORADO?" text={datos.esputoESintR} />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -211,8 +175,8 @@ const ReportPage1 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. ¿HA TENIDO EPISODIOS DE TOS Y FLEMA (O AUMENTO, SI USUALMENTE LOS PRESENTA) QUE DUREN 3 O MÁS DE UN AÑO?" text="NO" />
-                                        <QuestionnaireTos key={2} title="B. ¿CUANTOS AÑOS HA TENIDO AL MENOS UN EPISODIO AL AÑO?" text="0" />
+                                        <QuestionnaireTos key={1} title="A. ¿HA TENIDO EPISODIOS DE TOS Y FLEMA (O AUMENTO, SI USUALMENTE LOS PRESENTA) QUE DUREN 3 O MÁS DE UN AÑO?" text={datos.episoTosEspuASintR} />
+                                        <QuestionnaireTos key={2} title="B. ¿CUANTOS AÑOS HA TENIDO AL MENOS UN EPISODIO AL AÑO?" text={datos.episoTosEsputoBSintR} />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -234,11 +198,11 @@ const ReportPage1 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. SU PECHO PITA, SILBA O SUENA" text="NO" />
-                                        <QuestionnaireTos key={2} title="1. CUANDO TIENE GRIPA" text="NO" />
-                                        <QuestionnaireTos key={3} title="2. OCASIONALMENTE APARTE DE LAS GRIPAS" text="NO" />
-                                        <QuestionnaireTos key={4} title="3. LA MAYORÍA DE DÍAS Y NOCHES" text="NO" />
-                                        <QuestionnaireTos key={5} title="B. POR CUANTOS AÑOS HA PRESENTADO ESTA SITUACIÓN?" text="0" />
+                                        <QuestionnaireTos key={1} title="A. SU PECHO PITA, SILBA O SUENA" text={datos.sibilanciasASintR} />
+                                        <QuestionnaireTos key={2} title="1. CUANDO TIENE GRIPA" text={datos.sibilanciasA1SintR} />
+                                        <QuestionnaireTos key={3} title="2. OCASIONALMENTE APARTE DE LAS GRIPAS" text={datos.sibilanciasA2SintR} />
+                                        <QuestionnaireTos key={4} title="3. LA MAYORÍA DE DÍAS Y NOCHES" text={datos.sibilanciasA3SintR} />
+                                        <QuestionnaireTos key={5} title="B. POR CUANTOS AÑOS HA PRESENTADO ESTA SITUACIÓN?" text={datos.sibilanciasBSintR} />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -260,15 +224,14 @@ const ReportPage1 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. HA TENIDO EPISODIOS DE TOS Y FLEMA (O AUMENTO, SI USUALMENTE LOS PRESENTA) QUE DUREN 3 O MÁS DE UN AÑO?" text="NO" />
-                                        <QuestionnaireTos key={2} title="B. ¿QUÉ EDAD TENÍA CUANDO LE DIO EL PRIMER ATAQUE?" text="NO" />
-                                        <QuestionnaireTos key={3} title="C. HA TENIDO DOS O MÁS EPISODIOS" text="NO" />
-                                        <QuestionnaireTos key={4} title="D. ¿HA NECESITADO DROGAS O TRATAMIENTOS PARA ESTOS ATAQUES?" text="NO" />
+                                        <QuestionnaireTos key={1} title="A. HA TENIDO EPISODIOS DE TOS Y FLEMA (O AUMENTO, SI USUALMENTE LOS PRESENTA) QUE DUREN 3 O MÁS DE UN AÑO?" text={datos.ataquesSilbiASintR} />
+                                        <QuestionnaireTos key={2} title="B. ¿QUÉ EDAD TENÍA CUANDO LE DIO EL PRIMER ATAQUE?" text={datos.ataquesSilbiBSintR} />
+                                        <QuestionnaireTos key={3} title="C. HA TENIDO DOS O MÁS EPISODIOS" text={datos.ataquesSilbiCSintR} />
+                                        <QuestionnaireTos key={4} title="D. ¿HA NECESITADO DROGAS O TRATAMIENTOS PARA ESTOS ATAQUES?" text={datos.ataquesSilbiDSintR} />
                                     </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
-
                     </Grid>
                 </Grid>
             </Grid>

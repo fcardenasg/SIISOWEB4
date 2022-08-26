@@ -39,44 +39,8 @@ const DataInfo = ({ title = '', text = '' }) => {
     )
 }
 
-const ReportPage3 = () => {
-    const { id } = useParams();
+const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
-
-    const [timeWait, setTimeWait] = useState(false);
-    const [lsAdvice, setLsAdvice] = useState([]);
-    const [lsDataUser, setLsDataUser] = useState([]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByIdAdvice(id);
-                if (lsServer.status === 200) setLsAdvice(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [id]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetByMail(user.email);
-                if (lsServer.status === 200) setLsDataUser(lsServer.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [user.email]);
-
-    setTimeout(() => {
-        if (lsAdvice.length != 0 && lsDataUser.length != 0)
-            setTimeWait(true);
-    }, 1000);
 
     return (
         <SubCard>
@@ -90,7 +54,7 @@ const ReportPage3 = () => {
                         <Grid item xs={6}>
                             <Typography variant="h5" align="center"><b>DIVISIÓN MÉDICA</b></Typography>
                             <Typography variant="h5" align="center"><b>CUESTIONARIO DE SÍNTOMAS RESPIRATORIOS</b></Typography>
-                            <Typography variant="h5" align="center"><b>CONTROL PERIODICO</b></Typography>
+                            <Typography variant="h5" align="center"><b>{datos.datos}</b></Typography>
                         </Grid>
 
                         <Grid item xs={3}>
@@ -111,6 +75,27 @@ const ReportPage3 = () => {
                                 <Grid item xs={12}>
                                     <Divider />
                                 </Grid>
+                                <Grid item xs={12}>
+                                    <Grid container spacing={0.2}>
+
+                                        <QuestionnaireTos key={1} title="9. ¿PROBLEMAS DEL CORAZÓN?" text={datos.problemCoraASintR} />
+
+                                        <Grid item xs={2}>
+                                            <Typography fontSize={10}><b>- ESPECIFIQUE</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={10}>
+                                            <Typography align='right' variant="h6">{datos.problemCoraBSintR}</Typography>
+                                        </Grid>
+
+                                        <QuestionnaireTos key={3} title="- ¿HA RECIBIDO TRATAMIENTO POR ESTA CAUSA EN LOS ÚLTIMOS DIEZ AÑOS?" text={datos.problemaCoraCSintR} />
+                                        <QuestionnaireTos key={4} title="10. PRESIÓN ALTA (RECUERDE QUE DEBE SER CONFIRMADA POR EL MÉDICO)" text={datos.presionAltaASintR} />
+                                        <QuestionnaireTos key={5} title="- HA RECIBIDO TRATAMIENTO POR ESTA CAUSA EN LOS ÚLTIMOS DIEZ AÑOS?" text={datos.presionAltaBSintR} />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Divider />
+                                </Grid>
 
                                 <Grid item xs={12}>
                                     <Typography variant='h6'><b>10. HISTORIA OCUPACIONAL</b></Typography>
@@ -122,19 +107,30 @@ const ReportPage3 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. HA TRABAJADO TIEMPO COMPLETO (8 HORAS A LA SEMANA O MÁS) POR 6 MESES O MÁS?" text="SI" />
-                                        <QuestionnaireTos key={2} title="B. HA TRABAJADO AL MENOS DURANTE 6 MESES EN UN EMPLEO DONDE TUVO EXPOSICIÓN A POLVOS?" text="SI" />
-                                        <QuestionnaireTos key={3} title="- ESPECIFIQUE EMPLEO O INDUSTRIA" text="DRUMMOND" />
-                                        <QuestionnaireTos key={4} title="- TOTAL AÑOS TRABAJADOS:" text="11" />
-                                        <QuestionnaireTos key={5} title="- LA EXPOSICIÓN FUE:" text="LEV" />
-                                        <QuestionnaireTos key={6} title="C. ¿CUÁL HA SIDO SU OCUPACIÓN O TRABAJO USUAL EN EL QUE HA LABORADO POR MÁS TIEMPO?" text="11" />
-                                        <QuestionnaireTos key={7} title="- EMPLEO Y OCUPACIÓN" text="DR" />
-                                        <QuestionnaireTos key={8} title="- NEGOCIO, CAMPO O INDUSTRIA" text="LOGÍSTICA Y TRANSPORTE DE CARBÓN" />
+                                        <QuestionnaireTos key={1} title="A. HA TRABAJADO TIEMPO COMPLETO (8 HORAS A LA SEMANA O MÁS) POR 6 MESES O MÁS?" text={datos.historiaOcupASintR} />
+                                        <QuestionnaireTos key={2} title="B. HA TRABAJADO AL MENOS DURANTE 6 MESES EN UN EMPLEO DONDE TUVO EXPOSICIÓN A POLVOS?" text={datos.historiaOcupBSintR} />
+                                        <Grid item xs={3}>
+                                            <Typography fontSize={10}><b>- ESPECIFIQUE EMPLEO O INDUSTRIA</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography align='right' variant="h6">{datos.historiaOcupB1SintR}</Typography>
+                                        </Grid>
+
+                                        <QuestionnaireTos key={4} title="- TOTAL AÑOS TRABAJADOS:" text={datos.historiaOcupB2SintR} />
+                                        <QuestionnaireTos key={5} title="- LA EXPOSICIÓN FUE:" text={datos.nameHistoriaOcupB3SintR} />
+
+                                        <QuestionnaireTos key={6} title="C. ¿CUÁL HA SIDO SU OCUPACIÓN O TRABAJO USUAL EN EL QUE HA LABORADO POR MÁS TIEMPO?" text={datos.historiaOcupD2SintR} />
                                         <Grid item xs={4}>
-                                            <Typography fontSize={10}><b>DESCRIBA LA NATURALEZA DE ESTA CONDICIÓN:</b></Typography>
+                                            <Typography fontSize={10}>- EMPLEO Y OCUPACIÓN</Typography>
                                         </Grid>
                                         <Grid item xs={8}>
-                                            <Typography fontSize={10}>DESCRIBA LA NATURALEZA DE ESTA CONDICIÓN</Typography>
+                                            <Typography align='right' variant='h6'>{datos.historiaOcupD1SintR}</Typography>
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <Typography fontSize={10}>- NEGOCIO, CAMPO O INDUSTRIA</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Typography align='right' variant='h6'>{datos.historiaOcupD3}</Typography>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -148,7 +144,7 @@ const ReportPage3 = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography variant='h6'><b>7. DISNEA (DIFICULTAD PARA RESPIRAR)</b></Typography>
+                                    <Typography variant='h6'><b>11. TABAQUISMO</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -157,11 +153,11 @@ const ReportPage3 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. ¿SE AHOGA AL SUBIR DE UN NIVEL A OTRO AL CAMINAR POR UNA CUESTA SUAVE?" text="NO" />
-                                        <QuestionnaireTos key={2} title="B. ¿POR CAUSA DEL AHOGO TIENE QUE CAMINAR MÁS DESPACIO QUE LA GENTE DE SU EDAD, EN UNA CUESTA SUAVE?" text="NO" />
-                                        <QuestionnaireTos key={3} title="C. ¿TIENE QUE DETENERSE A RESPIRAR CUANDO CAMINA A SU PASO POR UNA CUESTA SUAVE?" text="NO" />
-                                        <QuestionnaireTos key={4} title="D. ¿TIENE QUE PARAR A RESPIRAR LUEGO DE CAMINAR 100 YARDAS (O LUEGO DE ALGUNOS MINUTOS) POR UNA CUESTA SUAVE?" text="NO" />
-                                        <QuestionnaireTos key={5} title="E. ¿EL AHOGO LE DIFICULTA DEJAR SU CASA, VESTIRSE O DESVESTIRTE?" text="NO" />
+                                        <QuestionnaireTos key={1} title="A. ¿HA FUMADO CIGARRILLOS, PIPA O TABACO (AL MENOS UNO(A) AL DÍA POR UN AÑO O 12 ONZAS DE TABACO DURANTE LA VIDA)?" text={datos.tabaquismoASintR} />
+                                        <QuestionnaireTos key={2} title="B. ¿FUMA AHORA (INCLUYE UN MES ATRÁS)?" text={datos.tabaquismoBSintR} />
+                                        <QuestionnaireTos key={3} title="C. ¿A QUÉ EDAD COMENZÓ A FUMAR EN FORMA REGULAR?" text={datos.tabaquismoCSintR} />
+                                        <QuestionnaireTos key={4} title="D. SI YA DEJO DE FUMAR TOTALMENTE, ¿A QUÉ EDAD LO DEJÓ?" text={datos.tabaquismoDSintR} />
+                                        <QuestionnaireTos key={5} title="E. ¿CUANTOS CIGARRILLOS FUMA AL DÍA O FUMABA?" text={datos.tabaquismoESintR} />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -174,7 +170,7 @@ const ReportPage3 = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography variant='h6'><b>8. GRIPAS Y ENFERMEDADES DEL TÓRAX</b></Typography>
+                                    <Typography variant='h6'><b>12. ACTIVIDAD DEPORTIVA</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -183,10 +179,11 @@ const ReportPage3 = () => {
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. ¿SI SE RESFRÍA SE LE AFECTA EL PECHO?" text="NO" />
-                                        <QuestionnaireTos key={2} title="B. ¿EN LOS ÚLTIMOS 3 AÑOS HA PRESENTADO ENFERMEDAD QUE LO ALEJE DE SU TRABAJO, LO MANTENGA EN CASA O EN CAMA?" text="NO" />
-                                        <QuestionnaireTos key={3} title="C. ¿EXPECTORÓ CON ALGUNA DE ESTAS ENFERMEDADES?" text="NO" />
-                                        <QuestionnaireTos key={4} title="D. EN LOS ÚLTIMOS AÑOS ¿CUÁNTAS DE ESTAS ENFERMEDADES CON ESPUTO LE HAN DURADO UNA SEMANA O MÁS?, ¿NÚMERO DE ENFERMEDADES?" text="0" />
+                                        <QuestionnaireTos key={1} title="A. ¿REALIZA ALGÚN DEPORTE?" text={datos.actDeportASintR} />
+                                        <QuestionnaireTos key={2} title="- ¿CUAL DEPORTE O ACTIVIDAD?" text={datos.actDeporA1SintR} />
+                                        <QuestionnaireTos key={3} title="- DÍAS A LA SEMANA QUE LO PRACTICA" text={datos.actDeporA2SintR} />
+                                        <QuestionnaireTos key={4} title="- HORAS AL DÍA QUE LE DEDICA" text={datos.actDeporA3SintR} />
+                                        <QuestionnaireTos key={4} title="- PROMEDIO DE HORAS A LA SEMANA" text={datos.actDeporA4SintR} />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -199,7 +196,7 @@ const ReportPage3 = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography variant='h6'><b>9. ANTECEDENTES</b></Typography>
+                                    <Typography variant='h6'><b>13. RECOMENDACIONES</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -207,46 +204,7 @@ const ReportPage3 = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. TUVO ALGUNA ENFERMEDAD PULMONAR ANTES DE LOS 16 AÑOS?" text="NO" />
-                                        <QuestionnaireTos key={2} title="B. ¿HA TENIDO ALGUNA DE LAS SIGUIENTES ENFERMEDADES (CONFIRMADAS POR EL MEDICO)?" text="NO" />
-                                        <QuestionnaireTos key={3} title="1. ¿ATAQUES DE BRONQUITIS?" text="NO" />
-                                        <QuestionnaireTos key={4} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text="0" />
-                                        <QuestionnaireTos key={5} title="2. ¿NEUMONÍA O BRONCONEUMONÍA?" text="NO" />
-                                        <QuestionnaireTos key={5} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text="0" />
-                                        <QuestionnaireTos key={5} title="3. ¿BRONQUITIS CRÓNICA?" text="NO" />
-                                        <QuestionnaireTos key={5} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text="0" />
-                                        <QuestionnaireTos key={5} title="- ¿AUN PRESENTA ESTA ENFERMEDAD?" text="NO" />
-                                        <QuestionnaireTos key={5} title="- EDAD DE INICIO" text="0" />
-                                        <QuestionnaireTos key={5} title="4. ¿ENFISEMA PULMONAR?" text="NO" />
-                                        <QuestionnaireTos key={5} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text="0" />
-                                        <QuestionnaireTos key={5} title="- ¿AUN PRESENTA ESTA ENFERMEDAD?" text="NO" />
-                                        <QuestionnaireTos key={5} title="- EDAD DE INICIO" text="0" />
-                                        <QuestionnaireTos key={5} title="5. ¿ASMA?" text="NO" />
-                                        <QuestionnaireTos key={5} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text="0" />
-                                        <QuestionnaireTos key={5} title="- ¿AUN PRESENTA ESTA ENFERMEDAD?" text="0" />
-                                        <QuestionnaireTos key={5} title="6. OTRAS ENFERMEDADES DEL TÓRAX" text="NO" />
-                                        <Grid item xs={3}>
-                                            <Typography fontSize={10}><b>- ESPECIFIQUE:</b></Typography>
-                                        </Grid>
-                                        <Grid item xs={9}>
-                                            <Typography align='right' fontSize={10}>ESPECIFIQUE</Typography>
-                                        </Grid>
-                                        <QuestionnaireTos key={5} title="7. ¿ALGUNA CIRUGÍA DEL TÓRAX?" text="NO" />
-                                        <Grid item xs={3}>
-                                            <Typography fontSize={10}><b>- ESPECIFIQUE:</b></Typography>
-                                        </Grid>
-                                        <Grid item xs={9}>
-                                            <Typography align='right' fontSize={10}>ESPECIFIQUE</Typography>
-                                        </Grid>
-                                        <QuestionnaireTos key={5} title="8. TRAUMA (ALGÚN ACCIDENTE) DEL TÓRAX" text="NO" />
-                                        <Grid item xs={3}>
-                                            <Typography fontSize={10}><b>- ESPECIFIQUE:</b></Typography>
-                                        </Grid>
-                                        <Grid item xs={9}>
-                                            <Typography align='right' fontSize={10}>ESPECIFIQUE</Typography>
-                                        </Grid>
-                                    </Grid>
+                                    <Typography variant='h6'>{datos.recoSintR}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
