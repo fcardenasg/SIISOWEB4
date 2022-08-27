@@ -184,6 +184,10 @@ const ListSpirometry = Loadable(lazy(() => import('modules/Paraclinics/Spirometr
 const Spirometry = Loadable(lazy(() => import('modules/Paraclinics/Spirometry/Spirometry')));
 const UpdateSpirometry = Loadable(lazy(() => import('modules/Paraclinics/Spirometry/UpdateSpirometry')));
 
+const ListLaboratory = Loadable(lazy(() => import('modules/Paraclinics/Laboratory/ListLaboratory')));
+const Laboratory = Loadable(lazy(() => import('modules/Paraclinics/Laboratory/Laboratory')));
+const UpdateLaboratory = Loadable(lazy(() => import('modules/Paraclinics/Laboratory/UpdateLaboratory')));
+
 
 const MainRoutes = {
     path: '/',
@@ -744,6 +748,24 @@ const MainRoutes = {
             path: '/paraclinics/spirometry/update/:id',
             element: <UpdateSpirometry />
         },
+
+        {
+            path: '/paraclinics/laboratory/list',
+            element: <ListLaboratory />
+        },
+        {
+            path: '/paraclinics/laboratory/add',
+            element: <Laboratory />
+        },
+        {
+            path: '/paraclinics/laboratory/update/:id',
+            element: <UpdateLaboratory />
+        },
+
+
+
+
+
 
 
 

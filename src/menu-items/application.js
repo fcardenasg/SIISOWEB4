@@ -234,10 +234,10 @@ const application = {
                     breadcrumbs: false
                 },
                 {
-                    id: 'radio',
+                    id: 'laboratory',
                     title: <FormattedMessage id="Laboratorios" />,
                     type: 'item',
-                    url: '/components/radio',
+                    url: '/Paraclinics/Laboratory/list',
                     breadcrumbs: false
                 },
                 {
