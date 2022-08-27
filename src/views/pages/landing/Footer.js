@@ -1,10 +1,15 @@
 // material-ui
 import { styled } from '@mui/material/styles';
 import { Container, Typography } from '@mui/material';
+import { Fragment } from 'react';
 
 // styles
 const FooterWrapper = styled('div')(({ theme }) => ({
-    padding: '35px 0',
+    position: 'fixed',
+    bottom: 0,
+    width: '100%',
+
+    padding: '20px 0',
     color: '#fff',
     background: theme.palette.secondary.main,
     [theme.breakpoints.down('md')]: {
@@ -12,32 +17,21 @@ const FooterWrapper = styled('div')(({ theme }) => ({
     }
 }));
 
-const FooterSubWrapper = styled('div')(({ theme }) => ({
-    padding: '20px 0',
-    color: '#fff',
-    background: theme.palette.secondary.dark,
-    [theme.breakpoints.down('md')]: {
-        textAlign: 'center'
-    }
-}));
 
 // ==============================|| LANDING - FOOTER PAGE ||============================== //
 
 const FooterPage = () => {
 
     return (
-        <>
+        <Fragment>
             <FooterWrapper>
-                <></>
-            </FooterWrapper>
-            <FooterSubWrapper>
                 <Container>
-                    <Typography variant="subtitle2" component="div" color="inherit">
+                    <Typography variant="h3" component="div" color="inherit">
                         &#169; SIISO
                     </Typography>
                 </Container>
-            </FooterSubWrapper>
-        </>
+            </FooterWrapper>
+        </Fragment>
     );
 };
 
