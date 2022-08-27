@@ -1,48 +1,29 @@
 import { useTheme } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
-import { Button, Card, TextField, CardActions, useMediaQuery, CardContent, CardHeader, CardMedia, Divider, Grid, Typography, IconButton, Modal, } from '@mui/material';
-import { QrReader } from 'react-qr-reader';
+import { Button, Card, TextField, CardActions, useMediaQuery, CardContent, CardHeader, Divider, Grid, Typography } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
-
-import { useDispatch } from 'react-redux';
 // project imports
 
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 
 import SubCard from 'ui-component/cards/SubCard';
 import MainCard from 'ui-component/cards/MainCard';
-import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 import { gridSpacing } from 'store/constant';
 
 import { GetAllTypeCatalog } from 'api/clients/TypeCatalogClient';
 import InputText from 'components/input/InputText';
 
-const videoConstraints = {
-    width: 250,
-    height: 87,
-    margin: 0
-};
 
 // ===============================|| UI CARDS ||=============================== //
 
 const Turner = () => {
     const theme = useTheme();
-    const [scanResultWebCam, setScanResultWebCam] = useState('');
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const dispatch = useDispatch();
-
-
-    /* NUESTROS USESTATE */
-    const [typeCatalog, setTypeCatalog] = useState([]);
-    const [btnReport, setBtnReport] = useState(false);
-    const [noSymptoms, setNoSymptoms] = useState(false);
-    const [closeContact, setCloseContact] = useState(false);
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
 
-    const { handleSubmit, errors, reset } = methods;
+    const { errors } = methods;
 
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
@@ -52,7 +33,6 @@ const Turner = () => {
                 value: item.id,
                 label: item.nombre
             }));
-            setTypeCatalog(result);
         } catch (error) {
             console.log(error);
         }
@@ -63,22 +43,6 @@ const Turner = () => {
         GetAll();
     }, [])
 
-    /* METODO DE INSERT  */
-    const handleClick = () => {
-        setBtnReport(true);
-    };
-
-    const handleNoSymptoms = (event) => {
-        setNoSymptoms(event.target.checked);
-    }
-
-    const handleCloseContact = (event) => {
-        setCloseContact(event.target.checked);
-    }
-
-    const navigate = useNavigate();
-
-
     const [text, setText] = useState('');
     const cardStyle = {
         background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.grey[50],
@@ -88,8 +52,6 @@ const Turner = () => {
 
     return (
         <>
-
-
             <MainCard
                 title="Solicita tu turno"
                 sx={{ mt: gridSpacing }}
@@ -102,20 +64,6 @@ const Turner = () => {
                                 <CardContent>
                                     <Grid container spacing={4}>
                                         <Grid item xl={4}>
-                                            <QrReader
-                                                containerStyle={videoConstraints}
-                                                style={{ width: '100%' }}
-                                                onResult={(result, error) => {
-                                                    if (!!result) {
-                                                        setScanResultWebCam(result?.text);
-                                                    }
-
-                                                    if (!!error) {
-                                                        console.info(error);
-                                                    }
-                                                }}
-                                                scanDelay={1000}
-                                            />
                                         </Grid>
                                         <Grid container spacing={1} justifyContent="center" alignItems="center">
                                             <Grid item>
@@ -128,9 +76,7 @@ const Turner = () => {
                                 </CardContent>
                                 <CardActions>
                                     <Grid container justifyContent="center">
-                                        {/* <Grid item>
-                                            <Button variant="contained">Solicitar turno</Button>
-                                        </Grid> */}
+
                                     </Grid>
                                 </CardActions>
                             </Card>
@@ -257,7 +203,7 @@ const Turner = () => {
                                     </Card>
                                 </Grid>
 
-                                
+
                                 <Grid item sm={6} md={4}>
                                     <Card sx={{ bgcolor: theme.palette.secondary.main, color: theme.palette.secondary.light }}>
                                         <CardHeader

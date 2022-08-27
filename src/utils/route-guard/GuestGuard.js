@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 // project imports
 import useAuth from 'hooks/useAuth';
-import config from 'config';
 import { useEffect } from 'react';
 
 /* Validate */

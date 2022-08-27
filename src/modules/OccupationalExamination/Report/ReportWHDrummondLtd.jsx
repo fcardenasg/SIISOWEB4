@@ -1,14 +1,12 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Divider, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { useParams } from 'react-router-dom';
 
 import useAuth from 'hooks/useAuth';
 import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { GetByIdAdvice } from 'api/clients/AdviceClient';
-import { FormatDate, GetEdad } from 'components/helpers/Format';
+import { FormatDate } from 'components/helpers/Format';
 import { DefaultValue } from 'components/helpers/Enums';
 import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
 
@@ -73,14 +71,14 @@ const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = 
                     var arrayMPI = lsServerDTLD.data.entities;
                     var arrayRUIDO = lsServerDTLD.data.entities;
 
-                    if (arrayMPI.length != 0 || arrayRUIDO.length != 0) {
-                        var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI_DLTD)
+                    if (arrayMPI.length !== 0 || arrayRUIDO.length !== 0) {
+                        var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico && code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
                             .map((riesgo) => ({
                                 anio: riesgo.anio,
                                 mes: riesgo.mes
                             }));
 
-                        var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo == DefaultValue.RiesgoFisico && code.idClase == DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                        var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico && code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
                             .map((riesgo) => ({
                                 anio: riesgo.anio,
                                 mes: riesgo.mes
@@ -122,14 +120,14 @@ const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = 
                     var arrayMPI = lsServerOtrasEmpresas.data.entities;
                     var arrayRUIDO = lsServerOtrasEmpresas.data.entities;
 
-                    if (arrayMPI.length != 0 || arrayRUIDO.length != 0) {
-                        var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI_DLTD)
+                    if (arrayMPI.length !== 0 || arrayRUIDO.length !== 0) {
+                        var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico && code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
                             .map((riesgo) => ({
                                 anio: riesgo.anio,
                                 mes: riesgo.mes
                             }));
 
-                        var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo == DefaultValue.RiesgoFisico && code.idClase == DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                        var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico && code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
                             .map((riesgo) => ({
                                 anio: riesgo.anio,
                                 mes: riesgo.mes

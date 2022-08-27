@@ -17,7 +17,6 @@ import {
     InputAdornment,
     InputLabel,
     OutlinedInput,
-    TextField,
     Typography,
     useMediaQuery
 } from '@mui/material';
@@ -37,9 +36,6 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
-
-// ===========================|| FIREBASE - REGISTER ||=========================== //
 
 const FirebaseRegister = ({ ...others }) => {
     const theme = useTheme();

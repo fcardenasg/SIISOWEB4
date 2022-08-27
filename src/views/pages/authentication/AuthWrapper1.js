@@ -1,15 +1,5 @@
 // material-ui
-import { styled, createTheme } from '@mui/material/styles';
-
-// ==============================|| AUTHENTICATION 1 WRAPPER ||============================== //
-
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#E31937',
-        },
-    },
-});
+import { styled } from '@mui/material/styles';
 
 const AuthWrapper1 = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.grey[300],

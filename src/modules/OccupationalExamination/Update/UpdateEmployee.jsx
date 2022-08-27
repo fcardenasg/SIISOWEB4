@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useRef, Fragment } from 'react';
-import { useParams } from 'react-router-dom';
 
 // Import de Material-ui
 import { useTheme } from '@mui/material/styles';
@@ -11,11 +10,8 @@ import {
 } from '@mui/material';
 
 // Terceros
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
 import SubCard from 'ui-component/cards/SubCard';
@@ -31,8 +27,7 @@ import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'ap
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { Message, TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
+import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
@@ -50,7 +45,6 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
     const WebCamRef = useRef(null);
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const navigate = useNavigate();
 
     const [lsCatalogo, setLsCatalogo] = useState([]);
     const [lsGes, setLsGes] = useState([]);
@@ -272,7 +266,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
     }, []);
 
     setTimeout(() => {
-        if (employee.length != 0) {
+        if (employee.length !== 0) {
             setTimeWait(true);
         }
     }, 1000);
@@ -317,7 +311,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
     const handleChangeDptoResidencia = async (event) => {
         setDptoResidencia(event.target.value);
 
-        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
         var resultMunicipioNacimiento = await GetSubString(lsResulCode);
         setMunicipioR(resultMunicipioNacimiento);
     };
@@ -325,7 +319,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
     const handleChangeDptoNacido = async (event) => {
         setDptoNacido(event.target.value);
 
-        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo = event.target.value).map(code => code.codigo));
         var resultMunicipioNacimiento = await GetSubString(lsResulCode);
         setMunicipioN(resultMunicipioNacimiento);
     };
@@ -333,7 +327,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
     const handleChangeDptoResidenciaTrabaja = async (event) => {
         setDptoResidenciaTrabaja(event.target.value);
 
-        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+        var lsResulCode = String(lsCodigoFilter.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
         var resultMunicipioNacimiento = await GetSubString(lsResulCode);
         setLsMunicipioTrabaja(resultMunicipioNacimiento);
     };
@@ -345,9 +339,9 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
 
     const handleClick = async (datos) => {
         try {
-            const municipioResidencia_DATA = municipioResidencia == '' ? datos.municipioResidencia : municipioResidencia;
-            const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
-            const municipioTrabaja_DATA = municipioResidenciaTrabaja == '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
+            const municipioResidencia_DATA = municipioResidencia === '' ? datos.municipioResidencia : municipioResidencia;
+            const municipioNacido_DATA = municipioNacido === '' ? datos.municipioNacido : municipioNacido;
+            const municipioTrabaja_DATA = municipioResidenciaTrabaja === '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
 
             const DataToUpdate = PutEmployee(datos.documento, datos.nombres, FormatDate(new Date(datos.fechaNaci)), datos.type, datos.departamento,
                 datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, FormatDate(new Date(datos.fechaContrato)),
@@ -358,7 +352,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date(datos.termDate)),
                 1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.email, FormatDate(new Date()), imgSrc);
 
-            if (imgSrc != null) {
+            if (imgSrc !== null) {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await UpdateEmployees(DataToUpdate);
                     if (result.status === 200) {
@@ -743,7 +737,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioN.length != 0 ? (
+                                {lsMunicipioN.length !== 0 ? (
                                     <SelectOnChange
                                         name="municipioNacido"
                                         label="Municipio de Nacimiento"
@@ -777,7 +771,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioR.length != 0 ? (
+                                {lsMunicipioR.length !== 0 ? (
                                     <SelectOnChange
                                         name="municipioResidencia"
                                         label="Municipio de Residencia"
@@ -823,7 +817,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioTrabaja.length != 0 ?
+                                {lsMunicipioTrabaja.length !== 0 ?
                                     <SelectOnChange
                                         name="municipioResidenciaTrabaja"
                                         label="Municipio de Residencia Laboral"

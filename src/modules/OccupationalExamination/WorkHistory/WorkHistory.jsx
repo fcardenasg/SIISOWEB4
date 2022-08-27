@@ -84,13 +84,13 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 var arrayRUIDO = lsServerDTLD.data.entities;
 
                 if (arrayMPI.length != 0 || arrayRUIDO.length != 0) {
-                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI_DLTD)
+                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico && code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
                         .map((riesgo) => ({
                             anio: riesgo.anio,
                             mes: riesgo.mes
                         }));
 
-                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo == DefaultValue.RiesgoFisico && code.idClase == DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico && code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
                         .map((riesgo) => ({
                             anio: riesgo.anio,
                             mes: riesgo.mes
@@ -133,13 +133,13 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 var arrayRUIDO = lsServerOtrasEmpresas.data.entities;
 
                 if (arrayMPI.length != 0 || arrayRUIDO.length != 0) {
-                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI_DLTD)
+                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico && code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
                         .map((riesgo) => ({
                             anio: riesgo.anio,
                             mes: riesgo.mes
                         }));
 
-                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo == DefaultValue.RiesgoFisico && code.idClase == DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico && code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
                         .map((riesgo) => ({
                             anio: riesgo.anio,
                             mes: riesgo.mes

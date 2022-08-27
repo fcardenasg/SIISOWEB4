@@ -1,15 +1,12 @@
 import { Fragment } from 'react';
 import { Divider, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { useParams } from 'react-router-dom';
 
 import useAuth from 'hooks/useAuth';
 import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { GetByIdAdvice } from 'api/clients/AdviceClient';
 import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
-import { GetByMail } from 'api/clients/UserClient';
 
 function createData(riesgo, sugRiesgo, exp, anios, meses, sinEpp, conEpp, medidasControl) {
     return { riesgo, sugRiesgo, exp, anios, meses, sinEpp, conEpp, medidasControl };

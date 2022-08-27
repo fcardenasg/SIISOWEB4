@@ -52,13 +52,13 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
         async function GetAll() {
             try {
                 if (idRisk !== 0) {
-                    if (diferen == "DLTD") {
+                    if (diferen === "DLTD") {
                         const lsServerRisk = await GetByIdWorkHistoryRisk(idRisk);
                         if (lsServerRisk.status === 200)
                             setRow(lsServerRisk.data);
                     }
 
-                    if (diferen == "COMPANY") {
+                    if (diferen === "COMPANY") {
                         const lsServerRisk = await GetByIdWorkHistoryRiskCompany(idRisk);
                         if (lsServerRisk.status === 200)
                             setRow(lsServerRisk.data);
@@ -79,7 +79,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
                 row.usuarioRegistro, row.fechaRegistro, user.email, FormatDate(new Date()));
 
             if (DataToInsert) {
-                if (diferen == "DLTD") {
+                if (diferen === "DLTD") {
                     const result = await UpdateWorkHistoryRisks(DataToInsert);
                     if (result.status === 200) {
                         openRisk = false;
@@ -89,7 +89,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
                     }
                 }
 
-                if (diferen == "COMPANY") {
+                if (diferen === "COMPANY") {
                     const result = await UpdateWorkHistoryRisksCompany(DataToInsert);
                     if (result.status === 200) {
                         openRisk = false;
@@ -125,7 +125,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
                 <DialogContent>
                     <Grid container spacing={2} sx={{ my: 0 }}>
                         <Grid item xs={12}>
-                            {row.length != 0 ?
+                            {row.length !== 0 ?
                                 <SubCard
                                     title={
                                         <Grid container spacing={1} alignItems="center">
@@ -133,7 +133,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
                                                 <Chip chipcolor="success" label={row.nameAtencion} size="small" />
                                             </Grid>
                                             <Grid item>
-                                                <Avatar size="sm" alt="Foto Empleado" src={row.empleadoFoto != null ? row.empleadoFoto : userImg} />
+                                                <Avatar size="sm" alt="Foto Empleado" src={row.empleadoFoto !== null ? row.empleadoFoto : userImg} />
                                             </Grid>
                                             <Grid item xs zeroMinWidth>
                                                 <Typography align="left" variant="h4">
@@ -204,7 +204,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
                                             <FormProvider {...methods}>
                                                 <InputText
                                                     type="number"
-                                                    disabled={row.length != 0 ? false : true}
+                                                    disabled={row.length !== 0 ? false : true}
                                                     defaultValue=""
                                                     name="anio"
                                                     label="Año"
@@ -217,7 +217,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
                                             <FormProvider {...methods}>
                                                 <InputText
                                                     type="number"
-                                                    disabled={row.length != 0 ? false : true}
+                                                    disabled={row.length !== 0 ? false : true}
                                                     defaultValue=""
                                                     name="mes"
                                                     label="Mes"

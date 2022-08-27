@@ -1,6 +1,5 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { Divider, Grid, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
 
 import ImgWhite from 'assets/img/ImgWhite.png';
 import useAuth from 'hooks/useAuth';
@@ -8,9 +7,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { GetByIdAdvice } from 'api/clients/AdviceClient';
-import { FormatDate, GetEdad } from 'components/helpers/Format';
-import { GetByMail } from 'api/clients/UserClient';
+import { FormatDate } from 'components/helpers/Format';
 
 const EmployeeNotification = ({ title = '', text = '' }) => {
     return (

@@ -30,7 +30,6 @@ import { Formik } from 'formik';
 import firebase from 'firebase/app';
 
 // project imports
-import config from 'config';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -41,8 +40,6 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import Google from 'assets/images/icons/social-google.svg';
 
-// ============================|| FIREBASE - LOGIN ||============================ //
-
 const FirebaseLogin = ({ loginProp, ...others }) => {
     const theme = useTheme();
     const scriptedRef = useScriptRef();
@@ -51,7 +48,7 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
     const [checked, setChecked] = useState(true);
     const navigate = useNavigate();
 
-    const { firebaseEmailPasswordSignIn, firebaseGoogleSignIn, isLoggedIn } = useAuth();
+    const { firebaseEmailPasswordSignIn, firebaseGoogleSignIn } = useAuth();
     const googleHandler = async () => {
         try {
             await firebaseGoogleSignIn();

@@ -6,7 +6,6 @@ import NavMotion from 'layout/NavMotion';
 import GuestGuard from 'utils/route-guard/GuestGuard';
 
 const SelectionView = Loadable(lazy(() => import('views/dashboard/SelectionView/SelectionView')));
-const DashboardEnergy = Loadable(lazy(() => import('views/dashboard/SelectionView/DashboardEnergy')));
 
 
 const QuestionnaireRoutes = {
@@ -18,12 +17,6 @@ const QuestionnaireRoutes = {
             </GuestGuard>
         </NavMotion>
     ),
-    /* children: [
-        {
-            path: '/dashboard/energy',
-            element: <DashboardEnergy />
-        },
-    ] */
 };
 
 export default QuestionnaireRoutes;

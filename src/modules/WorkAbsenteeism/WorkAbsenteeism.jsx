@@ -5,13 +5,9 @@ import {
     Grid,
     useMediaQuery,
     Typography,
-    Divider,
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import ViewEmployee from 'components/views/ViewEmployee';
@@ -20,21 +16,15 @@ import { GetAllBySegAfectado, GetAllBySegAgrupado } from 'api/clients/OthersClie
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format';
-import Accordion from 'components/accordion/Accordion';
-import PhotoModel from 'components/form/PhotoModel';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
-import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
-import { GetAllCompany } from 'api/clients/CompanyClient';
+import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import InputOnChange from 'components/input/InputOnChange';
 
-import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import RadioButtonCheckedTwoToneIcon from '@mui/icons-material/RadioButtonCheckedTwoTone';
 import UserCountCard from 'ui-component/cards/UserCountCard';
@@ -43,14 +33,12 @@ import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import { GetByIdCIE11 } from 'api/clients/CIE11Client';
 
 const WorkAbsenteeism = () => {
-    const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [documento, setDocumento] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
 

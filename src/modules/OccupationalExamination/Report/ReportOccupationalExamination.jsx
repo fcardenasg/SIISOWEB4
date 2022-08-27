@@ -1,22 +1,16 @@
-import { useRef, useEffect, useState, Suspense } from 'react';
-import { Button, Divider, Grid, Typography } from '@mui/material';
+import { useRef, useEffect, useState } from 'react';
+import { Button, Grid } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import ReactToPrint from 'react-to-print';
 import useAuth from 'hooks/useAuth';
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
 import MainCard from 'ui-component/cards/MainCard';
-import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
-import { ColorDrummondltd } from 'themes/colors';
-import { GetByIdAdvice } from 'api/clients/AdviceClient';
-import { ViewFormat, GetEdad, FormatDate } from 'components/helpers/Format';
 import { GetByMail } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
 
-/* REPORTE DE TRABAJO EN ALTURA */
 import ReportWorkHeight from './WorkHeight/ReportWorkHeight';
 import ReportEmployeeNotification from './WorkHeight/ReportEmployeeNotification';
 
@@ -106,11 +100,11 @@ const ReportOccupationalExamination = () => {
     setTimeout(() => {
         if (lsDataReport.length != 0 && lsDataUser.length != 0)
             setTimeWait(true);
-    }, 1000);
+    }, 500);
 
     return (
         <MainCard>
-            {lsDataReport.length != 0 ?
+            {timeWait ?
                 <Grid container justifyContent="center" spacing={gridSpacing}>
                     <Grid item xs={12} md={10} lg={8} ref={componentRef}>
                         <Grid container spacing={gridSpacing}>
@@ -126,60 +120,59 @@ const ReportOccupationalExamination = () => {
                                 <ReportPage3 key={14} datos={lsDataReport} lsDataUser={lsDataUser} />
                             </Grid>
 
-                            {/* <Grid item xs={12}>
+                            <Grid item xs={12}>
                                 <ReportWorkHeight key={10} datos={lsDataReport} lsDataUser={lsDataUser} />
                             </Grid>
 
                             <Grid item xs={12}>
                                 <ReportEmployeeNotification key={11} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid> */}
+                            </Grid>
 
+                            <Grid item xs={12}>
+                                <ReportConceptAptitude key={1} datos={lsDataReport} lsDataUser={lsDataUser} />
+                            </Grid>
 
-                            {/* <Grid item xs={12}>
-                            <ReportConceptAptitude key={1} datos={lsDataReport} lsDataUser={lsDataUser} />
-                        </Grid>
+                            <Grid item xs={12}>
+                                <ReportDiagnostics key={2} datos={lsDataReport} lsDataUser={lsDataUser} />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <ReportDiagnostics key={2} datos={lsDataReport} lsDataUser={lsDataUser} />
-                        </Grid>
+                            <Grid item xs={12}>
+                                <ReportWHOtherCompanies
+                                    key={3}
+                                    datos={lsDataReport}
+                                    lsDataUser={lsDataUser}
+                                    lsWorkHistoryOther={lsWorkHistoryOther}
+                                />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <ReportWHOtherCompanies
-                                key={3}
-                                datos={lsDataReport}
-                                lsDataUser={lsDataUser}
-                                lsWorkHistoryOther={lsWorkHistoryOther}
-                            />
-                        </Grid>
+                            <Grid item xs={12}>
+                                <ReportWHDrummondLtd
+                                    key={4}
+                                    datos={lsDataReport}
+                                    lsDataUser={lsDataUser}
+                                    lsWorkHistoryDLTD={lsWorkHistoryDLTD}
+                                />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <ReportWHDrummondLtd
-                                key={4}
-                                datos={lsDataReport}
-                                lsDataUser={lsDataUser}
-                                lsWorkHistoryDLTD={lsWorkHistoryDLTD}
-                            />
-                        </Grid>
+                            <Grid item xs={12}>
+                                <ReportPersonalHistory key={5} datos={lsDataReport} />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <ReportPersonalHistory key={5} datos={lsDataReport} />
-                        </Grid>
+                            <Grid item xs={12}>
+                                <ReportHabits key={6} datos={lsDataReport} />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <ReportHabits key={6} datos={lsDataReport} />
-                        </Grid>
+                            <Grid item xs={12}>
+                                <ReportSystemsReview key={7} datos={lsDataReport} />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <ReportSystemsReview key={7} datos={lsDataReport} />
-                        </Grid>
+                            <Grid item xs={12}>
+                                <ReportFunctionalExploration key={8} datos={lsDataReport} />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <ReportFunctionalExploration key={8} datos={lsDataReport} />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <ReportDefinitiveDiagnosis key={9} datos={lsDataReport} lsDataUser={lsDataUser} />
-                        </Grid> */}
+                            <Grid item xs={12}>
+                                <ReportDefinitiveDiagnosis key={9} datos={lsDataReport} lsDataUser={lsDataUser} />
+                            </Grid>
                         </Grid>
                     </Grid>
 

@@ -13,8 +13,6 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
 import Cargando from 'components/loading/Cargando';
@@ -26,7 +24,7 @@ import { FormatDate } from 'components/helpers/Format';
 import Accordion from 'components/accordion/Accordion';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
-import { InsertWorkAbsenteeism, GetByIdWorkAbsenteeism, UpdateWorkAbsenteeisms } from 'api/clients/WorkAbsenteeismClient';
+import {  GetByIdWorkAbsenteeism, UpdateWorkAbsenteeisms } from 'api/clients/WorkAbsenteeismClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
@@ -98,7 +96,6 @@ const UpdateWorkAbsenteeism = () => {
     const [lsWorkAbsenteeism, setLsWorkAbsenteeism] = useState([]);
 
     const [imgSrc, setImgSrc] = useState(null);
-    const [clickAttend, setClickAttend] = useState(false);
 
     const [nombres, setNombres] = useState('');
     const [email, setEmail] = useState('');
