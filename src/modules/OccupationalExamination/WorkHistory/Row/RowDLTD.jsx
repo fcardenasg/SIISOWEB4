@@ -22,7 +22,7 @@ import { DefaultValue } from 'components/helpers/Enums';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { InsertWorkHistoryRisk, DeleteWorkHistoryRisk } from 'api/clients/WorkHistoryRiskClient';
-import { FormatDate, ViewFormat } from 'components/helpers/Format';
+import { FormatDate } from 'components/helpers/Format';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { SubRow } from './SubRow';
 import { MenuItem } from '../Menu/MenuItem';

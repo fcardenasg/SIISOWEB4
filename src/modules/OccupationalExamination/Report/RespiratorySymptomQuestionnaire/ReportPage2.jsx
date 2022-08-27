@@ -1,16 +1,12 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment} from 'react';
 import { Divider, Grid, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
 
-import ImgWhite from 'assets/img/ImgWhite.png';
 import useAuth from 'hooks/useAuth';
 import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { GetByIdAdvice } from 'api/clients/AdviceClient';
-import { FormatDate, GetEdad } from 'components/helpers/Format';
-import { GetByMail } from 'api/clients/UserClient';
+import { FormatDate } from 'components/helpers/Format';
 
 const QuestionnaireTos = ({ title = '', text = '' }) => {
     return (
@@ -21,20 +17,6 @@ const QuestionnaireTos = ({ title = '', text = '' }) => {
             <Grid item xs={1}>
                 <Typography align="right" variant="h6">{text}</Typography>
             </Grid>
-        </Fragment>
-    )
-}
-
-const DataInfo = ({ title = '', text = '' }) => {
-    return (
-        <Fragment>
-            <Grid item xs={2}>
-                <Typography variant='h6'><b>{title}</b></Typography>
-            </Grid>
-            <Grid item xs={3.8}>
-                <Typography align="right" variant='h6'>{text}</Typography>
-            </Grid>
-            <Grid item xs={0.2} />
         </Fragment>
     )
 }

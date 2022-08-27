@@ -21,9 +21,6 @@ import {
     useScrollTrigger
 } from '@mui/material';
 
-// project imports
-import Logo from 'ui-component/Logo';
-
 // assets
 import { IconBook, IconCreditCard, IconDashboard, IconHome2 } from '@tabler/icons';
 import MenuIcon from '@mui/icons-material/Menu';

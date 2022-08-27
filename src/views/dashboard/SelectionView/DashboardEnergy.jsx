@@ -1,12 +1,10 @@
-import { Grid, Box, Typography, Button, CardMedia } from "@mui/material";
+import { Grid, Typography, CardMedia } from "@mui/material";
 import { Fragment } from "react";
-import { useNavigate } from 'react-router-dom';
 import { ColorDrummondltd } from 'themes/colors';
 import LogoDrummondLTD from 'assets/img/LogoDrummondLTD.png';
 import LogoDrummondEnergy from 'assets/img/LogoDrummondEnergy.png';
 
 const DashboardEnergy = () => {
-    const navigate = useNavigate();
 
     return (
         <Fragment>

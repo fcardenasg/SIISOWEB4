@@ -1,8 +1,8 @@
 import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
-import { useTheme, styled } from '@mui/material/styles';
-import { Box, Button, Container, Grid, Link, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Box, Button, Container, Grid,  Typography } from '@mui/material';
 
 // third party
 import { motion } from 'framer-motion';
@@ -10,21 +10,6 @@ import { motion } from 'framer-motion';
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
-
-
-// styles
-const HeaderImage = styled('img')(({ theme }) => ({
-    maxWidth: '100%',
-    borderRadius: '20px',
-    transform: 'scale(1.7)',
-    transformOrigin: theme.direction === 'rtl' ? '100% 50%' : '0 50%',
-    [theme.breakpoints.down('lg')]: {
-        transform: 'scale(1.2)'
-    }
-}));
-
-
-// ==============================|| LANDING - HEADER PAGE ||============================== //
 
 const HeaderPage = () => {
     const theme = useTheme();

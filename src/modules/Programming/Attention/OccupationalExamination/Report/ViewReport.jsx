@@ -11,16 +11,10 @@ import '@boldreports/react-reporting-components/Scripts/bold.reports.react.min';
 
 var viewerStyle = { 'height': '700px', 'width': '100%' };
 
-function App() {
+function ViewReport() {
     return (
-        <div style={viewerStyle}>
-            <BoldReportViewerComponent
-                id="reportviewer-container"
-                reportServiceUrl={'https://demos.boldreports.com/services/api/ReportViewer'}
-                reportPath={'~/Resources/docs/sales-order-detail.rdl'} >
-            </BoldReportViewerComponent>
-        </div>
+        <></>
     );
 }
 
-export default App;
+export default ViewReport;

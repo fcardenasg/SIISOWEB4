@@ -1,5 +1,5 @@
 // Import de Material-ui
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -15,8 +15,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 // Import del Proyecto
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -58,10 +56,8 @@ const MedicalAdvice = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
-    const WebCamRef = useRef(null);
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* NUESTROS ESTADOS PARA LOS DIFERENTES USOS */
     const [document, setDocument] = useState('');
     const [catalog, setCatalog] = useState([]);
     const [company, setCompany] = useState([]);

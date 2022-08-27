@@ -44,7 +44,7 @@ export const MenuItem = ({ onClickNuevo, onClickButton, numId, onClickHistorico 
                         </AnimateButton>
 
 
-                        {item.func == numId && numId != 8 ?
+                        {item.func === numId && numId !== 8 ?
                             <Grid container spacing={2} sx={{ pt: 2 }}>
                                 <Grid item xs={6}>
                                     <AnimateButton>
