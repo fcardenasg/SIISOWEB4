@@ -1,7 +1,5 @@
 import ReactDOM from 'react-dom';
 
-import './globals';
-
 // third party
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -18,8 +16,6 @@ import { store, persister } from 'store';
 // style + assets
 import 'assets/scss/style.scss';
 import config from 'config';
-
-// ==============================|| REACT DOM RENDER  ||============================== //
 
 ReactDOM.render(
     <Provider store={store}>

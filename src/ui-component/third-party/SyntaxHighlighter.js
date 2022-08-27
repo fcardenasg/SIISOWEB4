@@ -5,8 +5,6 @@ import { useTheme } from '@mui/material/styles';
 import { Card } from '@mui/material';
 
 // third-party
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // ==============================|| SYNTAX HIGHLIGHTER ||============================== //
 
@@ -26,13 +24,7 @@ const ReactSyntaxHighlighter = ({ codeString, showLineNumbers = true }) => {
                 }
             }}
         >
-            <SyntaxHighlighter
-                language="javacript"
-                showLineNumbers={showLineNumbers}
-                style={theme.palette.mode === 'dark' ? a11yLight : a11yDark}
-            >
-                {codeString}
-            </SyntaxHighlighter>
+            <></>
         </Card>
     );
 };

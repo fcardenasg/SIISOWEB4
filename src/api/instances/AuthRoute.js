@@ -1,5 +1,5 @@
 export const Url = {
-    Base: 'http://siiso4.westus3.cloudapp.azure.com/',
+    Base: 'https://siiso4.westus3.cloudapp.azure.com/',
 
     //'https://localhost:44347/', http://siiso4.westus3.cloudapp.azure.com/
 

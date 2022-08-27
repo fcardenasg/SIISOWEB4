@@ -11,7 +11,6 @@ import createCache from '@emotion/cache';
 // third-party
 import { create } from 'jss';
 import rtl from 'jss-rtl';
-import rtlPlugin from 'stylis-plugin-rtl';
 
 const jss = create({
     plugins: [...jssPreset().plugins, rtl()]
@@ -29,7 +28,7 @@ const RTLLayout = ({ children }) => {
     const cacheRtl = createCache({
         key: customization.rtlLayout ? 'rtl' : 'css',
         prepend: true,
-        stylisPlugins: customization.rtlLayout ? [rtlPlugin] : []
+        /* stylisPlugins: customization.rtlLayout ? [rtlPlugin] : [] */
     });
 
     cacheRtl.compat = true;
