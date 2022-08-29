@@ -177,6 +177,27 @@ const ReportFramingham = ({ datos = [], lsDataUser = [] }) => {
                                             <Typography align="right" variant="h6">{datos.glisemiaFRA}</Typography>
                                         </Grid>
 
+                                        <Grid item xs={2}>
+                                            <Typography variant="h6"><b>PESO:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <Typography align="right" variant="h6">{datos.pesoEF}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={2}>
+                                            <Typography variant="h6"><b>TALLA:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <Typography align="right" variant="h6">{datos.tallaEF}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={2}>
+                                            <Typography variant="h6"><b>IMC:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <Typography align="right" variant="h6">{datos.imcef}</Typography>
+                                        </Grid>
+
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>LDL:</b></Typography>
