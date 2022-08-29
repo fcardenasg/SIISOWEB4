@@ -11,6 +11,9 @@ import { gridSpacing } from 'store/constant';
 import { GetByMail } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
 
+/* REPORTE DE FRAMINGHAM */
+import ReportFramingham from './Framingham/ReportFramingham';
+
 import ReportWorkHeight from './WorkHeight/ReportWorkHeight';
 import ReportEmployeeNotification from './WorkHeight/ReportEmployeeNotification';
 
@@ -109,6 +112,10 @@ const ReportOccupationalExamination = () => {
                     <Grid item xs={12} md={10} lg={8} ref={componentRef}>
                         <Grid container spacing={gridSpacing}>
                             <Grid item xs={12}>
+                                <ReportFramingham key={13} datos={lsDataReport} lsDataUser={lsDataUser} />
+                            </Grid>
+
+                            {/* <Grid item xs={12}>
                                 <ReportPage1 key={12} datos={lsDataReport} lsDataUser={lsDataUser} />
                             </Grid>
 
@@ -172,7 +179,7 @@ const ReportOccupationalExamination = () => {
 
                             <Grid item xs={12}>
                                 <ReportDefinitiveDiagnosis key={9} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </Grid>
 
