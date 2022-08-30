@@ -1,24 +1,120 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Divider, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
 import useAuth from 'hooks/useAuth';
 import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
+import { DefaultValue } from 'components/helpers/Enums';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
+import { GetAllByChargeWHRAdvanceCompany } from 'api/clients/WorkHistoryRiskClient';
+import { GetAllByDocumentWorkHistoryOtherCompany } from 'api/clients/WorkHistoryOtherCompany';
 
-function createData(riesgo, sugRiesgo, exp, anios, meses, sinEpp, conEpp, medidasControl) {
-    return { riesgo, sugRiesgo, exp, anios, meses, sinEpp, conEpp, medidasControl };
+const WHOtherCompanies = ({ title = '', text = '' }) => {
+    return (
+        <Fragment>
+            <Grid item xs={2.5}>
+                <Typography variant="h6"><b>{title}</b></Typography>
+            </Grid>
+            <Grid item xs={3.5}>
+                <Typography variant="h6">{text}</Typography>
+            </Grid>
+        </Fragment>
+    )
 }
 
-const rows = [
-    createData('ERGONÓMICO', 'Posición Estática Prolongada de Pie', 'O', 1, 6, "N/A", "N/A", "PAUSAS ACTIVAS AUTOADMINISTRADAS",),
-    createData('PSICOSOCIAL', 'Monotonia', 'O', 1, 6, "N/A", "N/A", "PAUSAS ACTIVAS AUTOADMINISTRADAS")
-];
+const TableDLTD = ({ idRiesgo = 0, title = '', idHistoriaLaboral = '', idCargo = '' }) => {
+    const [lsRiesgo, setLsRiesgo] = useState([]);
 
-const ReportWHOtherCompanies = ({ datos = [], lsDataUser = [], lsWorkHistoryOther = [] }) => {
+    useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetAllByChargeWHRAdvanceCompany(0, 0, idCargo, idRiesgo, idHistoriaLaboral);
+                if (lsServer.status === 200) setLsRiesgo(lsServer.data.entities);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        GetAll();
+    }, [idHistoriaLaboral, idRiesgo, idCargo]);
+
+    return (
+        <Fragment>
+            {lsRiesgo.length !== 0 ?
+                <Fragment>
+                    <Grid item xs={12}>
+                        <Typography variant="h6"><b>{title}</b></Typography>
+                    </Grid><Grid item xs={12}><Divider /></Grid>
+
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>EXP.</b></Typography></TableCell>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>AÑOS</b></Typography></TableCell>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>MESES</b></Typography></TableCell>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>GR SIN EPP</b></Typography></TableCell>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>GR CON EPP</b></Typography></TableCell>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>MEDIDAS DE CONTROL</b></Typography></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {lsRiesgo.map((row, index) => (
+                                    <TableRow>
+
+                                        <TableCell align="right">
+                                            <Typography align="left" variant="h6">{row.nameExpocision}</Typography>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Typography align="left" variant="h6">{row.anio}</Typography>
+                                        </TableCell>
+
+                                        <TableCell align="right">
+                                            <Typography align="left" variant="h6">{row.mes}</Typography>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Typography align="left" variant="h6">{row.nameGradoSinEPP}</Typography>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Typography align="left" variant="h6">{row.nameGradoConEPP}</Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            {JSON.parse(row.medidasControl).map((medidas, index) => (
+                                                <Grid item xs={6}>
+                                                    <Typography fontSize={10}>{medidas.label},</Typography>
+                                                </Grid>
+                                            ))}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Fragment> : ''
+            }
+        </Fragment>
+
+    )
+}
+
+const ReportWHOtherCompanies = ({ datos = [] }) => {
     const { user } = useAuth();
+    const [lsWorkHistoryOther, setLsWorkHistoryOther] = useState([]);
+
+    useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetAllByDocumentWorkHistoryOtherCompany(0, 0, datos.documento);
+                if (lsServer.status === 200) setLsWorkHistoryOther(lsServer.data.entities);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        GetAll();
+    }, [datos.documento]);
 
     return (
         <SubCard>
@@ -74,152 +170,32 @@ const ReportWHOtherCompanies = ({ datos = [], lsDataUser = [], lsWorkHistoryOthe
 
                         <Grid item xs={12}>
                             <Grid container spacing={0.5}>
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">DOCUMENTO:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{datos.documento}</Typography>
-                                </Grid>
-
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">NOMBRES:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{datos.nameEmpleado}</Typography>
-                                </Grid>
-
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">GENERO:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{datos.nameGenero}</Typography>
-                                </Grid>
-
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">F. NACIMIENTO:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{ViewFormat(datos.fechaNacimiento)}</Typography>
-                                </Grid>
-
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">EDAD:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{GetEdad(new Date(datos.fechaNacimiento))}</Typography>
-                                </Grid>
-
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">DPTO. NACIMIENTO:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{datos.nameDptoNacimiento}</Typography>
-                                </Grid>
-
-
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">CIUDAD NACIMIENTO:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{datos.nameCiudadNacimiento}</Typography>
-                                </Grid>
-
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">ESTADO CIVIL:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{datos.nameEstadoCivil}</Typography>
-                                </Grid>
-
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">CELULAR PERSONAL:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{datos.celularEmpleado}</Typography>
-                                </Grid>
-
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">TURNO:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{datos.nameTurno}</Typography>
-                                </Grid>
-
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">GRUPO:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{datos.nameGrupo}</Typography>
-                                </Grid>
-
-                                <Grid item xs={2.5}>
-                                    <Typography variant="h5">EMAIL:</Typography>
-                                </Grid>
-                                <Grid item xs={3.5}>
-                                    <Typography variant="h5">{datos.correoEmpleado}</Typography>
-                                </Grid>
+                                <WHOtherCompanies title='DOCUMENTO:' text={datos.documento} />
+                                <WHOtherCompanies title='NOMBRES:' text={datos.nameEmpleado} />
+                                <WHOtherCompanies title='GENERO:' text={datos.nameGenero} />
+                                <WHOtherCompanies title='F. NACIMIENTO:' text={ViewFormat(datos.fechaNacimiento)} />
+                                <WHOtherCompanies title='EDAD:' text={GetEdad(new Date(datos.fechaNacimiento))} />
+                                <WHOtherCompanies title='DPTO. NACIMIENTO:' text={datos.nameDptoNacimiento} />
+                                <WHOtherCompanies title='CIUDAD NACIMIENTO:' text={datos.nameCiudadNacimiento} />
+                                <WHOtherCompanies title='ESTADO CIVIL:' text={datos.nameEstadoCivil} />
+                                <WHOtherCompanies title='CELULAR PERSONAL:' text={datos.celularEmpleado} />
+                                <WHOtherCompanies title='TURNO:' text={datos.nameTurno} />
+                                <WHOtherCompanies title='GRUPO:' text={datos.nameGrupo} />
+                                <WHOtherCompanies title='EMAIL:' text={datos.correoEmpleado} />
 
                                 <Grid item xs={12}>
-                                    <Grid container sx={{ pt: 2 }} spacing={1}>
+                                    <Grid container spacing={1}>
                                         <Grid item xs={12}>
-                                            <Typography variant="h5"><b>INFORMACIÓN DE LA EMPRESA Y CARGO</b></Typography>
+                                            <Typography variant="h6"><b>INFORMACIÓN DE LA EMPRESA Y CARGO</b></Typography>
                                         </Grid>
-
-                                        <Grid item xs={2.5}>
-                                            <Typography variant="h5">SEDE DE TRABAJO:</Typography>
-                                        </Grid>
-                                        <Grid item xs={3.5}>
-                                            <Typography variant="h5">{datos.nameSede}</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={2.5}>
-                                            <Typography variant="h5">DPTO. DE TRABAJO:</Typography>
-                                        </Grid>
-                                        <Grid item xs={3.5}>
-                                            <Typography variant="h5">{datos.nameDepartamentoTrabajo}</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={2.5}>
-                                            <Typography variant="h5">AREA:</Typography>
-                                        </Grid>
-                                        <Grid item xs={3.5}>
-                                            <Typography variant="h5">{datos.nameArea}</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={2.5}>
-                                            <Typography variant="h5">GRUPO:</Typography>
-                                        </Grid>
-                                        <Grid item xs={3.5}>
-                                            <Typography variant="h5">{datos.nameGrupo}</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={2.5}>
-                                            <Typography variant="h5">POSICIÓN:</Typography>
-                                        </Grid>
-                                        <Grid item xs={3.5}>
-                                            <Typography variant="h5">{datos.namePosicion}</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={2.5}>
-                                            <Typography variant="h5">TIPO CONTRATO:</Typography>
-                                        </Grid>
-                                        <Grid item xs={3.5}>
-                                            <Typography variant="h5">{datos.nameTipoContrato}</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={2.5}>
-                                            <Typography variant="h5">FECHA CONTRATO:</Typography>
-                                        </Grid>
-                                        <Grid item xs={3.5}>
-                                            <Typography variant="h5">{ViewFormat(datos.fechaContratoEmpleado)}</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={2.5}>
-                                            <Typography variant="h5">ANTIGUEDAD:</Typography>
-                                        </Grid>
-                                        <Grid item xs={3.5}>
-                                            <Typography variant="h5">{GetEdad(new Date(datos.fechaContratoEmpleado))} AÑOS</Typography>
-                                        </Grid>
+                                        <WHOtherCompanies title='SEDE DE TRABAJO:' text={datos.nameSede} />
+                                        <WHOtherCompanies title='DPTO. DE TRABAJO:' text={datos.nameDepartamentoTrabajo} />
+                                        <WHOtherCompanies title='AREA:' text={datos.nameArea} />
+                                        <WHOtherCompanies title='GRUPO:' text={datos.nameGrupo} />
+                                        <WHOtherCompanies title='POSICIÓN:' text={datos.namePosicion} />
+                                        <WHOtherCompanies title='TIPO CONTRATO:' text={datos.nameTipoContrato} />
+                                        <WHOtherCompanies title='FECHA CONTRATO:' text={ViewFormat(datos.fechaContratoEmpleado)} />
+                                        <WHOtherCompanies title='ANTIGUEDAD:' text={GetEdad(new Date(datos.fechaContratoEmpleado))} />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -234,15 +210,11 @@ const ReportWHOtherCompanies = ({ datos = [], lsDataUser = [], lsWorkHistoryOthe
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>ANTECEDENTES LABORALES</b></Typography>
+                            <Typography align="center" variant="h5"><b>HISTORIA LABORAL EN OTRAS EMPRESAS</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
                             <Divider />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Typography variant="h5"><b>HISTORIA LABORAL EN OTRAS EMPRESAS</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -274,79 +246,64 @@ const ReportWHOtherCompanies = ({ datos = [], lsDataUser = [], lsWorkHistoryOthe
                                         <Grid item xs={2}>
                                             <Typography align='center' variant="h6">{work.meses}</Typography>
                                         </Grid>
+
+                                        <Grid item xs={12}>
+                                            <Grid container spacing={1}>
+                                                <TableDLTD
+                                                    title='RIESGO QUÍMICO'
+                                                    idHistoriaLaboral={work.id}
+                                                    idCargo={work.cargo}
+                                                    idRiesgo={DefaultValue.RiesgoQuimico}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO FÍSICO'
+                                                    idHistoriaLaboral={work.id}
+                                                    idCargo={work.cargo}
+                                                    idRiesgo={DefaultValue.RiesgoFisico}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO PSICOSOCIAL'
+                                                    idHistoriaLaboral={work.id}
+                                                    idCargo={work.cargo}
+                                                    idRiesgo={DefaultValue.RiesgoPsicosocial}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO BIOLÓGICO'
+                                                    idHistoriaLaboral={work.id}
+                                                    idCargo={work.cargo}
+                                                    idRiesgo={DefaultValue.RiesgoBiologico}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO ECF - POSTURA'
+                                                    idHistoriaLaboral={work.id}
+                                                    idCargo={work.cargo}
+                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Postura}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO ECF - FUERZA'
+                                                    idHistoriaLaboral={work.id}
+                                                    idCargo={work.cargo}
+                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO ECF - MOVIMIENTO'
+                                                    idHistoriaLaboral={work.id}
+                                                    idCargo={work.cargo}
+                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento}
+                                                />
+                                            </Grid>
+                                        </Grid>
                                     </Fragment>
                                 ))}
 
 
                             </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>RECOMENDACIONES PARA APTITUD DE CONTROL PERIÓDICO</b></Typography>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <TableContainer>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell><Typography align="left" variant="h6">RIESGO</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">EXP.</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">AÑOS</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">MESES</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">GR SIN EPP</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">GR CON EPP</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">MEDIDAS DE CONTROL</Typography></TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows.map((row, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>
-                                                    <Typography align="left" variant="h6">
-                                                        {row.riesgo}
-                                                    </Typography>
-                                                    <Typography align="left" variant="caption">
-                                                        {row.sugRiesgo}
-                                                    </Typography>
-                                                </TableCell>
-
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.exp}</Typography>
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.anios}</Typography>
-                                                </TableCell>
-
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.meses}</Typography>
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.sinEpp}</Typography>
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.conEpp}</Typography>
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.medidasControl}</Typography>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
                         </Grid>
                     </Grid>
                 </Grid>

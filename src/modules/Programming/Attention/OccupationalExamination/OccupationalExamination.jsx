@@ -109,22 +109,22 @@ const calculateImc = (peso, talla) => {
     var clasificacionColor = '';
 
     if (imcFinal < 18.4) {
-        clasificacion = "Bajo de Peso";
+        clasificacion = "BAJO DE PESO";
         clasificacionColor = "info";
     } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
-        clasificacion = "Normal";
+        clasificacion = "NORMAL";
         clasificacionColor = "success";
     } else if (imcFinal >= 25 && imcFinal <= 29.9) {
-        clasificacion = "Sobrepeso";
+        clasificacion = "SOBREPESO";
         clasificacionColor = "warning";
     } else if (imcFinal >= 30 && imcFinal <= 34.9) {
-        clasificacion = "Normal";
+        clasificacion = "OBESIDAD GRADO I";
         clasificacionColor = "error";
     } else if (imcFinal >= 35 && imcFinal <= 39.9) {
-        clasificacion = "besidad Grado II";
+        clasificacion = "OBESIDAD GRADO II";
         clasificacionColor = "error";
     } else if (imcFinal > 40) {
-        clasificacion = "besidad Grado III";
+        clasificacion = "OBESIDAD GRADO III";
         clasificacionColor = "error";
     }
 
@@ -458,21 +458,6 @@ const OccupationalExamination = () => {
         GetAll();
     }, []);
 
-    /*     useEffect(() => {
-            async function GetAll() {
-                try {
-    
-                    const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(documento);
-                    if (lsServerUltimoRegistro.status === 200)
-                        setLastRecord(lsServerUltimoRegistro.data);
-    
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-    
-            GetAll();
-        }, [documento]); */
 
     const handleCerrarCaso = () => {
         try {

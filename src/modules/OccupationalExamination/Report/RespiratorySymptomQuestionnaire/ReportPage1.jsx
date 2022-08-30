@@ -113,7 +113,7 @@ const ReportPage1 = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
+                                    <Grid container spacing={1}>
                                         <QuestionnaireTos key={1} title="A. ¿TIENE TOS USUALMENTE (INCLUYE CON EL PRIMER CIGARRILLO O LA PRIMERA SALIDA A LA CALLE, EXCLUYE CARRASPEO)?" text={datos.tosAUsualSin} />
                                         <QuestionnaireTos key={2} title="B. TOSE 4 A 6 VECES AL DÍA, ¿DURANTE CUATRO O MÁS DÍAS DE LA SEMANA?" text={datos.tosEnLaSemanaSintR} />
                                         <QuestionnaireTos key={3} title="C. ¿SUELE TOSER LEVANTÁNDOSE POR LA MAÑANA A PRIMERA HORA, DURANTE EL RESTO DEL DÍA O LA NOCHE?" text={datos.tosMananaSintR} />
@@ -144,7 +144,7 @@ const ReportPage1 = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
+                                    <Grid container spacing={1}>
                                         <QuestionnaireTos key={1} title="A. SUELE EXPECTORAR DESDE EL PECHO (INCLUYE FLEMA CON EL 1ER CIGARRILLO, 1ERA SALIDA A LA CALLE Y LA QUE SE TRAGA, EXCLUYE MOCO O FLEMA DE LA NARIZ)" text={datos.esputoASintR} />
                                         <QuestionnaireTos key={2} title="B. EXPECTORA ASÍ DOS VECES AL DÍA, AL MENOS CUATRO DÍAS A LA SEMANA?" text={datos.esputoBSintR} />
                                         <QuestionnaireTos key={3} title="C. SUELE EXPECTORAR AL LEVANTARSE O A PRIMERA HORA DE LA MAÑANA, DURANTE EL RESTO DEL DÍA O DE LA NOCHE?" text={datos.esputoCSintR} />
@@ -170,7 +170,7 @@ const ReportPage1 = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
+                                    <Grid container spacing={1}>
                                         <QuestionnaireTos key={1} title="A. ¿HA TENIDO EPISODIOS DE TOS Y FLEMA (O AUMENTO, SI USUALMENTE LOS PRESENTA) QUE DUREN 3 O MÁS DE UN AÑO?" text={datos.episoTosEspuASintR} />
                                         <QuestionnaireTos key={2} title="B. ¿CUANTOS AÑOS HA TENIDO AL MENOS UN EPISODIO AL AÑO?" text={datos.episoTosEsputoBSintR} />
                                     </Grid>
@@ -193,7 +193,7 @@ const ReportPage1 = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
+                                    <Grid container spacing={1}>
                                         <QuestionnaireTos key={1} title="A. SU PECHO PITA, SILBA O SUENA" text={datos.sibilanciasASintR} />
                                         <QuestionnaireTos key={2} title="1. CUANDO TIENE GRIPA" text={datos.sibilanciasA1SintR} />
                                         <QuestionnaireTos key={3} title="2. OCASIONALMENTE APARTE DE LAS GRIPAS" text={datos.sibilanciasA2SintR} />
@@ -203,36 +203,11 @@ const ReportPage1 = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
                             </Grid>
                         </Grid>
-
-                        <Grid item xs={12}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Typography variant='h6'><b>5. ATAQUES DE SILBIDOS</b></Typography>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. HA TENIDO EPISODIOS DE TOS Y FLEMA (O AUMENTO, SI USUALMENTE LOS PRESENTA) QUE DUREN 3 O MÁS DE UN AÑO?" text={datos.ataquesSilbiASintR} />
-                                        <QuestionnaireTos key={2} title="B. ¿QUÉ EDAD TENÍA CUANDO LE DIO EL PRIMER ATAQUE?" text={datos.ataquesSilbiBSintR} />
-                                        <QuestionnaireTos key={3} title="C. HA TENIDO DOS O MÁS EPISODIOS" text={datos.ataquesSilbiCSintR} />
-                                        <QuestionnaireTos key={4} title="D. ¿HA NECESITADO DROGAS O TRATAMIENTOS PARA ESTOS ATAQUES?" text={datos.ataquesSilbiDSintR} />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 2 }} textAlign="center" justifyContent="center" container spacing={1}>
+            <Grid sx={{ pt: 9 }} textAlign="center" justifyContent="center" container spacing={1}>
                 <Grid item xs={12}>
                     <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
                 </Grid>

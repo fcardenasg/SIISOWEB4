@@ -59,7 +59,39 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                                     <Divider />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
+                                    <Grid container spacing={1}>
+                                        <QuestionnaireTos key={5} title="- EDAD DE INICIO" text={datos.antecedentesB3CSintR} />
+                                        <QuestionnaireTos key={5} title="4. ¿ENFISEMA PULMONAR?" text={datos.antecdentesB4SintR} />
+                                        <QuestionnaireTos key={5} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text={datos.antecedenteB4ASintR} />
+                                        <QuestionnaireTos key={5} title="- ¿AUN PRESENTA ESTA ENFERMEDAD?" text={datos.antecedentesB4BSintR} />
+                                        <QuestionnaireTos key={5} title="- EDAD DE INICIO" text={datos.antecedentesB4CSintR} />
+
+                                        <QuestionnaireTos key={5} title="5. ¿ASMA?" text={datos.antecedentesB5SintR} />
+                                        <QuestionnaireTos key={5} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text={datos.antecedentesB5ASintR} />
+                                        <QuestionnaireTos key={5} title="- ¿AUN PRESENTA ESTA ENFERMEDAD?" text={datos.antecedentesB5BSintR} />
+                                        <QuestionnaireTos key={5} title="- EDAD DE INICIO" text={datos.antecedentesB5CSintR} />
+
+                                        <QuestionnaireTos key={5} title="6. OTRAS ENFERMEDADES DEL TÓRAX" text={datos.otrasEnfToraxA} />
+                                        <Grid item xs={3}>
+                                            <Typography fontSize={10}><b>- ESPECIFIQUE:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography align='right' fontSize={10}>{datos.otrasEnfToraxB}</Typography>
+                                        </Grid>
+                                        <QuestionnaireTos key={5} title="7. ¿ALGUNA CIRUGÍA DEL TÓRAX?" text={datos.ciruToraxASintR} />
+                                        <Grid item xs={3}>
+                                            <Typography fontSize={10}><b>- ESPECIFIQUE:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography align='right' fontSize={10}>{datos.ciruToraxBSintR}</Typography>
+                                        </Grid>
+                                        <QuestionnaireTos key={5} title="8. TRAUMA (ALGÚN ACCIDENTE) DEL TÓRAX" text={datos.traumaToraxASintR} />
+                                        <Grid item xs={3}>
+                                            <Typography fontSize={10}><b>- ESPECIFIQUE:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography align='right' fontSize={10}>{datos.traumaToraxBSintR}</Typography>
+                                        </Grid>
 
                                         <QuestionnaireTos key={1} title="9. ¿PROBLEMAS DEL CORAZÓN?" text={datos.problemCoraASintR} />
 
@@ -89,7 +121,7 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
+                                    <Grid container spacing={1}>
                                         <QuestionnaireTos key={1} title="A. HA TRABAJADO TIEMPO COMPLETO (8 HORAS A LA SEMANA O MÁS) POR 6 MESES O MÁS?" text={datos.historiaOcupASintR} />
                                         <QuestionnaireTos key={2} title="B. HA TRABAJADO AL MENOS DURANTE 6 MESES EN UN EMPLEO DONDE TUVO EXPOSICIÓN A POLVOS?" text={datos.historiaOcupBSintR} />
                                         <Grid item xs={3}>
@@ -135,59 +167,11 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
+                                    <Grid container spacing={1}>
                                         <QuestionnaireTos key={1} title="A. ¿HA FUMADO CIGARRILLOS, PIPA O TABACO (AL MENOS UNO(A) AL DÍA POR UN AÑO O 12 ONZAS DE TABACO DURANTE LA VIDA)?" text={datos.tabaquismoASintR} />
                                         <QuestionnaireTos key={2} title="B. ¿FUMA AHORA (INCLUYE UN MES ATRÁS)?" text={datos.tabaquismoBSintR} />
                                         <QuestionnaireTos key={3} title="C. ¿A QUÉ EDAD COMENZÓ A FUMAR EN FORMA REGULAR?" text={datos.tabaquismoCSintR} />
-                                        <QuestionnaireTos key={4} title="D. SI YA DEJO DE FUMAR TOTALMENTE, ¿A QUÉ EDAD LO DEJÓ?" text={datos.tabaquismoDSintR} />
-                                        <QuestionnaireTos key={5} title="E. ¿CUANTOS CIGARRILLOS FUMA AL DÍA O FUMABA?" text={datos.tabaquismoESintR} />
                                     </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Typography variant='h6'><b>12. ACTIVIDAD DEPORTIVA</b></Typography>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Grid container spacing={0.2}>
-                                        <QuestionnaireTos key={1} title="A. ¿REALIZA ALGÚN DEPORTE?" text={datos.actDeportASintR} />
-                                        <QuestionnaireTos key={2} title="- ¿CUAL DEPORTE O ACTIVIDAD?" text={datos.actDeporA1SintR} />
-                                        <QuestionnaireTos key={3} title="- DÍAS A LA SEMANA QUE LO PRACTICA" text={datos.actDeporA2SintR} />
-                                        <QuestionnaireTos key={4} title="- HORAS AL DÍA QUE LE DEDICA" text={datos.actDeporA3SintR} />
-                                        <QuestionnaireTos key={4} title="- PROMEDIO DE HORAS A LA SEMANA" text={datos.actDeporA4SintR} />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Typography variant='h6'><b>13. RECOMENDACIONES</b></Typography>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Typography variant='h6'>{datos.recoSintR}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -195,7 +179,7 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 2 }} textAlign="center" justifyContent="center" container spacing={1}>
+            <Grid sx={{ pt: 1 }} textAlign="center" justifyContent="center" container spacing={1}>
                 <Grid item xs={12}>
                     <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
                 </Grid>

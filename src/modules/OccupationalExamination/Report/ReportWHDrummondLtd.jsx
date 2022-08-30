@@ -8,17 +8,8 @@ import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import { FormatDate } from 'components/helpers/Format';
 import { DefaultValue } from 'components/helpers/Enums';
-import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
-
-function createData(riesgo, sugRiesgo, exp, anios, meses, sinEpp, conEpp, medidasControl) {
-    return { riesgo, sugRiesgo, exp, anios, meses, sinEpp, conEpp, medidasControl };
-}
-
-const rows = [
-    createData('FÍSICO', 'Ruido', 'O', 15, 0, "MEDIO", "BAJO", "PROTECCIÓN AUDITIVA"),
-    createData('PSICOSOCIAL', 'Jornada Laboral Prolongada', 'F', 10, 6, "N/A", "N/A", "PAUSAS ACTIVAS AUTOADMINISTRADAS"),
-    createData('QUÍMICO', 'MPI', 'F', 10, 6, "MEDIO", "BAJO", "PROTECCIÓN RESPIRATORIA")
-];
+import { GetAllByChargeHistorico, GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
+import { GetAllByDocumentWorkHistory } from 'api/clients/WorkHistoryClient';
 
 const WorkHistoryAM = ({ mpiAnio = 0, mpiMes = 0, anioRuido = 0, mesRuido = 0 }) => {
     return (
@@ -50,8 +41,84 @@ const WorkHistoryAM = ({ mpiAnio = 0, mpiMes = 0, anioRuido = 0, mesRuido = 0 })
     )
 }
 
-const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = [] }) => {
+const TableDLTD = ({ idRiesgo = 0, title = '', documento = '', idCargo = 0 }) => {
+    const [lsRiesgo, setLsRiesgo] = useState([]);
+
+    useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetAllByChargeHistorico(0, 0, idCargo, idRiesgo, documento);
+                if (lsServer.status === 200) setLsRiesgo(lsServer.data.entities);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        GetAll();
+    }, [documento, idRiesgo, idCargo]);
+
+    return (
+        <Fragment>
+            {lsRiesgo.length !== 0 ?
+                <Fragment>
+                    <Grid item xs={12}>
+                        <Typography variant="h6"><b>{title}</b></Typography>
+                    </Grid><Grid item xs={12}><Divider /></Grid>
+
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>EXP.</b></Typography></TableCell>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>AÑOS</b></Typography></TableCell>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>MESES</b></Typography></TableCell>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>GR SIN EPP</b></Typography></TableCell>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>GR CON EPP</b></Typography></TableCell>
+                                    <TableCell align="right"><Typography align="left" variant="h6"><b>MEDIDAS DE CONTROL</b></Typography></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {lsRiesgo.map((row, index) => (
+                                    <TableRow>
+
+                                        <TableCell align="right">
+                                            <Typography align="left" variant="h6">{row.nameExpocision}</Typography>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Typography align="left" variant="h6">{row.anio}</Typography>
+                                        </TableCell>
+
+                                        <TableCell align="right">
+                                            <Typography align="left" variant="h6">{row.mes}</Typography>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Typography align="left" variant="h6">{row.nameGradoSinEPP}</Typography>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Typography align="left" variant="h6">{row.nameGradoConEPP}</Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            {JSON.parse(row.medidasControl).map((medidas, index) => (
+                                                <Grid item xs={6}>
+                                                    <Typography fontSize={10}>{medidas.label},</Typography>
+                                                </Grid>
+                                            ))}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Fragment> : ''
+            }
+        </Fragment>
+
+    )
+}
+
+const ReportWHDrummondLtd = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
+    const [lsWorkHistoryDLTD, setLsWorkHistoryDLTD] = useState([]);
 
     const [mpiAnioDTLD, setMpiAnioDTLD] = useState(0);
     const [mpiMesDTLD, setMpiMesDTLD] = useState(0);
@@ -66,7 +133,7 @@ const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = 
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServerDTLD = await GetAllByHistorico(0, 0, 94367343);
+                const lsServerDTLD = await GetAllByHistorico(0, 0, datos.documento);
                 if (lsServerDTLD.status === 200) {
                     var arrayMPI = lsServerDTLD.data.entities;
                     var arrayRUIDO = lsServerDTLD.data.entities;
@@ -115,7 +182,7 @@ const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = 
                     }
                 }
 
-                const lsServerOtrasEmpresas = await GetAllByHistoricoCompany(0, 0, 94367343);
+                const lsServerOtrasEmpresas = await GetAllByHistoricoCompany(0, 0, datos.documento);
                 if (lsServerOtrasEmpresas.status === 200) {
                     var arrayMPI = lsServerOtrasEmpresas.data.entities;
                     var arrayRUIDO = lsServerOtrasEmpresas.data.entities;
@@ -163,9 +230,6 @@ const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = 
                         }
                     }
                 }
-
-
-
             } catch (error) {
                 console.log(error);
             }
@@ -173,6 +237,19 @@ const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = 
 
         GetAll();
     }, []);
+
+    useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetAllByDocumentWorkHistory(0, 0, datos.documento);
+                if (lsServer.status === 200) setLsWorkHistoryDLTD(lsServer.data.entities);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        GetAll();
+    }, [datos.documento]);
 
     return (
         <SubCard>
@@ -233,77 +310,62 @@ const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = 
                                         <Grid item xs={3}>
                                             <Typography align='center' variant="h6">{work.meses}</Typography>
                                         </Grid>
+
+                                        <Grid item xs={12}>
+                                            <Grid container spacing={1}>
+                                                <TableDLTD
+                                                    title='RIESGO QUÍMICO'
+                                                    documento={datos.documento}
+                                                    idCargo={work.idCargo}
+                                                    idRiesgo={DefaultValue.RiesgoQuimico}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO FÍSICO'
+                                                    documento={datos.documento}
+                                                    idCargo={work.idCargo}
+                                                    idRiesgo={DefaultValue.RiesgoFisico}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO PSICOSOCIAL'
+                                                    documento={datos.documento}
+                                                    idCargo={work.idCargo}
+                                                    idRiesgo={DefaultValue.RiesgoPsicosocial}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO BIOLÓGICO'
+                                                    documento={datos.documento}
+                                                    idCargo={work.idCargo}
+                                                    idRiesgo={DefaultValue.RiesgoBiologico}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO ECF - POSTURA'
+                                                    documento={datos.documento}
+                                                    idCargo={work.idCargo}
+                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Postura}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO ECF - FUERZA'
+                                                    documento={datos.documento}
+                                                    idCargo={work.idCargo}
+                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza}
+                                                />
+
+                                                <TableDLTD
+                                                    title='RIESGO ECF - MOVIMIENTO'
+                                                    documento={datos.documento}
+                                                    idCargo={work.idCargo}
+                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento}
+                                                />
+                                            </Grid>
+                                        </Grid>
                                     </Fragment>
                                 ))}
                             </Grid>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-                    </Grid>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>EXPOSICIÓN OCUPACIONAL PARA EL CARGO EN DLTD</b></Typography>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <TableContainer>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell><Typography align="left" variant="h6">RIESGO</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">EXP.</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">AÑOS</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">MESES</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">GR SIN EPP</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">GR CON EPP</Typography></TableCell>
-                                            <TableCell align="right"><Typography align="left" variant="h6">MEDIDAS DE CONTROL</Typography></TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows.map((row, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>
-                                                    <Typography align="left" variant="h6">
-                                                        {row.riesgo}
-                                                    </Typography>
-                                                    <Typography align="left" variant="caption">
-                                                        {row.sugRiesgo}
-                                                    </Typography>
-                                                </TableCell>
-
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.exp}</Typography>
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.anios}</Typography>
-                                                </TableCell>
-
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.meses}</Typography>
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.sinEpp}</Typography>
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.conEpp}</Typography>
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    <Typography align="left" variant="h6">{row.medidasControl}</Typography>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -327,7 +389,6 @@ const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = 
                                         </Grid>
 
                                         <WorkHistoryAM
-                                            key={1}
                                             anioRuido={mpiAnioDTLD}
                                             mesRuido={mpiMesDTLD}
                                             mpiAnio={anioRuidoDTLD}
@@ -345,7 +406,6 @@ const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = 
                                         </Grid>
 
                                         <WorkHistoryAM
-                                            key={1}
                                             anioRuido={mpiAnioOtrasEmpresas}
                                             mesRuido={mpiMesOtrasEmpresas}
                                             mpiAnio={anioRuidoOtrasEmpresas}
@@ -363,7 +423,6 @@ const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = 
                                         </Grid>
 
                                         <WorkHistoryAM
-                                            key={1}
                                             anioRuido={mpiAnioDTLD + mpiAnioOtrasEmpresas}
                                             mesRuido={mpiMesDTLD + mpiMesOtrasEmpresas}
                                             mpiAnio={anioRuidoDTLD + anioRuidoOtrasEmpresas}
@@ -377,7 +436,7 @@ const ReportWHDrummondLtd = ({ datos = [], lsWorkHistoryDLTD = [], lsDataUser = 
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 41 }} textAlign="center" justifyContent="center" container spacing={1}>
+            <Grid sx={{ pt: 2 }} textAlign="center" justifyContent="center" container spacing={1}>
                 <Grid item xs={12}>
                     <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
                 </Grid>

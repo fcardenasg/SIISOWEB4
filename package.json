@@ -2,7 +2,7 @@
     "name": "berry-material-react",
     "version": "3.0.2",
     "private": true,
-    "homepage": "https://siiso4.westus3.cloudapp.azure.com:443/",
+    "homepage": "http://siiso4.westus3.cloudapp.azure.com/",
     "dependencies": {
         "@auth0/auth0-spa-js": "^1.14.0",
         "@emotion/cache": "^11.4.0",

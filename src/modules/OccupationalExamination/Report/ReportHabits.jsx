@@ -8,7 +8,7 @@ import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import { GetByIdAdvice } from 'api/clients/AdviceClient';
-import { FormatDate, GetEdad } from 'components/helpers/Format';
+import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
 import { GetByMail } from 'api/clients/UserClient';
 
 const Pathological = ({ title = '', text = '' }) => {
@@ -134,9 +134,13 @@ const ReportHabits = ({ datos = [] }) => {
                                     <Typography variant="h6"><b>TIPO DE FOBIA:</b></Typography>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    {JSON.parse(datos.tipoFobiaHB).map((fobia, index) => (
-                                        <Typography variant="h6">{fobia.label},</Typography>
-                                    ))}
+                                    <Grid container spacing={0.2}>
+                                        {JSON.parse(datos.tipoFobiaHB).map((fobia, index) => (
+                                            <Grid item xs={3}>
+                                                <Typography variant="h6">{fobia.label},</Typography>
+                                            </Grid>
+                                        ))}
+                                    </Grid>
                                 </Grid>
 
                                 <Grid item xs={2}>
@@ -161,11 +165,14 @@ const ReportHabits = ({ datos = [] }) => {
                                 <Grid item xs={12}>
                                     <Divider />
                                 </Grid>
-
-                                <Relationship key={1} numero={1} parentesco={datos.nameParentesco1ANFA} descripcion={datos.parentesco1ObserANFA} />
-                                <Relationship key={2} numero={2} parentesco={datos.nameParentesco2ANFA} descripcion={datos.parentesco2ObserANFA} />
-                                <Relationship key={3} numero={3} parentesco={datos.nameParentesco3ANFA} descripcion={datos.parentesco3ObserANFA} />
-                                <Relationship key={4} numero={4} parentesco={datos.nameParentesco4ANFA} descripcion={datos.parentesco4ObserANFA} />
+                                <Grid item xs={12}>
+                                    <Grid container spacing={0.5}>
+                                        <Relationship key={1} numero={1} parentesco={datos.nameParentesco1ANFA} descripcion={datos.parentesco1ObserANFA} />
+                                        <Relationship key={2} numero={2} parentesco={datos.nameParentesco2ANFA} descripcion={datos.parentesco2ObserANFA} />
+                                        <Relationship key={3} numero={3} parentesco={datos.nameParentesco3ANFA} descripcion={datos.parentesco3ObserANFA} />
+                                        <Relationship key={4} numero={4} parentesco={datos.nameParentesco4ANFA} descripcion={datos.parentesco4ObserANFA} />
+                                    </Grid>
+                                </Grid>
 
                                 <Grid item xs={12}>
                                     <Divider />
@@ -184,13 +191,95 @@ const ReportHabits = ({ datos = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography variant="h3">NO REFIERE</Typography>
+                                    <Grid container spacing={0.5}>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>1. MENARQUÍA:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography variant="h6">{datos.menarquiaGO}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>2. CICLOS:</b> {datos.nameCiclosGO}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>DURACIÓN:</b> {datos.duracionGO}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>3. DATOS:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>AMENORREA:</b> {datos.amenoreaGO}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>DISMENORREA:</b> {datos.disminureaGO}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>LEUCORREA:</b> {datos.leucoreaGO}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>4. VIDA MARITAL:</b> {datos.vidaMaritalGO}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>VIDA OBSTÉTRICA:</b> {datos.vidaObstetricaGO}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>4. G:</b> {datos.ggo}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>P:</b> {datos.pgo}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>A:</b> {datos.ago}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>C:</b> {datos.csgo}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>6. FUP:</b> {ViewFormat(datos.fupgo)}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>FUR:</b> {ViewFormat(datos.furgo)}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>7. ETS:</b> {datos.etsgo}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>8. QUISTE DE OVARIOS - MIOMAS:</b> {datos.quisteOvariosBiomasGO}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>9. ENDOMETRIOSIS:</b> {datos.endometriosisGO}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>10. PLANIFICA</b> {datos.planificaGO}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>METODO:</b> {datos.nameMetodoGO}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>11. ÚLTIMA CITOLOFIA - AÑO:</b> {datos.ultimoAnioCitologiaGO}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>RESULTADO:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography variant="h6">{datos.nameResultadoGO}</Typography>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
 
-                    <Grid sx={{ pt: 40 }} textAlign="center" justifyContent="center" container spacing={1}>
+                    <Grid sx={{ pt: 18 }} textAlign="center" justifyContent="center" container spacing={1}>
                         <Grid item xs={12}>
                             <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
                         </Grid>

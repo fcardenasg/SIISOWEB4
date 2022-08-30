@@ -14,6 +14,7 @@ import Cargando from 'components/loading/Cargando';
 /* REPORTE DE FRAMINGHAM */
 import ReportFramingham from './Framingham/ReportFramingham';
 
+//REPORTE DE TRABAJO EN ALTURA
 import ReportWorkHeight from './WorkHeight/ReportWorkHeight';
 import ReportEmployeeNotification from './WorkHeight/ReportEmployeeNotification';
 
@@ -21,6 +22,7 @@ import ReportEmployeeNotification from './WorkHeight/ReportEmployeeNotification'
 import ReportPage1 from './RespiratorySymptomQuestionnaire/ReportPage1';
 import ReportPage2 from './RespiratorySymptomQuestionnaire/ReportPage2';
 import ReportPage3 from './RespiratorySymptomQuestionnaire/ReportPage3';
+import ReportPage4 from './RespiratorySymptomQuestionnaire/ReportPage4';
 
 /* REPORTE DE EMO */
 import ReportConceptAptitude from './ReportConceptAptitude';
@@ -34,7 +36,7 @@ import ReportFunctionalExploration from './ReportFunctionalExploration';
 import ReportDefinitiveDiagnosis from './ReportDefinitiveDiagnosis';
 import { GetByIdDataReport } from 'api/clients/OccupationalExaminationClient';
 import { GetAllByDocumentWorkHistoryOtherCompany } from 'api/clients/WorkHistoryOtherCompany';
-import { GetAllByDocumentWorkHistory } from 'api/clients/WorkHistoryClient';
+
 
 const ReportOccupationalExamination = () => {
     const { id } = useParams();
@@ -45,34 +47,9 @@ const ReportOccupationalExamination = () => {
     const [timeWait, setTimeWait] = useState(false);
     const [lsDataReport, setLsDataReport] = useState([]);
     const [lsWorkHistoryOther, setLsWorkHistoryOther] = useState([]);
-    const [lsWorkHistoryDLTD, setLsWorkHistoryDLTD] = useState([]);
+
     const [lsDataUser, setLsDataUser] = useState([]);
 
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetAllByDocumentWorkHistory(0, 0, 94367343);
-                if (lsServer.status === 200) setLsWorkHistoryDLTD(lsServer.data.entities);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [id]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                const lsServer = await GetAllByDocumentWorkHistoryOtherCompany(0, 0, 94367343);
-                if (lsServer.status === 200) setLsWorkHistoryOther(lsServer.data.entities);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        GetAll();
-    }, [id]);
 
     useEffect(() => {
         async function GetAll() {
@@ -111,11 +88,11 @@ const ReportOccupationalExamination = () => {
                 <Grid container justifyContent="center" spacing={gridSpacing}>
                     <Grid item xs={12} md={10} lg={8} ref={componentRef}>
                         <Grid container spacing={gridSpacing}>
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <ReportFramingham key={13} datos={lsDataReport} lsDataUser={lsDataUser} />
                             </Grid>
 
-                            {/* <Grid item xs={12}>
+                            <Grid item xs={12}>
                                 <ReportPage1 key={12} datos={lsDataReport} lsDataUser={lsDataUser} />
                             </Grid>
 
@@ -125,6 +102,10 @@ const ReportOccupationalExamination = () => {
 
                             <Grid item xs={12}>
                                 <ReportPage3 key={14} datos={lsDataReport} lsDataUser={lsDataUser} />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <ReportPage4 key={14} datos={lsDataReport} lsDataUser={lsDataUser} />
                             </Grid>
 
                             <Grid item xs={12}>
@@ -141,7 +122,7 @@ const ReportOccupationalExamination = () => {
 
                             <Grid item xs={12}>
                                 <ReportDiagnostics key={2} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
+                            </Grid> */}
 
                             <Grid item xs={12}>
                                 <ReportWHOtherCompanies
@@ -152,24 +133,23 @@ const ReportOccupationalExamination = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <ReportWHDrummondLtd
                                     key={4}
                                     datos={lsDataReport}
                                     lsDataUser={lsDataUser}
-                                    lsWorkHistoryDLTD={lsWorkHistoryDLTD}
                                 />
-                            </Grid>
+                            </Grid> */}
 
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <ReportPersonalHistory key={5} datos={lsDataReport} />
-                            </Grid>
+                            </Grid> */}
 
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <ReportHabits key={6} datos={lsDataReport} />
-                            </Grid>
+                            </Grid> */}
 
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <ReportSystemsReview key={7} datos={lsDataReport} />
                             </Grid>
 

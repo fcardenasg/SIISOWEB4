@@ -8,19 +8,6 @@ import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
 
-const QuestionnaireTos = ({ title = '', text = '' }) => {
-    return (
-        <Fragment>
-            <Grid item xs={2.5}>
-                <Typography variant="h6"><b>{title}</b></Typography>
-            </Grid>
-            <Grid item xs={1.5}>
-                <Typography align="right" variant="h6">{text}</Typography>
-            </Grid>
-        </Fragment>
-    )
-}
-
 const DataInfo = ({ title = '', text = '' }) => {
     return (
         <Fragment>
@@ -37,6 +24,14 @@ const DataInfo = ({ title = '', text = '' }) => {
 
 const ReportFramingham = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
+
+    const ColorClasificacion = datos.clasificacionEF === "BAJO DE PESO" ? "info.main" :
+        datos.clasificacionEF === "NORMAL" ? "success.main" :
+            datos.clasificacionEF === "SOBREPESO" ? "warning.main" :
+                datos.clasificacionEF === "OBESIDAD GRADO I" ? "error.main" :
+                    datos.clasificacionEF === "OBESIDAD GRADO II" ? "error.main" : "error.main";
+
+    console.log(ColorClasificacion);
 
     return (
         <SubCard>
@@ -198,6 +193,12 @@ const ReportFramingham = ({ datos = [], lsDataUser = [] }) => {
                                             <Typography align="right" variant="h6">{datos.imcef}</Typography>
                                         </Grid>
 
+                                        <Grid item xs={2}>
+                                            <Typography variant="h6"><b>DX PESO:</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <Typography sx={{ bgcolor: ColorClasificacion }} align="right" variant="h6">{(datos.clasificacionEF).toUpperCase()}</Typography>
+                                        </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>LDL:</b></Typography>
@@ -276,11 +277,23 @@ const ReportFramingham = ({ datos = [], lsDataUser = [] }) => {
                                             <Typography align="right" variant="h6">{datos.riesgoRelativoFRA}</Typography>
                                         </Grid>
 
-                                        <Grid item xs={2}>
+                                        <Grid item xs={4}>
                                             <Typography variant="h6"><b>INTERPRETACIÓN:</b></Typography>
                                         </Grid>
-                                        <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.interpretacionFRA}</Typography>
+                                        <Grid item xs={8}>
+                                            <Typography variant="h6">{datos.interpretacionFRA}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <Typography variant="h6">
+                                                <b>EVALUACIÓN DEL RIESGO DE SUFRIR ACCIDENTE CARDIOVASCULAR EN LOS PRÓXIMOS DIEZ AÑOS</b>
+                                            </Typography>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <Typography align='center' variant="h6">
+                                                {datos.riesgoRelativoFRA}% {datos.interpretacionFRA}
+                                            </Typography>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -307,7 +320,7 @@ const ReportFramingham = ({ datos = [], lsDataUser = [] }) => {
                     <Typography variant="h6">Usuario Activo: {user.email}</Typography>
                 </Grid>
             </Grid>
-        </SubCard>
+        </SubCard >
     );
 };
 

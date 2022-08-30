@@ -223,22 +223,22 @@ const Attention = () => {
             setIMC(imcFinal.toFixed(1));
 
             if (imcFinal < 18.4) {
-                setClasificacion("Bajo de Peso")
+                setClasificacion("BAJO DE PESO")
                 setClasificacionColor("info");
             } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
-                setClasificacion("Normal")
+                setClasificacion("NORMAL")
                 setClasificacionColor("success");
             } else if (imcFinal >= 25 && imcFinal <= 29.9) {
-                setClasificacion("Sobrepeso")
+                setClasificacion("SOBREPESO")
                 setClasificacionColor("warning");
             } else if (imcFinal >= 30 && imcFinal <= 34.9) {
-                setClasificacion("Obesidad Grado I")
+                setClasificacion("OBESIDAD GRADO I")
                 setClasificacionColor("error");
             } else if (imcFinal >= 35 && imcFinal <= 39.9) {
-                setClasificacion("Obesidad Grado II")
+                setClasificacion("OBESIDAD GRADO II")
                 setClasificacionColor("error");
             } else if (imcFinal > 40) {
-                setClasificacion("Obesidad Grado III")
+                setClasificacion("OBESIDAD GRADO III")
                 setClasificacionColor("error");
             }
         } catch (error) { }

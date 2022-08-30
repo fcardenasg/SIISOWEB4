@@ -1,21 +1,14 @@
-import { useRef, useEffect, useState, Fragment } from 'react';
-import { Button, Divider, Grid, Typography } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Fragment } from 'react';
+import { Divider, Grid, Typography } from '@mui/material';
 
-import ReactToPrint from 'react-to-print';
 import useAuth from 'hooks/useAuth';
 
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
-import MainCard from 'ui-component/cards/MainCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import ImgWhite from 'assets/img/ImgWhite.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { GetByIdAdvice } from 'api/clients/AdviceClient';
 import { FormatDate, ViewFormat } from 'components/helpers/Format';
-import { GetByMail } from 'api/clients/UserClient';
-import Cargando from 'components/loading/Cargando';
 
 const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
@@ -220,7 +213,6 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
 
                         <Grid item xs={6}>
                             <img src={ImgWhite} height={50} />
-
 
                             <Divider sx={{ border: 1, mt: 1, background: 'black', color: 'black' }} />
                             <Typography variant="h6"><b>{datos.nameEmpleado}</b></Typography>

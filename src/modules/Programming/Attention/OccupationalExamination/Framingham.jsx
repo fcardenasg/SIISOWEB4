@@ -3,7 +3,7 @@ import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     useMediaQuery,
-    Grid, Typography, Divider
+    Grid, Typography,
 } from '@mui/material';
 
 import { IconHeartbeat } from '@tabler/icons';
@@ -20,7 +20,6 @@ import Accordion from 'components/accordion/Accordion';
 import { FormProvider } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
 import InputText from 'components/input/InputText';
-import InputSelect from 'components/input/InputSelect';
 import InputDatePicker from 'components/input/InputDatePicker';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';

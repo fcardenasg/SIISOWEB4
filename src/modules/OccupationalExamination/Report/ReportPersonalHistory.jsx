@@ -8,6 +8,19 @@ import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import { FormatDate } from 'components/helpers/Format';
 
+const Vaccines = ({ title = '', text = '' }) => {
+    return (
+        <Fragment>
+            <Grid item xs={3}>
+                <Typography variant="h6"><b>{title}</b></Typography>
+            </Grid>
+            <Grid item xs={3}>
+                <Typography variant="h6">{text}</Typography>
+            </Grid>
+        </Fragment>
+    )
+}
+
 const Pathological = ({ title = '', text = '' }) => {
     return (
         <Fragment>
@@ -169,15 +182,52 @@ const ReportPersonalHistory = ({ datos = [], lsDataUser = [] }) => {
                         <Grid item xs={12}>
                             <Divider />
                         </Grid>
+                        {datos.tetanoIM && datos.otrasIM && datos.influenzaIM && datos.fiebreAmarillaIM && datos.rubeolaSarampionIM && datos.covid19IM ?
+                            <Fragment>
+                                <Grid item xs={3}>
+                                    <Typography variant="h6"><b>VACUNAS</b></Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Typography variant="h6"><b>AÑO</b></Typography>
+                                </Grid>
 
-                        <Grid item xs={12}>
-                            <Typography variant="h3">NO REFIERE</Typography>
-                        </Grid>
+                                <Grid item xs={3}>
+                                    <Typography variant="h6"><b>VACUNAS</b></Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Typography variant="h6"><b>AÑO</b></Typography>
+                                </Grid>
+                            </Fragment> : ''
+                        }
+
+                        {datos.tetanoIM ? <Vaccines key={1} title="TETANO" text={datos.anioVacuna1IM} /> : ''}
+                        {datos.influenzaIM ? <Vaccines key={2} title="INFLUENZA" text={datos.anioVacuna2IM} /> : ''}
+                        {datos.fiebreAmarillaIM ? <Vaccines key={3} title="FIEBRE AMARILLA" text={datos.anioVacuna3IM} /> : ''}
+                        {datos.rubeolaSarampionIM ? <Vaccines key={4} title="RUBEOLA/SARAMPIÓN" text={datos.anioVacuna4IM} /> : ''}
+                        {datos.covid19IM ? <Vaccines key={5} title="COVID-19" text={datos.anioVacuna5IM} /> : ''}
+                        {datos.covid19IM ? <Vaccines key={5} title="REFUERZOS:" text={datos.nameRefuerzoIM} /> : ''}
+
+                        {datos.otrasIM ?
+                            <Fragment>
+                                <Grid item xs={3}>
+                                    <Typography variant="h6"><b>OTRAS</b></Typography>
+                                </Grid>
+                                <Grid item xs={9}>
+                                    <Typography variant="h6">{datos.anioVacuna6IM}</Typography>
+                                </Grid>
+                            </Fragment> : ''
+                        }
+
+                        {!datos.tetanoIM && !datos.otrasIM && !datos.influenzaIM && !datos.fiebreAmarillaIM && !datos.rubeolaSarampionIM && !datos.covid19IM ?
+                            <Grid item xs={12}>
+                                <Typography variant="h3">NO REFIERE</Typography>
+                            </Grid> : ''
+                        }
                     </Grid>
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 27 }} textAlign="center" justifyContent="center" container spacing={1}>
+            <Grid sx={{ pt: 13 }} textAlign="center" justifyContent="center" container spacing={1}>
                 <Grid item xs={12}>
                     <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
                 </Grid>
