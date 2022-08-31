@@ -26,6 +26,8 @@ import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { CodCatalogo } from 'components/helpers/Enums';
 import ViewFramingham from './Framingham/ViewFramingham';
+import Accordion from 'components/accordion/Accordion';
+import { IconHeartbeat } from '@tabler/icons';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
