@@ -18,7 +18,7 @@ const ControlModal = ({ open, onClose, maxWidth, title, children }) => {
                 open={open}
             >
                 <Grid container>
-                    <Grid item xs={9.9}>
+                    <Grid item xs={10}>
                         <DialogTitle>{title}</DialogTitle>
                     </Grid>
 

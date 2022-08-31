@@ -32,6 +32,8 @@ function GetEdad(dateString) {
     } catch (error) { }
 }
 
+
+
 function EdadFramigan(edad = 0, genero = '') {
     try {
         if (edad > 0 && edad <= 34) {
@@ -97,7 +99,7 @@ function EdadFramigan(edad = 0, genero = '') {
                 return 8;
         }
     } catch (error) { }
-}////
+}
 
 function FrColesterol(colesterol = 0, genero = '') {
     if (genero === "HOMBRE") {
@@ -131,7 +133,7 @@ function FrColesterol(colesterol = 0, genero = '') {
             return 3;
         }
     }
-}///
+}
 
 function FrHdl(edad = 0, genero = '') {
     try {
@@ -160,7 +162,7 @@ function FrHdl(edad = 0, genero = '') {
                 return -3;
         }
     } catch (error) { }
-}////
+}
 
 function FrGlicemia(glicemia = 0, genero = '') {
     try {
@@ -177,7 +179,7 @@ function FrGlicemia(glicemia = 0, genero = '') {
                 return 4;
         }
     } catch (error) { }
-}////
+}
 
 function FrTension(tension = '', genero = '') {
     try {
@@ -209,7 +211,7 @@ function FrTension(tension = '', genero = '') {
 
         return r;
     } catch (error) { }
-}////
+}
 
 function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
     var riesgoAbsolutoM = 0;
@@ -1344,17 +1346,13 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
 
 function PuntajeFr(frEdad = 0, frColesterol = 0, frHdl = 0, frGlicemia = 0, frTensionArterial = 0, frTabaquismo = 0) {
     try {
-        if (frEdad != 0 && frColesterol != 0 && frHdl != 0 && frGlicemia != 0 && frTensionArterial != 0 && frTabaquismo != 0) {
-
-            var puntaje = (frEdad + frColesterol + frHdl + frGlicemia + frTensionArterial + frTabaquismo);
-            console.log("puntaje = ", puntaje);
-            return puntaje;
-
-        }
+        var puntaje = (parseInt(frEdad) + parseInt(frColesterol) + parseInt(frHdl) +
+            parseInt(frGlicemia) + parseInt(frTensionArterial) + parseInt(frTabaquismo));
+        return puntaje;
     } catch (error) {
         console.log(error)
     }
-}////
+}
 
 function FrFuma(fuma = '') {
     try {
@@ -1365,7 +1363,7 @@ function FrFuma(fuma = '') {
             return 2;
         }
     } catch (error) { }
-}////
+}
 
 function FrLdl_FrRelacion(hdl = 0, colesterol = 0, triglicerios = 0) {
     if (hdl != 0 && colesterol != 0 && triglicerios != 0) {
@@ -1374,7 +1372,7 @@ function FrLdl_FrRelacion(hdl = 0, colesterol = 0, triglicerios = 0) {
 
         return { ldl, relacion }
     }
-}////
+}
 
 function NumeroDias(fechaInicio, fechaFin) {
     try {

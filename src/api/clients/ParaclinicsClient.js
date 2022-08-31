@@ -2,6 +2,8 @@ import { Url } from '../instances/AuthRoute';
 import { getData, deleteData, postData, putData } from '../UtilInstance';
 
 export const GetAllParaclinics = async (page, pageSize) => await getData(Url.Paraclinicos, { page, pageSize });
+export const GetAllByDocumentoParacli = async (page, pageSize, idTipoParaclinico, documento) =>
+    await getData(Url.Paraclinicos_GetAllByDocumentoParacli, { page, pageSize, idTipoParaclinico, documento });
 export const GetAllByTypeParaclinics = async (page, pageSize, idTipoParaclinico) =>
     await getData(Url.Paraclinicos_GetAllByTypeParaclinico, { page, pageSize, idTipoParaclinico });
 export const GetByIdParaclinics = async (id) => await getData(Url.ParaclinicosId, { id });

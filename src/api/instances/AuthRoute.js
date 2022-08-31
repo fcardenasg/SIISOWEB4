@@ -67,7 +67,7 @@ export const Url = {
     RegistroAtencionId: 'api/RegistroAtencion/id',
 
     Paraclinicos: 'api/Paraclinicos',
-    Paraclinicos_GetAllByTypeParaclinico: 'api/Paraclinicos/GetAllByTipoParaclinico',
+    Paraclinicos_GetAllByDocumentoParacli: 'api/Paraclinicos/GetAllByDocumentoParacli',
     ParaclinicosId: 'api/Paraclinicos/id',
 
     Ordenes: 'api/Ordenes',

@@ -3,7 +3,7 @@ import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button, useMediaQuery,
-    Grid, Typography, Divider
+    Grid, Typography,
 } from '@mui/material';
 
 import {
@@ -48,6 +48,7 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import TableAntecedentes from './TableEmo/TableAntecedentes';
 import RespiratorySymptoms from './RespiratorySymptoms';
 import { GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import TableExamenesPara from './TableEmo/TableExamenesPara';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -100,13 +101,13 @@ const Emo = ({
     const [lsIngreso, setLsIngreso] = useState([]);
     const [lsControlPeriodico, setLsControlPeriodico] = useState([]);
     const [lsPromo, setLsPromo] = useState([]);
-
-
     const [lsLastRecord, setLsLastRecord] = useState([]);
+
+    const [textParaclinico, setTextParaclinico] = useState('');
+    const [openParaclinico, setOpenParaclinico] = useState(false);
 
     async function GetAll() {
         try {
-
             const lsServerCie11 = await GetAllCIE11(0, 0);
             var resultCie11 = lsServerCie11.data.entities.map((item) => ({
                 value: item.id,
@@ -292,6 +293,14 @@ const Emo = ({
                 handleClose={() => setOpenHistory(false)}
             >
                 <TableAntecedentes documento={documento} param={cadenaHistory} />
+            </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openParaclinico}
+                title="EXÁMENES PARACLÍNICOS"
+                handleClose={() => setOpenParaclinico(false)}
+            >
+                <TableExamenesPara idTipoParaclinico={textParaclinico} documento={documento} />
             </FullScreenDialog>
 
             <Grid container spacing={2}>
@@ -2804,6 +2813,7 @@ const Emo = ({
                     </Accordion>
                 </Grid>
 
+                {/* TRAJANDO AQUÍ */}
                 <Grid item xs={12}>
                     <Accordion title={<><IconHeartRateMonitor />
                         <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">EXÁMENES PARACLÍNICOS</Typography></>}>
@@ -2864,7 +2874,7 @@ const Emo = ({
                                         <DetailedIcon
                                             xs={4}
                                             title={DetailIcons[2].title}
-                                            onClick={() => { setOpenHistory(true); setCadenaHistory('RX_TORAX') }}
+                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_RXTORAX) }}
                                             icons={DetailIcons[2].icons}
                                         />
                                     </Grid>
@@ -2925,7 +2935,7 @@ const Emo = ({
                                         <DetailedIcon
                                             xs={4}
                                             title={DetailIcons[2].title}
-                                            onClick={() => { setOpenHistory(true); setCadenaHistory('ESPIROMETRIA') }}
+                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_ESPIROMETRIA) }}
                                             icons={DetailIcons[2].icons}
                                         />
                                     </Grid>
@@ -2986,7 +2996,7 @@ const Emo = ({
                                         <DetailedIcon
                                             xs={4}
                                             title={DetailIcons[2].title}
-                                            onClick={() => { setOpenHistory(true); setCadenaHistory('AUDIOMETRIA') }}
+                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_ELECTRO) }}
                                             icons={DetailIcons[2].icons}
                                         />
                                     </Grid>
@@ -3047,7 +3057,7 @@ const Emo = ({
                                         <DetailedIcon
                                             xs={4}
                                             title={DetailIcons[2].title}
-                                            onClick={() => { setOpenHistory(true); setCadenaHistory('VISIOMETRIA') }}
+                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_VISIOMETRIA) }}
                                             icons={DetailIcons[2].icons}
                                         />
                                     </Grid>
@@ -3108,7 +3118,7 @@ const Emo = ({
                                         <DetailedIcon
                                             xs={4}
                                             title={DetailIcons[2].title}
-                                            onClick={() => { setOpenHistory(true); setCadenaHistory('LABORATORIO_CLINICO') }}
+                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_ELECTRO) }}
                                             icons={DetailIcons[2].icons}
                                         />
                                     </Grid>
@@ -3169,7 +3179,7 @@ const Emo = ({
                                         <DetailedIcon
                                             xs={4}
                                             title={DetailIcons[2].title}
-                                            onClick={() => { setOpenHistory(true); setCadenaHistory('CUESTIONARIO_SINTOMAS') }}
+                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_ELECTRO) }}
                                             icons={DetailIcons[2].icons}
                                         />
                                     </Grid>
@@ -3230,7 +3240,7 @@ const Emo = ({
                                         <DetailedIcon
                                             xs={4}
                                             title={DetailIcons[2].title}
-                                            onClick={() => { setOpenHistory(true); setCadenaHistory('EKG') }}
+                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_ELECTRO) }}
                                             icons={DetailIcons[2].icons}
                                         />
                                     </Grid>
@@ -3290,7 +3300,7 @@ const Emo = ({
                                         <DetailedIcon
                                             xs={4}
                                             title={DetailIcons[2].title}
-                                            onClick={() => { setOpenHistory(true); setCadenaHistory('RNM-COLUMNA_LUMBOSACRA') }}
+                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_RNM) }}
                                             icons={DetailIcons[2].icons}
                                         />
                                     </Grid>
@@ -3351,7 +3361,7 @@ const Emo = ({
                                         <DetailedIcon
                                             xs={4}
                                             title={DetailIcons[2].title}
-                                            onClick={() => { setOpenHistory(true); setCadenaHistory('RNM-COLUMNA_CERVICAL') }}
+                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_RNM) }}
                                             icons={DetailIcons[2].icons}
                                         />
                                     </Grid>

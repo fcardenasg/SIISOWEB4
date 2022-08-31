@@ -3,10 +3,9 @@ import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     useMediaQuery,
+    Button,
     Grid, Typography,
 } from '@mui/material';
-
-import { IconHeartbeat } from '@tabler/icons';
 
 import TableAntecedentes from './TableEmo/TableAntecedentes';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
@@ -16,7 +15,6 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 
 import InputOnChange from 'components/input/InputOnChange';
 import DetailedIcon from 'components/controllers/DetailedIcon';
-import Accordion from 'components/accordion/Accordion';
 import { FormProvider } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
 import InputText from 'components/input/InputText';
@@ -26,7 +24,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo } from 'components/helpers/Enums';
 import ViewFramingham from './Framingham/ViewFramingham';
 
 const DetailIcons = [
@@ -36,6 +34,7 @@ const DetailIcons = [
 ]
 
 const Framingham = ({
+    calculoFramingham,
     frFuma,
     frColesterol,
     frTencion,
@@ -140,7 +139,7 @@ const Framingham = ({
                                         name="fumaFRA"
                                         label="Fuma"
                                         value={fuma}
-                                        onChange={handleFuma}
+                                        onChange={(e) => handleFuma(e.target.value)}
                                         options={lsOpcion}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -151,7 +150,7 @@ const Framingham = ({
                                     <InputOnChange
                                         name="tencionFRA"
                                         label="Tensión Arterial"
-                                        onChange={handleTencion}
+                                        onChange={(e) => handleTencion(e.target.value)}
                                         value={tencion}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
@@ -172,7 +171,7 @@ const Framingham = ({
                                         type="number"
                                         name="colesterolTotalFRA"
                                         label="Colesterol Total"
-                                        onChange={handleColesterol}
+                                        onChange={(e) => handleColesterol(e.target.value)}
                                         value={colesterol}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
@@ -182,7 +181,7 @@ const Framingham = ({
                                     <InputOnChange
                                         name="hDLFRA"
                                         label="HDL"
-                                        onChange={handleHdl}
+                                        onChange={(e) => handleHdl(e.target.value)}
                                         value={hdl}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
@@ -192,7 +191,7 @@ const Framingham = ({
                                     <InputOnChange
                                         name="triglicericosFRA"
                                         label="Trigliceridos"
-                                        onChange={handleTrigliceridos}
+                                        onChange={(e) => handleTrigliceridos(e.target.value)}
                                         value={trigliceridos}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
@@ -203,10 +202,18 @@ const Framingham = ({
                                         type="number"
                                         name="glisemiaFRA"
                                         label="Glicemia"
-                                        onChange={handleGlicemia}
+                                        onChange={(e) => handleGlicemia(e.target.value)}
                                         value={glicemia}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <Typography align='center'>
+                                        <Button variant='contained' fullWidth onClick={calculoFramingham}>
+                                            CALCULAR
+                                        </Button>
+                                    </Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -274,6 +281,7 @@ const Framingham = ({
 export default Framingham;
 
 Framingham.propTypes = {
+    calculoFramingham: PropTypes.any,
     frFuma: PropTypes.any,
     frColesterol: PropTypes.any,
     frTencion: PropTypes.any,

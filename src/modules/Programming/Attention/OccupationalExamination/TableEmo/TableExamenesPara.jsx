@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect, Fragment } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -23,12 +22,11 @@ import {
 } from '@mui/material';
 
 import { visuallyHidden } from '@mui/utils';
-import { SNACKBAR_OPEN } from 'store/actions';
-import { GetAllTemplate } from 'api/clients/TemplateClient';
-
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ControlModal from 'components/controllers/ControlModal';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import SearchIcon from '@mui/icons-material/Search';
+import { GetAllByDocumentoParacli } from 'api/clients/ParaclinicsClient';
+import { ViewFormat } from 'components/helpers/Format';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -61,21 +59,21 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'nameCIE11',
+        id: 'fecha',
         numeric: false,
-        label: 'CIE11',
+        label: 'Fecha',
         align: 'left'
     },
     {
-        id: 'nameTipoAtencion',
+        id: 'nameMotivo',
         numeric: false,
-        label: 'Tipo de Atención',
+        label: 'Motivo',
         align: 'left'
     },
     {
-        id: 'nameAtencion',
+        id: 'nameResultado',
         numeric: false,
-        label: 'Atención',
+        label: 'Resultado',
         align: 'left'
     }
 ];
@@ -130,13 +128,14 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const ListPlantillaAll = () => {
-    const dispatch = useDispatch();
-    const [lsTemplate, setLsTemplate] = useState([]);
+const TableExamenesPara = ({ idTipoParaclinico = '', documento = '' }) => {
+    const [lsExamemesPara, setLsExamenesPara] = useState([]);
+    const [openViewPdf, setOpenViewPdf] = useState(false);
+    const [dataPdf, setDataPdf] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -146,8 +145,9 @@ const ListPlantillaAll = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllTemplate(0, 0);
-                setLsTemplate(lsServer.data.entities);
+                const lsServer = await GetAllByDocumentoParacli(0, 0, idTipoParaclinico, documento);
+                console.log(lsServer)
+                setLsExamenesPara(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
                 console.log(error);
@@ -155,7 +155,7 @@ const ListPlantillaAll = () => {
         }
 
         GetAll();
-    }, [])
+    }, [idTipoParaclinico, documento])
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -165,7 +165,7 @@ const ListPlantillaAll = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion'];
+                const properties = ['id', 'fecha', 'nameMotivo', 'nameResultado'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -179,9 +179,9 @@ const ListPlantillaAll = () => {
                 }
                 return matches;
             });
-            setLsTemplate(newRows);
+            setLsExamenesPara(newRows);
         } else {
-            setLsTemplate(rows);
+            setLsExamenesPara(rows);
         }
     };
 
@@ -200,10 +200,27 @@ const ListPlantillaAll = () => {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsExamemesPara.length) : 0;
 
     return (
         <Fragment>
+            <ControlModal
+                title="VISTA DE EXAMEN"
+                open={openViewPdf}
+                onClose={() => setOpenViewPdf(false)}
+                maxWidth="xl"
+            >
+                <Typography align='center'>
+                    {dataPdf && (
+                        <object type="application/pdf"
+                            data={dataPdf}
+                            width="1400"
+                            height="510"
+                        />
+                    )}
+                </Typography>
+            </ControlModal>
+
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -231,12 +248,12 @@ const ListPlantillaAll = () => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsTemplate.length}
+                        rowCount={lsExamemesPara.length}
                         theme={theme}
                         selected={selected}
                     />
                     <TableBody>
-                        {stableSort(lsTemplate, getComparator(order, orderBy))
+                        {stableSort(lsExamemesPara, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
@@ -260,6 +277,7 @@ const ListPlantillaAll = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
+
                                                 #{row.id}
                                             </Typography>
                                         </TableCell>
@@ -274,7 +292,7 @@ const ListPlantillaAll = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameCIE11}
+                                                {ViewFormat(row.fecha)}
                                             </Typography>
                                         </TableCell>
 
@@ -288,7 +306,7 @@ const ListPlantillaAll = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameTipoAtencion}
+                                                {row.nameMotivo}
                                             </Typography>
                                         </TableCell>
 
@@ -302,33 +320,16 @@ const ListPlantillaAll = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameAtencion}
+                                                {row.nameConclusion}
                                             </Typography>
                                         </TableCell>
-
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <CopyToClipboard
-                                                text={row.descripcion}
-                                                onCopy={() =>
-                                                    dispatch({
-                                                        type: SNACKBAR_OPEN,
-                                                        anchorOrigin: { vertical: 'top', horizontal: 'right' },
-                                                        transition: 'SlideLeft',
-                                                        open: true,
-                                                        message: 'Texto Copiado',
-                                                        variant: 'alert',
-                                                        alertSeverity: 'success',
-                                                        close: false
-                                                    })
-                                                }
-                                            >
-                                                <Tooltip title="Copiar">
-                                                    <IconButton size="large">
-                                                        <ContentCopyIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </CopyToClipboard>
+                                            <Tooltip title="Ver PDF" onClick={() => { setOpenViewPdf(true); setDataPdf(row.url) }}>
+                                                <IconButton size="large">
+                                                    <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                                                </IconButton>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -349,7 +350,7 @@ const ListPlantillaAll = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsTemplate.length}
+                count={lsExamemesPara.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -359,4 +360,4 @@ const ListPlantillaAll = () => {
     );
 };
 
-export default ListPlantillaAll;
+export default TableExamenesPara;

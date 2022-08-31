@@ -316,14 +316,9 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                     <TableCell sx={{ pl: 3 }} />
                                     <TableCell>Empresa</TableCell>
                                     <TableCell>Cargo</TableCell>
-                                    {/* <TableCell>Fecha</TableCell> */}
                                     <TableCell>Años</TableCell>
-                                    <TableCell>
-                                        Meses
-                                    </TableCell>
-                                    <TableCell>
-                                        Acciones
-                                    </TableCell>
+                                    <TableCell>Meses</TableCell>
+                                    <TableCell>Acciones</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -419,9 +414,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell sx={{ pl: 3 }} />
-                                    {/* <TableCell>Empresa</TableCell> */}
                                     <TableCell>Cargo</TableCell>
-                                    {/* <TableCell>Fecha</TableCell> */}
                                     <TableCell>Años</TableCell>
                                     <TableCell>
                                         Meses

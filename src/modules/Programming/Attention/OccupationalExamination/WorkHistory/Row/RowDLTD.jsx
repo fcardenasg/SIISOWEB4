@@ -315,11 +315,7 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
                     </IconButton>
                 </TableCell>
 
-                {/* <TableCell component="th" scope="row">
-                    {row.nameEmpresa}
-                </TableCell> */}
                 <TableCell>{row.nameCargo}</TableCell>
-                {/* <TableCell>{ViewFormat(row.fecha)}</TableCell> */}
                 <TableCell>{row.anio}</TableCell>
                 <TableCell>{row.meses}</TableCell>
                 <TableCell>
@@ -334,7 +330,7 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
+                        <Box sx={{ margin: 0, pt: 5, pb: 5 }}>
 
                             <MenuItem
                                 key={row.id}

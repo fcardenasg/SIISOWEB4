@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -189,7 +189,7 @@ const ListMedicalFormula = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedical.length) : 0;
 
     return (
-        <>
+        <Fragment>
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -319,7 +319,7 @@ const ListMedicalFormula = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </>
+        </Fragment>
     );
 };
 

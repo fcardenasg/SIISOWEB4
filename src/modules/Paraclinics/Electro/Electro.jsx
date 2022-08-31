@@ -361,8 +361,6 @@ const Electro = () => {
                                         </AnimateButton>
                                     </Grid>
 
-
-
                                     <Grid item xs={6}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/electro/list")}>
@@ -374,11 +372,6 @@ const Electro = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
-
-
-
-
-
                 </Grid>
             </Fragment>
         </MainCard>

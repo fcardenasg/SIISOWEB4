@@ -317,7 +317,6 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                     {row.empresa}
                 </TableCell>
                 <TableCell>{row.cargo}</TableCell>
-                {/* <TableCell>{ViewFormat(row.fecha)}</TableCell> */}
                 <TableCell>{row.anio}</TableCell>
                 <TableCell>{row.meses}</TableCell>
                 <TableCell>
@@ -332,7 +331,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
+                        <Box sx={{ margin: 0, pt: 5, pb: 5 }}>  
 
                             <MenuItem
                                 key={row.id}
@@ -374,7 +373,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                     </Collapse>
                 </TableCell>
             </TableRow>
-        </Fragment>
+        </Fragment >
     );
 }
 

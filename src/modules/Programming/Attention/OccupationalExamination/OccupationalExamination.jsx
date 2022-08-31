@@ -28,8 +28,6 @@ import Transitions from 'ui-component/extended/Transitions';
 import { useNavigate } from 'react-router-dom';
 import DialogFormula from './Modal/DialogFormula';
 import { useForm, FormProvider } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import HoverSocialCard from './Framingham/HoverSocialCard';
 import ControlModal from 'components/controllers/ControlModal';
@@ -40,11 +38,10 @@ import ImageIcon from '@mui/icons-material/Image';
 
 import { IconStairsDown, IconStairsUp } from '@tabler/icons';
 import ChartAnthropometry from './ChartData/ChartAnthropometry';
-import { GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { GetAllOccupationalExamination, InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { DefaultValue, Message } from 'components/helpers/Enums';
 import { TitleButton } from 'components/helpers/Enums';
-import { FormatDate, GetEdad, EdadFramigan, GetRiesgos, FrHdl, FrGlicemia, FrFuma, FrColesterol, FrTension, FrLdl_FrRelacion } from 'components/helpers/Format';
+import { FormatDate, GetEdad, EdadFramigan, GetRiesgos, FrHdl, FrGlicemia, FrFuma, PuntajeFr, FrColesterol, FrTension, FrLdl_FrRelacion } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import User from 'assets/img/user.png';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -138,11 +135,6 @@ const OccupationalExamination = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [disabledButton, setDisabledButton] = useState({
-        buttonSave: false,
-        buttonReport: false
-    });
-
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
@@ -181,17 +173,18 @@ const OccupationalExamination = () => {
     const [tencion, setTencion] = useState('');
 
     const [frFuma, setFrFuma] = useState(null);
-    const [hdl, setHdl] = useState(null);
-    const [trigliceridos, setTrigliceridos] = useState(null);
     const [frLdl, setFrLdl] = useState(null);
     const [relacion, setRelacion] = useState(null);
 
-    const [frEdad, setFrEdad] = useState(null);
     const [frColesterol, setFrColesterol] = useState(null);
-    const [frHdl, setFrHdl] = useState(null);
     const [frGlicemia, setFrGlicemia] = useState(null);
     const [frTencion, setFrTencion] = useState(null);
     const [frPuntaje, setFrPuntaje] = useState(null);
+
+    const [trigliceridos, setTrigliceridos] = useState(null);
+    const [frHdl, setFrHdl] = useState(null);
+    const [hdl, setHdl] = useState(null);
+    const [frEdad, setFrEdad] = useState(null);
 
     const [riesgo, setRiesgo] = useState({
         riesgoAbsoluto: '',
@@ -214,105 +207,39 @@ const OccupationalExamination = () => {
         otrasIM: false,
     });
 
-    const handleHdl = (event) => {
+    const calculoFramingham = () => {
         try {
-            setHdl(event.target.value);
-            var result = FrLdl_FrRelacion(event.target.value, colesterol, trigliceridos);
-            setFrLdl(result.ldl);
-            setRelacion(result.relacion);
+            if (fuma && tencion && colesterol && hdl && trigliceridos && glicemia) {
+                const frFumaa = FrFuma(fuma);
+                setFrFuma(frFumaa);
 
-        } catch (error) { }
-    }
+                const frColes = FrColesterol(colesterol, lsEmployee.nameGenero);
+                setFrColesterol(frColes);
 
-    const handleColesterol = (event) => {
-        try {
-            setColesterol(event.target.value);
-            var resultColes = FrColesterol(event.target.value, lsEmployee.nameGenero);
-            setFrColesterol(resultColes);
+                const frGlice = FrGlicemia(glicemia, lsEmployee.nameGenero);
+                setFrGlicemia(frGlice);
 
-            var result = FrLdl_FrRelacion(hdl, event.target.value, trigliceridos);
-            setFrLdl(result.ldl);
-            setRelacion(result.relacion);
+                const frTensi = FrTension(tencion, lsEmployee.nameGenero);
+                setFrTencion(frTensi);
 
-            /* PUNTAJE */
-            var puntajeFR = parseInt(frEdad) + parseInt(resultColes) + parseInt(frHdl) + parseInt(frGlicemia) + parseInt(frTencion) + parseInt(frFuma);
-            setFrPuntaje(puntajeFR);
+                const frPunta = PuntajeFr(frEdad, frColes, frHdl, frGlice, frTensi, frFumaa);
+                setFrPuntaje(frPunta);
 
-            var datos = GetRiesgos(puntajeFR, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
-            setRiesgo({
-                dxRiesgo: datos.dxRiesgo,
-                riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? datos.riesgoAbsolutoH : datos.riesgoAbsolutoM,
-                riesgoRelativo: datos.riesgoRelativo
-            });
-        } catch (error) { }
-    }
+                const frRelaci = FrLdl_FrRelacion(hdl, colesterol, trigliceridos);
+                setRelacion(frRelaci.relacion);
+                setFrLdl(frRelaci.ldl);
 
-    const handleTrigliceridos = (event) => {
-        try {
-            setTrigliceridos(event.target.value);
+                const frRies = GetRiesgos(frPunta, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
+                setRiesgo({
+                    dxRiesgo: frRies.dxRiesgo,
+                    riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? frRies.riesgoAbsolutoH : frRies.riesgoAbsolutoM,
+                    riesgoRelativo: frRies.riesgoRelativo
+                });
+            } else {
+                setOpenError(true);
+                setErrorMessage('Por favor, colocoque todos los datos');
+            }
 
-            var result = FrLdl_FrRelacion(hdl, colesterol, event.target.value);
-            setFrLdl(result.ldl);
-            setRelacion(result.relacion);
-        } catch (error) { }
-    }
-
-    const handleTencion = (event) => {
-        try {
-            setTencion(event.target.value);
-
-            var tencionResul = FrTension(event.target.value, lsEmployee.nameGenero);
-            setFrTencion(tencionResul);
-
-            /* PUNTAJE */
-            var puntajeFR = parseInt(frEdad) + parseInt(frColesterol) + parseInt(frHdl) + parseInt(frGlicemia) + parseInt(tencionResul) + parseInt(frFuma);
-            setFrPuntaje(puntajeFR);
-
-            var datos = GetRiesgos(puntajeFR, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
-            setRiesgo({
-                dxRiesgo: datos.dxRiesgo,
-                riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? datos.riesgoAbsolutoH : datos.riesgoAbsolutoM,
-                riesgoRelativo: datos.riesgoRelativo
-            });
-        } catch (error) { }
-    }
-
-    const handleGlicemia = (event) => {
-        try {
-            setGlicemia(event.target.value);
-
-            var glicemiaResul = FrGlicemia(event.target.value, lsEmployee.nameGenero);
-            setFrGlicemia(glicemiaResul);
-
-            /* PUNTAJE */
-            var puntajeFR = parseInt(frEdad) + parseInt(frColesterol) + parseInt(frHdl) + parseInt(glicemiaResul) + parseInt(frTencion) + parseInt(frFuma);
-            setFrPuntaje(puntajeFR);
-
-            var datos = GetRiesgos(puntajeFR, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
-            setRiesgo({
-                dxRiesgo: datos.dxRiesgo,
-                riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? datos.riesgoAbsolutoH : datos.riesgoAbsolutoM,
-                riesgoRelativo: datos.riesgoRelativo
-            });
-        } catch (error) { }
-    }
-
-    const handleFuma = (event) => {
-        try {
-            setFuma(event.target.value);
-            var fumaResult = FrFuma(event.target.value);
-            setFrFuma(fumaResult);
-
-            /* PUNTAJE */
-            var puntajeFR = parseInt(frEdad) + parseInt(frColesterol) + parseInt(frHdl) + parseInt(frGlicemia) + parseInt(frTencion) + parseInt(fumaResult);
-            setFrPuntaje(puntajeFR);
-
-            var datos = GetRiesgos(puntajeFR, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
-            setRiesgo({
-                dxRiesgo: datos.dxRiesgo,
-                riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? datos.riesgoAbsolutoH : datos.riesgoAbsolutoM,
-                riesgoRelativo: datos.riesgoRelativo
-            });
         } catch (error) { }
     }
 
@@ -841,6 +768,7 @@ const OccupationalExamination = () => {
                         />
 
                         <Framingham
+                            calculoFramingham={calculoFramingham}
                             frFuma={frFuma}
                             frColesterol={frColesterol}
                             frTencion={frTencion}
@@ -852,17 +780,17 @@ const OccupationalExamination = () => {
                             frHdl={frHdl}
                             riesgo={riesgo}
 
-                            handleHdl={handleHdl}
+                            handleHdl={setHdl}
                             hdl={hdl}
-                            handleColesterol={handleColesterol}
+                            handleColesterol={setColesterol}
                             colesterol={colesterol}
-                            handleTrigliceridos={handleTrigliceridos}
+                            handleTrigliceridos={setTrigliceridos}
                             trigliceridos={trigliceridos}
-                            handleFuma={handleFuma}
+                            handleFuma={setFuma}
                             fuma={fuma}
-                            handleGlicemia={handleGlicemia}
+                            handleGlicemia={setGlicemia}
                             glicemia={glicemia}
-                            handleTencion={handleTencion}
+                            handleTencion={setTencion}
                             tencion={tencion}
 
                             errors={errors}
@@ -874,7 +802,7 @@ const OccupationalExamination = () => {
                     <Grid container spacing={2} sx={{ pt: 5 }}>
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                     {TitleButton.Guardar}
                                 </Button>
                             </AnimateButton>

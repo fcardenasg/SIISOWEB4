@@ -1,24 +1,34 @@
-"menarquiaGO": 12,
-"nameCiclosGO": "PORVENIR",
-"duracionGO": 12,
-"amenoreaGO": true,
-"disminureaGO": true,
-"leucoreaGO": true,
-"vidaMaritalGO": 12,
-"vidaObstetricaGO": 12,
-"ggo": 12,
-"pgo": 12,
-"ago": 12,
-"csgo": 12,
-"vgo": 12,
-"fupgo": "2022-08-23T00:00:00",
-"furgo": "2022-08-23T00:00:00",
-"etsgo": true,
-"cualgo": "The standard Lorem Ipsum passage, used since the 1500s",
-"quisteOvariosBiomasGO": true,
-"endometriosisGO": true,
-"epigo": true,
-"planificaGO": true,
-"nameMetodoGO": "PROTECCION",
-"ultimoAnioCitologiaGO": 12,
-"nameResultadoGO": "ANORMAL",
+const handleFuma = (event) => {
+    try {
+        setFuma(event.target.value);
+        var fumaResult = FrFuma(event.target.value);
+        setFrFuma(fumaResult);
+
+        /* PUNTAJE */
+        var puntajeFR = parseInt(frEdad) + parseInt(frColesterol) + parseInt(frHdl) + parseInt(frGlicemia) + parseInt(frTencion) + parseInt(fumaResult);
+        setFrPuntaje(puntajeFR);
+
+        var datos = GetRiesgos(puntajeFR, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
+        setRiesgo({
+            dxRiesgo: datos.dxRiesgo,
+            riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? datos.riesgoAbsolutoH : datos.riesgoAbsolutoM,
+            riesgoRelativo: datos.riesgoRelativo
+        });
+    } catch (error) { }
+}
+
+const metodoFuma = (fuma) => {
+    setFuma(fuma);
+    var fumaResult = FrFuma(fuma);
+    setFrFuma(fumaResult);
+}
+
+const metodoHdl = (hdl) => {
+    try {
+        setHdl(hdl);
+        var result = FrLdl_FrRelacion(hdl, colesterol, trigliceridos);
+        setFrLdl(result.ldl);
+        setRelacion(result.relacion);
+
+    } catch (error) { }
+}

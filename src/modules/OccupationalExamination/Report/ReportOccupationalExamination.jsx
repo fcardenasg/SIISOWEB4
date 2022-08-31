@@ -133,23 +133,23 @@ const ReportOccupationalExamination = () => {
                                 />
                             </Grid>
 
-                            {/* <Grid item xs={12}>
+                            <Grid item xs={12}>
                                 <ReportWHDrummondLtd
                                     key={4}
                                     datos={lsDataReport}
                                     lsDataUser={lsDataUser}
                                 />
-                            </Grid> */}
+                            </Grid>
 
                             {/* <Grid item xs={12}>
                                 <ReportPersonalHistory key={5} datos={lsDataReport} />
-                            </Grid> */}
+                            </Grid>
 
-                            {/* <Grid item xs={12}>
+                            <Grid item xs={12}>
                                 <ReportHabits key={6} datos={lsDataReport} />
-                            </Grid> */}
+                            </Grid>
 
-                            {/* <Grid item xs={12}>
+                            <Grid item xs={12}>
                                 <ReportSystemsReview key={7} datos={lsDataReport} />
                             </Grid>
 
