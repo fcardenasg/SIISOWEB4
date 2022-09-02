@@ -1,1 +1,0 @@
-{"version":3,"sources":["views/pages/maintenance/ComingSoon/ComingSoon1/index.js"],"names":["ComingSoon1"],"mappings":"yJAMeA,UANK,WAChB,OACI","file":"static/js/196.a5a4ee83.chunk.js","sourcesContent":["const ComingSoon1 = () => {\r\n    return (\r\n        <></>\r\n    );\r\n};\r\n\r\nexport default ComingSoon1;"],"sourceRoot":""}

@@ -4,13 +4,10 @@ import {
     Button,
     Grid,
     useMediaQuery,
-    Typography,
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
@@ -61,7 +58,7 @@ const Attention = () => {
     const [peso, setPeso] = useState('');
     const [talla, setTalla] = useState('');
     const [imc, setIMC] = useState('');
-    const [clasificacion, setClasificacion] = useState('Clasificación');
+    const [clasificacion, setClasificacion] = useState('CLASIFICACIÓN');
     const [clasificacionColor, setClasificacionColor] = useState('info');
 
     const [open, setOpen] = useState(false);
@@ -252,22 +249,22 @@ const Attention = () => {
             setIMC(imcFinal.toFixed(1));
 
             if (imcFinal < 18.4) {
-                setClasificacion("Bajo de Peso")
+                setClasificacion("BAJO DE PESO")
                 setClasificacionColor("info");
             } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
-                setClasificacion("Normal")
+                setClasificacion("NORMAL")
                 setClasificacionColor("success");
             } else if (imcFinal >= 25 && imcFinal <= 29.9) {
-                setClasificacion("Sobrepeso")
+                setClasificacion("SOBREPESO")
                 setClasificacionColor("warning");
             } else if (imcFinal >= 30 && imcFinal <= 34.9) {
-                setClasificacion("Obesidad Grado I")
+                setClasificacion("OBESIDAD GRADO I")
                 setClasificacionColor("error");
             } else if (imcFinal >= 35 && imcFinal <= 39.9) {
-                setClasificacion("Obesidad Grado II")
+                setClasificacion("OBESIDAD GRADO II")
                 setClasificacionColor("error");
             } else if (imcFinal > 40) {
-                setClasificacion("Obesidad Grado III")
+                setClasificacion("OBESIDAD GRADO III")
                 setClasificacionColor("error");
             }
         } catch (error) { }
@@ -275,7 +272,7 @@ const Attention = () => {
 
     useEffect(() => {
         GetAll();
-    }, [])
+    }, []);
 
     const handleClick = async (datos) => {
         try {
@@ -283,8 +280,6 @@ const Attention = () => {
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 motivo, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
-
-            console.log("DATOS => ", DataToInsert);
 
             if (documento !== '' && lsEmployee.length !== 0) {
                 if (Object.keys(datos.length !== 0)) {

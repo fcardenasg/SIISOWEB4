@@ -37,7 +37,7 @@ export const itemsMenu = [
     subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
     icon: IconSchool,
     selected: false,
-    url: '/catalog/list',
+    url: '/reprint/list',
     color: ColorDrummondltd.GrayDrummond
   },
   {
@@ -53,7 +53,7 @@ export const itemsMenu = [
     subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
     icon: IconSchool,
     selected: false,
-    url: '/catalog/list',
+    url: '/export/list',
     color: ColorDrummondltd.BlueSeDrummond
   },
   {

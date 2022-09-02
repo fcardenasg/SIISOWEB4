@@ -22,7 +22,6 @@ const AppCalendar = Loadable(lazy(() => import('views/application/calendar')));
 const AppContactCard = Loadable(lazy(() => import('views/application/contact/Card')));
 const AppContactList = Loadable(lazy(() => import('views/application/contact/List')));
 
-
 //Nuestros import
 const ListTypeCatalog = Loadable(lazy(() => import('modules/TypeCatalog/ListTypeCatalog')));
 const ReportTypeCatolog = Loadable(lazy(() => import('components/report/ReportTypeCatolog')));
@@ -187,6 +186,9 @@ const UpdateSpirometry = Loadable(lazy(() => import('modules/Paraclinics/Spirome
 const ListLaboratory = Loadable(lazy(() => import('modules/Paraclinics/Laboratory/ListLaboratory')));
 const Laboratory = Loadable(lazy(() => import('modules/Paraclinics/Laboratory/Laboratory')));
 const UpdateLaboratory = Loadable(lazy(() => import('modules/Paraclinics/Laboratory/UpdateLaboratory')));
+
+const ViewReprint = Loadable(lazy(() => import('modules/Reprint/ViewReprint')));
+const ViewExport = Loadable(lazy(() => import('modules/Export/ViewExport')));
 
 
 const MainRoutes = {
@@ -389,8 +391,6 @@ const MainRoutes = {
             path: '/alcoholanddrugtesting/report',
             element: <ReportAlcoholAndDrugTesting />
         },
-
-
         /* Render de Turner */
         {
             path: '/turner/add',
@@ -652,8 +652,6 @@ const MainRoutes = {
             path: '/sg-sst/update/:id',
             element: <UpdateSGSST />
         },
-
-
         /* Render de  Paraclinicos */
         {
             path: '/paraclinics/electro/list',
@@ -667,7 +665,6 @@ const MainRoutes = {
             path: '/paraclinics/electro/update/:id',
             element: <UpdateElectro />
         },
-
         {
             path: '/paraclinics/rnm/list',
             element: <ListRNM />
@@ -680,7 +677,6 @@ const MainRoutes = {
             path: '/paraclinics/rnm/update/:id',
             element: <UpdateRNM />
         },
-
         {
             path: '/paraclinics/psa/list',
             element: <ListPSA />
@@ -693,8 +689,6 @@ const MainRoutes = {
             path: '/paraclinics/psa/update/:id',
             element: <UpdatePSA />
         },
-
-
         {
             path: '/paraclinics/rxtorax/list',
             element: <ListRXTORAX />
@@ -707,8 +701,6 @@ const MainRoutes = {
             path: '/paraclinics/rxtorax/update/:id',
             element: <UpdateRXTORAX />
         },
-
-
         {
             path: '/paraclinics/cytology/list',
             element: <ListCytology />
@@ -721,7 +713,6 @@ const MainRoutes = {
             path: '/paraclinics/cytology/update/:id',
             element: <UpdateCytology />
         },
-
         {
             path: '/paraclinics/visiometrics/list',
             element: <ListVisiometrics />
@@ -734,7 +725,6 @@ const MainRoutes = {
             path: '/paraclinics/visiometrics/update/:id',
             element: <UpdateVisiometrics />
         },
-
 
         {
             path: '/paraclinics/spirometry/list',
@@ -760,6 +750,16 @@ const MainRoutes = {
         {
             path: '/paraclinics/laboratory/update/:id',
             element: <UpdateLaboratory />
+        },
+
+        /* Render de Reimprimir */
+        {
+            path: '/reprint/list',
+            element: <ViewReprint />
+        },
+        {
+            path: '/export/list',
+            element: <ViewExport />
         },
 
 

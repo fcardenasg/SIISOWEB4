@@ -1,2 +1,0 @@
-(this["webpackJsonpberry-material-react"]=this["webpackJsonpberry-material-react"]||[]).push([[196],{1690:function(r,t,e){"use strict";e.r(t);var a=e(1);t.default=function(){return Object(a.jsx)(a.Fragment,{})}}}]);
-//# sourceMappingURL=196.a5a4ee83.chunk.js.map

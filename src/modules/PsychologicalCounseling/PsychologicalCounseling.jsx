@@ -5,15 +5,11 @@ import {
     Grid,
     useMediaQuery,
     Typography,
-    Tooltip,
-    Fab
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import useAuth from 'hooks/useAuth';
 import InputText from 'components/input/InputText';
@@ -68,7 +64,6 @@ const PsychologicalCounseling = () => {
     }, [])
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors, reset } = methods;
 
@@ -111,7 +106,6 @@ const PsychologicalCounseling = () => {
 
     async function GetAll() {
         try {
-
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AsesoriaMotivo);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -139,8 +133,6 @@ const PsychologicalCounseling = () => {
                 label: item.nombre
             }));
             setEstadoCaso(resultEstadoCaso);
-            console.log("lsServerEstadoCaso = ", lsServerEstadoCaso, resultEstadoCaso)
-
 
             const lsServerDiaTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DiaTurno);
             var resultDiaTurno = lsServerDiaTurno.data.entities.map((item) => ({
@@ -176,9 +168,8 @@ const PsychologicalCounseling = () => {
 
     const handleClick = async (datos) => {
         try {
-
-            const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), DefaultData.AsesoriaPsicologica, lsEmployee.sede,
-                datos.idContingencia, datos.idEstadoCaso, datos.idTurno, datos.idDiaTurno, datos.idTipoAsesoria,
+            const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), DefaultData.AsesoriaPsicologica,
+                lsEmployee.sede, datos.idContingencia, datos.idEstadoCaso, datos.idTurno, datos.idDiaTurno, datos.idTipoAsesoria,
                 datos.idMotivo, datos.idCausa, datos.motivoConsulta, datos.concepto, datos.pautasSeguir,
                 datos.idEstadoAsesoria, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
