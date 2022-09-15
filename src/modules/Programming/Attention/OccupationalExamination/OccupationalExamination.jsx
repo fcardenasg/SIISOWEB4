@@ -22,6 +22,7 @@ import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
 import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone';
 
+import { GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import Transitions from 'ui-component/extended/Transitions';
@@ -128,12 +129,44 @@ const calculateImc = (peso, talla) => {
     return { imc, clasificacion, clasificacionColor }
 }
 
+const dataMedicalOrders = [
+    {
+        open: true,
+        title: 'Formula',
+        subtitle: 'Formula',
+        iconPrimary: AssignmentIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Laboratorio',
+        subtitle: 'Laboratorio',
+        iconPrimary: BiotechIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Imagenes',
+        subtitle: 'Imagenes',
+        iconPrimary: ImageIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Examenes',
+        subtitle: 'Examenes',
+        iconPrimary: FolderOpenIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+]
+
 const OccupationalExamination = () => {
     const { user } = useAuth();
     const { id } = useParams();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const statusClose = true;
 
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -155,7 +188,7 @@ const OccupationalExamination = () => {
 
     const [documento, setDocumento] = useState('');
     const [atencion, setAtencion] = useState('');
-    const [lastRecord, setLastRecord] = useState([]);
+    const [lsLastRecord, setLsLastRecord] = useState([]);
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsAnthropometry, setLsAnthropometry] = useState([]);
     const [lsAtencionEMO, setLsAtencionEMO] = useState([]);
@@ -246,26 +279,21 @@ const OccupationalExamination = () => {
     const handleUpdateAttention = async (DataToUpdate) => {
         try {
             const result = await UpdateAttentions(DataToUpdate);
-            if (result.status === 200) {
-                setOpenSuccess(true);
-            }
-
+            if (result.status === 200) setOpenSuccess(true);
         } catch (error) { }
     }
 
     const handleUpdateAttentionClose = async (estadoPac = '') => {
         try {
-            const DataToUpdate = PutAttention(id, lsAtencion.documento, lsAtencion.fecha, lsAtencion.sede, lsAtencion.tipo, lsAtencion.atencion,
-                lsAtencion.estadoCaso, lsAtencion.observaciones, lsAtencion.numeroHistoria, estadoPac, lsAtencion.contingencia,
-                lsAtencion.turno, lsAtencion.diaTurno, lsAtencion.motivo, lsAtencion.medico, lsAtencion.docSolicitante, lsAtencion.talla, lsAtencion.peso,
-                lsAtencion.iMC, lsAtencion.usuarioCierreAtencion, lsAtencion.fechaDigitacion, lsAtencion.fechaCierreAtencion, lsAtencion.duracion,
+            const DataToUpdate = PutAttention(id, lsAtencion.documento, lsAtencion.fecha, lsAtencion.sede, lsAtencion.tipo,
+                lsAtencion.atencion, lsAtencion.estadoCaso, lsAtencion.observaciones, lsAtencion.numeroHistoria, estadoPac,
+                lsAtencion.contingencia, lsAtencion.turno, lsAtencion.diaTurno, lsAtencion.motivo, lsAtencion.medico,
+                lsAtencion.docSolicitante, lsAtencion.talla, lsAtencion.peso, lsAtencion.iMC, lsAtencion.usuarioCierreAtencion,
+                lsAtencion.fechaDigitacion, lsAtencion.fechaCierreAtencion, lsAtencion.duracion,
                 lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, lsAtencion.usuarioModifico, lsAtencion.fechaModifico);
 
             const result = await UpdateAttentions(DataToUpdate);
-            if (result.status === 200) {
-                setOpenSuccess(true);
-            }
-
+            if (result.status === 200) setOpenSuccess(true);
         } catch (error) { }
     }
 
@@ -285,10 +313,40 @@ const OccupationalExamination = () => {
     }
 
     const methods = useForm();
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, errors } = methods;
 
     useEffect(() => {
-        async function GetAll() {
+        async function getLastData() {
+            try {
+                const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(documento);
+                if (lsServerUltimoRegistro.status === 200) {
+                    setLsLastRecord(lsServerUltimoRegistro.data);
+                    console.log(lsServerUltimoRegistro);
+
+                    setEstadoVacuna({
+                        tetanoIM: lsServerUltimoRegistro.data.tetanoIM,
+                        influenzaIM: lsServerUltimoRegistro.data.influenzaIM,
+                        fiebreAmarillaIM: lsServerUltimoRegistro.data.fiebreAmarillaIM,
+                        rubeolaSarampionIM: lsServerUltimoRegistro.data.rubeolaSarampionIM,
+                        covid19IM: lsServerUltimoRegistro.data.covid19IM,
+                        otrasIM: lsServerUltimoRegistro.data.otrasIM,
+                    });
+
+                    setArrays({
+                        tipoFobia: JSON.parse(lsServerUltimoRegistro.data.tipoFobiaHB),
+                        dx: JSON.parse(lsServerUltimoRegistro.data.dxID),
+                        antecedentesCardio: [],
+                        metabolico: [],
+                    });
+                }
+            } catch (error) { }
+        }
+
+        getLastData();
+    }, [documento]);
+
+    useEffect(() => {
+        async function getDataAttention() {
             try {
                 const lsServerAtencion = await GetByIdAttention(id);
                 if (lsServerAtencion.status === 200) {
@@ -316,20 +374,35 @@ const OccupationalExamination = () => {
                     setClasificacion(resultImc.clasificacion);
                     setClasificacionColor(resultImc.clasificacionColor);
                 }
+            } catch (error) { }
+        }
 
+        getDataAttention();
+    }, [id]);
+
+    useEffect(() => {
+        async function getLsAtencion() {
+            try {
+                const lsServerAtencionEMO = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
+                var resultAtencionEMO = lsServerAtencionEMO.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsAtencionEMO(resultAtencionEMO);
+            } catch (error) { }
+        }
+
+        getLsAtencion();
+    }, []);
+
+    useEffect(() => {
+        async function getDataForChart() {
+            try {
                 const lsAnthropometry = await GetAllOccupationalExamination(0, 0);
                 if (lsAnthropometry.status === 200) {
-                    var resultPeso = lsAnthropometry.data.entities.map((item) => (
-                        item.pesoEF
-                    ));
-
-                    var resultImc = lsAnthropometry.data.entities.map((item) => (
-                        item.imcef
-                    ));
-
-                    var resultAnio = lsAnthropometry.data.entities.map((item) => (
-                        new Date(item.fecha).getFullYear()
-                    ));
+                    var resultPeso = lsAnthropometry.data.entities.map((item) => item.pesoEF);
+                    var resultImc = lsAnthropometry.data.entities.map((item) => item.imcef);
+                    var resultAnio = lsAnthropometry.data.entities.map((item) => new Date(item.fecha).getFullYear());
 
                     if (resultPeso && resultImc && resultAnio) {
                         const chartData = {
@@ -370,21 +443,11 @@ const OccupationalExamination = () => {
                         setLsAnthropometry([]);
                     }
                 }
-
-                const lsServerAtencionEMO = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
-                var resultAtencionEMO = lsServerAtencionEMO.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsAtencionEMO(resultAtencionEMO);
-            } catch (error) {
-                console.log(error);
-            }
+            } catch (error) { }
         }
 
-        GetAll();
+        getDataForChart();
     }, []);
-
 
     const handleCerrarCaso = () => {
         try {
@@ -394,13 +457,11 @@ const OccupationalExamination = () => {
                     navigate("/programming/list");
                 }
             });
-
         } catch (error) { }
     }
 
     const handleClick = async (datos) => {
         try {
-
             const DataToInset = PostOccupationalExamination(
                 id, documento, FormatDate(datos.fecha), atencion,
 
@@ -464,10 +525,12 @@ const OccupationalExamination = () => {
                 datos.idHistoriaFobiasNEMTA, datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA,
                 datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, DefaultValue.SINREGISTRO_GLOBAL,
 
-                FormatDate(datos.fechaFRA), datos.tencionFRA, datos.idTencionArterialFRA, JSON.stringify(arrays.antecedentesCardio), datos.idDeporteFRA, datos.idBebidaFRA,
-                FormatDate(datos.fechaLaboratorioFRA), datos.colesterolTotalFRA, datos.hDLFRA, datos.triglicericosFRA, JSON.stringify(arrays.metabolico), datos.glisemiaFRA,
-                datos.fumaFRA, datos.observacionFRA, datos.lDLFRA, datos.relacionFRA, datos.fRLEdadFRA, datos.fRLColesterolFRA, datos.fRHDLFRA, datos.fRGlisemiaFRA,
-                datos.fRTencionFRA, datos.fRTabaquismoFRA, datos.puntajeFRA, datos.riesgoAbsolutoFRA, datos.riesgoRelativoFRA, datos.interpretacionFRA,
+                FormatDate(datos.fechaFRA), tencion, frTencion, 'VACIO', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                FormatDate(datos.fechaLaboratorioFRA), colesterol, hdl, trigliceridos, 'VACIO', glicemia,
+                fuma, datos.observacionFRA,
+
+                frLdl, relacion, frEdad, frColesterol, frHdl, frGlicemia,
+                frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()),
 
                 datos.tosAUsualSin, datos.tosEnLaSemanaSintR, datos.tosMananaSintR, datos.tosConsecutivaSintR, datos.anosConTosSintR, datos.esputoASintR,
@@ -497,7 +560,7 @@ const OccupationalExamination = () => {
                 const result = await InsertOccupationalExamination(DataToInset);
                 if (result.status === 200) {
                     setOpenSuccess(true);
-                    await handleUpdateAttention("ATENDIDO");
+                    statusClose = false;
                 }
             }
         } catch (error) {
@@ -507,10 +570,17 @@ const OccupationalExamination = () => {
     };
 
     setTimeout(() => {
-        if (lsAtencion.length != 0) {
+        if (lsAtencion.length !== 0)
             setTimeWait(true);
-        }
     }, 1500);
+
+    const onCloseModal = () => {
+        setOpenForm(false);
+        setListMedicalFormula(true);
+        setNewMedicalFormula(false);
+        setUpdateMedicalFormula(false);
+        setNewMedicalFormula(false);
+    }
 
     return (
         <MainCard>
@@ -522,13 +592,7 @@ const OccupationalExamination = () => {
                     <ControlModal
                         title={"Ordenes Medicas - " + titleModal}
                         open={openForm}
-                        onClose={() => {
-                            setOpenForm(false);
-                            setListMedicalFormula(true);
-                            setNewMedicalFormula(false);
-                            setUpdateMedicalFormula(false);
-                            setNewMedicalFormula(false)
-                        }}
+                        onClose={onCloseModal}
                         maxWidth="md"
                     >
                         {newMedicalFormula ?
@@ -576,60 +640,29 @@ const OccupationalExamination = () => {
                         open={openFormula}
                         handleCloseDialog={() => setOpenFormula(false)}
                     >
-                        <Grid item xs={12}>
-                            <HoverSocialCard
-                                onClick={() => { setOpenForm(true); setTitleModal('Formula') }}
-                                secondary="Formula"
-                                iconPrimary={AssignmentIcon}
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <HoverSocialCard
-                                onClick={() => { setOpenForm(true); setTitleModal('Laboratorio') }}
-                                secondary="Laboratorio"
-                                iconPrimary={BiotechIcon}
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <HoverSocialCard
-                                onClick={() => { setOpenForm(true); setTitleModal('Imagenes') }}
-                                secondary="Imagenes"
-                                iconPrimary={ImageIcon}
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <HoverSocialCard
-                                onClick={() => { setOpenForm(true); setTitleModal('Examenes') }}
-                                secondary="Examenes"
-                                iconPrimary={FolderOpenIcon}
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
+                        {dataMedicalOrders.map(data =>
+                            <Grid item xs={12}>
+                                <HoverSocialCard
+                                    onClick={() => { setOpenForm(data.open); setTitleModal(data.title) }}
+                                    secondary={data.subtitle}
+                                    iconPrimary={data.iconPrimary}
+                                    color={data.color}
+                                />
+                            </Grid>
+                        )}
                     </DialogFormula>
 
                     <Transitions type="collapse" in={viewChart} position="top-left" direction="up">
-                        {lsAnthropometry.length != 0 ? <ChartAnthropometry datos={lsAnthropometry} lastRecord={lastRecord} /> : <></>}
+                        {lsAnthropometry.length !== 0 ? <ChartAnthropometry datos={lsAnthropometry} lastRecord={lsLastRecord} /> : null}
                         <Grid sx={{ pb: 2 }} />
                     </Transitions>
 
                     <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}
                         secondary={
                             <Fragment>
-                                {viewChart ?
-                                    <Button onClick={() => setViewChart(false)}>
-                                        <IconStairsUp stroke={1.5} size="1.3rem" />
-                                    </Button>
-                                    :
-                                    <Button onClick={() => setViewChart(true)}>
-                                        <IconStairsDown stroke={1.5} size="1.3rem" />
-                                    </Button>
-                                }
+                                <Button onClick={() => setViewChart(viewChart ? false : true)}>
+                                    {viewChart ? <IconStairsUp stroke={1.5} size="1.3rem" /> : <IconStairsDown stroke={1.5} size="1.3rem" />}
+                                </Button>
                             </Fragment>
                         }
                     >
@@ -637,8 +670,9 @@ const OccupationalExamination = () => {
                             <Grid item xs={5}>
                                 <Grid container justifyContent="center" alignItems="center" spacing={2}>
                                     <Grid item xs={4}>
-                                        <Avatar sx={{ width: 100, height: 100 }} src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
+                                        <Avatar sx={{ width: 100, height: 100 }} src={lsEmployee.imagenUrl !== null ? lsEmployee.imagenUrl : User} />
                                     </Grid>
+
                                     <Grid item xs={4}>
                                         <TextField
                                             value={documento}
@@ -653,12 +687,13 @@ const OccupationalExamination = () => {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            {lsEmployee.length != 0 ?
+
+                            {lsEmployee.length !== 0 ?
                                 <Grid item xs={7}>
                                     <Typography variant="h2" component="div">
                                         {lsEmployee.nombres}
                                     </Typography>
-                                    <Grid container spacing={1} direction="row" justifyContent="left" alignItems="center">
+                                    <Grid container spacing={1}>
                                         <Grid item>
                                             <Typography variant="h5">{lsEmployee.nameGenero}</Typography>
                                         </Grid>
@@ -666,7 +701,7 @@ const OccupationalExamination = () => {
                                             <Typography variant="h5">{GetEdad(new Date(lsEmployee.fechaNaci))} AÑOS</Typography>
                                         </Grid>
                                     </Grid>
-                                </Grid> : <Grid item xs={7}></Grid>
+                                </Grid> : null
                             }
                         </Grid>
 
@@ -680,6 +715,7 @@ const OccupationalExamination = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={6}>
                                 <SelectOnChange
                                     name="idAtencion"
@@ -734,8 +770,12 @@ const OccupationalExamination = () => {
                     </Tabs>
 
                     <TabPanel value={value} index={0}>
-                        <PersonalData lsEmployee={lsEmployee} />
+                        <PersonalData
+                            lsEmployee={lsEmployee}
+                            handleLoadingDocument={(idEmployee) => handleLoadingDocument(idEmployee)}
+                        />
                     </TabPanel>
+
                     <TabPanel value={value} index={1}>
                         <WorkHistory
                             lsEmpleado={lsEmployee}
@@ -743,6 +783,7 @@ const OccupationalExamination = () => {
                             atencion={atencion}
                         />
                     </TabPanel>
+
                     <TabPanel value={value} index={2}>
                         <Emo
                             atencion={atencion}
@@ -756,6 +797,7 @@ const OccupationalExamination = () => {
                             setClasificacion={setClasificacion}
                             clasificacionColor={clasificacionColor}
                             setClasificacionColor={setClasificacionColor}
+                            lsLastRecord={lsLastRecord.length !== 0 ? lsLastRecord : []}
 
                             documento={documento}
                             errors={errors}
@@ -766,7 +808,6 @@ const OccupationalExamination = () => {
                             lsEmployee={lsEmployee}
                             {...methods}
                         />
-
                         <Framingham
                             calculoFramingham={calculoFramingham}
                             frFuma={frFuma}
@@ -824,7 +865,7 @@ const OccupationalExamination = () => {
                             </AnimateButton>
                         </Grid>
 
-                        <Grid item xs={2}>
+                        {statusClose ? <Grid item xs={2}>
                             <AnimateButton>
                                 <Button variant="outlined" fullWidth onClick={() => {
                                     navigate("/programming/list");
@@ -833,7 +874,7 @@ const OccupationalExamination = () => {
                                     {TitleButton.Cancelar}
                                 </Button>
                             </AnimateButton>
-                        </Grid>
+                        </Grid> : null}
 
                         <Grid item xs={2}>
                             <AnimateButton>

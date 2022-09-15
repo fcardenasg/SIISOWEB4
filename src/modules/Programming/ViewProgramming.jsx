@@ -46,10 +46,7 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
             if (programming.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA &&
                 programming.atencion === DefaultValue.ATENCION_PRUEBA_ALCOHOL)
                 navigate(`/programming/alcoholanddrugtesting/${programming.id}`);
-
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     var disabledButon = programming.estadoPac === 'PENDIENTE POR ATENCIÓN' ? false :

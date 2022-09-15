@@ -47,7 +47,6 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import TableAntecedentes from './TableEmo/TableAntecedentes';
 import RespiratorySymptoms from './RespiratorySymptoms';
-import { GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import TableExamenesPara from './TableEmo/TableExamenesPara';
 
 const DetailIcons = [
@@ -56,6 +55,18 @@ const DetailIcons = [
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
+const validateLastData = (data, tipo = true) => {
+    if (tipo) {
+        if (data === undefined)
+            return false;
+        else return data;
+    } else {
+        if (data === undefined)
+            return ""
+        else return data;
+    }
+}
+
 const Emo = ({
     atencion,
     setPeso, peso,
@@ -63,6 +74,7 @@ const Emo = ({
     setIMC, imc,
     setClasificacion, clasificacion,
     setClasificacionColor, clasificacionColor,
+    lsLastRecord,
 
     errors,
     documento,
@@ -101,12 +113,13 @@ const Emo = ({
     const [lsIngreso, setLsIngreso] = useState([]);
     const [lsControlPeriodico, setLsControlPeriodico] = useState([]);
     const [lsPromo, setLsPromo] = useState([]);
-    const [lsLastRecord, setLsLastRecord] = useState([]);
 
     const [textParaclinico, setTextParaclinico] = useState('');
     const [openParaclinico, setOpenParaclinico] = useState(false);
 
-    async function GetAll() {
+
+
+    async function getAll() {
         try {
             const lsServerCie11 = await GetAllCIE11(0, 0);
             var resultCie11 = lsServerCie11.data.entities.map((item) => ({
@@ -205,34 +218,10 @@ const Emo = ({
                 label: item.nombre
             }));
             setLsTipoFobia(resultTipoFobia);
-
-            const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(documento);
-            if (lsServerUltimoRegistro.status === 200) {
-                setLsLastRecord(lsServerUltimoRegistro.data);
-
-                setEstadoVacuna({
-                    tetanoIM: lsServerUltimoRegistro.data.tetanoIM,
-                    influenzaIM: lsServerUltimoRegistro.data.influenzaIM,
-                    fiebreAmarillaIM: lsServerUltimoRegistro.data.fiebreAmarillaIM,
-                    rubeolaSarampionIM: lsServerUltimoRegistro.data.rubeolaSarampionIM,
-                    covid19IM: lsServerUltimoRegistro.data.covid19IM,
-                    otrasIM: lsServerUltimoRegistro.data.otrasIM,
-                });
-
-                setArrays({
-                    tipoFobia: JSON.parse(lsServerUltimoRegistro.data.tipoFobiaHB),
-                    dx: JSON.parse(lsServerUltimoRegistro.data.dxID),
-                    antecedentesCardio: [],
-                    metabolico: [],
-                });
-            }
-
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
-    async function GetAllConceptos() {
+    async function getAllConceptos() {
         try {
 
             const lsServerConceptoActitudIngreso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_APTI_PSICO_INGRESO);
@@ -255,17 +244,16 @@ const Emo = ({
                 label: item.nombre
             }));
             setLsPromo(resultPromo);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
-        GetAllConceptos();
+        getAllConceptos();
     }, [atencion]);
 
+
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [documento]);
 
     return (
@@ -315,7 +303,7 @@ const Emo = ({
                                             label="1. Congenitos"
                                             name="congenitosAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.congenitosAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.congenitosAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -326,7 +314,7 @@ const Emo = ({
                                             label="2. Inmunoprevenible"
                                             name="inmunoPrevenibleAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.inmunoPrevenibleAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.inmunoPrevenibleAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -337,7 +325,7 @@ const Emo = ({
                                             label="3. Infecciosos"
                                             name="infecciososAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.infecciososAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.infecciososAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -348,7 +336,7 @@ const Emo = ({
                                             label="4. Ojos"
                                             name="ojoAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.ojoAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.ojoAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -359,7 +347,7 @@ const Emo = ({
                                             label="5. Agudeza Visual"
                                             name="agudezaVisualAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.agudezaVisualAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.agudezaVisualAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -370,7 +358,7 @@ const Emo = ({
                                             label="6. Oidos"
                                             name="oidosAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.oidosAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.oidosAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -381,7 +369,7 @@ const Emo = ({
                                             label="7. Nasofaringe"
                                             name="nasoFaringeAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.nasoFaringeAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.nasoFaringeAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -392,7 +380,7 @@ const Emo = ({
                                             label="8. Cardiovascular"
                                             name="cardiovascularAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.cardiovascularAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.cardiovascularAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -403,7 +391,7 @@ const Emo = ({
                                             label="9. Pulmonar"
                                             name="pulmonarAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.pulmonarAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.pulmonarAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -414,7 +402,7 @@ const Emo = ({
                                             label="10. Gastrointestinal"
                                             name="gastrointestinalAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.gastrointestinalAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.gastrointestinalAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -425,7 +413,7 @@ const Emo = ({
                                             label="11. Genitourinario"
                                             name="gimitoUrinarioAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.gimitoUrinarioAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.gimitoUrinarioAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -436,7 +424,7 @@ const Emo = ({
                                             label="12. Neurológico"
                                             name="neurologicoAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.neurologicoAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.neurologicoAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -447,7 +435,7 @@ const Emo = ({
                                             label="13. Trastornos de piel"
                                             name="transtornoPielAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.transtornoPielAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.transtornoPielAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -458,7 +446,7 @@ const Emo = ({
                                             label="14. Osteomusculares"
                                             name="osteoMuscularAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.osteoMuscularAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.osteoMuscularAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -469,7 +457,7 @@ const Emo = ({
                                             label="15. Alérgicos"
                                             name="alergicosAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.alergicosAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.alergicosAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -480,7 +468,7 @@ const Emo = ({
                                             label="16. Tóxicos"
                                             name="toxicoAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.toxicoAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.toxicoAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -491,7 +479,7 @@ const Emo = ({
                                             label="17. Farmacólogicos"
                                             name="faRmacologicosAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.faRmacologicosAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.faRmacologicosAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -502,7 +490,7 @@ const Emo = ({
                                             label="18. Quirúrgicos"
                                             name="quirurgicosAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.quirurgicosAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.quirurgicosAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -513,7 +501,7 @@ const Emo = ({
                                             label="19. Traumático"
                                             name="traumaticosAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.traumaticosAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.traumaticosAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -524,7 +512,7 @@ const Emo = ({
                                             label="20. Transfusiones"
                                             name="tranfuccionesAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.tranfuccionesAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.tranfuccionesAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -535,7 +523,7 @@ const Emo = ({
                                             label="21. ETS"
                                             name="etsAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.etsAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.etsAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -546,7 +534,7 @@ const Emo = ({
                                             label="22. Deformidades"
                                             name="deformidadesAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.deformidadesAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.deformidadesAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -557,7 +545,7 @@ const Emo = ({
                                             label="23. Psiquiatrico"
                                             name="psiquiatricosAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.psiquiatricosAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.psiquiatricosAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -568,7 +556,7 @@ const Emo = ({
                                             label="24. Farmacodependencia"
                                             name="farmacoDependenciaAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.farmacoDependenciaAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.farmacoDependenciaAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -579,7 +567,7 @@ const Emo = ({
                                             label="25. E.M."
                                             name="emAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.emAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.emAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -590,7 +578,7 @@ const Emo = ({
                                             label="26. Renal"
                                             name="renalAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.renalAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.renalAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -601,7 +589,7 @@ const Emo = ({
                                             label="27. Asma"
                                             name="asmaAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.asmaAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.asmaAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -612,7 +600,7 @@ const Emo = ({
                                             label="28. O.R.L."
                                             name="orlAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.orlAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.orlAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -623,7 +611,7 @@ const Emo = ({
                                             label="29. Cancer"
                                             name="cancerAP"
                                             size={30}
-                                            defaultValue={lsLastRecord.cancerAP}
+                                            defaultValue={() => validateLastData(lsLastRecord.cancerAP)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -634,7 +622,7 @@ const Emo = ({
                                     <InputText
                                         multiline
                                         rows={4}
-                                        defaultValue={lsLastRecord.especifiqueAP}
+                                        defaultValue={() => validateLastData(lsLastRecord.especifiqueAP, false)}
                                         fullWidth
                                         name="especifiqueAP"
                                         label="Especifique"
@@ -677,7 +665,7 @@ const Emo = ({
                                         <InputSelect
                                             name="parentesco1ANFA"
                                             label="Parentesco"
-                                            defaultValue={lsLastRecord.parentesco1ANFA}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco1ANFA, false)}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -688,7 +676,7 @@ const Emo = ({
                                 <Grid item xs={9}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.parentesco1ObserANFA}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco1ObserANFA, false)}
                                             fullWidth
                                             name="parentesco1ObserANFA"
                                             label="Observación"
@@ -703,7 +691,7 @@ const Emo = ({
                                         <InputSelect
                                             name="parentesco2ANFA"
                                             label="Parentesco"
-                                            defaultValue={lsLastRecord.parentesco2ANFA}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco2ANFA, false)}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -714,7 +702,7 @@ const Emo = ({
                                 <Grid item xs={9}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.parentesco2ObserANFA}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco2ObserANFA, false)}
                                             fullWidth
                                             name="parentesco2ObserANFA"
                                             label="Observación"
@@ -729,7 +717,7 @@ const Emo = ({
                                         <InputSelect
                                             name="parentesco3ANFA"
                                             label="Parentesco"
-                                            defaultValue={lsLastRecord.parentesco3ANFA}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco3ANFA, false)}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -740,7 +728,7 @@ const Emo = ({
                                 <Grid item xs={9}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.parentesco3ObserANFA}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco3ObserANFA, false)}
                                             fullWidth
                                             name="parentesco3ObserANFA"
                                             label="Observación"
@@ -755,7 +743,7 @@ const Emo = ({
                                         <InputSelect
                                             name="parentesco4ANFA"
                                             label="Parentesco"
-                                            defaultValue={lsLastRecord.parentesco4ANFA}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco4ANFA, false)}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -766,7 +754,7 @@ const Emo = ({
                                 <Grid item xs={9}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.parentesco4ObserANFA}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco4ObserANFA, false)}
                                             fullWidth
                                             name="parentesco4ObserANFA"
                                             label="Observación"
@@ -789,7 +777,7 @@ const Emo = ({
                                     <FormProvider {...methods}>
                                         <InputText
                                             type="number"
-                                            defaultValue={lsLastRecord.anioAT}
+                                            defaultValue={() => validateLastData(lsLastRecord.anioAT, false)}
                                             fullWidth
                                             name="anioAT"
                                             label="Año"
@@ -804,7 +792,7 @@ const Emo = ({
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={lsLastRecord.especifiqueAT}
+                                            defaultValue={() => validateLastData(lsLastRecord.especifiqueAT, false)}
                                             fullWidth
                                             name="especifiqueAT"
                                             label="Especifique"
@@ -840,7 +828,7 @@ const Emo = ({
                                     <FormProvider {...methods}>
                                         <InputText
                                             type="number"
-                                            defaultValue={lsLastRecord.anio1AT}
+                                            defaultValue={() => validateLastData(lsLastRecord.anio1AT, false)}
                                             fullWidth
                                             name="anio1AT"
                                             label="Año"
@@ -855,7 +843,7 @@ const Emo = ({
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={lsLastRecord.especifique1AT}
+                                            defaultValue={() => validateLastData(lsLastRecord.especifique1AT, false)}
                                             fullWidth
                                             name="especifique1AT"
                                             label="Especifique"
@@ -885,7 +873,6 @@ const Emo = ({
                                     icons={DetailIcons[2].icons}
                                 />
                             </Grid>
-
                         </SubCard>
                     </Accordion>
                 </Grid>
@@ -900,7 +887,7 @@ const Emo = ({
                                         label="Tetano"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, tetanoIM: e.target.checked })}
                                         size={30}
-                                        checked={estadoVacuna.tetanoIM}
+                                        checked={() => validateLastData(estadoVacuna.tetanoIM)}
                                     />
                                 </Grid>
 
@@ -909,7 +896,7 @@ const Emo = ({
                                         label="Influenza"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, influenzaIM: e.target.checked })}
                                         size={30}
-                                        checked={estadoVacuna.influenzaIM}
+                                        checked={() => validateLastData(estadoVacuna.influenzaIM)}
                                     />
                                 </Grid>
 
@@ -918,7 +905,7 @@ const Emo = ({
                                         label="Fiebre Amarilla"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, fiebreAmarillaIM: e.target.checked })}
                                         size={30}
-                                        checked={estadoVacuna.fiebreAmarillaIM}
+                                        checked={() => validateLastData(estadoVacuna.fiebreAmarillaIM)}
                                     />
                                 </Grid>
 
@@ -927,7 +914,7 @@ const Emo = ({
                                         label="Rubéola - Sarampión"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, rubeolaSarampionIM: e.target.checked })}
                                         size={30}
-                                        checked={estadoVacuna.rubeolaSarampionIM}
+                                        checked={() => validateLastData(estadoVacuna.rubeolaSarampionIM)}
                                     />
                                 </Grid>
 
@@ -936,7 +923,7 @@ const Emo = ({
                                         label="COVID-19"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, covid19IM: e.target.checked })}
                                         size={30}
-                                        checked={estadoVacuna.covid19IM}
+                                        checked={() => validateLastData(estadoVacuna.covid19IM)}
                                     />
                                 </Grid>
 
@@ -945,7 +932,7 @@ const Emo = ({
                                         label="Otras"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, otrasIM: e.target.checked })}
                                         size={30}
-                                        checked={estadoVacuna.otrasIM}
+                                        checked={() => validateLastData(estadoVacuna.otrasIM)}
                                     />
                                 </Grid>
 
@@ -954,7 +941,7 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 type="number"
-                                                defaultValue={lsLastRecord.anioVacuna1IM}
+                                                defaultValue={() => validateLastData(lsLastRecord.anioVacuna1IM, false)}
                                                 fullWidth
                                                 name="anioVacuna1IM"
                                                 label="Año Tetano"
@@ -962,13 +949,13 @@ const Emo = ({
                                                 bug={errors}
                                             />
                                         </FormProvider>
-                                    </Grid> : <></>}
+                                    </Grid> : null}
                                 {estadoVacuna.influenzaIM ?
                                     <Grid item xs={2} >
                                         <FormProvider {...methods}>
                                             <InputText
                                                 type="number"
-                                                defaultValue={lsLastRecord.anioVacuna2IM}
+                                                defaultValue={() => validateLastData(lsLastRecord.anioVacuna2IM, false)}
                                                 fullWidth
                                                 name="anioVacuna2IM"
                                                 label="Año Influenza"
@@ -976,13 +963,13 @@ const Emo = ({
                                                 bug={errors}
                                             />
                                         </FormProvider>
-                                    </Grid> : <></>}
+                                    </Grid> : null}
                                 {estadoVacuna.fiebreAmarillaIM ?
                                     <Grid item xs={2} >
                                         <FormProvider {...methods}>
                                             <InputText
                                                 type="number"
-                                                defaultValue={lsLastRecord.anioVacuna3IM}
+                                                defaultValue={() => validateLastData(lsLastRecord.anioVacuna3IM, false)}
                                                 fullWidth
                                                 name="anioVacuna3IM"
                                                 label="Año Fiebre Amarilla"
@@ -990,13 +977,13 @@ const Emo = ({
                                                 bug={errors}
                                             />
                                         </FormProvider>
-                                    </Grid> : <></>}
+                                    </Grid> : null}
                                 {estadoVacuna.rubeolaSarampionIM ?
                                     <Grid item xs={2} >
                                         <FormProvider {...methods}>
                                             <InputText
                                                 type="number"
-                                                defaultValue={lsLastRecord.anioVacuna4IM}
+                                                defaultValue={() => validateLastData(lsLastRecord.anioVacuna4IM, false)}
                                                 fullWidth
                                                 name="anioVacuna4IM"
                                                 label="Año Rubéola - Sarampion"
@@ -1004,14 +991,14 @@ const Emo = ({
                                                 bug={errors}
                                             />
                                         </FormProvider>
-                                    </Grid> : <></>}
+                                    </Grid> : null}
                                 {estadoVacuna.covid19IM ?
                                     <Fragment>
                                         <Grid item xs={2} >
                                             <FormProvider {...methods}>
                                                 <InputText
                                                     type="number"
-                                                    defaultValue={lsLastRecord.anioVacuna5IM}
+                                                    defaultValue={() => validateLastData(lsLastRecord.anioVacuna5IM, false)}
                                                     fullWidth
                                                     name="anioVacuna5IM"
                                                     label="Año Esquema Completo"
@@ -1026,20 +1013,19 @@ const Emo = ({
                                                 <InputSelect
                                                     name="idRefuerzoIM"
                                                     label="Refuerzo"
-                                                    defaultValue={lsLastRecord.idRefuerzoIM}
+                                                    defaultValue={() => validateLastData(lsLastRecord.idRefuerzoIM, false)}
                                                     options={lsRefuerzo}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
                                                 />
                                             </FormProvider>
                                         </Grid>
-                                    </Fragment>
-                                    : <></>}
+                                    </Fragment> : null}
                                 {estadoVacuna.otrasIM ?
                                     <Grid item xs={12} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.anioVacuna6IM}
+                                                defaultValue={() => validateLastData(lsLastRecord.anioVacuna6IM, false)}
                                                 fullWidth
                                                 name="anioVacuna6IM"
                                                 label="Observación"
@@ -1047,7 +1033,7 @@ const Emo = ({
                                                 bug={errors}
                                             />
                                         </FormProvider>
-                                    </Grid> : <></>}
+                                    </Grid> : null}
                             </Grid>
                         </SubCard>
                     </Accordion>
@@ -1064,7 +1050,7 @@ const Emo = ({
                                             label="Fuma"
                                             name="fumaHB"
                                             size={30}
-                                            defaultValue={lsLastRecord.fumaHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.fumaHB)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1072,7 +1058,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.cigarrillosDiasFumaHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.cigarrillosDiasFumaHB, false)}
                                             fullWidth
                                             type="number"
                                             name="cigarrillosDiasFumaHB"
@@ -1086,7 +1072,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.aniosCigaFumaHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.aniosCigaFumaHB, false)}
                                             fullWidth
                                             type="number"
                                             name="aniosCigaFumaHB"
@@ -1101,7 +1087,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.mesesCigaFumaHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.mesesCigaFumaHB, false)}
                                             fullWidth
                                             type="number"
                                             name="mesesCigaFumaHB"
@@ -1115,7 +1101,7 @@ const Emo = ({
                                 <Grid item xs={4} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.observacionFumaHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.observacionFumaHB, false)}
                                             fullWidth
                                             name="observacionFumaHB"
                                             label="Observación"
@@ -1133,7 +1119,7 @@ const Emo = ({
                                             label="Fumaba"
                                             name="fumabaHB"
                                             size={30}
-                                            defaultValue={lsLastRecord.fumabaHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.fumabaHB)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1141,7 +1127,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.cigarrillosDiasFumabaHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.cigarrillosDiasFumabaHB, false)}
                                             fullWidth
                                             type="number"
                                             name="cigarrillosDiasFumabaHB"
@@ -1155,7 +1141,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.aniosCigaFumabaHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.aniosCigaFumabaHB, false)}
                                             fullWidth
                                             type="number"
                                             name="aniosCigaFumabaHB"
@@ -1169,7 +1155,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.mesesCigaFumabaHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.mesesCigaFumabaHB, false)}
                                             fullWidth
                                             type="number"
                                             name="mesesCigaFumabaHB"
@@ -1183,7 +1169,7 @@ const Emo = ({
                                 <Grid item xs={4} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.observacionFumabaHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.observacionFumabaHB, false)}
                                             fullWidth
                                             name="observacionFumabaHB"
                                             label="Observación"
@@ -1201,7 +1187,7 @@ const Emo = ({
                                             label="Practica Deporte"
                                             name="practicaDeporteHB"
                                             size={30}
-                                            defaultValue={lsLastRecord.practicaDeporteHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.practicaDeporteHB)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1211,7 +1197,7 @@ const Emo = ({
                                         <InputSelect
                                             name="idFrecuenciaDeporteHB"
                                             label="Frecuencia Deporte"
-                                            defaultValue={lsLastRecord.idFrecuenciaDeporteHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.idFrecuenciaDeporteHB, false)}
                                             options={lsFrecuencia}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -1224,7 +1210,7 @@ const Emo = ({
                                         <InputSelect
                                             name="idCualDeporteHB"
                                             label="Cual Deporte"
-                                            defaultValue={lsLastRecord.idCualDeporteHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.idCualDeporteHB, false)}
                                             options={lsDeporte}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -1235,7 +1221,7 @@ const Emo = ({
                                 <Grid item xs={6} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.observacionPracticaDeporHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.observacionPracticaDeporHB, false)}
                                             fullWidth
                                             name="observacionPracticaDeporHB"
                                             label="Observación"
@@ -1253,7 +1239,7 @@ const Emo = ({
                                             label="Hobby/Pasatiempos"
                                             name="hobbiesPasatiempoHB"
                                             size={30}
-                                            defaultValue={lsLastRecord.hobbiesPasatiempoHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.hobbiesPasatiempoHB)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1261,7 +1247,7 @@ const Emo = ({
                                 <Grid item xs={10} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.cualHobbiesHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.cualHobbiesHB, false)}
                                             fullWidth
                                             name="cualHobbiesHB"
                                             label="Cual"
@@ -1279,7 +1265,7 @@ const Emo = ({
                                             label="¿Consume Bebidas Alcohólicas?"
                                             name="consumeBebidasAlcoholicasHB"
                                             size={30}
-                                            defaultValue={lsLastRecord.consumeBebidasAlcoholicasHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.consumeBebidasAlcoholicasHB)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1289,7 +1275,7 @@ const Emo = ({
                                         <InputSelect
                                             name="idFrecuenciaBebidaAlHB"
                                             label="Frecuencia de Bebidas"
-                                            defaultValue={lsLastRecord.idFrecuenciaBebidaAlHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.idFrecuenciaBebidaAlHB, false)}
                                             options={lsFrecuencia}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -1300,7 +1286,7 @@ const Emo = ({
                                 <Grid item xs={7}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.cualBebidasAlHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.cualBebidasAlHB, false)}
                                             fullWidth
                                             name="cualBebidasAlHB"
                                             label="Cual"
@@ -1318,7 +1304,7 @@ const Emo = ({
                                             label="Fobias"
                                             name="fobiasHB"
                                             size={30}
-                                            defaultValue={lsLastRecord.fobiasHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.fobiasHB)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1336,7 +1322,7 @@ const Emo = ({
                                 <Grid item xs={5} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsLastRecord.cualFobiaHB}
+                                            defaultValue={() => validateLastData(lsLastRecord.cualFobiaHB, false)}
                                             fullWidth
                                             name="cualFobiaHB"
                                             label="Cual"
@@ -1350,7 +1336,7 @@ const Emo = ({
                     </Accordion>
                 </Grid>
 
-                {lsEmployee.genero == DefaultValue.GeneroWomen ?
+                {lsEmployee.genero === DefaultValue.GeneroWomen ?
                     <Grid item xs={12}>
                         <Accordion title={<><IconWoman />
                             <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">GINECO OBSTÉTRICOS</Typography></>}>
@@ -1359,7 +1345,7 @@ const Emo = ({
                                     <Grid item xs={2.5}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.menarquiaGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.menarquiaGO, false)}
                                                 fullWidth
                                                 type="number"
                                                 name="menarquiaGO"
@@ -1375,7 +1361,7 @@ const Emo = ({
                                             <InputSelect
                                                 name="idCiclosGO"
                                                 label="Ciclos"
-                                                defaultValue={lsLastRecord.idCiclosGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.idCiclosGO, false)}
                                                 options={lsCiclos}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
@@ -1386,7 +1372,7 @@ const Emo = ({
                                     <Grid item xs={2.5} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.duracionGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.duracionGO, false)}
                                                 fullWidth
                                                 type="number"
                                                 name="duracionGO"
@@ -1403,7 +1389,7 @@ const Emo = ({
                                                 label="Amenorrea"
                                                 name="amenoreaGO"
                                                 size={30}
-                                                defaultValue={lsLastRecord.amenoreaGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.amenoreaGO)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1414,7 +1400,7 @@ const Emo = ({
                                                 label="Dismenorrea"
                                                 name="disminureaGO"
                                                 size={30}
-                                                defaultValue={lsLastRecord.disminureaGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.disminureaGO)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1425,7 +1411,7 @@ const Emo = ({
                                                 label="Leucorrea"
                                                 name="leucoreaGO"
                                                 size={30}
-                                                defaultValue={lsLastRecord.leucoreaGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.leucoreaGO)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1435,7 +1421,7 @@ const Emo = ({
                                     <Grid item xs={2.5}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.vidaMaritalGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.vidaMaritalGO, false)}
                                                 fullWidth
                                                 type="number"
                                                 name="vidaMaritalGO"
@@ -1449,7 +1435,7 @@ const Emo = ({
                                     <Grid item xs={2.5}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.vidaObstetricaGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.vidaObstetricaGO, false)}
                                                 fullWidth
                                                 type="number"
                                                 name="vidaObstetricaGO"
@@ -1463,7 +1449,7 @@ const Emo = ({
                                     <Grid item xs={1.4}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.ggo}
+                                                defaultValue={() => validateLastData(lsLastRecord.ggo, false)}
                                                 fullWidth
                                                 type="number"
                                                 name="gGO"
@@ -1477,7 +1463,7 @@ const Emo = ({
                                     <Grid item xs={1.4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.pgo}
+                                                defaultValue={() => validateLastData(lsLastRecord.pgo, false)}
                                                 fullWidth
                                                 type="number"
                                                 name="pGO"
@@ -1491,7 +1477,7 @@ const Emo = ({
                                     <Grid item xs={1.4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.ago}
+                                                defaultValue={() => validateLastData(lsLastRecord.ago, false)}
                                                 fullWidth
                                                 type="number"
                                                 name="aGO"
@@ -1505,7 +1491,7 @@ const Emo = ({
                                     <Grid item xs={1.4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.csgo}
+                                                defaultValue={() => validateLastData(lsLastRecord.csgo, false)}
                                                 fullWidth
                                                 type="number"
                                                 name="cSGO"
@@ -1519,7 +1505,7 @@ const Emo = ({
                                     <Grid item xs={1.4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.vgo}
+                                                defaultValue={() => validateLastData(lsLastRecord.vgo, false)}
                                                 fullWidth
                                                 type="number"
                                                 name="vGO"
@@ -1537,7 +1523,7 @@ const Emo = ({
                                             <InputDatePicker
                                                 label="Fecha"
                                                 name="fUPGO"
-                                                defaultValue={lsLastRecord.fupgo}
+                                                defaultValue={() => validateLastData(lsLastRecord.fupgo, false)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1547,7 +1533,7 @@ const Emo = ({
                                             <InputDatePicker
                                                 label="Fecha"
                                                 name="fURGO"
-                                                defaultValue={lsLastRecord.furgo}
+                                                defaultValue={() => validateLastData(lsLastRecord.furgo, false)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1558,7 +1544,7 @@ const Emo = ({
                                                 label="ETS"
                                                 name="eTSGO"
                                                 size={30}
-                                                defaultValue={lsLastRecord.etsgo}
+                                                defaultValue={() => validateLastData(lsLastRecord.etsgo)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1566,7 +1552,7 @@ const Emo = ({
                                     <Grid item xs={6}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.cualgo}
+                                                defaultValue={() => validateLastData(lsLastRecord.cualgo, false)}
                                                 fullWidth
                                                 name="cUALGO"
                                                 label="Cúal?"
@@ -1584,7 +1570,7 @@ const Emo = ({
                                                 label="Quiste de Ovarios - Miomas"
                                                 name="quisteOvariosBiomasGO"
                                                 size={30}
-                                                defaultValue={lsLastRecord.quisteOvariosBiomasGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.quisteOvariosBiomasGO)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1595,7 +1581,7 @@ const Emo = ({
                                                 label="Endometriosis"
                                                 name="endometriosisGO"
                                                 size={30}
-                                                defaultValue={lsLastRecord.endometriosisGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.endometriosisGO)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1606,7 +1592,7 @@ const Emo = ({
                                                 label="EPI"
                                                 name="ePIGO"
                                                 size={30}
-                                                defaultValue={lsLastRecord.epigo}
+                                                defaultValue={() => validateLastData(lsLastRecord.epigo)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1617,7 +1603,7 @@ const Emo = ({
                                                 label="Planifica"
                                                 name="planificaGO"
                                                 size={30}
-                                                defaultValue={lsLastRecord.planificaGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.planificaGO)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1627,7 +1613,7 @@ const Emo = ({
                                             <InputSelect
                                                 name="idMetodoGO"
                                                 label="Método"
-                                                defaultValue={lsLastRecord.idMetodoGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.idMetodoGO, false)}
                                                 options={lsGineMetodo}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
@@ -1638,7 +1624,7 @@ const Emo = ({
                                     <Grid item xs={2}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsLastRecord.ultimoAnioCitologiaGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.ultimoAnioCitologiaGO, false)}
                                                 fullWidth
                                                 type="number"
                                                 name="ultimoAnioCitologiaGO"
@@ -1654,7 +1640,7 @@ const Emo = ({
                                             <InputSelect
                                                 name="idResultadoGO"
                                                 label="Resultado"
-                                                defaultValue={lsLastRecord.idResultadoGO}
+                                                defaultValue={() => validateLastData(lsLastRecord.idResultadoGO, false)}
                                                 options={lsResultado}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
@@ -1664,7 +1650,7 @@ const Emo = ({
                                 </Grid>
                             </SubCard>
                         </Accordion>
-                    </Grid> : <></>
+                    </Grid> : null
                 }
 
                 <Grid item xs={12}>
@@ -1678,7 +1664,7 @@ const Emo = ({
                                             label="1. Cabeza - Cefalea"
                                             name="cabezaRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.cabezaRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.cabezaRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1689,7 +1675,7 @@ const Emo = ({
                                             label="2. Ojos(A. Visual, dolor, congestion, etc)"
                                             name="ojosRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.ojosRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.ojosRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1700,7 +1686,7 @@ const Emo = ({
                                             label="3. Oidos(A. Auditiva, dolor, secreción)"
                                             name="oidosRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.oidosRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.oidosRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1711,7 +1697,7 @@ const Emo = ({
                                             label="4. Nariz (Congestión, epistaxis, rinorrea)"
                                             name="narizRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.narizRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.narizRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1722,7 +1708,7 @@ const Emo = ({
                                             label="5. Boca (eraciones, sangrado de encias)"
                                             name="bocaRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.bocaRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.bocaRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1733,7 +1719,7 @@ const Emo = ({
                                             label="6. Garganta (Dolor, ardor, disfagia, disfonía)"
                                             name="gargantaRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.gargantaRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.gargantaRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1744,7 +1730,7 @@ const Emo = ({
                                             label="7. Cuello (Dolor, torticolis, opatías)"
                                             name="cuellosRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.cuellosRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.cuellosRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1755,7 +1741,7 @@ const Emo = ({
                                             label="8. Cardio-Respiratorio"
                                             name="cardioRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.cardioRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.cardioRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1766,7 +1752,7 @@ const Emo = ({
                                             label="9. Gastrointestinal"
                                             name="gastrointestinalRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.gastrointestinalRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.gastrointestinalRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1777,7 +1763,7 @@ const Emo = ({
                                             label="10. GenitoUrinario"
                                             name="genitoUrinarioRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.genitoUrinarioRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.genitoUrinarioRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1788,7 +1774,7 @@ const Emo = ({
                                             label="11. Osteo-Articular"
                                             name="osteoRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.osteoRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.osteoRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1799,7 +1785,7 @@ const Emo = ({
                                             label="12.Neuro-Muscular"
                                             name="neuroRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.neuroRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.neuroRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1810,7 +1796,7 @@ const Emo = ({
                                             label="13. Piel y Anexos"
                                             name="pielRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.pielRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.pielRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1821,7 +1807,7 @@ const Emo = ({
                                             label="14. Psiquiátrico"
                                             name="psiquiatricoRS"
                                             size={30}
-                                            defaultValue={lsLastRecord.psiquiatricoRS}
+                                            defaultValue={() => validateLastData(lsLastRecord.psiquiatricoRS)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1832,7 +1818,7 @@ const Emo = ({
                                     <InputText
                                         multiline
                                         rows={4}
-                                        defaultValue={lsLastRecord.observacionRS}
+                                        defaultValue={() => validateLastData(lsLastRecord.observacionRS, false)}
                                         fullWidth
                                         name="observacionRS"
                                         label="Observaciones"
@@ -1962,6 +1948,7 @@ const Emo = ({
                                     </Grid>
                                 </Grid>
                             </SubCard>
+                            <Grid sx={{ pb: 2 }} />
 
                             <SubCard
                                 title="Antropometria"
@@ -2017,7 +2004,7 @@ const Emo = ({
                                             <InputSelect
                                                 name="idBiotipoEF"
                                                 label="Biotipo"
-                                                defaultValue={lsLastRecord.idBiotipoEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.idBiotipoEF, false)}
                                                 options={lsBiotipo}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
@@ -2026,6 +2013,7 @@ const Emo = ({
                                     </Grid>
                                 </Grid>
                             </SubCard>
+                            <Grid sx={{ pb: 2 }} />
 
                             <SubCard title="Exploración Morfologica">
                                 <Grid container spacing={1} sx={{ pb: 2 }}>
@@ -2035,7 +2023,7 @@ const Emo = ({
                                                 label="1. Estado Nutricional"
                                                 name="estadoNitricionalEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.estadoNitricionalEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.estadoNitricionalEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2046,7 +2034,7 @@ const Emo = ({
                                                 label="2. Piel-Faneras"
                                                 name="pielFaneraEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.pielFaneraEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.pielFaneraEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2057,7 +2045,7 @@ const Emo = ({
                                                 label="3. Craneo"
                                                 name="craneoEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.craneoEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.craneoEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2068,7 +2056,7 @@ const Emo = ({
                                                 label="4. Parpados"
                                                 name="parpadoEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.parpadoEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.parpadoEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2079,7 +2067,7 @@ const Emo = ({
                                                 label="5. Conjuntivas"
                                                 name="conjuntivasEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.conjuntivasEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.conjuntivasEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2090,7 +2078,7 @@ const Emo = ({
                                                 label="6. Corneas"
                                                 name="corniasEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.corniasEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.corniasEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2101,7 +2089,7 @@ const Emo = ({
                                                 label="7. Pupilas"
                                                 name="pupilasEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.pupilasEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.pupilasEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2112,7 +2100,7 @@ const Emo = ({
                                                 label="8. Reflejo Fotomotors"
                                                 name="reflejoFotomotorEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.reflejoFotomotorEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.reflejoFotomotorEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2123,7 +2111,7 @@ const Emo = ({
                                                 label="9. Reflejo Corneal"
                                                 name="reflejoCornialEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.reflejoCornialEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.reflejoCornialEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2134,7 +2122,7 @@ const Emo = ({
                                                 label="10. Fondo Ojos"
                                                 name="fondoOjosEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.fondoOjosEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.fondoOjosEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2145,7 +2133,7 @@ const Emo = ({
                                                 label="11. Inspección Externa Oidos"
                                                 name="inspeccionEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.inspeccionEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.inspeccionEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2156,7 +2144,7 @@ const Emo = ({
                                                 label="12. Otoscopia"
                                                 name="otoscopiaEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.otoscopiaEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.otoscopiaEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2167,7 +2155,7 @@ const Emo = ({
                                                 label="13. Inpección Externa de Nariz"
                                                 name="inspeccionNarizEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.inspeccionNarizEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.inspeccionNarizEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2178,7 +2166,7 @@ const Emo = ({
                                                 label="14. Rinoscopia"
                                                 name="rinoscopioEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.rinoscopioEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.rinoscopioEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2189,7 +2177,7 @@ const Emo = ({
                                                 label="15. Labios"
                                                 name="labiosEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.labiosEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.labiosEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2200,7 +2188,7 @@ const Emo = ({
                                                 label="16. Mucosa Oral"
                                                 name="mucosaEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.mucosaEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.mucosaEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2211,7 +2199,7 @@ const Emo = ({
                                                 label="17. Encias"
                                                 name="enciasEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.enciasEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.enciasEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2222,7 +2210,7 @@ const Emo = ({
                                                 label="18. Paladar"
                                                 name="paladarEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.paladarEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.paladarEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2233,7 +2221,7 @@ const Emo = ({
                                                 label="19. Dientes"
                                                 name="dientesEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.dientesEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.dientesEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2244,7 +2232,7 @@ const Emo = ({
                                                 label="20. Lengua"
                                                 name="lenguaEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.lenguaEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.lenguaEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2255,7 +2243,7 @@ const Emo = ({
                                                 label="21. Faringe"
                                                 name="faringeEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.faringeEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.faringeEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2266,7 +2254,7 @@ const Emo = ({
                                                 label="22. Amigdalas"
                                                 name="amigdalasEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.amigdalasEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.amigdalasEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2277,7 +2265,7 @@ const Emo = ({
                                                 label="23. Cuello Tiroides"
                                                 name="cuellosEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.cuellosEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.cuellosEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2288,7 +2276,7 @@ const Emo = ({
                                                 label="24. Inspección de Torax-Mamas"
                                                 name="inspeccionToraxEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.inspeccionToraxEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.inspeccionToraxEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2299,7 +2287,7 @@ const Emo = ({
                                                 label="25. Auscultación Cardiaca"
                                                 name="auscultacionCardiacaEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.auscultacionCardiacaEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.auscultacionCardiacaEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2310,7 +2298,7 @@ const Emo = ({
                                                 label="26. Auscultación Respiratoria"
                                                 name="auscultacionRespiratoriaEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.auscultacionRespiratoriaEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.auscultacionRespiratoriaEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2321,7 +2309,7 @@ const Emo = ({
                                                 label="27. Inspección Abdomen"
                                                 name="inspeccionAbdomenEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.inspeccionAbdomenEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.inspeccionAbdomenEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2332,7 +2320,7 @@ const Emo = ({
                                                 label="28. Palpación Abdomen"
                                                 name="palpacionAbdomenEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.palpacionAbdomenEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.palpacionAbdomenEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2343,7 +2331,7 @@ const Emo = ({
                                                 label="29. Exploración Higado"
                                                 name="exploracionHigadoEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.exploracionHigadoEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.exploracionHigadoEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2354,7 +2342,7 @@ const Emo = ({
                                                 label="30. Exploración de Bazo"
                                                 name="exploracionVasoEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.exploracionVasoEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.exploracionVasoEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2365,7 +2353,7 @@ const Emo = ({
                                                 label="31. Exploración Riñones"
                                                 name="exploracionRinionesEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.exploracionRinionesEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.exploracionRinionesEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2376,7 +2364,7 @@ const Emo = ({
                                                 label="32. Anillos Inguinale"
                                                 name="anillosInguinalesEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.anillosInguinalesEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.anillosInguinalesEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2387,7 +2375,7 @@ const Emo = ({
                                                 label="33. Anillo Umbilical"
                                                 name="anilloUmbilicalEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.anilloUmbilicalEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.anilloUmbilicalEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2398,7 +2386,7 @@ const Emo = ({
                                                 label="34. Genitales Externos"
                                                 name="genitalesExternosEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.genitalesExternosEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.genitalesExternosEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2409,7 +2397,7 @@ const Emo = ({
                                                 label="35. Región Anal"
                                                 name="regionAnalEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.regionAnalEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.regionAnalEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2420,7 +2408,7 @@ const Emo = ({
                                                 label="36. Tacto Rectal"
                                                 name="tactoRectalEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.tactoRectalEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.tactoRectalEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2431,7 +2419,7 @@ const Emo = ({
                                                 label="37. Tacto Vaginal"
                                                 name="tactoVaginalEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.tactoVaginalEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.tactoVaginalEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2442,7 +2430,7 @@ const Emo = ({
                                                 label="38. Extremidades Superiores"
                                                 name="extremidadesSuperioresEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.extremidadesSuperioresEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.extremidadesSuperioresEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2453,7 +2441,7 @@ const Emo = ({
                                                 label="39. Extremidades Inferiores"
                                                 name="extremidadesInferioresEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.extremidadesInferioresEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.extremidadesInferioresEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2464,7 +2452,7 @@ const Emo = ({
                                                 label="40. Pulsos"
                                                 name="pulsosEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.pulsosEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.pulsosEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2475,7 +2463,7 @@ const Emo = ({
                                                 label="41. Columna Vertebral"
                                                 name="columnaVertebralEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.columnaVertebralEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.columnaVertebralEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2486,7 +2474,7 @@ const Emo = ({
                                                 label="42. Articulaciones"
                                                 name="articulacionesEF"
                                                 size={30}
-                                                defaultValue={lsLastRecord.articulacionesEF}
+                                                defaultValue={() => validateLastData(lsLastRecord.articulacionesEF)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2496,7 +2484,7 @@ const Emo = ({
                                     <InputText
                                         multiline
                                         rows={4}
-                                        defaultValue={lsLastRecord.especifiqueEMEFU}
+                                        defaultValue={() => validateLastData(lsLastRecord.especifiqueEMEFU, false)}
                                         fullWidth
                                         name="especifiqueEMEFU"
                                         label="Especifique"
@@ -2525,6 +2513,7 @@ const Emo = ({
                                     />
                                 </Grid>
                             </SubCard>
+                            <Grid sx={{ pb: 2 }} />
                         </SubCard>
                     </Accordion>
                 </Grid>
@@ -2540,7 +2529,7 @@ const Emo = ({
                                             label="1. Movilidad Ocular"
                                             name="movilidadEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.movilidadEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.movilidadEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2551,7 +2540,7 @@ const Emo = ({
                                             label="2. Equilibrio"
                                             name="equilibrioEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.equilibrioEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.equilibrioEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2562,7 +2551,7 @@ const Emo = ({
                                             label="3. Marcha Coordinación"
                                             name="marchaEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.marchaEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.marchaEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2573,7 +2562,7 @@ const Emo = ({
                                             label="4. Movilidad Hombro"
                                             name="movilidadHombroEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.movilidadHombroEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.movilidadHombroEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2584,7 +2573,7 @@ const Emo = ({
                                             label="5. Movilidad Codo"
                                             name="movilidadCodoEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.movilidadCodoEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.movilidadCodoEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2595,7 +2584,7 @@ const Emo = ({
                                             label="6. Movilidad Muñeca"
                                             name="movilidadMuniecaEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.movilidadMuniecaEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.movilidadMuniecaEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2606,7 +2595,7 @@ const Emo = ({
                                             label="7. Signo de Tinel"
                                             name="signoTinelEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.signoTinelEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.signoTinelEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2617,7 +2606,7 @@ const Emo = ({
                                             label="8. Signo de Phalen"
                                             name="signoPhalenEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.signoPhalenEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.signoPhalenEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2628,7 +2617,7 @@ const Emo = ({
                                             label="9. Movilidad Manos"
                                             name="movilidadManosEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.movilidadManosEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.movilidadManosEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2639,7 +2628,7 @@ const Emo = ({
                                             label="10. Movilidad Cadera"
                                             name="movilidadCaderaEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.movilidadCaderaEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.movilidadCaderaEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2650,7 +2639,7 @@ const Emo = ({
                                             label="11. Movilidad Rodilla"
                                             name="movilidadRodillaEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.movilidadRodillaEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.movilidadRodillaEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2661,7 +2650,7 @@ const Emo = ({
                                             label="12. Movilidad Tobillo"
                                             name="movilidadTobilloEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.movilidadTobilloEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.movilidadTobilloEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2672,7 +2661,7 @@ const Emo = ({
                                             label="13. Movilidad Cuello (C1-C4)"
                                             name="movilidadCuelloEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.movilidadCuelloEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.movilidadCuelloEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2683,7 +2672,7 @@ const Emo = ({
                                             label="14. ROT Bicipital (C5)"
                                             name="rOTVisipitalEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.rotVisipitalEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.rotVisipitalEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2694,7 +2683,7 @@ const Emo = ({
                                             label="15. ROT Rotuliano (L4)"
                                             name="rOTRotuleanoEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.rotRotuleanoEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.rotRotuleanoEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2705,7 +2694,7 @@ const Emo = ({
                                             label="16. Extencion Primer Artejo (L5)"
                                             name="extencionEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.extencionEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.extencionEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2716,7 +2705,7 @@ const Emo = ({
                                             label="17. Sensibilidad cara anterior pie (L5)"
                                             name="sensibilidadCaraAnteriorEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.sensibilidadCaraAnteriorEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.sensibilidadCaraAnteriorEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2727,7 +2716,7 @@ const Emo = ({
                                             label="18. Eversión Pie(S1)"
                                             name="eversionPiesEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.eversionPiesEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.eversionPiesEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2738,7 +2727,7 @@ const Emo = ({
                                             label="19. Sensibilidad cara lateral pie (L5)"
                                             name="sensibilidadCaraLateralEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.sensibilidadCaraLateralEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.sensibilidadCaraLateralEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2749,7 +2738,7 @@ const Emo = ({
                                             label="20. ROT Aquiliano"
                                             name="rOTAquileanoEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.rotAquileanoEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.rotAquileanoEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2760,7 +2749,7 @@ const Emo = ({
                                             label="21. Signo de la Laségue"
                                             name="signoLasegueEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.signoLasegueEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.signoLasegueEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2771,7 +2760,7 @@ const Emo = ({
                                             label="22. Indice Wells"
                                             name="indiceWellsEFU"
                                             size={30}
-                                            defaultValue={lsLastRecord.indiceWellsEFU}
+                                            defaultValue={() => validateLastData(lsLastRecord.indiceWellsEFU)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2781,7 +2770,7 @@ const Emo = ({
                                 <InputText
                                     multiline
                                     rows={4}
-                                    defaultValue={lsLastRecord.observacionEFU}
+                                    defaultValue={() => validateLastData(lsLastRecord.observacionEFU, false)}
                                     fullWidth
                                     name="observacionEFU"
                                     label="Observaciones"
@@ -2813,7 +2802,6 @@ const Emo = ({
                     </Accordion>
                 </Grid>
 
-                {/* TRAJANDO AQUÍ */}
                 <Grid item xs={12}>
                     <Accordion title={<><IconHeartRateMonitor />
                         <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">EXÁMENES PARACLÍNICOS</Typography></>}>
@@ -3426,7 +3414,7 @@ const Emo = ({
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={lsLastRecord.observacionID}
+                                            defaultValue={() => validateLastData(lsLastRecord.observacionID, false)}
                                             fullWidth
                                             name="observacionID"
                                             label="Observaciones"
@@ -3461,7 +3449,7 @@ const Emo = ({
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={lsLastRecord.recomendacionesID}
+                                            defaultValue={() => validateLastData(lsLastRecord.recomendacionesID, false)}
                                             fullWidth
                                             name="recomendacionesID"
                                             label="Recomendaciones"
@@ -3496,7 +3484,7 @@ const Emo = ({
                                         <InputSelect
                                             name="idConceptoActitudID"
                                             label="Concepto de Aptitud PsicoFisica"
-                                            defaultValue={lsLastRecord.idConceptoActitudID}
+                                            defaultValue=""
                                             options={
                                                 atencion === DefaultValue.EMO_ATENCION_INGRESO ? lsIngreso :
                                                     atencion === DefaultValue.EMO_ATENCION_CONTRO ? lsControlPeriodico :
@@ -3523,6 +3511,7 @@ const Emo = ({
                     <Accordion title={<><IconFall />
                         <Typography sx={{ pl: 2 }} variant="h5" color="inherit">TRABAJO EN ALTURA</Typography></>}>
 
+
                         <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIÓN EMPRESA</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
@@ -3540,7 +3529,7 @@ const Emo = ({
                                         <InputSelect
                                             name="conceptoActitudNETA"
                                             label="Concepto Aptitud"
-                                            defaultValue={lsLastRecord.conceptoActitudNETA}
+                                            defaultValue={() => validateLastData(lsLastRecord.conceptoActitudNETA, false)}
                                             options={lsNeConceptoActi}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3553,7 +3542,7 @@ const Emo = ({
                                         <InputSelect
                                             name="conceptoAplazadoNETA"
                                             label="El Concepto de aptitud debe ser aplazado"
-                                            defaultValue={lsLastRecord.conceptoAplazadoNETA}
+                                            defaultValue={() => validateLastData(lsLastRecord.conceptoAplazadoNETA, false)}
                                             options={lsOpcion}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3566,7 +3555,7 @@ const Emo = ({
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={lsLastRecord.motivoAplazoNETA}
+                                            defaultValue={() => validateLastData(lsLastRecord.motivoAplazoNETA, false)}
                                             fullWidth
                                             name="motivoAplazoNETA"
                                             label="Motivo de Aplazo"
@@ -3601,7 +3590,7 @@ const Emo = ({
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={lsLastRecord.descripcionResultadoNETA}
+                                            defaultValue={() => validateLastData(lsLastRecord.descripcionResultadoNETA, false)}
                                             fullWidth
                                             name="descripcionResultadoNETA"
                                             label="Descripción de resultados(Resumen de limitaciones o restricciones)"
@@ -3636,7 +3625,7 @@ const Emo = ({
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={lsLastRecord.recomendacionesNETA}
+                                            defaultValue={() => validateLastData(lsLastRecord.recomendacionesNETA, false)}
                                             fullWidth
                                             name="recomendacionesNETA"
                                             label="Recomendaciones (En términos sencillos de cuidados y controles requeridos)"
@@ -3671,7 +3660,7 @@ const Emo = ({
                                         <InputSelect
                                             name="remitidoNETA"
                                             label="Remitido"
-                                            defaultValue={lsLastRecord.remitidoNETA}
+                                            defaultValue={() => validateLastData(lsLastRecord.remitidoNETA, false)}
                                             options={lsOpcion}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3684,7 +3673,7 @@ const Emo = ({
                                         <InputSelect
                                             name="remididoDondeNETA"
                                             label="A Donde:"
-                                            defaultValue={lsLastRecord.remididoDondeNETA}
+                                            defaultValue={() => validateLastData(lsLastRecord.remididoDondeNETA, false)}
                                             options={lsNeADonde}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3693,6 +3682,7 @@ const Emo = ({
                                 </Grid>
                             </Grid>
                         </SubCard>
+                        <Grid sx={{ pb: 2 }} />
 
                         <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIÓN EMPLEADO</Typography>}>
                             <Grid container spacing={2} sx={{ pb: 2 }}>
@@ -4081,9 +4071,11 @@ const Emo = ({
                                 </Grid>
                             </Grid>
                         </SubCard >
+
                     </Accordion>
                 </Grid>
             </Grid>
+
         </Fragment>
     );
 };
@@ -4098,6 +4090,7 @@ Emo.propTypes = {
     arrays: PropTypes.any,
     setEstadoVacuna: PropTypes.func,
     estadoVacuna: PropTypes.any,
+    lsLastRecord: PropTypes.any,
 
     peso: PropTypes.string,
     setPeso: PropTypes.func,

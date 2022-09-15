@@ -1,18 +1,17 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
-    Checkbox,
     Grid,
     IconButton,
     InputAdornment,
     Table,
     TableBody,
+    Button,
     TableCell,
     TableContainer,
     TableHead,
@@ -20,27 +19,16 @@ import {
     TableRow,
     TableSortLabel,
     TextField,
-    Toolbar,
     Tooltip,
     Typography,
-    Button,
 } from '@mui/material';
+
 import { visuallyHidden } from '@mui/utils';
-
-import swal from 'sweetalert';
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { ViewFormat } from 'components/helpers/Format';
-import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
-import MainCard from 'ui-component/cards/MainCard';
-
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { GetAllTemplate } from 'api/clients/TemplateClient';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { DeleteNoteInfirmary, GetAllNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
+import { TitleButton } from 'components/helpers/Enums';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -67,19 +55,25 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
+        id: 'id',
+        numeric: false,
+        label: 'ID',
+        align: 'center'
+    },
+    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
         align: 'center'
     },
     {
-        id: 'nameContingencia',
+        id: 'idContingencia',
         numeric: false,
         label: 'Contingencia',
         align: 'left'
     },
     {
-        id: 'nameAtencion',
+        id: 'idAtencion',
         numeric: false,
         label: 'Atencion',
         align: 'left'
@@ -89,16 +83,10 @@ const headCells = [
         numeric: false,
         label: 'Fecha',
         align: 'left'
-    },
-    {
-        id: 'usuarioRegistro',
-        numeric: false,
-        label: 'Usuario Que Atiende',
-        align: 'left'
     }
 ];
 
-function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
+function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -106,22 +94,6 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox" sx={{ pl: 3 }}>
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts'
-                        }}
-                    />
-                </TableCell>
-                {numSelected > 0 && (
-                    <TableCell padding="none" colSpan={8}>
-                        <EnhancedTableToolbar numSelected={selected.length} onClick={onClick} />
-                    </TableCell>
-                )}
                 {numSelected <= 0 &&
                     headCells.map((headCell) => (
                         <TableCell
@@ -158,78 +130,36 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
 
 EnhancedTableHead.propTypes = {
     theme: PropTypes.object,
-    selected: PropTypes.array,
-    onClick: PropTypes.func.isRequired,
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.oneOf(['asc', 'desc']).isRequired,
     orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired
 };
 
-const EnhancedTableToolbar = ({ numSelected, onClick }) => (
-    <Toolbar
-        sx={{
-            p: 0,
-            pl: 1,
-            pr: 1,
-            ...(numSelected > 0 && {
-                color: (theme) => theme.palette.secondary.main
-            })
-        }}
-    >
-        {numSelected > 0 ? (
-            <Typography color="inherit" variant="h4">
-                {numSelected} {TitleButton.Seleccionadas}
-            </Typography>
-        ) : (
-            <Typography variant="h6" id="tableTitle">
-                Nutrición
-            </Typography>
-        )}
-        <Box sx={{ flexGrow: 1 }} />
-        {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
-        )}
-    </Toolbar>
-);
-
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onClick: PropTypes.func
-};
-
-const ListNoteInfirmary = () => {
+const TableInfirmary = () => {
     const navigate = useNavigate();
-    const [idCheck, setIdCheck] = useState('');
-    const [openDelete, setOpenDelete] = useState(false);
-    const [lsNoteInfirmary, setLsNoteInfirmary] = useState([]);
+    const [lsTemplate, setLsTemplate] = useState([]);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('fecha');
+    const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function GetAll() {
-        try {
-            const lsServer = await GetAllNoteInfirmary(0, 0);
-            setLsNoteInfirmary(lsServer.data.entities);
-            setRows(lsServer.data.entities);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetAllTemplate(0, 0);
+                setLsTemplate(lsServer.data.entities);
+                setRows(lsServer.data.entities);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         GetAll();
     }, [])
 
@@ -241,7 +171,7 @@ const ListNoteInfirmary = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameContingencia', 'nameAtencion', 'fecha', 'usuarioRegistro'];
+                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -255,9 +185,9 @@ const ListNoteInfirmary = () => {
                 }
                 return matches;
             });
-            setLsNoteInfirmary(newRows);
+            setLsTemplate(newRows);
         } else {
-            setLsNoteInfirmary(rows);
+            setLsTemplate(rows);
         }
     };
 
@@ -265,35 +195,6 @@ const ListNoteInfirmary = () => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    const handleSelectAllClick = (event) => {
-
-        if (event.target.checked) {
-            const newSelectedId = lsNoteInfirmary.map((n) => n.id);
-            setSelected(newSelectedId);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, id) => {
-        if (idCheck === '') setIdCheck(id); else setIdCheck('');
-
-        const selectedIndex = selected.indexOf(id);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-        }
-
-        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -305,29 +206,13 @@ const ListNoteInfirmary = () => {
         setPage(0);
     };
 
-    const handleDelete = async () => {
-        swal(ParamDelete).then(async (willDelete) => {
-            if (willDelete) {
-                const result = await DeleteNoteInfirmary(idCheck);
-                if (result.status === 200) {
-                    setOpenDelete(true);
-                }
-                setSelected([]);
-                GetAll();
-            } else
-                setSelected([]);
-        });
-    }
-
-    const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsNoteInfirmary.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
-            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+        <Fragment>
             <CardContent>
-                <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                <Grid container spacing={2}>
+                    <Grid item xs={11}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -343,24 +228,12 @@ const ListNoteInfirmary = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} ls={6} sm={3} sx={{ textAlign: 'right' }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <Tooltip title="Impresión" onClick={() => navigate(`/note-infirmary/report/${idCheck}`)}>
-                                    <IconButton disabled={idCheck === '' ? true : false} size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-
-                            <Grid item xs={12} sm={6}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/note-infirmary/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
-                            </Grid>
-
-                        </Grid>
+                    <Grid item xs={1}>
+                        <AnimateButton>
+                            <Button onClick={() => navigate('/dashboard/ltd')} variant="contained">
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
                     </Grid>
                 </Grid>
             </CardContent>
@@ -371,64 +244,37 @@ const ListNoteInfirmary = () => {
                         numSelected={selected.length}
                         order={order}
                         orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsNoteInfirmary.length}
+                        rowCount={lsTemplate.length}
                         theme={theme}
                         selected={selected}
-                        onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(lsNoteInfirmary, getComparator(order, orderBy))
+                        {stableSort(lsTemplate, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
                                     <TableRow
                                         hover
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
                                         tabIndex={-1}
                                         key={index}
-                                        selected={isItemSelected}
                                     >
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
-                                                }}
-                                            />
-                                        </TableCell>
-
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
-                                        >
-                                            {row.documento}
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameContingencia}
+                                                #{row.id}
                                             </Typography>
                                         </TableCell>
 
@@ -436,7 +282,34 @@ const ListNoteInfirmary = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameCIE11}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameTipoAtencion}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -447,40 +320,11 @@ const ListNoteInfirmary = () => {
                                             </Typography>
                                         </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {ViewFormat(row.fecha)}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.usuarioRegistro}
-                                            </Typography>
-                                        </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/note-infirmary/update/${row.id}`)}>
+                                            <Tooltip title="Imprimir">
                                                 <IconButton size="large">
-                                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                    <PrintIcon color="info" sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
                                         </TableCell>
@@ -503,14 +347,14 @@ const ListNoteInfirmary = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsNoteInfirmary.length}
+                count={lsTemplate.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </MainCard>
+        </Fragment>
     );
 };
 
-export default ListNoteInfirmary;
+export default TableInfirmary;

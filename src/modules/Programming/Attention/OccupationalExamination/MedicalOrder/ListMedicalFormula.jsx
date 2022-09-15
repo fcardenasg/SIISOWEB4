@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -37,12 +36,6 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
-import { IconFileExport } from '@tabler/icons';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -227,9 +220,7 @@ const ListMedicalFormula = ({ setNewMedicalFormula, setListMedicalFormula, setUp
                 setLsMedicalFormula(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             }
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -298,9 +289,7 @@ const ListMedicalFormula = ({ setNewMedicalFormula, setListMedicalFormula, setUp
         setSelected(newSelected);
     };
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+    const handleChangePage = (event, newPage) => { setPage(newPage); };
 
     const handleChangeRowsPerPage = (event) => {
         if (event?.target.value) setRowsPerPage(parseInt(event?.target.value, 10));
@@ -320,9 +309,7 @@ const ListMedicalFormula = ({ setNewMedicalFormula, setListMedicalFormula, setUp
                 } else
                     setSelected([]);
             });
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -349,40 +336,10 @@ const ListMedicalFormula = ({ setNewMedicalFormula, setListMedicalFormula, setUp
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Recetario">
-                            <ExcelSheet data={lsMedicalFormula} name="Lista de Recetario">
-                                <ExcelColumn label="Id" value="idRecetario" />
-                                <ExcelColumn label="Fecha" value="fecha" />
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre del Empleado" value="nameEmpleado" />
-                                <ExcelColumn label="Contingencia" value="nameContingencia" />
-                                <ExcelColumn label="Número de historia" value="numeroHistoria" />
-                                <ExcelColumn label="Tipo de Orden" value="nameTipoRemision" />
-                                <ExcelColumn label="Diagnostico" value="diagnostico" />
-                                <ExcelColumn label="Descripción" value="descripcion" />
-                                <ExcelColumn label="Médico" value="medico" />
-                                <ExcelColumn label="Usuario" value="usuario" />
-                                <ExcelColumn label="Fecha del Sistema" value="fechaSistema" />
-                            </ExcelSheet>
-                        </ExcelFile>
-
-                        {/* <Tooltip title="Impresión" onClick={() => navigate('/medicalformula/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip> */}
-
                         <Button variant="contained" size="small" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => { setNewMedicalFormula(true) }}>
                             {TitleButton.Agregar}
                         </Button>
-
                     </Grid>
                 </Grid>
             </CardContent>

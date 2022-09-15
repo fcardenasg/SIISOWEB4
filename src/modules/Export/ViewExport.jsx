@@ -8,7 +8,11 @@ import InputDatePick from 'components/input/InputDatePick';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
 import SubCard from 'ui-component/cards/SubCard';
+
 import ExportConsulting from './Export/ExportConsulting';
+import ExportMedicalAttention from './Export/ExportMedicalAttention';
+import ExportEmo from './Export/ExportEmo';
+import ExportInfirmary from './Export/ExportInfirmary';
 
 const Title = {
     asesoria: 'ASESORÍAS',
@@ -53,6 +57,7 @@ const ViewExport = () => {
 
     async function getAllAgain(codigo = '') {
         try {
+            setAtencion(''); setSede(''); setFechaInicio(null); setFechaFin(null);
             setStatusReprint(codigo);
             var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, codigo, 5);
             if (lsGetTipo.status === 200) {
@@ -63,11 +68,8 @@ const ViewExport = () => {
 
                 setLsAtencion(resultMapsTipo);
             }
-
         } catch (error) { }
     }
-
-
 
     useEffect(() => {
         GetAll();
@@ -151,12 +153,36 @@ const ViewExport = () => {
                                 />
                             </Grid>
 
-                            <ExportConsulting
-                                atencion={atencion}
-                                fechaFin={fechaFin}
-                                fechaInicio={fechaInicio}
-                                sede={sede}
-                            />
+                            {statusReprint === 'SER03' ?
+                                <ExportConsulting
+                                    atencion={atencion}
+                                    fechaFin={fechaFin}
+                                    fechaInicio={fechaInicio}
+                                    sede={sede}
+                                /> :
+                                statusReprint === 'SER01' ?
+                                    <ExportMedicalAttention
+                                        atencion={atencion}
+                                        fechaFin={fechaFin}
+                                        fechaInicio={fechaInicio}
+                                        sede={sede}
+                                    /> :
+                                    statusReprint === 'SER04' ?
+                                        <ExportEmo
+                                            atencion={atencion}
+                                            fechaFin={fechaFin}
+                                            fechaInicio={fechaInicio}
+                                            sede={sede}
+                                        /> :
+                                        statusReprint === 'SER02' ?
+                                            <ExportInfirmary
+                                                atencion={atencion}
+                                                fechaFin={fechaFin}
+                                                fechaInicio={fechaInicio}
+                                                sede={sede}
+                                            /> : ''
+                            }
+
                         </Grid>
                     </SubCard>
                 </Grid>

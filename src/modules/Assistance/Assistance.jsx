@@ -7,8 +7,6 @@ import {
     Typography,
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
@@ -64,11 +62,6 @@ const Assistance = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-
-    const [disabledButton, setDisabledButton] = useState({
-        buttonSave: false,
-        buttonReport: false
-    });
 
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -669,7 +662,7 @@ const Assistance = () => {
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>

@@ -13,10 +13,8 @@ import {
     TableRow,
     Button,
     Stack,
-    Typography,
 } from '@mui/material';
 
-import SideIconCard from 'ui-component/cards/SideIconCard';
 import swal from 'sweetalert';
 import { MessageSuccess, MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
@@ -30,7 +28,6 @@ import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import { FormProvider, useForm } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
-import { GetAllCompany } from 'api/clients/CompanyClient';
 import { GetAllByDocumentWorkHistory, DeleteWorkHistory, InsertWorkHistory } from 'api/clients/WorkHistoryClient';
 import {
     GetAllByDocumentWorkHistoryOtherCompany,
@@ -41,9 +38,6 @@ import { FormatDate } from 'components/helpers/Format';
 import RowDLTD from './Row/RowDLTD';
 import RowCompany from './Row/RowCompany';
 
-import ReportProblemIcon from '@mui/icons-material/ReportProblem';
-import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
-import { ColorDrummondltd } from 'themes/colors';
 import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
 import DataExposition from './DataExposition';
 
@@ -72,7 +66,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const [lsCargo, setLsCargo] = useState([]);
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors, reset } = methods;
 
@@ -95,9 +88,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             anio: riesgo.anio,
                             mes: riesgo.mes
                         }));
-
-                    console.log("arrayMPI = ", arrayMPI);
-                    console.log("arrayRUIDO = ", arrayRUIDO);
 
                     var aniosMpi = 0;
                     var mesMpi = 0;
@@ -194,7 +184,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
             }));
             setLsCargo(resultCargo);
         } catch (error) {
-            console.log(error);
         }
     }
 
@@ -217,7 +206,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 });
             }
         } catch (error) {
-            console.log(error);
         }
     };
 
@@ -236,7 +224,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 });
             }
         } catch (error) {
-            console.log(error);
         }
     };
 
@@ -266,9 +253,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                     transition: 'SlideUp'
                 })
             }
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     };
 
     const handleClickDLTD = async (datos) => {
@@ -297,9 +282,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                     transition: 'SlideUp'
                 })
             }
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     };
 
     return (
@@ -533,5 +516,5 @@ export default WorkHistory;
 WorkHistory.propTypes = {
     documento: PropTypes.string,
     lsEmpleado: PropTypes.object,
-    atencion: PropTypes.number
+    atencion: PropTypes.string
 };

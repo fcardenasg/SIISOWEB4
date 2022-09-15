@@ -64,20 +64,20 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
     const methods = useForm();
     const { handleSubmit, errors, reset } = methods;
 
-    async function GetAll() {
-        try {
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServerCie11 = await GetAllCIE11(0, 0);
+                var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.dx
+                }));
+                setLsCie11(resultCie11);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         GetAll();
     }, [])
 
@@ -91,8 +91,6 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
             const DataToInsert = PostMedicalFormula(FormatDate(new Date()), documento, DefaultValue.SINREGISTRO_GLOBAL,
                 lsAtencion.id, saveTipoOrden, JSON.stringify(diagnostico), datos.descripcion,
                 user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
-
-            console.log("Datos = ", DataToInsert);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertMedicalFormula(DataToInsert);
@@ -146,7 +144,7 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
                             <Grid item xs={12}>
                                 <Grid container justifyContent="center" alignItems="center" spacing={2}>
                                     <Grid item xs={2}>
-                                        <Avatar sx={{ width: 80, height: 80 }} src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
+                                        <Avatar sx={{ width: 80, height: 80 }} src={lsEmployee.imagenUrl !== null ? lsEmployee.imagenUrl : User} />
                                     </Grid>
 
                                     <Grid item xs={2}>

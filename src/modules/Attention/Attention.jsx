@@ -33,6 +33,7 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import Chip from '@mui/material/Chip';
+import { GetAllUser } from 'api/clients/UserClient';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -66,7 +67,6 @@ const Attention = () => {
 
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsCodigoTipo, setLsCodigoTipo] = useState([]);
-    const [lsContingencia, setLsContingencia] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
 
     const [lsSede, setLsSede] = useState([]);
@@ -76,76 +76,82 @@ const Attention = () => {
     const [lsEstadoCaso, setLsEstadoCaso] = useState([]);
     const [lsMotivoMedica, setLsMotivoMedica] = useState([]);
     const [lsMotivoPsico, setLsMotivoPsico] = useState([]);
+    const [lsMedicos, setLsMedicos] = useState([]);
+    const [result, setResult] = useState([]);
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors, reset } = methods;
 
-    async function GetAll() {
-        try {
-            const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
-            var resultSede = lsServerSede.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsSede(resultSede);
+    useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
+                var resultSede = lsServerSede.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsSede(resultSede);
 
-            const lsServerTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Turno);
-            var resultTurno = lsServerTurno.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTurno(resultTurno);
+                const lsServerMedicos = await GetAllUser(0, 0);
+                var resultMedico = lsServerMedicos.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
+                setLsMedicos(resultMedico);
 
-            const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCaso);
-            var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsEstadoCaso(resultEstadoCaso);
+                const lsServerTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Turno);
+                var resultTurno = lsServerTurno.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsTurno(resultTurno);
 
-            const lsServerMotivoPsico = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoPsicologia);
-            var resultMotivoPsico = lsServerMotivoPsico.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivoPsico(resultMotivoPsico);
+                const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCaso);
+                var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsEstadoCaso(resultEstadoCaso);
 
-            const lsServerMotivoMedica = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoMedica);
-            var resultMotivoMedica = lsServerMotivoMedica.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivoMedica(resultMotivoMedica);
+                const lsServerMotivoPsico = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoPsicologia);
+                var resultMotivoPsico = lsServerMotivoPsico.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsMotivoPsico(resultMotivoPsico);
 
-            const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAtencion);
-            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTipoAtencion(resultTipoAtencion);
-            setLsCodigoTipo(lsServerTipoAtencion.data.entities);
+                const lsServerMotivoMedica = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoMedica);
+                var resultMotivoMedica = lsServerMotivoMedica.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsMotivoMedica(resultMotivoMedica);
 
-            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
-            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsContingencia(resultContingencia);
+                const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAtencion);
+                var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsTipoAtencion(resultTipoAtencion);
+                setLsCodigoTipo(lsServerTipoAtencion.data.entities);
 
-            const lsServerMotivoPAD = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PAD_MOTIVO);
-            var resultMotivoPAD = lsServerMotivoPAD.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivoPAD(resultMotivoPAD);
+                const lsServerMotivoPAD = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PAD_MOTIVO);
+                var resultMotivoPAD = lsServerMotivoPAD.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsMotivoPAD(resultMotivoPAD);
 
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage(`${error}`);
+            } catch (error) {
+                setOpenError(true);
+                setErrorMessage(`${error}`);
+            }
         }
-    }
+
+        GetAll();
+    }, []);
 
     const handleDocumento = async (event) => {
         try {
@@ -173,7 +179,7 @@ const Attention = () => {
         try {
             setDocumentoSolicita(event?.target.value);
             if (event.key === 'Enter') {
-                if (event?.target.value != "") {
+                if (event?.target.value !== "") {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
                     if (lsServerEmployee.status === 200) {
@@ -270,15 +276,13 @@ const Attention = () => {
         } catch (error) { }
     }
 
-    useEffect(() => {
-        GetAll();
-    }, []);
-
     const handleClick = async (datos) => {
         try {
+            const motivoFinal = motivo === 1 ? datos.motivo : motivo;
+
             const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), datos.sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                motivo, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
+                motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (documento !== '' && lsEmployee.length !== 0) {
@@ -291,6 +295,7 @@ const Attention = () => {
                         setAtencion('');
                         setLsEmployee([]);
                         reset();
+                        setResult(result.data)
                     }
                 }
             } else {
@@ -388,7 +393,7 @@ const Attention = () => {
                                 />
                             </Grid>
 
-                            {tipoAtencion == DefaultValue.TIP_AT_TRIAGE ?
+                            {tipoAtencion === DefaultValue.TIP_AT_TRIAGE ?
                                 <Fragment>
                                     <Grid item xs={3}>
                                         <FormProvider {...methods}>
@@ -402,7 +407,7 @@ const Attention = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
-                                </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ENFERME && atencion == DefaultValue.AT_ENFERMERIA ?
+                                </Fragment> : tipoAtencion === DefaultValue.TIP_AT_ENFERME && atencion === DefaultValue.AT_ENFERMERIA ?
                                     <Fragment>
                                         <Grid item xs={3}>
                                             <FormProvider {...methods}>
@@ -416,7 +421,7 @@ const Attention = () => {
                                                 />
                                             </FormProvider>
                                         </Grid>
-                                    </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ENFERME && atencion == DefaultValue.AT_PAD ?
+                                    </Fragment> : tipoAtencion === DefaultValue.TIP_AT_ENFERME && atencion === DefaultValue.AT_PAD ?
                                         <Fragment>
                                             <Grid item xs={3}>
                                                 <FormProvider {...methods}>
@@ -469,7 +474,7 @@ const Attention = () => {
                                                     </Grid>
                                                 </Fragment> : <></>}
 
-                                        </Fragment> : tipoAtencion == DefaultValue.TIP_AT_EMO ?
+                                        </Fragment> : tipoAtencion === DefaultValue.TIP_AT_EMO ?
                                             <Fragment>
                                                 <Grid item xs={3}>
                                                     <InputOnChange
@@ -510,7 +515,7 @@ const Attention = () => {
                                                         sx={{ fontSize: '20px', width: '300px', height: '50px' }}
                                                     />
                                                 </Grid>
-                                            </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && atencion == DefaultValue.AT_PSICO ?
+                                            </Fragment> : tipoAtencion === DefaultValue.TIP_AT_ASESORIA && atencion === DefaultValue.AT_PSICO ?
                                                 <Fragment>
                                                     <Grid item xs={3}>
                                                         <FormProvider {...methods}>
@@ -544,13 +549,13 @@ const Attention = () => {
                                                                 name="medico"
                                                                 label="Médico"
                                                                 defaultValue=""
-                                                                options={lsContingencia}
+                                                                options={lsMedicos}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 bug={errors}
                                                             />
                                                         </FormProvider>
                                                     </Grid>
-                                                </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && atencion == DefaultValue.AT_ASESORIA_MEDICA ?
+                                                </Fragment> : tipoAtencion === DefaultValue.TIP_AT_ASESORIA && atencion === DefaultValue.AT_ASESORIA_MEDICA ?
                                                     <Fragment>
                                                         <Grid item xs={3}>
                                                             <FormProvider {...methods}>
@@ -571,13 +576,13 @@ const Attention = () => {
                                                                     name="medico"
                                                                     label="Médico"
                                                                     defaultValue=""
-                                                                    options={lsContingencia}
+                                                                    options={lsMedicos}
                                                                     size={matchesXS ? 'small' : 'medium'}
                                                                     bug={errors}
                                                                 />
                                                             </FormProvider>
                                                         </Grid>
-                                                    </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && (atencion != DefaultValue.AT_ASESORIA_MEDICA || atencion != DefaultValue.AT_PSICO) ?
+                                                    </Fragment> : tipoAtencion === DefaultValue.TIP_AT_ASESORIA && (atencion !== DefaultValue.AT_ASESORIA_MEDICA || atencion !== DefaultValue.AT_PSICO) ?
                                                         <Fragment>
                                                             <Grid item xs={3}>
                                                                 <FormProvider {...methods}>
@@ -628,7 +633,7 @@ const Attention = () => {
 
                         <Grid item xs={12} sx={{ pt: 4 }}>
                             <Grid container spacing={2}>
-                                <Grid item xs={4}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Guardar}
@@ -636,7 +641,7 @@ const Attention = () => {
                                     </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={() => navigate("/programming/list")} fullWidth>
                                             {TitleButton.Programacion}
@@ -644,7 +649,16 @@ const Attention = () => {
                                     </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                {result.length !== 0 ?
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="contained" onClick={() => navigate(`/attention/report/${result.id}`)} fullWidth>
+                                                {TitleButton.Imprimir}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid> : null}
+
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/attention/list")}>
                                             {TitleButton.Cancelar}

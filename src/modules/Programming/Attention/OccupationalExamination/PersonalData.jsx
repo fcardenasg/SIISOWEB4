@@ -6,6 +6,7 @@ import {
     Tooltip
 } from '@mui/material';
 
+import ControlModal from 'components/controllers/ControlModal';
 import PropTypes from 'prop-types';
 import { ViewFormat } from 'components/helpers/Format';
 import User from 'assets/img/user.png'
@@ -71,18 +72,19 @@ const DetailsViewTwo = [
     { name: 'Turno', }, { name: 'Tipo Contrato', }, { name: 'Fecha Contrato', }, { name: 'Antiguedad', }, { name: 'GES', },
 ]
 
-const PersonalData = ({ lsEmployee = [] }) => {
+const PersonalData = ({ lsEmployee = [], handleLoadingDocument }) => {
     const [openUpdate, setOpenUpdate] = useState(false);
 
     return (
         <Grid container spacing={gridSpacing}>
-            <FullScreenDialog
-                open={openUpdate}
+            <ControlModal
                 title="ACTUALIZAR EMPLEADO"
-                handleClose={() => setOpenUpdate(false)}
+                open={openUpdate}
+                onClose={() => { setOpenUpdate(false); handleLoadingDocument(lsEmployee.documento) }}
+                maxWidth="xl"
             >
                 <UpdateEmployee idEmpleado={lsEmployee.documento} setOpenUpdate={setOpenUpdate} key={1} />
-            </FullScreenDialog>
+            </ControlModal>
 
             <Grid item lg={6} xs={12}>
                 <SubCard title="Datos Personales" secondary={
@@ -94,10 +96,10 @@ const PersonalData = ({ lsEmployee = [] }) => {
                 }>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item>
-                            <Avatar sx={{ width: 60, height: 60 }} alt="Foto del Empleado" src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
+                            <Avatar sx={{ width: 60, height: 60 }} alt="Foto del Empleado" src={lsEmployee.imagenUrl !== null ? lsEmployee.imagenUrl : User} />
                         </Grid>
 
-                        {lsEmployee.length != 0 ?
+                        {lsEmployee.length !== 0 ?
                             <Grid item xs zeroMinWidth>
                                 <Typography align="left" variant="h4">
                                     {lsEmployee.nombres}
@@ -111,8 +113,8 @@ const PersonalData = ({ lsEmployee = [] }) => {
                                 <Typography align="left" variant="subtitle2">
                                     {lsEmployee.nameEstadoCivil}
                                 </Typography>
-                            </Grid>
-                            : <></>}
+                            </Grid> : null
+                        }
 
                     </Grid>
 

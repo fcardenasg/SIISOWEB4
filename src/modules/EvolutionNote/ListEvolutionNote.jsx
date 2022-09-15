@@ -71,13 +71,13 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'idContingencia',
+        id: 'nameContingencia',
         numeric: false,
         label: 'Contingencia',
         align: 'left'
     },
     {
-        id: 'idAtencion',
+        id: 'nameAtencion',
         numeric: false,
         label: 'Atencion',
         align: 'left'
@@ -210,7 +210,7 @@ const ListEvolutionNote = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -222,9 +222,7 @@ const ListEvolutionNote = () => {
             const lsServer = await GetAllEvolutionNote(0, 0);
             setEvolutionNote(lsServer.data.entities);
             setRows(lsServer.data.entities);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -239,7 +237,7 @@ const ListEvolutionNote = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'idContingencia', 'idAtencion', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'nameContingencia', 'nameAtencion', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -276,7 +274,7 @@ const ListEvolutionNote = () => {
     };
 
     const handleClick = (event, id) => {
-        setIdCheck(id);
+        if (idCheck === '') setIdCheck(id); else setIdCheck('');
 
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
@@ -316,9 +314,7 @@ const ListEvolutionNote = () => {
                 } else
                     setSelected([]);
             });
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -344,24 +340,24 @@ const ListEvolutionNote = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <Tooltip title="Copiar">
-                            <IconButton size="large">
-                                <FileCopyIcon />
-                            </IconButton>
-                        </Tooltip>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/evolution-note/report/${idCheck}`)}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                    <Grid item xs={12} ls={6} sm={3} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <Tooltip title="Impresión" onClick={() => navigate(`/evolution-note/report/${idCheck}`)}>
+                                    <IconButton disabled={idCheck === '' ? true : false} size="large">
+                                        <PrintIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/evolution-note/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
-
+                            <Grid item xs={12} sm={6}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/evolution-note/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>
@@ -430,7 +426,7 @@ const ListEvolutionNote = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idContingencia}
+                                                {row.nameContingencia}
                                             </Typography>
                                         </TableCell>
 
@@ -445,7 +441,7 @@ const ListEvolutionNote = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idAtencion}
+                                                {row.nameAtencion}
                                             </Typography>
                                         </TableCell>
 

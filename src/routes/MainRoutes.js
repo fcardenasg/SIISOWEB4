@@ -53,10 +53,12 @@ const UpdateSupplier = Loadable(lazy(() => import('modules/Supplier/UpdateSuppli
 const ListAssistance = Loadable(lazy(() => import('modules/Assistance/ListAssistance')));
 const Assistance = Loadable(lazy(() => import('modules/Assistance/Assistance')));
 const UpdateAssistance = Loadable(lazy(() => import('modules/Assistance/UpdateAssistance')));
+const ReportAssistance = Loadable(lazy(() => import('modules/Assistance/ReportAssistance')));
 
 const ListEvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/ListEvolutionNote')));
 const EvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/EvolutionNote')));
 const UpdateEvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/UpdateEvolutionNote')));
+const ReportEvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/ReportEvolutionNote')));
 
 const ListMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/ListMedicalAdvice')));
 const MedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/MedicalAdvice')));
@@ -71,7 +73,7 @@ const ReportPsychologicalCounseling = Loadable(lazy(() => import('components/rep
 const ListNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/ListNoteInfirmary')));
 const NoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/NoteInfirmary')));
 const UpdateNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/UpdateNoteInfirmary')));
-const ReportInfirmary = Loadable(lazy(() => import('components/report/ReportInfirmary')));
+const ReportNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/ReportNoteInfirmary')));
 
 const ListMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/ListMedicalFormula')));
 const MedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/MedicalFormula')));
@@ -87,6 +89,7 @@ const Turner = Loadable(lazy(() => import('modules/Turner/Turner')));
 
 const Attention = Loadable(lazy(() => import('modules/Attention/Attention')));
 const UpdateAttention = Loadable(lazy(() => import('modules/Attention/UpdateAttention')));
+const ReportAttention = Loadable(lazy(() => import('modules/Attention/ReportAttention')));
 const ListAttention = Loadable(lazy(() => import('modules/Attention/ListAttention')));
 
 const ListOccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/ListOccupationalExamination')));
@@ -189,6 +192,7 @@ const UpdateLaboratory = Loadable(lazy(() => import('modules/Paraclinics/Laborat
 
 const ViewReprint = Loadable(lazy(() => import('modules/Reprint/ViewReprint')));
 const ViewExport = Loadable(lazy(() => import('modules/Export/ViewExport')));
+const ViewHistory = Loadable(lazy(() => import('modules/History/ViewHistory')));
 
 
 const MainRoutes = {
@@ -297,6 +301,10 @@ const MainRoutes = {
             path: '/assistance/update/:id',
             element: <UpdateAssistance />
         },
+        {
+            path: '/assistance/report/:id',
+            element: <ReportAssistance />
+        },
         /* Render de NOTAS DE EVOLUCION */
         {
             path: '/evolution-note/list',
@@ -309,6 +317,10 @@ const MainRoutes = {
         {
             path: '/evolution-note/update/:id',
             element: <UpdateEvolutionNote />
+        },
+        {
+            path: '/evolution-note/report/:id',
+            element: <ReportEvolutionNote />
         },
         /* Render de ASESORÍAS MÉDICA */
         {
@@ -342,7 +354,7 @@ const MainRoutes = {
         },
         {
             path: '/note-infirmary/report/:id',
-            element: <ReportInfirmary />
+            element: <ReportNoteInfirmary />
         },
         /* Render de FORMULAS MEDICAS */
         {
@@ -373,6 +385,10 @@ const MainRoutes = {
         {
             path: '/attention/update/:id',
             element: <UpdateAttention />
+        },
+        {
+            path: '/attention/report/:id',
+            element: <ReportAttention />
         },
         /* Render de Pruebas de Alcohol y Droga */
         {
@@ -760,6 +776,10 @@ const MainRoutes = {
         {
             path: '/export/list',
             element: <ViewExport />
+        },
+        {
+            path: '/history/list',
+            element: <ViewHistory />
         },
 
 

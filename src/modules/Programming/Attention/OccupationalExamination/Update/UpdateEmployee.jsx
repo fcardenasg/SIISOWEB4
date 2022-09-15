@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback, useRef, Fragment } from 'react';
-import { useParams } from 'react-router-dom';
 
-// Import de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -10,14 +8,9 @@ import {
     Typography
 } from '@mui/material';
 
-// Terceros
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
-// Import del Proyecto
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
 import PhotoModel from 'components/form/PhotoModel';
@@ -31,18 +24,11 @@ import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'ap
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { Message, TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
+import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
-
-/* VALIDACIÓN CON YUP */
-/* const validationSchema = yup.object().shape({
-    nombre: yup.string().required(`${ValidationMessage.Requerido}`),
-    codigo: yup.string().required(`${ValidationMessage.Requerido}`)
-}); */
 
 const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
     const { user } = useAuth();
@@ -50,7 +36,6 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
     const WebCamRef = useRef(null);
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const navigate = useNavigate();
 
     const [lsCatalogo, setLsCatalogo] = useState([]);
     const [lsGes, setLsGes] = useState([]);
@@ -254,28 +239,14 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                 label: item.descripcionSpa
             }));
             setCompany(resultCompany);
-        } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
         GetAll();
     }, []);
 
-    setTimeout(() => {
-        if (employee.length != 0) {
-            setTimeWait(true);
-        }
-    }, 1000);
+
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
@@ -358,7 +329,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date(datos.termDate)),
                 1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.email, FormatDate(new Date()), imgSrc);
 
-            if (imgSrc != null) {
+            if (imgSrc !== null) {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await UpdateEmployees(DataToUpdate);
                     if (result.status === 200) {
@@ -407,10 +378,16 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
         }
     };
 
+    setTimeout(() => {
+        if (employee.length != 0) {
+            setTimeWait(true);
+        }
+    }, 1500);
+
     return (
-        <>
+        <Grid container spacing={3}>
             {timeWait ? (
-                <Fragment>
+                <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">DATOS PERSONALES</Typography>}>
                         <ModalChildren
                             open={open}
@@ -961,10 +938,13 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                             </Grid>
                         </Grid>
                     </Grid>
-                </Fragment>
-            ) : <Cargando />
+                </Grid>
+            ) :
+                <Grid container spacing={3}>
+                    <Cargando />
+                </Grid>
             }
-        </>
+        </Grid>
     );
 };
 

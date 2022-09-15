@@ -11,8 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import { ParamCloseCase } from 'components/alert/AlertAll';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import HoverSocialCard from './OccupationalExamination/Framingham/HoverSocialCard';
 import BiotechIcon from '@mui/icons-material/Biotech';
@@ -60,16 +58,11 @@ const DetailIcons = [
 
 const UpdateMedicalAdvice = () => {
     const { user } = useAuth();
-    const theme = useTheme();
     const { id } = useParams();
+    const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
-
-    const [disabledButton, setDisabledButton] = useState({
-        buttonSave: false,
-        buttonReport: false
-    });
 
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -92,7 +85,6 @@ const UpdateMedicalAdvice = () => {
     const [lsEmployee, setLsEmployee] = useState([]);
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors } = methods;
 
@@ -147,9 +139,7 @@ const UpdateMedicalAdvice = () => {
                 label: item.nombre
             }));
             setLsMotivo(resultMotivo);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     const handleLoadingDocument = async (idEmployee) => {
@@ -174,7 +164,6 @@ const UpdateMedicalAdvice = () => {
                     navigate("/programming/list");
                 }
             });
-
         } catch (error) { }
     }
 
@@ -184,10 +173,10 @@ const UpdateMedicalAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), DefaultData.ASESORIA_MEDICA, lsEmployee.sede,
+            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.ASESORIA_MEDICA, lsAtencion.sede,
                 DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
                 datos.idTipoAsesoria, datos.idMotivo, DefaultData.SINREGISTRO_GLOBAL, datos.observaciones, '', '', DefaultData.SINREGISTRO_GLOBAL,
-                lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, user.email, FormatDate(new Date()));
+                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertAdvice(DataToUpdate);
@@ -406,7 +395,7 @@ const UpdateMedicalAdvice = () => {
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>

@@ -1,18 +1,18 @@
-export function PostMedicalAdvice(documento, fecha, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno,
+export function PostMedicalAdvice(documento, fecha, idRegistroAtencion, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno,
     idDiaTurno, idTipoAsesoria, idMotivo, idCausa, motivo, recomendaciones, pautas, idEstadoAsesoria, usuarioRegistro,
     fechaRegistro, usuarioModifico, fechaModifico) {
     return {
-        documento, fecha, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno, idDiaTurno, idTipoAsesoria,
+        documento, fecha, idRegistroAtencion, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno, idDiaTurno, idTipoAsesoria,
         idMotivo, idCausa, motivo, recomendaciones, pautas, idEstadoAsesoria, usuarioRegistro, fechaRegistro, usuarioModifico,
         fechaModifico
     };
 }
 
-export function PutMedicalAdvice(id, documento, fecha, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno,
+export function PutMedicalAdvice(id, documento, fecha, idRegistroAtencion, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno,
     idDiaTurno, idTipoAsesoria, idMotivo, idCausa, motivo, recomendaciones, pautas, idEstadoAsesoria, usuarioRegistro,
     fechaRegistro, usuarioModifico, fechaModifico) {
     return {
-        id, documento, fecha, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno, idDiaTurno, idTipoAsesoria,
+        id, documento, fecha, idRegistroAtencion, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno, idDiaTurno, idTipoAsesoria,
         idMotivo, idCausa, motivo, recomendaciones, pautas, idEstadoAsesoria, usuarioRegistro, fechaRegistro, usuarioModifico,
         fechaModifico
     };

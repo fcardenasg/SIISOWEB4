@@ -78,13 +78,13 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'idContingencia',
+        id: 'nameContingencia',
         numeric: false,
         label: 'Contingencia',
         align: 'left'
     },
     {
-        id: 'idAtencion',
+        id: 'nameAtencion',
         numeric: false,
         label: 'Atencion',
         align: 'left'
@@ -218,7 +218,7 @@ const ListAssistance = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -247,7 +247,7 @@ const ListAssistance = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'idContingencia', 'idAtencion', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'nameContingencia', 'nameAtencion', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -284,7 +284,7 @@ const ListAssistance = () => {
     };
 
     const handleClick = (event, id) => {
-        setIdCheck(id);
+        if (idCheck === '') setIdCheck(id); else setIdCheck('')
 
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
@@ -366,8 +366,8 @@ const ListAssistance = () => {
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Fecha" value="fecha" />
-                                <ExcelColumn label="Atención" value="idAtencion" />
-                                <ExcelColumn label="Contingencia" value="idContingencia" />
+                                <ExcelColumn label="Atención" value="nameAtencion" />
+                                <ExcelColumn label="Contingencia" value="nameContingencia" />
                                 <ExcelColumn label="Turno" value="idTurno" />
                                 <ExcelColumn label="Día del Turno" value="idDiaTurno" />
                                 <ExcelColumn label="Motivo de Consulta" value="motivoConsulta" />
@@ -387,7 +387,7 @@ const ListAssistance = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => setOpen(true)}>
+                        <Tooltip title="Impresión" onClick={() => navigate(`/assistance/report/${idCheck}`)}>
                             <IconButton disabled={idCheck === '' ? true : false} size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -397,6 +397,7 @@ const ListAssistance = () => {
                             onClick={() => navigate("/assistance/add")}>
                             {TitleButton.Agregar}
                         </Button>
+                        
                     </Grid>
                 </Grid>
             </CardContent>
@@ -464,7 +465,7 @@ const ListAssistance = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idContingencia}
+                                                {row.nameContingencia}
                                             </Typography>
                                         </TableCell>
 
@@ -479,7 +480,7 @@ const ListAssistance = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idAtencion}
+                                                {row.nameAtencion}
                                             </Typography>
                                         </TableCell>
 

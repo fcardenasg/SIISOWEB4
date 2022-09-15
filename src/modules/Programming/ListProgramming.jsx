@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Grid, InputAdornment, OutlinedInput, TablePagination, Typography } from '@mui/material';
+import { Button, Grid, InputAdornment, OutlinedInput, TablePagination, Typography } from '@mui/material';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
@@ -10,7 +10,9 @@ import { gridSpacing } from 'store/constant';
 import { IconSearch } from '@tabler/icons';
 import { GetAllAtencion, DeleteAttention } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
-import { DefaultValue } from 'components/helpers/Enums';
+import { DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { useNavigate } from 'react-router-dom';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -36,6 +38,7 @@ function stableSort(array, comparator) {
 }
 
 const ListProgramming = () => {
+    const navigate = useNavigate();
     const [lsProgramming, setLsProgramming] = useState([]);
     const [rows, setRows] = useState([]);
     const [search, setSearch] = useState('');
@@ -52,47 +55,6 @@ const ListProgramming = () => {
         if (event?.target.value) setRowsPerPage(parseInt(event?.target.value, 10));
         setPage(0);
     };
-
-    const GetAll = async () => {
-        try {
-            const response = await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO);
-            if (response.status === 200) { setLsProgramming(response.data.entities); setRows(response.data.entities) }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    useEffect(() => {
-        GetAll();
-    }, []);
-
-    const onClickDelete = async (id) => {
-        try {
-            swal(ParamDelete).then(async (willDelete) => {
-                if (willDelete) {
-                    const result = await DeleteAttention(id);
-                    if (result.status === 200) {
-                        setOpenDelete(true);
-                    }
-                    GetAll();
-                }
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    let usersResult = <></>;
-
-    if (lsProgramming.length !== 0) {
-        usersResult = stableSort(lsProgramming, getComparator('asc', 'fecha')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((programming, index) => (
-
-                <Grid key={index} item xs={12} sm={6} lg={3} xl={2}>
-                    <ViewProgramming key={index} onClickDelete={onClickDelete} programming={programming} />
-                </Grid>
-            ));
-    } else usersResult = <Cargando />
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -122,17 +84,55 @@ const ListProgramming = () => {
         }
     };
 
+    const GetAll = async () => {
+        try {
+            const response = await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO);
+            if (response.status === 200) { setLsProgramming(response.data.entities); setRows(response.data.entities) }
+        } catch (error) { }
+    };
+
+    useEffect(() => {
+        GetAll();
+    }, []);
+
+    const onClickDelete = async (id) => {
+        try {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteAttention(id);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    GetAll();
+                }
+            });
+        } catch (error) { }
+    };
+
+    let usersResult = <></>;
+
+    if (lsProgramming.length !== 0) {
+        usersResult = stableSort(lsProgramming, getComparator('asc', 'fecha')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((programming, index) => (
+                <Grid key={index} item xs={12} sm={6} lg={3} xl={2}>
+                    <ViewProgramming key={index} onClickDelete={onClickDelete} programming={programming} />
+                </Grid>
+            ));
+    } else usersResult = <Cargando />
+
     return (
         <MainCard
             title={
-                <Grid container alignItems="center" justifyContent="space-between" spacing={gridSpacing}>
-                    <Grid item xs={12} md={6} lg={4}>
+                <Grid container alignItems="center" spacing={gridSpacing}>
+                    <Grid item xs={12} md={7}>
                         <Typography variant="h3">Lista de Programación</Typography>
                     </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
+
+                    <Grid item xs={8} md={3}>
                         <OutlinedInput
+                            fullWidth
                             id="input-search-card-style3"
-                            placeholder="Search"
+                            placeholder="Buscar"
                             value={search}
                             onChange={handleSearch}
                             startAdornment={
@@ -143,6 +143,15 @@ const ListProgramming = () => {
                             size="small"
                         />
                     </Grid>
+
+                    <Grid item xs={4} md={2}>
+                        <AnimateButton>
+                            <Button variant="outlined" fullWidth onClick={() => navigate("/dashboard/ltd")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+
                 </Grid>
             }
         >

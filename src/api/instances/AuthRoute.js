@@ -1,7 +1,7 @@
 export const Url = {
-    Base: 'https://localhost:44347/',
+    Base: 'https://siisov4.westus3.cloudapp.azure.com:44347/',
 
-    //'https://localhost:44347/', http://siiso4.westus3.cloudapp.azure.com/
+    //'https://localhost:44347/', https://siiso4.westus3.cloudapp.azure.com/
 
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',

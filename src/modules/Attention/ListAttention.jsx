@@ -27,9 +27,10 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
-import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllAttention, DeleteAttention } from 'api/clients/AttentionClient';
 
@@ -108,7 +109,7 @@ const headCells = [
     {
         id: 'usuarioRegistro',
         numeric: false,
-        label: 'usuario',
+        label: 'Usuario',
         align: 'left'
     }
 ];
@@ -220,10 +221,10 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListAttention = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
     const [lsAttention, setLsAttention] = useState([]);
+    const [openDelete, setOpenDelete] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -239,9 +240,7 @@ const ListAttention = () => {
             const lsServer = await GetAllAttention(0, 0);
             setLsAttention(lsServer.data.entities);
             setRows(lsServer.data.entities);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -292,7 +291,7 @@ const ListAttention = () => {
     };
 
     const handleClick = (event, id) => {
-        setIdCheck(id);
+        if (idCheck === '') setIdCheck(id); else setIdCheck('');
 
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
@@ -321,23 +320,18 @@ const ListAttention = () => {
 
     const handleDelete = async () => {
         try {
-            const result = await DeleteAttention(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
-        } catch (error) {
-            console.log(error);
-        }
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteAttention(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSelected([]);
+                    GetAll();
+                } else
+                    setSelected([]);
+            });
+        } catch (error) { }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -345,6 +339,8 @@ const ListAttention = () => {
 
     return (
         <MainCard title="Lista de Atención" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -375,8 +371,8 @@ const ListAttention = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/attention/report')}>
-                            <IconButton size="large">
+                        <Tooltip title="Impresión" onClick={() => navigate(`/attention/report/${idCheck}`)}>
+                            <IconButton disabled={idCheck === '' ? true : false} size="large">
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
