@@ -2,7 +2,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Box, Button, Container, Grid,  Typography } from '@mui/material';
+import { Box, Button, Container, Grid, Typography } from '@mui/material';
 
 // third party
 import { motion } from 'framer-motion';
@@ -101,32 +101,6 @@ const HeaderPage = () => {
                                                 Iniciar sesión
                                             </Button>
                                         </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </motion.div>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <motion.div
-                                initial={{ opacity: 0, translateY: 550 }}
-                                animate={{ opacity: 1, translateY: 0 }}
-                                transition={{
-                                    type: 'spring',
-                                    stiffness: 150,
-                                    damping: 30,
-                                    delay: 0.6
-                                }}
-                            >
-                                <Grid
-                                    container
-                                    alignItems="center"
-                                    spacing={2}
-                                    sx={{ [theme.breakpoints.down('lg')]: { display: 'inline-flex', width: 'auto' } }}
-                                >
-                                    <Grid item xs zeroMinWidth>
-                                        <Typography variant="h4" component="div" color="inherit" sx={{ fontWeight: 400, lineHeight: 1.4 }}>
-                                            <b>&#169;</b>Copyright 2022 Drummond Ltd. Colombia - V 4.0.
-                                        </Typography>
                                     </Grid>
                                 </Grid>
                             </motion.div>

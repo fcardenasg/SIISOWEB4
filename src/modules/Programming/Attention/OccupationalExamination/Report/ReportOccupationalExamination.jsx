@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
 import { Button, Grid } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
 
 import ReactToPrint from 'react-to-print';
 import useAuth from 'hooks/useAuth';
@@ -35,18 +34,14 @@ import ReportSystemsReview from './ReportSystemsReview';
 import ReportFunctionalExploration from './ReportFunctionalExploration';
 import ReportDefinitiveDiagnosis from './ReportDefinitiveDiagnosis';
 import { GetByIdDataReport } from 'api/clients/OccupationalExaminationClient';
-import { GetAllByDocumentWorkHistoryOtherCompany } from 'api/clients/WorkHistoryOtherCompany';
 
 
-const ReportOccupationalExamination = () => {
-    const { id } = useParams();
+const ReportOccupationalExamination = ({ id, setOpenReport }) => {
     const { user } = useAuth();
-    const navigate = useNavigate();
     const componentRef = useRef(null);
 
     const [timeWait, setTimeWait] = useState(false);
     const [lsDataReport, setLsDataReport] = useState([]);
-    const [lsWorkHistoryOther, setLsWorkHistoryOther] = useState([]);
 
     const [lsDataUser, setLsDataUser] = useState([]);
 
@@ -54,7 +49,7 @@ const ReportOccupationalExamination = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetByIdDataReport(15);
+                const lsServer = await GetByIdDataReport(id);
                 if (lsServer.status === 200) setLsDataReport(lsServer.data);
             } catch (error) {
                 console.log(error);
@@ -129,7 +124,6 @@ const ReportOccupationalExamination = () => {
                                     key={3}
                                     datos={lsDataReport}
                                     lsDataUser={lsDataUser}
-                                    lsWorkHistoryOther={lsWorkHistoryOther}
                                 />
                             </Grid>
 
@@ -141,7 +135,7 @@ const ReportOccupationalExamination = () => {
                                 />
                             </Grid>
 
-                            {/* <Grid item xs={12}>
+                            <Grid item xs={12}>
                                 <ReportPersonalHistory key={5} datos={lsDataReport} />
                             </Grid>
 
@@ -159,7 +153,7 @@ const ReportOccupationalExamination = () => {
 
                             <Grid item xs={12}>
                                 <ReportDefinitiveDiagnosis key={9} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid> */}
+                            </Grid>
                         </Grid>
                     </Grid>
 
@@ -173,7 +167,7 @@ const ReportOccupationalExamination = () => {
 
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button fullWidth variant="outlined" onClick={() => navigate('/medicaladvice/list')}>
+                                    <Button fullWidth variant="outlined" onClick={() => setOpenReport(false)}>
                                         Cerrar
                                     </Button>
                                 </AnimateButton>

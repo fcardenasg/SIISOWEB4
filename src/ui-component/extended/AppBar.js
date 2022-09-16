@@ -1,7 +1,6 @@
 import { cloneElement, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     AppBar as MuiAppBar,
@@ -21,9 +20,9 @@ import {
     useScrollTrigger
 } from '@mui/material';
 
-// assets
 import { IconBook, IconCreditCard, IconDashboard, IconHome2 } from '@tabler/icons';
 import MenuIcon from '@mui/icons-material/Menu';
+import PaperHomePage from 'views/pages/landing/Paper/PaperHomePage';
 
 function ElevationScroll({ children, window }) {
     const theme = useTheme();
@@ -45,11 +44,10 @@ function ElevationScroll({ children, window }) {
     });
 }
 
-// ==============================|| MINIMAL LAYOUT APP BAR ||============================== //
-
 const AppBar = ({ ...others }) => {
+
     const [drawerToggle, setDrawerToggle] = useState(false);
-    /** Method called on multiple components with different event types */
+
     const drawerToggler = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -66,29 +64,19 @@ const AppBar = ({ ...others }) => {
                             {/* <Logo /> */}
                         </Typography>
                         <Stack direction="row" sx={{ display: { xs: 'none', sm: 'block' } }} spacing={2}>
-                            <Button color="inherit" component={Link} href="#" target="_blank">
-                                Home
+                            <Button color="inherit" /* onClick={() => { return <PaperHomePage /> }} */ /* href="/" */>
+                                SIAE
                             </Button>
+
                             <Button color="inherit" component={RouterLink} to="login" target="_blank">
                                 Iniciar Sesión
                             </Button>
-                            {/* <Button color="inherit" component={Link} href="https://codedthemes.gitbook.io/berry" target="_blank">
-                                Documentation
-                            </Button> */}
-                            {/* <Button
-                                component={Link}
-                                href="https://material-ui.com/store/items/berry-react-material-admin/"
-                                disableElevation
-                                variant="contained"
-                                color="secondary"
-                            >
-                                Purchase Now
-                            </Button> */}
                         </Stack>
                         <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
                             <IconButton color="inherit" onClick={drawerToggler(true)} size="large">
                                 <MenuIcon />
                             </IconButton>
+
                             <Drawer anchor="top" open={drawerToggle} onClose={drawerToggler(false)}>
                                 <Box
                                     sx={{
@@ -142,6 +130,7 @@ const AppBar = ({ ...others }) => {
                                     </List>
                                 </Box>
                             </Drawer>
+
                         </Box>
                     </Toolbar>
                 </Container>

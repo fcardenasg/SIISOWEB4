@@ -117,7 +117,6 @@ const AuthenticationRoutes = {
             path: '/pages/code-verification/code-verification3',
             element: <AuthCodeVerification3 />
         },
-
         {
             path: '/pages/error',
             element: <MaintenanceError />

@@ -1,61 +1,46 @@
 import { useState, useRef, useEffect, Fragment } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Avatar,
     Box,
-    Card,
-    CardContent,
     Chip,
     ClickAwayListener,
-    Divider,
-    Grid,
-    InputAdornment,
     List,
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    OutlinedInput,
     Paper,
     Popper,
     Stack,
-    Switch,
     Typography
 } from '@mui/material';
 
-// third-party
-import PerfectScrollbar from 'react-perfect-scrollbar';
-
-// project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-import UpgradePlanCard from './UpgradePlanCard';
 import useAuth from 'hooks/useAuth';
 import User1 from 'assets/images/users/user-round.svg';
 
 // assets
-import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
-
-// ==============================|| PROFILE MENU ||============================== //
+import { IconLogout, IconSettings } from '@tabler/icons';
 
 const ProfileSection = () => {
     const theme = useTheme();
     const customization = useSelector((state) => state.customization);
     const navigate = useNavigate();
 
-    const [selectedIndex, setSelectedIndex] = useState(-1);
     const { logout, user } = useAuth();
     const [open, setOpen] = useState(false);
-    
-    
+
+
     const anchorRef = useRef(null);
     const handleLogout = async () => {
         try {
             await logout();
+            navigate("/login");
         } catch (err) {
             console.error(err);
         }
@@ -68,14 +53,6 @@ const ProfileSection = () => {
         setOpen(false);
     };
 
-    const handleListItemClick = (event, index, route = '') => {
-        setSelectedIndex(index);
-        handleClose(event);
-
-        if (route && route !== '') {
-            navigate(route);
-        }
-    };
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -173,7 +150,6 @@ const ProfileSection = () => {
 
 
                                     <List
-                                        component="nav"
                                         sx={{
                                             width: '100%',
                                             maxWidth: 350,
@@ -188,21 +164,9 @@ const ProfileSection = () => {
                                             }
                                         }}
                                     >
-                                        {/* <ListItemButton
-                                            sx={{ borderRadius: `${customization.borderRadius}px` }}
-                                            selected={selectedIndex === 0}
-                                            onClick={(event) => handleListItemClick(event, 0, '/user/account-profile/profile1')}
-                                        >
-                                            <ListItemIcon>
-                                                <IconSettings stroke={1.5} size="1.3rem" />
-                                            </ListItemIcon>
-                                            <ListItemText primary={<Typography variant="body2">Cerrar Sesión</Typography>} />
-                                        </ListItemButton> */}
-
                                         <ListItemButton
                                             sx={{ borderRadius: `${customization.borderRadius}px` }}
-                                            selected={selectedIndex === 4}
-                                            onClick={(event) => handleListItemClick(event, 0, '/pages/login/login3')}
+                                            onClick={handleLogout}
                                         >
                                             <ListItemIcon>
                                                 <IconLogout stroke={1.5} size="1.3rem" />

@@ -887,7 +887,7 @@ const Emo = ({
                                         label="Tetano"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, tetanoIM: e.target.checked })}
                                         size={30}
-                                        checked={() => validateLastData(estadoVacuna.tetanoIM)}
+                                        checked={estadoVacuna.tetanoIM}
                                     />
                                 </Grid>
 
@@ -896,7 +896,7 @@ const Emo = ({
                                         label="Influenza"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, influenzaIM: e.target.checked })}
                                         size={30}
-                                        checked={() => validateLastData(estadoVacuna.influenzaIM)}
+                                        checked={estadoVacuna.influenzaIM}
                                     />
                                 </Grid>
 
@@ -905,7 +905,7 @@ const Emo = ({
                                         label="Fiebre Amarilla"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, fiebreAmarillaIM: e.target.checked })}
                                         size={30}
-                                        checked={() => validateLastData(estadoVacuna.fiebreAmarillaIM)}
+                                        checked={estadoVacuna.fiebreAmarillaIM}
                                     />
                                 </Grid>
 
@@ -914,7 +914,7 @@ const Emo = ({
                                         label="Rubéola - Sarampión"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, rubeolaSarampionIM: e.target.checked })}
                                         size={30}
-                                        checked={() => validateLastData(estadoVacuna.rubeolaSarampionIM)}
+                                        checked={estadoVacuna.rubeolaSarampionIM}
                                     />
                                 </Grid>
 
@@ -923,7 +923,7 @@ const Emo = ({
                                         label="COVID-19"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, covid19IM: e.target.checked })}
                                         size={30}
-                                        checked={() => validateLastData(estadoVacuna.covid19IM)}
+                                        checked={estadoVacuna.covid19IM}
                                     />
                                 </Grid>
 
@@ -932,7 +932,7 @@ const Emo = ({
                                         label="Otras"
                                         onChange={(e) => setEstadoVacuna({ ...estadoVacuna, otrasIM: e.target.checked })}
                                         size={30}
-                                        checked={() => validateLastData(estadoVacuna.otrasIM)}
+                                        checked={estadoVacuna.otrasIM}
                                     />
                                 </Grid>
 

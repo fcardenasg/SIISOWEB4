@@ -216,7 +216,7 @@ export const DefaultValue = {
     AT_ASESORIA_MEDICA: 3911,
 
     /* RIESGOS */
-    RiesgoEnOtrasEmpresas: 4067,
+    RiesgoEnOtrasEmpresas: 7284,
     RiesgoQuimico: 3949,
     RiesgoQuimico_MPI_DLTD: 3955,
     RiesgoQuimico_RUIDO_DLTD: 3960,

@@ -165,7 +165,7 @@ const ListPlantillaAll = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion'];
+                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion', 'idCIE11'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

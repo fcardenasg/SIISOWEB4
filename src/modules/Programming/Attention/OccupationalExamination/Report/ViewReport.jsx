@@ -1,7 +1,7 @@
-function ViewReport() {
+function App() {
     return (
         <></>
     );
 }
 
-export default ViewReport;
+export default App;

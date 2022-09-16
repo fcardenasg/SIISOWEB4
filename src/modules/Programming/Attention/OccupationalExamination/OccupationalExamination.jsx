@@ -61,7 +61,7 @@ import { ColorDrummondltd } from 'themes/colors';
 import ListMedicalFormula from './MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './MedicalOrder/UpdateMedicalFormula';
-import ViewReport from './Report/ViewReport';
+import ReportOccupationalExamination from './Report/ReportOccupationalExamination';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -171,6 +171,7 @@ const OccupationalExamination = () => {
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
+    const [resultData, setResultData] = useState(false);
 
     const [newMedicalFormula, setNewMedicalFormula] = useState(false);
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
@@ -324,12 +325,12 @@ const OccupationalExamination = () => {
                     console.log(lsServerUltimoRegistro);
 
                     setEstadoVacuna({
-                        tetanoIM: lsServerUltimoRegistro.data.tetanoIM,
-                        influenzaIM: lsServerUltimoRegistro.data.influenzaIM,
-                        fiebreAmarillaIM: lsServerUltimoRegistro.data.fiebreAmarillaIM,
-                        rubeolaSarampionIM: lsServerUltimoRegistro.data.rubeolaSarampionIM,
-                        covid19IM: lsServerUltimoRegistro.data.covid19IM,
-                        otrasIM: lsServerUltimoRegistro.data.otrasIM,
+                        tetanoIM: lsServerUltimoRegistro.data.tetanoIM === undefined ? false : lsServerUltimoRegistro.data.tetanoIM,
+                        influenzaIM: lsServerUltimoRegistro.data.influenzaIM === undefined ? false : lsServerUltimoRegistro.data.influenzaIM,
+                        fiebreAmarillaIM: lsServerUltimoRegistro.data.fiebreAmarillaIM === undefined ? false : lsServerUltimoRegistro.data.fiebreAmarillaIM,
+                        rubeolaSarampionIM: lsServerUltimoRegistro.data.rubeolaSarampionIM === undefined ? false : lsServerUltimoRegistro.data.rubeolaSarampionIM,
+                        covid19IM: lsServerUltimoRegistro.data.covid19IM === undefined ? false : lsServerUltimoRegistro.data.covid19IM,
+                        otrasIM: lsServerUltimoRegistro.data.otrasIM === undefined ? false : lsServerUltimoRegistro.data.otrasIM,
                     });
 
                     setArrays({
@@ -560,6 +561,7 @@ const OccupationalExamination = () => {
                 const result = await InsertOccupationalExamination(DataToInset);
                 if (result.status === 200) {
                     setOpenSuccess(true);
+                    setResultData(result.data);
                     statusClose = false;
                 }
             }
@@ -632,7 +634,7 @@ const OccupationalExamination = () => {
                         onClose={() => setOpenReport(false)}
                         maxWidth="xl"
                     >
-                        <ViewReport />
+                        <ReportOccupationalExamination id={resultData.id} setOpenReport={setOpenReport} openReport={openReport} />
                     </ControlModal>
 
                     <DialogFormula

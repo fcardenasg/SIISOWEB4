@@ -2,6 +2,7 @@
 import { styled } from '@mui/material/styles';
 import { Container, Typography } from '@mui/material';
 import { Fragment } from 'react';
+import { ColorDrummondltd } from 'themes/colors';
 
 // styles
 const FooterWrapper = styled('div')(({ theme }) => ({
@@ -11,10 +12,8 @@ const FooterWrapper = styled('div')(({ theme }) => ({
 
     padding: '20px 0',
     color: '#fff',
-    background: theme.palette.secondary.main,
-    [theme.breakpoints.down('md')]: {
-        textAlign: 'center'
-    }
+    background: ColorDrummondltd.GrayDrummond,
+    textAlign: 'center'
 }));
 
 
@@ -26,8 +25,9 @@ const FooterPage = () => {
         <Fragment>
             <FooterWrapper>
                 <Container>
-                    <Typography variant="h3" component="div" color="inherit">
-                        &#169; SIISO
+                    <Typography variant="h5" component="div" color="inherit">
+                        <b>&#169;</b>Copyright 2022 Drummond Ltd. Colombia - V 4.0.
+                        Departamento de salud ocupacional
                     </Typography>
                 </Container>
             </FooterWrapper>
