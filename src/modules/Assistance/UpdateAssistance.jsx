@@ -7,9 +7,6 @@ import {
     Typography
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
 import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -59,17 +56,43 @@ const DetailIcons = [
     { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
+const dataMedicalOrders = [
+    {
+        open: true,
+        title: 'Formula',
+        subtitle: 'Formula',
+        iconPrimary: AssignmentIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Laboratorio',
+        subtitle: 'Laboratorio',
+        iconPrimary: BiotechIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Imagenes',
+        subtitle: 'Imagenes',
+        iconPrimary: ImageIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Examenes',
+        subtitle: 'Examenes',
+        iconPrimary: FolderOpenIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+]
+
 const UpdateAssistance = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
     const { id } = useParams();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-
-    const [disabledButton, setDisabledButton] = useState({
-        buttonSave: false,
-        buttonReport: false
-    });
 
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -94,24 +117,18 @@ const UpdateAssistance = () => {
     const [documento, setDocumento] = useState('');
     const [lsCie11, setLsCie11] = useState([]);
     const [lsAtencion, setLsAtencion] = useState([]);
-    const [lsDiaTurno, setLsDiaTurno] = useState([]);
-    const [lsTurno, setLsTurno] = useState([]);
     const [lsContingencia, setLsContingencia] = useState([]);
-    const [lsRemitido, setLsRemitido] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-
     const { handleSubmit, errors } = methods;
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
 
-            if (lsServerEmployee.status === 200) {
+            if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);
-            }
         } catch (error) {
             setLsEmployee([]);
             setErrorMessage(Message.ErrorDeDatos);
@@ -120,7 +137,6 @@ const UpdateAssistance = () => {
 
     async function GetAll() {
         try {
-          
             const serverData = await GetByIdMedicalHistory(id);
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
@@ -150,27 +166,6 @@ const UpdateAssistance = () => {
             }));
             setLsContingencia(resultContingencia);
 
-            const lsServerTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Turno);
-            var resultTurno = lsServerTurno.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTurno(resultTurno);
-
-            const lsServerDiaTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DiaTurno);
-            var resultDiaTurno = lsServerDiaTurno.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsDiaTurno(resultDiaTurno);
-
-            const lsServerRemitido = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
-            var resultRemitido = lsServerRemitido.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsRemitido(resultRemitido);
-
             const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_CONCEP_ACTITUD);
             var resultConceptoAptitud = lsServerConceptoAptitud.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -188,7 +183,8 @@ const UpdateAssistance = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutAssistance(id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
+            const DataToUpdate = PutAssistance(id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, DefaultValue.SINREGISTRO_GLOBAL,
+                DefaultValue.SINREGISTRO_GLOBAL,
                 datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico, datos.examenParaclinico,
                 JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()), '',
                 FormatDate(new Date()));
@@ -300,41 +296,16 @@ const UpdateAssistance = () => {
                 open={openFormula}
                 handleCloseDialog={() => setOpenFormula(false)}
             >
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Formula') }}
-                        secondary="Formula"
-                        iconPrimary={AssignmentIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Laboratorio') }}
-                        secondary="Laboratorio"
-                        iconPrimary={BiotechIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Imagenes') }}
-                        secondary="Imagenes"
-                        iconPrimary={ImageIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Examenes') }}
-                        secondary="Examenes"
-                        iconPrimary={FolderOpenIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
+                {dataMedicalOrders.map(data =>
+                    <Grid item xs={12}>
+                        <HoverSocialCard
+                            onClick={() => { setOpenForm(data.open); setTitleModal(data.title) }}
+                            secondary={data.subtitle}
+                            iconPrimary={data.iconPrimary}
+                            color={data.color}
+                        />
+                    </Grid>
+                )}
             </DialogFormula>
 
             {lsAssistance.length != 0 ?
@@ -353,7 +324,7 @@ const UpdateAssistance = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle>
                             <Grid container spacing={2}>
-                                <Grid item xs={2.4}>
+                                <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
                                             label="Fecha"
@@ -363,7 +334,7 @@ const UpdateAssistance = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2.4}>
+                                <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idAtencion"
@@ -376,39 +347,13 @@ const UpdateAssistance = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2.4}>
+                                <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idContingencia"
                                             label="Contingencia"
                                             defaultValue={lsAssistance.idContingencia}
                                             options={lsContingencia}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idTurno"
-                                            label="Turno"
-                                            defaultValue={lsAssistance.idTurno}
-                                            options={lsTurno}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idDiaTurno"
-                                            label="Día del Turno"
-                                            defaultValue={lsAssistance.idDiaTurno}
-                                            options={lsDiaTurno}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -668,7 +613,7 @@ const UpdateAssistance = () => {
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>

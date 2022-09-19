@@ -7,6 +7,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 
 import PaperHome from 'assets/img/PaperHome.jpg';
 import Slide from '@mui/material/Slide';
+import { TitleButton } from 'components/helpers/Enums';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -52,7 +53,7 @@ export default function PaperHomePage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={() => setOpen(false)}>{TitleButton.Cancelar}</Button>
                 </DialogActions>
             </Dialog>
         </div>

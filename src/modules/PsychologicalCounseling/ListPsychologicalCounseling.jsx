@@ -74,7 +74,7 @@ const headCells = [
         id: 'id',
         numeric: false,
         label: 'ID',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'documento',
@@ -95,19 +95,13 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'motivo',
-        numeric: false,
-        label: 'Motivo',
-        align: 'left'
-    },
-    {
-        id: 'idTipoAtencion',
+        id: 'nameTiAtencion',
         numeric: false,
         label: 'Tipo Atencion',
         align: 'left'
     },
     {
-        id: 'idEstadoCaso',
+        id: 'nameEstadoCaso',
         numeric: false,
         label: 'Estado Caso',
         align: 'left'
@@ -228,7 +222,7 @@ const ListPsychologicalCounseling = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -240,9 +234,7 @@ const ListPsychologicalCounseling = () => {
             const lsServer = await GetAllAdvice(0, 0);
             setMedicalAdvice(lsServer.data.entities);
             setRows(lsServer.data.entities);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -257,7 +249,7 @@ const ListPsychologicalCounseling = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'fecha', 'usuarioRegistro', 'motivo', 'idTipoAtencion', 'idEstadoCaso'];
+                const properties = ['id', 'documento', 'fecha', 'usuarioRegistro', 'motivo', 'nameTiAtencion', 'nameEstadoCaso'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -284,7 +276,6 @@ const ListPsychologicalCounseling = () => {
     };
 
     const handleSelectAllClick = (event) => {
-
         if (event.target.checked) {
             const newSelectedId = medicalAdvice.map((n) => n.id);
             setSelected(newSelectedId);
@@ -294,7 +285,7 @@ const ListPsychologicalCounseling = () => {
     };
 
     const handleClick = (event, id) => {
-        setIdCheck(id);
+        if (idCheck === '') setIdCheck(id); else setIdCheck('');
 
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
@@ -396,8 +387,8 @@ const ListPsychologicalCounseling = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/psychologicalcounseling/report')}>
-                            <IconButton size="large">
+                        <Tooltip title="Impresión" onClick={() => navigate(`/psychologicalcounseling/report/${idCheck}`)}>
+                            <IconButton disabled={idCheck === '' ? true : false} size="large">
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
@@ -459,7 +450,6 @@ const ListPsychologicalCounseling = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
                                         >
                                             {row.id}
                                         </TableCell>
@@ -505,52 +495,37 @@ const ListPsychologicalCounseling = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
+                                                {row.nameTiAtencion}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameEstadoCaso}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
                                                 {row.usuarioRegistro}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.motivo}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.idTipoAtencion}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.idEstadoCaso}
                                             </Typography>
                                         </TableCell>
 

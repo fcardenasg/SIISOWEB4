@@ -5,9 +5,6 @@ import {
     Grid,
     useMediaQuery,
 } from '@mui/material';
-
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import swal from 'sweetalert';
 import { ParamCloseCase } from 'components/alert/AlertAll';
 
@@ -23,7 +20,7 @@ import { PutAttention } from 'formatdata/AttentionForm';
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
-import ViewReport from './OccupationalExamination/Report/ViewReport';
+import ReportAssistance from './Report/ReportAssistance';
 import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 
@@ -62,17 +59,43 @@ const DetailIcons = [
     { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
+const dataMedicalOrders = [
+    {
+        open: true,
+        title: 'Formula',
+        subtitle: 'Formula',
+        iconPrimary: AssignmentIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Laboratorio',
+        subtitle: 'Laboratorio',
+        iconPrimary: BiotechIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Imagenes',
+        subtitle: 'Imagenes',
+        iconPrimary: ImageIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Examenes',
+        subtitle: 'Examenes',
+        iconPrimary: FolderOpenIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+]
+
 const UpdateAssistance = () => {
     const { user } = useAuth();
     const { id } = useParams();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-
-    const [disabledButton, setDisabledButton] = useState({
-        buttonSave: false,
-        buttonReport: false
-    });
 
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -100,8 +123,9 @@ const UpdateAssistance = () => {
     const [lsContingencia, setLsContingencia] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
 
+    const [resultData, setResultData] = useState([]);
+
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors } = methods;
 
@@ -109,9 +133,8 @@ const UpdateAssistance = () => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
 
-            if (lsServerEmployee.status === 200) {
+            if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);
-            }
         } catch (error) {
             setLsEmployee([]);
             setErrorMessage(Message.ErrorDeDatos);
@@ -131,7 +154,6 @@ const UpdateAssistance = () => {
                 lsAtencion.turno, lsAtencion.diaTurno, lsAtencion.motivo, lsAtencion.medico, lsAtencion.docSolicitante, lsAtencion.talla, lsAtencion.peso,
                 lsAtencion.iMC, lsAtencion.usuarioCierreAtencion, lsAtencion.fechaDigitacion, lsAtencion.fechaCierreAtencion, lsAtencion.duracion,
                 lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, lsAtencion.usuarioModifico, lsAtencion.fechaModifico);
-
             await UpdateAttentions(DataToUpdate);
         } catch (error) { }
     }
@@ -153,8 +175,11 @@ const UpdateAssistance = () => {
                 await handleUpdateAttention(DataToUpdate);
 
                 setDocumento(lsServerAtencion.data.documento);
-                setLsAtencion(lsServerAtencion.data);
                 handleLoadingDocument(lsServerAtencion.data.documento);
+
+                setTimeout(() => {
+                    setLsAtencion(lsServerAtencion.data);
+                }, 1500);
             }
 
             const lsServerCie11 = await GetAllCIE11(0, 0);
@@ -215,6 +240,7 @@ const UpdateAssistance = () => {
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertMedicalHistory(DataToUpdate);
                 if (result.status === 200) {
+                    setResultData(result.data);
                     setOpenUpdate(true);
                 }
             }
@@ -268,7 +294,7 @@ const UpdateAssistance = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ViewReport />
+                <ReportAssistance id={resultData.id} />
             </ControlModal>
 
             <ControlModal
@@ -319,41 +345,16 @@ const UpdateAssistance = () => {
                 open={openFormula}
                 handleCloseDialog={() => setOpenFormula(false)}
             >
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Formula') }}
-                        secondary="Formula"
-                        iconPrimary={AssignmentIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Laboratorio') }}
-                        secondary="Laboratorio"
-                        iconPrimary={BiotechIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Imagenes') }}
-                        secondary="Imagenes"
-                        iconPrimary={ImageIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Examenes') }}
-                        secondary="Examenes"
-                        iconPrimary={FolderOpenIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
+                {dataMedicalOrders.map(data =>
+                    <Grid item xs={12}>
+                        <HoverSocialCard
+                            onClick={() => { setOpenForm(data.open); setTitleModal(data.title) }}
+                            secondary={data.subtitle}
+                            iconPrimary={data.iconPrimary}
+                            color={data.color}
+                        />
+                    </Grid>
+                )}
             </DialogFormula>
 
             {lsAtencion.length != 0 ?
@@ -662,7 +663,7 @@ const UpdateAssistance = () => {
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>

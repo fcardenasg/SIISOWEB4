@@ -25,7 +25,7 @@ import { PutAttention } from 'formatdata/AttentionForm';
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
-import ViewReport from './OccupationalExamination/Report/ViewReport';
+import ReportNoteInfirmary from './Report/ReportNoteInfirmary';
 import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 
@@ -40,7 +40,6 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { PostNoteInfirmary } from 'formatdata/NoteInfirmaryForm';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -66,11 +65,6 @@ const UpdateNoteInfirmary = () => {
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsAtencionn, setLsAtencionn] = useState([]);
 
-    const [disabledButton, setDisabledButton] = useState({
-        buttonSave: false,
-        buttonReport: false
-    });
-
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
@@ -92,8 +86,9 @@ const UpdateNoteInfirmary = () => {
     const [lsProcedimiento, setLsProcedimiento] = useState([]);
     const [lsContingencia, setLsContingencia] = useState([]);
 
+    const [resultData, setResultData] = useState([]);
+
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors } = methods;
 
@@ -169,9 +164,7 @@ const UpdateNoteInfirmary = () => {
                 label: item.nombre
             }));
             setLsProcedimiento(resultProcedimiento);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -200,6 +193,7 @@ const UpdateNoteInfirmary = () => {
                 const result = await InsertNoteInfirmary(UpdateToInsert);
                 if (result.status === 200) {
                     setOpenUpdate(true);
+                    setResultData(result.data);
                 }
             }
         } catch (error) {
@@ -236,7 +230,7 @@ const UpdateNoteInfirmary = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ViewReport />
+                <ReportNoteInfirmary id={resultData.id} />
             </ControlModal>
 
             <ControlModal

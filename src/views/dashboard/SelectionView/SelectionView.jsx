@@ -2,8 +2,17 @@ import { Grid, Box, Typography, Button, CardMedia, Divider } from "@mui/material
 import { Fragment } from "react";
 import { useNavigate } from 'react-router-dom';
 import { ColorDrummondltd } from 'themes/colors';
+import { styled } from '@mui/material/styles';
+
 import LogoDrummondLTD from 'assets/img/LogoDrummondLTD.png';
 import LogoDrummondEnergy from 'assets/img/LogoDrummondEnergy.png';
+
+const FooterWrapper = styled('div')(({ theme }) => ({
+    top: 0,
+    width: '100%',
+    padding: '15px 0',
+    background: ColorDrummondltd.RedDrummond,
+}));
 
 const SelectionView = () => {
     const navigate = useNavigate();
@@ -12,15 +21,11 @@ const SelectionView = () => {
         <Fragment>
             <Grid container>
                 <Grid item xs={12}>
-                    <Box
-                        sx={{
-                            width: 1535,
-                            height: 70,
-                            backgroundColor: ColorDrummondltd.RedDrummond
-                        }}
-                    >
-                        <Typography sx={{ pt: 2, pl: 10, color: 'white' }} align="left" variant="h1">© SIISO</Typography>
-                    </Box>
+                    <FooterWrapper>
+                        <Box>
+                            <Typography sx={{ pl: 10, color: 'white' }} align="left" variant="h1">© SIISO</Typography>
+                        </Box>
+                    </FooterWrapper>
                 </Grid>
 
                 <Grid container sx={{ pt: 10 }}>
@@ -63,7 +68,7 @@ const SelectionView = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container sx={{ pt: 10 }}>
+                <Grid container sx={{ pt: 8 }}>
                     <Grid item xs={12}>
                         <Typography sx={{ color: ColorDrummondltd.GrayDrummond }} align="center" variant="h6">
                             © Copyright 2022 Drummond Ltd. Colombia - V 4.0.

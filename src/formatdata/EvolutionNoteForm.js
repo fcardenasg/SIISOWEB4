@@ -1,15 +1,15 @@
-export function PostEvolutionNote(documento, fecha, idAtencion, idContingencia, idTurno, idDiaTurno, nota, diagnostico,
+export function PostEvolutionNote(documento, fecha, idRegistroAtencion, idAtencion, idContingencia, idTurno, idDiaTurno, nota, diagnostico,
     planManejo, idConceptoActitud, idRemitido, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
-        documento, fecha, idAtencion, idContingencia, idTurno, idDiaTurno, nota, diagnostico,
+        documento, fecha, idRegistroAtencion, idAtencion, idContingencia, idTurno, idDiaTurno, nota, diagnostico,
         planManejo, idConceptoActitud, idRemitido, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }
 
-export function PutEvolutionNote(id, documento, fecha, idAtencion, idContingencia, idTurno, idDiaTurno, nota, diagnostico,
+export function PutEvolutionNote(id, documento, fecha, idRegistroAtencion, idAtencion, idContingencia, idTurno, idDiaTurno, nota, diagnostico,
     planManejo, idConceptoActitud, idRemitido, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
-        id, documento, fecha, idAtencion, idContingencia, idTurno, idDiaTurno, nota, diagnostico,
+        id, documento, fecha, idRegistroAtencion, idAtencion, idContingencia, idTurno, idDiaTurno, nota, diagnostico,
         planManejo, idConceptoActitud, idRemitido, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }

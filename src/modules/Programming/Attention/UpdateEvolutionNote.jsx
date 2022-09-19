@@ -4,7 +4,6 @@ import {
     Button,
     Grid,
     useMediaQuery,
-    Typography
 } from '@mui/material';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
@@ -25,14 +24,12 @@ import { PutAttention } from 'formatdata/AttentionForm';
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
-import ViewReport from './OccupationalExamination/Report/ViewReport';
+import ReportEvolutionNote from './Report/ReportEvolutionNote';
 import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import useAuth from 'hooks/useAuth';
 import InputDatePicker from 'components/input/InputDatePicker';
@@ -52,8 +49,8 @@ import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PutEvolutionNote } from 'formatdata/EvolutionNoteForm';
-import { UpdateEvolutionNotes } from 'api/clients/EvolutionNoteClient';
+import { PostEvolutionNote } from 'formatdata/EvolutionNoteForm';
+import { InsertEvolutionNote } from 'api/clients/EvolutionNoteClient';
 import { FormatDate } from 'components/helpers/Format';
 
 const DetailIcons = [
@@ -62,17 +59,43 @@ const DetailIcons = [
     { title: 'Ver Examenes', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
+const dataMedicalOrders = [
+    {
+        open: true,
+        title: 'Formula',
+        subtitle: 'Formula',
+        iconPrimary: AssignmentIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Laboratorio',
+        subtitle: 'Laboratorio',
+        iconPrimary: BiotechIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Imagenes',
+        subtitle: 'Imagenes',
+        iconPrimary: ImageIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Examenes',
+        subtitle: 'Examenes',
+        iconPrimary: FolderOpenIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+]
+
 const UpdateEvolutionNote = () => {
     const { user } = useAuth();
     const { id } = useParams();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-
-    const [disabledButton, setDisabledButton] = useState({
-        buttonSave: false,
-        buttonReport: false
-    });
 
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -99,8 +122,9 @@ const UpdateEvolutionNote = () => {
     const [lsContingencia, setLsContingencia] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
 
+    const [resultData, setResultData] = useState([]);
+
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors } = methods;
 
@@ -108,9 +132,8 @@ const UpdateEvolutionNote = () => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
 
-            if (lsServerEmployee.status === 200) {
+            if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);
-            }
         } catch (error) {
             setLsEmployee([]);
             setErrorMessage(Message.ErrorDeDatos);
@@ -150,9 +173,12 @@ const UpdateEvolutionNote = () => {
 
                 await handleUpdateAttention(DataToUpdate);
 
-                setLsAtencion(lsServerAtencion.data);
                 setDocumento(lsServerAtencion.data.documento);
                 handleLoadingDocument(lsServerAtencion.data.documento);
+
+                setTimeout(() => {
+                    setLsAtencion(lsServerAtencion.data);
+                }, 1500);
             }
 
             const lsServerCie11 = await GetAllCIE11(0, 0);
@@ -182,9 +208,7 @@ const UpdateEvolutionNote = () => {
                 label: item.nombre
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -205,8 +229,7 @@ const UpdateEvolutionNote = () => {
 
     const handleClick = async (datos) => {
         try {
-
-            const DataToUpdate = PutEvolutionNote(id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia,
+            const DataToUpdate = PostEvolutionNote(documento, FormatDate(datos.fecha), id, datos.idAtencion, datos.idContingencia,
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.nota, JSON.stringify(diagnosticoArray),
                 datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.email,
                 FormatDate(new Date()), '', FormatDate(new Date()));
@@ -214,9 +237,10 @@ const UpdateEvolutionNote = () => {
             console.log(DataToUpdate);
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateEvolutionNotes(DataToUpdate);
+                const result = await InsertEvolutionNote(DataToUpdate);
                 if (result.status === 200) {
                     setOpenUpdate(true);
+                    setResultData(result.data);
                 }
             }
         } catch (error) {
@@ -261,7 +285,7 @@ const UpdateEvolutionNote = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ViewReport />
+                <ReportEvolutionNote id={resultData.id} />
             </ControlModal>
 
             <ControlModal
@@ -312,41 +336,16 @@ const UpdateEvolutionNote = () => {
                 open={openFormula}
                 handleCloseDialog={() => setOpenFormula(false)}
             >
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Formula') }}
-                        secondary="Formula"
-                        iconPrimary={AssignmentIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Laboratorio') }}
-                        secondary="Laboratorio"
-                        iconPrimary={BiotechIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Imagenes') }}
-                        secondary="Imagenes"
-                        iconPrimary={ImageIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Examenes') }}
-                        secondary="Examenes"
-                        iconPrimary={FolderOpenIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
+                {dataMedicalOrders.map(data =>
+                    <Grid item xs={12}>
+                        <HoverSocialCard
+                            onClick={() => { setOpenForm(data.open); setTitleModal(data.title) }}
+                            secondary={data.subtitle}
+                            iconPrimary={data.iconPrimary}
+                            color={data.color}
+                        />
+                    </Grid>
+                )}
             </DialogFormula>
 
             {lsAtencion.length != 0 ?
@@ -509,7 +508,7 @@ const UpdateEvolutionNote = () => {
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>

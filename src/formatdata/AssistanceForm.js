@@ -1,18 +1,22 @@
-export function PostAssistance(documento, fecha, idAtencion, idContingencia, idTurno, idDiaTurno, motivoConsulta, enfermedadActual,
+import { DefaultValue } from "components/helpers/Enums";
+
+export function PostAssistance(documento, fecha, idRegistroAtencion, idAtencion, idContingencia, idTurno = DefaultValue.SINREGISTRO_GLOBAL,
+    idDiaTurno = DefaultValue.SINREGISTRO_GLOBAL, motivoConsulta, enfermedadActual,
     antecedentes, revisionSistema, examenFisico, examenParaclinico, diagnostico, planManejo, idConceptoActitud, idRemitido,
     usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
-        documento, fecha, idAtencion, idContingencia, idTurno, idDiaTurno, motivoConsulta, enfermedadActual,
+        documento, fecha, idAtencion, idRegistroAtencion, idContingencia, idTurno, idDiaTurno, motivoConsulta, enfermedadActual,
         antecedentes, revisionSistema, examenFisico, examenParaclinico, diagnostico, planManejo, idConceptoActitud, idRemitido,
         usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }
 
-export function PutAssistance(id, documento, fecha, idAtencion, idContingencia, idTurno, idDiaTurno, motivoConsulta, enfermedadActual,
+export function PutAssistance(id, documento, fecha, idAtencion, idRegistroAtencion, idContingencia, idTurno = DefaultValue.SINREGISTRO_GLOBAL,
+    idDiaTurno = DefaultValue.SINREGISTRO_GLOBAL, motivoConsulta, enfermedadActual,
     antecedentes, revisionSistema, examenFisico, examenParaclinico, diagnostico, planManejo, idConceptoActitud, idRemitido,
     usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
-        id, documento, fecha, idAtencion, idContingencia, idTurno, idDiaTurno, motivoConsulta, enfermedadActual,
+        id, documento, fecha, idAtencion, idRegistroAtencion, idContingencia, idTurno, idDiaTurno, motivoConsulta, enfermedadActual,
         antecedentes, revisionSistema, examenFisico, examenParaclinico, diagnostico, planManejo, idConceptoActitud, idRemitido,
         usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };

@@ -10,8 +10,6 @@ import {
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import ViewEmployee from 'components/views/ViewEmployee';
 import useAuth from 'hooks/useAuth';
@@ -30,7 +28,7 @@ import InputSelect from 'components/input/InputSelect';
 import { CodCatalogo, Message, TitleButton, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton'
 import SubCard from 'ui-component/cards/SubCard';
-import { MessageSuccess, MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
@@ -80,7 +78,6 @@ const UpdateAlcoholAndDrugTesting = () => {
 
     const methods = useForm();
     const { handleSubmit, errors } = methods;
-    /* { resolver: yupResolver(validationSchema) } */
 
     const handleLoadingDocument = async (idEmployee) => {
         try {

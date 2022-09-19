@@ -14,8 +14,6 @@ import swal from 'sweetalert';
 import { ParamCloseCase } from 'components/alert/AlertAll';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import ViewReport from './OccupationalExamination/Report/ViewReport';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
@@ -129,7 +127,6 @@ const UpdateAlcoholAndDrugTesting = () => {
 
     const methods = useForm();
     const { handleSubmit, errors } = methods;
-    /* { resolver: yupResolver(validationSchema) } */
 
     const handleDocumentoSolicita = async (event) => {
         try {
@@ -217,7 +214,7 @@ const UpdateAlcoholAndDrugTesting = () => {
             var MotivoAsistencia = realizada == DefaultValue.Opcion_SI ? 1 : datos.idMotivoAsis;
             var Observacion = realizada == DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
 
-            const DataToInsert = PostAlcoholAndDrugTesting(documento, FormatDate(datos.fecha), datos.idMotivoPrueba, datos.sustancia1,
+            const DataToInsert = PostAlcoholAndDrugTesting(documento, FormatDate(datos.fecha), id, datos.idMotivoPrueba, datos.sustancia1,
                 datos.idMuestra1, cocaina, datos.sustancia2, datos.idMuestra2, marihuana, datos.sustancia3, datos.idMuestra3,
                 datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5, datos.idResultado5,
                 datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, 0, conceptoAptitud,

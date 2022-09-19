@@ -68,7 +68,7 @@ const ReportMedicalAdvice = Loadable(lazy(() => import('components/report/Report
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
 const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/UpdatePsychologicalCounseling')));
-const ReportPsychologicalCounseling = Loadable(lazy(() => import('components/report/ReportPsychologicalCounseling')));
+const ReportPsychological = Loadable(lazy(() => import('modules/PsychologicalCounseling/ReportPsychological')));
 
 const ListNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/ListNoteInfirmary')));
 const NoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/NoteInfirmary')));
@@ -470,8 +470,8 @@ const MainRoutes = {
             element: <UpdatePsychologicalCounseling />
         },
         {
-            path: '/psychologicalcounseling/report',
-            element: <ReportPsychologicalCounseling />
+            path: '/psychologicalcounseling/report/:id',
+            element: <ReportPsychological />
         },
         /* Render de CIE11 */
         {
@@ -514,10 +514,6 @@ const MainRoutes = {
             path: '/panorama/update/:id',
             element: <UpdatePanorama />
         },
-        {
-            path: '/cie11/report',
-            element: <ReportPsychologicalCounseling />
-        },
         /* Render de TEMPLATE */
         {
             path: '/template/list',
@@ -530,10 +526,6 @@ const MainRoutes = {
         {
             path: '/template/update/:id',
             element: <UpdateTemplate />
-        },
-        {
-            path: '/template/report',
-            element: <ReportPsychologicalCounseling />
         },
         /* Render de OCCUPATIONAL HEALTH */
         {

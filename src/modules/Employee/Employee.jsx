@@ -167,8 +167,6 @@ const Employee = () => {
         var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
         var resultMunicipioNacimiento = await GetSubString(lsResulCode);
         setMunicipioN(resultMunicipioNacimiento);
-
-        console.log("Datos = ", lsResulCode, resultMunicipioNacimiento, event.target.value);
     };
 
     const handleChangeDptoResidenciaTrabaja = async (event) => {
