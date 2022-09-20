@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Grid, InputAdornment, OutlinedInput, TablePagination, Typography } from '@mui/material';
 
-import swal from 'sweetalert';
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+
 import ViewProgramming from './ViewProgramming';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
@@ -10,7 +9,7 @@ import { gridSpacing } from 'store/constant';
 import { IconSearch } from '@tabler/icons';
 import { GetAllAtencion, DeleteAttention } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
-import { DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
+import { DefaultValue, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { useNavigate } from 'react-router-dom';
 
@@ -42,14 +41,9 @@ const ListProgramming = () => {
     const [lsProgramming, setLsProgramming] = useState([]);
     const [rows, setRows] = useState([]);
     const [search, setSearch] = useState('');
-    const [openDelete, setOpenDelete] = useState(false);
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(12);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
 
     const handleChangeRowsPerPage = (event) => {
         if (event?.target.value) setRowsPerPage(parseInt(event?.target.value, 10));
@@ -84,7 +78,7 @@ const ListProgramming = () => {
         }
     };
 
-    const GetAll = async () => {
+    const getAll = async () => {
         try {
             const response = await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO);
             if (response.status === 200) { setLsProgramming(response.data.entities); setRows(response.data.entities) }
@@ -92,22 +86,9 @@ const ListProgramming = () => {
     };
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, []);
 
-    const onClickDelete = async (id) => {
-        try {
-            swal(ParamDelete).then(async (willDelete) => {
-                if (willDelete) {
-                    const result = await DeleteAttention(id);
-                    if (result.status === 200) {
-                        setOpenDelete(true);
-                    }
-                    GetAll();
-                }
-            });
-        } catch (error) { }
-    };
 
     let usersResult = <></>;
 
@@ -115,7 +96,7 @@ const ListProgramming = () => {
         usersResult = stableSort(lsProgramming, getComparator('asc', 'fecha')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((programming, index) => (
                 <Grid key={index} item xs={12} sm={6} lg={3} xl={2}>
-                    <ViewProgramming key={index} onClickDelete={onClickDelete} programming={programming} />
+                    <ViewProgramming key={index} programming={programming} getAll={getAll} />
                 </Grid>
             ));
     } else usersResult = <Cargando />
@@ -155,7 +136,6 @@ const ListProgramming = () => {
                 </Grid>
             }
         >
-            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <Grid container spacing={gridSpacing}>
                 {usersResult}
 
@@ -168,7 +148,7 @@ const ListProgramming = () => {
                                 count={lsProgramming.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
-                                onPageChange={handleChangePage}
+                                onPageChange={(event, newPage) => setPage(newPage)}
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                             />
                         </Grid>

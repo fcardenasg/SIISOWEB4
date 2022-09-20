@@ -308,9 +308,9 @@ const ListEvolutionNote = () => {
                     const result = await DeleteEvolutionNote(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
+                        setSelected([]);
+                        GetAll();
                     }
-                    setSelected([]);
-                    GetAll();
                 } else
                     setSelected([]);
             });

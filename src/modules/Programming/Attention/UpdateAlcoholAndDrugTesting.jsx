@@ -211,8 +211,8 @@ const UpdateAlcoholAndDrugTesting = () => {
 
     const handleClick = async (datos) => {
         try {
-            var MotivoAsistencia = realizada == DefaultValue.Opcion_SI ? 1 : datos.idMotivoAsis;
-            var Observacion = realizada == DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
+            var MotivoAsistencia = realizada === DefaultValue.Opcion_SI ? 1 : datos.idMotivoAsis;
+            var Observacion = realizada === DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
 
             const DataToInsert = PostAlcoholAndDrugTesting(documento, FormatDate(datos.fecha), id, datos.idMotivoPrueba, datos.sustancia1,
                 datos.idMuestra1, cocaina, datos.sustancia2, datos.idMuestra2, marihuana, datos.sustancia3, datos.idMuestra3,
@@ -618,7 +618,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                         <Divider />
                                                     </Grid>
 
-                                                    {motivo === DefaultValue.AT_PAD_MOTIVO ?
+                                                    {motivo === DefaultValue.PAD_MOTIVO_SOSPECHA ?
                                                         <Fragment>
                                                             <Grid item xs={12} md={6} lg={4}>
                                                                 <InputOnChange

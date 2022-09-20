@@ -83,7 +83,7 @@ const ReportMedicalFormula = Loadable(lazy(() => import('components/report/Repor
 const ListAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/ListAlcoholAndDrugTesting')));
 const AlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/AlcoholAndDrugTesting')));
 const UpdateAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/UpdateAlcoholAndDrugTesting')));
-const ReportAlcoholAndDrugTesting = Loadable(lazy(() => import('components/report/ReportAlcoholAndDrugTesting')));
+const ReportAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/ReportAlcoholAndDrugTesting')));
 
 const Turner = Loadable(lazy(() => import('modules/Turner/Turner')));
 
@@ -404,7 +404,7 @@ const MainRoutes = {
             element: <UpdateAlcoholAndDrugTesting />
         },
         {
-            path: '/alcoholanddrugtesting/report',
+            path: '/alcoholanddrugtesting/report/:id',
             element: <ReportAlcoholAndDrugTesting />
         },
         /* Render de Turner */

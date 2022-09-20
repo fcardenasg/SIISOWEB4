@@ -451,7 +451,7 @@ const Attention = () => {
                                                 />
                                             </Grid>
 
-                                            {motivo === DefaultValue.AT_PAD_MOTIVO ?
+                                            {motivo === DefaultValue.PAD_MOTIVO_SOSPECHA ?
                                                 <Fragment>
                                                     <Grid item xs={3}>
                                                         <InputOnChange
@@ -501,7 +501,7 @@ const Attention = () => {
                                                         disabled
                                                         type="number"
                                                         label="IMC"
-                                                        onChange={(e) => setIMC(e?.target.value)}
+                                                        onChange={(e) => setIMC(e.target.value)}
                                                         value={imc}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />

@@ -1,19 +1,65 @@
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import { useTheme } from '@mui/material/styles';
 import { Button, Card, CardContent, CardMedia, Chip, Grid, Typography } from '@mui/material';
 
+import { DeleteAttention } from 'api/clients/AttentionClient';
+import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { ColorDrummondltd } from 'themes/colors';
 import Avatar from 'ui-component/extended/Avatar';
 import { gridSpacing } from 'store/constant';
 import { IconEye, IconCircleMinus } from '@tabler/icons';
 import { DefaultValue } from 'components/helpers/Enums';
+import MenuOptions from './MenuOptions';
+import { UpdateAttentions } from 'api/clients/AttentionClient';
+import { PutAttention } from 'formatdata/AttentionForm';
 
-const ViewProgramming = ({ programming, onClickDelete }) => {
+const ViewProgramming = ({ programming, getAll }) => {
     const navigate = useNavigate();
     const theme = useTheme();
+
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [openDelete, setOpenDelete] = useState(false);
+
+    const handleUpdateAttention = async () => {
+        try {
+            const DataToUpdate = PutAttention(programming.id, programming.documento, programming.fecha, programming.sede,
+                programming.tipo, programming.atencion, programming.estadoCaso, programming.observaciones, programming.numeroHistoria,
+                'PENDIENTE POR ATENCIÓN', programming.contingencia, programming.turno, programming.diaTurno, programming.motivo,
+                programming.medico, programming.docSolicitante, programming.talla, programming.peso, programming.iMC,
+                programming.usuarioCierreAtencion, programming.fechaDigitacion, programming.fechaCierreAtencion, programming.duracion,
+                programming.usuarioRegistro, programming.fechaRegistro, programming.usuarioModifico, programming.fechaModifico);
+
+            const result = await UpdateAttentions(DataToUpdate);
+            if (result.status === 200) {
+                setOpenSuccess(true);
+                setAnchorEl(null);
+                getAll();
+            }
+        } catch (error) { setErrorMessage(`${error}`) }
+    }
+
+    const onClickDelete = async (id) => {
+        try {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteAttention(id);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                        getAll();
+                    }
+                }
+            });
+        } catch (error) { }
+    };
 
     const handleClick = () => {
         try {
@@ -49,7 +95,7 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
         } catch (error) { }
     }
 
-    var disabledButon = programming.estadoPac === 'PENDIENTE POR ATENCIÓN' ? false :
+    const disabledButon = programming.estadoPac === 'PENDIENTE POR ATENCIÓN' ? false :
         programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' ? true :
             programming.estadoPac === 'ATENDIDO' ? true : false;
 
@@ -73,6 +119,10 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
                 textAlign: 'center'
             }}
         >
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <CardMedia component="div" title="Atención" sx={{ height: '90px', bgcolor: ColorCard }}>
                 <Typography variant="h6" sx={{
                     pt: programming.nameAtencion === 'PRUEBAS DE ALCOHOL Y DROGAS' ?
@@ -89,19 +139,33 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
                             </Grid>
                         </Grid>
                     </Grid>
+
                     <Grid item xs={12} alignItems="center">
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
-                                <Typography variant="h4">{programming.nameEmpleado}</Typography>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={9}>
+                                        <Typography variant="h6"><b>{programming.nameEmpleado}</b></Typography>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <MenuOptions
+                                            setAnchorEl={setAnchorEl}
+                                            anchorEl={anchorEl}
+                                            onClickEnable={handleUpdateAttention}
+                                        />
+                                    </Grid>
+                                </Grid>
                             </Grid>
 
                             <Grid item xs={12} alignItems="center">
                                 <Grid container direction="row" justifyContent="space-between" alignItems="center">
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <Typography variant="body2">{programming.empleadoGenero}</Typography>
+                                    <Grid item xs={6}>
+                                        <Typography variant="h6">{programming.empleadoGenero}</Typography>
                                     </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <Typography variant="body2">{GetEdad(new Date(programming.empleadoFechaNacimiento))} AÑOS</Typography>
+
+                                    <Grid item xs={6}>
+                                        <Typography variant="h6">{GetEdad(new Date(programming.empleadoFechaNacimiento))} AÑOS</Typography>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -120,12 +184,13 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
                     </Grid>
                     <Grid item xs={12}>
                         <Grid container spacing={1}>
-                            <Grid item xs={12} md={6}>
-                                <Typography variant="h5">FECHA: </Typography>
+                            <Grid item xs={6}>
+                                <Typography variant="h6"><b>FECHA:</b> </Typography>
                                 <Typography variant="h6">{ViewFormat(programming.fecha)}</Typography>
                             </Grid>
-                            <Grid item xs={12} md={6}>
-                                <Typography variant="h5">SEDE: </Typography>
+
+                            <Grid item xs={6}>
+                                <Typography variant="h6"><b>SEDE:</b> </Typography>
                                 <Typography variant="h6">{programming.nameSede}</Typography>
                             </Grid>
                         </Grid>
@@ -136,6 +201,7 @@ const ViewProgramming = ({ programming, onClickDelete }) => {
                             Atender
                         </Button>
                     </Grid>
+
                     <Grid item xs={12}>
                         <Button disabled={disabledButon} variant="outlined" color="error" onClick={() => onClickDelete(programming.id)} fullWidth startIcon={<IconCircleMinus />}>
                             Anular
