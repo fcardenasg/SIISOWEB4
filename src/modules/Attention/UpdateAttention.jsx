@@ -443,7 +443,7 @@ const UpdateAttention = () => {
                                                 />
                                             </Grid>
 
-                                            {motivo === DefaultValue.AT_PAD_MOTIVO ?
+                                            {motivo === DefaultValue.PAD_MOTIVO_SOSPECHA ?
                                                 <Fragment>
                                                     <Grid item xs={3}>
                                                         <InputOnChange

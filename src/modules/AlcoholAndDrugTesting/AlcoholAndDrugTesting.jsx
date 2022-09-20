@@ -184,8 +184,8 @@ const AlcoholAndDrugTesting = () => {
 
     const handleClick = async (datos) => {
         try {
-            var MotivoAsistencia = realizada == DefaultValue.Opcion_SI ? 1 : datos.idMotivoAsis;
-            var Observacion = realizada == DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
+            var MotivoAsistencia = realizada === DefaultValue.Opcion_SI ? 1 : datos.idMotivoAsis;
+            var Observacion = realizada === DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
 
             const DataToInsert = PostAlcoholAndDrugTesting(documento, FormatDate(datos.fecha), 0, datos.idMotivoPrueba, datos.sustancia1,
                 datos.idMuestra1, cocaina, datos.sustancia2, datos.idMuestra2, marihuana, datos.sustancia3, datos.idMuestra3,

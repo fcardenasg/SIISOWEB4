@@ -82,13 +82,13 @@ const headCells = [
     },
 
     {
-        id: 'celularEmpleado',
+        id: 'nameTelefono',
         numeric: false,
         label: 'Celular',
         align: 'left'
     },
     {
-        id: 'emailEmpleado',
+        id: 'nameCorreo',
         numeric: false,
         label: 'Email',
         align: 'left'
@@ -215,7 +215,7 @@ const ListAlcoholAndDrugTesting = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -229,9 +229,7 @@ const ListAlcoholAndDrugTesting = () => {
                 setLsAlcoholAndDrugTesting(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             }
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -246,7 +244,7 @@ const ListAlcoholAndDrugTesting = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameEmpleado', 'celularEmpleado', 'emailEmpleado', 'fecha'];
+                const properties = ['documento', 'nameEmpleado', 'nameTelefono', 'nameCorreo', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -282,7 +280,7 @@ const ListAlcoholAndDrugTesting = () => {
     };
 
     const handleClick = (event, id) => {
-        setIdCheck(id);
+        if (idCheck === '') setIdCheck(id); else setIdCheck('');
 
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
@@ -316,15 +314,13 @@ const ListAlcoholAndDrugTesting = () => {
                     const result = await DeleteAlcoholAndDrugTesting(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
+                        setSelected([]);
+                        GetAll();
                     }
-                    setSelected([]);
-                    GetAll();
                 } else
                     setSelected([]);
             });
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -365,8 +361,8 @@ const ListAlcoholAndDrugTesting = () => {
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombre del Empleado" value="nameEmpleado" />
 
-                                <ExcelColumn label="Celular" value="celularEmpleado" />
-                                <ExcelColumn label="Email" value="emailEmpleado" />
+                                <ExcelColumn label="Celular" value="nameTelefono" />
+                                <ExcelColumn label="Email" value="nameCorreo" />
 
                                 <ExcelColumn label="Motivo" value="nameMotivo" />
                                 <ExcelColumn label="Sustancia" value="sustancia1" />
@@ -406,8 +402,8 @@ const ListAlcoholAndDrugTesting = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/alcoholanddrugtesting/report')}>
-                            <IconButton size="large">
+                        <Tooltip title="Impresión" onClick={() => navigate(`/alcoholanddrugtesting/report/${idCheck}`)}>
+                            <IconButton disabled={idCheck === '' ? true : false} size="large">
                                 <PrintIcon />
                             </IconButton>
                         </Tooltip>
@@ -504,7 +500,7 @@ const ListAlcoholAndDrugTesting = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.celularEmpleado}
+                                                {row.nameTelefono}
                                             </Typography>
                                         </TableCell>
 
@@ -519,7 +515,7 @@ const ListAlcoholAndDrugTesting = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.emailEmpleado}
+                                                {row.nameCorreo}
                                             </Typography>
                                         </TableCell>
 
