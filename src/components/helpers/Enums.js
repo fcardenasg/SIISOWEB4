@@ -36,7 +36,7 @@ export const CodCatalogo = {
     PANO_RIESGO: 128,
     PANO_GRADO_CONSINEPP: 131,
 
-    PARACLINICO_LECTURA: 168,
+    PARACLINICO_Interpretacion: 169,
 
     PARACLINICO_CONTROL: 169,
 
