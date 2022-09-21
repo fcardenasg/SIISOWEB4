@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
-import * as Yup from "yup";
+import * as yup from "yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
@@ -20,9 +20,9 @@ import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
-const validationSchema = Yup.object().shape({
-    nombre: Yup.string().required(`${ValidationMessage.Requerido}`),
-}).required();
+const validationSchema = yup.object().shape({
+    nombre: yup.string().required(`${ValidationMessage.Requerido}`),
+});
 
 const TypeCatalog = () => {
     const { user } = useAuth();
@@ -38,7 +38,7 @@ const TypeCatalog = () => {
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, reset, formState: { errors } } = methods;
 
     const handleClick = async (datos) => {
         try {
@@ -63,39 +63,40 @@ const TypeCatalog = () => {
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            fullWidth
-                            name="nombre"
-                            label="Nombre"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
-                        />
-                    </FormProvider>
-                </Grid>
-            </Grid>
-
-            <Grid item sx={{ pt: 4 }} xs={12}>
+            <form onSubmit={handleSubmit(handleClick)}>
                 <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <AnimateButton>
-                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                {TitleButton.Guardar}
-                            </Button>
-                        </AnimateButton>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <AnimateButton>
-                            <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
-                                {TitleButton.Cancelar}
-                            </Button>
-                        </AnimateButton>
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                name="nombre"
+                                label="Nombre"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.nombre}
+                            />
+                        </FormProvider>
                     </Grid>
                 </Grid>
-            </Grid>
+
+                <Grid item sx={{ pt: 4 }} xs={12}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button variant="contained" fullWidth type='submit'>
+                                    {TitleButton.Guardar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </form>
         </MainCard>
     );
 };

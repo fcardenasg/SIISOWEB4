@@ -19,8 +19,6 @@ const HeaderWrapper = styled('div')(({ theme }) => ({
     }
 }));
 
-// =============================|| LANDING MAIN ||============================= //
-
 const Landing = () => (
     <Fragment>
 

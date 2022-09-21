@@ -11,13 +11,10 @@ const FooterWrapper = styled('div')(({ theme }) => ({
     width: '100%',
 
     padding: '20px 0',
+    background: '#fafafa',
     color: '#fff',
-    background: ColorDrummondltd.GrayDrummond,
     textAlign: 'center'
 }));
-
-
-// ==============================|| LANDING - FOOTER PAGE ||============================== //
 
 const FooterPage = () => {
 
@@ -25,7 +22,7 @@ const FooterPage = () => {
         <Fragment>
             <FooterWrapper>
                 <Container>
-                    <Typography variant="h5" component="div" color="inherit">
+                    <Typography variant="h6" component="div" sx={{ color: ColorDrummondltd.GrayDrummond, }}>
                         <b>&#169;</b>Copyright 2022 Drummond Ltd. Colombia - V 4.0.
                         Departamento de salud ocupacional
                     </Typography>

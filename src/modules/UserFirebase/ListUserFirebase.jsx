@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -25,12 +26,14 @@ import {
     Button
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
+import { IconFileExport } from '@tabler/icons';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllTemplate, DeleteTemplate } from 'api/clients/TemplateClient';
+
+import firebase from 'firebase/app';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -38,8 +41,7 @@ import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
-import { IconFileExport } from '@tabler/icons';
-import { ViewFormat } from 'components/helpers/Format';
+import { DeleteUser, GetAllUser } from 'api/clients/UserClient';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -72,25 +74,19 @@ const headCells = [
     {
         id: 'id',
         numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
-        id: 'nameCIE11',
-        numeric: false,
-        label: 'CIE11',
+        label: 'UID',
         align: 'left'
     },
     {
-        id: 'usuario',
+        id: 'correo',
         numeric: false,
-        label: 'Usuario',
+        label: 'Correo',
         align: 'left'
     },
     {
-        id: 'fechaRegistro',
+        id: 'rol',
         numeric: false,
-        label: 'Fecha',
+        label: 'Rol Usuario',
         align: 'left'
     }
 ];
@@ -201,33 +197,40 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListTemplate = () => {
+const ListUserFirebase = () => {
     const navigate = useNavigate();
-    const [lsTemplate, setLsTemplate] = useState([]);
+    const [lsUser, setLsUser] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [idCheck, setIdCheck] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('fechaRegistro');
+    const [orderBy, setOrderBy] = useState('rol');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function getAll() {
+    async function GetAll() {
         try {
-            const lsServer = await GetAllTemplate(0, 0);
-            if (lsServer.status === 200) {
-                setLsTemplate(lsServer.data.entities);
-                setRows(lsServer.data.entities);
-            }
+            await firebase.firestore().collection('Usuarios').get()
+                .then(result => {
+                    const datos = [];
+
+                    result.forEach(doc => {
+                        console.log("doc =", doc);
+
+                        datos.push({ ...doc.data(), id: doc.id })
+                    });
+                    setLsUser(datos);
+                    setRows(datos);
+                });
         } catch (error) { }
     }
 
     useEffect(() => {
-        getAll();
+        GetAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -238,7 +241,7 @@ const ListTemplate = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameCIE11', 'usuario', 'fechaRegistro'];
+                const properties = ['id', 'correo', 'rol'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -252,9 +255,9 @@ const ListTemplate = () => {
                 }
                 return matches;
             });
-            setLsTemplate(newRows);
+            setLsUser(newRows);
         } else {
-            setLsTemplate(rows);
+            setLsUser(rows);
         }
     };
 
@@ -267,7 +270,7 @@ const ListTemplate = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = lsTemplate.map((n) => n.id);
+            const newSelectedId = lsUser.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -306,12 +309,13 @@ const ListTemplate = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteTemplate(idCheck);
+                    const result = await DeleteUser(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
                     }
+                    setSearch('');
                     setSelected([]);
-                    getAll();
+                    GetAll();
                 } else
                     setSelected([]);
             });
@@ -321,10 +325,10 @@ const ListTemplate = () => {
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsUser.length) : 0;
 
     return (
-        <MainCard title="Lista de Plantilla" content={false}>
+        <MainCard title="Lista de Usuarios" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -350,22 +354,29 @@ const ListTemplate = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Listado de Plantilla">
-                            <ExcelSheet data={lsTemplate} name="Plantilla">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="DX" value="nameCIE11" />
-                                <ExcelColumn label="Usuario" value="usuario" />
-                                <ExcelColumn label="Descripción" value="descripcion" />
-
-                                <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
-                                <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha Modifico" value={(fe) => ViewFormat(fe.fechaModifico)} />
+                        } filename="Usuarios">
+                            <ExcelSheet data={lsUser} name="Usuarios">
+                                <ExcelColumn label="ID" value="id" />
+                                <ExcelColumn label="Documento" value="documento" />
+                                <ExcelColumn label="Nombre" value="nombre" />
+                                <ExcelColumn label="Teléfono" value="telefono" />
+                                <ExcelColumn label="Correo" value="correo" />
+                                <ExcelColumn label="Rol de Usuario" value="rolUsuario" />
+                                <ExcelColumn label="Especialidad" value="especialidad" />
+                                <ExcelColumn label="Registro Medico" value="registroMedico" />
+                                <ExcelColumn label="Licencia" value="licencia" />
+                                <ExcelColumn label="Tarjeta Profesional" value="tarjetaProfesional" />
                             </ExcelSheet>
                         </ExcelFile>
 
+                        <Tooltip title="Impresión" onClick={() => navigate('/userfire/report')}>
+                            <IconButton size="large">
+                                <PrintIcon />
+                            </IconButton>
+                        </Tooltip>
+
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/template/add")}>
+                            onClick={() => navigate("/userfire/add")}>
                             {TitleButton.Agregar}
                         </Button>
 
@@ -381,15 +392,16 @@ const ListTemplate = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsTemplate.length}
+                        rowCount={lsUser.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(lsTemplate, getComparator(order, orderBy))
+                        {stableSort(lsUser, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
+
                                 if (typeof row === 'string') return null;
 
                                 const isItemSelected = isSelected(row.id);
@@ -420,13 +432,12 @@ const ListTemplate = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                #{row.id}
+                                                {row.id}
                                             </Typography>
                                         </TableCell>
 
@@ -441,7 +452,7 @@ const ListTemplate = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameCIE11}
+                                                {row.correo}
                                             </Typography>
                                         </TableCell>
 
@@ -456,27 +467,12 @@ const ListTemplate = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.usuario}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {ViewFormat(row.fechaRegistro)}
+                                                {row.rol}
                                             </Typography>
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/template/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/userfire/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -501,7 +497,7 @@ const ListTemplate = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsTemplate.length}
+                count={lsUser.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -511,4 +507,4 @@ const ListTemplate = () => {
     );
 };
 
-export default ListTemplate;
+export default ListUserFirebase;

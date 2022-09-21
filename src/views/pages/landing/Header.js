@@ -88,17 +88,31 @@ const HeaderPage = () => {
                                 }}
                             >
                                 <Grid container spacing={2} sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                                    <Grid item>
+                                    <Grid item xs={5}>
                                         <AnimateButton>
                                             <Button
+                                                fullWidth
                                                 component={RouterLink}
                                                 to="/dashboard/select"
                                                 target="_blank"
                                                 size="large"
                                                 variant="contained"
-                                                color="secondary"
+                                                color="primary"
                                             >
                                                 Iniciar sesión
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={5}>
+                                        <AnimateButton>
+                                            <Button
+                                                fullWidth
+                                                size="large"
+                                                variant="outlined"
+                                                color="primary"
+                                            >
+                                                SIAE
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
