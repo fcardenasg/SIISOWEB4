@@ -6,7 +6,7 @@ import {
     TextField,
 } from '@mui/material';
 
-const InputText = ({ bug, defaultValue, label, size, fullWidth = true, name, required, ...others }) => {
+const InputText = ({ bug, defaultValue, label, size, fullWidth = true, name, ...others }) => {
 
     return (
         <>
@@ -19,8 +19,8 @@ const InputText = ({ bug, defaultValue, label, size, fullWidth = true, name, req
                         label={label}
                         size={size}
                         InputLabelProps={{
-                            className: required ? 'required-label' : '',
-                            required: required || false
+                            className: bug ? 'required-label' : '',
+                            required: bug || false
                         }}
                         error={bug ? true : false}
                         fullWidth
@@ -30,7 +30,7 @@ const InputText = ({ bug, defaultValue, label, size, fullWidth = true, name, req
             />
             {bug && (
                 <Grid item xs={12}>
-                    <FormHelperText error>{bug}</FormHelperText>
+                    <FormHelperText error>{bug.message}</FormHelperText>
                 </Grid>
             )}
         </>
@@ -48,3 +48,14 @@ InputText.propTypes = {
     required: PropTypes.bool,
     fullWidth: PropTypes.bool
 };
+
+{/* <Controller render={({ field, formState }) => (
+    <TextField
+        {...field}
+        label="display name"
+        error={!!formState.errors?.displayName}
+        helperText={!!formState.errors?.displayName ? formState.errors?.displayName.message : null}
+    />
+
+)} name="displayName" control={control} defaultValue=""
+/> */}

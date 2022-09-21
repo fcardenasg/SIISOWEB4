@@ -44,16 +44,18 @@ const Catalog = () => {
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
     useEffect(() => {
         async function GetAll() {
             try {
                 const lsServer = await GetAllTypeCatalog(0, 0);
+
                 var result = lsServer.data.entities.map((item) => ({
                     value: item.id,
                     label: item.nombre
                 }));
+                
                 setTypeCatalog(result);
             } catch (error) {
                 console.log(error);
@@ -96,7 +98,7 @@ const Catalog = () => {
                                 defaultValue=""
                                 options={typeCatalog}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.idTipoCatalogo}
                             />
                         </FormProvider>
                     </Grid>
@@ -109,7 +111,7 @@ const Catalog = () => {
                                 name="codigo"
                                 label="Código"
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.codigo}
                             />
                         </FormProvider>
                     </Grid>
@@ -122,7 +124,7 @@ const Catalog = () => {
                                 name="nombre"
                                 label="Nombre"
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.nombre}
                             />
                         </FormProvider>
                     </Grid>

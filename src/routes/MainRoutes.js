@@ -154,6 +154,10 @@ const ListUser = Loadable(lazy(() => import('modules/User/ListUser')));
 const UpdateUser = Loadable(lazy(() => import('modules/User/UpdateUser')));
 const User = Loadable(lazy(() => import('modules/User/User')));
 
+const ListUserFirebase = Loadable(lazy(() => import('modules/UserFirebase/ListUserFirebase')));
+const UpdateUserFirebase = Loadable(lazy(() => import('modules/UserFirebase/UpdateUserFirebase')));
+const UserFirebase = Loadable(lazy(() => import('modules/UserFirebase/UserFirebase')));
+
 const ListSGSST = Loadable(lazy(() => import('modules/SGSST/ListSGSST')));
 const UpdateSGSST = Loadable(lazy(() => import('modules/SGSST/UpdateSGSST')));
 const SGSST = Loadable(lazy(() => import('modules/SGSST/SGSST')));
@@ -647,6 +651,18 @@ const MainRoutes = {
         {
             path: '/user/update/:id',
             element: <UpdateUser />
+        },
+        {
+            path: '/userfire/list',
+            element: <ListUserFirebase />
+        },
+        {
+            path: '/userfire/add',
+            element: <UserFirebase />
+        },
+        {
+            path: '/userfire/update/:id',
+            element: <UpdateUserFirebase />
         },
         {
             path: '/sg-sst/list',

@@ -10,12 +10,6 @@ import {
 } from '@mui/material';
 
 const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others }) => {
-    let isError = false;
-    let errorMessage = '';
-    if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
-        isError = true;
-        errorMessage = bug[name].message;
-    }
 
     return (
         <>
@@ -23,10 +17,11 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others 
                 name={name}
                 defaultValue={defaultValue}
                 render={({ field }) => (
-                    <FormControl fullWidth error={isError}>
-                        <InputLabel htmlFor="my-input" id="demo-simple-select-label" /* sx={{ fontSize: 14 }} */>
+                    <FormControl fullWidth error={bug ? true : false} required={bug ? true : false}>
+                        <InputLabel htmlFor="my-input" id="demo-simple-select-label">
                             {label}
                         </InputLabel>
+
                         <Select
                             {...field}
                             labelId="demo-simple-select-label"
@@ -45,9 +40,9 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others 
                     </FormControl>
                 )}
             />
-            {errorMessage && (
+            {bug && (
                 <Grid item xs={12}>
-                    <FormHelperText error>{errorMessage}</FormHelperText>
+                    <FormHelperText error>{bug.message}</FormHelperText>
                 </Grid>
             )}
 

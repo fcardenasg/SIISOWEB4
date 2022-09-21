@@ -24,6 +24,12 @@ const pages = {
                     url: '/user/list',
                 },
                 {
+                    id: 'Usuarios',
+                    title: <FormattedMessage id="Usuarios Firebase" />,
+                    type: 'item',
+                    url: '/userfire/list',
+                },
+                {
                     id: 'forgot-password3',
                     title: <FormattedMessage id="forgot-password" />,
                     type: 'item',

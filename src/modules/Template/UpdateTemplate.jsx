@@ -12,230 +12,80 @@ import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
+import DetailedIcon from 'components/controllers/DetailedIcon';
+
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import Cargando from 'components/loading/Cargando';
 import { PutTemplate } from 'formatdata/TemplateForm';
-import SelectOnChange from 'components/input/SelectOnChange';
-import { GetByIdTemplate } from 'api/clients/TemplateClient';
-import {
-    GetAllBySegAgrupado,
-    GetAllBySegAfectado,
-    GetAllSegmentoAgrupado,
-    GetAllBySubsegmento,
-    GetAllByTipoAtencion,
-    GetAllTipoAtencion
-} from 'api/clients/OthersClients';
-import { SNACKBAR_OPEN } from 'store/actions';
-import { UpdateTemplates } from 'api/clients/TemplateClient';
+
+import { GetByIdTemplate, UpdateTemplates } from 'api/clients/TemplateClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { GetAllByAtencion } from 'api/clients/ItemsClient';
 import { FormatDate } from 'components/helpers/Format';
+import { GetAllCIE11 } from 'api/clients/CIE11Client';
 
 const validationSchema = yup.object().shape({
-    descripcion: yup.string().required(`${ValidationMessage.Requerido}`),
     idCIE11: yup.string().required(`${ValidationMessage.Requerido}`),
-    idItems: yup.string().required(`${ValidationMessage.Requerido}`),
+    descripcion: yup.string().required(`${ValidationMessage.Requerido}`),
 });
+
+const DetailIcons = [
+    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> }
+]
 
 const UpdateTemplate = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const theme = useTheme();
     const { id } = useParams();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [open, setOpen] = useState(false);
 
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
 
     const [lsTemplate, setLsTemplate] = useState([]);
-    const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
-    const [segmentoAgrupado, setSegmentoAgrupado] = useState('');
-    const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
-    const [segmentoAfectado, setSegmentoAfectado] = useState('');
-    const [lsSubsegmento, setLsSubsegmento] = useState([]);
-    const [subsegmento, setSubsegmento] = useState('');
     const [lsCie11, setLsCie11] = useState([]);
-    const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
-    const [tipoAtencion, setTipoAtencion] = useState('');
-    const [lsAtencion, setLsAtencion] = useState([]);
-    const [atencion, setAtencion] = useState('');
-    const [lsItems, setLsItems] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, errors } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
-    const handleChangeSegAgrupado = async (event) => {
+    async function getAll() {
         try {
-            setLsSegmentoAfectado([]); setLsSubsegmento([]); setLsCie11([]); setSegmentoAfectado('');
-            setSegmentoAgrupado(event.target.value);
+            const lsServerTemplate = await GetByIdTemplate(id);
+            if (lsServerTemplate.status === 200) {
+                setLsTemplate(lsServerTemplate.data);
+            }
 
-            const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
-            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                value: item.id,
-                label: item.descripcion
-            }));
-            setLsSegmentoAfectado(resultSegAfectado);
 
-            console.log(event.target.value);
-        } catch (error) {
-            console.log(error);
-            setLsSegmentoAfectado([]);
-        }
-    }
 
-    const handleChangeSegAfectado = async (event) => {
-        try {
-            setLsSubsegmento([]); setLsCie11([]); setSubsegmento('');
-            setSegmentoAfectado(event.target.value);
-
-            const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
-            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                value: item.id,
-                label: item.descripcion
-            }));
-            setLsSubsegmento(resultSubsegmento);
-
-            console.log(event.target.value);
-        } catch (error) {
-            console.log(error);
-            setLsSubsegmento([]);
-        }
-    }
-
-    const handleChangeSubsegmento = async (event) => {
-        try {
-            setSubsegmento(event.target.value);
-
-            const lsServerCie11 = await GetAllBySubsegmento(event.target.value, 0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+            const lsServerCIE11 = await GetAllCIE11(0, 0);
+            var resultCIE11 = lsServerCIE11.data.entities.map((item) => ({
                 value: item.id,
                 label: item.dx
             }));
-            setLsCie11(resultCie11);
-
-            console.log(event.target.value);
-        } catch (error) {
-            console.log(error);
-            setLsCie11([]);
-        }
-    }
-
-    const handleChangeTipoAtencion = async (event) => {
-        try {
-            setLsAtencion([]); setLsItems([]); setAtencion('');
-            setTipoAtencion(event.target.value);
-
-            const lsServerTipoAtencion = await GetAllByTipoAtencion(0, 0, event.target.value);
-            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setLsAtencion(resultTipoAtencion);
-        } catch (error) {
-            console.log(error);
-            setLsAtencion([]);
-        }
-    }
-
-    const handleChangeAtencion = async (event) => {
-        try {
-            setAtencion(event.target.value);
-
-            const lsServerAtencion = await GetAllByAtencion(0, 0, event.target.value);
-            var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
-                value: item.id,
-                label: item.descripcion
-            }));
-            setLsItems(resultAtencion);
-        } catch (error) {
-            console.log(error);
-            setLsItems([]);
-        }
-    }
-
-    async function GetAll() {
-        try {
-            const serverData = await GetByIdTemplate(id);
-            if (serverData.status === 200) {
-                setSegmentoAgrupado(serverData.data.idSegmentoAgrupado);
-                setSegmentoAfectado(serverData.data.idSegmentoAfectado);
-                setSubsegmento(serverData.data.idSubsegmento);
-                setTipoAtencion(serverData.data.idTipoAtencion);
-                setAtencion(serverData.data.idAtencion);
-                setLsTemplate(serverData.data);
-
-                const lsServerSegAfectado = await GetAllBySegAgrupado(serverData.data.idSegmentoAgrupado, 0, 0);
-                var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.descripcion
-                }));
-                setLsSegmentoAfectado(resultSegAfectado);
-
-                const lsServerSubsegmento = await GetAllBySegAfectado(serverData.data.idSegmentoAfectado, 0, 0);
-                var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.descripcion
-                }));
-                setLsSubsegmento(resultSubsegmento);
-
-                const lsServerCie11 = await GetAllBySubsegmento(serverData.data.idSubsegmento, 0, 0);
-                var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.dx
-                }));
-                setLsCie11(resultCie11);
-
-                const lsServerTipoAtencion = await GetAllByTipoAtencion(0, 0, serverData.data.idTipoAtencion);
-                var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.nombre
-                }));
-                setLsAtencion(resultTipoAtencion);
-
-                const lsServerAtencion = await GetAllByAtencion(0, 0, serverData.data.idAtencion);
-                var resultAtencion = lsServerAtencion.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.descripcion
-                }));
-                setLsItems(resultAtencion);
-            }
-
-            const lsServerTipoAtencion = await GetAllTipoAtencion(0, 0);
-            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setLsTipoAtencion(resultTipoAtencion);
-
-            const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
-            var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setLsSegmentoAgrupado(resultSegAgrupado);
-        } catch (error) {
-            console.log(error);
-        }
+            setLsCie11(resultCIE11);
+        } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutTemplate(id, segmentoAgrupado, segmentoAfectado, subsegmento,
-                datos.idCIE11, "Usuario", tipoAtencion, atencion, datos.idItems, datos.descripcion,
+            const DataToUpdate = PutTemplate(id, 0, 0, 0,
+                datos.idCIE11, lsTemplate.usuario, 0, 0, 0, datos.descripcion,
                 lsTemplate.usuarioRegistro, lsTemplate.fechaRegistro, user.email, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -258,89 +108,15 @@ const UpdateTemplate = () => {
             {lsTemplate.length != 0 ?
                 <Fragment>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <SelectOnChange
-                                name="segmentoAgrupado"
-                                label="Segmento Agrupado"
-                                options={lsSegmentoAgrupado}
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={segmentoAgrupado}
-                                onChange={handleChangeSegAgrupado}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <SelectOnChange
-                                name="segmentoAfectado"
-                                label="Segmento Afectado"
-                                options={lsSegmentoAfectado}
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={segmentoAfectado}
-                                onChange={handleChangeSegAfectado}
-                                disabled={lsSegmentoAfectado.length != 0 ? false : true}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <SelectOnChange
-                                name="idSubsegmento"
-                                label="Subsegmento"
-                                options={lsSubsegmento}
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={subsegmento}
-                                onChange={handleChangeSubsegmento}
-                                disabled={lsSubsegmento.length != 0 ? false : true}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
+                        <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idCIE11"
                                     label="CIE11"
                                     defaultValue={lsTemplate.idCIE11}
                                     options={lsCie11}
-                                    disabled={lsCie11.length != 0 ? false : true}
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <SelectOnChange
-                                name="idTipoAtencion"
-                                label="Tipo de Atención"
-                                options={lsTipoAtencion}
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={tipoAtencion}
-                                onChange={handleChangeTipoAtencion}
-                                disabled={lsTipoAtencion.length != 0 ? false : true}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <SelectOnChange
-                                name="idAtencion"
-                                label="Atención"
-                                options={lsAtencion}
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={atencion}
-                                onChange={handleChangeAtencion}
-                                disabled={lsAtencion.length != 0 ? false : true}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="idItems"
-                                    label="Items"
-                                    defaultValue={lsTemplate.idItems}
-                                    options={lsItems}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                    disabled={lsItems.length != 0 ? false : true}
+                                    bug={errors.idCIE11}
                                 />
                             </FormProvider>
                         </Grid>
@@ -349,15 +125,21 @@ const UpdateTemplate = () => {
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={lsTemplate.descripcion}
-                                    fullWidth
                                     multiline
-                                    rows={4}
+                                    rows={5}
                                     name="descripcion"
                                     label="Descripción"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.descripcion}
                                 />
                             </FormProvider>
+                        </Grid>
+                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                            <DetailedIcon
+                                title={DetailIcons[0].title}
+                                onClick={() => setOpen(true)}
+                                icons={DetailIcons[0].icons}
+                            />
                         </Grid>
                     </Grid>
 

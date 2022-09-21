@@ -247,7 +247,7 @@ export const TitleButton = {
 }
 
 export const ValidationMessage = {
-    Requerido: 'Este campo es requerido'
+    Requerido: 'Por favor ingrese la descripción'
 }
 
 export const Message = {

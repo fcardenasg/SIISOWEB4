@@ -49,8 +49,6 @@ const FirebaseRegister = ({ ...others }) => {
     const [level, setLevel] = useState();
     const { firebaseRegister, firebaseGoogleSignIn } = useAuth();
 
-    /* const firestore = getFirestore(config.firebase); */
-
     const googleHandler = async () => {
         try {
             await firebaseGoogleSignIn();
@@ -100,6 +98,7 @@ const FirebaseRegister = ({ ...others }) => {
                         </Button>
                     </AnimateButton>
                 </Grid>
+
                 <Grid item xs={12}>
                     <Box sx={{ alignItems: 'center', display: 'flex' }}>
                         <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
@@ -167,7 +166,7 @@ const FirebaseRegister = ({ ...others }) => {
                             correo: values.email,
                             rol: visitante
                         });
-                        
+
                     } catch (err) {
                         console.error(err);
                         if (scriptedRef.current) {
