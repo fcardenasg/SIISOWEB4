@@ -33,7 +33,7 @@ const pages = {
                     id: 'forgot-password3',
                     title: <FormattedMessage id="forgot-password" />,
                     type: 'item',
-                    url: '/user4/list',
+                    url: '/forgot-password/view',
                 },
                 {
                     id: 'check-mail3',

@@ -198,6 +198,8 @@ const ViewReprint = Loadable(lazy(() => import('modules/Reprint/ViewReprint')));
 const ViewExport = Loadable(lazy(() => import('modules/Export/ViewExport')));
 const ViewHistory = Loadable(lazy(() => import('modules/History/ViewHistory')));
 
+const ForgotPassword = Loadable(lazy(() => import('modules/ForgotPassword/ForgotPassword')));
+
 
 const MainRoutes = {
     path: '/',
@@ -788,6 +790,12 @@ const MainRoutes = {
         {
             path: '/history/list',
             element: <ViewHistory />
+        },
+
+        /* Render de Recuperar Contraseña */
+        {
+            path: '/forgot-password/view',
+            element: <ForgotPassword />
         },
 
 

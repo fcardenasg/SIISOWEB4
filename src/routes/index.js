@@ -10,11 +10,13 @@ import SelectionViewRoutes from './SelectionViewRoutes';
 import Loadable from 'ui-component/Loadable';
 
 const PagesLanding = Loadable(lazy(() => import('views/pages/landing')));
+const SIAE = Loadable(lazy(() => import('views/pages/siae/SIAE')));
 
 // ==============================|| ROUTING RENDER ||============================== //
 
 export default function ThemeRoutes() {
     return useRoutes([{ path: '/', element: <PagesLanding /> },
+    { path: '/siae', element: <SIAE /> },
         QuestionnaireRoutes,
         SelectionViewRoutes,
         AuthenticationRoutes,

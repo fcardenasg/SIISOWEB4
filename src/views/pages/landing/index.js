@@ -5,7 +5,6 @@ import Footer from './Footer';
 import Customization from 'layout/Customization';
 import AppBar from 'ui-component/extended/AppBar';
 import { Fragment } from 'react';
-import PaperHomePage from './Paper/PaperHomePage';
 
 const HeaderWrapper = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -25,7 +24,6 @@ const Landing = () => (
         <HeaderWrapper id="home">
             <AppBar />
             <Header />
-            <PaperHomePage />
         </HeaderWrapper>
 
         <Footer />
