@@ -67,15 +67,13 @@ const Laboratory = () => {
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [documento, setDocumento] = useState('');
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
-    const [lsConclusion, setLsConclusion] = useState([]);
+
     const [lsInterpretacion, setLsInterpretacion] = useState([]);
-    const [lsConducta, setLsConducta] = useState([]);
-    const [lsControl, setLsControl] = useState([]);
+
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
@@ -129,34 +127,12 @@ const Laboratory = () => {
     async function GetAll() {
         try {
 
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
-
-
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsMotivo(resultMotivo);
-
-            const lsServerConducta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
-            var resultConducta = lsServerConducta.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConducta(resultConducta);
-
-            const lsServerConclusion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
-            var resultConclusion = lsServerConclusion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConclusion(resultConclusion);
 
 
             const lsServerInterpretacion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_Interpretacion);
@@ -166,14 +142,6 @@ const Laboratory = () => {
             }));
             setLsInterpretacion(resultInterpretacion);
 
-       
-
-            const lsServerControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONTROL);
-            var resultControl = lsServerControl.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsControl(resultControl);
 
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
@@ -196,19 +164,26 @@ const Laboratory = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_VISIOMETRIA, documento,
-                FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
-                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, JSON.stringify(diagnosticoArray), datos.ojoIzquierdo, JSON.stringify(diagnosticoArray1), datos.add1, datos.idLecturaAdd, datos.idControl, datos.remitidoOftalmo,
-                datos.requiereLentes, JSON.stringify(diagnosticoArray2), DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
+            const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_LABORATORIO, documento,
+                FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
+                '', DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, JSON.stringify(diagnosticoArray),
+                datos.ojoIzquierdo, JSON.stringify(diagnosticoArray1), datos.add1, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                datos.remitidoOftalmo,
+                datos.requiereLentes, JSON.stringify(diagnosticoArray2), DefaultValue.SINREGISTRO_GLOBAL,
+                '', '', '', '', '', '', datos.resultadoColesterol,
+                datos.interpretacionColeste, datos.observacionColeste, datos.resultadoColesteHDL,
+                datos.interpretacionColesteHDL, datos.observacionColesteHDL, datos.dislipidemiaHDL, datos.resultadoTrigli,
+                datos.interpretacionTrigli, datos.observacionTrigli, datos.resultadoGlicemia, datos.interpretacionGlicemia,
+                datos.observacionGlicemia, datos.resultadoCreatinina, datos.interpretacionCreatinina, datos.observacionCreatinina, datos.resultadoBUN,
+                datos.interpretacionBUN, datos.observacionBUN, datos.idParcialOrina, datos.observacionParcialOrina,
+                datos.hemograma, datos.observacionHemograma, datos.gpt, datos.observacionGPT, datos.got, datos.observacionGOT, datos.bilirrubina,
+                datos.observacionBilirrubina, datos.bilirrubinaDirecta, datos.observacionBilirrubinaDirecta, false, false, false, false, false, false, false, false, false, false, false, false,
                 false, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, '', filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
-
+          
+                console.log("DataToInsert =", DataToInsert);
 
             if (Object.keys(datos.length !== 0)) {
                 if (filePdf) {
@@ -315,7 +290,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="ojoDerecho"
+                                            name="ResultadoColesterol"
                                             label="Resultado mg/dl"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -328,7 +303,7 @@ const Laboratory = () => {
                                 <Grid item xs={12} md={1} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idLecturaAdd"
+                                            name="interpretacionColeste"
                                             label="Interpretación"
                                             defaultValue=""
                                             options={lsInterpretacion}
@@ -344,7 +319,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="observacion"
+                                            name="observacionColeste"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
@@ -370,7 +345,6 @@ const Laboratory = () => {
                     </Grid>
 
 
-
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">COLESTEROL HDL (REF: HOMBRE=NORMAL  MAYOR A 35 MG/DL - MUJER =NORMAL MAYOR A 45 MG/DL)</Typography>}>
                             <Grid container spacing={2}>
@@ -380,7 +354,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="ojoDerecho"
+                                            name="resultadoColesteHDL"
                                             label="Resultado mg/dl"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -393,7 +367,7 @@ const Laboratory = () => {
                                 <Grid item xs={12} md={1} lg={5}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idLecturaAdd"
+                                            name="interpretacionColesteHDL"
                                             label="Interpretación"
                                             defaultValue=""
                                             options={lsInterpretacion}
@@ -407,8 +381,8 @@ const Laboratory = () => {
                                 <Grid item xs={12} md={1} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
-                                            label="Dislipidemia Mixta"
-                                            name="remitidoOftalmo"
+                                            label="dislipidemiaHDL"
+                                            name="dislipidemiaHDL"
                                             size={25}
                                             defaultValue={false}
                                         />
@@ -421,7 +395,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="observacion"
+                                            name="observacionColesteHDL"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
@@ -448,6 +422,7 @@ const Laboratory = () => {
 
 
 
+
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">TRIGLICÉRIDOS (REF: 0 - 200 MG/DL)</Typography>}>
                             <Grid container spacing={2}>
@@ -457,7 +432,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="ojoDerecho"
+                                            name="resultadoTrigli"
                                             label="Resultado mg/dl"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -470,7 +445,7 @@ const Laboratory = () => {
                                 <Grid item xs={12} md={1} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idLecturaAdd"
+                                            name="interpretacionTrigli"
                                             label="Interpretación"
                                             defaultValue=""
                                             options={lsInterpretacion}
@@ -486,7 +461,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="observacion"
+                                            name="observacionTrigli"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
@@ -513,6 +488,7 @@ const Laboratory = () => {
 
 
 
+
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">GLICEMIA (REF: 70 - 100 MG/DL)</Typography>}>
                             <Grid container spacing={2}>
@@ -522,7 +498,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="ojoDerecho"
+                                            name="resultadoGlicemia"
                                             label="Resultado mg/dl"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -535,7 +511,7 @@ const Laboratory = () => {
                                 <Grid item xs={12} md={1} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idLecturaAdd"
+                                            name="interpretacionGlicemia"
                                             label="Interpretacion"
                                             defaultValue=""
                                             options={lsInterpretacion}
@@ -551,7 +527,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="observacion"
+                                            name="observacionGlicemia"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
@@ -575,6 +551,8 @@ const Laboratory = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
+
+
 
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">CREATININA (REF: 0,5 - 1,5 MG/DL)</Typography>}>
@@ -585,7 +563,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="ojoDerecho"
+                                            name="resultadoCreatinina"
                                             label="Resultado mg/dl"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -598,7 +576,7 @@ const Laboratory = () => {
                                 <Grid item xs={12} md={1} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idLecturaAdd"
+                                            name="interpretacionCreatinina"
                                             label="lsInterpretacion"
                                             defaultValue=""
                                             options={lsInterpretacion}
@@ -614,7 +592,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="observacion"
+                                            name="observacionCreatinina"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
@@ -638,6 +616,11 @@ const Laboratory = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
+
+
+                    ,
+
+
 
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">BUN (Ref: 5 - 25 mg/dl)</Typography>}>
@@ -648,7 +631,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="ojoDerecho"
+                                            name="resultadoBUN"
                                             label="Resultado mg/dl"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -661,7 +644,7 @@ const Laboratory = () => {
                                 <Grid item xs={12} md={1} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idLecturaAdd"
+                                            name="interpretacionBUN"
                                             label="lsInterpretacion"
                                             defaultValue=""
                                             options={lsInterpretacion}
@@ -677,7 +660,7 @@ const Laboratory = () => {
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="observacion"
+                                            name="observacionBUN"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
@@ -702,221 +685,229 @@ const Laboratory = () => {
                         </SubCard>
                     </Grid>
 
+
+
+
                     <Grid item xs={12}>
-                
-                            <Grid container spacing={2}>
+
+                        <Grid container spacing={2}>
 
                             <Grid item xs={12} md={1} lg={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idLecturaAdd"
-                                            label="Parcial de Orina"
-                                            defaultValue=""
-                                            options={lsInterpretacion}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={8}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="ojoDerecho"
-                                            label="Observaciones"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idParcialOrina"
+                                        label="Parcial de Orina"
+                                        defaultValue=""
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
                             </Grid>
-                  
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="observacionParcialOrina"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+
+
+                        </Grid>
+
                     </Grid>
 
                     <Grid item xs={12}>
-                
-                <Grid container spacing={2}>
 
-                <Grid item xs={12} md={1} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idLecturaAdd"
-                                label="Hemograma"
-                                defaultValue=""
-                                options={lsInterpretacion}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="hemograma"
+                                        label="Hemograma"
+                                        defaultValue=""
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="observacionHemograma"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+
+
+                        </Grid>
+
                     </Grid>
 
-                    <Grid item xs={12} md={1} lg={8}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="ojoDerecho"
-                                label="Observaciones"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                    <Grid item xs={12}>
+
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="gpt"
+                                        label="GPT - (Ref: 7 - 33 Normal)"
+                                        defaultValue=""
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="observacionGPT"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
 
 
-                </Grid>
-      
-        </Grid>
+                        </Grid>
 
-        <Grid item xs={12}>
-                
-                <Grid container spacing={2}>
-
-                <Grid item xs={12} md={1} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idLecturaAdd"
-                                label="GPT - (Ref: 7 - 33 Normal)"
-                                defaultValue=""
-                                options={lsInterpretacion}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={12} md={1} lg={8}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="ojoDerecho"
-                                label="Observaciones"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-
-
-                </Grid>
-      
-        </Grid>
-
-        <Grid item xs={12}>
-                
-                <Grid container spacing={2}>
-
-                <Grid item xs={12} md={1} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idLecturaAdd"
-                                label="GoT - (Ref: 5 - 32 Normal)"
-                                defaultValue=""
-                                options={lsInterpretacion}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={12} md={1} lg={8}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="ojoDerecho"
-                                label="Observaciones"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
                     </Grid>
 
 
 
-                </Grid>
-      
-        </Grid>
 
-        <Grid item xs={12}>
-                
-                <Grid container spacing={2}>
+                    <Grid item xs={12}>
 
-                <Grid item xs={12} md={1} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idLecturaAdd"
-                                label="Bilirrubina Total"
-                                defaultValue=""
-                                options={lsInterpretacion}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="got"
+                                        label="GoT - (Ref: 5 - 32 Normal)"
+                                        defaultValue=""
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="observacionGOT"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+
+
+                        </Grid>
+
                     </Grid>
 
-                    <Grid item xs={12} md={1} lg={8}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="ojoDerecho"
-                                label="Observaciones"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
+                    <Grid item xs={12}>
+
+
+
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="bilirrubina"
+                                        label="Bilirrubina Total"
+                                        defaultValue=""
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="observacionBilirrubina"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+
+
+                        </Grid>
+
                     </Grid>
 
+                    <Grid item xs={12}>
+
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="bilirrubinaDirecta"
+                                        label="Bilirrubina Directa"
+                                        defaultValue=""
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        name="observacionBilirrubinaDirecta"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
 
-                </Grid>
-      
-        </Grid>
 
-        <Grid item xs={12}>
-                
-                <Grid container spacing={2}>
+                        </Grid>
 
-                <Grid item xs={12} md={1} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idLecturaAdd"
-                                label="Bilirrubina Directa"
-                                defaultValue=""
-                                options={lsInterpretacion}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
                     </Grid>
-
-                    <Grid item xs={12} md={1} lg={8}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="ojoDerecho"
-                                label="Observaciones"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-
-
-                </Grid>
-      
-        </Grid>
 
 
 
@@ -963,7 +954,7 @@ const Laboratory = () => {
 
                                     <Grid item xs={6}>
                                         <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/visiometrics/list")}>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/laboratory/list")}>
                                                 {TitleButton.Cancelar}
                                             </Button>
                                         </AnimateButton>
