@@ -38,8 +38,7 @@ import RemoveModeratorIcon from '@mui/icons-material/RemoveModerator';
 import userImg from 'assets/img/user.png';
 import { PutWorkHistoryRiskDLTD } from 'formatdata/WorkHistoryRiskForm';
 
-const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) => {
-    let openRisk = open;
+const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRisk, title }) => {
 
     const { user } = useAuth();
     const methods = useForm();
@@ -49,7 +48,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
     const [openUpdate, setOpenUpdate] = useState(false);
 
     useEffect(() => {
-        async function GetAll() {
+        async function getAllRisk() {
             try {
                 if (idRisk !== 0) {
                     if (diferen == "DLTD") {
@@ -69,7 +68,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
             }
         }
 
-        GetAll();
+        getAllRisk();
     }, [idRisk]);
 
     const handleClick = async (datos) => {
@@ -82,20 +81,20 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
                 if (diferen == "DLTD") {
                     const result = await UpdateWorkHistoryRisks(DataToInsert);
                     if (result.status === 200) {
-                        openRisk = false;
                         setOpenUpdate(true);
                         reset();
                         getAll();
+                        getSumaRiesgo();
                     }
                 }
 
                 if (diferen == "COMPANY") {
                     const result = await UpdateWorkHistoryRisksCompany(DataToInsert);
                     if (result.status === 200) {
-                        openRisk = false;
                         setOpenUpdate(true);
                         reset();
                         getAll();
+                        getSumaRiesgo();
                     }
                 }
             }
@@ -111,8 +110,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
 
             <Dialog
-                open={openRisk}
-                onClose={onClose}
+                open={open}
                 sx={{
                     '&>div:nth-child(3)': {
                         '&>div': {
@@ -257,5 +255,6 @@ ModalRisk.propTypes = {
     diferen: PropTypes.string,
     idRisk: PropTypes.number,
     onClose: PropTypes.func,
+    getSumaRiesgo: PropTypes.func,
     getAll: PropTypes.func,
 };

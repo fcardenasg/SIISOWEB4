@@ -152,7 +152,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                 <Grid container>
                     <Grid item xs={4}>
                         <Typography variant="h5">
-                            Cargo:
+                            Roster Position:
                             <Typography variant="h6">
                                 {lsEmployee.nameRosterPosition}
                             </Typography>

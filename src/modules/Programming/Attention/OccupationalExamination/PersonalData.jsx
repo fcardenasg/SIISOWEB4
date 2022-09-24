@@ -13,7 +13,6 @@ import User from 'assets/img/user.png'
 import Avatar from 'ui-component/extended/Avatar';
 import SubCard from 'ui-component/cards/SubCard';
 import { gridSpacing } from 'store/constant';
-import FullScreenDialog from 'components/controllers/FullScreenDialog'
 import { IconEdit } from '@tabler/icons';
 import PhonelinkRingTwoToneIcon from '@mui/icons-material/PhonelinkRingTwoTone';
 import PinDropTwoToneIcon from '@mui/icons-material/PinDropTwoTone';
@@ -72,7 +71,7 @@ const DetailsViewTwo = [
     { name: 'Turno', }, { name: 'Tipo Contrato', }, { name: 'Fecha Contrato', }, { name: 'Antiguedad', }, { name: 'GES', },
 ]
 
-const PersonalData = ({ lsEmployee = [], handleLoadingDocument }) => {
+const PersonalData = ({ lsEmployee = [], getDataAttention }) => {
     const [openUpdate, setOpenUpdate] = useState(false);
 
     return (
@@ -80,10 +79,10 @@ const PersonalData = ({ lsEmployee = [], handleLoadingDocument }) => {
             <ControlModal
                 title="ACTUALIZAR EMPLEADO"
                 open={openUpdate}
-                onClose={() => { setOpenUpdate(false); handleLoadingDocument(lsEmployee.documento) }}
+                onClose={() => setOpenUpdate(false)}
                 maxWidth="xl"
             >
-                <UpdateEmployee idEmpleado={lsEmployee.documento} setOpenUpdate={setOpenUpdate} key={1} />
+                <UpdateEmployee idEmpleado={lsEmployee.documento} getDataAttention={getDataAttention} setOpenUpdateTwo={setOpenUpdate} key={1} />
             </ControlModal>
 
             <Grid item lg={6} xs={12}>
@@ -161,4 +160,5 @@ export default PersonalData;
 
 PersonalData.propTypes = {
     lsEmployee: PropTypes.any,
+    getDataAttention: PropTypes.func,
 };

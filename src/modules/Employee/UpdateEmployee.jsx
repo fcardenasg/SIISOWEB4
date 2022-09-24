@@ -17,6 +17,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+
 // Import del Proyecto
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
@@ -31,13 +33,26 @@ import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'ap
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { Message, TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
 import userEmpleado from 'assets/img/user.png';
+
+const validationSchema = yup.object().shape({
+    documento: yup.string().required(`${ValidationMessage.Requerido}`),
+    nombres: yup.string().required(`${ValidationMessage.Requerido}`),
+    celular: yup.string().required(`${ValidationMessage.Requerido}`),
+    empresa: yup.string().required(`${ValidationMessage.Requerido}`),
+    tipoContrato: yup.string().required(`${ValidationMessage.Requerido}`),
+    sede: yup.string().required(`${ValidationMessage.Requerido}`),
+    genero: yup.string().required(`${ValidationMessage.Requerido}`),
+    estadoCivil: yup.string().required(`${ValidationMessage.Requerido}`),
+    grupo: yup.string().required(`${ValidationMessage.Requerido}`),
+    type: yup.string().required(`${ValidationMessage.Requerido}`),
+});
 
 const UpdateEmployee = () => {
     const { user } = useAuth();
@@ -47,6 +62,10 @@ const UpdateEmployee = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
     const { id } = useParams();
+
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [openError, setOpenError] = useState(false);
 
     const [lsCatalogo, setLsCatalogo] = useState([]);
     const [lsGes, setLsGes] = useState([]);
@@ -275,9 +294,11 @@ const UpdateEmployee = () => {
         }
     }, 2000);
 
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-    const { handleSubmit, errors } = methods;
+    const methods = useForm(
+        { resolver: yupResolver(validationSchema) }
+    );
+
+    const { handleSubmit, formState: { errors } } = methods;
 
     async function GetSubString(codigo) {
         try {
@@ -360,48 +381,19 @@ const UpdateEmployee = () => {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await UpdateEmployees(DataToUpdate);
                     if (result.status === 200) {
-                        dispatch({
-                            type: SNACKBAR_OPEN,
-                            open: true,
-                            message: `${Message.Actualizar}`,
-                            variant: 'alert',
-                            alertSeverity: 'success',
-                            close: false,
-                            transition: 'SlideUp'
-                        })
+                        setOpenUpdate(true);
                     }
                 } else {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: 'Hubo un problemas al guardo los datos',
-                        variant: 'alert',
-                        alertSeverity: 'error',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+                    setOpenError(true);
+                    setErrorMessage('Hubo un problemas al guardo los datos');
                 }
             } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Exiten campos vacios aún',
-                    variant: 'alert',
-                    alertSeverity: 'warning',
-                    close: false,
-                    transition: 'SlideUp'
-                })
+                setOpenError(true);
+                setErrorMessage('Exiten campos vacios aún');
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     };
 
@@ -409,6 +401,9 @@ const UpdateEmployee = () => {
         <MainCard>
             {timeWait ? (
                 <Fragment>
+                    <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                    <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
                     <SubCard darkTitle title={<Typography variant="h4">DATOS PERSONALES</Typography>}>
                         <ModalChildren
                             open={open}
@@ -442,7 +437,7 @@ const UpdateEmployee = () => {
                                                 name="documento"
                                                 label="Documento"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.documento}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -454,7 +449,7 @@ const UpdateEmployee = () => {
                                                 name="nombres"
                                                 label="Nombres"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.nombres}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -466,7 +461,7 @@ const UpdateEmployee = () => {
                                                 name="email"
                                                 label="Email"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.email}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -478,7 +473,7 @@ const UpdateEmployee = () => {
                                                 name="celular"
                                                 label="Celular"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.celular}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -490,7 +485,7 @@ const UpdateEmployee = () => {
                                                 defaultValue={employee.escolaridad}
                                                 options={lsEscolaridad}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.escolaridad}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -502,7 +497,7 @@ const UpdateEmployee = () => {
                                                 defaultValue={employee.empresa}
                                                 options={company}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.empresa}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -514,7 +509,7 @@ const UpdateEmployee = () => {
                                                 defaultValue={employee.sede}
                                                 options={lsSede}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.sede}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -535,7 +530,7 @@ const UpdateEmployee = () => {
                                                 defaultValue={employee.genero}
                                                 options={lsGenero}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.genero}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -547,7 +542,7 @@ const UpdateEmployee = () => {
                                                 defaultValue={employee.estadoCivil}
                                                 options={lsEstadoCivil}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.estadoCivil}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -559,7 +554,7 @@ const UpdateEmployee = () => {
                                                 name="contacto"
                                                 label="Contacto"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.contacto}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -571,7 +566,7 @@ const UpdateEmployee = () => {
                                                 name="telefonoContacto"
                                                 label="Telefono Contacto"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.telefonoContacto}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -600,7 +595,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.tipoContrato}
                                         options={lsTipoContrato}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.tipoContrato}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -612,7 +607,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.type}
                                         options={lsRol}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.type}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -624,7 +619,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.rosterPosition}
                                         options={lsRosterPosition}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.rosterPosition}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -636,7 +631,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.generalPosition}
                                         options={lsGeneralPosition}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.generalPosition}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -648,7 +643,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.departamento}
                                         options={lsDepartEmpresa}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.departamento}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -660,7 +655,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.area}
                                         options={lsArea}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.area}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -672,7 +667,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.subArea}
                                         options={lsSubArea}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.subArea}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -684,7 +679,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.grupo}
                                         options={lsGrupo}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.grupo}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -696,7 +691,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.turno}
                                         options={lsTurno}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.turno}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -708,7 +703,7 @@ const UpdateEmployee = () => {
                                         name="rotation"
                                         label="Rotación"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.rotation}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -720,7 +715,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.payStatus}
                                         options={lsEstado}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.payStatus}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -741,7 +736,7 @@ const UpdateEmployee = () => {
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioN.length != 0 ? (
+                                {lsMunicipioN.length !== 0 ? (
                                     <SelectOnChange
                                         name="municipioNacido"
                                         label="Municipio de Nacimiento"
@@ -759,7 +754,7 @@ const UpdateEmployee = () => {
                                             disabled
                                             options={lsCatalogo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
+                                            bug={errors.municipioNacido}
                                         />
                                     </FormProvider>
                                 )}
@@ -775,7 +770,7 @@ const UpdateEmployee = () => {
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioR.length != 0 ? (
+                                {lsMunicipioR.length !== 0 ? (
                                     <SelectOnChange
                                         name="municipioResidencia"
                                         label="Municipio de Residencia"
@@ -793,7 +788,7 @@ const UpdateEmployee = () => {
                                             disabled
                                             options={lsCatalogo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
+                                            bug={errors.municipioResidencia}
                                         />
                                     </FormProvider>
                                 )}
@@ -806,7 +801,7 @@ const UpdateEmployee = () => {
                                         name="direccionResidencia"
                                         label="Dirección de Residencia"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.direccionResidencia}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -821,7 +816,7 @@ const UpdateEmployee = () => {
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioTrabaja.length != 0 ?
+                                {lsMunicipioTrabaja.length !== 0 ?
                                     <SelectOnChange
                                         name="municipioResidenciaTrabaja"
                                         label="Municipio de Residencia Laboral"
@@ -838,7 +833,7 @@ const UpdateEmployee = () => {
                                             disabled
                                             options={lsCatalogo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
+                                            bug={errors.municipioResidenciaTrabaja}
                                         />
                                     </FormProvider>}
                             </Grid>
@@ -850,7 +845,7 @@ const UpdateEmployee = () => {
                                         name="direccionResidenciaTrabaja"
                                         label="Dirección de Residencia Laboral"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.direccionResidenciaTrabaja}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -868,7 +863,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.eps}
                                         options={lsEps}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.eps}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -880,7 +875,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.afp}
                                         options={lsAfp}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.afp}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -892,7 +887,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.arl}
                                         options={lsArl}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.arl}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -904,7 +899,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.cesantias}
                                         options={lsCesantias}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.cesantias}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -932,7 +927,7 @@ const UpdateEmployee = () => {
                                         defaultValue={employee.ges}
                                         options={lsGes}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.ges}
                                     />
                                 </FormProvider>
                             </Grid>

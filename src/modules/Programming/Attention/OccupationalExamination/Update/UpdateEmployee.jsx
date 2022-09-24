@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, Fragment } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -8,8 +8,11 @@ import {
     Typography
 } from '@mui/material';
 
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import PropTypes from 'prop-types';
 
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
@@ -17,25 +20,40 @@ import PhotoModel from 'components/form/PhotoModel';
 import ModalChildren from 'components/form/ModalChildren';
 import WebCamCapture from 'components/form/WebCam';
 import { PutEmployee } from 'formatdata/EmployeeForm';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { GetByIdEmployee, UpdateEmployees } from 'api/clients/EmployeeClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
 
-const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
+const validationSchema = yup.object().shape({
+    documento: yup.string().required(`${ValidationMessage.Requerido}`),
+    nombres: yup.string().required(`${ValidationMessage.Requerido}`),
+    celular: yup.string().required(`${ValidationMessage.Requerido}`),
+    empresa: yup.string().required(`${ValidationMessage.Requerido}`),
+    tipoContrato: yup.string().required(`${ValidationMessage.Requerido}`),
+    sede: yup.string().required(`${ValidationMessage.Requerido}`),
+    genero: yup.string().required(`${ValidationMessage.Requerido}`),
+    estadoCivil: yup.string().required(`${ValidationMessage.Requerido}`),
+    grupo: yup.string().required(`${ValidationMessage.Requerido}`),
+    type: yup.string().required(`${ValidationMessage.Requerido}`),
+});
+
+const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention }) => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const WebCamRef = useRef(null);
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [openError, setOpenError] = useState(false);
 
     const [lsCatalogo, setLsCatalogo] = useState([]);
     const [lsGes, setLsGes] = useState([]);
@@ -246,11 +264,11 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
         GetAll();
     }, []);
 
+    const methods = useForm(
+        { resolver: yupResolver(validationSchema) }
+    );
 
-
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-    const { handleSubmit, errors } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
     async function GetSubString(codigo) {
         try {
@@ -262,26 +280,12 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                 }));
                 return resultMunicipio;
             } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Problemas al traer los datos de combo',
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
+                setOpenError(true);
+                setErrorMessage('Problemas al traer los datos de combo');
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     }
 
@@ -333,48 +337,20 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await UpdateEmployees(DataToUpdate);
                     if (result.status === 200) {
-                        dispatch({
-                            type: SNACKBAR_OPEN,
-                            open: true,
-                            message: `${Message.Actualizar}`,
-                            variant: 'alert',
-                            alertSeverity: 'success',
-                            close: false,
-                            transition: 'SlideUp'
-                        })
+                        getDataAttention(result.data.documento);
+                        setOpenUpdate(true);
                     }
                 } else {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: 'Hubo un problemas al guardo los datos',
-                        variant: 'alert',
-                        alertSeverity: 'error',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
+                    setOpenError(true);
+                    setErrorMessage('Hubo un problemas al guardo los datos');
                 }
             } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Exiten campos vacios aún',
-                    variant: 'alert',
-                    alertSeverity: 'warning',
-                    close: false,
-                    transition: 'SlideUp'
-                })
+                setOpenError(true);
+                setErrorMessage('Exiten campos vacios aún');
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     };
 
@@ -388,6 +364,9 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
         <Grid container spacing={3}>
             {timeWait ? (
                 <Grid item xs={12}>
+                    <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                    <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
                     <SubCard darkTitle title={<Typography variant="h4">DATOS PERSONALES</Typography>}>
                         <ModalChildren
                             open={open}
@@ -421,7 +400,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                                 name="documento"
                                                 label="Documento"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.documento}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -433,7 +412,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                                 name="nombres"
                                                 label="Nombres"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.nombres}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -445,7 +424,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                                 name="email"
                                                 label="Email"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.email}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -457,7 +436,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                                 name="celular"
                                                 label="Celular"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.celular}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -469,7 +448,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                                 defaultValue={employee.escolaridad}
                                                 options={lsEscolaridad}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.escolaridad}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -481,7 +460,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                                 defaultValue={employee.empresa}
                                                 options={company}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.empresa}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -493,7 +472,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                                 defaultValue={employee.sede}
                                                 options={lsSede}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.sede}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -514,7 +493,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                                 defaultValue={employee.genero}
                                                 options={lsGenero}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.genero}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -526,7 +505,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                                 defaultValue={employee.estadoCivil}
                                                 options={lsEstadoCivil}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.estadoCivil}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -538,7 +517,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                                 name="contacto"
                                                 label="Contacto"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.contacto}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -550,7 +529,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                                 name="telefonoContacto"
                                                 label="Telefono Contacto"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.telefonoContacto}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -579,7 +558,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.tipoContrato}
                                         options={lsTipoContrato}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.tipoContrato}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -591,7 +570,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.type}
                                         options={lsRol}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.type}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -603,7 +582,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.rosterPosition}
                                         options={lsRosterPosition}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.rosterPosition}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -615,7 +594,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.generalPosition}
                                         options={lsGeneralPosition}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.generalPosition}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -627,7 +606,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.departamento}
                                         options={lsDepartEmpresa}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.departamento}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -639,7 +618,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.area}
                                         options={lsArea}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.area}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -651,7 +630,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.subArea}
                                         options={lsSubArea}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.subArea}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -663,7 +642,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.grupo}
                                         options={lsGrupo}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.grupo}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -675,7 +654,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.turno}
                                         options={lsTurno}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.turno}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -687,7 +666,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         name="rotation"
                                         label="Rotación"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.rotation}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -699,7 +678,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.payStatus}
                                         options={lsEstado}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.payStatus}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -720,7 +699,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioN.length != 0 ? (
+                                {lsMunicipioN.length !== 0 ? (
                                     <SelectOnChange
                                         name="municipioNacido"
                                         label="Municipio de Nacimiento"
@@ -738,7 +717,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                             disabled
                                             options={lsCatalogo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
+                                            bug={errors.municipioNacido}
                                         />
                                     </FormProvider>
                                 )}
@@ -754,7 +733,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioR.length != 0 ? (
+                                {lsMunicipioR.length !== 0 ? (
                                     <SelectOnChange
                                         name="municipioResidencia"
                                         label="Municipio de Residencia"
@@ -772,7 +751,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                             disabled
                                             options={lsCatalogo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
+                                            bug={errors.municipioResidencia}
                                         />
                                     </FormProvider>
                                 )}
@@ -785,7 +764,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         name="direccionResidencia"
                                         label="Dirección de Residencia"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.direccionResidencia}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -800,7 +779,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioTrabaja.length != 0 ?
+                                {lsMunicipioTrabaja.length !== 0 ?
                                     <SelectOnChange
                                         name="municipioResidenciaTrabaja"
                                         label="Municipio de Residencia Laboral"
@@ -817,7 +796,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                             disabled
                                             options={lsCatalogo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
+                                            bug={errors.municipioResidenciaTrabaja}
                                         />
                                     </FormProvider>}
                             </Grid>
@@ -829,7 +808,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         name="direccionResidenciaTrabaja"
                                         label="Dirección de Residencia Laboral"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.direccionResidenciaTrabaja}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -847,7 +826,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.eps}
                                         options={lsEps}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.eps}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -859,7 +838,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.afp}
                                         options={lsAfp}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.afp}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -871,7 +850,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.arl}
                                         options={lsArl}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.arl}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -883,7 +862,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.cesantias}
                                         options={lsCesantias}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.cesantias}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -911,7 +890,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                         defaultValue={employee.ges}
                                         options={lsGes}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.ges}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -921,7 +900,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
 
                     <Grid item xs={12} sx={{ pt: 2 }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={2}>
                                 <AnimateButton>
                                     <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                         {TitleButton.Actualizar}
@@ -929,9 +908,9 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                                 </AnimateButton>
                             </Grid>
 
-                            <Grid item xs={6}>
+                            <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button variant="outlined" onClick={() => setOpenUpdate(false)} fullWidth>
+                                    <Button variant="outlined" onClick={() => setOpenUpdateTwo(false)} fullWidth>
                                         {TitleButton.Cancelar}
                                     </Button>
                                 </AnimateButton>
@@ -940,7 +919,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
                     </Grid>
                 </Grid>
             ) :
-                <Grid container spacing={3}>
+                <Grid container spacing={3} sx={{ m: 5 }}>
                     <Cargando />
                 </Grid>
             }
@@ -949,3 +928,9 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdate }) => {
 };
 
 export default UpdateEmployee;
+
+UpdateEmployee.propTypes = {
+    idEmpleado: PropTypes.string,
+    setOpenUpdateTwo: PropTypes.any,
+    getDataAttention: PropTypes.func,
+};

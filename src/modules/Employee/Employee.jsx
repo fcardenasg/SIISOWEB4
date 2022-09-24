@@ -9,7 +9,6 @@ import {
 import SubCard from 'ui-component/cards/SubCard';
 
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -19,14 +18,14 @@ import InputDatePicker from 'components/input/InputDatePicker';
 import ModalChildren from 'components/form/ModalChildren';
 import WebCamCapture from 'components/form/WebCam';
 import PhotoModel from 'components/form/PhotoModel';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import { InsertEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { Message, TitleButton, CodCatalogo, ValidationMessage, DefaultValue } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo, ValidationMessage, DefaultValue } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
@@ -49,9 +48,12 @@ const Employee = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const WebCamRef = useRef(null);
-    const dispatch = useDispatch();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [openError, setOpenError] = useState(false);
 
     const [lsGes, setLsGes] = useState([]);
     const [company, setCompany] = useState([]);
@@ -105,26 +107,12 @@ const Employee = () => {
                 }));
                 return resultMunicipio;
             } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Problemas al traer los datos de combo',
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
+                setOpenError(true);
+                setErrorMessage('Problemas al traer los datos de combo');
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     }
 
@@ -301,17 +289,7 @@ const Employee = () => {
                 label: item.nombre
             }));
             setCesantias(resultCesantias);
-        } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -342,55 +320,29 @@ const Employee = () => {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await InsertEmployee(DataToInsert);
                     if (result.status === 200) {
-                        dispatch({
-                            type: SNACKBAR_OPEN,
-                            open: true,
-                            message: `${Message.Guardar}`,
-                            variant: 'alert',
-                            alertSeverity: 'success',
-                            close: false,
-                            transition: 'SlideUp'
-                        })
-                        reset();
+                        setOpenUpdate(true);
                         CleanCombo();
-                    } else {
-                        dispatch({
-                            type: SNACKBAR_OPEN,
-                            open: true,
-                            message: 'Hubo un problemas al guardo los datos',
-                            variant: 'alert',
-                            alertSeverity: 'error',
-                            close: false,
-                            transition: 'SlideUp'
-                        })
+                        reset();
                     }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Hubo un problemas al guardo los datos');
                 }
             } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Por favor registre la fotografía',
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
+                setOpenError(true);
+                setErrorMessage('Exiten campos vacios aún');
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: 'Error al consumir el servicio de POST',
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(`${error}`);
         }
     };
 
     return (
         <MainCard>
+            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <SubCard darkTitle title={<Typography variant="h4">DATOS PERSONALES</Typography>}>
                 <ModalChildren
                     open={open}

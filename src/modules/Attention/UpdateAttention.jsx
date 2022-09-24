@@ -12,7 +12,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
+import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import InputText from 'components/input/InputText';
 import InputOnChange from 'components/input/InputOnChange';
@@ -51,7 +51,7 @@ const UpdateAttention = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openUpdate, setOpenUpdate] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -332,7 +332,7 @@ const UpdateAttention = () => {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await UpdateAttentions(DataToInsert);
                     if (result.status === 200) {
-                        setOpenSuccess(true);
+                        setOpenUpdate(true);
                     }
                 }
             } else {
@@ -353,7 +353,7 @@ const UpdateAttention = () => {
 
     return (
         <Fragment>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <FullScreenDialog
@@ -680,7 +680,7 @@ const UpdateAttention = () => {
                                     <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                                {TitleButton.Guardar}
+                                                {TitleButton.Actualizar}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>

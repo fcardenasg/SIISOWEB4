@@ -15,7 +15,7 @@ import {
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ModalRisk from '../ModalRisk';
 
-export const SubRow = ({ title, getAll, diferen, onClickDelete, row }) => {
+export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, row }) => {
     const theme = useTheme();
     const [open, setOpen] = useState(false);
     const [idRisk, setIdRisk] = useState(0);
@@ -49,6 +49,7 @@ export const SubRow = ({ title, getAll, diferen, onClickDelete, row }) => {
                 diferen={diferen}
                 idRisk={idRisk}
                 key={row.id}
+                getSumaRiesgo={getSumaRiesgo}
                 open={open}
                 title={'Editar ' + title}
                 onClose={() => setOpen(false)}
@@ -66,8 +67,8 @@ export const SubRow = ({ title, getAll, diferen, onClickDelete, row }) => {
                             <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
                                 <TableCell>Consecutivo</TableCell>
                                 <TableCell>Clase</TableCell>
-                                {diferen === 'COMPANY' ? <></> : <TableCell>Grado sin EPP</TableCell>}
-                                {diferen === 'COMPANY' ? <></> : <TableCell>Grado con EPP</TableCell>}
+                                {diferen === 'COMPANY' ? null : <TableCell>Grado sin EPP</TableCell>}
+                                {diferen === 'COMPANY' ? null : <TableCell>Grado con EPP</TableCell>}
                                 <TableCell >Medidas de Control</TableCell>
                                 <TableCell >Año</TableCell>
                                 <TableCell >Mes</TableCell>
@@ -80,12 +81,12 @@ export const SubRow = ({ title, getAll, diferen, onClickDelete, row }) => {
                                 <TableRow hover key={historyRow.id}>
                                     <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.id}</TableCell>
                                     <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.nameClase}</TableCell>
-                                    {diferen === 'COMPANY' ? <></> :
+                                    {diferen === 'COMPANY' ? null :
                                         <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>
                                             {historyRow.nameGradoSinEPP}
                                         </TableCell>
                                     }
-                                    {diferen === 'COMPANY' ? <></> :
+                                    {diferen === 'COMPANY' ? null :
                                         <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>
                                             {historyRow.nameGradoConEPP}
                                         </TableCell>
@@ -117,6 +118,7 @@ SubRow.propTypes = {
     title: PropTypes.string,
     diferen: PropTypes.string,
     onClickDelete: PropTypes.func,
+    getSumaRiesgo: PropTypes.func,
     getAll: PropTypes.func,
     row: PropTypes.array,
 };

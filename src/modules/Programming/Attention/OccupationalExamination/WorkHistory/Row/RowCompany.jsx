@@ -28,7 +28,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { SubRow } from './SubRow';
 import { MenuItem } from '../Menu/MenuItem';
 
-export default function RowCompany({ row = [], handleDelete, documento }) {
+export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, documento }) {
     const diferen = "COMPANY";
     const { user } = useAuth();
     const [numId, setNumId] = useState(1);
@@ -141,7 +141,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
         GetAllHistoricoForCharge();
     }, [documento]);
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerRiesgoQuimico = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoQuimico, row.id);
             if (lsServerRiesgoQuimico.status === 200)
@@ -176,7 +176,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [row.id]);
 
     const handleClickButton = async (id) => {
@@ -235,31 +235,31 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
 
     const handleClickHistorico = (id) => {
         try {
-            if (id == 1) {
+            if (id === 1) {
                 setOpenCargoHistorico(true); setCargoHistorico(lsHisQuimico); setTitleCargoHistorico("RIESGO QUÍMICO");
             }
 
-            if (id == 2) {
+            if (id === 2) {
                 setOpenCargoHistorico(true); setCargoHistorico(lsHisFisico); setTitleCargoHistorico("RIESGO FÍSICO");
             }
 
-            if (id == 3) {
+            if (id === 3) {
                 setOpenCargoHistorico(true); setCargoHistorico(lsHisPsicosocial); setTitleCargoHistorico("RIESGO PSICOSOCIAL");
             }
 
-            if (id == 4) {
+            if (id === 4) {
                 setOpenCargoHistorico(true); setCargoHistorico(lsHisBiologico); setTitleCargoHistorico("RIESGO BIOLÓGICO");
             }
 
-            if (id == 5) {
+            if (id === 5) {
                 setOpenCargoHistorico(true); setCargoHistorico(lsHisECFPostura); setTitleCargoHistorico("RIESGO ECF - POSTURA");
             }
 
-            if (id == 6) {
+            if (id === 6) {
                 setOpenCargoHistorico(true); setCargoHistorico(lsHisECFFuerza); setTitleCargoHistorico("RIESGO ECF - FUERZA");
             }
 
-            if (id == 7) {
+            if (id === 7) {
                 setOpenCargoHistorico(true); setCargoHistorico(lsHisECFMovimiento); setTitleCargoHistorico("RIESGO ECF - MOVIMIENTO");
             }
 
@@ -276,7 +276,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                     const result = await DeleteWorkHistoryRiskCompany(id);
                     if (result.status === 200) {
                         setOpenDelete(true);
-                        GetAll();
+                        getAll();
                     }
                 }
             });
@@ -331,7 +331,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 0, pt: 5, pb: 5 }}>  
+                        <Box sx={{ margin: 0, pt: 5, pb: 5 }}>
 
                             <MenuItem
                                 key={row.id}
@@ -341,34 +341,33 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
                                 onClickHistorico={handleClickHistorico}
                             />
 
-                            {lsQuimico.length != 0 && numId == 1 ?
-                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsQuimico} title="Riesgo Químico" />
-                                : <></>}
+                            {lsQuimico.length !== 0 && numId === 1 ?
+                                <SubRow key={row.id} getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsQuimico} title="Riesgo Químico" />
+                                : null}
 
-                            {lsFisico.length != 0 && numId == 2 ?
-                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsFisico} title="Riesgo Físico" />
-                                : <></>}
+                            {lsFisico.length !== 0 && numId === 2 ?
+                                <SubRow key={row.id} getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsFisico} title="Riesgo Físico" />
+                                : null}
 
-                            {lsPsicosocial.length != 0 && numId == 3 ?
-                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsPsicosocial} title="Riesgo Psicosocial" />
-                                : <></>}
+                            {lsPsicosocial.length !== 0 && numId === 3 ?
+                                <SubRow key={row.id} getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsPsicosocial} title="Riesgo Psicosocial" />
+                                : null}
 
-                            {lsBiologico.length != 0 && numId == 4 ?
-                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsBiologico} title="Riesgo Biológico" />
-                                : <></>}
+                            {lsBiologico.length !== 0 && numId === 4 ?
+                                <SubRow key={row.id} getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsBiologico} title="Riesgo Biológico" />
+                                : null}
 
-                            {lsECFPostura.length != 0 && numId == 5 ?
-                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFPostura} title="Riesgo ECF - Postura" />
-                                : <></>}
+                            {lsECFPostura.length !== 0 && numId === 5 ?
+                                <SubRow key={row.id} getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFPostura} title="Riesgo ECF - Postura" />
+                                : null}
 
-                            {lsECFFuerza.length != 0 && numId == 6 ?
-                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFFuerza} title="Riesgo ECF - Fuerza" />
-                                : <></>}
+                            {lsECFFuerza.length !== 0 && numId === 6 ?
+                                <SubRow key={row.id} getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFFuerza} title="Riesgo ECF - Fuerza" />
+                                : null}
 
-                            {lsECFMovimiento.length != 0 && numId == 7 ?
-                                <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFMovimiento} title="Riesgo ECF - Movimiento" />
-                                : <></>}
-
+                            {lsECFMovimiento.length !== 0 && numId === 7 ?
+                                <SubRow key={row.id} getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFMovimiento} title="Riesgo ECF - Movimiento" />
+                                : null}
                         </Box>
                     </Collapse>
                 </TableCell>
@@ -380,5 +379,6 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
 RowCompany.propTypes = {
     row: PropTypes.object,
     handleDelete: PropTypes.func,
+    getSumaRiesgo: PropTypes.func,
     documento: PropTypes.string,
 };

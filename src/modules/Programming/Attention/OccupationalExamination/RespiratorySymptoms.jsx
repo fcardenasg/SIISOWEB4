@@ -306,7 +306,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                     </Grid>
                 </SubCard>
             </Accordion>
-            <Divider />
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
@@ -473,7 +472,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                 </SubCard>
                 <Grid sx={{ pb: 2 }} />
             </Accordion>
-            <Divider />
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
@@ -881,7 +879,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                     </Grid>
                 </SubCard>
             </Accordion>
-            <Divider />
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
@@ -1188,7 +1185,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                     </Grid>
                 </SubCard>
             </Accordion>
-            <Divider />
             <Grid sx={{ pb: 2 }} />
 
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
@@ -1210,7 +1206,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                     </Grid>
                 </Grid>
             </Accordion>
-            <Divider />
         </Fragment>
     );
 };

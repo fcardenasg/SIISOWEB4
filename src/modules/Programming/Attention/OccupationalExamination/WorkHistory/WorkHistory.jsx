@@ -8,6 +8,7 @@ import {
     TableBody,
     Grid,
     TableCell,
+    Typography,
     TableContainer,
     TableHead,
     TableRow,
@@ -69,7 +70,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
     const { handleSubmit, errors, reset } = methods;
 
-    async function GetAll() {
+    async function getSumaRiesgo() {
         try {
             const lsServerDTLD = await GetAllByHistorico(0, 0, documento);
             if (lsServerDTLD.status === 200) {
@@ -168,7 +169,11 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                     }
                 }
             }
+        } catch { }
+    }
 
+    async function getAll() {
+        try {
             const lsServerWorkHistory = await GetAllByDocumentWorkHistory(0, 0, documento);
             if (lsServerWorkHistory.status === 200)
                 setLsWorkHistory(lsServerWorkHistory.data.entities);
@@ -188,7 +193,11 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     }
 
     useEffect(() => {
-        GetAll();
+        getSumaRiesgo();
+    }, [documento]);
+
+    useEffect(() => {
+        getAll();
     }, [documento]);
 
     const handleDeleteEmpresa = async (idWorkHistory) => {
@@ -200,7 +209,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                         if (result.status === 200) {
                             setOpenDelete(true);
                             setAddItemClickedEmpresa(false);
-                            GetAll();
+                            getAll();
                         }
                     }
                 });
@@ -218,13 +227,12 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                         if (result.status === 200) {
                             setOpenDelete(true);
                             setAddItemClickedDLTD(false);
-                            GetAll();
+                            getAll();
                         }
                     }
                 });
             }
-        } catch (error) {
-        }
+        } catch (error) { }
     };
 
     const handleClickEmpresa = async (datos) => {
@@ -237,8 +245,9 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                     const result = await InsertWorkHistoryOtherCompany(DataToInsert);
                     if (result.status === 200) {
                         reset();
+                        getSumaRiesgo();
                         setAddItemClickedEmpresa(false);
-                        GetAll();
+                        getAll();
                         setOpenSuccess(true);
                     }
                 }
@@ -265,9 +274,10 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await InsertWorkHistory(DataToInsert);
                     if (result.status === 200) {
+                        getSumaRiesgo();
                         reset();
                         setAddItemClickedDLTD(false);
-                        GetAll();
+                        getAll();
                         setOpenSuccess(true);
                     }
                 }
@@ -291,7 +301,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <Grid item xs={12}>
-                <SubCard title="Historia Laboral otras empresas">
+                <SubCard title={<Typography variant='h4'>Historia Laboral Otras Empresas</Typography>}>
                     <TableContainer>
                         <Table aria-label="collapsible table">
                             <TableHead>
@@ -306,7 +316,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             </TableHead>
                             <TableBody>
                                 {lsWorkHistoryOtherCompany.map((row) => (
-                                    <RowCompany key={row.id} documento={documento} row={row} handleDelete={handleDeleteEmpresa} />
+                                    <RowCompany key={row.id} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteEmpresa} />
                                 ))}
                             </TableBody>
                         </Table>
@@ -386,12 +396,12 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <Button disabled={lsEmpleado.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedEmpresa(true)}>
                                 + Agregar Empresa
                             </Button>
-                        </Grid> : <></>}
+                        </Grid> : null}
                 </SubCard>
             </Grid>
 
             <Grid item xs={12}>
-                <SubCard title="Historia Laboral DLTD">
+                <SubCard title={<Typography variant='h4'>Historia Laboral DLTD</Typography>}>
                     <TableContainer>
                         <Table aria-label="collapsible table">
                             <TableHead>

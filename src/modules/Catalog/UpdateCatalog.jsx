@@ -21,14 +21,15 @@ import { GetAllTypeCatalog } from 'api/clients/TypeCatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import {  TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Cargando from 'components/loading/Cargando';
 
 const validationSchema = yup.object().shape({
     nombre: yup.string().required(`${ValidationMessage.Requerido}`),
-    codigo: yup.string().required(`${ValidationMessage.Requerido}`)
+    codigo: yup.string().required(`${ValidationMessage.Requerido}`),
+    idTipoCatalogo: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
 const UpdateCatalog = () => {
@@ -70,7 +71,7 @@ const UpdateCatalog = () => {
         resolver: yupResolver(validationSchema)
     });
 
-    const { handleSubmit, errors } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
     const onSubmit = async (datos) => {
         const DataToUpdate = PutCatalog(id, datos.nombre, datos.codigo, datos.idTipoCatalogo,
@@ -104,7 +105,7 @@ const UpdateCatalog = () => {
                                     defaultValue={lsCatalog.idTipoCatalogo}
                                     options={typecatalogo}
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.idTipoCatalogo}
                                 />
                             </FormProvider>
                         </Grid>
@@ -117,7 +118,7 @@ const UpdateCatalog = () => {
                                     name="codigo"
                                     label="Código"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.codigo}
                                 />
                             </FormProvider>
                         </Grid>
@@ -130,7 +131,7 @@ const UpdateCatalog = () => {
                                     name="nombre"
                                     label="Nombre"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.nombre}
                                 />
                             </FormProvider>
                         </Grid>

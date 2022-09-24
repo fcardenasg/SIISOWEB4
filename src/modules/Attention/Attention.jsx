@@ -8,6 +8,8 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
@@ -22,7 +24,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { InsertAttention } from 'api/clients/AttentionClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, DefaultValue, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostAttention } from 'formatdata/AttentionForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -39,6 +41,10 @@ const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
+
+const validationSchema = yup.object().shape({
+    sede: yup.string().required(`${ValidationMessage.Requerido}`),
+});
 
 const Attention = () => {
     const { user } = useAuth();
@@ -79,10 +85,11 @@ const Attention = () => {
     const [lsMedicos, setLsMedicos] = useState([]);
     const [result, setResult] = useState([]);
 
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
+    const methods = useForm(
+        { resolver: yupResolver(validationSchema) }
+    );
 
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
     useEffect(() => {
         async function GetAll() {
@@ -363,7 +370,7 @@ const Attention = () => {
                                         defaultValue=""
                                         options={lsSede}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.sede}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -402,7 +409,6 @@ const Attention = () => {
                                                 label="Estado Caso"
                                                 options={lsEstadoCaso}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -415,7 +421,6 @@ const Attention = () => {
                                                     label="Estado Caso"
                                                     options={lsEstadoCaso}
                                                     size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -429,7 +434,6 @@ const Attention = () => {
                                                         defaultValue=""
                                                         options={lsTurno}
                                                         size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -522,7 +526,6 @@ const Attention = () => {
                                                                 label="Estado Caso"
                                                                 options={lsEstadoCaso}
                                                                 size={matchesXS ? 'small' : 'medium'}
-                                                                bug={errors}
                                                             />
                                                         </FormProvider>
                                                     </Grid>
@@ -535,7 +538,6 @@ const Attention = () => {
                                                                 defaultValue=""
                                                                 options={lsMotivoPsico}
                                                                 size={matchesXS ? 'small' : 'medium'}
-                                                                bug={errors}
                                                             />
                                                         </FormProvider>
                                                     </Grid>
@@ -548,7 +550,6 @@ const Attention = () => {
                                                                 defaultValue=""
                                                                 options={lsMedicos}
                                                                 size={matchesXS ? 'small' : 'medium'}
-                                                                bug={errors}
                                                             />
                                                         </FormProvider>
                                                     </Grid>
@@ -562,7 +563,6 @@ const Attention = () => {
                                                                     defaultValue=""
                                                                     options={lsMotivoMedica}
                                                                     size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
                                                                 />
                                                             </FormProvider>
                                                         </Grid>
@@ -575,7 +575,6 @@ const Attention = () => {
                                                                     defaultValue=""
                                                                     options={lsMedicos}
                                                                     size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
                                                                 />
                                                             </FormProvider>
                                                         </Grid>
@@ -588,7 +587,6 @@ const Attention = () => {
                                                                         label="Estado Caso"
                                                                         options={lsEstadoCaso}
                                                                         size={matchesXS ? 'small' : 'medium'}
-                                                                        bug={errors}
                                                                     />
                                                                 </FormProvider>
                                                             </Grid>
@@ -606,7 +604,6 @@ const Attention = () => {
                                             name="observaciones"
                                             label="Nota"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>

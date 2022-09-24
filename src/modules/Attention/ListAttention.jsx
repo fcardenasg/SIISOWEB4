@@ -376,7 +376,7 @@ const ListAttention = () => {
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombre" value="nameEmpleado" />
                                 <ExcelColumn label="Sede Empleado" value="nameSedeEmpleado" />
-                                <ExcelColumn label="Cargo" value="nameCargo" />
+                                <ExcelColumn label="Roster Position" value="nameCargo" />
                                 <ExcelColumn label="General Position" value="nameGeneralPosition" />
                                 <ExcelColumn label="Correo" value="nameCorreo" />
                                 <ExcelColumn label="Genero" value="nameGenero" />

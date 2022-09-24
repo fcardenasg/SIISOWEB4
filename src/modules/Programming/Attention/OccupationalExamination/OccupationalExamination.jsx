@@ -277,24 +277,25 @@ const OccupationalExamination = () => {
         } catch (error) { }
     }
 
-    const handleUpdateAttention = async (DataToUpdate) => {
+    const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
-            const result = await UpdateAttentions(DataToUpdate);
-            if (result.status === 200) setOpenSuccess(true);
-        } catch (error) { }
-    }
+            const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
+                lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
+                lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
+                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, lsDataUpdate.usuarioCierreAtencion,
+                lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
+                lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
 
-    const handleUpdateAttentionClose = async (estadoPac = '') => {
-        try {
-            const DataToUpdate = PutAttention(id, lsAtencion.documento, lsAtencion.fecha, lsAtencion.sede, lsAtencion.tipo,
-                lsAtencion.atencion, lsAtencion.estadoCaso, lsAtencion.observaciones, lsAtencion.numeroHistoria, estadoPac,
-                lsAtencion.contingencia, lsAtencion.turno, lsAtencion.diaTurno, lsAtencion.motivo, lsAtencion.medico,
-                lsAtencion.docSolicitante, lsAtencion.talla, lsAtencion.peso, lsAtencion.iMC, lsAtencion.usuarioCierreAtencion,
-                lsAtencion.fechaDigitacion, lsAtencion.fechaCierreAtencion, lsAtencion.duracion,
-                lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, lsAtencion.usuarioModifico, lsAtencion.fechaModifico);
+            await UpdateAttentions(DataToUpdate);
 
-            const result = await UpdateAttentions(DataToUpdate);
-            if (result.status === 200) setOpenSuccess(true);
+            if (estadoPac === "ATENDIDO") {
+                swal(ParamCloseCase).then(async (willDelete) => {
+                    if (willDelete)
+                        navigate("/programming/list");
+                });
+            } else if (estadoPac === "PENDIENTE POR ATENCIÓN")
+                navigate("/programming/list");
+
         } catch (error) { }
     }
 
@@ -344,30 +345,21 @@ const OccupationalExamination = () => {
         }
 
         getLastData();
-    }, [documento]);
+    }, [id]);
 
     useEffect(() => {
         async function getDataAttention() {
             try {
                 const lsServerAtencion = await GetByIdAttention(id);
                 if (lsServerAtencion.status === 200) {
-                    const DataToUpdate = PutAttention(id, lsServerAtencion.data.documento, lsServerAtencion.data.fecha, lsServerAtencion.data.sede,
-                        lsServerAtencion.data.tipo, lsServerAtencion.data.atencion, lsServerAtencion.data.estadoCaso, lsServerAtencion.data.observaciones,
-                        lsServerAtencion.data.numeroHistoria, "ESTÁ SIENDO ATENDIDO", lsServerAtencion.data.contingencia, lsServerAtencion.data.turno,
-                        lsServerAtencion.data.diaTurno, lsServerAtencion.data.motivo, lsServerAtencion.data.medico, lsServerAtencion.data.docSolicitante,
-                        lsServerAtencion.data.talla, lsServerAtencion.data.peso, lsServerAtencion.data.iMC, lsServerAtencion.data.usuarioCierreAtencion,
-                        lsServerAtencion.data.fechaDigitacion, lsServerAtencion.data.fechaCierreAtencion, lsServerAtencion.data.duracion,
-                        lsServerAtencion.data.usuarioRegistro, lsServerAtencion.data.fechaRegistro, lsServerAtencion.data.usuarioModifico,
-                        lsServerAtencion.data.fechaModifico);
-
-                    await handleUpdateAttention(DataToUpdate);
+                    handleLoadingDocument(lsServerAtencion.data.documento);
+                    await handleUpdateAttentionClose("ESTÁ SIENDO ATENDIDO", lsServerAtencion.data);
 
                     setIMC(lsServerAtencion.data.imc);
                     setTalla(lsServerAtencion.data.talla);
                     setPeso(lsServerAtencion.data.peso);
                     setLsAtencion(lsServerAtencion.data);
                     setDocumento(lsServerAtencion.data.documento);
-                    handleLoadingDocument(lsServerAtencion.data.documento);
                     setAtencion(lsServerAtencion.data.atencion);
 
                     var resultImc = calculateImc(lsServerAtencion.data.peso, lsServerAtencion.data.talla);
@@ -450,16 +442,7 @@ const OccupationalExamination = () => {
         getDataForChart();
     }, []);
 
-    const handleCerrarCaso = () => {
-        try {
-            swal(ParamCloseCase).then(async (willDelete) => {
-                if (willDelete) {
-                    handleUpdateAttentionClose("ATENDIDO");
-                    navigate("/programming/list");
-                }
-            });
-        } catch (error) { }
-    }
+
 
     const handleClick = async (datos) => {
         try {
@@ -774,7 +757,7 @@ const OccupationalExamination = () => {
                     <TabPanel value={value} index={0}>
                         <PersonalData
                             lsEmployee={lsEmployee}
-                            handleLoadingDocument={(idEmployee) => handleLoadingDocument(idEmployee)}
+                            getDataAttention={handleLoadingDocument}
                         />
                     </TabPanel>
 
@@ -869,10 +852,7 @@ const OccupationalExamination = () => {
 
                         {statusClose ? <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => {
-                                    navigate("/programming/list");
-                                    handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN");
-                                }}>
+                                <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </AnimateButton>
@@ -880,7 +860,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={handleCerrarCaso}>
+                                <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                     {TitleButton.CerrarCaso}
                                 </Button>
                             </AnimateButton>

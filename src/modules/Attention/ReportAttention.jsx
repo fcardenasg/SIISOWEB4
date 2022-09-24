@@ -24,10 +24,9 @@ const DataAttention = ({ title, text }) => {
             <Grid item xs={2}>
                 <Typography variant="h5"><b>{title}</b></Typography>
             </Grid>
-            <Grid item xs={3.5}>
-                <Typography variant="h5" align="right">{text}</Typography>
+            <Grid item xs={4}>
+                <Typography variant="h5" align="left">{text}</Typography>
             </Grid>
-            <Grid item xs={0.5} />
         </Fragment>
 
     );
@@ -99,7 +98,7 @@ const ReportAttention = () => {
                                                         <DataAttention title="DOCUMENTO:" text={lsDataReport.documento} />
                                                         <DataAttention title="NOMBRES:" text={lsDataReport.nameEmpleado} />
                                                         <DataAttention title="ESTADO CASO:" text={lsDataReport.nameEstadoCaso} />
-                                                        <DataAttention title="SEDE:" text={lsDataReport.nameSede} />
+                                                        <DataAttention title="SEDE:" text={lsDataReport.nameSedeAtencion} />
                                                     </Grid>
                                                 </Grid>
 
