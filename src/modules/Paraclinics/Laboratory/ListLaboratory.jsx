@@ -248,7 +248,7 @@ const ListLaboratory = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'idMotivo', 'idConductaClasificacion', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'idMotivo', 'idProveedor', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -365,13 +365,27 @@ const ListLaboratory = () => {
                         } filename="Laboratorios">
                             <ExcelSheet data={laboratory} name="Laboratorios">
                                 <ExcelColumn label="Id" value="id" />
+                                <ExcelColumn label="Fecha" value="fecha" />
                                 <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="idConductaClasificacion" />
-                                <ExcelColumn label="Conducta" value="idConductaClasificacion" />
+                                <ExcelColumn label="Nombre" value="documento" />
                                 <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Conclusión" value="idConclusion" />
-                                <ExcelColumn label="Proveedor" value="iidProveedor" />
+                                <ExcelColumn label="Proveedor" value="idProveedor" />
                                 <ExcelColumn label="Observaciones" value="observacion" />
+
+                                <ExcelColumn label="Nombre" value="documento" />
+                                <ExcelColumn label="Motivo" value="idMotivo" />
+                                <ExcelColumn label="Proveedor" value="idProveedor" />
+                                <ExcelColumn label="Observaciones" value="observacion" />
+                                <ExcelColumn label="Nombre" value="documento" />
+                                <ExcelColumn label="Motivo" value="idMotivo" />
+                                <ExcelColumn label="Proveedor" value="idProveedor" />
+                                <ExcelColumn label="Observaciones" value="observacion" />
+                                <ExcelColumn label="Nombre" value="documento" />
+                                <ExcelColumn label="Motivo" value="idMotivo" />
+                                <ExcelColumn label="Proveedor" value="idProveedor" />
+                                <ExcelColumn label="Observaciones" value="observacion" />
+
+
                                 <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
                                 <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
