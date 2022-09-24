@@ -278,7 +278,7 @@ const Attention = () => {
 
     const handleClick = async (datos) => {
         try {
-            const motivoFinal = motivo === 1 ? datos.motivo : motivo;
+            const motivoFinal = motivo === '' ? datos.motivo : motivo;
 
             const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), datos.sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
@@ -400,7 +400,6 @@ const Attention = () => {
                                             <InputSelect
                                                 name="estadoCaso"
                                                 label="Estado Caso"
-                                                defaultValue={1}
                                                 options={lsEstadoCaso}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
@@ -414,7 +413,6 @@ const Attention = () => {
                                                 <InputSelect
                                                     name="estadoCaso"
                                                     label="Estado Caso"
-                                                    defaultValue={1}
                                                     options={lsEstadoCaso}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
@@ -522,7 +520,6 @@ const Attention = () => {
                                                             <InputSelect
                                                                 name="estadoCaso"
                                                                 label="Estado Caso"
-                                                                defaultValue={1}
                                                                 options={lsEstadoCaso}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 bug={errors}
@@ -589,7 +586,6 @@ const Attention = () => {
                                                                     <InputSelect
                                                                         name="estadoCaso"
                                                                         label="Estado Caso"
-                                                                        defaultValue={1}
                                                                         options={lsEstadoCaso}
                                                                         size={matchesXS ? 'small' : 'medium'}
                                                                         bug={errors}

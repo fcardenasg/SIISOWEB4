@@ -37,6 +37,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
+import userEmpleado from 'assets/img/user.png';
 
 const UpdateEmployee = () => {
     const { user } = useAuth();
@@ -90,7 +91,8 @@ const UpdateEmployee = () => {
             const lsServerEmployeeId = await GetByIdEmployee(id);
             if (lsServerEmployeeId.status === 200) {
                 setEmployee(lsServerEmployeeId.data);
-                setImgSrc(lsServerEmployeeId.data.imagenUrl);
+                setImgSrc(lsServerEmployeeId.data.imagenUrl === '' ? userEmpleado : lsServerEmployeeId.data.imagenUrl);
+
                 setDptoNacido(lsServerEmployeeId.data.dptoNacido);
                 setDptoResidenciaTrabaja(lsServerEmployeeId.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId.data.dptoResidencia);
@@ -268,7 +270,7 @@ const UpdateEmployee = () => {
     }, []);
 
     setTimeout(() => {
-        if (employee.length != 0) {
+        if (employee.length !== 0) {
             setTimeWait(true);
         }
     }, 2000);
@@ -940,14 +942,14 @@ const UpdateEmployee = () => {
 
                     <Grid item xs={12} sx={{ pb: 2 }}>
                         <Grid container spacing={1}>
-                            <Grid item xs={6}>
+                            <Grid item xs={2}>
                                 <AnimateButton>
                                     <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                         {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={2}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/employee/list")}>
                                         {TitleButton.Cancelar}

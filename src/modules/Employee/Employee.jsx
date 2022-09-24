@@ -26,50 +26,24 @@ import { GetAllCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, ValidationMessage, DefaultValue } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import { PostEmployee } from 'formatdata/EmployeeForm';
 
-/* VALIDACIÓN CON YUP */
-/* const validationSchema = yup.object().shape({
+const validationSchema = yup.object().shape({
     documento: yup.string().required(`${ValidationMessage.Requerido}`),
-    nombre: yup.string().required(`${ValidationMessage.Requerido}`),
-    type: yup.string().required(`${ValidationMessage.Requerido}`),
-    departamento: yup.string().required(`${ValidationMessage.Requerido}`),
-    area: yup.string().required(`${ValidationMessage.Requerido}`),
-    subArea: yup.string().required(`${ValidationMessage.Requerido}`),
-    grupo: yup.string().required(`${ValidationMessage.Requerido}`),
-    municipioNacido: yup.string().required(`${ValidationMessage.Requerido}`),
-
-    rosterPosition: yup.string().required(`${ValidationMessage.Requerido}`),
-    tipoContrato: yup.string().required(`${ValidationMessage.Requerido}`),
-    generalPosition: yup.string().required(`${ValidationMessage.Requerido}`),
-    genero: yup.string().required(`${ValidationMessage.Requerido}`),
-    sede: yup.string().required(`${ValidationMessage.Requerido}`),
-    direccionResidencia: yup.string().required(`${ValidationMessage.Requerido}`),
-    municipioResidencia: yup.string().required(`${ValidationMessage.Requerido}`),
-
+    nombres: yup.string().required(`${ValidationMessage.Requerido}`),
     celular: yup.string().required(`${ValidationMessage.Requerido}`),
-    eps: yup.string().required(`${ValidationMessage.Requerido}`),
-    afp: yup.string().required(`${ValidationMessage.Requerido}`),
-    turno: yup.string().required(`${ValidationMessage.Requerido}`),
-    email: yup.string().required(`${ValidationMessage.Requerido}`),
-    telefonoContacto: yup.string().required(`${ValidationMessage.Requerido}`),
-    estadoCivil: yup.string().required(`${ValidationMessage.Requerido}`),
     empresa: yup.string().required(`${ValidationMessage.Requerido}`),
-    arl: yup.string().required(`${ValidationMessage.Requerido}`),
-    contacto: yup.string().required(`${ValidationMessage.Requerido}`),
-    escolaridad: yup.string().required(`${ValidationMessage.Requerido}`),
-    cesantias: yup.string().required(`${ValidationMessage.Requerido}`),
-    rotation: yup.string().required(`${ValidationMessage.Requerido}`),
-    payStatus: yup.string().required(`${ValidationMessage.Requerido}`),
-    bandera: yup.string().required(`${ValidationMessage.Requerido}`),
-    ges: yup.string().required(`${ValidationMessage.Requerido}`),
-    usuarioModifica: yup.string().required(`${ValidationMessage.Requerido}`),
-    usuarioCreacion: yup.string().required(`${ValidationMessage.Requerido}`)
-}); */
+    tipoContrato: yup.string().required(`${ValidationMessage.Requerido}`),
+    sede: yup.string().required(`${ValidationMessage.Requerido}`),
+    genero: yup.string().required(`${ValidationMessage.Requerido}`),
+    estadoCivil: yup.string().required(`${ValidationMessage.Requerido}`),
+    grupo: yup.string().required(`${ValidationMessage.Requerido}`),
+    type: yup.string().required(`${ValidationMessage.Requerido}`),
+});
 
 const Employee = () => {
     const { user } = useAuth();
@@ -103,17 +77,18 @@ const Employee = () => {
     const [lsAfp, setAfp] = useState([]);
     const [lsArl, setArl] = useState([]);
     const [lsCesantias, setCesantias] = useState([]);
-    const [dptoNacido, setDptoNacido] = useState('');
-    const [dptoResidencia, setDptoResidencia] = useState('');
-    const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState('');
+    const [dptoNacido, setDptoNacido] = useState(null);
+    const [dptoResidencia, setDptoResidencia] = useState(null);
+    const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState(null);
     const [lsSubArea, setLsSubArea] = useState([]);
     const [imgSrc, setImgSrc] = useState(null);
     const [open, setOpen] = useState(false);
 
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
+    const methods = useForm(
+        { resolver: yupResolver(validationSchema) }
+    );
 
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
     const CapturePhoto = useCallback(() => {
         const imageSrc = WebCamRef.current.getScreenshot();
@@ -353,13 +328,15 @@ const Employee = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostEmployee(datos.documento, datos.nombres, FormatDate(datos.fechaNaci), datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido, FormatDate(datos.fechaContrato),
+                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido === null ? 1 : dptoNacido, FormatDate(datos.fechaContrato),
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
-                datos.direccionResidencia, datos.direccionResidenciaTrabaja, datos.municipioResidencia, dptoResidenciaTrabaja,
-                datos.municipioResidenciaTrabaja, dptoResidencia, datos.celular, datos.eps,
+                datos.direccionResidencia, datos.direccionResidenciaTrabaja, datos.municipioResidencia, dptoResidenciaTrabaja === null ? 1 : dptoNacido,
+                datos.municipioResidenciaTrabaja, dptoResidencia === null ? 1 : dptoNacido, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(datos.termDate),
-                1, datos.ges, user.email, FormatDate(new Date()), '', FormatDate(new Date()), imgSrc);
+                DefaultValue.BANDERA_DRUMMOND, datos.ges, user.email, FormatDate(new Date()), '', FormatDate(new Date()), imgSrc);
+
+            console.log("Datos =", DataToInsert);
 
             if (imgSrc != null) {
                 if (Object.keys(datos.length !== 0)) {
@@ -392,9 +369,9 @@ const Employee = () => {
                 dispatch({
                     type: SNACKBAR_OPEN,
                     open: true,
-                    message: 'Exiten campos vacios aún',
+                    message: 'Por favor registre la fotografía',
                     variant: 'alert',
-                    alertSeverity: 'warning',
+                    alertSeverity: 'error',
                     close: false,
                     transition: 'SlideUp'
                 })
@@ -442,24 +419,22 @@ const Employee = () => {
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="documento"
                                         label="Documento"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={!!errors?.documento}
+                                        bug={errors.documento}
                                     />
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="nombres"
                                         label="Nombres"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={!!errors?.nombres}
+                                        bug={errors.nombres}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -471,19 +446,18 @@ const Employee = () => {
                                         name="email"
                                         label="Email"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.email}
                                     />
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="celular"
                                         label="Celular"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.celular}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -492,10 +466,9 @@ const Employee = () => {
                                     <InputSelect
                                         name="escolaridad"
                                         label="Escolaridad"
-                                        defaultValue=""
                                         options={lsEscolaridad}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.escolaridad}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -504,10 +477,9 @@ const Employee = () => {
                                     <InputSelect
                                         name="empresa"
                                         label="Empresa"
-                                        defaultValue=""
                                         options={company}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.empresa}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -516,10 +488,9 @@ const Employee = () => {
                                     <InputSelect
                                         name="sede"
                                         label="Sede"
-                                        defaultValue=""
                                         options={lsSede}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.sede}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -528,7 +499,6 @@ const Employee = () => {
                                     <InputDatePicker
                                         label="Fecha de Nacimiento"
                                         name="fechaNaci"
-                                        defaultValue={new Date()}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -537,10 +507,9 @@ const Employee = () => {
                                     <InputSelect
                                         name="genero"
                                         label="Genero"
-                                        defaultValue=""
                                         options={lsGenero}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.genero}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -549,10 +518,9 @@ const Employee = () => {
                                     <InputSelect
                                         name="estadoCivil"
                                         label="Estado civil"
-                                        defaultValue=""
                                         options={lsEstadoCivil}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.estadoCivil}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -564,7 +532,7 @@ const Employee = () => {
                                         name="contacto"
                                         label="Contacto"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.contacto}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -576,7 +544,7 @@ const Employee = () => {
                                         name="telefonoContacto"
                                         label="Teléfono Contacto"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.telefonoContacto}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -593,7 +561,6 @@ const Employee = () => {
                             <InputDatePicker
                                 label="Fecha de Contrato"
                                 name="fechaContrato"
-                                defaultValue={new Date()}
                             />
                         </FormProvider>
                     </Grid>
@@ -602,10 +569,9 @@ const Employee = () => {
                             <InputSelect
                                 name="tipoContrato"
                                 label="Tipo de Contrato"
-                                defaultValue=""
                                 options={lsTipoContrato}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.tipoContrato}
                             />
                         </FormProvider>
                     </Grid>
@@ -614,10 +580,9 @@ const Employee = () => {
                             <InputSelect
                                 name="type"
                                 label="Rol"
-                                defaultValue=""
                                 options={lsRol}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.type}
                             />
                         </FormProvider>
                     </Grid>
@@ -626,10 +591,9 @@ const Employee = () => {
                             <InputSelect
                                 name="rosterPosition"
                                 label="Roster Position"
-                                defaultValue=""
                                 options={lsRosterPosition}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.rosterPosition}
                             />
                         </FormProvider>
                     </Grid>
@@ -638,10 +602,9 @@ const Employee = () => {
                             <InputSelect
                                 name="generalPosition"
                                 label="General Position"
-                                defaultValue=""
                                 options={lsGeneralPosition}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.generalPosition}
                             />
                         </FormProvider>
                     </Grid>
@@ -650,10 +613,9 @@ const Employee = () => {
                             <InputSelect
                                 name="departamento"
                                 label="Departamento"
-                                defaultValue=""
                                 options={lsDepartEmpresa}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.departamento}
                             />
                         </FormProvider>
                     </Grid>
@@ -662,10 +624,9 @@ const Employee = () => {
                             <InputSelect
                                 name="area"
                                 label="Area"
-                                defaultValue=""
                                 options={lsArea}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.area}
                             />
                         </FormProvider>
                     </Grid>
@@ -674,10 +635,9 @@ const Employee = () => {
                             <InputSelect
                                 name="subArea"
                                 label="Subarea"
-                                defaultValue=""
                                 options={lsSubArea}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.subArea}
                             />
                         </FormProvider>
                     </Grid>
@@ -686,10 +646,9 @@ const Employee = () => {
                             <InputSelect
                                 name="grupo"
                                 label="Grupo"
-                                defaultValue=""
                                 options={lsGrupo}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.grupo}
                             />
                         </FormProvider>
                     </Grid>
@@ -698,10 +657,9 @@ const Employee = () => {
                             <InputSelect
                                 name="turno"
                                 label="Turno"
-                                defaultValue=""
                                 options={lsTurno}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.turno}
                             />
                         </FormProvider>
                     </Grid>
@@ -713,7 +671,7 @@ const Employee = () => {
                                 name="rotation"
                                 label="Rotación"
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.rotation}
                             />
                         </FormProvider>
                     </Grid>
@@ -722,10 +680,9 @@ const Employee = () => {
                             <InputSelect
                                 name="payStatus"
                                 label="Estado"
-                                defaultValue=""
                                 options={lsEstado}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.payStatus}
                             />
                         </FormProvider>
                     </Grid>
@@ -750,10 +707,9 @@ const Employee = () => {
                             <InputSelect
                                 name="municipioNacido"
                                 label="Municipio de Nacimiento"
-                                defaultValue=""
                                 options={lsMunicipioN}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.municipioNacido}
                             />
                         </FormProvider>
                     </Grid>
@@ -772,10 +728,9 @@ const Employee = () => {
                             <InputSelect
                                 name="municipioResidencia"
                                 label="Municipio de Residencia"
-                                defaultValue=""
                                 options={lsMunicipioR}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.municipioResidencia}
                             />
                         </FormProvider>
                     </Grid>
@@ -787,7 +742,7 @@ const Employee = () => {
                                 name="direccionResidencia"
                                 label="Dirección de Residencia"
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.direccionResidencia}
                             />
                         </FormProvider>
                     </Grid>
@@ -806,10 +761,9 @@ const Employee = () => {
                             <InputSelect
                                 name="municipioResidenciaTrabaja"
                                 label="Municipio de Residencia Laboral"
-                                defaultValue=""
                                 options={lsMunicipioTrabaja}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.municipioResidenciaTrabaja}
                             />
                         </FormProvider>
                     </Grid>
@@ -821,7 +775,7 @@ const Employee = () => {
                                 name="direccionResidenciaTrabaja"
                                 label="Dirección de Residencia Laboral"
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.direccionResidenciaTrabaja}
                             />
                         </FormProvider>
                     </Grid>
@@ -836,10 +790,9 @@ const Employee = () => {
                             <InputSelect
                                 name="eps"
                                 label="EPS"
-                                defaultValue=""
                                 options={lsEps}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.eps}
                             />
                         </FormProvider>
                     </Grid>
@@ -848,10 +801,9 @@ const Employee = () => {
                             <InputSelect
                                 name="afp"
                                 label="AFP"
-                                defaultValue=""
                                 options={lsAfp}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.afp}
                             />
                         </FormProvider>
                     </Grid>
@@ -860,10 +812,9 @@ const Employee = () => {
                             <InputSelect
                                 name="arl"
                                 label="ARL"
-                                defaultValue=""
                                 options={lsArl}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.arl}
                             />
                         </FormProvider>
                     </Grid>
@@ -872,10 +823,9 @@ const Employee = () => {
                             <InputSelect
                                 name="cesantias"
                                 label="Cesantias"
-                                defaultValue=""
                                 options={lsCesantias}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.cesantias}
                             />
                         </FormProvider>
                     </Grid>
@@ -890,7 +840,6 @@ const Employee = () => {
                             <InputDatePicker
                                 label="Fecha de Terminación"
                                 name="termDate"
-                                defaultValue={new Date()}
                             />
                         </FormProvider>
                     </Grid>
@@ -900,10 +849,9 @@ const Employee = () => {
                             <InputSelect
                                 name="ges"
                                 label="Ges"
-                                defaultValue=""
                                 options={lsGes}
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
+                                bug={errors.ges}
                             />
                         </FormProvider>
                     </Grid>
@@ -914,14 +862,14 @@ const Employee = () => {
 
             <Grid item xs={12} sx={{ pb: 2 }}>
                 <Grid container spacing={1}>
-                    <Grid item xs={6}>
+                    <Grid item xs={2}>
                         <AnimateButton>
                             <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                 {TitleButton.Guardar}
                             </Button>
                         </AnimateButton>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={2}>
                         <AnimateButton>
                             <Button variant="outlined" fullWidth onClick={() => navigate("/employee/list")}>
                                 {TitleButton.Cancelar}

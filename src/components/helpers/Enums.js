@@ -156,6 +156,7 @@ export const DefaultData = {
 
 export const DefaultValue = {
     SINREGISTRO_GLOBAL: 1,
+    BANDERA_DRUMMOND: 7116,
     SINREGISTRO_TEXTO: 'REGISTRO NO APLICA',
     GeneroWomen: 2,
     ATENCION_ATENDIDO: 'ATENDIDO',

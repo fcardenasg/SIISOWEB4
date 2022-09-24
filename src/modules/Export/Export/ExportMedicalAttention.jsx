@@ -122,6 +122,7 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Nro Atencion" value="id" />
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                         <ExcelColumn label="Atención" value="nameAtencion" />
+                                        
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombres" value="nameEmpleado" />
                                         <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNacimi)} />

@@ -1,5 +1,5 @@
 export const Url = {
-    Base: 'https://siisonew.westus3.cloudapp.azure.com:44347/',
+    Base: 'https://localhost:44347/',
 
     //https://siisonew.westus3.cloudapp.azure.com:44347/api/Empresa?page=0&pageSize=100
 
