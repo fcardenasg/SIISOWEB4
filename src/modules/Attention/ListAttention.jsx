@@ -366,9 +366,43 @@ const ListAttention = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Asesoría Médica">
-                            <ExcelSheet data={lsAttention} name="Asesoría Médica">
+                        } filename="Lista de Atención">
+                            <ExcelSheet data={lsAttention} name="Atención">
                                 <ExcelColumn label="Id" value="id" />
+                                <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
+                                <ExcelColumn label="Tipo de Atención" value="nameTipoAtencion" />
+                                <ExcelColumn label="Atención" value="nameAtencion" />
+
+                                <ExcelColumn label="Documento" value="documento" />
+                                <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                <ExcelColumn label="Sede Empleado" value="nameSedeEmpleado" />
+                                <ExcelColumn label="Cargo" value="nameCargo" />
+                                <ExcelColumn label="General Position" value="nameGeneralPosition" />
+                                <ExcelColumn label="Correo" value="nameCorreo" />
+                                <ExcelColumn label="Genero" value="nameGenero" />
+                                <ExcelColumn label="Empresa" value="nameEmpresa" />
+                                <ExcelColumn label="Fecha Nacimiento" value={(fe) => ViewFormat(fe.fechaNacimi)} />
+                                <ExcelColumn label="Eps" value="nameEps" />
+                                <ExcelColumn label="Telefono" value="nameTelefono" />
+                                <ExcelColumn label="Fecha Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
+                                <ExcelColumn label="Afp" value="nameAfp" />
+                                <ExcelColumn label="Area" value="nameArea" />
+                                <ExcelColumn label="Ciudad Nacimiento" value="nameCiudadNacido" />
+                                <ExcelColumn label="Ciudad Residencia" value="nameCiudadResidencia" />
+                                <ExcelColumn label="Departamento" value="nameDepartamento" />
+                                <ExcelColumn label="Dirección" value="nameDireccion" />
+                                <ExcelColumn label="Departamento Nacimiento" value="nameDptoNacido" />
+                                <ExcelColumn label="Departamento Residencia" value="nameDptoResidencia" />
+                                <ExcelColumn label="Estado Civil" value="nameEstadoCivil" />
+                                <ExcelColumn label="Grupo" value="nameGrupo" />
+                                <ExcelColumn label="Subarea" value="nameSubarea" />
+                                <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
+                                <ExcelColumn label="Turno Empleado" value="nameTurnoEmpleado" />
+                                <ExcelColumn label="Type" value="nameType" />
+
+                                <ExcelColumn label="Estado Caso" value="nameEstadoCaso" />
+                                <ExcelColumn label="Sede Atención" value="nameSedeAtencion" />
+                                <ExcelColumn label="Observaciones" value="observaciones" />
                             </ExcelSheet>
                         </ExcelFile>
 

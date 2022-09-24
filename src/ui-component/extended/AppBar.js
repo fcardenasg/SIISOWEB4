@@ -1,20 +1,17 @@
-import { cloneElement, useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { cloneElement } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { useTheme } from '@mui/material/styles';
 import {
     AppBar as MuiAppBar,
-    Box,
     Button,
     Container,
-    IconButton,
     Stack,
     Toolbar,
     Typography,
     useScrollTrigger
 } from '@mui/material';
 
-import PaperHomePage from 'views/pages/landing/Paper/PaperHomePage';
 import Logo from 'ui-component/Logo';
 
 function ElevationScroll({ children, window }) {

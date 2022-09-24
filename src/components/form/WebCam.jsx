@@ -5,7 +5,6 @@ import {
     Grid
 } from '@mui/material';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import Cargando from 'components/loading/Cargando';
 
 const videoConstraints = {
     width: 360,

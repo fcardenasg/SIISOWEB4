@@ -1,34 +1,65 @@
-const handleFuma = (event) => {
-    try {
-        setFuma(event.target.value);
-        var fumaResult = FrFuma(event.target.value);
-        setFrFuma(fumaResult);
+Id = reg.Id,
+Documento = reg.Documento,
+Fecha = reg.Fecha,
+Sede = reg.Sede,
+Tipo = reg.Tipo,
+Atencion = reg.Atencion,
+EstadoCaso = reg.EstadoCaso,
+Observaciones = reg.Observaciones,
+NumeroHistoria = reg.NumeroHistoria,
+EstadoPac = reg.EstadoPac,
+Contingencia = reg.Contingencia,
+Turno = reg.Turno,
+DiaTurno = reg.DiaTurno,
+Motivo = reg.Motivo,
+Medico = reg.Medico,
+DocSolicitante = reg.DocSolicitante,
+Talla = reg.Talla,
+Peso = reg.Peso,
+IMC = reg.IMC,
+UsuarioCierreAtencion = reg.UsuarioCierreAtencion,
+FechaDigitacion = reg.FechaDigitacion,
+FechaCierreAtencion = reg.FechaCierreAtencion,
+Duracion = reg.Duracion,
+UsuarioRegistro = reg.UsuarioRegistro,
+UsuarioModifico = reg.UsuarioModifico,
+FechaRegistro = reg.FechaRegistro,
+FechaModifico = reg.FechaModifico,
 
-        /* PUNTAJE */
-        var puntajeFR = parseInt(frEdad) + parseInt(frColesterol) + parseInt(frHdl) + parseInt(frGlicemia) + parseInt(frTencion) + parseInt(fumaResult);
-        setFrPuntaje(puntajeFR);
+NameTipoAtencion = reg.TipoTAtencion.Nombre,
+NameAtencion = reg.TipoAAtencion.Nombre,
+NameContingencia = reg.TipoContingencia.Nombre,
+NameSedeAtencion = reg.TipoSede.Nombre,
+NameDiaTurno = reg.TipoDiaTurno.Nombre,
+NameTurno = reg.TipoTurno.Nombre,
+NameEmpleadoSolicita = reg.DatosEmpleadoSolicita.Nombres,
+NameMotivo = reg.TipoMotivo.Nombre,
+NameEstadoCaso = reg.TipoEstadoCaso.Nombre,
 
-        var datos = GetRiesgos(puntajeFR, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
-        setRiesgo({
-            dxRiesgo: datos.dxRiesgo,
-            riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? datos.riesgoAbsolutoH : datos.riesgoAbsolutoM,
-            riesgoRelativo: datos.riesgoRelativo
-        });
-    } catch (error) { }
-}
+EmpleadoFoto = reg.DatosEmpleado.ImagenUrl,
+NameEmpleado = reg.DatosEmpleado.Nombres,
+NameSedeEmpleado = reg.DatosEmpleado.TipoSede.Nombre,
+NameCargo = reg.DatosEmpleado.TipoRosterPosition.Nombre,
+NameGeneralPosition = reg.DatosEmpleado.TipoGeneralPosition.Nombre,
 
-const metodoFuma = (fuma) => {
-    setFuma(fuma);
-    var fumaResult = FrFuma(fuma);
-    setFrFuma(fumaResult);
-}
-
-const metodoHdl = (hdl) => {
-    try {
-        setHdl(hdl);
-        var result = FrLdl_FrRelacion(hdl, colesterol, trigliceridos);
-        setFrLdl(result.ldl);
-        setRelacion(result.relacion);
-
-    } catch (error) { }
-}
+NameCorreo = reg.DatosEmpleado.Email,
+NameEmpresa = reg.DatosEmpleado.TipoEmpresas.DescripcionSpa,
+FechaNacimi = reg.DatosEmpleado.FechaNaci,
+NameEps = reg.DatosEmpleado.TipoEps.Nombre,
+NameTelefono = reg.DatosEmpleado.Celular,
+FechaContrato = reg.DatosEmpleado.FechaContrato,
+NameAfp = reg.DatosEmpleado.TipoAfp.Nombre,
+NameArea = reg.DatosEmpleado.TipoArea.Nombre,
+NameCiudadNacido = reg.DatosEmpleado.TipoMunicipioNacido.Nombre,
+NameCiudadResidencia = reg.DatosEmpleado.TipoMunicipioResidencia.Nombre,
+NameDepartamento = reg.DatosEmpleado.TipoDepartamento.Nombre,
+NameDireccion = reg.DatosEmpleado.DireccionResidencia,
+NameDptoNacido = reg.DatosEmpleado.TipoDptoNacido.Nombre,
+NameDptoResidencia = reg.DatosEmpleado.TipoDptoResidencia.Nombre,
+NameEstadoCivil = reg.DatosEmpleado.TipoEstadoCivil.Nombre,
+NameGrupo = reg.DatosEmpleado.TipoGrupo.Nombre,
+NameSubarea = reg.DatosEmpleado.TipoSubArea.Nombre,
+NameTipoContrato = reg.DatosEmpleado.TipoTipoContrato.Nombre,
+NameTurnoEmpleado = reg.DatosEmpleado.TipoTurno.Nombre,
+NameType = reg.DatosEmpleado.TipoType.Nombre,
+NameGenero = reg.DatosEmpleado.TipoGenero.Nombre,

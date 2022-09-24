@@ -161,11 +161,11 @@ const ViewProgramming = ({ programming, getAll }) => {
                             <Grid item xs={12} alignItems="center">
                                 <Grid container direction="row" justifyContent="space-between" alignItems="center">
                                     <Grid item xs={6}>
-                                        <Typography variant="h6">{programming.empleadoGenero}</Typography>
+                                        <Typography variant="h6">{programming.nameGenero}</Typography>
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <Typography variant="h6">{GetEdad(new Date(programming.empleadoFechaNacimiento))} AÑOS</Typography>
+                                        <Typography variant="h6">{GetEdad(new Date(programming.fechaNacimi))} AÑOS</Typography>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -191,7 +191,7 @@ const ViewProgramming = ({ programming, getAll }) => {
 
                             <Grid item xs={6}>
                                 <Typography variant="h6"><b>SEDE:</b> </Typography>
-                                <Typography variant="h6">{programming.nameSede}</Typography>
+                                <Typography variant="h6">{programming.nameSedeAtencion}</Typography>
                             </Grid>
                         </Grid>
                     </Grid>

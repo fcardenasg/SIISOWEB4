@@ -51,6 +51,8 @@ import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
+import { GetEdad, ViewFormat } from 'components/helpers/Format';
+import userEmpleado from 'assets/img/user.png';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -435,45 +437,46 @@ const ListEmployee = () => {
                             <ExcelSheet data={employee} name="Empleado">
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombres" value="nombres" />
-                                <ExcelColumn label="Fecha de Nacimiento" value="fechaNaci" />
-                                <ExcelColumn label="Type" value="type" />
-                                <ExcelColumn label="Departamento" value="departamento" />
-                                <ExcelColumn label="Area" value="area" />
-                                <ExcelColumn label="Subarea" value="subarea" />
-                                <ExcelColumn label="Grupo" value="grupo" />
-                                <ExcelColumn label="Municipio de Nacimiento" value="municipioNacido" />
-                                <ExcelColumn label="Departamento de Nacimiento" value="dptoNacido" />
-                                <ExcelColumn label="Fecha de Contrato" value="fechaContrato" />
-                                <ExcelColumn label="Roster Position" value="rosterPosition" />
-                                <ExcelColumn label="Tipo de Contrato" value="tipoContrato" />
-                                <ExcelColumn label="General Position" value="generalPosition" />
-                                <ExcelColumn label="Genero" value="genero" />
-                                <ExcelColumn label="Sede" value="sede" />
+                                <ExcelColumn label="Fecha de Nacimiento" value={(fe) => ViewFormat(fe.fechaNaci)} />
+                                <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNaci)} />
+                                <ExcelColumn label="Type" value="nameType" />
+                                <ExcelColumn label="Departamento" value="nameDepartamento" />
+                                <ExcelColumn label="Area" value="nameArea" />
+                                <ExcelColumn label="Subarea" value="nameSubArea" />
+                                <ExcelColumn label="Grupo" value="nameGrupo" />
+                                <ExcelColumn label="Municipio de Nacimiento" value="nameMunicipioNacido" />
+                                <ExcelColumn label="Departamento de Nacimiento" value="nameDptoNacido" />
+                                <ExcelColumn label="Fecha de Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
+                                <ExcelColumn label="Antiguedad" value={(fe) => GetEdad(fe.fechaContrato)} />
+                                <ExcelColumn label="Roster Position" value="nameRosterPosition" />
+                                <ExcelColumn label="Tipo de Contrato" value="nameTipoContrato" />
+                                <ExcelColumn label="General Position" value="nameGeneralPosition" />
+                                <ExcelColumn label="Genero" value="nameGenero" />
+                                <ExcelColumn label="Sede" value="nameSede" />
                                 <ExcelColumn label="Dirección de Residencia" value="direccionResidencia" />
-                                <ExcelColumn label="Municipio de Residencia" value="municipioResidencia" />
-                                <ExcelColumn label="Departamento de Residencia" value="dptoResidencia" />
+                                <ExcelColumn label="Municipio de Residencia" value="nameMunicipioResidencia" />
+                                <ExcelColumn label="Departamento de Residencia" value="nameDptoResidencia" />
                                 <ExcelColumn label="celular" value="celular" />
-                                <ExcelColumn label="Eps" value="eps" />
-                                <ExcelColumn label="Afp" value="afp" />
-                                <ExcelColumn label="Turno" value="turno" />
+                                <ExcelColumn label="Eps" value="nameEps" />
+                                <ExcelColumn label="Afp" value="nameAfp" />
+                                <ExcelColumn label="Turno" value="nameTurno" />
                                 <ExcelColumn label="Email" value="email" />
                                 <ExcelColumn label="Teléfono de Contacto" value="telefonoContacto" />
-                                <ExcelColumn label="Estado Civil" value="estadoCivil" />
-                                <ExcelColumn label="Empresa" value="empresa" />
-                                <ExcelColumn label="Arl" value="arl" />
+                                <ExcelColumn label="Estado Civil" value="nameEstadoCivil" />
+                                <ExcelColumn label="Empresa" value="nameCompany" />
+                                <ExcelColumn label="Arl" value="nameArl" />
                                 <ExcelColumn label="Contacto" value="contacto" />
-                                <ExcelColumn label="Escolaridad" value="escolaridad" />
-                                <ExcelColumn label="Cesantias" value="cesantias" />
+                                <ExcelColumn label="Escolaridad" value="nameEscolaridad" />
+                                <ExcelColumn label="Cesantias" value="nameCesantias" />
                                 <ExcelColumn label="Rotation" value="rotation" />
-                                <ExcelColumn label="PayStatus" value="payStatus" />
-                                <ExcelColumn label="PayStatus" value="payStatus" />
-                                <ExcelColumn label="Fecha de terminación" value="termDate" />
-                                <ExcelColumn label="Bandera" value="bandera" />
-                                <ExcelColumn label="Ges" value="ges" />
+                                <ExcelColumn label="PayStatus" value="namePayStatus" />
+                                <ExcelColumn label="Fecha de terminación" value={(fe) => ViewFormat(fe.termDate)} />
+                                <ExcelColumn label="Bandera" value="nameBandera" />
+                                <ExcelColumn label="Ges" value="nameGes" />
+                                <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
+                                <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                 <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
-                                <ExcelColumn label="Fecha de Modificación" value="fechaModificacion" />
-                                <ExcelColumn label="Usuario Creación" value="usuarioCreacion" />
-                                <ExcelColumn label="Fecha de Creación" value="fechaCreacion" />
+                                <ExcelColumn label="Fecha de Modificación" value={(fe) => ViewFormat(fe.fechaModifico)} />
                             </ExcelSheet>
                         </ExcelFile>
 
@@ -547,7 +550,7 @@ const ListEmployee = () => {
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
-                                            <Avatar alt="Foto Empleado" src={row.imagenUrl} />
+                                            <Avatar alt="Foto Empleado" src={row.imagenUrl === '' ? userEmpleado : row.imagenUrl} />
                                         </TableCell>
 
                                         <TableCell

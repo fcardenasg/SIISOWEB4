@@ -96,7 +96,6 @@ ViewDataDetails.propTypes = {
 const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, handleDocumento }) => {
     const [openUpdate, setOpenUpdate] = useState(false);
 
-
     return (
         <Grid container spacing={1}>
             <FullScreenDialog
@@ -124,9 +123,6 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                             <Stack sx={{ pr: 2 }} alignItems="center" spacing={1}>
                                 <Typography variant="h3">
                                     {lsEmployee.nombres == null ? 'Digite Documento...' : lsEmployee.nombres}
-                                    <Typography variant="h6">
-                                        {lsEmployee.nameType == null ? '' : lsEmployee.nameType}
-                                    </Typography>
                                 </Typography>
                             </Stack>
                         </Grid>
@@ -262,11 +258,12 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
     return (
         <Fragment>
             <SubCard title={<Typography variant="h4">{title}</Typography>}>
-                <Grid container justifyContent="center" alignItems="center">
+                <Grid container alignItems="center">
                     <Grid item xs={3.2}>
                         <CardMedia
                             component="img"
-                            image={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : user}
+                            image={lsEmployee.imagenUrl === undefined ? user :
+                                lsEmployee.imagenUrl === '' ? user : lsEmployee.imagenUrl}
                             sx={{ width: 200, borderRadius: '150px' }}
                         />
                     </Grid>
@@ -313,7 +310,6 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                                 </Grid>
                             </Grid>
                         </Accordion>
-                        <Divider />
                     </Grid>
                 </Grid>
             </SubCard>

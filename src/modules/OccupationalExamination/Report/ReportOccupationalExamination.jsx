@@ -141,7 +141,7 @@ const ReportOccupationalExamination = () => {
                                 />
                             </Grid>
 
-                            {/* <Grid item xs={12}>
+                            <Grid item xs={12}>
                                 <ReportPersonalHistory key={5} datos={lsDataReport} />
                             </Grid>
 
@@ -159,7 +159,7 @@ const ReportOccupationalExamination = () => {
 
                             <Grid item xs={12}>
                                 <ReportDefinitiveDiagnosis key={9} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid> */}
+                            </Grid>
                         </Grid>
                     </Grid>
 
