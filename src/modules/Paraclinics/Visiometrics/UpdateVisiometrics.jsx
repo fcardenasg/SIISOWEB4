@@ -15,15 +15,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { FormProvider, useForm } from 'react-hook-form';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
+
 import { FormatDate } from 'components/helpers/Format'
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import InputText from 'components/input/InputText';
@@ -153,22 +150,6 @@ const UpdateVisiometrics = () => {
             }));
             setLsCie11(resultCie11);
 
-            const lsServerLectura = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_LECTURA);
-            var resultLectura = lsServerLectura.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsLectura(resultLectura);
-
-       
-
-            const lsServerControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONTROL);
-            var resultControl = lsServerControl.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsControl(resultControl);
-
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -190,12 +171,31 @@ const UpdateVisiometrics = () => {
             }));
             setLsConclusion(resultConclusion);
 
+
+            const lsServerLectura = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_LECTURAADD);
+            var resultLectura = lsServerLectura.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsLectura(resultLectura);
+
+       
+
+            const lsServerControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONTROLV);
+            var resultControl = lsServerControl.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsControl(resultControl);
+
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
+
+      
 
 
 
