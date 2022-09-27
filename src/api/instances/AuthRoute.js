@@ -1,5 +1,5 @@
 export const Url = {
-    Base: 'https://siisonew.westus3.cloudapp.azure.com:44347/',
+    Base: 'https://localhost:44347/',
 
     //'https://localhost:44347/', https://siisonew.westus3.cloudapp.azure.com:44347/
 
@@ -68,6 +68,7 @@ export const Url = {
 
     Paraclinicos: 'api/Paraclinicos',
     Paraclinicos_GetAllByDocumentoParacli: 'api/Paraclinicos/GetAllByDocumentoParacli',
+    Paraclinicos_GetAllByTypeParaclinico: 'api/Paraclinicos/GetAllByTipoParaclinico',
     ParaclinicosId: 'api/Paraclinicos/id',
 
     Ordenes: 'api/Ordenes',

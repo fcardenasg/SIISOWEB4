@@ -24,18 +24,17 @@ const QuestionnaireTos = ({ title = '', text = '' }) => {
 const DataInfo = ({ title = '', text = '' }) => {
     return (
         <Fragment>
-            <Grid item xs={2}>
+            <Grid item xs={1.7}>
                 <Typography variant='h6'><b>{title}</b></Typography>
             </Grid>
-            <Grid item xs={3.8}>
-                <Typography align="right" variant='h6'>{text}</Typography>
+            <Grid item xs={4.3}>
+                <Typography variant='h6'>{text}</Typography>
             </Grid>
-            <Grid item xs={0.2} />
         </Fragment>
     )
 }
 
-const ReportPage1 = ({ datos = [], lsDataUser = [] }) => {
+const ReportPage1 = ({ datos = [] }) => {
     const { user } = useAuth();
 
     return (

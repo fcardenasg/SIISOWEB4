@@ -22,7 +22,7 @@ const EmployeeNotification = ({ title = '', text = '' }) => {
     )
 }
 
-const ReportEmployeeNotification = ({ datos = [], lsDataUser = [] }) => {
+const ReportConfinedSpaceWorker = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
 
     return (
@@ -36,7 +36,7 @@ const ReportEmployeeNotification = ({ datos = [], lsDataUser = [] }) => {
 
                         <Grid item xs={4}>
                             <Typography variant="h5" align="center"><b>DIVISION MÉDICA</b></Typography>
-                            <Typography variant="h5" align="center"><b>ANEXO DE APTITUD PARA TRABAJO EN ALTURAS</b></Typography>
+                            <Typography variant="h5" align="center"><b>ANEXO DE ESPACIO CONFINADO</b></Typography>
                         </Grid>
 
                         <Grid item xs={4}>
@@ -242,4 +242,4 @@ const ReportEmployeeNotification = ({ datos = [], lsDataUser = [] }) => {
     );
 };
 
-export default ReportEmployeeNotification;
+export default ReportConfinedSpaceWorker;

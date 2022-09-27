@@ -422,7 +422,7 @@ const OccupationalExamination = () => {
                                     lsEmployee={lsEmployee}
                                     lsAtencion={lsAtencion}
                                     tipoOrden={titleModal}
-                                /> : ''
+                                /> : null
                     }
                 </ControlModal>
 

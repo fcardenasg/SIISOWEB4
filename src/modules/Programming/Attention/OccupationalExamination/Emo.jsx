@@ -57,20 +57,20 @@ const DetailIcons = [
 
 const validateLastData = (data = undefined, tipoCampo = "bool") => {
     if (tipoCampo === "bool") {
-        if (data === undefined)
+        if (data == undefined)
             return false;
         else return data;
     } else if (tipoCampo === "string") {
-        if (data === undefined)
-            return "";
+        if (data == undefined)
+            return undefined;
         else return data;
     } else if (tipoCampo === "date") {
-        if (data === undefined)
+        if (data == undefined)
             return new Date();
         else return data;
     } else if (tipoCampo === "number") {
-        if (data === undefined)
-            return "";
+        if (data == undefined)
+            return undefined;
         else return data;
     }
 }
@@ -229,7 +229,6 @@ const Emo = ({
 
     async function getAllConceptos() {
         try {
-
             const lsServerConceptoActitudIngreso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_APTI_PSICO_INGRESO);
             var resultConceptoActitudIngreso = lsServerConceptoActitudIngreso.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -256,7 +255,6 @@ const Emo = ({
     useEffect(() => {
         getAllConceptos();
     }, [atencion]);
-
 
     useEffect(() => {
         getAll();
@@ -300,10 +298,10 @@ const Emo = ({
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Accordion title={<><IconAffiliate />
-                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ANTECEDENTES PATALÓGICOS</Typography></>}>
+                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ANTECEDENTES PATOLÓGICOS</Typography></>}>
                         <SubCard>
-                            <Grid container spacing={2}>
-                                <Grid item xs={2} >
+                            <Grid container spacing={0.5}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="1. Congenitos"
@@ -314,7 +312,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="2. Inmunoprevenible"
@@ -325,7 +323,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="3. Infecciosos"
@@ -336,7 +334,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="4. Ojos"
@@ -347,7 +345,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="5. Agudeza Visual"
@@ -358,7 +356,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="6. Oidos"
@@ -369,7 +367,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2} >
+                                <Grid item xs={2.4} >
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="7. Nasofaringe"
@@ -380,7 +378,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="8. Cardiovascular"
@@ -391,7 +389,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="9. Pulmonar"
@@ -402,7 +400,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="10. Gastrointestinal"
@@ -413,7 +411,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="11. Genitourinario"
@@ -424,7 +422,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="12. Neurológico"
@@ -435,7 +433,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="13. Trastornos de piel"
@@ -446,7 +444,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="14. Osteomusculares"
@@ -457,7 +455,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="15. Alérgicos"
@@ -468,7 +466,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="16. Tóxicos"
@@ -479,7 +477,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="17. Farmacólogicos"
@@ -490,7 +488,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="18. Quirúrgicos"
@@ -501,7 +499,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2} >
+                                <Grid item xs={2.4} >
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="19. Traumático"
@@ -512,7 +510,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="20. Transfusiones"
@@ -523,7 +521,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="21. ETS"
@@ -534,7 +532,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="22. Deformidades"
@@ -545,7 +543,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="23. Psiquiatrico"
@@ -556,7 +554,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="24. Farmacodependencia"
@@ -567,7 +565,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="25. E.M."
@@ -578,7 +576,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="26. Renal"
@@ -589,7 +587,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="27. Asma"
@@ -600,7 +598,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="28. O.R.L."
@@ -611,7 +609,7 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="29. Cancer"
@@ -671,7 +669,7 @@ const Emo = ({
                                         <InputSelect
                                             name="parentesco1ANFA"
                                             label="Parentesco"
-                                            defaultValue={() => validateLastData(lsLastRecord.parentesco1ANFA, "number")}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco1ANFA, "string")}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -697,7 +695,7 @@ const Emo = ({
                                         <InputSelect
                                             name="parentesco2ANFA"
                                             label="Parentesco"
-                                            defaultValue={() => validateLastData(lsLastRecord.parentesco2ANFA, "number")}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco2ANFA, "string")}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -723,7 +721,7 @@ const Emo = ({
                                         <InputSelect
                                             name="parentesco3ANFA"
                                             label="Parentesco"
-                                            defaultValue={() => validateLastData(lsLastRecord.parentesco3ANFA, "number")}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco3ANFA, "string")}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -749,7 +747,7 @@ const Emo = ({
                                         <InputSelect
                                             name="parentesco4ANFA"
                                             label="Parentesco"
-                                            defaultValue={() => validateLastData(lsLastRecord.parentesco4ANFA, "number")}
+                                            defaultValue={() => validateLastData(lsLastRecord.parentesco4ANFA, "string")}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -1064,7 +1062,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.cigarrillosDiasFumaHB, "string")}
+                                            defaultValue={() => validateLastData(lsLastRecord.cigarrillosDiasFumaHB, "number")}
                                             fullWidth
                                             type="number"
                                             name="cigarrillosDiasFumaHB"
@@ -1078,7 +1076,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.aniosCigaFumaHB, "string")}
+                                            defaultValue={() => validateLastData(lsLastRecord.aniosCigaFumaHB, "number")}
                                             fullWidth
                                             type="number"
                                             name="aniosCigaFumaHB"
@@ -1093,7 +1091,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.mesesCigaFumaHB, "string")}
+                                            defaultValue={() => validateLastData(lsLastRecord.mesesCigaFumaHB, "number")}
                                             fullWidth
                                             type="number"
                                             name="mesesCigaFumaHB"
@@ -1133,7 +1131,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.cigarrillosDiasFumabaHB, "string")}
+                                            defaultValue={() => validateLastData(lsLastRecord.cigarrillosDiasFumabaHB, "number")}
                                             fullWidth
                                             type="number"
                                             name="cigarrillosDiasFumabaHB"
@@ -1147,7 +1145,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.aniosCigaFumabaHB, "string")}
+                                            defaultValue={() => validateLastData(lsLastRecord.aniosCigaFumabaHB, "number")}
                                             fullWidth
                                             type="number"
                                             name="aniosCigaFumabaHB"
@@ -1161,7 +1159,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.mesesCigaFumabaHB, "string")}
+                                            defaultValue={() => validateLastData(lsLastRecord.mesesCigaFumabaHB, "number")}
                                             fullWidth
                                             type="number"
                                             name="mesesCigaFumabaHB"
@@ -1351,7 +1349,7 @@ const Emo = ({
                                     <Grid item xs={2.5}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.menarquiaGO, "string")}
+                                                defaultValue={() => validateLastData(lsLastRecord.menarquiaGO, "number")}
                                                 fullWidth
                                                 type="number"
                                                 name="menarquiaGO"
@@ -1378,7 +1376,7 @@ const Emo = ({
                                     <Grid item xs={2.5} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.duracionGO, "string")}
+                                                defaultValue={() => validateLastData(lsLastRecord.duracionGO, "number")}
                                                 fullWidth
                                                 type="number"
                                                 name="duracionGO"
@@ -1427,7 +1425,7 @@ const Emo = ({
                                     <Grid item xs={2.5}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.vidaMaritalGO, "string")}
+                                                defaultValue={() => validateLastData(lsLastRecord.vidaMaritalGO, "number")}
                                                 fullWidth
                                                 type="number"
                                                 name="vidaMaritalGO"
@@ -1441,7 +1439,7 @@ const Emo = ({
                                     <Grid item xs={2.5}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.vidaObstetricaGO, "string")}
+                                                defaultValue={() => validateLastData(lsLastRecord.vidaObstetricaGO, "number")}
                                                 fullWidth
                                                 type="number"
                                                 name="vidaObstetricaGO"
@@ -1455,7 +1453,7 @@ const Emo = ({
                                     <Grid item xs={1.4}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.ggo, "string")}
+                                                defaultValue={() => validateLastData(lsLastRecord.ggo, "number")}
                                                 fullWidth
                                                 type="number"
                                                 name="gGO"
@@ -1469,7 +1467,7 @@ const Emo = ({
                                     <Grid item xs={1.4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.pgo, "string")}
+                                                defaultValue={() => validateLastData(lsLastRecord.pgo, "number")}
                                                 fullWidth
                                                 type="number"
                                                 name="pGO"
@@ -1497,7 +1495,7 @@ const Emo = ({
                                     <Grid item xs={1.4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.csgo, "string")}
+                                                defaultValue={() => validateLastData(lsLastRecord.csgo, "number")}
                                                 fullWidth
                                                 type="number"
                                                 name="cSGO"
@@ -1511,7 +1509,7 @@ const Emo = ({
                                     <Grid item xs={1.4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.vgo, "string")}
+                                                defaultValue={() => validateLastData(lsLastRecord.vgo, "number")}
                                                 fullWidth
                                                 type="number"
                                                 name="vGO"
@@ -1630,7 +1628,7 @@ const Emo = ({
                                     <Grid item xs={2}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.ultimoAnioCitologiaGO, "string")}
+                                                defaultValue={() => validateLastData(lsLastRecord.ultimoAnioCitologiaGO, "number")}
                                                 fullWidth
                                                 type="number"
                                                 name="ultimoAnioCitologiaGO"
@@ -1872,7 +1870,6 @@ const Emo = ({
                                     <Grid item xs={4}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue=""
                                                 fullWidth
                                                 type="number"
                                                 name="tASentadoEF"
@@ -1886,7 +1883,6 @@ const Emo = ({
                                     <Grid item xs={4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue=""
                                                 fullWidth
                                                 type="number"
                                                 name="tAAcostadoEF"
@@ -1900,7 +1896,6 @@ const Emo = ({
                                     <Grid item xs={4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue=""
                                                 fullWidth
                                                 type="number"
                                                 name="pulsoEF"
@@ -1914,7 +1909,6 @@ const Emo = ({
                                     <Grid item xs={4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue=""
                                                 fullWidth
                                                 type="number"
                                                 name="fCEF"
@@ -1928,7 +1922,6 @@ const Emo = ({
                                     <Grid item xs={4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue=""
                                                 fullWidth
                                                 type="number"
                                                 name="fREF"
@@ -1942,7 +1935,6 @@ const Emo = ({
                                     <Grid item xs={4} >
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue=""
                                                 fullWidth
                                                 type="number"
                                                 name="temperaturaEF"
@@ -2021,7 +2013,7 @@ const Emo = ({
                             </SubCard>
                             <Grid sx={{ pb: 2 }} />
 
-                            <SubCard title="Exploración Morfologica">
+                            <SubCard title="Exploración Morfológica">
                                 <Grid container spacing={1} sx={{ pb: 2 }}>
                                     <Grid item xs={3}>
                                         <FormProvider {...methods}>
@@ -2828,7 +2820,6 @@ const Emo = ({
                                         <InputSelect
                                             name="resultadoRxToraxEPA"
                                             label="Resultado"
-                                            defaultValue=""
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -2839,7 +2830,6 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacionesRxToraxEPA"
                                             label="Observaciones"
@@ -2889,7 +2879,6 @@ const Emo = ({
                                         <InputSelect
                                             name="resultadoEspirometriaEPA"
                                             label="Resultado"
-                                            defaultValue=""
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -2900,7 +2889,6 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacionesEspirometriaEPA"
                                             label="Observaciones"
@@ -2950,7 +2938,6 @@ const Emo = ({
                                         <InputSelect
                                             name="resultadoAudiometriaEPA"
                                             label="Resultado"
-                                            defaultValue=""
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -2961,7 +2948,6 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacionesAudiometriaEPA"
                                             label="Observaciones"
@@ -3011,7 +2997,6 @@ const Emo = ({
                                         <InputSelect
                                             name="resultadoVisiometriaEPA"
                                             label="Resultado"
-                                            defaultValue=""
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3022,7 +3007,6 @@ const Emo = ({
                                 <Grid item xs={6} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacionesVisiometriaEPA"
                                             label="Observaciones"
@@ -3072,7 +3056,6 @@ const Emo = ({
                                         <InputSelect
                                             name="resultadoLaboratorioClinicoEPA"
                                             label="Resultado"
-                                            defaultValue=""
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3083,7 +3066,6 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacionesLaboratorioClinicoEPA"
                                             label="Observaciones"
@@ -3133,7 +3115,6 @@ const Emo = ({
                                         <InputSelect
                                             name="resultadoCuestionarioSintomaEPA"
                                             label="Resultado"
-                                            defaultValue=""
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3144,7 +3125,6 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacionesCuestionarioSintomaEPA"
                                             label="Observaciones"
@@ -3194,7 +3174,6 @@ const Emo = ({
                                         <InputSelect
                                             name="resultadoEkgEPA"
                                             label="Resultado"
-                                            defaultValue=""
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3205,7 +3184,6 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacionesEkgEPA"
                                             label="Observaciones"
@@ -3255,7 +3233,6 @@ const Emo = ({
                                         <InputSelect
                                             name="resultadoRnmLumbosacraEPA"
                                             label="Resultado"
-                                            defaultValue=""
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3266,7 +3243,6 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacionesRnmLumbosacraEPA"
                                             label="Observaciones"
@@ -3315,7 +3291,6 @@ const Emo = ({
                                         <InputSelect
                                             name="resultadoRnmCervicalEPA"
                                             label="Resultado"
-                                            defaultValue=""
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3326,7 +3301,6 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacionesRnmCervicalEPA"
                                             label="Observaciones"
@@ -3490,7 +3464,6 @@ const Emo = ({
                                         <InputSelect
                                             name="idConceptoActitudID"
                                             label="Concepto de Aptitud PsicoFisica"
-                                            defaultValue=""
                                             options={
                                                 atencion === DefaultValue.EMO_ATENCION_INGRESO ? lsIngreso :
                                                     atencion === DefaultValue.EMO_ATENCION_CONTRO ? lsControlPeriodico :
@@ -3509,7 +3482,7 @@ const Emo = ({
                 <Grid item xs={12}>
                     <Accordion title={<><IconLungs />
                         <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">SINTOMAS RESPIRATORIOS</Typography></>}>
-                        <RespiratorySymptoms documento={documento} errors={errors} lsEmployee={lsEmployee} {...methods} />
+                        <RespiratorySymptoms {...methods} />
                     </Accordion>
                 </Grid>
 
@@ -3739,7 +3712,6 @@ const Emo = ({
                                         <InputSelect
                                             name="idRiesgoCardiovascularNEMTA"
                                             label="Riesgo Cardiovascular"
-                                            defaultValue=""
                                             options={lsRiesClasifi}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3752,7 +3724,6 @@ const Emo = ({
                                         <InputSelect
                                             name="idClasificacionNEMTA"
                                             label="Clasificación"
-                                            defaultValue=""
                                             options={lsRiesClasifi}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -4066,7 +4037,6 @@ const Emo = ({
                                             disabled
                                             name="conceptoActitudNETA"
                                             label="Concepto de Aptitud Medica"
-                                            defaultValue=""
                                             options={lsNeConceptoActi}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}

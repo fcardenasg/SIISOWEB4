@@ -17,11 +17,9 @@ import {
 } from '@mui/material';
 
 import swal from 'sweetalert';
-import { MessageSuccess, MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { MessageSuccess, MessageDelete, ParamDelete, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import { PostWorkHistoryDLTD, PostWorkHistoryEmpresa } from 'formatdata/WorkHistoryForm';
-import { useDispatch } from 'react-redux';
-import { SNACKBAR_OPEN } from 'store/actions';
 import Transitions from 'ui-component/extended/Transitions';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
@@ -45,8 +43,12 @@ import DataExposition from './DataExposition';
 const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const theme = useTheme();
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
 
     const [mpiAnioDTLD, setMpiAnioDTLD] = useState(0);
     const [mpiMesDTLD, setMpiMesDTLD] = useState(0);
@@ -58,8 +60,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const [anioRuidoOtrasEmpresas, setAnioRuidoOtrasEmpresas] = useState(0);
     const [mesRuidoOtrasEmpresas, setMesRuidoOtrasEmpresas] = useState(0);
 
-    const [openSuccess, setOpenSuccess] = useState(false);
-    const [openDelete, setOpenDelete] = useState(false);
     const [addItemClickedEmpresa, setAddItemClickedEmpresa] = useState(false);
     const [addItemClickedDLTD, setAddItemClickedDLTD] = useState(false);
     const [lsWorkHistory, setLsWorkHistory] = useState([]);
@@ -77,14 +77,14 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 var arrayMPI = lsServerDTLD.data.entities;
                 var arrayRUIDO = lsServerDTLD.data.entities;
 
-                if (arrayMPI.length != 0 || arrayRUIDO.length != 0) {
-                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI_DLTD)
+                if (arrayMPI.length !== 0 || arrayRUIDO.length !== 0) {
+                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico && code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
                         .map((riesgo) => ({
                             anio: riesgo.anio,
                             mes: riesgo.mes
                         }));
 
-                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo == DefaultValue.RiesgoFisico && code.idClase == DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico && code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
                         .map((riesgo) => ({
                             anio: riesgo.anio,
                             mes: riesgo.mes
@@ -126,14 +126,14 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 var arrayMPI = lsServerOtrasEmpresas.data.entities;
                 var arrayRUIDO = lsServerOtrasEmpresas.data.entities;
 
-                if (arrayMPI.length != 0 || arrayRUIDO.length != 0) {
-                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo == DefaultValue.RiesgoQuimico && code.idClase == DefaultValue.RiesgoQuimico_MPI_DLTD)
+                if (arrayMPI.length !== 0 || arrayRUIDO.length !== 0) {
+                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico && code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
                         .map((riesgo) => ({
                             anio: riesgo.anio,
                             mes: riesgo.mes
                         }));
 
-                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo == DefaultValue.RiesgoFisico && code.idClase == DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico && code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
                         .map((riesgo) => ({
                             anio: riesgo.anio,
                             mes: riesgo.mes
@@ -252,15 +252,8 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                     }
                 }
             } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Por favor, seleccione la Atención',
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
+                setOpenError(true);
+                setErrorMessage('Por favor, seleccione la Atención');
             }
         } catch (error) { }
     };
@@ -282,15 +275,8 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                     }
                 }
             } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Por favor, seleccione la Atención',
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
+                setOpenError(true);
+                setErrorMessage('Por favor, seleccione la Atención');
             }
         } catch (error) { }
     };
@@ -299,6 +285,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
         <Grid container spacing={3}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <Grid item xs={12}>
                 <SubCard title={<Typography variant='h4'>Historia Laboral Otras Empresas</Typography>}>
@@ -419,7 +406,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             </TableHead>
                             <TableBody>
                                 {lsWorkHistory.map((row) => (
-                                    <RowDLTD key={row.id} documento={documento} row={row} handleDelete={handleDeleteDLTD} />
+                                    <RowDLTD key={row.id} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteDLTD} />
                                 ))}
                             </TableBody>
                         </Table>
@@ -486,22 +473,8 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <Button disabled={lsEmpleado.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedDLTD(true)}>
                                 + Agregar Cargo
                             </Button>
-                        </Grid> : <></>}
+                        </Grid> : null}
                 </SubCard>
-            </Grid>
-
-            <Grid item xs={12}>
-                <DataExposition
-                    title="Exposición Acumulada de Factores de Riesgo - DLTD"
-                    title1="Ruido en DLTD"
-                    anio1={`Años: ${anioRuidoDTLD}`}
-                    title2="Ruido en DLTD"
-                    mes1={`Meses: ${mesRuidoDTLD}`}
-                    title3="Exposición MPI DLTD"
-                    anio2={`Años: ${mpiAnioDTLD}`}
-                    title4="Exposición MPI DLTD"
-                    mes2={`Meses: ${mpiMesDTLD}`}
-                />
             </Grid>
 
             <Grid item xs={12}>
@@ -515,6 +488,20 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                     anio2={`Años: ${mpiAnioOtrasEmpresas}`}
                     title4="Exposición MPI Otras Empresas"
                     mes2={`Meses: ${mpiMesOtrasEmpresas}`}
+                />
+            </Grid>
+
+            <Grid item xs={12}>
+                <DataExposition
+                    title="Exposición Acumulada de Factores de Riesgo - DLTD"
+                    title1="Ruido en DLTD"
+                    anio1={`Años: ${anioRuidoDTLD}`}
+                    title2="Ruido en DLTD"
+                    mes1={`Meses: ${mesRuidoDTLD}`}
+                    title3="Exposición MPI DLTD"
+                    anio2={`Años: ${mpiAnioDTLD}`}
+                    title4="Exposición MPI DLTD"
+                    mes2={`Meses: ${mpiMesDTLD}`}
                 />
             </Grid>
         </Grid>

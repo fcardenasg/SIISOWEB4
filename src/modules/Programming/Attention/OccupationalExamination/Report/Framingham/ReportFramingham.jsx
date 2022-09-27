@@ -14,15 +14,14 @@ const DataInfo = ({ title = '', text = '' }) => {
             <Grid item xs={2}>
                 <Typography variant='h6'><b>{title}</b></Typography>
             </Grid>
-            <Grid item xs={3.8}>
-                <Typography align="right" variant='h6'>{text}</Typography>
+            <Grid item xs={4}>
+                <Typography variant='h6'>{text}</Typography>
             </Grid>
-            <Grid item xs={0.2} />
         </Fragment>
     )
 }
 
-const ReportFramingham = ({ datos = [], lsDataUser = [] }) => {
+const ReportFramingham = ({ datos = [] }) => {
     const { user } = useAuth();
 
     const ColorClasificacion = datos.clasificacionEF === "BAJO DE PESO" ? "info.main" :
@@ -75,7 +74,7 @@ const ReportFramingham = ({ datos = [], lsDataUser = [] }) => {
                                     <Grid container spacing={0.2}>
                                         <DataInfo key={1} title="DOCUMENTO NRO:" text={datos.documento} />
                                         <DataInfo key={2} title="NOMBRES:" text={datos.nameEmpleado} />
-                                        <DataInfo key={3} title="FECHA NACIMIENTO:" text={datos.fechaNacimiento} />
+                                        <DataInfo key={3} title="FECHA NACIMIENTO:" text={ViewFormat(datos.fechaNacimiento)} />
                                         <DataInfo key={4} title="EDAD:" text={GetEdad(datos.fechaNacimiento)} />
                                         <DataInfo key={5} title="FECHA INGRESO:" text={ViewFormat(datos.fecha)} />
                                         <DataInfo key={6} title="GÉNERO:" text={datos.nameGenero} />
@@ -113,168 +112,168 @@ const ReportFramingham = ({ datos = [], lsDataUser = [] }) => {
                                             <Typography variant="h6"><b>NRO ID:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.id}</Typography>
+                                            <Typography variant="h6">{datos.id}</Typography>
                                         </Grid>
 
-                                        <Grid item xs={1}>
+                                        <Grid item xs={2}>
                                             <Typography variant="h6"><b>FECHA:</b></Typography>
                                         </Grid>
-                                        <Grid item xs={3}>
-                                            <Typography align="right" variant="h6">{ViewFormat(datos.fechaFRA)}</Typography>
+                                        <Grid item xs={2}>
+                                            <Typography variant="h6">{ViewFormat(datos.fechaFRA)}</Typography>
                                         </Grid>
 
-                                        <Grid item xs={1}>
+                                        <Grid item xs={2}>
                                             <Typography variant="h6"><b>FUMA:</b></Typography>
                                         </Grid>
-                                        <Grid item xs={3}>
-                                            <Typography align="right" variant="h6">{datos.nameFumaFRA}</Typography>
+                                        <Grid item xs={2}>
+                                            <Typography variant="h6">{datos.nameFumaFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>TENSIÓN ARTERIAL:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.idTencionArterialFRA}</Typography>
+                                            <Typography variant="h6">{datos.idTencionArterialFRA}</Typography>
                                         </Grid>
 
-                                        <Grid item xs={2.5}>
+                                        <Grid item xs={2}>
                                             <Typography variant="h6"><b>FECHA LABORATORIO:</b></Typography>
                                         </Grid>
-                                        <Grid item xs={1.5}>
-                                            <Typography align="right" variant="h6">{ViewFormat(datos.fechaLaboratorioFRA)}</Typography>
+                                        <Grid item xs={2}>
+                                            <Typography variant="h6">{ViewFormat(datos.fechaLaboratorioFRA)}</Typography>
                                         </Grid>
 
-                                        <Grid item xs={3}>
+                                        <Grid item xs={2}>
                                             <Typography variant="h6"><b>COLESTEROL TOTAL:</b></Typography>
                                         </Grid>
-                                        <Grid item xs={1}>
-                                            <Typography align="right" variant="h6">{datos.colesterolTotalFRA}</Typography>
+                                        <Grid item xs={2}>
+                                            <Typography variant="h6">{datos.colesterolTotalFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>HDL:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.hdlfra}</Typography>
+                                            <Typography variant="h6">{datos.hdlfra}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>TRIGLICERIDOS:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.triglicericosFRA}</Typography>
+                                            <Typography variant="h6">{datos.triglicericosFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>GLICEMIA:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.glisemiaFRA}</Typography>
+                                            <Typography variant="h6">{datos.glisemiaFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>PESO:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.pesoEF}</Typography>
+                                            <Typography variant="h6">{datos.pesoEF}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>TALLA:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.tallaEF}</Typography>
+                                            <Typography variant="h6">{datos.tallaEF}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>IMC:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.imcef}</Typography>
+                                            <Typography variant="h6">{datos.imcef}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>DX PESO:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography sx={{ bgcolor: ColorClasificacion }} align="right" variant="h6">{(datos.clasificacionEF).toUpperCase()}</Typography>
+                                            <Typography sx={{ bgcolor: ColorClasificacion }} variant="h6">{(datos.clasificacionEF).toUpperCase()}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>LDL:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.ldlfra}</Typography>
+                                            <Typography variant="h6">{datos.ldlfra}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>RELACIÓN:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.relacionFRA}</Typography>
+                                            <Typography variant="h6">{datos.relacionFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>FR EDAD:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.frlEdadFRA}</Typography>
+                                            <Typography variant="h6">{datos.frlEdadFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>FR COLESTEROL:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.frlColesterolFRA}</Typography>
+                                            <Typography variant="h6">{datos.frlColesterolFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>FR HDL:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.frhdlfra}</Typography>
+                                            <Typography variant="h6">{datos.frhdlfra}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>FR GLICEMIA:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.frGlisemiaFRA}</Typography>
+                                            <Typography variant="h6">{datos.frGlisemiaFRA}</Typography>
                                         </Grid>
 
-                                        <Grid item xs={3}>
+                                        <Grid item xs={2}>
                                             <Typography variant="h6"><b>FR TENSIÓN ARTERIAL:</b></Typography>
                                         </Grid>
-                                        <Grid item xs={1}>
-                                            <Typography align="right" variant="h6">{datos.frTencionFRA}</Typography>
+                                        <Grid item xs={2}>
+                                            <Typography variant="h6">{datos.frTencionFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>FR TABAQUISMO:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.frTabaquismoFRA}</Typography>
+                                            <Typography variant="h6">{datos.frTabaquismoFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>PUNTAJE:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.puntajeFRA}</Typography>
+                                            <Typography variant="h6">{datos.puntajeFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>RIESGO ABSOLUTO:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.riesgoAbsolutoFRA}</Typography>
+                                            <Typography variant="h6">{datos.riesgoAbsolutoFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <Typography variant="h6"><b>RIESGO RELATIVO:</b></Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Typography align="right" variant="h6">{datos.riesgoRelativoFRA}</Typography>
+                                            <Typography variant="h6">{datos.riesgoRelativoFRA}</Typography>
                                         </Grid>
 
                                         <Grid item xs={4}>
@@ -284,8 +283,8 @@ const ReportFramingham = ({ datos = [], lsDataUser = [] }) => {
                                             <Typography variant="h6">{datos.interpretacionFRA}</Typography>
                                         </Grid>
 
-                                        <Grid item xs={12}>
-                                            <Typography variant="h6">
+                                        <Grid item xs={12} sx={{ mt: 3 }}>
+                                            <Typography variant="h5">
                                                 <b>EVALUACIÓN DEL RIESGO DE SUFRIR ACCIDENTE CARDIOVASCULAR EN LOS PRÓXIMOS DIEZ AÑOS</b>
                                             </Typography>
                                         </Grid>

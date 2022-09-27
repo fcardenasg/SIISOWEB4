@@ -33,18 +33,82 @@ import ReportHabits from './ReportHabits';
 import ReportSystemsReview from './ReportSystemsReview';
 import ReportFunctionalExploration from './ReportFunctionalExploration';
 import ReportDefinitiveDiagnosis from './ReportDefinitiveDiagnosis';
+
+/* REPORTE DE ESPACIO CONFINADO */
+import ReportConfinedSpaceCompany from './ConfinedSpace/ReportConfinedSpaceCompany';
+import ReportConfinedSpaceWorker from './ConfinedSpace/ReportConfinedSpaceWorker';
+
 import { GetByIdDataReport } from 'api/clients/OccupationalExaminationClient';
 
+const divStyle = {
 
-const ReportOccupationalExamination = ({ id, setOpenReport }) => {
+};
+
+
+const ReportOccupationalExamination = ({ id = 3, setOpenReport }) => {
     const { user } = useAuth();
     const componentRef = useRef(null);
 
     const [timeWait, setTimeWait] = useState(false);
     const [lsDataReport, setLsDataReport] = useState([]);
-
     const [lsDataUser, setLsDataUser] = useState([]);
 
+    const listOfContent = [
+        {
+            component: <ReportConceptAptitude datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportFramingham datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportDiagnostics datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportWHOtherCompanies datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportWHDrummondLtd datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportPersonalHistory datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportHabits datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportSystemsReview datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportFunctionalExploration datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportDefinitiveDiagnosis datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportPage1 datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportPage2 datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportPage3 datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportPage4 datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportWorkHeight datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportEmployeeNotification datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportConfinedSpaceWorker datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+        {
+            component: <ReportConfinedSpaceCompany datos={lsDataReport} lsDataUser={lsDataUser} />,
+        }
+    ]
 
     useEffect(() => {
         async function GetAll() {
@@ -83,77 +147,16 @@ const ReportOccupationalExamination = ({ id, setOpenReport }) => {
                 <Grid container justifyContent="center" spacing={gridSpacing}>
                     <Grid item xs={12} md={10} lg={8} ref={componentRef}>
                         <Grid container spacing={gridSpacing}>
-                            <Grid item xs={12}>
-                                <ReportFramingham key={13} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
 
-                            <Grid item xs={12}>
-                                <ReportPage1 key={12} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
+                            <div className="print-container" style={{ margin: "0", padding: "0" }}>
+                                {listOfContent.map(report => (
+                                    <>
+                                        <div className="page-break" />
+                                        <div>{report.component}</div>
+                                    </>
+                                ))}
+                            </div>
 
-                            <Grid item xs={12}>
-                                <ReportPage2 key={13} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportPage3 key={14} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportPage4 key={14} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportWorkHeight key={10} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportEmployeeNotification key={11} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportConceptAptitude key={1} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportDiagnostics key={2} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportWHOtherCompanies
-                                    key={3}
-                                    datos={lsDataReport}
-                                    lsDataUser={lsDataUser}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportWHDrummondLtd
-                                    key={4}
-                                    datos={lsDataReport}
-                                    lsDataUser={lsDataUser}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportPersonalHistory key={5} datos={lsDataReport} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportHabits key={6} datos={lsDataReport} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportSystemsReview key={7} datos={lsDataReport} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportFunctionalExploration key={8} datos={lsDataReport} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ReportDefinitiveDiagnosis key={9} datos={lsDataReport} lsDataUser={lsDataUser} />
-                            </Grid>
                         </Grid>
                     </Grid>
 

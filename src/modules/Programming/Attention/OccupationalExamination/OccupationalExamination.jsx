@@ -166,7 +166,6 @@ const OccupationalExamination = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const statusClose = true;
 
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -317,41 +316,39 @@ const OccupationalExamination = () => {
     const methods = useForm();
     const { handleSubmit, errors } = methods;
 
-    useEffect(() => {
-        async function getLastData() {
-            try {
-                const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(documento);
-                if (lsServerUltimoRegistro.status === 200) {
-                    setLsLastRecord(lsServerUltimoRegistro.data);
-                    console.log(lsServerUltimoRegistro);
+    async function getLastData(documento) {
+        try {
+            const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(documento);
+            if (lsServerUltimoRegistro.status === 200) {
+                console.log("lsServerUltimoRegistro =", lsServerUltimoRegistro);
 
-                    setEstadoVacuna({
-                        tetanoIM: lsServerUltimoRegistro.data.tetanoIM === undefined ? false : lsServerUltimoRegistro.data.tetanoIM,
-                        influenzaIM: lsServerUltimoRegistro.data.influenzaIM === undefined ? false : lsServerUltimoRegistro.data.influenzaIM,
-                        fiebreAmarillaIM: lsServerUltimoRegistro.data.fiebreAmarillaIM === undefined ? false : lsServerUltimoRegistro.data.fiebreAmarillaIM,
-                        rubeolaSarampionIM: lsServerUltimoRegistro.data.rubeolaSarampionIM === undefined ? false : lsServerUltimoRegistro.data.rubeolaSarampionIM,
-                        covid19IM: lsServerUltimoRegistro.data.covid19IM === undefined ? false : lsServerUltimoRegistro.data.covid19IM,
-                        otrasIM: lsServerUltimoRegistro.data.otrasIM === undefined ? false : lsServerUltimoRegistro.data.otrasIM,
-                    });
+                setLsLastRecord(lsServerUltimoRegistro.data);
 
-                    setArrays({
-                        tipoFobia: JSON.parse(lsServerUltimoRegistro.data.tipoFobiaHB),
-                        dx: JSON.parse(lsServerUltimoRegistro.data.dxID),
-                        antecedentesCardio: [],
-                        metabolico: [],
-                    });
-                }
-            } catch (error) { }
-        }
+                setEstadoVacuna({
+                    tetanoIM: lsServerUltimoRegistro.data.tetanoIM === undefined ? false : lsServerUltimoRegistro.data.tetanoIM,
+                    influenzaIM: lsServerUltimoRegistro.data.influenzaIM === undefined ? false : lsServerUltimoRegistro.data.influenzaIM,
+                    fiebreAmarillaIM: lsServerUltimoRegistro.data.fiebreAmarillaIM === undefined ? false : lsServerUltimoRegistro.data.fiebreAmarillaIM,
+                    rubeolaSarampionIM: lsServerUltimoRegistro.data.rubeolaSarampionIM === undefined ? false : lsServerUltimoRegistro.data.rubeolaSarampionIM,
+                    covid19IM: lsServerUltimoRegistro.data.covid19IM === undefined ? false : lsServerUltimoRegistro.data.covid19IM,
+                    otrasIM: lsServerUltimoRegistro.data.otrasIM === undefined ? false : lsServerUltimoRegistro.data.otrasIM,
+                });
 
-        getLastData();
-    }, [id]);
+                setArrays({
+                    tipoFobia: JSON.parse(lsServerUltimoRegistro.data.tipoFobiaHB),
+                    dx: JSON.parse(lsServerUltimoRegistro.data.dxID),
+                    antecedentesCardio: [],
+                    metabolico: [],
+                });
+            }
+        } catch (error) { console.log(error) }
+    }
 
     useEffect(() => {
         async function getDataAttention() {
             try {
                 const lsServerAtencion = await GetByIdAttention(id);
                 if (lsServerAtencion.status === 200) {
+                    getLastData(lsServerAtencion.data.documento);
                     handleLoadingDocument(lsServerAtencion.data.documento);
                     await handleUpdateAttentionClose("ESTÁ SIENDO ATENDIDO", lsServerAtencion.data);
 
@@ -391,11 +388,11 @@ const OccupationalExamination = () => {
     useEffect(() => {
         async function getDataForChart() {
             try {
-                const lsAnthropometry = await GetAllOccupationalExamination(0, 0);
-                if (lsAnthropometry.status === 200) {
-                    var resultPeso = lsAnthropometry.data.entities.map((item) => item.pesoEF);
-                    var resultImc = lsAnthropometry.data.entities.map((item) => item.imcef);
-                    var resultAnio = lsAnthropometry.data.entities.map((item) => new Date(item.fecha).getFullYear());
+                const lsAnthropometryTwo = await GetAllOccupationalExamination(0, 0);
+                if (lsAnthropometryTwo.status === 200 && lsAnthropometryTwo.data.entities.length !== 0) {
+                    var resultPeso = lsAnthropometryTwo.data.entities.map((item) => item.pesoEF);
+                    var resultImc = lsAnthropometryTwo.data.entities.map((item) => item.imcef);
+                    var resultAnio = lsAnthropometryTwo.data.entities.map((item) => new Date(item.fecha).getFullYear());
 
                     if (resultPeso && resultImc && resultAnio) {
                         const chartData = {
@@ -403,11 +400,11 @@ const OccupationalExamination = () => {
                             series: [
                                 {
                                     name: 'PESO',
-                                    data: resultPeso !== null ? resultPeso : null
+                                    data: resultPeso
                                 },
                                 {
                                     name: 'IMC',
-                                    data: resultImc !== null ? resultImc : null
+                                    data: resultImc
                                 }
                             ],
                             options: {
@@ -422,7 +419,7 @@ const OccupationalExamination = () => {
                                     curve: 'smooth'
                                 },
                                 xaxis: {
-                                    categories: resultAnio !== null ? resultAnio : new Date().getFullYear()
+                                    categories: resultAnio
                                 },
                                 tooltip: {
                                     x: {
@@ -441,8 +438,6 @@ const OccupationalExamination = () => {
 
         getDataForChart();
     }, []);
-
-
 
     const handleClick = async (datos) => {
         try {
@@ -545,7 +540,6 @@ const OccupationalExamination = () => {
                 if (result.status === 200) {
                     setOpenSuccess(true);
                     setResultData(result.data);
-                    statusClose = false;
                 }
             }
         } catch (error) {
@@ -617,7 +611,7 @@ const OccupationalExamination = () => {
                         onClose={() => setOpenReport(false)}
                         maxWidth="xl"
                     >
-                        <ReportOccupationalExamination id={resultData.id} setOpenReport={setOpenReport} openReport={openReport} />
+                        <ReportOccupationalExamination id={resultData.id} setOpenReport={setOpenReport} />
                     </ControlModal>
 
                     <DialogFormula
@@ -645,7 +639,9 @@ const OccupationalExamination = () => {
                     <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}
                         secondary={
                             <Fragment>
-                                <Button onClick={() => setViewChart(viewChart ? false : true)}>
+                                <Button disabled={lsAnthropometry.length === 0 ? true : false}
+                                    onClick={() => setViewChart(viewChart ? false : true)}
+                                >
                                     {viewChart ? <IconStairsUp stroke={1.5} size="1.3rem" /> : <IconStairsDown stroke={1.5} size="1.3rem" />}
                                 </Button>
                             </Fragment>
@@ -782,7 +778,7 @@ const OccupationalExamination = () => {
                             setClasificacion={setClasificacion}
                             clasificacionColor={clasificacionColor}
                             setClasificacionColor={setClasificacionColor}
-                            lsLastRecord={lsLastRecord.length !== 0 ? lsLastRecord : []}
+                            lsLastRecord={lsLastRecord}
 
                             documento={documento}
                             errors={errors}
@@ -850,13 +846,13 @@ const OccupationalExamination = () => {
                             </AnimateButton>
                         </Grid>
 
-                        {statusClose ? <Grid item xs={2}>
+                        <Grid item xs={2}>
                             <AnimateButton>
                                 <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </AnimateButton>
-                        </Grid> : null}
+                        </Grid>
 
                         <Grid item xs={2}>
                             <AnimateButton>

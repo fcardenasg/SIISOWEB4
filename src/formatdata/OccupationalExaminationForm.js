@@ -11,7 +11,7 @@ export function PostOccupationalExamination(
     etsAP = false, deformidadesAP = false, psiquiatricosAP = false, farmacoDependenciaAP = false, emAP = false, renalAP = false,
     asmaAP = false, orlAP = false, cancerAP = false, especifiqueAP = "",
 
-    anioAT = 0, especifiqueAT = "", anio1AT = 0, especifique1AT = "",
+    anioAT = "", especifiqueAT = "", anio1AT = "", especifique1AT = "",
 
     tetanoIM = false, influenzaIM = false, fiebreAmarillaIM = false, rubeolaSarampionIM = false, covid19IM = false, otrasIM = false,
     anioVacuna1IM = 0, anioVacuna2IM = 0, anioVacuna3IM = 0, anioVacuna4IM = 0, anioVacuna5IM = 0,
@@ -86,31 +86,31 @@ export function PostOccupationalExamination(
     riesgoRelativoFRA, interpretacionFRA, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico,
 
     /* SINTOMAS RESPIRATORIOS */
-    tosAUsualSin = false, tosEnLaSemanaSintR = false, tosMananaSintR = false, tosConsecutivaSintR = false, anosConTosSintR = 0,
+    tosAUsualSin = false, tosEnLaSemanaSintR = false, tosMananaSintR = false, tosConsecutivaSintR = false, anosConTosSintR = "",
 
     esputoASintR = false, esputoBSintR = false, esputoCSintR = false, esputoDSintR = false, esputoESintR = 0,
 
-    episoTosEspuASintR = false, episoTosEsputoBSintR = 0,
+    episoTosEspuASintR = false, episoTosEsputoBSintR = "",
 
-    sibilanciasASintR = false, sibilanciasA1SintR = false, sibilanciasA2SintR = false, sibilanciasA3SintR = false, sibilanciasBSintR = 0,
+    sibilanciasASintR = false, sibilanciasA1SintR = false, sibilanciasA2SintR = false, sibilanciasA3SintR = false, sibilanciasBSintR = "",
 
-    ataquesSilbiASintR = false, ataquesSilbiBSintR = 0, ataquesSilbiCSintR = false, ataquesSilbiDSintR = false,
+    ataquesSilbiASintR = false, ataquesSilbiBSintR = "", ataquesSilbiCSintR = false, ataquesSilbiDSintR = false,
 
     otrasEnfInhaASintR = false, otrasEnfInhaBSintR = false, otrasEnfInhaDescriSintR = "",
 
     disneaASintR = false, disneaBSintR = false, disneaCSintR = false, disneaDSintR = false, disneaESintR = false,
 
-    enferToraxASintR = false, enferToraxBSintR = false, enferToraxCSintR = false, enferToraxD = 0,
+    enferToraxASintR = false, enferToraxBSintR = false, enferToraxCSintR = false, enferToraxD = "",
 
     antecedentesASintR = false,
 
-    antecedentesB1SintR = false, antecedentesB1ASintR = 0, antecedentesB2Sintr = false, antecedentesB2ASintR = 0,
+    antecedentesB1SintR = false, antecedentesB1ASintR = "", antecedentesB2Sintr = false, antecedentesB2ASintR = "",
 
-    antecedentesB3SintR = false, antecedentesB3ASintR = 0, antecedentesB3BSintR = false, antecedentesB3CSintR = 0,
+    antecedentesB3SintR = false, antecedentesB3ASintR = "", antecedentesB3BSintR = false, antecedentesB3CSintR = "",
 
-    antecdentesB4SintR = false, antecedenteB4ASintR = 0, antecedentesB4BSintR = false, antecedentesB4CSintR = 0,
+    antecdentesB4SintR = false, antecedenteB4ASintR = "", antecedentesB4BSintR = false, antecedentesB4CSintR = "",
 
-    antecedentesB5SintR = false, antecedentesB5ASintR = 0, antecedentesB5BSintR = false, antecedentesB5CSintR = 0,
+    antecedentesB5SintR = false, antecedentesB5ASintR = "", antecedentesB5BSintR = false, antecedentesB5CSintR = "",
 
     otrasEnfToraxA = false, otrasEnfToraxB = "", ciruToraxASintR = false, ciruToraxBSintR = "",
 
@@ -118,14 +118,14 @@ export function PostOccupationalExamination(
 
     problemaCoraCSintR = false, presionAltaASintR = false, presionAltaBSintR = false,
 
-    historiaOcupASintR = false, historiaOcupBSintR = false, historiaOcupB1SintR = "", historiaOcupB2SintR = 0,
+    historiaOcupASintR = false, historiaOcupBSintR = false, historiaOcupB1SintR = "", historiaOcupB2SintR = "",
     historiaOcupB3SintR = DefaultValue.SINREGISTRO_GLOBAL, historiaOcupCSintR = false, historiaOcupC1SintR = "",
-    historiaOcupC2SintR = 0, historiaOcupC3SintR = DefaultValue.SINREGISTRO_GLOBAL, historiaOcupD1SintR = "",
-    historiaOcupD2SintR = 0, historiaOcupD3 = "",
+    historiaOcupC2SintR = "", historiaOcupC3SintR = DefaultValue.SINREGISTRO_GLOBAL, historiaOcupD1SintR = "",
+    historiaOcupD2SintR = "", historiaOcupD3 = "",
 
-    tabaquismoASintR = false, tabaquismoBSintR = false, tabaquismoCSintR = 0, tabaquismoDSintR = 0, tabaquismoESintR = 0,
+    tabaquismoASintR = false, tabaquismoBSintR = false, tabaquismoCSintR = "", tabaquismoDSintR = "", tabaquismoESintR = "",
 
-    actDeportASintR = false, actDeporA1SintR = "", actDeporA2SintR = 0, actDeporA3SintR = 0, actDeporA4SintR = 0,
+    actDeportASintR = false, actDeporA1SintR = "", actDeporA2SintR = "", actDeporA3SintR = "", actDeporA4SintR = "",
 
     recoSintR = "",
 

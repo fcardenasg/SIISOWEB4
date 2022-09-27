@@ -22,7 +22,7 @@ import { CodCatalogo } from 'components/helpers/Enums';
 import FullScreenDialog from 'components/controllers/FullScreenDialog'
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 
-const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
+const RespiratorySymptoms = ({ ...methods }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -126,12 +126,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="anosConTosSintR"
                                     label="Años"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -193,12 +191,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="esputoESintR"
                                     label="Años"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -227,12 +223,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="episoTosEsputoBSintR"
                                     label="Años"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -294,12 +288,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="sibilanciasBSintR"
                                     label="Años"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -331,12 +323,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="ataquesSilbiBSintR"
                                     label="Años"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -400,7 +390,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="otrasEnfInhaDescriSintR"
                                     label="Describa la naturaleza de esta condición:"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -520,12 +509,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="enferToraxD"
                                     label="Años"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -565,12 +552,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="antecedentesB1ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -590,12 +575,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="antecedentesB2ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -615,12 +598,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="antecedentesB3ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -640,12 +621,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="antecedentesB3CSintR"
                                     label="Edad de Inicio"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -665,12 +644,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="antecedenteB4ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -690,12 +667,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="antecedentesB4CSintR"
                                     label="Edad de Inicio"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -715,12 +690,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="antecedentesB5ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -740,12 +713,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="antecedentesB5CSintR"
                                     label="¿Edad de Inicio?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -769,7 +740,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="otrasEnfToraxB"
                                     label="Especifique"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -793,7 +763,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="ciruToraxBSintR"
                                     label="Especifique"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -817,7 +786,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="traumaToraxBSintR"
                                     label="Especifique"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -841,7 +809,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="problemCoraBSintR"
                                     label="Especifique"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -916,7 +883,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="historiaOcupB1SintR"
                                     label="Especifique empleo o Industria"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -925,12 +891,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="historiaOcupB2SintR"
                                     label="¿Total años trabajados?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -940,10 +904,8 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                 <InputSelect
                                     name="historiaOcupB3SintR"
                                     label="La exposición fue:"
-                                    defaultValue=""
                                     options={lsExposicion}
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -967,7 +929,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="historiaOcupC1SintR"
                                     label="Especifique empleo y ocupación o industria"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -976,12 +937,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="historiaOcupC2SintR"
                                     label="Total años trabajados"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -991,10 +950,8 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                 <InputSelect
                                     name="historiaOcupC3SintR"
                                     label="La exposición fue:"
-                                    defaultValue=""
                                     options={lsExposicion}
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1011,7 +968,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="historiaOcupD1SintR"
                                     label="Empleo y Ocupación"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1020,12 +976,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="historiaOcupD2SintR"
                                     label="Total años trabajados"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1038,7 +992,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="historiaOcupD3"
                                     label="Negocio, campo o Industria"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1074,12 +1027,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="tabaquismoCSintR"
                                     label="C. ¿A qué edad comenzó a fumar en forma regular"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1088,12 +1039,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="tabaquismoDSintR"
                                     label="D. ¿Si ya dejo de fumar totalmente, ¿A que edad lo dejó?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1102,12 +1051,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="tabaquismoESintR"
                                     label="E. ¿Cuantos cigarrillos fuma al día o fumaba?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1136,7 +1083,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                     name="actDeporA1SintR"
                                     label="¿Cual deporte o actividad?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1145,12 +1091,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="actDeporA2SintR"
                                     label="¿Cual deporte o actividad?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1159,12 +1103,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="actDeporA3SintR"
                                     label="¿Cual deporte o actividad?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1173,12 +1115,10 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue=""
                                     fullWidth
                                     name="actDeporA4SintR"
                                     label="¿Cual deporte o actividad?"
                                     size="small"
-                                    bug={errors}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1200,7 +1140,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
                                 name="recoSintR"
                                 label="Recomendaciones/Observaciones"
                                 size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
                             />
                         </FormProvider>
                     </Grid>
@@ -1211,9 +1150,3 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
 };
 
 export default RespiratorySymptoms;
-
-RespiratorySymptoms.propTypes = {
-    lsEmployee: PropTypes.any,
-    documento: PropTypes.any,
-    errors: PropTypes.any,
-};
