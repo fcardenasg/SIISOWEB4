@@ -40,10 +40,7 @@ import ReportConfinedSpaceWorker from './ConfinedSpace/ReportConfinedSpaceWorker
 
 import { GetByIdDataReport } from 'api/clients/OccupationalExaminationClient';
 
-const divStyle = {
-
-};
-
+import "./report.module.css"
 
 const ReportOccupationalExamination = ({ id = 3, setOpenReport }) => {
     const { user } = useAuth();
@@ -145,21 +142,6 @@ const ReportOccupationalExamination = ({ id = 3, setOpenReport }) => {
         <MainCard>
             {timeWait ?
                 <Grid container justifyContent="center" spacing={gridSpacing}>
-                    <Grid item xs={12} md={10} lg={8} ref={componentRef}>
-                        <Grid container spacing={gridSpacing}>
-
-                            <div className="print-container" style={{ margin: "0", padding: "0" }}>
-                                {listOfContent.map(report => (
-                                    <>
-                                        <div className="page-break" />
-                                        <div>{report.component}</div>
-                                    </>
-                                ))}
-                            </div>
-
-                        </Grid>
-                    </Grid>
-
                     <Grid item xs={12}>
                         <Grid container alignItems="center" justifyContent="center" spacing={2}>
                             <Grid item xs={2}>
@@ -174,6 +156,23 @@ const ReportOccupationalExamination = ({ id = 3, setOpenReport }) => {
                                         Cerrar
                                     </Button>
                                 </AnimateButton>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid item xs={12} md={10} lg={8} ref={componentRef}>
+                        <Grid container spacing={gridSpacing}>
+                            <Grid item xs={12}>
+                                <div className="print-container" style={{ margin: "0", padding: "0" }}>
+                                    {listOfContent.map(report => (
+                                        <>
+                                            <div className="page-break" />
+                                            <div>
+                                                {report.component}
+                                            </div>
+                                        </>
+                                    ))}
+                                </div>
                             </Grid>
                         </Grid>
                     </Grid>

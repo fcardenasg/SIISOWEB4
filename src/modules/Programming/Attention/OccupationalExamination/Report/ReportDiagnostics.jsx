@@ -2,8 +2,6 @@ import { Fragment } from 'react';
 import { Divider, Grid, Typography } from '@mui/material';
 
 import useAuth from 'hooks/useAuth';
-
-import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import ImgWhite from 'assets/img/ImgWhite.png';
 import { gridSpacing } from 'store/constant';
@@ -14,7 +12,7 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
 
     return (
-        <SubCard>
+        <div>
             {datos.length != 0 ?
                 <Fragment>
                     <Grid container spacing={gridSpacing}>
@@ -239,7 +237,7 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
                     </Grid>
                 </Fragment> : ''
             }
-        </SubCard>
+        </div>
     );
 };
 

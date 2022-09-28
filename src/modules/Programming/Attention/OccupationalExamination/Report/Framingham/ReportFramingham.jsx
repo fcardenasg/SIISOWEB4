@@ -2,7 +2,6 @@ import { Fragment } from 'react';
 import { Divider, Grid, Typography } from '@mui/material';
 
 import useAuth from 'hooks/useAuth';
-import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
@@ -33,7 +32,7 @@ const ReportFramingham = ({ datos = [] }) => {
     console.log(ColorClasificacion);
 
     return (
-        <SubCard>
+        <div>
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12}>
                     <Grid container spacing={1}>
@@ -302,7 +301,7 @@ const ReportFramingham = ({ datos = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 2 }} textAlign="center" justifyContent="center" container spacing={1}>
+            <Grid sx={{ pt: 30 }} textAlign="center" justifyContent="center" container spacing={1}>
                 <Grid item xs={12}>
                     <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
                 </Grid>
@@ -319,7 +318,7 @@ const ReportFramingham = ({ datos = [] }) => {
                     <Typography variant="h6">Usuario Activo: {user.email}</Typography>
                 </Grid>
             </Grid>
-        </SubCard >
+        </div>
     );
 };
 

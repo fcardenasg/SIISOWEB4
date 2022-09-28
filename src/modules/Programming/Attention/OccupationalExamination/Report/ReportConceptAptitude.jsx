@@ -1,26 +1,32 @@
-import { useRef, useEffect, useState } from 'react';
-import { Button, Divider, Grid, Typography } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Fragment } from 'react';
+import { Divider, Grid, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-import ReactToPrint from 'react-to-print';
 import useAuth from 'hooks/useAuth';
 
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import MainCard from 'ui-component/cards/MainCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { GetByIdAdvice } from 'api/clients/AdviceClient';
-import { FormatDate, ViewFormat } from 'components/helpers/Format';
-import { GetByMail } from 'api/clients/UserClient';
-import Cargando from 'components/loading/Cargando';
+import { ViewFormat } from 'components/helpers/Format';
+
+import "./report.module.css"
+
+const PiePagina = styled('div')(({ theme }) => ({
+    /* position: 'fixed',
+    bottom: 0,
+    width: '100%', */
+
+    /* padding: '20px 0',
+    background: '#fafafa',
+    color: '#fff',
+    textAlign: 'center' */
+}));
 
 const ReportConceptAptitude = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
 
     return (
-        <SubCard>
+        <div>
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12}>
                     <Grid container spacing={1}>
@@ -137,16 +143,16 @@ const ReportConceptAptitude = ({ datos = [], lsDataUser = [] }) => {
                         <Grid item textAlign="justify" xs={12}>
                             <Grid container spacing={0}>
                                 <Grid item xs={12}>
-                                    <Typography variant="h6">
-                                        {datos.recomendacionesID}
+                                    <Typography variant="h6" sx={{ height: "350px", width: "100%" }}>
+                                        {/* {datos.recomendacionesID} */}
+                                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
                                     </Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-
-                <Grid item xs={12} /><Grid item xs={12} />
 
                 <Grid item xs={4}>
                     <img src={lsDataUser.firma} height={50} />
@@ -159,24 +165,22 @@ const ReportConceptAptitude = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ mt: 35 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 3 }} textAlign="center" justifyContent="center" spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={6}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">{datos.nameEmpleado}</Typography>
+                    <Grid item xs={6}>
+                        <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    </Grid>
                 </Grid>
-
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
-                </Grid>
-            </Grid>
-        </SubCard>
+            </footer>
+        </div>
     );
 };
 

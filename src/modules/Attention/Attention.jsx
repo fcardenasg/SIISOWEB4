@@ -59,7 +59,7 @@ const Attention = () => {
     const [documento, setDocumento] = useState('');
     const [tipoAtencion, setTipoAtencion] = useState('');
     const [atencion, setAtencion] = useState('');
-    const [motivo, setMotivo] = useState(1);
+    const [motivo, setMotivo] = useState('');
     const [documentoSolicita, setDocumentoSolicita] = useState('');
     const [nombreSolicitante, setNombreSolicitante] = useState('');
     const [peso, setPeso] = useState('');
@@ -285,7 +285,7 @@ const Attention = () => {
 
     const handleClick = async (datos) => {
         try {
-            const motivoFinal = motivo === '' ? datos.motivo : motivo;
+            const motivoFinal = motivo == '' ? datos.motivo : motivo;
 
             const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), datos.sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
@@ -394,7 +394,7 @@ const Attention = () => {
                                     options={lsAtencion}
                                     onChange={(e) => {
                                         setAtencion(e.target.value);
-                                        setMotivo(1);
+                                        setMotivo('');
                                     }}
                                     size={matchesXS ? 'small' : 'medium'}
                                 />

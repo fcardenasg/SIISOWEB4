@@ -117,7 +117,7 @@ const ReportWHOtherCompanies = ({ datos = [] }) => {
     }, [datos.documento]);
 
     return (
-        <SubCard>
+        <div>
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12}>
                     <Grid container spacing={1}>
@@ -326,7 +326,7 @@ const ReportWHOtherCompanies = ({ datos = [] }) => {
                     <Typography variant="h6">Usuario Activo: {user.email}</Typography>
                 </Grid>
             </Grid>
-        </SubCard>
+        </div>
     );
 };
 

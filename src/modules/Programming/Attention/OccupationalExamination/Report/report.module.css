@@ -1,0 +1,42 @@
+@media all {
+    .page-break {
+        display: none;
+    }
+}
+
+@media print {
+
+    /*     html,
+    body {
+        height: initial !important;
+        overflow: initial !important;
+    } */
+}
+
+@media print {
+    .page-break {
+        margin-top: 1rem;
+        display: block;
+        page-break-inside: always;
+    }
+}
+
+@page {
+    size: auto;
+    margin: 10mm 10mm 10mm;
+}
+
+/* @page {
+    @footnote {
+        float: bottom;
+    }
+} */
+
+
+.contenedor {
+    border: 2px solid darkblue;
+    height: 500mm;
+    /* width: 100mm; */
+    max-width: 100%;
+    /* -webkit-print-color-adjust: exact; */
+}

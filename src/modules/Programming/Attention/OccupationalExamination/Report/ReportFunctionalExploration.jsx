@@ -1,15 +1,11 @@
-import { Fragment, useEffect, useState } from 'react';
-import { Divider, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { Fragment } from 'react';
+import { Divider, Grid, Typography } from '@mui/material';
 
 import useAuth from 'hooks/useAuth';
-import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { GetByIdAdvice } from 'api/clients/AdviceClient';
-import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
-import { GetByMail } from 'api/clients/UserClient';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 
 const FunctionalExploration = ({ title = '', text = '' }) => {
     return (
@@ -47,7 +43,7 @@ const ReportFunctionalExploration = ({ datos = [] }) => {
     const { user } = useAuth();
 
     return (
-        <SubCard>
+        <div>
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12}>
                     <Grid container spacing={1}>
@@ -246,7 +242,7 @@ const ReportFunctionalExploration = ({ datos = [] }) => {
                     <Typography variant="h6">Usuario Activo: {user.email}</Typography>
                 </Grid>
             </Grid>
-        </SubCard>
+        </div>
     );
 };
 

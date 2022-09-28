@@ -2,7 +2,6 @@ import { Fragment, useEffect, useState } from 'react';
 import { Divider, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
 import useAuth from 'hooks/useAuth';
-import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
@@ -252,7 +251,7 @@ const ReportWHDrummondLtd = ({ datos = [], lsDataUser = [] }) => {
     }, [datos.documento]);
 
     return (
-        <SubCard>
+        <div>
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12}>
                     <Grid container spacing={1}>
@@ -453,7 +452,7 @@ const ReportWHDrummondLtd = ({ datos = [], lsDataUser = [] }) => {
                     <Typography variant="h6">Usuario Activo: {user.email}</Typography>
                 </Grid>
             </Grid>
-        </SubCard>
+        </div>
     );
 };
 

@@ -23,7 +23,6 @@ import { PutAttention } from 'formatdata/AttentionForm';
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
-import ViewReport from './OccupationalExamination/Report/ViewReport';
 import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 
@@ -56,6 +55,37 @@ const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
+const dataMedicalOrders = [
+    {
+        open: true,
+        title: 'Formula',
+        subtitle: 'Formula',
+        iconPrimary: AssignmentIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Laboratorio',
+        subtitle: 'Laboratorio',
+        iconPrimary: BiotechIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Imagenes',
+        subtitle: 'Imagenes',
+        iconPrimary: ImageIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Examenes',
+        subtitle: 'Examenes',
+        iconPrimary: FolderOpenIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+]
+
 const UpdateMedicalAdvice = () => {
     const { user } = useAuth();
     const { id } = useParams();
@@ -64,6 +94,7 @@ const UpdateMedicalAdvice = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
 
+    const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
@@ -88,38 +119,11 @@ const UpdateMedicalAdvice = () => {
 
     const { handleSubmit, errors } = methods;
 
-    const handleUpdateAttention = async (DataToUpdate) => {
-        try {
-            await UpdateAttentions(DataToUpdate);
-        } catch (error) { }
-    }
-
-    const handleUpdateAttentionClose = async (estadoPac = '') => {
-        try {
-            const DataToUpdate = PutAttention(id, lsAtencion.documento, lsAtencion.fecha, lsAtencion.sede, lsAtencion.tipo, lsAtencion.atencion,
-                lsAtencion.estadoCaso, lsAtencion.observaciones, lsAtencion.numeroHistoria, estadoPac, lsAtencion.contingencia,
-                lsAtencion.turno, lsAtencion.diaTurno, lsAtencion.motivo, lsAtencion.medico, lsAtencion.docSolicitante, lsAtencion.talla, lsAtencion.peso,
-                lsAtencion.iMC, lsAtencion.usuarioCierreAtencion, lsAtencion.fechaDigitacion, lsAtencion.fechaCierreAtencion, lsAtencion.duracion,
-                lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, lsAtencion.usuarioModifico, lsAtencion.fechaModifico);
-
-            await UpdateAttentions(DataToUpdate);
-        } catch (error) { }
-    }
-
     async function GetAll() {
         try {
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
-                const DataToUpdate = PutAttention(id, lsServerAtencion.data.documento, lsServerAtencion.data.fecha, lsServerAtencion.data.sede,
-                    lsServerAtencion.data.tipo, lsServerAtencion.data.atencion, lsServerAtencion.data.estadoCaso, lsServerAtencion.data.observaciones,
-                    lsServerAtencion.data.numeroHistoria, "ESTÁ SIENDO ATENDIDO", lsServerAtencion.data.contingencia, lsServerAtencion.data.turno,
-                    lsServerAtencion.data.diaTurno, lsServerAtencion.data.motivo, lsServerAtencion.data.medico, lsServerAtencion.data.docSolicitante,
-                    lsServerAtencion.data.talla, lsServerAtencion.data.peso, lsServerAtencion.data.iMC, lsServerAtencion.data.usuarioCierreAtencion,
-                    lsServerAtencion.data.fechaDigitacion, lsServerAtencion.data.fechaCierreAtencion, lsServerAtencion.data.duracion,
-                    lsServerAtencion.data.usuarioRegistro, lsServerAtencion.data.fechaRegistro, lsServerAtencion.data.usuarioModifico,
-                    lsServerAtencion.data.fechaModifico);
-
-                await handleUpdateAttention(DataToUpdate);
+                await handleUpdateAttentionClose("ESTÁ SIENDO ATENDIDO", lsServerAtencion.data);
 
                 setLsAtencion(lsServerAtencion.data);
                 handleLoadingDocument(lsServerAtencion.data.documento);
@@ -156,14 +160,25 @@ const UpdateMedicalAdvice = () => {
         }
     }
 
-    const handleCerrarCaso = () => {
+    const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
-            swal(ParamCloseCase).then(async (willDelete) => {
-                if (willDelete) {
-                    handleUpdateAttentionClose("ATENDIDO");
-                    navigate("/programming/list");
-                }
-            });
+            const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
+                lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
+                lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
+                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, lsDataUpdate.usuarioCierreAtencion,
+                lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
+                lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
+
+            await UpdateAttentions(DataToUpdate);
+
+            if (estadoPac === "ATENDIDO") {
+                swal(ParamCloseCase).then(async (willDelete) => {
+                    if (willDelete)
+                        navigate("/programming/list");
+                });
+            } else if (estadoPac === "PENDIENTE POR ATENCIÓN")
+                navigate("/programming/list");
+
         } catch (error) { }
     }
 
@@ -175,7 +190,7 @@ const UpdateMedicalAdvice = () => {
         try {
             const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.ASESORIA_MEDICA, lsAtencion.sede,
                 DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
-                datos.idTipoAsesoria, datos.idMotivo, DefaultData.SINREGISTRO_GLOBAL, datos.observaciones, '', '', DefaultData.SINREGISTRO_GLOBAL,
+                datos.idTipoAsesoria, datos.idMotivo, DefaultData.SINREGISTRO_GLOBAL, datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -189,6 +204,11 @@ const UpdateMedicalAdvice = () => {
             setErrorMessage(`${error}`);
         }
     };
+
+    setTimeout(() => {
+        if (lsAtencion.length !== 0)
+            setTimeWait(true);
+    }, 1500);
 
     return (
         <Fragment>
@@ -218,7 +238,7 @@ const UpdateMedicalAdvice = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ViewReport />
+
             </ControlModal>
 
             <ControlModal
@@ -269,44 +289,19 @@ const UpdateMedicalAdvice = () => {
                 open={openFormula}
                 handleCloseDialog={() => setOpenFormula(false)}
             >
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Formula') }}
-                        secondary="Formula"
-                        iconPrimary={AssignmentIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Laboratorio') }}
-                        secondary="Laboratorio"
-                        iconPrimary={BiotechIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Imagenes') }}
-                        secondary="Imagenes"
-                        iconPrimary={ImageIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Examenes') }}
-                        secondary="Examenes"
-                        iconPrimary={FolderOpenIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
+                {dataMedicalOrders.map(data =>
+                    <Grid item xs={12}>
+                        <HoverSocialCard
+                            onClick={() => { setOpenForm(data.open); setTitleModal(data.title) }}
+                            secondary={data.subtitle}
+                            iconPrimary={data.iconPrimary}
+                            color={data.color}
+                        />
+                    </Grid>
+                )}
             </DialogFormula>
 
-            {lsAtencion.length != 0 ?
+            {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
@@ -359,7 +354,7 @@ const UpdateMedicalAdvice = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <SubCard darkTitle title={<><Typography variant="h4">NOTA</Typography></>}>
+                                    <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
                                         <Grid item xs={12}>
                                             <FormProvider {...methods}>
                                                 <InputText
@@ -368,7 +363,36 @@ const UpdateMedicalAdvice = () => {
                                                     defaultValue=""
                                                     fullWidth
                                                     name="observaciones"
-                                                    label="Observaciones"
+                                                    label="Descripción"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                            <DetailedIcon
+                                                title={DetailIcons[0].title}
+                                                onClick={() => setOpenTemplate(true)}
+                                                icons={DetailIcons[0].icons}
+                                            />
+
+                                            <DetailedIcon
+                                                title={DetailIcons[1].title}
+                                                onClick={() => setOpen(true)}
+                                                icons={DetailIcons[1].icons}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} sx={{ pt: 2 }}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    multiline
+                                                    rows={4}
+                                                    defaultValue=""
+                                                    fullWidth
+                                                    name="recomendaciones"
+                                                    label="Recomendaciones"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
                                                 />
@@ -419,10 +443,7 @@ const UpdateMedicalAdvice = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => {
-                                            navigate("/programming/list");
-                                            handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN");
-                                        }}>
+                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -430,7 +451,7 @@ const UpdateMedicalAdvice = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={handleCerrarCaso}>
+                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                             {TitleButton.CerrarCaso}
                                         </Button>
                                     </AnimateButton>

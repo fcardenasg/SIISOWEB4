@@ -26,7 +26,7 @@ const ReportConfinedSpaceCompany = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
 
     return (
-        <SubCard>
+        <div>
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12}>
                     <Grid container spacing={1}>
@@ -173,7 +173,7 @@ const ReportConfinedSpaceCompany = ({ datos = [], lsDataUser = [] }) => {
                     <Typography variant="h6">Usuario Activo: {user.email}</Typography>
                 </Grid>
             </Grid>
-        </SubCard>
+        </div>
     );
 };
 

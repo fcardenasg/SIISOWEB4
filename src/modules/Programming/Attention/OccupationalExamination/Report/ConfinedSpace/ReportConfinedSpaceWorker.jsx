@@ -3,7 +3,6 @@ import { Divider, Grid, Typography } from '@mui/material';
 
 import ImgWhite from 'assets/img/ImgWhite.png';
 import useAuth from 'hooks/useAuth';
-import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
@@ -26,7 +25,7 @@ const ReportConfinedSpaceWorker = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
 
     return (
-        <SubCard>
+        <div>
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12}>
                     <Grid container spacing={1}>
@@ -238,7 +237,7 @@ const ReportConfinedSpaceWorker = ({ datos = [], lsDataUser = [] }) => {
                     <Typography variant="h6">Usuario Activo: {user.email}</Typography>
                 </Grid>
             </Grid>
-        </SubCard>
+        </div>
     );
 };
 

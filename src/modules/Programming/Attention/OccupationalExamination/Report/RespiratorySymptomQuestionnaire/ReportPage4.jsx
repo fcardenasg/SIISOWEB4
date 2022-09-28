@@ -2,7 +2,6 @@ import { Fragment } from 'react';
 import { Divider, Grid, Typography } from '@mui/material';
 
 import useAuth from 'hooks/useAuth';
-import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
@@ -27,7 +26,7 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
 
     return (
-        <SubCard>
+        <div>
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12}>
                     <Grid container spacing={1}>
@@ -149,7 +148,7 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                     <Typography variant="h6">Usuario Activo: {user.email}</Typography>
                 </Grid>
             </Grid>
-        </SubCard>
+        </div>
     );
 };
 
