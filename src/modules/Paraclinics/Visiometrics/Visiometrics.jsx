@@ -159,7 +159,7 @@ const Visiometrics = () => {
             setLsConclusion(resultConclusion);
 
 
-            const lsServerLectura = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_LECTURA);
+            const lsServerLectura = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_LECTURAADD);
             var resultLectura = lsServerLectura.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -168,7 +168,7 @@ const Visiometrics = () => {
 
        
 
-            const lsServerControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONTROL);
+            const lsServerControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONTROLV);
             var resultControl = lsServerControl.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
