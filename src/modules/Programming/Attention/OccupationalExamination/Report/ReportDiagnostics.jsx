@@ -42,11 +42,11 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
                         <Grid item xs={12}>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
-                                    <Typography align="center" variant="h5">CONCEPTO EXAMEN OCUPACIONAL</Typography>
+                                    <Typography variant="h5">CONCEPTO EXAMEN OCUPACIONAL</Typography>
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <Typography align="center" variant="h5">FECHA DE CONCEPTO: {ViewFormat(datos.fecha)}</Typography>
+                                    <Typography align="right" variant="h5">FECHA DE CONCEPTO: {ViewFormat(datos.fecha)}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -68,35 +68,35 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
                                 <Grid item xs={12}>
                                     <Grid container spacing={0.5}>
                                         <Grid item xs={4}>
-                                            <Typography variant="h5">DOCUMENTO:</Typography>
+                                            <Typography variant="h5"><b>DOCUMENTO:</b></Typography>
                                         </Grid>
                                         <Grid item xs={8}>
                                             <Typography variant="h5">{datos.documento}</Typography>
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <Typography variant="h5">NOMBRES:</Typography>
+                                            <Typography variant="h5"><b>NOMBRES:</b></Typography>
                                         </Grid>
                                         <Grid item xs={8}>
                                             <Typography variant="h5">{datos.nameEmpleado}</Typography>
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <Typography variant="h5">CARGO:</Typography>
+                                            <Typography variant="h5"><b>CARGO:</b></Typography>
                                         </Grid>
                                         <Grid item xs={8}>
                                             <Typography variant="h5">{datos.nameCargo}</Typography>
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <Typography variant="h5">AREA:</Typography>
+                                            <Typography variant="h5"><b>AREA:</b></Typography>
                                         </Grid>
                                         <Grid item xs={8}>
                                             <Typography variant="h5">{datos.nameArea}</Typography>
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <Typography variant="h5">DEPARTAMENTO:</Typography>
+                                            <Typography variant="h5"><b>DEPARTAMENTO:</b></Typography>
                                         </Grid>
                                         <Grid item xs={8}>
                                             <Typography variant="h5">{datos.nameDepartamentoTrabajo}</Typography>
@@ -111,10 +111,10 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
                                                 {JSON.parse(datos.dxID).map((dx, index) => (
                                                     <Fragment>
                                                         <Grid item xs={4}>
-                                                            <Typography variant="h5"><b>DX {index = index + 1}:</b></Typography>
+                                                            <Typography variant="h6"><b>DX {index = index + 1}:</b></Typography>
                                                         </Grid>
                                                         <Grid item xs={8}>
-                                                            <Typography variant="h5">{dx.label}</Typography>
+                                                            <Typography variant="h6">{dx.label}</Typography>
                                                         </Grid>
                                                     </Fragment>
                                                 ))}
@@ -143,27 +143,15 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
                                 <Grid item textAlign="justify" xs={12}>
                                     <Grid container spacing={0}>
                                         <Grid item xs={12}>
-                                            <Typography variant="h6">
-                                                NO REALIZAR TAREAS EN ALTURAS
-                                                CONTINUAR CON LAS RECOMENDACIONES YA CONOCIDAS.
-                                                1.Se considera que podrá hacer uso de escaleras trasversales en ascenso y descenso y siempre usando los tres puntos de apoyo;
-                                                esto incluye hacerlo de manera segura y pausada.
-                                                2.Evitar trabajos que ameriten la elevación de los hombros por encima de los 110°.
-                                                3.Podrá levantar cargas de manera bimanual por debajo del hombro y está limitado para no exceder los 11 kg, para cargas que
-                                                excedan este peso requerirá de otras personas o en dado caso de equipos que suplan la demanda física (solicite el apoyo que
-                                                requiera). Tenga en cuenta que estas cargas deberán estar posicionadas cerca del plano sagital (cerca de su cuerpo).
-                                                {/* 4.Actividades como el empujar, traccionar y/o halar quedarán a disposición suya, entendiendo que la frecuencia debe este tipo de
-                                        tareas deben ser bajas y administradas por usted; tenga en cuenta que si al realizarlas presenta sintomatología alguna, deberá
-                                        evitarlas y/o suspenderlas.
-                                        5.Para el uso de maletín o morral se sugiere no tenerlo muy cargado (menos de 5 kg), usarlo adecuadamente con ambos tirantes
-                                        sobre los hombros.
-                                        6.Evitar realizar actividades que impliquen someterse a vibración del segmento mano-brazo-hombro.
-                                        7.Realizar pausas activas de manera auto administradas.
-                                        8.Acudir formalmente a sus citas ordenadas y retroalimentar a Salud Ocupacional Drummond LTD., acerca de su condición de
-                                        salud. */}
+                                            <Typography variant="h6" sx={{ height: "70px", width: "100%" }}>
+                                                {datos.observacionID}
                                             </Typography>
                                         </Grid>
                                     </Grid>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Divider />
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -171,7 +159,7 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
                         <Grid item xs={12}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
-                                    <Typography align="center" variant="h5"><b>RECOMENDACIONES PARA APTITUD DE CONTROL PERIÓDICO</b></Typography>
+                                    <Typography align="center" variant="h5"><b>RECOMENDACIONES PARA APTITUD DE {datos.nameAtencion}</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -181,12 +169,8 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
                                 <Grid item textAlign="justify" xs={12}>
                                     <Grid container spacing={0}>
                                         <Grid item xs={12}>
-                                            <Typography variant="h6">
-                                                USAR LOS EPP CORRESPONDIENTES SEGÚN LO ESTABLECIDO EN LA MATRIZ DE RIESGOS.
-                                                REALIZAR PAUSAS ACTIVAS DE MANERA AUTOADMINISTRADA E INTERCALAR POSTURAS LIBREMENTE.
-                                                USO DE TÉCNICAS ADECUADAS PARA EL LEVANTAMIENTO Y DESPLAZAMIENTO DE CARGAS.
-                                                PROPENDER POR MANTENER UN ADECUADO PESO CORPORAL.
-                                                REALIZAR ACTIVIDAD FÍSICA AEROBICA DIRIGIDA Y PROGRESIVA DE SER NECESARIO.
+                                            <Typography variant="h6" sx={{ height: "80px", width: "100%" }}>
+                                                {datos.recomendacionesID}
                                             </Typography>
                                         </Grid>
                                     </Grid>
@@ -200,7 +184,7 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
                         {/* <Grid item xs={12} /> */}
 
                         <Grid item xs={6}>
-                            <img src={lsDataUser.firma} height={50} />
+                            <img src={lsDataUser.firma} height={80} />
 
                             <Divider sx={{ border: 1, background: 'black', color: 'black', mt: 1 }} />
                             <Typography variant="h6"><b>{lsDataUser.nombre}.</b></Typography>
@@ -210,7 +194,7 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
                         </Grid>
 
                         <Grid item xs={6}>
-                            <img src={ImgWhite} height={50} />
+                            <img src={ImgWhite} height={80} />
 
                             <Divider sx={{ border: 1, mt: 1, background: 'black', color: 'black' }} />
                             <Typography variant="h6"><b>{datos.nameEmpleado}</b></Typography>
@@ -218,23 +202,25 @@ const ReportDiagnostics = ({ datos = [], lsDataUser = [] }) => {
                         </Grid>
                     </Grid>
 
-                    <Grid sx={{ pt: 10 }} textAlign="center" justifyContent="center" container spacing={1}>
-                        <Grid item xs={12}>
-                            <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                        </Grid>
+                    <footer>
+                        <Grid container sx={{ pt: 3 }} spacing={1}>
+                            <Grid item xs={12}>
+                                <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                            </Grid>
 
-                        <Grid item xs={4}>
-                            <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                        </Grid>
+                            <Grid item xs={4}>
+                                <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                            </Grid>
 
-                        <Grid item xs={4}>
-                            <Typography variant="h6">{datos.nameEmpleado}</Typography>
-                        </Grid>
+                            <Grid item xs={4}>
+                                <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                            </Grid>
 
-                        <Grid item xs={4}>
-                            <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                            <Grid item xs={4}>
+                                <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </footer>
                 </Fragment> : ''
             }
         </div>

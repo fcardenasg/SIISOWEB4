@@ -54,11 +54,11 @@ const ReportConceptAptitude = ({ datos = [], lsDataUser = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
-                            <Typography align="center" variant="h5">CONCEPTO EXAMEN OCUPACIONAL</Typography>
+                            <Typography variant="h5">CONCEPTO EXAMEN OCUPACIONAL</Typography>
                         </Grid>
 
                         <Grid item xs={6}>
-                            <Typography align="center" variant="h5">FECHA DE CONCEPTO: {ViewFormat(datos.fecha)}</Typography>
+                            <Typography align="right" variant="h5">FECHA DE CONCEPTO: {ViewFormat(datos.fecha)}</Typography>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -79,50 +79,49 @@ const ReportConceptAptitude = ({ datos = [], lsDataUser = [] }) => {
 
                         <Grid item xs={12}>
                             <Grid container spacing={0.5}>
-                                <Grid item xs={4}>
-                                    <Typography variant="h5">DOCUMENTO:</Typography>
+                                <Grid item xs={3}>
+                                    <Typography variant="h5"><b>DOCUMENTO:</b></Typography>
                                 </Grid>
-                                <Grid item xs={8}>
+                                <Grid item xs={9}>
                                     <Typography variant="h5">{datos.documento}</Typography>
                                 </Grid>
 
-                                <Grid item xs={4}>
-                                    <Typography variant="h5">NOMBRES:</Typography>
+                                <Grid item xs={3}>
+                                    <Typography variant="h5"><b>NOMBRES:</b></Typography>
                                 </Grid>
-                                <Grid item xs={8}>
+                                <Grid item xs={9}>
                                     <Typography variant="h5">{datos.nameEmpleado}</Typography>
                                 </Grid>
 
-                                <Grid item xs={4}>
-                                    <Typography variant="h5">CARGO:</Typography>
+                                <Grid item xs={3}>
+                                    <Typography variant="h5"><b>CARGO:</b></Typography>
                                 </Grid>
-                                <Grid item xs={8}>
+                                <Grid item xs={9}>
                                     <Typography variant="h5">{datos.nameCargo}</Typography>
                                 </Grid>
 
-                                <Grid item xs={4}>
-                                    <Typography variant="h5">AREA:</Typography>
+                                <Grid item xs={3}>
+                                    <Typography variant="h5"><b>AREA:</b></Typography>
                                 </Grid>
-                                <Grid item xs={8}>
+                                <Grid item xs={9}>
                                     <Typography variant="h5">{datos.nameArea}</Typography>
                                 </Grid>
 
-                                <Grid item xs={4}>
-                                    <Typography variant="h5">DEPARTAMENTO:</Typography>
+                                <Grid item xs={3}>
+                                    <Typography variant="h5"><b>DEPARTAMENTO:</b></Typography>
                                 </Grid>
-                                <Grid item xs={8}>
+                                <Grid item xs={9}>
                                     <Typography variant="h5">{datos.nameDepartamentoTrabajo}</Typography>
                                 </Grid>
 
-                                <Grid item xs={4}>
-                                    <Typography variant="h5">CONCEPTO DE APTITUD:</Typography>
+                                <Grid item xs={3}>
+                                    <Typography variant="h5"><b>CONCEPTO DE APTITUD:</b></Typography>
                                 </Grid>
-                                <Grid item xs={8}>
+                                <Grid item xs={9}>
                                     <Typography variant="h5"><b>{datos.nameConceptoActitudID}</b></Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
-
                     </Grid>
                 </Grid>
 
@@ -143,10 +142,8 @@ const ReportConceptAptitude = ({ datos = [], lsDataUser = [] }) => {
                         <Grid item textAlign="justify" xs={12}>
                             <Grid container spacing={0}>
                                 <Grid item xs={12}>
-                                    <Typography variant="h6" sx={{ height: "350px", width: "100%" }}>
-                                        {/* {datos.recomendacionesID} */}
-                                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                    <Typography variant="h6" sx={{ height: "300px", width: "100%" }}>
+                                        {datos.recomendacionesID}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -155,7 +152,7 @@ const ReportConceptAptitude = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
 
                 <Grid item xs={4}>
-                    <img src={lsDataUser.firma} height={50} />
+                    <img src={lsDataUser.firma} height={120} />
 
                     <Divider sx={{ border: 1, background: 'black', color: 'black', mt: 1 }} />
                     <Typography variant="h6"><b>{lsDataUser.nombre}.</b></Typography>
@@ -166,17 +163,21 @@ const ReportConceptAptitude = ({ datos = [], lsDataUser = [] }) => {
             </Grid>
 
             <footer>
-                <Grid container sx={{ pt: 3 }} textAlign="center" justifyContent="center" spacing={1}>
+                <Grid container sx={{ pt: 3 }} spacing={1}>
                     <Grid item xs={12}>
                         <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
                     </Grid>
 
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                         <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
                     </Grid>
 
-                    <Grid item xs={6}>
-                        <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
+
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
                     </Grid>
                 </Grid>
             </footer>

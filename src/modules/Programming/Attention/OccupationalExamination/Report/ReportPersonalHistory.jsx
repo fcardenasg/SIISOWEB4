@@ -33,6 +33,17 @@ const Pathological = ({ title = '', text = '' }) => {
     )
 }
 
+const Antecedentes = ({ paraclinico = '', observacion = '' }) => (
+    <>
+        <Grid item xs={2}>
+            <Typography variant="h6">{paraclinico}</Typography>
+        </Grid>
+        <Grid item xs={10}>
+            <Typography variant="h6">{observacion}</Typography>
+        </Grid>
+    </>
+)
+
 const ReportPersonalHistory = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
 
@@ -65,7 +76,7 @@ const ReportPersonalHistory = ({ datos = [], lsDataUser = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>ANTECEDENTES PERSONALES</b></Typography>
+                            <Typography variant="h5"><b>4. ANTECEDENTES PERSONALES</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -75,7 +86,7 @@ const ReportPersonalHistory = ({ datos = [], lsDataUser = [] }) => {
                         <Grid item xs={12}>
                             <Grid container direction="row" spacing={1}>
                                 <Grid item xs={12} sx={{ mb: 2 }}>
-                                    <Typography variant="h5"><b>PATOLÓGICOS</b></Typography>
+                                    <Typography variant="h5"><b>4.1 PATOLÓGICOS</b></Typography>
                                 </Grid>
 
                                 <Pathological key={1} title="1. CONGÉNITOS:" text={datos.congenitosAP} />
@@ -122,12 +133,41 @@ const ReportPersonalHistory = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography align="justify" variant="h6">
+                                    <Typography align="justify" variant="h6" sx={{ height: "40px", width: "100%" }}>
                                         {datos.especifiqueAP}
                                     </Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Typography align="center" variant="h5"><b>4.2 ANTECEDENTES FAMILIARES</b></Typography>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <Typography variant="h6"><b>PARENTESCO</b></Typography>
+                        </Grid>
+
+                        <Grid item xs={10}>
+                            <Typography variant="h6"><b>OBSERVACIÓN</b></Typography>
+                        </Grid>
+
+                        {datos.nameParentesco1ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco1ANFA} observacion={datos.parentesco1ObserANFA} /> : null}
+                        {datos.nameParentesco2ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco2ANFA} observacion={datos.parentesco2ObserANFA} /> : null}
+                        {datos.nameParentesco3ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco3ANFA} observacion={datos.parentesco3ObserANFA} /> : null}
+                        {datos.nameParentesco4ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco4ANFA} observacion={datos.parentesco4ObserANFA} /> : null}
+
                         <Grid item xs={12}>
                             <Divider />
                         </Grid>

@@ -55,9 +55,6 @@ const ReportOccupationalExamination = ({ id = 3, setOpenReport }) => {
             component: <ReportConceptAptitude datos={lsDataReport} lsDataUser={lsDataUser} />,
         },
         {
-            component: <ReportFramingham datos={lsDataReport} lsDataUser={lsDataUser} />,
-        },
-        {
             component: <ReportDiagnostics datos={lsDataReport} lsDataUser={lsDataUser} />,
         },
         {
@@ -69,6 +66,13 @@ const ReportOccupationalExamination = ({ id = 3, setOpenReport }) => {
         {
             component: <ReportPersonalHistory datos={lsDataReport} lsDataUser={lsDataUser} />,
         },
+
+        /* FALTA DEPURAR HASTA ABAJO */
+
+        {
+            component: <ReportFramingham datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+
         {
             component: <ReportHabits datos={lsDataReport} lsDataUser={lsDataUser} />,
         },

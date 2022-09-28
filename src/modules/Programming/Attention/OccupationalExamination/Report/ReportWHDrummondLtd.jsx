@@ -5,7 +5,7 @@ import useAuth from 'hooks/useAuth';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import { DefaultValue } from 'components/helpers/Enums';
 import { GetAllByChargeHistorico, GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
 import { GetAllByDocumentWorkHistory } from 'api/clients/WorkHistoryClient';
@@ -279,7 +279,7 @@ const ReportWHDrummondLtd = ({ datos = [], lsDataUser = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>HISTORIA LABORAL EN DRUMMOND LTD.</b></Typography>
+                            <Typography variant="h5"><b>3.2 HISTORIA LABORAL EN DRUMMOND LTD.</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -297,136 +297,141 @@ const ReportWHDrummondLtd = ({ datos = [], lsDataUser = [] }) => {
                                 <Grid item xs={3}>
                                     <Typography align='center' variant="h6"><b>MESES</b></Typography>
                                 </Grid>
+                                <Grid item xs={12} sx={{ height: "630px", width: "100%" }}>
+                                    {lsWorkHistoryDLTD && lsWorkHistoryDLTD.map((work, index) => (
+                                        <Grid container spacing={1}>
+                                            <Grid item xs={6}>
+                                                <Typography variant="h6">{work.nameCargo}</Typography>
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                <Typography align='center' variant="h6">{work.anio}</Typography>
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                <Typography align='center' variant="h6">{work.meses}</Typography>
+                                            </Grid>
 
-                                {lsWorkHistoryDLTD && lsWorkHistoryDLTD.map((work, index) => (
-                                    <Fragment>
-                                        <Grid item xs={6}>
-                                            <Typography variant="h6">{work.nameCargo}</Typography>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <Typography align='center' variant="h6">{work.anio}</Typography>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <Typography align='center' variant="h6">{work.meses}</Typography>
-                                        </Grid>
+                                            <Grid item xs={12}>
+                                                <Typography variant="h5"><b>3.2.1 EXPOSICIÓN OCUPACIONAL PARA EL CARGO EN DTLD</b></Typography>
+                                            </Grid>
 
-                                        <Grid item xs={12}>
-                                            <Grid container spacing={1}>
-                                                <TableDLTD
-                                                    title='RIESGO QUÍMICO'
-                                                    documento={datos.documento}
-                                                    idCargo={work.idCargo}
-                                                    idRiesgo={DefaultValue.RiesgoQuimico}
-                                                />
+                                            <Grid item xs={12}>
+                                                <Grid container spacing={1}>
+                                                    <TableDLTD
+                                                        title='RIESGO QUÍMICO'
+                                                        documento={datos.documento}
+                                                        idCargo={work.idCargo}
+                                                        idRiesgo={DefaultValue.RiesgoQuimico}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO FÍSICO'
-                                                    documento={datos.documento}
-                                                    idCargo={work.idCargo}
-                                                    idRiesgo={DefaultValue.RiesgoFisico}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO FÍSICO'
+                                                        documento={datos.documento}
+                                                        idCargo={work.idCargo}
+                                                        idRiesgo={DefaultValue.RiesgoFisico}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO PSICOSOCIAL'
-                                                    documento={datos.documento}
-                                                    idCargo={work.idCargo}
-                                                    idRiesgo={DefaultValue.RiesgoPsicosocial}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO PSICOSOCIAL'
+                                                        documento={datos.documento}
+                                                        idCargo={work.idCargo}
+                                                        idRiesgo={DefaultValue.RiesgoPsicosocial}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO BIOLÓGICO'
-                                                    documento={datos.documento}
-                                                    idCargo={work.idCargo}
-                                                    idRiesgo={DefaultValue.RiesgoBiologico}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO BIOLÓGICO'
+                                                        documento={datos.documento}
+                                                        idCargo={work.idCargo}
+                                                        idRiesgo={DefaultValue.RiesgoBiologico}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO ECF - POSTURA'
-                                                    documento={datos.documento}
-                                                    idCargo={work.idCargo}
-                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Postura}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO ECF - POSTURA'
+                                                        documento={datos.documento}
+                                                        idCargo={work.idCargo}
+                                                        idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Postura}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO ECF - FUERZA'
-                                                    documento={datos.documento}
-                                                    idCargo={work.idCargo}
-                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO ECF - FUERZA'
+                                                        documento={datos.documento}
+                                                        idCargo={work.idCargo}
+                                                        idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO ECF - MOVIMIENTO'
-                                                    documento={datos.documento}
-                                                    idCargo={work.idCargo}
-                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO ECF - MOVIMIENTO'
+                                                        documento={datos.documento}
+                                                        idCargo={work.idCargo}
+                                                        idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento}
+                                                    />
+                                                </Grid>
                                             </Grid>
                                         </Grid>
-                                    </Fragment>
-                                ))}
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
+                                    ))}
 
-                <Grid item xs={12}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>EXPOSICIÓN ACUMULADA DE FACTORES DE RIESGO</b></Typography>
-                        </Grid>
+                                    <Grid sx={{ mt: 3 }} item xs={12}>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <Typography variant="h5"><b>3.3 EXPOSICIÓN ACUMULADA DE FACTORES DE RIESGO</b></Typography>
+                                            </Grid>
 
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
+                                            <Grid item xs={12}>
+                                                <Divider />
+                                            </Grid>
 
-                        <Grid item xs={12}>
-                            <Grid container spacing={1}>
-                                <Grid item xs>
-                                    <Grid container spacing={0.5}>
-                                        <Grid item xs={12}>
-                                            <Typography align="center" variant="h6"><b>EN DLTD</b></Typography>
+                                            <Grid item xs={12}>
+                                                <Grid container spacing={1}>
+                                                    <Grid item xs>
+                                                        <Grid container spacing={0.5}>
+                                                            <Grid item xs={12}>
+                                                                <Typography align="center" variant="h6"><b>EN DLTD</b></Typography>
+                                                            </Grid>
+
+                                                            <WorkHistoryAM
+                                                                anioRuido={mpiAnioDTLD}
+                                                                mesRuido={mpiMesDTLD}
+                                                                mpiAnio={anioRuidoDTLD}
+                                                                mpiMes={mesRuidoDTLD}
+                                                            />
+                                                        </Grid>
+                                                    </Grid>
+
+                                                    <Divider orientation="vertical" flexItem sx={{ background: "black", border: 1, color: "black" }} />
+
+                                                    <Grid item xs>
+                                                        <Grid container spacing={0.5}>
+                                                            <Grid item xs={12}>
+                                                                <Typography align="center" variant="h6"><b>EN OTRAS EMPRESAS</b></Typography>
+                                                            </Grid>
+
+                                                            <WorkHistoryAM
+                                                                anioRuido={mpiAnioOtrasEmpresas}
+                                                                mesRuido={mpiMesOtrasEmpresas}
+                                                                mpiAnio={anioRuidoOtrasEmpresas}
+                                                                mpiMes={mesRuidoOtrasEmpresas}
+                                                            />
+                                                        </Grid>
+                                                    </Grid>
+
+                                                    <Divider orientation="vertical" flexItem sx={{ background: "black", border: 1, color: "black" }} />
+
+                                                    <Grid item xs>
+                                                        <Grid container spacing={0.5}>
+                                                            <Grid item xs={12}>
+                                                                <Typography align="center" variant="h6"><b>TOTALES</b></Typography>
+                                                            </Grid>
+
+                                                            <WorkHistoryAM
+                                                                anioRuido={mpiAnioDTLD + mpiAnioOtrasEmpresas}
+                                                                mesRuido={mpiMesDTLD + mpiMesOtrasEmpresas}
+                                                                mpiAnio={anioRuidoDTLD + anioRuidoOtrasEmpresas}
+                                                                mpiMes={mesRuidoDTLD + mesRuidoOtrasEmpresas}
+                                                            />
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
                                         </Grid>
-
-                                        <WorkHistoryAM
-                                            anioRuido={mpiAnioDTLD}
-                                            mesRuido={mpiMesDTLD}
-                                            mpiAnio={anioRuidoDTLD}
-                                            mpiMes={mesRuidoDTLD}
-                                        />
-                                    </Grid>
-                                </Grid>
-
-                                <Divider orientation="vertical" flexItem sx={{ background: "black", border: 1, color: "black" }} />
-
-                                <Grid item xs>
-                                    <Grid container spacing={0.5}>
-                                        <Grid item xs={12}>
-                                            <Typography align="center" variant="h6"><b>EN OTRAS EMPRESAS</b></Typography>
-                                        </Grid>
-
-                                        <WorkHistoryAM
-                                            anioRuido={mpiAnioOtrasEmpresas}
-                                            mesRuido={mpiMesOtrasEmpresas}
-                                            mpiAnio={anioRuidoOtrasEmpresas}
-                                            mpiMes={mesRuidoOtrasEmpresas}
-                                        />
-                                    </Grid>
-                                </Grid>
-
-                                <Divider orientation="vertical" flexItem sx={{ background: "black", border: 1, color: "black" }} />
-
-                                <Grid item xs>
-                                    <Grid container spacing={0.5}>
-                                        <Grid item xs={12}>
-                                            <Typography align="center" variant="h6"><b>TOTALES</b></Typography>
-                                        </Grid>
-
-                                        <WorkHistoryAM
-                                            anioRuido={mpiAnioDTLD + mpiAnioOtrasEmpresas}
-                                            mesRuido={mpiMesDTLD + mpiMesOtrasEmpresas}
-                                            mpiAnio={anioRuidoDTLD + anioRuidoOtrasEmpresas}
-                                            mpiMes={mesRuidoDTLD + mesRuidoOtrasEmpresas}
-                                        />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -435,23 +440,25 @@ const ReportWHDrummondLtd = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 2 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 21 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

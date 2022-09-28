@@ -2,22 +2,21 @@ import { Fragment, useEffect, useState } from 'react';
 import { Divider, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
 import useAuth from 'hooks/useAuth';
-import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { DefaultValue } from 'components/helpers/Enums';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
+import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import { GetAllByChargeWHRAdvanceCompany } from 'api/clients/WorkHistoryRiskClient';
 import { GetAllByDocumentWorkHistoryOtherCompany } from 'api/clients/WorkHistoryOtherCompany';
 
 const WHOtherCompanies = ({ title = '', text = '' }) => {
     return (
         <Fragment>
-            <Grid item xs={2.5}>
+            <Grid item xs={2}>
                 <Typography variant="h6"><b>{title}</b></Typography>
             </Grid>
-            <Grid item xs={3.5}>
+            <Grid item xs={4}>
                 <Typography variant="h6">{text}</Typography>
             </Grid>
         </Fragment>
@@ -63,7 +62,6 @@ const TableDLTD = ({ idRiesgo = 0, title = '', idHistoriaLaboral = '', idCargo =
                             <TableBody>
                                 {lsRiesgo.map((row, index) => (
                                     <TableRow>
-
                                         <TableCell align="right">
                                             <Typography align="left" variant="h6">{row.nameExpocision}</Typography>
                                         </TableCell>
@@ -80,9 +78,10 @@ const TableDLTD = ({ idRiesgo = 0, title = '', idHistoriaLaboral = '', idCargo =
                                         <TableCell align="right">
                                             <Typography align="left" variant="h6">{row.nameGradoConEPP}</Typography>
                                         </TableCell>
+
                                         <TableCell>
                                             {JSON.parse(row.medidasControl).map((medidas, index) => (
-                                                <Grid item xs={6}>
+                                                <Grid item>
                                                     <Typography fontSize={10}>{medidas.label},</Typography>
                                                 </Grid>
                                             ))}
@@ -99,7 +98,7 @@ const TableDLTD = ({ idRiesgo = 0, title = '', idHistoriaLaboral = '', idCargo =
     )
 }
 
-const ReportWHOtherCompanies = ({ datos = [] }) => {
+const ReportWHOtherCompanies = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
     const [lsWorkHistoryOther, setLsWorkHistoryOther] = useState([]);
 
@@ -108,9 +107,7 @@ const ReportWHOtherCompanies = ({ datos = [] }) => {
             try {
                 const lsServer = await GetAllByDocumentWorkHistoryOtherCompany(0, 0, datos.documento);
                 if (lsServer.status === 200) setLsWorkHistoryOther(lsServer.data.entities);
-            } catch (error) {
-                console.log(error);
-            }
+            } catch (error) { }
         }
 
         GetAll();
@@ -143,25 +140,25 @@ const ReportWHOtherCompanies = ({ datos = [] }) => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={0.5}>
                         <Grid item xs={6}>
-                            <Typography align="center" variant="h5">FECHA DE CONCEPTO: {ViewFormat(datos.fecha)}</Typography>
+                            <Typography variant="h6">FECHA DE CONCEPTO: {ViewFormat(datos.fecha)}</Typography>
                         </Grid>
 
                         <Grid item xs={6}>
-                            <Typography align="center" variant="h5">Valoración Médica Nro: {datos.id}</Typography>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Divider />
+                            <Typography align="right" variant="h6">VALORACIÓN MÉDICA NRO: {datos.id}</Typography>
                         </Grid>
                     </Grid>
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={0.5}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>DATOS PERSONALES</b></Typography>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography variant="h5"><b>1. DATOS PERSONALES</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -186,7 +183,7 @@ const ReportWHOtherCompanies = ({ datos = [] }) => {
                                 <Grid item xs={12}>
                                     <Grid container spacing={1}>
                                         <Grid item xs={12}>
-                                            <Typography variant="h6"><b>INFORMACIÓN DE LA EMPRESA Y CARGO</b></Typography>
+                                            <Typography variant="h5"><b>2. INFORMACIÓN DE LA EMPRESA Y CARGO</b></Typography>
                                         </Grid>
                                         <WHOtherCompanies title='SEDE DE TRABAJO:' text={datos.nameSede} />
                                         <WHOtherCompanies title='DPTO. DE TRABAJO:' text={datos.nameDepartamentoTrabajo} />
@@ -200,17 +197,25 @@ const ReportWHOtherCompanies = ({ datos = [] }) => {
                                 </Grid>
                             </Grid>
                         </Grid>
-
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
                     </Grid>
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={0.5}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>HISTORIA LABORAL EN OTRAS EMPRESAS</b></Typography>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography variant="h5"><b>3. ANTECEDENTES LABORALES</b></Typography>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography variant="h5"><b>3.1 HISTORIA LABORAL EN OTRAS EMPRESAS</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -232,100 +237,102 @@ const ReportWHOtherCompanies = ({ datos = [] }) => {
                                     <Typography align='center' variant="h6"><b>MESES</b></Typography>
                                 </Grid>
 
-                                {lsWorkHistoryOther && lsWorkHistoryOther.map((work, index) => (
-                                    <Fragment>
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">{work.empresa}</Typography>
-                                        </Grid>
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">{work.cargo}</Typography>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Typography align='center' variant="h6">{work.anio}</Typography>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Typography align='center' variant="h6">{work.meses}</Typography>
-                                        </Grid>
+                                <Grid item xs={12} sx={{ height: "430px", width: "100%" }}>
+                                    {lsWorkHistoryOther && lsWorkHistoryOther.map((work, index) => (
+                                        <Grid container spacing={1}>
+                                            <Grid item xs={4}>
+                                                <Typography variant="h6">{work.empresa}</Typography>
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                <Typography variant="h6">{work.cargo}</Typography>
+                                            </Grid>
+                                            <Grid item xs={2}>
+                                                <Typography align='center' variant="h6">{work.anio}</Typography>
+                                            </Grid>
+                                            <Grid item xs={2}>
+                                                <Typography align='center' variant="h6">{work.meses}</Typography>
+                                            </Grid>
 
-                                        <Grid item xs={12}>
-                                            <Grid container spacing={1}>
-                                                <TableDLTD
-                                                    title='RIESGO QUÍMICO'
-                                                    idHistoriaLaboral={work.id}
-                                                    idCargo={work.cargo}
-                                                    idRiesgo={DefaultValue.RiesgoQuimico}
-                                                />
+                                            <Grid item xs={12}>
+                                                <Grid container spacing={1}>
+                                                    <TableDLTD
+                                                        title='RIESGO QUÍMICO'
+                                                        idHistoriaLaboral={work.id}
+                                                        idCargo={work.cargo}
+                                                        idRiesgo={DefaultValue.RiesgoQuimico}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO FÍSICO'
-                                                    idHistoriaLaboral={work.id}
-                                                    idCargo={work.cargo}
-                                                    idRiesgo={DefaultValue.RiesgoFisico}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO FÍSICO'
+                                                        idHistoriaLaboral={work.id}
+                                                        idCargo={work.cargo}
+                                                        idRiesgo={DefaultValue.RiesgoFisico}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO PSICOSOCIAL'
-                                                    idHistoriaLaboral={work.id}
-                                                    idCargo={work.cargo}
-                                                    idRiesgo={DefaultValue.RiesgoPsicosocial}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO PSICOSOCIAL'
+                                                        idHistoriaLaboral={work.id}
+                                                        idCargo={work.cargo}
+                                                        idRiesgo={DefaultValue.RiesgoPsicosocial}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO BIOLÓGICO'
-                                                    idHistoriaLaboral={work.id}
-                                                    idCargo={work.cargo}
-                                                    idRiesgo={DefaultValue.RiesgoBiologico}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO BIOLÓGICO'
+                                                        idHistoriaLaboral={work.id}
+                                                        idCargo={work.cargo}
+                                                        idRiesgo={DefaultValue.RiesgoBiologico}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO ECF - POSTURA'
-                                                    idHistoriaLaboral={work.id}
-                                                    idCargo={work.cargo}
-                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Postura}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO ECF - POSTURA'
+                                                        idHistoriaLaboral={work.id}
+                                                        idCargo={work.cargo}
+                                                        idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Postura}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO ECF - FUERZA'
-                                                    idHistoriaLaboral={work.id}
-                                                    idCargo={work.cargo}
-                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO ECF - FUERZA'
+                                                        idHistoriaLaboral={work.id}
+                                                        idCargo={work.cargo}
+                                                        idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza}
+                                                    />
 
-                                                <TableDLTD
-                                                    title='RIESGO ECF - MOVIMIENTO'
-                                                    idHistoriaLaboral={work.id}
-                                                    idCargo={work.cargo}
-                                                    idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento}
-                                                />
+                                                    <TableDLTD
+                                                        title='RIESGO ECF - MOVIMIENTO'
+                                                        idHistoriaLaboral={work.id}
+                                                        idCargo={work.cargo}
+                                                        idRiesgo={DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento}
+                                                    />
+                                                </Grid>
                                             </Grid>
                                         </Grid>
-                                    </Fragment>
-                                ))}
-
-
+                                    ))}
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 7 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 2 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };
