@@ -18,8 +18,8 @@ import {
 } from '@mui/material';
 
 import Chip from 'ui-component/extended/Chip';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import UpdateEmployee from 'modules/OccupationalExamination/Update/UpdateEmployee';
+import ControlModal from 'components/controllers/ControlModal';
+import UpdateEmployee from 'modules/Programming/Attention/OccupationalExamination/Update/UpdateEmployee';
 
 import {
     IconEdit,
@@ -98,13 +98,14 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
 
     return (
         <Grid container spacing={1}>
-            <FullScreenDialog
-                open={openUpdate}
+            <ControlModal
                 title="ACTUALIZAR EMPLEADO"
-                handleClose={() => setOpenUpdate(false)}
+                open={openUpdate}
+                onClose={() => setOpenUpdate(false)}
+                maxWidth="xl"
             >
-                <UpdateEmployee idEmpleado={documento} setOpenUpdate={setOpenUpdate} key={1} />
-            </FullScreenDialog>
+                <UpdateEmployee idEmpleado={documento} getDataAttention={handleDocumento} setOpenUpdateTwo={setOpenUpdate} />
+            </ControlModal>
 
             <Grid item xs={12} sx={{ pb: 4 }}>
                 <Stack direction="row" alignItems="center" alignContent="center" justifyContent="space-between">

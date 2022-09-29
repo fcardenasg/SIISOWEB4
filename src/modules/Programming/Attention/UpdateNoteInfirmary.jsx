@@ -56,6 +56,37 @@ const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
+const dataMedicalOrders = [
+    {
+        open: true,
+        title: 'Formula',
+        subtitle: 'Formula',
+        iconPrimary: AssignmentIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Laboratorio',
+        subtitle: 'Laboratorio',
+        iconPrimary: BiotechIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Imagenes',
+        subtitle: 'Imagenes',
+        iconPrimary: ImageIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Examenes',
+        subtitle: 'Examenes',
+        iconPrimary: FolderOpenIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+]
+
 const UpdateNoteInfirmary = () => {
     const theme = useTheme();
     const { user } = useAuth();
@@ -65,6 +96,7 @@ const UpdateNoteInfirmary = () => {
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsAtencionn, setLsAtencionn] = useState([]);
 
+    const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
@@ -92,21 +124,25 @@ const UpdateNoteInfirmary = () => {
 
     const { handleSubmit, errors } = methods;
 
-    const handleUpdateAttention = async (DataToUpdate) => {
+    const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
-            await UpdateAttentions(DataToUpdate);
-        } catch (error) { }
-    }
-
-    const handleUpdateAttentionClose = async (estadoPac = '') => {
-        try {
-            const DataToUpdate = PutAttention(id, lsAtencion.documento, lsAtencion.fecha, lsAtencion.sede, lsAtencion.tipo, lsAtencion.atencion,
-                lsAtencion.estadoCaso, lsAtencion.observaciones, lsAtencion.numeroHistoria, estadoPac, lsAtencion.contingencia,
-                lsAtencion.turno, lsAtencion.diaTurno, lsAtencion.motivo, lsAtencion.medico, lsAtencion.docSolicitante, lsAtencion.talla, lsAtencion.peso,
-                lsAtencion.iMC, lsAtencion.usuarioCierreAtencion, lsAtencion.fechaDigitacion, lsAtencion.fechaCierreAtencion, lsAtencion.duracion,
-                lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, lsAtencion.usuarioModifico, lsAtencion.fechaModifico);
+            const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
+                lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
+                lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
+                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, lsDataUpdate.usuarioCierreAtencion,
+                lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
+                lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
 
             await UpdateAttentions(DataToUpdate);
+
+            if (estadoPac === "ATENDIDO") {
+                swal(ParamCloseCase).then(async (willDelete) => {
+                    if (willDelete)
+                        navigate("/programming/list");
+                });
+            } else if (estadoPac === "PENDIENTE POR ATENCIÓN")
+                navigate("/programming/list");
+
         } catch (error) { }
     }
 
@@ -128,16 +164,6 @@ const UpdateNoteInfirmary = () => {
         try {
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
-                const DataToUpdate = PutAttention(id, lsServerAtencion.data.documento, lsServerAtencion.data.fecha, lsServerAtencion.data.sede,
-                    lsServerAtencion.data.tipo, lsServerAtencion.data.atencion, lsServerAtencion.data.estadoCaso, lsServerAtencion.data.observaciones,
-                    lsServerAtencion.data.numeroHistoria, "ESTÁ SIENDO ATENDIDO", lsServerAtencion.data.contingencia, lsServerAtencion.data.turno,
-                    lsServerAtencion.data.diaTurno, lsServerAtencion.data.motivo, lsServerAtencion.data.medico, lsServerAtencion.data.docSolicitante,
-                    lsServerAtencion.data.talla, lsServerAtencion.data.peso, lsServerAtencion.data.iMC, lsServerAtencion.data.usuarioCierreAtencion,
-                    lsServerAtencion.data.fechaDigitacion, lsServerAtencion.data.fechaCierreAtencion, lsServerAtencion.data.duracion,
-                    lsServerAtencion.data.usuarioRegistro, lsServerAtencion.data.fechaRegistro, lsServerAtencion.data.usuarioModifico,
-                    lsServerAtencion.data.fechaModifico);
-
-                await handleUpdateAttention(DataToUpdate);
 
                 setLsAtencion(lsServerAtencion.data);
                 setDocumento(lsServerAtencion.data.documento);
@@ -171,21 +197,10 @@ const UpdateNoteInfirmary = () => {
         GetAll();
     }, []);
 
-    const handleCerrarCaso = () => {
-        try {
-            swal(ParamCloseCase).then(async (willDelete) => {
-                if (willDelete) {
-                    handleUpdateAttentionClose("ATENDIDO");
-                    navigate("/programming/list");
-                }
-            });
-
-        } catch (error) { }
-    }
 
     const handleClick = async (datos) => {
         try {
-            const UpdateToInsert = PostNoteInfirmary(documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia,
+            const UpdateToInsert = PostNoteInfirmary(id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia,
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, JSON.stringify(procedimiento), datos.notaEnfermedad,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
@@ -201,6 +216,11 @@ const UpdateNoteInfirmary = () => {
             setErrorMessage(`${error}`);
         }
     };
+
+    setTimeout(() => {
+        if (lsAtencion.length !== 0)
+            setTimeWait(true);
+    }, 1500);
 
     return (
         <Fragment>
@@ -281,44 +301,19 @@ const UpdateNoteInfirmary = () => {
                 open={openFormula}
                 handleCloseDialog={() => setOpenFormula(false)}
             >
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Formula') }}
-                        secondary="Formula"
-                        iconPrimary={AssignmentIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Laboratorio') }}
-                        secondary="Laboratorio"
-                        iconPrimary={BiotechIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Imagenes') }}
-                        secondary="Imagenes"
-                        iconPrimary={ImageIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <HoverSocialCard
-                        onClick={() => { setOpenForm(true); setTitleModal('Examenes') }}
-                        secondary="Examenes"
-                        iconPrimary={FolderOpenIcon}
-                        color={ColorDrummondltd.RedDrummond}
-                    />
-                </Grid>
+                {dataMedicalOrders.map(data =>
+                    <Grid item xs={12}>
+                        <HoverSocialCard
+                            onClick={() => { setOpenForm(data.open); setTitleModal(data.title) }}
+                            secondary={data.subtitle}
+                            iconPrimary={data.iconPrimary}
+                            color={data.color}
+                        />
+                    </Grid>
+                )}
             </DialogFormula>
 
-            {lsAtencion.length != 0 ?
+            {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
@@ -352,7 +347,6 @@ const UpdateNoteInfirmary = () => {
                                             defaultValue={lsAtencion.atencion}
                                             options={lsAtencionn}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -365,7 +359,6 @@ const UpdateNoteInfirmary = () => {
                                             defaultValue=""
                                             options={lsContingencia}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -396,7 +389,6 @@ const UpdateNoteInfirmary = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
                                             rows={6}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -442,10 +434,7 @@ const UpdateNoteInfirmary = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => {
-                                            navigate("/programming/list");
-                                            handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN");
-                                        }}>
+                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -453,7 +442,7 @@ const UpdateNoteInfirmary = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={handleCerrarCaso}>
+                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                             {TitleButton.CerrarCaso}
                                         </Button>
                                     </AnimateButton>

@@ -58,7 +58,7 @@ const ListProgramming = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameEmpleado', 'nameAtencion', 'estadoPac', 'nameSede', 'fecha', 'nameTipoAtencion'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameTipoAtencion', 'nameAtencion', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

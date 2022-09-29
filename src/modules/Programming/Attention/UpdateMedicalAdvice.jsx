@@ -117,7 +117,7 @@ const UpdateMedicalAdvice = () => {
 
     const methods = useForm();
 
-    const { handleSubmit, errors } = methods;
+    const { handleSubmit } = methods;
 
     async function GetAll() {
         try {
@@ -335,7 +335,6 @@ const UpdateMedicalAdvice = () => {
                                             defaultValue={lsAtencion.motivo}
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -348,7 +347,6 @@ const UpdateMedicalAdvice = () => {
                                             defaultValue=""
                                             options={tipoAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -365,7 +363,6 @@ const UpdateMedicalAdvice = () => {
                                                     name="observaciones"
                                                     label="Descripción"
                                                     size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -394,7 +391,6 @@ const UpdateMedicalAdvice = () => {
                                                     name="recomendaciones"
                                                     label="Recomendaciones"
                                                     size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
                                                 />
                                             </FormProvider>
                                         </Grid>

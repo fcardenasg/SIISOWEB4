@@ -9,12 +9,8 @@ import {
 
 import swal from 'sweetalert';
 import { ParamCloseCase } from 'components/alert/AlertAll';
-
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-
 import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient';
 import { PutAttention } from 'formatdata/AttentionForm';
 import ViewReport from './OccupationalExamination/Report/ViewReport';
@@ -55,11 +51,7 @@ const UpdateCounseling = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
 
-    const [disabledButton, setDisabledButton] = useState({
-        buttonSave: false,
-        buttonReport: false
-    });
-
+    const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
 
     const [openUpdate, setOpenUpdate] = useState(false);
@@ -76,20 +68,33 @@ const UpdateCounseling = () => {
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
     const [causaAsesoria, setCausaAsesoria] = useState([]);
 
-    async function GetAll() {
+    const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
+        try {
+            const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
+                lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
+                lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
+                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, lsDataUpdate.usuarioCierreAtencion,
+                lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
+                lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
+
+            await UpdateAttentions(DataToUpdate);
+
+            if (estadoPac === "ATENDIDO") {
+                swal(ParamCloseCase).then(async (willDelete) => {
+                    if (willDelete)
+                        navigate("/programming/list");
+                });
+            } else if (estadoPac === "PENDIENTE POR ATENCIÓN")
+                navigate("/programming/list");
+
+        } catch (error) { }
+    }
+
+    async function getAll() {
         try {
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
-                const DataToUpdate = PutAttention(id, lsServerAtencion.data.documento, lsServerAtencion.data.fecha, lsServerAtencion.data.sede,
-                    lsServerAtencion.data.tipo, lsServerAtencion.data.atencion, lsServerAtencion.data.estadoCaso, lsServerAtencion.data.observaciones,
-                    lsServerAtencion.data.numeroHistoria, "ESTÁ SIENDO ATENDIDO", lsServerAtencion.data.contingencia, lsServerAtencion.data.turno,
-                    lsServerAtencion.data.diaTurno, lsServerAtencion.data.motivo, lsServerAtencion.data.medico, lsServerAtencion.data.docSolicitante,
-                    lsServerAtencion.data.talla, lsServerAtencion.data.peso, lsServerAtencion.data.iMC, lsServerAtencion.data.usuarioCierreAtencion,
-                    lsServerAtencion.data.fechaDigitacion, lsServerAtencion.data.fechaCierreAtencion, lsServerAtencion.data.duracion,
-                    lsServerAtencion.data.usuarioRegistro, lsServerAtencion.data.fechaRegistro, lsServerAtencion.data.usuarioModifico,
-                    lsServerAtencion.data.fechaModifico);
-
-                await handleUpdateAttention(DataToUpdate);
+                await handleUpdateAttentionClose("ESTÁ SIENDO ATENDIDO", lsServerAtencion.data);
 
                 setLsAtencion(lsServerAtencion.data);
                 setDocumento(lsServerAtencion.data.documento);
@@ -130,37 +135,15 @@ const UpdateCounseling = () => {
                 label: item.nombre
             }));
             setCausaAsesoria(resultCausaAsesoria);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-
-    const { handleSubmit, errors, reset } = methods;
-
-    const handleUpdateAttention = async (DataToUpdate) => {
-        try {
-            await UpdateAttentions(DataToUpdate);
-        } catch (error) { }
-    }
-
-    const handleUpdateAttentionClose = async (estadoPac = '') => {
-        try {
-            const DataToUpdate = PutAttention(id, lsAtencion.documento, lsAtencion.fecha, lsAtencion.sede, lsAtencion.tipo, lsAtencion.atencion,
-                lsAtencion.estadoCaso, lsAtencion.observaciones, lsAtencion.numeroHistoria, estadoPac, lsAtencion.contingencia,
-                lsAtencion.turno, lsAtencion.diaTurno, lsAtencion.motivo, lsAtencion.medico, lsAtencion.docSolicitante, lsAtencion.talla, lsAtencion.peso,
-                lsAtencion.iMC, lsAtencion.usuarioCierreAtencion, lsAtencion.fechaDigitacion, lsAtencion.fechaCierreAtencion, lsAtencion.duracion,
-                lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, lsAtencion.usuarioModifico, lsAtencion.fechaModifico);
-
-            await UpdateAttentions(DataToUpdate);
-        } catch (error) { }
-    }
+    const { handleSubmit } = methods;
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -175,22 +158,9 @@ const UpdateCounseling = () => {
         }
     }
 
-    const handleCerrarCaso = () => {
-        try {
-            swal(ParamCloseCase).then(async (willDelete) => {
-                if (willDelete) {
-                    handleUpdateAttentionClose("ATENDIDO");
-                    navigate("/programming/list");
-                }
-            });
-
-        } catch (error) { }
-    }
-
     const handleClick = async (datos) => {
         try {
-
-            const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), DefaultData.AsesoriaPsicologica, lsEmployee.sede,
+            const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.idEstadoCaso, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 datos.idTipoAsesoria, datos.idMotivo, datos.idCausa, datos.motivoConsulta, datos.concepto, datos.pautasSeguir,
                 datos.idEstadoAsesoria, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
@@ -206,6 +176,11 @@ const UpdateCounseling = () => {
             setErrorMessage(`${error}`);
         }
     };
+
+    setTimeout(() => {
+        if (lsAtencion.length !== 0)
+            setTimeWait(true);
+    }, 1500);
 
     return (
         <Fragment>
@@ -238,10 +213,11 @@ const UpdateCounseling = () => {
                 <ViewReport />
             </ControlModal>
 
-            {lsAtencion.length != 0 ?
+            {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
+                            title="ASESORÍA PSICOLÓGICA"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -272,7 +248,6 @@ const UpdateCounseling = () => {
                                             defaultValue={lsAtencion.estadoCaso}
                                             options={lsEstadoCaso}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -285,7 +260,6 @@ const UpdateCounseling = () => {
                                             defaultValue={lsAtencion.motivo}
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -298,7 +272,6 @@ const UpdateCounseling = () => {
                                             defaultValue=""
                                             options={causaAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -311,7 +284,6 @@ const UpdateCounseling = () => {
                                             defaultValue=""
                                             options={tipoAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -331,7 +303,6 @@ const UpdateCounseling = () => {
                                             name="motivoConsulta"
                                             label="Motivo de consulta"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -359,7 +330,6 @@ const UpdateCounseling = () => {
                                             name="concepto"
                                             label="Concepto"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -387,7 +357,6 @@ const UpdateCounseling = () => {
                                             name="pautasSeguir"
                                             label="Pautas a Seguir"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -414,7 +383,6 @@ const UpdateCounseling = () => {
                                             defaultValue=""
                                             options={estadoAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -423,7 +391,7 @@ const UpdateCounseling = () => {
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={disabledButton.buttonSave} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
@@ -439,10 +407,7 @@ const UpdateCounseling = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => {
-                                            navigate("/programming/list");
-                                            handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN");
-                                        }}>
+                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -450,7 +415,7 @@ const UpdateCounseling = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={handleCerrarCaso}>
+                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                             {TitleButton.CerrarCaso}
                                         </Button>
                                     </AnimateButton>

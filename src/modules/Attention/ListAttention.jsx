@@ -72,12 +72,6 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'id',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
@@ -460,17 +454,6 @@ const ListAttention = () => {
                                                     'aria-labelledby': labelId
                                                 }}
                                             />
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                            align="center"
-                                        >
-                                            {row.id}
                                         </TableCell>
 
                                         <TableCell

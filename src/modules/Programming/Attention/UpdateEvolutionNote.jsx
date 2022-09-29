@@ -97,6 +97,7 @@ const UpdateEvolutionNote = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
@@ -126,7 +127,7 @@ const UpdateEvolutionNote = () => {
 
     const methods = useForm();
 
-    const { handleSubmit, errors } = methods;
+    const { handleSubmit } = methods;
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -140,53 +141,38 @@ const UpdateEvolutionNote = () => {
         }
     }
 
-    const handleUpdateAttention = async (DataToUpdate) => {
+    const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
+            const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
+                lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
+                lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
+                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, lsDataUpdate.usuarioCierreAtencion,
+                lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
+                lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
+
             await UpdateAttentions(DataToUpdate);
+
+            if (estadoPac === "ATENDIDO") {
+                swal(ParamCloseCase).then(async (willDelete) => {
+                    if (willDelete)
+                        navigate("/programming/list");
+                });
+            } else if (estadoPac === "PENDIENTE POR ATENCIÓN")
+                navigate("/programming/list");
+
         } catch (error) { }
     }
 
-    const handleUpdateAttentionClose = async (estadoPac = '') => {
-        try {
-            const DataToUpdate = PutAttention(id, lsAtencion.documento, lsAtencion.fecha, lsAtencion.sede, lsAtencion.tipo, lsAtencion.atencion,
-                lsAtencion.estadoCaso, lsAtencion.observaciones, lsAtencion.numeroHistoria, estadoPac, lsAtencion.contingencia,
-                lsAtencion.turno, lsAtencion.diaTurno, lsAtencion.motivo, lsAtencion.medico, lsAtencion.docSolicitante, lsAtencion.talla, lsAtencion.peso,
-                lsAtencion.iMC, lsAtencion.usuarioCierreAtencion, lsAtencion.fechaDigitacion, lsAtencion.fechaCierreAtencion, lsAtencion.duracion,
-                lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, lsAtencion.usuarioModifico, lsAtencion.fechaModifico);
-
-            await UpdateAttentions(DataToUpdate);
-        } catch (error) { }
-    }
-
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
-                const DataToUpdate = PutAttention(id, lsServerAtencion.data.documento, lsServerAtencion.data.fecha, lsServerAtencion.data.sede,
-                    lsServerAtencion.data.tipo, lsServerAtencion.data.atencion, lsServerAtencion.data.estadoCaso, lsServerAtencion.data.observaciones,
-                    lsServerAtencion.data.numeroHistoria, "ESTÁ SIENDO ATENDIDO", lsServerAtencion.data.contingencia, lsServerAtencion.data.turno,
-                    lsServerAtencion.data.diaTurno, lsServerAtencion.data.motivo, lsServerAtencion.data.medico, lsServerAtencion.data.docSolicitante,
-                    lsServerAtencion.data.talla, lsServerAtencion.data.peso, lsServerAtencion.data.iMC, lsServerAtencion.data.usuarioCierreAtencion,
-                    lsServerAtencion.data.fechaDigitacion, lsServerAtencion.data.fechaCierreAtencion, lsServerAtencion.data.duracion,
-                    lsServerAtencion.data.usuarioRegistro, lsServerAtencion.data.fechaRegistro, lsServerAtencion.data.usuarioModifico,
-                    lsServerAtencion.data.fechaModifico);
-
-                await handleUpdateAttention(DataToUpdate);
+                await handleUpdateAttentionClose("ESTÁ SIENDO ATENDIDO", lsServerAtencion.data);
 
                 setDocumento(lsServerAtencion.data.documento);
                 handleLoadingDocument(lsServerAtencion.data.documento);
-
-                setTimeout(() => {
-                    setLsAtencion(lsServerAtencion.data);
-                }, 1500);
+                setLsAtencion(lsServerAtencion.data);
             }
-
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
 
             const lsServerAtencionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION);
             var resultAtencion = lsServerAtencionn.data.entities.map((item) => ({
@@ -208,24 +194,19 @@ const UpdateEvolutionNote = () => {
                 label: item.nombre
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
+
+            const lsServerCie11 = await GetAllCIE11(0, 0);
+            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                value: item.id,
+                label: item.dx
+            }));
+            setLsCie11(resultCie11);
         } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
-
-    const handleCerrarCaso = () => {
-        try {
-            swal(ParamCloseCase).then(async (willDelete) => {
-                if (willDelete) {
-                    handleUpdateAttentionClose("ATENDIDO");
-                    navigate("/programming/list");
-                }
-            });
-
-        } catch (error) { }
-    }
 
     const handleClick = async (datos) => {
         try {
@@ -248,6 +229,11 @@ const UpdateEvolutionNote = () => {
             setErrorMessage(`${error}`);
         }
     };
+
+    setTimeout(() => {
+        if (lsAtencion.length !== 0)
+            setTimeWait(true);
+    }, 1500);
 
     return (
         <Fragment>
@@ -348,7 +334,7 @@ const UpdateEvolutionNote = () => {
                 )}
             </DialogFormula>
 
-            {lsAtencion.length != 0 ?
+            {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
@@ -383,7 +369,6 @@ const UpdateEvolutionNote = () => {
                                             defaultValue={lsAtencion.atencion}
                                             options={lsAtencionn}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -396,7 +381,6 @@ const UpdateEvolutionNote = () => {
                                             defaultValue=""
                                             options={lsContingencia}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -417,7 +401,6 @@ const UpdateEvolutionNote = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
                                             rows={6}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -467,7 +450,6 @@ const UpdateEvolutionNote = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
                                             rows={6}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -499,7 +481,6 @@ const UpdateEvolutionNote = () => {
                                             defaultValue=""
                                             options={lsConceptoAptitud}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -532,10 +513,7 @@ const UpdateEvolutionNote = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => {
-                                            navigate("/programming/list");
-                                            handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN");
-                                        }}>
+                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -543,7 +521,7 @@ const UpdateEvolutionNote = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={handleCerrarCaso}>
+                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                             {TitleButton.CerrarCaso}
                                         </Button>
                                     </AnimateButton>
