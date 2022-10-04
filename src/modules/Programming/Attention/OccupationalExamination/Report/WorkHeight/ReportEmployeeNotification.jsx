@@ -6,7 +6,7 @@ import useAuth from 'hooks/useAuth';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 
 const EmployeeNotification = ({ title = '', text = '' }) => {
     return (
@@ -52,9 +52,9 @@ const ReportEmployeeNotification = ({ datos = [], lsDataUser = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Grid container spacing={1}>
+                            <Grid container spacing={0.5}>
                                 <Grid item xs={12}>
-                                    <Typography align="center" variant="h5"><b>NOTIFICACIÓN AL TRABAJADOR</b></Typography>
+                                    <Typography variant="h5"><b>NOTIFICACIÓN AL TRABAJADOR</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -65,47 +65,47 @@ const ReportEmployeeNotification = ({ datos = [], lsDataUser = [] }) => {
                                     <Typography fontSize={9}>LA SIGUIENTE LISTA SE HA DESARROLLADO CON BASE EN LOS RESULTADOS DEL EXAMEN MÉDICO OCUPACIONAL, LOS EXÁMENES DE LABORATORIO Y LAS PRUEBAS COMPLEMENTARIAS REALIZADAS.</Typography>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={1.5}>
                                     <Typography variant='h6'><b>SEDE:</b></Typography>
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={2.5}>
                                     <Typography variant='h6'>{datos.nameSede}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2}>
                                     <Typography variant='h6'><b>FECHA DIGITACIÓN:</b></Typography>
                                 </Grid>
-                                <Grid item xs={2}>
-                                    <Typography variant='h6'>2022-08-19</Typography>
+                                <Grid item xs={1.5}>
+                                    <Typography variant='h6'>{ViewFormat(datos.fechaRegistro)}</Typography>
                                 </Grid>
 
                                 <Grid item xs={3}>
                                     <Typography variant='h6'><b>RIESGO CARDIOVASCULAR:</b></Typography>
                                 </Grid>
-                                <Grid item xs={1}>
-                                    <Typography variant='h6'>MEDIO</Typography>
+                                <Grid item xs={1.5}>
+                                    <Typography variant='h6'>{datos.nameRiesgoCardiovascularNEMTA}</Typography>
                                 </Grid>
 
                                 {/* SEGUNDA LINEA */}
-                                <Grid item xs={2}>
+                                <Grid item xs={1.5}>
                                     <Typography variant='h6'><b>CLASIFICACIÓN:</b></Typography>
                                 </Grid>
-                                <Grid item xs={2}>
-                                    <Typography variant='h6'>SOBREPESO GRADO III</Typography>
+                                <Grid item xs={2.5}>
+                                    <Typography variant='h6'>{datos.clasificacionEF}</Typography>
                                 </Grid>
 
                                 <Grid item xs={2}>
                                     <Typography variant='h6'><b>PESO (K):</b></Typography>
                                 </Grid>
-                                <Grid item xs={2}>
-                                    <Typography variant='h6'>85</Typography>
+                                <Grid item xs={1.5}>
+                                    <Typography variant='h6'>{datos.pesoEF}</Typography>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={3}>
                                     <Typography variant='h6'><b>IMC:</b></Typography>
                                 </Grid>
-                                <Grid item xs={2}>
-                                    <Typography variant='h6'>26.7</Typography>
+                                <Grid item xs={1.5}>
+                                    <Typography variant='h6'>{datos.imcef}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -154,13 +154,13 @@ const ReportEmployeeNotification = ({ datos = [], lsDataUser = [] }) => {
                                     </Grid>
                                 </Grid>
 
-                                <Grid item xs={12} sx={{ mt: 1 }}>
-                                    <Typography variant='h6'><b>OBSERVACIONES</b></Typography>
-                                </Grid>
+                                <Grid item xs={12} sx={{ height: "40px", width: "100%", mt: 1 }}>
+                                    <Typography variant='h6'>
+                                        <b>OBSERVACIONES: </b>
 
-                                <Grid item xs={12}>
-                                    <Typography align="justify" variant='h6'>
-                                        {datos.observacionesNEMTA}
+                                        <Typography align="justify" variant='h6'>
+                                            {datos.observacionesNEMTA}
+                                        </Typography>
                                     </Typography>
                                 </Grid>
 
@@ -175,15 +175,15 @@ const ReportEmployeeNotification = ({ datos = [], lsDataUser = [] }) => {
                                         </Grid>
 
                                         <Grid item xs={5.5}>
-                                            <Typography align="right" variant='h6'>{datos.nameConceptoActitudMedicoNEMTA}</Typography>
+                                            <Typography variant='h6'>{datos.nameConceptoActitudMedicoNEMTA}</Typography>
                                         </Grid>
 
-                                        <Grid item xs={3}>
+                                        <Grid item xs={2.5}>
                                             <Typography variant='h6'><b>VIGENCIA DEL CONCEPTO:</b></Typography>
                                         </Grid>
 
-                                        <Grid item xs={1}>
-                                            <Typography align="right" variant='h6'>1 AÑO</Typography>
+                                        <Grid item xs={1.5}>
+                                            <Typography variant='h6'>1 AÑO</Typography>
                                         </Grid>
 
                                         <Grid item xs={12}>
@@ -194,20 +194,19 @@ const ReportEmployeeNotification = ({ datos = [], lsDataUser = [] }) => {
                             </Grid>
                         </Grid>
 
-                        <Grid sx={{ mt: 2 }} item xs={12}>
+                        <Grid item xs={12}>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
-                                    <img src={lsDataUser.firma} height={50} />
+                                    <img src={lsDataUser.firma} height={70} />
 
                                     <Divider sx={{ border: 1, background: 'black', color: 'black', mt: 1 }} />
                                     <Typography variant="h6"><b>{lsDataUser.nombre}.</b></Typography>
                                     <Typography variant="h6"><b>{lsDataUser.tarjetaProfesional}</b></Typography>
-                                    <Typography variant="h6"><b>{lsDataUser.licencia}</b></Typography>
-                                    <Typography variant="h6"><b>{lsDataUser.registroMedico}</b></Typography>
+                                    <Typography variant="h6"><b>{lsDataUser.licencia} - {lsDataUser.registroMedico}</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <img src={ImgWhite} height={50} />
+                                    <img src={ImgWhite} height={70} />
 
 
                                     <Divider sx={{ border: 1, mt: 1, background: 'black', color: 'black' }} />
@@ -220,23 +219,25 @@ const ReportEmployeeNotification = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 1 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 2 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

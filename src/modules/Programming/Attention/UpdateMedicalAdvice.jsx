@@ -49,6 +49,7 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { useParams } from 'react-router-dom';
 import Cargando from 'components/loading/Cargando';
+import ReportMedicalAdvice from './Report/ReportMedicalAdvice';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -115,8 +116,9 @@ const UpdateMedicalAdvice = () => {
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
 
-    const methods = useForm();
+    const [resultData, setResultData] = useState([]);
 
+    const methods = useForm();
     const { handleSubmit } = methods;
 
     async function GetAll() {
@@ -197,6 +199,7 @@ const UpdateMedicalAdvice = () => {
                 const result = await InsertAdvice(DataToUpdate);
                 if (result.status === 200) {
                     setOpenSuccess(true);
+                    setResultData(result.data);
                 }
             }
         } catch (error) {
@@ -238,7 +241,7 @@ const UpdateMedicalAdvice = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-
+                <ReportMedicalAdvice id={resultData.id} />
             </ControlModal>
 
             <ControlModal
@@ -305,6 +308,7 @@ const UpdateMedicalAdvice = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
+                            title="ASESORÍAS MÉDICAS ESPECIALIZADAS"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -415,7 +419,7 @@ const UpdateMedicalAdvice = () => {
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
@@ -423,7 +427,7 @@ const UpdateMedicalAdvice = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

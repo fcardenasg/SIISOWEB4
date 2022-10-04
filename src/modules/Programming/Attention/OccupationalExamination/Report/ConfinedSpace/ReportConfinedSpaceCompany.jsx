@@ -2,28 +2,25 @@ import { Fragment } from 'react';
 import { Divider, Grid, Typography } from '@mui/material';
 
 import ImgWhite from 'assets/img/ImgWhite.png';
-import useAuth from 'hooks/useAuth';
-import SubCard from 'ui-component/cards/SubCard';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
+import { ViewFormat } from 'components/helpers/Format';
 
-const Pathological = ({ title = '', text = '' }) => {
+const EmployeeNotification = ({ title = '', text = '' }) => {
     return (
         <Fragment>
-            <Grid item xs={3}>
-                <Typography variant="h6"><b>{title}</b></Typography>
+            <Grid item xs={11}>
+                <Typography align="justify" fontSize={10}>{title}</Typography>
             </Grid>
-            <Grid item xs={9}>
-                <Typography variant="h6">{text}</Typography>
+            <Grid item xs={1}>
+                <Typography align="right" variant="h6">{text}</Typography>
             </Grid>
         </Fragment>
     )
 }
 
 const ReportConfinedSpaceCompany = ({ datos = [], lsDataUser = [] }) => {
-    const { user } = useAuth();
 
     return (
         <div>
@@ -53,73 +50,138 @@ const ReportConfinedSpaceCompany = ({ datos = [], lsDataUser = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>NOTIFICACIÓN A LA EMPRESA</b></Typography>
-                        </Grid>
+                            <Grid container spacing={0.5}>
+                                <Grid item xs={12}>
+                                    <Typography variant="h5"><b>NOTIFICACIÓN AL TRABAJADOR</b></Typography>
+                                </Grid>
 
-                        <Grid item xs={12}>
-                            <Divider />
+                                <Grid item xs={12}>
+                                    <Divider />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography fontSize={9}>LA SIGUIENTE LISTA SE HA DESARROLLADO CON BASE EN LOS RESULTADOS DEL EXAMEN MÉDICO OCUPACIONAL, LOS EXÁMENES DE LABORATORIO Y LAS PRUEBAS COMPLEMENTARIAS REALIZADAS.</Typography>
+                                </Grid>
+
+                                <Grid item xs={1.5}>
+                                    <Typography variant='h6'><b>SEDE:</b></Typography>
+                                </Grid>
+                                <Grid item xs={2.5}>
+                                    <Typography variant='h6'>{datos.nameSede}</Typography>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <Typography variant='h6'><b>FECHA DIGITACIÓN:</b></Typography>
+                                </Grid>
+                                <Grid item xs={1.5}>
+                                    <Typography variant='h6'>{ViewFormat(datos.fechaRegistro)}</Typography>
+                                </Grid>
+
+                                <Grid item xs={3}>
+                                    <Typography variant='h6'><b>RIESGO CARDIOVASCULAR:</b></Typography>
+                                </Grid>
+                                <Grid item xs={1.5}>
+                                    <Typography variant='h6'>{datos.nameRiesgoCardiovascularNEMTA}</Typography>
+                                </Grid>
+
+                                {/* SEGUNDA LINEA */}
+                                <Grid item xs={1.5}>
+                                    <Typography variant='h6'><b>CLASIFICACIÓN:</b></Typography>
+                                </Grid>
+                                <Grid item xs={2.5}>
+                                    <Typography variant='h6'>{datos.clasificacionEF}</Typography>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <Typography variant='h6'><b>PESO (K):</b></Typography>
+                                </Grid>
+                                <Grid item xs={1.5}>
+                                    <Typography variant='h6'>{datos.pesoEF}</Typography>
+                                </Grid>
+
+                                <Grid item xs={3}>
+                                    <Typography variant='h6'><b>IMC:</b></Typography>
+                                </Grid>
+                                <Grid item xs={1.5}>
+                                    <Typography variant='h6'>{datos.imcef}</Typography>
+                                </Grid>
+                            </Grid>
                         </Grid>
 
                         <Grid item xs={12}>
                             <Grid container spacing={0.5}>
-                                <Grid item xs={12} sx={{ mb: 2 }}>
-                                    <Typography variant="h5"><b>DATOS BÁSICOS DE LA ATENCIÓN</b></Typography>
+                                <Grid item xs={11}>
+                                    <Typography variant='h6'><b>CONDICIONES REVISADAS</b></Typography>
                                 </Grid>
-
-                                <Pathological key={1} title="CONSECUTIVO:" text={datos.id} />
-                                <Pathological key={2} title="FECHA DEL CONCEPTO:" text={ViewFormat(datos.fechaConceptoNETA)} />
-                                <Pathological key={3} title="DOCUMENTO NRO:" text={datos.documento} />
-                                <Pathological key={4} title="NOMBRE:" text={datos.nameEmpleado} />
-                                <Pathological key={6} title="GENERO:" text={datos.nameGenero} />
-                                <Pathological key={7} title="AREA:" text={datos.nameArea} />
-                                <Pathological key={8} title="EDAD:" text={GetEdad(datos.fechaNacimiento)} />
-                                <Pathological key={9} title="ANTIGUEDAD:" text={GetEdad(datos.fechaContratoEmpleado)} />
-                                <Pathological key={10} title="VIGENCIA DEL CONCEPTO:" text="1 AÑO" />
-                                <Pathological key={11} title="TIPO DE EXAMEN:" text="APTO PARA TRABAJAR EN ALTURAS RIESGO ALTO" />
-                                <Pathological key={12} title="CONCEPTO DE APTITUD:" text={datos.nameConceptoActitudNETA} />
-                                <Pathological key={13} title="CONCEPTO APTITUD APLAZADO:" text={datos.nameConceptoAplazadoNETA} />
-                                <Pathological key={14} title="MOTIVO DE APLAZO:" text={datos.motivoAplazoNETA} />
-
-                                <Grid item xs={12} sx={{ mt: 2 }}>
-                                    <Typography variant="h6"><b>DESCRIPCIÓN DE RESULTADOS (RESUMEN DE LIMITACIONES O RESTRICCIONES)</b></Typography>
+                                <Grid item xs={1}>
+                                    <Typography align="right" variant='h6'><b>SI/NO</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography align="justify" variant="h6">
-                                        {datos.descripcionResultadoNETA}
+                                    <Divider />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Grid container spacing={0}>
+                                        <EmployeeNotification key={1} title="1. MENOR DE EDAD." text={datos.idMenorEdadNEMTA} />
+                                        <EmployeeNotification key={2} title="2. MUJER EMBARAZADA CON CUALQUIER EDAD DE GESTACIÓN." text={datos.idMujerEmbarazadaNEMTA} />
+                                        <EmployeeNotification key={3} title="3. ARRITMIAS CARDIACAS." text={datos.idArimiaNEMTA} />
+                                        <EmployeeNotification key={4} title="4. ENFERMEDADES O MALFORMACIONES CARDIACAS ASINTOMÁTICAS." text={datos.idEnfermedadNEMTA} />
+                                        <EmployeeNotification key={5} title="5. HISTORIA DE HIPOTENSIÓN ORTOSTÁTICA (NO BASTA PRESENTAR EPISODIOS AISLADOS)." text={datos.idHistoriaNEMTA} />
+                                        <EmployeeNotification key={6} title="6. HIPERTENSIÓN ARTERIAL NO CONTROLADA O RESISTENTE AL TRATAMIENTO." text={datos.idHipertensionNEMTA} />
+                                        <EmployeeNotification key={7} title="7. HIPERTRIGLICERIDEMIA AISLADA SEVERA, CON CIFRAS MAYORES A 500 MG/DL." text={datos.idHipertrigliceridemiaNEMTA} />
+                                        <EmployeeNotification key={8} title="8. CIFRAS LDL MAYORES A 190 MG/DL." text={datos.idCifrasNEMTA} />
+                                        <EmployeeNotification key={9} title="9. DIABETES CONTROLADAS." text={datos.idDiabetesNEMTA} />
+                                        <EmployeeNotification key={10} title="10. DISLIPEMIA DE MODERADA A SEVERA ASOCIADA A DIABETES, HTA, OBESIDAD, HIPOTIROIDISMO." text={datos.idDislipidemiaNEMTA} />
+                                        <EmployeeNotification key={11} title="11. DIAGNÓSTICO O SOSPECHA DE DISLIPEMIA DE ORIGEN FAMILIAR (GENÉTICO)." text={datos.idDiagnosticoNEMTA} />
+                                        <EmployeeNotification key={12} title="12. RIESGO CARDIOVASCULAR A 10 AÑOS 20% SEGÚN MÉTODO DE FRAMINGHAM." text={datos.idRiesgoCardiovascular1NEMTA} />
+                                        <EmployeeNotification key={13} title="13. RIESGO CARDIOVASCULAR ENTRE 10 Y 20% SI EXISTEN DOS O MÁS FACTORES MAYORES DE RIESGO." text={datos.idRiesgoCardiovascular2NEMTA} />
+                                        <EmployeeNotification key={14} title="14. HIPERTIROIDISMO NO CONTROLADO O SINTOMÁTICO." text={datos.idHipertiroidismoNEMTA} />
+                                        <EmployeeNotification key={15} title="15. ALTERACIÓN AUDITIVA SEVERA Y BILATERAL QUE COMPROMETA BANDAS CONVERSACIONALES (500 A 2000 HZ)." text={datos.idAlteracionAuditivaNEMTA} />
+                                        <EmployeeNotification key={16} title="16. VÉRTIGO Y OTRAS ALTERACIONES DEL EQUILIBRIO." text={datos.idVertigoAlteracionesNEMTA} />
+                                        <EmployeeNotification key={17} title="17. EPILEPSIA U OTRA ENFERMEDAD NEUROLÓGICA, QUE PUEDA GENERAR ALTERACIONES DE LA CONCIENCIA O EL EQUILIBRIO." text={datos.idEpilegsiaNEMTA} />
+                                        <EmployeeNotification key={18} title="18. CEGUERA TEMPORAL O PERMANENTE O ALTERACIONES VISUALES SIGNIFICATIVAS Y SEVERAS." text={datos.idCegueraTemporalNEMTA} />
+                                        <EmployeeNotification key={19} title="19. HISTORIA DE FOBIAS O EPISODIOS DE PÁNICO RELACIONADOS CON ALTURA." text={datos.idHistoriaFobiasNEMTA} />
+                                        <EmployeeNotification key={20} title="20. TRASTORNOS PSIQUIÁTRICOS, INCLUYENDO ADICCIONES A SUSTANCIAS PSICOACTIVAS." text={datos.idTranstornoPsiquiatricoNEMTA} />
+                                        <EmployeeNotification key={21} title="21. LIMITACIONES PERMANENTES PARA DEAMBULAR POR SUS PROPIOS MEDIOS O LESIONES CON COMPROMISO FUNCIONAL DEL CUELLO, 
+                                ESPALDA O EXTREMIDADES, QUE AFECTEN EL AGARRE REQUERIDO EN ESTAS LABORES." text={datos.idLimitacionesNEMTA} />
+                                        <EmployeeNotification key={22} title="22. OBESIDAD MÓRBIDA (IMC MAYOR A 35) O PESO MAYOR DE 120 KG, POR LIMITACIONES DE SISTEMAS DE ARNESES." text={datos.idObesidadMorbidaNEMTA} />
+                                        <EmployeeNotification key={23} title="23. DE FORMA TEMPORAL, EL USO DE MEDICAMENTOS QUE PRODUZCAN SUEÑO O DEPRIVACIÓN DE SUEÑO MÁS DE UN TURNO." text={datos.idDeformaTemporalNEMTA} />
+                                        <EmployeeNotification key={24} title="24. OTRAS ALTERACIONES CARDIOVASCULARES, PULMONARES, MUSCULARES, HEPÁTICAS, SANGUÍNEAS O RENALES, QUE POR SU SEVERIDAD O
+                                 PROGRESO PUEDAN GENERAR ALTERACIONES DEL EQUILIBRIO O DE LA CONCIENCIA EN CONCEPTO DEL MÉDICO TRATANTE." text={datos.idOtrasAlteracionesNEMTA} />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid item xs={12} sx={{ height: "40px", width: "100%", mt: 1 }}>
+                                    <Typography variant='h6'>
+                                        <b>OBSERVACIONES: </b>
+
+                                        <Typography align="justify" variant='h6'>
+                                            {datos.observacionesNEMTA}
+                                        </Typography>
                                     </Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography variant="h6"><b>RECOMENDACIONES (EN TÉRMINOS SENCILLOS RESUMEN DE CUIDADOS Y CONTROLES REQUERIDOS)</b></Typography>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Typography align="justify" variant="h6">
-                                        {datos.recomendacionesNETA}
-                                    </Typography>
-                                </Grid>
-
-                                <Grid item sx={{ mt: 2 }} xs={12}>
-                                    <Grid container spacing={2}>
+                                    <Grid container spacing={1}>
                                         <Grid item xs={12}>
                                             <Divider />
                                         </Grid>
 
-                                        <Grid item xs={2}>
-                                            <Typography variant="h6"><b>REMITIDO:</b></Typography>
+                                        <Grid item xs={2.5}>
+                                            <Typography variant='h6'><b>CONCEPTO DE APTITUD:</b></Typography>
                                         </Grid>
 
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">{datos.nameRemitidoNETA}</Typography>
+                                        <Grid item xs={5.5}>
+                                            <Typography variant='h6'>{datos.nameConceptoActitudMedicoNEMTA}</Typography>
                                         </Grid>
 
-                                        <Grid item xs={2}>
-                                            <Typography variant="h6"><b>A DONDE:</b></Typography>
+                                        <Grid item xs={2.5}>
+                                            <Typography variant='h6'><b>VIGENCIA DEL CONCEPTO:</b></Typography>
                                         </Grid>
 
-                                        <Grid item xs={4}>
-                                            <Typography variant="h6">{datos.nameRemididoDondeNETA}</Typography>
+                                        <Grid item xs={1.5}>
+                                            <Typography variant='h6'>1 AÑO</Typography>
                                         </Grid>
 
                                         <Grid item xs={12}>
@@ -130,20 +192,19 @@ const ReportConfinedSpaceCompany = ({ datos = [], lsDataUser = [] }) => {
                             </Grid>
                         </Grid>
 
-                        <Grid item sx={{ mt: 7 }} xs={12}>
+                        <Grid item xs={12}>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
-                                    <img src={lsDataUser.firma} height={50} />
+                                    <img src={lsDataUser.firma} height={70} />
 
                                     <Divider sx={{ border: 1, background: 'black', color: 'black', mt: 1 }} />
                                     <Typography variant="h6"><b>{lsDataUser.nombre}.</b></Typography>
                                     <Typography variant="h6"><b>{lsDataUser.tarjetaProfesional}</b></Typography>
-                                    <Typography variant="h6"><b>{lsDataUser.licencia}</b></Typography>
-                                    <Typography variant="h6"><b>{lsDataUser.registroMedico}</b></Typography>
+                                    <Typography variant="h6"><b>{lsDataUser.licencia} - {lsDataUser.registroMedico}</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <img src={ImgWhite} height={50} />
+                                    <img src={ImgWhite} height={70} />
 
 
                                     <Divider sx={{ border: 1, mt: 1, background: 'black', color: 'black' }} />
@@ -156,23 +217,25 @@ const ReportConfinedSpaceCompany = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 2 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 2 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

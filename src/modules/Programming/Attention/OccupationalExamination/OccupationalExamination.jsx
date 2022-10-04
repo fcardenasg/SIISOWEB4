@@ -502,7 +502,7 @@ const OccupationalExamination = () => {
                 datos.idDiabetesNEMTA, datos.idDislipidemiaNEMTA, datos.idDiagnosticoNEMTA, datos.idRiesgoCardiovascular1NEMTA, datos.idRiesgoCardiovascular2NEMTA,
                 datos.idHipertiroidismoNEMTA, datos.idAlteracionAuditivaNEMTA, datos.idVertigoAlteracionesNEMTA, datos.idEpilegsiaNEMTA, datos.idCegueraTemporalNEMTA,
                 datos.idHistoriaFobiasNEMTA, datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA,
-                datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, DefaultValue.SINREGISTRO_GLOBAL,
+                datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, datos.conceptoActitudNETA,
 
                 FormatDate(datos.fechaFRA), tencion, frTencion, 'VACIO', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 FormatDate(datos.fechaLaboratorioFRA), colesterol, hdl, trigliceridos, 'VACIO', glicemia,

@@ -43,6 +43,8 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 
+import { generateReport } from './ReportAtten';
+
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
@@ -223,14 +225,14 @@ const ListAttention = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServer = await GetAllAttention(0, 0);
             setLsAttention(lsServer.data.entities);
@@ -239,7 +241,7 @@ const ListAttention = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -320,13 +322,14 @@ const ListAttention = () => {
                     const result = await DeleteAttention(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
+                        setSelected([]);
+                        getAll();
+                        setIdCheck('');
                     }
-                    setSelected([]);
-                    GetAll();
                 } else
                     setSelected([]);
             });
-        } catch (error) { }
+        } catch (error) { console.log(error) }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -400,11 +403,18 @@ const ListAttention = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/attention/report/${idCheck}`)}>
-                            <IconButton disabled={idCheck === '' ? true : false} size="large">
+                        <Button onClick={generateReport}>
+                            Imprimir
+                        </Button>
+
+                        {/* () => navigate(`/attention/report/${idCheck}`) */}
+                        {/* disabled={idCheck === '' ? true : false} */}
+
+                        {/* <Tooltip components={Button} title="Impresión" onClick={generateReport}>
+                            <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/attention/add")}>

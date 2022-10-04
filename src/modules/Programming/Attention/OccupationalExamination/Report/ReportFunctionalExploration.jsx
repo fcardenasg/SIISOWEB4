@@ -10,10 +10,10 @@ import { FormatDate, ViewFormat } from 'components/helpers/Format';
 const FunctionalExploration = ({ title = '', text = '' }) => {
     return (
         <Fragment>
-            <Grid item xs={5}>
+            <Grid item xs={4}>
                 <Typography variant='h6'><b>{title}</b></Typography>
             </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={2}>
                 <Typography variant='h6'>{text}</Typography>
             </Grid>
         </Fragment>
@@ -23,24 +23,26 @@ const FunctionalExploration = ({ title = '', text = '' }) => {
 const ParaclinicalExaminations = ({ fecha = new Date(), estudio = "", resultado = "", observacion = "" }) => {
     return (
         <Fragment>
-            <Grid item xs={1.5}>
-                <Typography variant="h6">{FormatDate(fecha)}</Typography>
-            </Grid>
-            <Grid item xs={3}>
-                <Typography variant="h6">{estudio}</Typography>
-            </Grid>
-            <Grid item xs={2}>
-                <Typography variant="h6">{resultado}</Typography>
-            </Grid>
-            <Grid item xs={5.5}>
-                <Typography variant="h6">{observacion}</Typography>
-            </Grid>
-        </Fragment>
+            {resultado !== "SIN REGISTRO" ?
+                <Fragment>
+                    <Grid item xs={1.5}>
+                        <Typography variant="h6">{FormatDate(fecha)}</Typography>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Typography variant="h6">{estudio}</Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Typography variant="h6">{resultado}</Typography>
+                    </Grid>
+                    <Grid item xs={5.5}>
+                        <Typography variant="h6">{observacion}</Typography>
+                    </Grid>
+                </Fragment> : null}
+        </Fragment >
     )
 }
 
-const ReportFunctionalExploration = ({ datos = [] }) => {
-    const { user } = useAuth();
+const ReportFunctionalExploration = ({ datos = [], lsDataUser = [] }) => {
 
     return (
         <div>
@@ -71,7 +73,7 @@ const ReportFunctionalExploration = ({ datos = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>EXPLORACIÓN FUNCIONAL</b></Typography>
+                            <Typography variant="h5"><b>7. EXPLORACIÓN FUNCIONAL</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -123,7 +125,7 @@ const ReportFunctionalExploration = ({ datos = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>EXÁMENES PARACLÍNICOS</b></Typography>
+                            <Typography variant="h5"><b>8. EXÁMENES PARACLÍNICOS</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -145,75 +147,80 @@ const ReportFunctionalExploration = ({ datos = [] }) => {
                                     <Typography variant="h6"><b>OBSERVACIÓN:</b></Typography>
                                 </Grid>
 
-                                <ParaclinicalExaminations
-                                    fecha={ViewFormat(datos.fechaRxToraxEPA)}
-                                    estudio="RX TORAX"
-                                    resultado={datos.nameResultadoRxToraxEPA}
-                                    observacion={datos.observacionesRxToraxEPA}
-                                />
+                                <Grid item xs={12} sx={{ height: "250px", width: "100%" }}>
+                                    <Grid container spacing={0.5}>
+                                        <ParaclinicalExaminations
+                                            fecha={ViewFormat(datos.fechaRxToraxEPA)}
+                                            estudio="RX TORAX"
+                                            resultado={datos.nameResultadoRxToraxEPA}
+                                            observacion={datos.observacionesRxToraxEPA}
+                                        />
 
-                                <ParaclinicalExaminations
-                                    fecha={ViewFormat(datos.fechaEspirometriaEPA)}
-                                    estudio="ESPIROMETRIA"
-                                    resultado={datos.nameResultadoEspirometriaEPA}
-                                    observacion={datos.observacionesEspirometriaEPA}
-                                />
+                                        <ParaclinicalExaminations
+                                            fecha={ViewFormat(datos.fechaEspirometriaEPA)}
+                                            estudio="ESPIROMETRIA"
+                                            resultado={datos.nameResultadoEspirometriaEPA}
+                                            observacion={datos.observacionesEspirometriaEPA}
+                                        />
 
-                                <ParaclinicalExaminations
-                                    fecha={ViewFormat(datos.fechaAudiometriaEPA)}
-                                    estudio="AUDIOMETRIA"
-                                    resultado={datos.nameResultadoAudiometriaEPA}
-                                    observacion={datos.observacionesAudiometriaEPA}
-                                />
+                                        <ParaclinicalExaminations
+                                            fecha={ViewFormat(datos.fechaAudiometriaEPA)}
+                                            estudio="AUDIOMETRIA"
+                                            resultado={datos.nameResultadoAudiometriaEPA}
+                                            observacion={datos.observacionesAudiometriaEPA}
+                                        />
 
-                                <ParaclinicalExaminations
-                                    fecha={ViewFormat(datos.fechaVisiometriaEPA)}
-                                    estudio="VISIOMETRIA"
-                                    resultado={datos.nameResultadoVisiometriaEPA}
-                                    observacion={datos.observacionesVisiometriaEPA}
-                                />
+                                        <ParaclinicalExaminations
+                                            fecha={ViewFormat(datos.fechaVisiometriaEPA)}
+                                            estudio="VISIOMETRIA"
+                                            resultado={datos.nameResultadoVisiometriaEPA}
+                                            observacion={datos.observacionesVisiometriaEPA}
+                                        />
 
-                                <ParaclinicalExaminations
-                                    fecha={ViewFormat(datos.fechaLaboratorioClinicoEPA)}
-                                    estudio="LABORATORIO CLINICO"
-                                    resultado={datos.nameResultadoLaboratorioClinicoEPA}
-                                    observacion={datos.observacionesLaboratorioClinicoEPA}
-                                />
+                                        <ParaclinicalExaminations
+                                            fecha={ViewFormat(datos.fechaLaboratorioClinicoEPA)}
+                                            estudio="LABORATORIO CLINICO"
+                                            resultado={datos.nameResultadoLaboratorioClinicoEPA}
+                                            observacion={datos.observacionesLaboratorioClinicoEPA}
+                                        />
 
-                                <ParaclinicalExaminations
-                                    fecha={ViewFormat(datos.fechaCuestionarioSintomaEPA)}
-                                    estudio="CUESTIONARIO DE SINTOMAS"
-                                    resultado={datos.nameResultadoCuestionarioSintomaEPA}
-                                    observacion={datos.observacionesCuestionarioSintomaEPA}
-                                />
+                                        <ParaclinicalExaminations
+                                            fecha={ViewFormat(datos.fechaCuestionarioSintomaEPA)}
+                                            estudio="CUESTIONARIO DE SINTOMAS"
+                                            resultado={datos.nameResultadoCuestionarioSintomaEPA}
+                                            observacion={datos.observacionesCuestionarioSintomaEPA}
+                                        />
 
-                                <ParaclinicalExaminations
-                                    fecha={ViewFormat(datos.fechaEkgEPA)}
-                                    estudio="EKG"
-                                    resultado={datos.nameResultadoEkgEPA}
-                                    observacion={datos.observacionesEkgEPA}
-                                />
+                                        <ParaclinicalExaminations
+                                            fecha={ViewFormat(datos.fechaEkgEPA)}
+                                            estudio="EKG"
+                                            resultado={datos.nameResultadoEkgEPA}
+                                            observacion={datos.observacionesEkgEPA}
+                                        />
 
-                                <ParaclinicalExaminations
-                                    fecha={ViewFormat(datos.fechaRnmLumbosacraEPA)}
-                                    estudio="RNM LUMBOSACRA"
-                                    resultado={datos.nameResultadoRnmLumbosacraEPA}
-                                    observacion={datos.observacionesRnmLumbosacraEPA}
-                                />
+                                        <ParaclinicalExaminations
+                                            fecha={ViewFormat(datos.fechaRnmLumbosacraEPA)}
+                                            estudio="RNM LUMBOSACRA"
+                                            resultado={datos.nameResultadoRnmLumbosacraEPA}
+                                            observacion={datos.observacionesRnmLumbosacraEPA}
+                                        />
 
-                                <ParaclinicalExaminations
-                                    fecha={ViewFormat(datos.fechaRnmCervicalEPA)}
-                                    estudio="RNM CERVICAL"
-                                    resultado={datos.nameResultadoRnmCervicalEPA}
-                                    observacion={datos.observacionesRnmCervicalEPA}
-                                />
+                                        <ParaclinicalExaminations
+                                            fecha={ViewFormat(datos.fechaRnmCervicalEPA)}
+                                            estudio="RNM CERVICAL"
+                                            resultado={datos.nameResultadoRnmCervicalEPA}
+                                            observacion={datos.observacionesRnmCervicalEPA}
+                                        />
+                                    </Grid>
+                                </Grid>
+
 
                                 <Grid item xs={12} sx={{ mt: 2 }}>
                                     <Typography variant="h5"><b>OBSERVACIONES:</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography align="justify" variant="h6">
+                                    <Typography align="justify" variant="h6" sx={{ height: "80px", width: "100%" }}>
                                         {datos.observacionEPA}
                                     </Typography>
                                 </Grid>
@@ -225,23 +232,25 @@ const ReportFunctionalExploration = ({ datos = [] }) => {
 
             </Grid>
 
-            <Grid sx={{ pt: 31 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 3 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

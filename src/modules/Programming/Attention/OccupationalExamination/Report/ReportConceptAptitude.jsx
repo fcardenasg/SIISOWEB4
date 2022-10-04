@@ -11,19 +11,7 @@ import { ViewFormat } from 'components/helpers/Format';
 
 import "./report.module.css"
 
-const PiePagina = styled('div')(({ theme }) => ({
-    /* position: 'fixed',
-    bottom: 0,
-    width: '100%', */
-
-    /* padding: '20px 0',
-    background: '#fafafa',
-    color: '#fff',
-    textAlign: 'center' */
-}));
-
 const ReportConceptAptitude = ({ datos = [], lsDataUser = [] }) => {
-    const { user } = useAuth();
 
     return (
         <div>

@@ -37,13 +37,14 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import Cargando from 'components/loading/Cargando';
+import ReportPsychological from './Report/ReportPsychological';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
-const UpdateCounseling = () => {
+const UpdatePsychological = () => {
     const { user } = useAuth();
     const { id } = useParams();
     const theme = useTheme();
@@ -67,6 +68,8 @@ const UpdateCounseling = () => {
     const [estadoAsesoria, setEstadoAsesoria] = useState([]);
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
     const [causaAsesoria, setCausaAsesoria] = useState([]);
+
+    const [resultData, setResultData] = useState([]);
 
     const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
@@ -122,7 +125,7 @@ const UpdateCounseling = () => {
             }));
             setTipoAsesoria(resultTipoAsesoria);
 
-            const lsServerEstadoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoAsesoria);
+            const lsServerEstadoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_CASO);
             var resultEstadoAsesoria = lsServerEstadoAsesoria.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -169,6 +172,7 @@ const UpdateCounseling = () => {
                 const result = await InsertAdvice(DataToInsert);
                 if (result.status === 200) {
                     setOpenUpdate(true);
+                    setResultData(result.data);
                 }
             }
         } catch (error) {
@@ -210,7 +214,7 @@ const UpdateCounseling = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ViewReport />
+                <ReportPsychological id={resultData.id} />
             </ControlModal>
 
             {timeWait ?
@@ -428,4 +432,4 @@ const UpdateCounseling = () => {
     );
 };
 
-export default UpdateCounseling;
+export default UpdatePsychological;

@@ -5,7 +5,7 @@ import useAuth from 'hooks/useAuth';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 
 const QuestionnaireTos = ({ title = '', text = '' }) => {
     return (
@@ -127,7 +127,7 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                                             <Typography fontSize={10}><b>- ESPECIFIQUE EMPLEO O INDUSTRIA</b></Typography>
                                         </Grid>
                                         <Grid item xs={9}>
-                                            <Typography align='right' variant="h6">{datos.historiaOcupB1SintR}</Typography>
+                                            <Typography align='right' fontSize={9}>{datos.historiaOcupB1SintR}</Typography>
                                         </Grid>
 
                                         <QuestionnaireTos key={4} title="- TOTAL AÑOS TRABAJADOS:" text={datos.historiaOcupB2SintR} />
@@ -138,7 +138,7 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                                             <Typography fontSize={10}>- EMPLEO Y OCUPACIÓN</Typography>
                                         </Grid>
                                         <Grid item xs={8}>
-                                            <Typography align='right' variant='h6'>{datos.historiaOcupD1SintR}</Typography>
+                                            <Typography align='right' fontSize={9}>{datos.historiaOcupD1SintR}</Typography>
                                         </Grid>
                                         <Grid item xs={4}>
                                             <Typography fontSize={10}>- NEGOCIO, CAMPO O INDUSTRIA</Typography>
@@ -178,23 +178,25 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 1 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 1 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

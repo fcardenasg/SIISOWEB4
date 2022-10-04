@@ -55,7 +55,7 @@ const DetailIcons = [
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const validateLastData = (data = undefined, tipoCampo = "bool") => {
+const validateLastData = (data, tipoCampo = "bool") => {
     if (tipoCampo === "bool") {
         if (data == undefined)
             return false;
@@ -127,13 +127,6 @@ const Emo = ({
 
     async function getAll() {
         try {
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
-
             const lsServerRiesClasifi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RIESGO_CLASIFICACION);
             var resultRiesClasifi = lsServerRiesClasifi.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -224,8 +217,19 @@ const Emo = ({
                 label: item.nombre
             }));
             setLsTipoFobia(resultTipoFobia);
+
+            const lsServerCie11 = await GetAllCIE11(0, 0);
+            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                value: item.id,
+                label: item.dx
+            }));
+            setLsCie11(resultCie11);
         } catch (error) { }
     }
+
+    useEffect(() => {
+        getAll();
+    }, [documento]);
 
     async function getAllConceptos() {
         try {
@@ -256,9 +260,7 @@ const Emo = ({
         getAllConceptos();
     }, [atencion]);
 
-    useEffect(() => {
-        getAll();
-    }, [documento]);
+
 
     return (
         <Fragment>
@@ -1871,7 +1873,6 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                type="number"
                                                 name="tASentadoEF"
                                                 label="TA Sentado"
                                                 size={matchesXS ? 'small' : 'medium'}
@@ -1884,7 +1885,6 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                type="number"
                                                 name="tAAcostadoEF"
                                                 label="TA Acostado"
                                                 size={matchesXS ? 'small' : 'medium'}
@@ -3501,12 +3501,12 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4} >
+                                <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue=""
                                             name="conceptoActitudNETA"
                                             label="Concepto Aptitud"
-                                            defaultValue={() => validateLastData(lsLastRecord.conceptoActitudNETA, "number")}
                                             options={lsNeConceptoActi}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -4031,12 +4031,13 @@ const Emo = ({
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} >
+                                <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             disabled
+                                            defaultValue=""
                                             name="conceptoActitudNETA"
-                                            label="Concepto de Aptitud Medica"
+                                            label="Concepto Aptitud Médica"
                                             options={lsNeConceptoActi}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}

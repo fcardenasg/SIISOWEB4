@@ -5,15 +5,15 @@ import useAuth from 'hooks/useAuth';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 
 const Vaccines = ({ title = '', text = '' }) => {
     return (
         <Fragment>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
                 <Typography variant="h6"><b>{title}</b></Typography>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
                 <Typography variant="h6">{text}</Typography>
             </Grid>
         </Fragment>
@@ -35,10 +35,10 @@ const Pathological = ({ title = '', text = '' }) => {
 
 const Antecedentes = ({ paraclinico = '', observacion = '' }) => (
     <>
-        <Grid item xs={2}>
-            <Typography variant="h6">{paraclinico}</Typography>
+        <Grid item xs={1}>
+            <Typography variant="h6"><b>{paraclinico}:</b></Typography>
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={5}>
             <Typography variant="h6">{observacion}</Typography>
         </Grid>
     </>
@@ -84,8 +84,8 @@ const ReportPersonalHistory = ({ datos = [], lsDataUser = [] }) => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Grid container direction="row" spacing={1}>
-                                <Grid item xs={12} sx={{ mb: 2 }}>
+                            <Grid container direction="row" spacing={0.5}>
+                                <Grid item xs={12}>
                                     <Typography variant="h5"><b>4.1 PATOLÓGICOS</b></Typography>
                                 </Grid>
 
@@ -139,34 +139,6 @@ const ReportPersonalHistory = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-                    </Grid>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>4.2 ANTECEDENTES FAMILIARES</b></Typography>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <Typography variant="h6"><b>PARENTESCO</b></Typography>
-                        </Grid>
-
-                        <Grid item xs={10}>
-                            <Typography variant="h6"><b>OBSERVACIÓN</b></Typography>
-                        </Grid>
-
-                        {datos.nameParentesco1ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco1ANFA} observacion={datos.parentesco1ObserANFA} /> : null}
-                        {datos.nameParentesco2ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco2ANFA} observacion={datos.parentesco2ObserANFA} /> : null}
-                        {datos.nameParentesco3ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco3ANFA} observacion={datos.parentesco3ObserANFA} /> : null}
-                        {datos.nameParentesco4ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco4ANFA} observacion={datos.parentesco4ObserANFA} /> : null}
 
                         <Grid item xs={12}>
                             <Divider />
@@ -177,33 +149,21 @@ const ReportPersonalHistory = ({ datos = [], lsDataUser = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>ENFERMEDAD PROFESIONAL/ACCIDENTE DE TRABAJO</b></Typography>
+                            <Typography variant="h5"><b>4.2 ANTECEDENTES FAMILIARES</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
                             <Divider />
                         </Grid>
 
-                        <Grid item xs={2}>
-                            <Typography variant="h6"><b>FECHA</b></Typography>
-                        </Grid>
+                        <Grid item xs={12}>
+                            <Grid container spacing={0.5} sx={{ height: "40px", width: "100%" }}>
+                                {datos.nameParentesco1ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco1ANFA} observacion={datos.parentesco1ObserANFA} /> : null}
+                                {datos.nameParentesco2ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco2ANFA} observacion={datos.parentesco2ObserANFA} /> : null}
+                                {datos.nameParentesco3ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco3ANFA} observacion={datos.parentesco3ObserANFA} /> : null}
+                                {datos.nameParentesco4ANFA !== "SIN REGISTRO" ? <Antecedentes paraclinico={datos.nameParentesco4ANFA} observacion={datos.parentesco4ObserANFA} /> : null}
 
-                        <Grid item xs={10}>
-                            <Typography variant="h6"><b>OBSERVACIÓN</b></Typography>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <Typography variant="h6">{datos.anioAT}</Typography>
-                        </Grid>
-                        <Grid item xs={10}>
-                            <Typography variant="h6">{datos.especifiqueAT}</Typography>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <Typography variant="h6">{datos.anio1AT}</Typography>
-                        </Grid>
-                        <Grid item xs={10}>
-                            <Typography variant="h6">{datos.especifique1AT}</Typography>
+                            </Grid>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -215,74 +175,101 @@ const ReportPersonalHistory = ({ datos = [], lsDataUser = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>INMUNIZACIONES</b></Typography>
+                            <Typography variant="h5"><b>4.3 ACCIDENTE DE TRABAJO/ENFERMEDAD LABORAL</b></Typography>
+                        </Grid>
+
+                        {datos.anioAT !== "" || datos.especifiqueAT !== "" ? <>
+                            <Grid item xs={2}>
+                                <Typography variant="h6"><b>FECHA:</b> {datos.anioAT}</Typography>
+                            </Grid>
+                            <Grid item xs={10}>
+                                <Typography variant="h6">
+                                    <b>OBSERVACIÓN:</b> {datos.especifiqueAT}
+                                </Typography>
+                            </Grid></> : <Grid item xs={10}>
+                            <Typography variant="h5"><b>NO REFIERE</b></Typography>
+                        </Grid>}
+
+                        <Grid item xs={12}>
+                            <Typography variant="h5"><b>ENFERMEDAD LABORAL</b></Typography>
+                        </Grid>
+
+                        {datos.anio1AT !== "" || datos.especifique1AT !== "" ? <>
+                            <Grid item xs={2}>
+                                <Typography variant="h6"><b>FECHA:</b> {datos.anio1AT}</Typography>
+                            </Grid>
+                            <Grid item xs={10}>
+                                <Typography variant="h6"><b>OBSERVACIÓN:</b> {datos.especifique1AT}</Typography>
+                            </Grid>
+                        </> : <Grid item xs={10}>
+                            <Typography variant="h5"><b>NO REFIERE</b></Typography>
+                        </Grid>}
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <Grid item xs={12} sx={{ height: "165px", width: "100%" }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Typography variant="h5"><b>4.5 INMUNIZACIONES</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
                             <Divider />
                         </Grid>
-                        {datos.tetanoIM && datos.otrasIM && datos.influenzaIM && datos.fiebreAmarillaIM && datos.rubeolaSarampionIM && datos.covid19IM ?
-                            <Fragment>
-                                <Grid item xs={3}>
-                                    <Typography variant="h6"><b>VACUNAS</b></Typography>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Typography variant="h6"><b>AÑO</b></Typography>
-                                </Grid>
 
-                                <Grid item xs={3}>
-                                    <Typography variant="h6"><b>VACUNAS</b></Typography>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Typography variant="h6"><b>AÑO</b></Typography>
-                                </Grid>
-                            </Fragment> : ''
-                        }
+                        <Grid item xs={12}>
+                            <Grid container spacing={0.5}>
+                                {datos.tetanoIM ? <Vaccines key={1} title="TETANO" text={datos.anioVacuna1IM} /> : ''}
+                                {datos.influenzaIM ? <Vaccines key={2} title="INFLUENZA" text={datos.anioVacuna2IM} /> : ''}
+                                {datos.fiebreAmarillaIM ? <Vaccines key={3} title="FIEBRE AMARILLA" text={datos.anioVacuna3IM} /> : ''}
+                                {datos.rubeolaSarampionIM ? <Vaccines key={4} title="RUBEOLA/SARAMPIÓN" text={datos.anioVacuna4IM} /> : ''}
+                                {datos.covid19IM ? <Vaccines key={5} title="COVID-19" text={datos.anioVacuna5IM} /> : ''}
+                                {datos.covid19IM ? <Vaccines key={5} title="REFUERZOS:" text={datos.nameRefuerzoIM} /> : ''}
 
-                        {datos.tetanoIM ? <Vaccines key={1} title="TETANO" text={datos.anioVacuna1IM} /> : ''}
-                        {datos.influenzaIM ? <Vaccines key={2} title="INFLUENZA" text={datos.anioVacuna2IM} /> : ''}
-                        {datos.fiebreAmarillaIM ? <Vaccines key={3} title="FIEBRE AMARILLA" text={datos.anioVacuna3IM} /> : ''}
-                        {datos.rubeolaSarampionIM ? <Vaccines key={4} title="RUBEOLA/SARAMPIÓN" text={datos.anioVacuna4IM} /> : ''}
-                        {datos.covid19IM ? <Vaccines key={5} title="COVID-19" text={datos.anioVacuna5IM} /> : ''}
-                        {datos.covid19IM ? <Vaccines key={5} title="REFUERZOS:" text={datos.nameRefuerzoIM} /> : ''}
+                                {datos.otrasIM ?
+                                    <Fragment>
+                                        <Grid item xs={3}>
+                                            <Typography variant="h6"><b>OTRAS</b></Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography variant="h6">{datos.anioVacuna6IM}</Typography>
+                                        </Grid>
+                                    </Fragment> : ''
+                                }
 
-                        {datos.otrasIM ?
-                            <Fragment>
-                                <Grid item xs={3}>
-                                    <Typography variant="h6"><b>OTRAS</b></Typography>
-                                </Grid>
-                                <Grid item xs={9}>
-                                    <Typography variant="h6">{datos.anioVacuna6IM}</Typography>
-                                </Grid>
-                            </Fragment> : ''
-                        }
-
-                        {!datos.tetanoIM && !datos.otrasIM && !datos.influenzaIM && !datos.fiebreAmarillaIM && !datos.rubeolaSarampionIM && !datos.covid19IM ?
-                            <Grid item xs={12}>
-                                <Typography variant="h3">NO REFIERE</Typography>
-                            </Grid> : ''
-                        }
+                                {!datos.tetanoIM && !datos.otrasIM && !datos.influenzaIM && !datos.fiebreAmarillaIM && !datos.rubeolaSarampionIM && !datos.covid19IM ?
+                                    <Grid item xs={12}>
+                                        <Typography variant="h3">NO REFIERE</Typography>
+                                    </Grid> : ''
+                                }
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 13 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 3 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

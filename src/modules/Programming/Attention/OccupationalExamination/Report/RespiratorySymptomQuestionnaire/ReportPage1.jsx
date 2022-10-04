@@ -33,7 +33,7 @@ const DataInfo = ({ title = '', text = '' }) => {
     )
 }
 
-const ReportPage1 = ({ datos = [] }) => {
+const ReportPage1 = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
 
     return (
@@ -196,7 +196,7 @@ const ReportPage1 = ({ datos = [] }) => {
                                         <QuestionnaireTos key={2} title="1. CUANDO TIENE GRIPA" text={datos.sibilanciasA1SintR} />
                                         <QuestionnaireTos key={3} title="2. OCASIONALMENTE APARTE DE LAS GRIPAS" text={datos.sibilanciasA2SintR} />
                                         <QuestionnaireTos key={4} title="3. LA MAYORÍA DE DÍAS Y NOCHES" text={datos.sibilanciasA3SintR} />
-                                        <QuestionnaireTos key={5} title="B. POR CUANTOS AÑOS HA PRESENTADO ESTA SITUACIÓN?" text={datos.sibilanciasBSintR} />
+                                        <QuestionnaireTos key={5} title="B. ¿POR CUANTOS AÑOS HA PRESENTADO ESTA SITUACIÓN?" text={datos.sibilanciasBSintR} />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -205,23 +205,25 @@ const ReportPage1 = ({ datos = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 9 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 2 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

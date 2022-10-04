@@ -35,6 +35,8 @@
         "framer-motion": "^4.1.13",
         "history": "^5.0.0",
         "jsonwebtoken": "^8.5.1",
+        "jspdf": "^2.5.1",
+        "jspdf-invoice-template": "^1.4.3",
         "jss": "^10.7.1",
         "jss-rtl": "^0.3.0",
         "jwt-decode": "^3.1.2",

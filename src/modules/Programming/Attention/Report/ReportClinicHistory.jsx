@@ -30,7 +30,7 @@ const DataAssistance = ({ title, text, xsTitle = 1.5, xsText = 2.5 }) => {
     );
 }
 
-const ReportAssistance = ({ id }) => {
+const ReportClinicHistory = ({ id }) => {
     const { user } = useAuth();
     const componentRef = useRef(null);
 
@@ -408,4 +408,4 @@ const ReportAssistance = ({ id }) => {
     );
 };
 
-export default ReportAssistance;
+export default ReportClinicHistory;

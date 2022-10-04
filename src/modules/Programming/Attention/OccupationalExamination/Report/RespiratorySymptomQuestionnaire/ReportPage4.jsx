@@ -5,7 +5,7 @@ import useAuth from 'hooks/useAuth';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import ImgWhite from 'assets/img/ImgWhite.png';
 
 const QuestionnaireTos = ({ title = '', text = '' }) => {
@@ -101,7 +101,7 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography variant='h6'>{datos.recoSintR}</Typography>
+                                    <Typography variant='h6' sx={{ height: "360px", width: "100%" }}>{datos.recoSintR}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -109,7 +109,7 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                         <Grid sx={{ mt: 5 }} item xs={12}>
                             <Grid container spacing={1}>
                                 <Grid item xs={6}>
-                                    <img src={lsDataUser.firma} height={50} />
+                                    <img src={lsDataUser.firma} height={100} />
 
                                     <Divider sx={{ border: 1, background: 'black', color: 'black', mt: 1 }} />
                                     <Typography variant="h6"><b>{lsDataUser.nombre}.</b></Typography>
@@ -119,7 +119,7 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <img src={ImgWhite} height={50} />
+                                    <img src={ImgWhite} height={100} />
 
                                     <Divider sx={{ border: 1, mt: 1, background: 'black', color: 'black' }} />
                                     <Typography variant="h6"><b>{datos.nameEmpleado}</b></Typography>
@@ -131,23 +131,25 @@ const ReportPage3 = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 2 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 2 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

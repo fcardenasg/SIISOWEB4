@@ -5,7 +5,7 @@ import useAuth from 'hooks/useAuth';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 
 const QuestionnaireTos = ({ title = '', text = '' }) => {
     return (
@@ -52,27 +52,21 @@ const ReportPage2 = ({ datos = [], lsDataUser = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Grid item xs={12}>
-                                <Grid container spacing={1}>
-                                    <Grid item xs={12}>
-                                        <Divider />
-                                    </Grid>
+                            <Grid container spacing={1}>
+                                <Grid item xs={12}>
+                                    <Typography variant='h6'><b>5. ATAQUES DE SILBIDOS</b></Typography>
+                                </Grid>
 
-                                    <Grid item xs={12}>
-                                        <Typography variant='h6'><b>5. ATAQUES DE SILBIDOS</b></Typography>
-                                    </Grid>
+                                <Grid item xs={12}>
+                                    <Divider />
+                                </Grid>
 
-                                    <Grid item xs={12}>
-                                        <Divider />
-                                    </Grid>
-
-                                    <Grid item xs={12}>
-                                        <Grid container spacing={1}>
-                                            <QuestionnaireTos key={1} title="A. HA TENIDO EPISODIOS DE TOS Y FLEMA (O AUMENTO, SI USUALMENTE LOS PRESENTA) QUE DUREN 3 O MÁS DE UN AÑO?" text={datos.ataquesSilbiASintR} />
-                                            <QuestionnaireTos key={2} title="B. ¿QUÉ EDAD TENÍA CUANDO LE DIO EL PRIMER ATAQUE?" text={datos.ataquesSilbiBSintR} />
-                                            <QuestionnaireTos key={3} title="C. HA TENIDO DOS O MÁS EPISODIOS" text={datos.ataquesSilbiCSintR} />
-                                            <QuestionnaireTos key={4} title="D. ¿HA NECESITADO DROGAS O TRATAMIENTOS PARA ESTOS ATAQUES?" text={datos.ataquesSilbiDSintR} />
-                                        </Grid>
+                                <Grid item xs={12}>
+                                    <Grid container spacing={1}>
+                                        <QuestionnaireTos key={1} title="A. HA TENIDO EPISODIOS DE TOS Y FLEMA (O AUMENTO, SI USUALMENTE LOS PRESENTA) QUE DUREN 3 O MÁS DE UN AÑO?" text={datos.ataquesSilbiASintR} />
+                                        <QuestionnaireTos key={2} title="B. ¿QUÉ EDAD TENÍA CUANDO LE DIO EL PRIMER ATAQUE?" text={datos.ataquesSilbiBSintR} />
+                                        <QuestionnaireTos key={3} title="C. HA TENIDO DOS O MÁS EPISODIOS" text={datos.ataquesSilbiCSintR} />
+                                        <QuestionnaireTos key={4} title="D. ¿HA NECESITADO DROGAS O TRATAMIENTOS PARA ESTOS ATAQUES?" text={datos.ataquesSilbiDSintR} />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -146,7 +140,7 @@ const ReportPage2 = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Grid container spacing={1}>
+                                    <Grid container spacing={0.5}>
                                         <QuestionnaireTos key={1} title="A. ¿SI SE RESFRÍA SE LE AFECTA EL PECHO?" text={datos.enferToraxASintR} />
                                         <QuestionnaireTos key={2} title="B. ¿EN LOS ÚLTIMOS 3 AÑOS HA PRESENTADO ENFERMEDAD QUE LO ALEJE DE SU TRABAJO, LO MANTENGA EN CASA O EN CAMA?" text={datos.enferToraxBSintR} />
                                         <QuestionnaireTos key={3} title="C. ¿EXPECTORÓ CON ALGUNA DE ESTAS ENFERMEDADES?" text={datos.enferToraxCSintR} />
@@ -181,8 +175,6 @@ const ReportPage2 = ({ datos = [], lsDataUser = [] }) => {
                                         <QuestionnaireTos key={5} title="3. ¿BRONQUITIS CRÓNICA?" text={datos.antecedentesB3SintR} />
                                         <QuestionnaireTos key={5} title="- ¿A QUÉ EDAD PRESENTÓ EL PRIMER ATAQUE?" text={datos.antecedentesB3ASintR} />
                                         <QuestionnaireTos key={5} title="- ¿AUN PRESENTA ESTA ENFERMEDAD?" text={datos.antecedentesB3BSintR} />
-
-
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -191,23 +183,25 @@ const ReportPage2 = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 4 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 1 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

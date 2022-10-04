@@ -42,7 +42,7 @@ import { GetByIdDataReport } from 'api/clients/OccupationalExaminationClient';
 
 import "./report.module.css"
 
-const ReportOccupationalExamination = ({ id = 3, setOpenReport }) => {
+const ReportOccupationalExamination = ({ id, setOpenReport }) => {
     const { user } = useAuth();
     const componentRef = useRef(null);
 
@@ -66,13 +66,6 @@ const ReportOccupationalExamination = ({ id = 3, setOpenReport }) => {
         {
             component: <ReportPersonalHistory datos={lsDataReport} lsDataUser={lsDataUser} />,
         },
-
-        /* FALTA DEPURAR HASTA ABAJO */
-
-        {
-            component: <ReportFramingham datos={lsDataReport} lsDataUser={lsDataUser} />,
-        },
-
         {
             component: <ReportHabits datos={lsDataReport} lsDataUser={lsDataUser} />,
         },
@@ -85,6 +78,7 @@ const ReportOccupationalExamination = ({ id = 3, setOpenReport }) => {
         {
             component: <ReportDefinitiveDiagnosis datos={lsDataReport} lsDataUser={lsDataUser} />,
         },
+
         {
             component: <ReportPage1 datos={lsDataReport} lsDataUser={lsDataUser} />,
         },
@@ -97,12 +91,18 @@ const ReportOccupationalExamination = ({ id = 3, setOpenReport }) => {
         {
             component: <ReportPage4 datos={lsDataReport} lsDataUser={lsDataUser} />,
         },
+
         {
             component: <ReportWorkHeight datos={lsDataReport} lsDataUser={lsDataUser} />,
         },
         {
             component: <ReportEmployeeNotification datos={lsDataReport} lsDataUser={lsDataUser} />,
         },
+
+        {
+            component: <ReportFramingham datos={lsDataReport} lsDataUser={lsDataUser} />,
+        },
+
         {
             component: <ReportConfinedSpaceWorker datos={lsDataReport} lsDataUser={lsDataUser} />,
         },

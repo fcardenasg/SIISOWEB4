@@ -5,25 +5,12 @@ import useAuth from 'hooks/useAuth';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 
 const SystemsReview = ({ title = '', text = '' }) => {
     return (
         <Fragment>
             <Grid item xs={5}>
-                <Typography variant='h6'><b>{title}</b></Typography>
-            </Grid>
-            <Grid item xs={1}>
-                <Typography variant='h6'>{text}</Typography>
-            </Grid>
-        </Fragment>
-    )
-}
-
-const Morphological = ({ title = '', text = '' }) => {
-    return (
-        <Fragment>
-            <Grid item xs={3}>
                 <Typography fontSize={11}><b>{title}</b></Typography>
             </Grid>
             <Grid item xs={1}>
@@ -33,8 +20,21 @@ const Morphological = ({ title = '', text = '' }) => {
     )
 }
 
-const ReportSystemsReview = ({ datos = [] }) => {
-    const { user } = useAuth();
+const Morphological = ({ title = '', text = '', xsTitle = 2.7, xsText = 1.3 }) => {
+    return (
+        <Fragment>
+            <Grid item xs={xsTitle}>
+                <Typography fontSize={11}><b>{title}</b></Typography>
+            </Grid>
+
+            <Grid item xs={xsText}>
+                <Typography align="right" fontSize={10}>{text}</Typography>
+            </Grid>
+        </Fragment>
+    )
+}
+
+const ReportSystemsReview = ({ datos = [], lsDataUser = [] }) => {
 
     return (
         <div>
@@ -48,7 +48,7 @@ const ReportSystemsReview = ({ datos = [] }) => {
                         <Grid item xs={4}>
                             <Typography variant="h5" align="center"><b>DIVISION MÉDICA</b></Typography>
                             <Typography variant="h5" align="center"><b>HISTORIA CLINICA OCUPACIONAL</b></Typography>
-                            <Typography variant="h5" align="center"><b>C{datos.nameAtencion}</b></Typography>
+                            <Typography variant="h5" align="center"><b>{datos.nameAtencion}</b></Typography>
                         </Grid>
 
                         <Grid item xs={4}>
@@ -65,7 +65,7 @@ const ReportSystemsReview = ({ datos = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>REVISIÓN POR SISTEMAS - PATOLOGÍAS</b></Typography>
+                            <Typography variant="h5"><b>5. REVISIÓN POR SISTEMAS - PATOLOGÍAS</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -109,7 +109,7 @@ const ReportSystemsReview = ({ datos = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>EXAMEN FÍSICO</b></Typography>
+                            <Typography variant="h5"><b>6 EXAMEN FÍSICO</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -117,10 +117,10 @@ const ReportSystemsReview = ({ datos = [] }) => {
                         </Grid>
 
                         <Grid item xs={6}>
-                            <Typography align="center" variant="h5"><b>SIGNOS VITALES</b></Typography>
+                            <Typography align="center" variant="h5"><b>6.1 SIGNOS VITALES</b></Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Typography align="center" variant="h5"><b>ANTROPOMETRÍA</b></Typography>
+                            <Typography align="center" variant="h5"><b>6.2 ANTROPOMETRÍA</b></Typography>
                         </Grid>
 
                         <Grid item xs>
@@ -186,18 +186,18 @@ const ReportSystemsReview = ({ datos = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={2.1}>
-                                    <Typography align='center' variant="h6">{datos.pesoEF}</Typography>
+                                    <Typography variant="h6">{datos.pesoEF}</Typography>
                                 </Grid>
                                 <Grid item xs={2.1}>
-                                    <Typography align='center' variant="h6">{datos.tallaEF}</Typography>
+                                    <Typography variant="h6">{datos.tallaEF}</Typography>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <Typography align='center' variant="h6">{datos.imcef}</Typography>
+                                    <Typography variant="h6">{datos.imcef}</Typography>
                                 </Grid>
-                                <Grid item xs={3.8}>
+                                <Grid item xs={3.7}>
                                     <Typography variant="h6">{datos.clasificacionEF}</Typography>
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={2.1}>
                                     <Typography variant="h6">{datos.nameBiotipoEF}</Typography>
                                 </Grid>
                             </Grid>
@@ -212,7 +212,7 @@ const ReportSystemsReview = ({ datos = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>EXPLORACIÓN MORFOLÓGICA - ASPECTOS</b></Typography>
+                            <Typography align="center" variant="h5"><b>6.3 EXPLORACIÓN MORFOLÓGICA - ASPECTOS</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -246,7 +246,7 @@ const ReportSystemsReview = ({ datos = [] }) => {
                                 <Morphological key={23} title="23. CUELLO - TIROIDES" text={datos.cuellosEF} />
                                 <Morphological key={24} title="24. INS. DE TORAXMAMAS" text={datos.inspeccionToraxEF} />
                                 <Morphological key={25} title="25. AUSCULTACIÓN CARDIACA" text={datos.auscultacionCardiacaEF} />
-                                <Morphological key={26} title="26. AUSCULTACIÓN RESPIRATORIA" text={datos.auscultacionRespiratoriaEF} />
+                                <Morphological key={26} title="26. AUSCULTACIÓN RESPIRATORIA" text={datos.auscultacionRespiratoriaEF} xsTitle={3} xsText={1} />
                                 <Morphological key={27} title="27. INSPECCIÓN ABDOMEN" text={datos.inspeccionAbdomenEF} />
                                 <Morphological key={28} title="28. PALPACIÓN ABDOMEN" text={datos.palpacionAbdomenEF} />
                                 <Morphological key={29} title="29. EXPLORACIÓN DE HÍGADO" text={datos.exploracionHigadoEF} />
@@ -269,7 +269,7 @@ const ReportSystemsReview = ({ datos = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography align="justify" variant="h6">
+                                    <Typography align="justify" variant="h6" sx={{ height: "55px", width: "100%" }}>
                                         {datos.especifiqueEMEFU}
                                     </Typography>
                                 </Grid>
@@ -277,27 +277,27 @@ const ReportSystemsReview = ({ datos = [] }) => {
                         </Grid>
                     </Grid>
                 </Grid>
-
-
             </Grid>
 
-            <Grid sx={{ pt: 13 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 3 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

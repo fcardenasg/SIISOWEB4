@@ -20,7 +20,7 @@ import { PutAttention } from 'formatdata/AttentionForm';
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
-import ReportAssistance from './Report/ReportAssistance';
+import ReportClinicHistory from './Report/ReportClinicHistory';
 import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 
@@ -90,7 +90,7 @@ const dataMedicalOrders = [
     },
 ]
 
-const UpdateAssistance = () => {
+const UpdateClinicHistory = () => {
     const { user } = useAuth();
     const { id } = useParams();
     const navigate = useNavigate();
@@ -278,7 +278,7 @@ const UpdateAssistance = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ReportAssistance id={resultData.id} />
+                <ReportClinicHistory id={resultData.id} />
             </ControlModal>
 
             <ControlModal
@@ -684,4 +684,4 @@ const UpdateAssistance = () => {
     );
 };
 
-export default UpdateAssistance;
+export default UpdateClinicHistory;

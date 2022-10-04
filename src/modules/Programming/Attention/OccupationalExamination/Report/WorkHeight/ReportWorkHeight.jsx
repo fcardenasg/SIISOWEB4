@@ -52,7 +52,7 @@ const ReportWorkHeight = ({ datos = [], lsDataUser = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>NOTIFICACIÓN A LA EMPRESA</b></Typography>
+                            <Typography variant="h5"><b>NOTIFICACIÓN A LA EMPRESA</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -84,7 +84,7 @@ const ReportWorkHeight = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography align="justify" variant="h6">
+                                    <Typography align="justify" variant="h6" sx={{ height: "60px", width: "100%" }}>
                                         {datos.descripcionResultadoNETA}
                                     </Typography>
                                 </Grid>
@@ -94,7 +94,7 @@ const ReportWorkHeight = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography align="justify" variant="h6">
+                                    <Typography align="justify" variant="h6" sx={{ height: "60px", width: "100%" }}>
                                         {datos.recomendacionesNETA}
                                     </Typography>
                                 </Grid>
@@ -129,10 +129,10 @@ const ReportWorkHeight = ({ datos = [], lsDataUser = [] }) => {
                             </Grid>
                         </Grid>
 
-                        <Grid item sx={{ mt: 7 }} xs={12}>
+                        <Grid item sx={{ mt: 2 }} xs={12}>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
-                                    <img src={lsDataUser.firma} height={50} />
+                                    <img src={lsDataUser.firma} height={80} />
 
                                     <Divider sx={{ border: 1, background: 'black', color: 'black', mt: 1 }} />
                                     <Typography variant="h6"><b>{lsDataUser.nombre}.</b></Typography>
@@ -142,8 +142,7 @@ const ReportWorkHeight = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <img src={ImgWhite} height={50} />
-
+                                    <img src={ImgWhite} height={80} />
 
                                     <Divider sx={{ border: 1, mt: 1, background: 'black', color: 'black' }} />
                                     <Typography variant="h6"><b>Ibarra Lopez,Melquis Leonardo</b></Typography>
@@ -155,23 +154,25 @@ const ReportWorkHeight = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 2 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 3 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

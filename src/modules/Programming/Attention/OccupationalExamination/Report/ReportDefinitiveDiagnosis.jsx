@@ -6,7 +6,7 @@ import useAuth from 'hooks/useAuth';
 import LogoReport from 'assets/img/LogoReport.png';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 
 const ReportDefinitiveDiagnosis = ({ datos = [], lsDataUser = [] }) => {
     const { user } = useAuth();
@@ -40,7 +40,7 @@ const ReportDefinitiveDiagnosis = ({ datos = [], lsDataUser = [] }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography align="center" variant="h5"><b>DIAGNÓSTICO DEFINITIVO</b></Typography>
+                            <Typography variant="h5"><b>9. DIAGNÓSTICO DEFINITIVO</b></Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -51,16 +51,20 @@ const ReportDefinitiveDiagnosis = ({ datos = [], lsDataUser = [] }) => {
                             <Grid container spacing={0.5}>
                                 {datos.length != 0 ?
                                     <Fragment>
-                                        {JSON.parse(datos.dxID).map((dx, index) => (
-                                            <Fragment>
-                                                <Grid item xs={2}>
-                                                    <Typography variant="h5"><b>DX {index = index + 1}:</b></Typography>
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <Typography variant="h5">{dx.label}</Typography>
-                                                </Grid>
-                                            </Fragment>
-                                        ))}
+                                        <Grid item xs={12} sx={{ height: "60px", width: "100%" }}>
+                                            <Grid container spacing={0.5}>
+                                                {JSON.parse(datos.dxID).map((dx, index) => (
+                                                    <Fragment>
+                                                        <Grid item xs={2}>
+                                                            <Typography variant="h5"><b>DX {index = index + 1}:</b></Typography>
+                                                        </Grid>
+                                                        <Grid item xs={10}>
+                                                            <Typography variant="h5">{dx.label}</Typography>
+                                                        </Grid>
+                                                    </Fragment>
+                                                ))}
+                                            </Grid>
+                                        </Grid>
                                     </Fragment> : ''
                                 }
 
@@ -69,7 +73,7 @@ const ReportDefinitiveDiagnosis = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography align="justify" variant="h6">
+                                    <Typography align="justify" variant="h6" sx={{ height: "95px", width: "100%" }}>
                                         {datos.observacionID}
                                     </Typography>
                                 </Grid>
@@ -89,7 +93,7 @@ const ReportDefinitiveDiagnosis = ({ datos = [], lsDataUser = [] }) => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography align="justify" variant="h6">
+                                    <Typography align="justify" variant="h6" sx={{ height: "95px", width: "100%" }}>
                                         {datos.recomendacionesID}
                                     </Typography>
                                 </Grid>
@@ -119,7 +123,7 @@ const ReportDefinitiveDiagnosis = ({ datos = [], lsDataUser = [] }) => {
                 <Grid item xs={12} sx={{ mt: 3 }} />
 
                 <Grid item xs={6}>
-                    <img src={lsDataUser.firma} height={50} />
+                    <img src={lsDataUser.firma} height={100} />
 
                     <Divider sx={{ border: 1, background: 'black', color: 'black', mt: 1 }} />
                     <Typography variant="h6"><b>{lsDataUser.nombre}.</b></Typography>
@@ -129,8 +133,7 @@ const ReportDefinitiveDiagnosis = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
 
                 <Grid item xs={6}>
-                    <img src={ImgWhite} height={50} />
-
+                    <img src={ImgWhite} height={100} />
 
                     <Divider sx={{ border: 1, mt: 1, background: 'black', color: 'black' }} />
                     <Typography variant="h6"><b>Ibarra Lopez,Melquis Leonardo</b></Typography>
@@ -138,23 +141,25 @@ const ReportDefinitiveDiagnosis = ({ datos = [], lsDataUser = [] }) => {
                 </Grid>
             </Grid>
 
-            <Grid sx={{ pt: 2 }} textAlign="center" justifyContent="center" container spacing={1}>
-                <Grid item xs={12}>
-                    <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
-                </Grid>
+            <footer>
+                <Grid container sx={{ pt: 3 }} spacing={1}>
+                    <Grid item xs={12}>
+                        <Divider sx={{ border: 2, borderRadius: 1, background: ColorDrummondltd.RedDrummond, color: ColorDrummondltd.RedDrummond }} />
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Fecha Sistema: {FormatDate(new Date())}</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">Fecha Sistema: {ViewFormat(new Date())}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Ibarra Lopez,Melquis Leonardo</Typography>
-                </Grid>
+                    <Grid item xs={4}>
+                        <Typography align="center" variant="h6">{datos.nameEmpleado}</Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                    <Grid item xs={4}>
+                        <Typography align="right" variant="h6">Usuario Activo: {lsDataUser.nombre}</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </footer>
         </div>
     );
 };

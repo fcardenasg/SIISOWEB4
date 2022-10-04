@@ -139,9 +139,9 @@ const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdersIndivi
 const UpdateOrdersIndividual = Loadable(lazy(() => import('modules/Orders/UpdateOrdersIndividual')));
 
 const OccupationalExaminationProgra = Loadable(lazy(() => import('modules/Programming/Attention/OccupationalExamination/OccupationalExamination')));
-const UpdateAssistanceProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateAssistance')));
+const UpdateClinicHistory = Loadable(lazy(() => import('modules/Programming/Attention/UpdateClinicHistory')));
 const UpdateEvolutionNoteProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateEvolutionNote')));
-const UpdateCounselingProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateCounseling')));
+const UpdatePsychological = Loadable(lazy(() => import('modules/Programming/Attention/UpdatePsychological')));
 const UpdateMedicalAdviceProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateMedicalAdvice')));
 const UpdateNoteInfirmaryProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateNoteInfirmary')));
 const UpdateAlcoholAndDrugTestings = Loadable(lazy(() => import('modules/Programming/Attention/UpdateAlcoholAndDrugTesting')));
@@ -608,11 +608,11 @@ const MainRoutes = {
         /* ATENCIONES DE PROGRAMACIÓN */
         {
             path: '/programming/psychological/:id',
-            element: <UpdateCounselingProgra />
+            element: <UpdatePsychological />
         },
         {
             path: '/programming/attention-new/:id',
-            element: <UpdateAssistanceProgra />
+            element: <UpdateClinicHistory />
         },
         {
             path: '/programming/attention-control/:id',
@@ -624,7 +624,7 @@ const MainRoutes = {
         },
         {
             path: '/programming/other/:id',
-            element: <UpdateCounselingProgra />
+            element: <UpdatePsychological />
         },
         {
             path: '/programming/medical-attention/:id',

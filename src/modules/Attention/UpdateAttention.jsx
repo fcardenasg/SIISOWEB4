@@ -91,7 +91,7 @@ const UpdateAttention = () => {
 
     const { handleSubmit, errors, reset } = methods;
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAtencion);
             var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
@@ -316,7 +316,7 @@ const UpdateAttention = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
