@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import ControlModal from 'components/controllers/ControlModal';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -26,9 +26,8 @@ import {
     Button
 } from '@mui/material';
 
-import { visuallyHidden } from '@mui/utils';
-
 import swal from 'sweetalert';
+import { visuallyHidden } from '@mui/utils';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
 import { TitleButton } from 'components/helpers/Enums';
@@ -44,6 +43,10 @@ import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 
 import { generateReport } from './ReportAtten';
+import { GetByIdAttention } from "api/clients/AttentionClient";
+import Cargando from 'components/loading/Cargando';
+import { GetByMail } from 'api/clients/UserClient';
+import useAuth from 'hooks/useAuth';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -218,10 +221,12 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListAttention = () => {
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
     const [lsAttention, setLsAttention] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
+    const [openReport, setOpenReport] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -231,6 +236,7 @@ const ListAttention = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
+    const [dataPDF, setDataPDF] = useState(null);
 
     async function getAll() {
         try {
@@ -278,6 +284,16 @@ const ListAttention = () => {
         setOrderBy(property);
     };
 
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAttention(idCheck);
+            const lsDataUser = await GetByMail(user.email);
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
             const newSelectedId = lsAttention.map((n) => n.id);
@@ -323,13 +339,20 @@ const ListAttention = () => {
                     if (result.status === 200) {
                         setOpenDelete(true);
                         setSelected([]);
-                        getAll();
                         setIdCheck('');
+                        getAll();
                     }
                 } else
                     setSelected([]);
             });
         } catch (error) { console.log(error) }
+    }
+
+    const handleClose = () => {
+        setOpenReport(false);
+        setSelected([]);
+        setIdCheck('');
+        setDataPDF(null);
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -338,6 +361,24 @@ const ListAttention = () => {
     return (
         <MainCard title="Lista de Atención" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={handleClose}
+                maxWidth="xl"
+            >
+                {dataPDF !== null ?
+                    <object type="application/pdf"
+                        data={dataPDF}
+                        width="1420"
+                        height="500"
+                    /> :
+
+                    <Cargando />
+
+                }
+            </ControlModal>
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -403,18 +444,11 @@ const ListAttention = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Button onClick={generateReport}>
-                            Imprimir
-                        </Button>
-
-                        {/* () => navigate(`/attention/report/${idCheck}`) */}
-                        {/* disabled={idCheck === '' ? true : false} */}
-
-                        {/* <Tooltip components={Button} title="Impresión" onClick={generateReport}>
+                        <Tooltip disabled={idCheck === '' ? true : false} title="Impresión" onClick={handleClickReport} sx={{ mx: 1 }}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
-                        </Tooltip> */}
+                        </Tooltip>
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/attention/add")}>

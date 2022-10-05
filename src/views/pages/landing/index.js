@@ -20,7 +20,6 @@ const HeaderWrapper = styled('div')(({ theme }) => ({
 
 const Landing = () => (
     <Fragment>
-
         <HeaderWrapper id="home">
             <AppBar />
             <Header />
