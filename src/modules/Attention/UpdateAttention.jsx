@@ -22,12 +22,12 @@ import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdAttention, InsertAttention, UpdateAttentions } from 'api/clients/AttentionClient';
+import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, DefaultValue, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostAttention, PutAttention } from 'formatdata/AttentionForm';
+import { PutAttention } from 'formatdata/AttentionForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
@@ -37,12 +37,18 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import Chip from '@mui/material/Chip';
 import Cargando from 'components/loading/Cargando';
-import { GetAllUser } from 'api/clients/UserClient';
+import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { generateReport } from './ReportAtten';
+import ViewPDF from 'components/components/ViewPDF';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
+
+const validationSchema = yup.object().shape({
+    sede: yup.string().required(`${ValidationMessage.Requerido}`),
+});
 
 const UpdateAttention = () => {
     const { user } = useAuth();
@@ -50,6 +56,9 @@ const UpdateAttention = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [openReport, setOpenReport] = useState(false);
+    const [dataPDF, setDataPDF] = useState(null);
 
     const [openUpdate, setOpenUpdate] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -89,7 +98,7 @@ const UpdateAttention = () => {
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
 
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
     async function getAll() {
         try {
@@ -222,6 +231,16 @@ const UpdateAttention = () => {
             setErrorMessage(`${Message.ErrorDeDatos}`);
         }
     }
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAttention(id);
+            const lsDataUser = await GetByMail(user.email);
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleChangeTipo = async (event) => {
         try {
@@ -373,6 +392,15 @@ const UpdateAttention = () => {
                 <ControllerListen />
             </ControlModal>
 
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
             {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -407,7 +435,7 @@ const UpdateAttention = () => {
                                             defaultValue={lsDataAtencion.sede}
                                             options={lsSede}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
+                                            bug={errors.sede}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -447,7 +475,7 @@ const UpdateAttention = () => {
                                                     defaultValue={lsDataAtencion.estadoCaso}
                                                     options={lsEstadoCaso}
                                                     size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
+                                                    bug={errors.estadoCaso}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -461,7 +489,7 @@ const UpdateAttention = () => {
                                                         defaultValue={1}
                                                         options={lsEstadoCaso}
                                                         size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
+                                                        bug={errors.estadoCaso}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -475,7 +503,7 @@ const UpdateAttention = () => {
                                                             defaultValue=""
                                                             options={lsTurno}
                                                             size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
+                                                            bug={errors.turno}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -569,7 +597,7 @@ const UpdateAttention = () => {
                                                                     defaultValue={lsDataAtencion.estadoCaso}
                                                                     options={lsEstadoCaso}
                                                                     size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
+                                                                    bug={errors.estadoCaso}
                                                                 />
                                                             </FormProvider>
                                                         </Grid>
@@ -582,7 +610,7 @@ const UpdateAttention = () => {
                                                                     defaultValue={lsDataAtencion.motivo}
                                                                     options={lsMotivoPsico}
                                                                     size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
+                                                                    bug={errors.motivo}
                                                                 />
                                                             </FormProvider>
                                                         </Grid>
@@ -595,7 +623,7 @@ const UpdateAttention = () => {
                                                                     defaultValue={lsDataAtencion.medico}
                                                                     options={lsMedicos}
                                                                     size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
+                                                                    bug={errors.medico}
                                                                 />
                                                             </FormProvider>
                                                         </Grid>
@@ -609,7 +637,7 @@ const UpdateAttention = () => {
                                                                         defaultValue={lsDataAtencion.motivo}
                                                                         options={lsMotivoMedica}
                                                                         size={matchesXS ? 'small' : 'medium'}
-                                                                        bug={errors}
+                                                                        bug={errors.motivo}
                                                                     />
                                                                 </FormProvider>
                                                             </Grid>
@@ -622,7 +650,7 @@ const UpdateAttention = () => {
                                                                         defaultValue={lsDataAtencion.medico}
                                                                         options={lsMedicos}
                                                                         size={matchesXS ? 'small' : 'medium'}
-                                                                        bug={errors}
+                                                                        bug={errors.medico}
                                                                     />
                                                                 </FormProvider>
                                                             </Grid>
@@ -636,7 +664,7 @@ const UpdateAttention = () => {
                                                                             defaultValue={lsDataAtencion.estadoCaso}
                                                                             options={lsEstadoCaso}
                                                                             size={matchesXS ? 'small' : 'medium'}
-                                                                            bug={errors}
+                                                                            bug={errors.estadoCaso}
                                                                         />
                                                                     </FormProvider>
                                                                 </Grid>
@@ -654,7 +682,7 @@ const UpdateAttention = () => {
                                                 name="observaciones"
                                                 label="Nota"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                                bug={errors.observaciones}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -689,6 +717,14 @@ const UpdateAttention = () => {
                                         <AnimateButton>
                                             <Button variant="contained" onClick={() => navigate("/programming/list")} fullWidth>
                                                 {TitleButton.Programacion}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="contained" onClick={handleClickReport} fullWidth>
+                                                {TitleButton.Imprimir}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>

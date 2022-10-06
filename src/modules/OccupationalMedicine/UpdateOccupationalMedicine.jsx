@@ -1,6 +1,6 @@
 // Import de Material-ui
 import { useState, useEffect } from 'react';
-import {  useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -1644,7 +1644,6 @@ const UpdateOccupationalMedicine = () => {
                     <Grid xs={5} sx={{ pl: 4, pt: 4 }} container spacing={2}>
                         <input type="file" onChange={(e) => setFileUpload(e.target.files[0])} />
 
-                        {/* <ViewPdf handleFile={handleFile} pdfFile={pdfFile} pdfError={pdfError} title="Visualizar PDF de Medicina Laboral" /> */}
                     </Grid>
                 </SubCard>
 
