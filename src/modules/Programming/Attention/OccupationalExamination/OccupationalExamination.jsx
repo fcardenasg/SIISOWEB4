@@ -64,9 +64,6 @@ import UpdateMedicalFormula from './MedicalOrder/UpdateMedicalFormula';
 import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
 
-import { generateReportWorkHeight } from './Report/WorkHeight';
-
-
 import { generateReport } from './Report';
 
 function TabPanel({ children, value, index, ...other }) {
@@ -255,7 +252,7 @@ const OccupationalExamination = () => {
             const lsDataReport = await GetByIdDataReport(5);
             const lsDataUser = await GetByMail(user.email);
 
-            const dataPDFTwo = generateReportWorkHeight(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
 
             setDataPDF(dataPDFTwo);
         } catch (err) { }
