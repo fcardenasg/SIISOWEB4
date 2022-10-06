@@ -132,14 +132,7 @@ const Spirometry = () => {
     async function GetAll() {
         try {
 
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
-
-
+          
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,

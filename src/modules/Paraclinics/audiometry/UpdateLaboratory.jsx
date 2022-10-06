@@ -50,7 +50,7 @@ const DetailIcons = [
 
 ]
 
-const UpdateSpirometry = () => {
+const UpdateLaboratory = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
@@ -66,17 +66,29 @@ const UpdateSpirometry = () => {
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [lsCie11, setLsCie11] = useState([]);
-    const [lsSpirometry, setLsSpirometry] = useState([]);
+    const [lsVisiometrics, setLsVisiometrics] = useState([]);
+
+    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
+    const [diagnosticoArray1, setDiagnosticoArray1] = useState([]);
+    const [diagnosticoArray2, setDiagnosticoArray2] = useState([]);
 
     const [documento, setDocumento] = useState('');
 
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
-    const [lsTipoEPP, setLsTipoEPP] = useState([]);
-    const [lsResultado, setLsResultado] = useState([]);
+    const [lsConclusion, setLsConclusion] = useState([]);
+    const [lsConducta, setLsConducta] = useState([]);
+
+    const [lsLectura, setLsLectura] = useState([]);
+    const [lsControl, setLsControl] = useState([]);
 
 
+    const [lsOjoDerecho, setLsOjoDerecho] = useState([]);
+    const [lsOjoIzquierdo, setLsOjoIzquierdo] = useState([]);
+    const [lsAdd1, setLsAdd1] = useState([]);
+    
 
+    
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
@@ -108,7 +120,6 @@ const UpdateSpirometry = () => {
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
-            console.log(lsServerEmployee, idEmployee)
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -125,13 +136,38 @@ const UpdateSpirometry = () => {
 
 
             const serverData = await GetByIdParaclinics(id);
-            console.log(serverData)
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
-                setLsSpirometry(serverData.data);
+                setLsVisiometrics(serverData.data);
+                setDiagnosticoArray(JSON.parse(serverData.data.dxDerecho));
+                setDiagnosticoArray1(JSON.parse(serverData.data.dxIzquierdo));
+                setDiagnosticoArray2(JSON.parse(serverData.data.dxDiagnostico));
                 handleLoadingDocument(serverData.data.documento);
                 setFilePdf(serverData.data.url);
             }
+
+            const lsServerCie11 = await GetAllCIE11(0, 0);
+            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                value: item.id,
+                label: item.dx
+            }));
+            setLsCie11(resultCie11);
+
+            const lsServerLectura = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_LECTURA);
+            var resultLectura = lsServerLectura.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsLectura(resultLectura);
+
+       
+
+            const lsServerControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONTROL);
+            var resultControl = lsServerControl.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsControl(resultControl);
 
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
@@ -140,34 +176,26 @@ const UpdateSpirometry = () => {
             }));
             setLsMotivo(resultMotivo);
 
-    
-
-
-            const lsServerTipoEPP = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_TIPOEPP);
-            var resultTipoEPP = lsServerTipoEPP.data.entities.map((item) => ({
+            const lsServerConducta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
+            var resultConducta = lsServerConducta.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsTipoEPP(resultTipoEPP);
+            setLsConducta(resultConducta);
 
-       
-
-            const lsServerResultado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_RESULTADO);
-            var resultResultado = lsServerResultado.data.entities.map((item) => ({
+            const lsServerConclusion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
+            var resultConclusion = lsServerConclusion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsResultado(resultResultado);
+            setLsConclusion(resultConclusion);
 
-
-     
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
-
 
 
 
@@ -182,10 +210,10 @@ const UpdateSpirometry = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_ESPIROMETRIA, documento,
-                FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
-                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
-                false, '', datos.idTipoEPP, datos.fvc, datos.feV1, datos.fevfvc, datos.feV2575, datos.pef, datos.resultado, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
+            const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_VISIOMETRIA, documento,
+                FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
+                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, JSON.stringify(diagnosticoArray), datos.ojoIzquierdo, JSON.stringify(diagnosticoArray1), datos.add1, datos.idLecturaAdd, datos.idControl, datos.remitidoOftalmo,
+                datos.requiereLentes, JSON.stringify(diagnosticoArray2), DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
@@ -212,7 +240,7 @@ const UpdateSpirometry = () => {
     };
 
     return (
-        <MainCard title="Actualizar Espirometría">
+        <MainCard title="Actualizar Laboratorios">
             <Fragment>
                 <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
@@ -228,7 +256,7 @@ const UpdateSpirometry = () => {
 
 
 
-                {lsSpirometry.length != 0 ?
+                {lsVisiometrics.length != 0 ?
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <ViewEmployee
@@ -244,22 +272,22 @@ const UpdateSpirometry = () => {
                         <Grid item xs={12}>
                             <SubCard darkTitle>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={3.0}>
+                                    <Grid item xs={3.3}>
                                         <FormProvider {...methods}>
                                             <InputDatePicker
                                                 label="Fecha"
                                                 name="fecha"
-                                                defaultValue={lsSpirometry.fecha}
+                                                defaultValue={lsVisiometrics.fecha}
                                             />
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={3.0}>
+                                    <Grid item xs={4.3}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="idMotivo"
                                                 label="Motivo"
-                                                defaultValue={lsSpirometry.idMotivo}
+                                                defaultValue={lsVisiometrics.idMotivo}
                                                 options={lsMotivo}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
@@ -267,134 +295,151 @@ const UpdateSpirometry = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={3.0}>
+                                    <Grid item xs={4.3}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="idProveedor"
                                                 label="Proveedor"
-                                                defaultValue={lsSpirometry.idProveedor}
+                                                defaultValue={lsVisiometrics.idProveedor}
                                                 options={lsProveedor}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
-
-
-                                    <Grid item xs={3.0}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idTipoEPP"
-                                                label="Tipo EPP"
-                                                defaultValue={lsSpirometry.idTipoEPP}
-                                                options={lsTipoEPP}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-
                                 </Grid>
                             </SubCard>
                         </Grid>
 
 
                         <Grid item xs={12}>
-                            <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
-                                <Grid container spacing={2}>
+                        <SubCard darkTitle title={<Typography variant="h4">ESTADO REFRACTIVO</Typography>}>
+                            <Grid container spacing={2}>
 
-
-                                    <Grid item xs={12} md={1} lg={2}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                name="fvc"
-                                                label="FVC"
-                                                defaultValue={lsSpirometry.fvc}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-
-
-                                    <Grid item xs={12} md={1} lg={2}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                name="feV1"
-                                                label="FEV1"
-                                                defaultValue={lsSpirometry.feV1}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={12} md={1} lg={2}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-
-                                                fullWidth
-                                                name="fevfvc"
-                                                label="FEV1/FVC"
-                                                defaultValue={lsSpirometry.fevfvc}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={12} md={1} lg={2}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                name="feV2575"
-                                                label="FEV25/75"
-                                                defaultValue={lsSpirometry.feV2575}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={12} md={1} lg={2}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                name="pef"
-                                                label="PEF"
-                                                defaultValue={lsSpirometry.pef}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                 
-
-                                    <Grid item xs={12} md={1} lg={2}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                 name="resultado"
-                                                label="Resultado"
-                                                defaultValue={lsSpirometry.resultado}
-                                                options={lsResultado}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-
-
-
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            fullWidth
+                                            name="ojoDerecho"
+                                            label="Ojo Derecho"
+                                            defaultValue={lsVisiometrics.ojoDerecho}
+                                            options={lsOjoDerecho}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
                                 </Grid>
-                            </SubCard>
-                        </Grid>
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <InputMultiSelects
+                                        fullWidth
+                                        onChange={(event, value) => setDiagnosticoArray(value)}
+                                        value={diagnosticoArray}
+                                        label="Diagnósticos"
+                                        options={lsCie11}
+                                    />
+                                </Grid>
+                           
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            fullWidth
+                                            name="ojoIzquierdo"
+                                            label="Ojo Izquierdo"
+                                            defaultValue={lsVisiometrics.ojoIzquierdo}
+                                            options={lsOjoIzquierdo}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <InputMultiSelects
+                                        fullWidth
+                                        onChange={(event, value) => setDiagnosticoArray1(value)}
+                                        value={diagnosticoArray1}
+                                        label="Diagnósticos"
+                                        options={lsCie11}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
 
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">LECTURA ADD</Typography>}>
+                            <Grid container spacing={2}>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            fullWidth
+                                            name="add1"
+                                            label="ADD"
+                                            defaultValue={lsVisiometrics.add1}
+                                            options={lsAdd1}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idLecturaAdd"
+                                            label="Lectura ADD"
+                                            defaultValue={lsVisiometrics.idLecturaAdd}
+                                            options={lsLectura}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idControl"
+                                            label="Control"
+                                            defaultValue={lsVisiometrics.idControl}
+                                            options={lsControl}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Remitodo a Oftalmologia"
+                                            name="remitidoOftalmo"
+                                            size={25}
+                                            defaultValue={lsVisiometrics.remitidoOftalmo}
+
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Requiere Lentes"
+                                            name="requiereLentes"
+                                            size={25}
+                                            defaultValue={lsVisiometrics.requiereLentes}
+
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+                            </Grid>
+                        </SubCard>
+                    </Grid>
 
 
                         <Grid item xs={12}>
@@ -403,7 +448,7 @@ const UpdateSpirometry = () => {
                                     <Grid item xs={12}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={lsSpirometry.observacion}
+                                                defaultValue={lsVisiometrics.observacion}
                                                 fullWidth
                                                 name="observacion"
                                                 label="Observación"
@@ -471,7 +516,7 @@ const UpdateSpirometry = () => {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/spirometry/list")}>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/visiometrics/list")}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -488,4 +533,4 @@ const UpdateSpirometry = () => {
     );
 };
 
-export default UpdateSpirometry;
+export default UpdateLaboratory;
