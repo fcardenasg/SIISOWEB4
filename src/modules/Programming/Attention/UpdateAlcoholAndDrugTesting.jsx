@@ -15,7 +15,6 @@ import { ParamCloseCase } from 'components/alert/AlertAll';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import ViewReport from './OccupationalExamination/Report/ViewReport';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import UserCountCard from 'components/components/UserCountCard';
 import ViewEmployee from 'components/views/ViewEmployee';
@@ -276,7 +275,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ViewReport />
+                
             </ControlModal>
 
             <FullScreenDialog

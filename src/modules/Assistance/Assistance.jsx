@@ -21,7 +21,6 @@ import ImageIcon from '@mui/icons-material/Image';
 import ListMedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
-import ViewReport from 'modules/Programming/Attention/OccupationalExamination/Report/ViewReport';
 import DialogFormula from 'modules/Programming/Attention/OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 
@@ -247,7 +246,7 @@ const Assistance = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ViewReport />
+                
             </ControlModal>
 
             <ControlModal

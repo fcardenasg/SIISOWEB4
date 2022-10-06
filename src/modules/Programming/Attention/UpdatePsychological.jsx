@@ -13,7 +13,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient';
 import { PutAttention } from 'formatdata/AttentionForm';
-import ViewReport from './OccupationalExamination/Report/ViewReport';
 
 import useAuth from 'hooks/useAuth';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';

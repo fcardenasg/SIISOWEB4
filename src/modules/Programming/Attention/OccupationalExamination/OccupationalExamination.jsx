@@ -61,7 +61,10 @@ import { ColorDrummondltd } from 'themes/colors';
 import ListMedicalFormula from './MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './MedicalOrder/UpdateMedicalFormula';
-import ReportOccupationalExamination from './Report/ReportOccupationalExamination';
+import ViewPDF from 'components/components/ViewPDF';
+import { GetByMail } from 'api/clients/UserClient';
+
+import { generateReport } from './Report';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -231,6 +234,8 @@ const OccupationalExamination = () => {
     const [clasificacion, setClasificacion] = useState('Clasificación');
     const [clasificacionColor, setClasificacionColor] = useState('info');
 
+    const [dataPDF, setDataPDF] = useState(null);
+
     const [estadoVacuna, setEstadoVacuna] = useState({
         tetanoIM: false,
         influenzaIM: false,
@@ -239,6 +244,18 @@ const OccupationalExamination = () => {
         covid19IM: false,
         otrasIM: false,
     });
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAttention(1089);
+            const lsDataUser = await GetByMail(user.email);
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+
+            console.log("dataPDFTwo = ", dataPDFTwo);
+        } catch (err) { }
+    };
 
     const calculoFramingham = () => {
         try {
@@ -611,7 +628,7 @@ const OccupationalExamination = () => {
                         onClose={() => setOpenReport(false)}
                         maxWidth="xl"
                     >
-                        <ReportOccupationalExamination id={resultData.id} setOpenReport={setOpenReport} />
+                        <ViewPDF dataPDF={dataPDF} />
                     </ControlModal>
 
                     <DialogFormula
@@ -832,7 +849,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                <Button variant="outlined" fullWidth onClick={handleClickReport}>
                                     {TitleButton.Imprimir}
                                 </Button>
                             </AnimateButton>
