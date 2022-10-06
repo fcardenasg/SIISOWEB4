@@ -21,7 +21,7 @@ import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
-import { InsertAttention } from 'api/clients/AttentionClient';
+import { GetByIdAttention, InsertAttention } from 'api/clients/AttentionClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, DefaultValue, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
@@ -35,7 +35,9 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import Chip from '@mui/material/Chip';
-import { GetAllUser } from 'api/clients/UserClient';
+import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { generateReport } from './ReportAtten';
+import ViewPDF from 'components/components/ViewPDF';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -51,6 +53,9 @@ const Attention = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [openReport, setOpenReport] = useState(false);
+    const [dataPDF, setDataPDF] = useState(null);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -181,6 +186,16 @@ const Attention = () => {
             setErrorMessage(`${Message.ErrorDeDatos}`);
         }
     }
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAttention(result.id);
+            const lsDataUser = await GetByMail(user.email);
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleDocumentoSolicita = async (event) => {
         try {
@@ -335,6 +350,15 @@ const Attention = () => {
                 title="DICTADO POR VOZ"
             >
                 <ControllerListen />
+            </ControlModal>
+
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
             <Grid container spacing={2}>
@@ -645,7 +669,7 @@ const Attention = () => {
                                 {result.length !== 0 ?
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button variant="contained" onClick={() => navigate(`/attention/report/${result.id}`)} fullWidth>
+                                            <Button variant="contained" onClick={handleClickReport} fullWidth>
                                                 {TitleButton.Imprimir}
                                             </Button>
                                         </AnimateButton>

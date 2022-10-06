@@ -89,7 +89,6 @@ const Turner = Loadable(lazy(() => import('modules/Turner/Turner')));
 
 const Attention = Loadable(lazy(() => import('modules/Attention/Attention')));
 const UpdateAttention = Loadable(lazy(() => import('modules/Attention/UpdateAttention')));
-const ReportAttention = Loadable(lazy(() => import('modules/Attention/ReportAttention')));
 const ListAttention = Loadable(lazy(() => import('modules/Attention/ListAttention')));
 
 const ListOccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/ListOccupationalExamination')));
@@ -391,10 +390,6 @@ const MainRoutes = {
         {
             path: '/attention/update/:id',
             element: <UpdateAttention />
-        },
-        {
-            path: '/attention/report/:id',
-            element: <ReportAttention />
         },
         /* Render de Pruebas de Alcohol y Droga */
         {

@@ -47,6 +47,7 @@ import { GetByIdAttention } from "api/clients/AttentionClient";
 import Cargando from 'components/loading/Cargando';
 import { GetByMail } from 'api/clients/UserClient';
 import useAuth from 'hooks/useAuth';
+import ViewPDF from 'components/components/ViewPDF';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -106,12 +107,6 @@ const headCells = [
         label: 'Fecha',
         align: 'left'
     },
-    {
-        id: 'usuarioRegistro',
-        numeric: false,
-        label: 'Usuario',
-        align: 'left'
-    }
 ];
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
@@ -368,16 +363,7 @@ const ListAttention = () => {
                 onClose={handleClose}
                 maxWidth="xl"
             >
-                {dataPDF !== null ?
-                    <object type="application/pdf"
-                        data={dataPDF}
-                        width="1420"
-                        height="500"
-                    /> :
-
-                    <Cargando />
-
-                }
+                <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
             <CardContent>
@@ -572,21 +558,6 @@ const ListAttention = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {ViewFormat(row.fecha)}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.usuarioRegistro}
                                             </Typography>
                                         </TableCell>
 

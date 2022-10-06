@@ -9,7 +9,7 @@ function getHeader(doc) {
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.text("DIVISIÓN MÉDICA", 150, 10, null, null, "center");
-    doc.text("REGISTRO ATENCION", 150, 17, null, null, "center");
+    doc.text("REGISTRO ATENCIÓN", 150, 17, null, null, "center");
 
     /* LINEA DE DIVISIÓN */
     doc.setLineWidth(1);
@@ -22,7 +22,8 @@ function getPiePage(doc, lsDataUser) {
     doc.setLineWidth(1);
     doc.setDrawColor(255, 0, 0);
     doc.line(5, doc.internal.pageSize.height - 10, 210, doc.internal.pageSize.height - 10);
-    doc.text(`FECHA DE SISTEMA:  ${ViewFormat(new Date())}`, 10, doc.internal.pageSize.height - 4);
+
+    doc.text(`FECHA DE SISTEMA:  ${new Date().toLocaleString()}`, 10, doc.internal.pageSize.height - 4);
     doc.text(`USUARIO ACTIVO:  ${lsDataUser.nombre}`, 90, doc.internal.pageSize.height - 4);
     doc.text("Pag. 1 of 1", 190, doc.internal.pageSize.height - 4);
 }
@@ -63,7 +64,8 @@ export function generateReport(lsDataReport = [], lsDataUser = []) {
     /* CUADRO DATOS */
     doc.line(5, 40, 210, 40);
     doc.line(5, 40, 5, 120);
-    doc.line(105, 40, 105, 74); /* LINEA MEDIO */
+    doc.line(40, 40, 40, 74); /* LINEA ONE */
+    doc.line(115, 40, 115, 74); /* LINEA TWO */
     doc.line(210, 40, 210, 120);
     doc.line(5, 74, 210, 74);
     /* CUADRO OBSERVACIÓN */
@@ -71,26 +73,28 @@ export function generateReport(lsDataReport = [], lsDataUser = []) {
     doc.line(5, 120, 210, 120);
 
     /* TITULOS DE CONTENIDO */
-    doc.text('N° REGISTRO:', 10, 48);
-    doc.text('FECHA:', 110, 48);
-    doc.text('TIPO ATENCIÓN:', 10, 55);
-    doc.text('ATENCIÓN:', 110, 55);
-    doc.text('DOCUMENTO:', 10, 62);
-    doc.text('NOMBRES:', 110, 62);
-    doc.text('ESTADO CASO:', 10, 69);
-    doc.text('SEDE:', 110, 69);
+    doc.text('N° REGISTRO:', 45, 48);
+    doc.text('FECHA:', 120, 48);
+    doc.text('TIPO ATENCIÓN:', 45, 55);
+    doc.text('ATENCIÓN:', 120, 55);
+    doc.text('DOCUMENTO:', 45, 62);
+    doc.text('NOMBRES:', 120, 62);
+    doc.text('ESTADO CASO:', 45, 69);
+    doc.text('SEDE:', 120, 69);
     doc.text('OBSERVACIÓN:', 10, 80);
 
     /* RENDERIZADO DE CONTENIDO */
     doc.setFont("helvetica", "normal");
-    doc.text(`${lsDataReport.id}`, 40, 48);
-    doc.text(`${ViewFormat(lsDataReport.fecha)}`, 135, 48);
-    doc.text(`${lsDataReport.nameTipoAtencion}`, 40, 55);
-    doc.text(`${lsDataReport.nameAtencion}`, 135, 55);
-    doc.text(`${lsDataReport.documento}`, 40, 62);
-    doc.text(`${lsDataReport.nameEmpleado}`, 135, 62);
-    doc.text(`${lsDataReport.nameEstadoCaso}`, 40, 69);
-    doc.text(`${lsDataReport.nameSedeAtencion}`, 135, 69);
+    doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 42, 30, 30);
+    doc.text(`${lsDataReport.id}`, 75, 48);
+    doc.text(`${ViewFormat(lsDataReport.fecha)}`, 145, 48);
+    doc.text(`${lsDataReport.nameTipoAtencion}`, 75, 55);
+    doc.text(`${lsDataReport.nameAtencion}`, 145, 55);
+    doc.text(`${lsDataReport.documento}`, 75, 62);
+    doc.text(`${lsDataReport.nameEmpleado}`, 145, 62);
+    doc.text(`${lsDataReport.nameEstadoCaso}`, 75, 69);
+    doc.text(`${lsDataReport.nameSedeAtencion}`, 145, 69);
+
     doc.text(`${lsDataReport.observaciones}`, 10, 90, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
 
     /* FIRMA */
