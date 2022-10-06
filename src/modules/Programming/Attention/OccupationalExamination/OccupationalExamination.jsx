@@ -22,7 +22,7 @@ import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
 import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone';
 
-import { GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import { GetByIdDataReport, GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import Transitions from 'ui-component/extended/Transitions';
@@ -63,6 +63,9 @@ import MedicalFormula from './MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './MedicalOrder/UpdateMedicalFormula';
 import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
+
+import { generateReportWorkHeight } from './Report/WorkHeight';
+
 
 import { generateReport } from './Report';
 
@@ -245,15 +248,16 @@ const OccupationalExamination = () => {
         otrasIM: false,
     });
 
+    /* Metodo de Reporte */
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAttention(1089);
+            const lsDataReport = await GetByIdDataReport(5);
             const lsDataUser = await GetByMail(user.email);
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
-            setDataPDF(dataPDFTwo);
 
-            console.log("dataPDFTwo = ", dataPDFTwo);
+            const dataPDFTwo = generateReportWorkHeight(lsDataReport.data, lsDataUser.data);
+
+            setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
 
