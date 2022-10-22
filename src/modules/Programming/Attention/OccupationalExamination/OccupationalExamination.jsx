@@ -325,7 +325,7 @@ const OccupationalExamination = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdDataReport(5);
+            const lsDataReport = await GetByIdDataReport(1);
             const lsDataUser = await GetByMail(user.email);
             const resultExpoDLTD = await getDataExploracion(documento);
 

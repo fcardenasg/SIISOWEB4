@@ -60,7 +60,7 @@ function getHeader(doc) {
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
   doc.text(
-    "ANEXO DE APTITUD PARA TRABAJO EN ALTURAS",
+    "ANEXO DE APTITUD PARA ESPACIO CONFINADO",
     120,
     15,
     null,
@@ -109,7 +109,7 @@ function getPiePage(doc, lsDataUser, page, pageSize) {
 }
 
 /* Pag. 1 */
-function pageCompanyNotification(doc, lsDataReport = [], lsDataUser = []) {
+function pageCompanyNotificationEC(doc, lsDataReport = [], lsDataUser = []) {
   /* CUADRO DATOS */
 
   /* LISTA DE DATOS PACIENTE */
@@ -202,7 +202,7 @@ function pageCompanyNotification(doc, lsDataReport = [], lsDataUser = []) {
   getFirmaEmployee(doc, lsDataReport);
 }
 /* Pag. 2 */
-function pageWorkerNotification(doc, lsDataReport = [], lsDataUser = []) {
+function pageWorkerNotificationEC(doc, lsDataReport = [], lsDataUser = []) {
   /* LISTA DE DATOS PACIENTE */
   doc.setFontSize(10);
   doc.setLineWidth(0.2);
@@ -442,19 +442,20 @@ function pageWorkerNotification(doc, lsDataReport = [], lsDataUser = []) {
 }
 
 /* Renderizado Principal INDEX  */
-export function generateReportWorkHeight(lsDataReport = [], lsDataUser = []) {
+export function generateReportConfinedSpace(lsDataReport = [], lsDataUser = []) {
   var doc = new jsPDF("p", "mm", "letter");
   /* Pag. 1 */
   getHeader(doc);
-  pageCompanyNotification(doc, lsDataReport, lsDataUser);
+  pageCompanyNotificationEC(doc, lsDataReport, lsDataUser);
   getPiePage(doc, lsDataUser, 1, 2);
 
   doc.addPage();
 
   getHeader(doc);
-  pageWorkerNotification(doc, lsDataReport, lsDataUser);
+  pageWorkerNotificationEC(doc, lsDataReport, lsDataUser);
   getPiePage(doc, lsDataUser, 2, 2);
 
   var dataPDF = doc.output("bloburl");
   return dataPDF;
 }
+

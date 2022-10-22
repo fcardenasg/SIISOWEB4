@@ -39,9 +39,12 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { InsertAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
+import { GetByIdAlcoholAndDrugTesting, InsertAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
 import { PostAlcoholAndDrugTesting } from 'formatdata/AlcoholAndDrugTestingForm';
 import { FormatDate } from 'components/helpers/Format';
+import ViewPDF from 'components/components/ViewPDF';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReportAlcoholtesting } from './Report/Alcoholtesting';
 import Cargando from 'components/loading/Cargando';
 
 const DetailIcons = [
@@ -85,6 +88,7 @@ const UpdateAlcoholAndDrugTesting = () => {
     const [lsMuestraAD, setLsMuestraAD] = useState([]);
     const [lsMuestraA, setLsMuestraA] = useState([]);
     const [lsResultado, setLsResultado] = useState([]);
+    const [dataPDF, setDataPDF] = useState(null);
 
     const handleLoadingDocumento = async (idEmployee) => {
         try {
@@ -100,6 +104,7 @@ const UpdateAlcoholAndDrugTesting = () => {
         }
     }
 
+
     const handleUpdateAttentionClose = async (estadoPac = '') => {
         try {
             const DataToUpdate = PutAttention(id, lsAtencion.documento, lsAtencion.fecha, lsAtencion.sede, lsAtencion.tipo, lsAtencion.atencion,
@@ -111,6 +116,9 @@ const UpdateAlcoholAndDrugTesting = () => {
             await UpdateAttentions(DataToUpdate);
         } catch (error) { }
     }
+
+
+
 
     const handleCerrarCaso = () => {
         try {
@@ -125,7 +133,23 @@ const UpdateAlcoholAndDrugTesting = () => {
     }
 
     const methods = useForm();
+
     const { handleSubmit, errors } = methods;
+
+    //Metodo Imprimir
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAlcoholAndDrugTesting(3);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReportAlcoholtesting(lsDataReport.data, lsDataUser.data);
+
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
+
 
     const handleDocumentoSolicita = async (event) => {
         try {
@@ -275,7 +299,8 @@ const UpdateAlcoholAndDrugTesting = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-
+                {/* VISUALIZACIÓN DEL REPORTE */}
+                <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
             <FullScreenDialog
@@ -709,7 +734,7 @@ const UpdateAlcoholAndDrugTesting = () => {
 
                                 <Grid item xs={6} md={3} lg={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                        <Button variant="outlined" fullWidth onClick={handleClickReport}>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

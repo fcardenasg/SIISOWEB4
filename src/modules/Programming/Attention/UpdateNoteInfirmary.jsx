@@ -48,10 +48,13 @@ import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
-import { InsertNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
+import { GetByIdNoteInfirmary, InsertNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
 import Cargando from 'components/loading/Cargando';
 import InputOnChange from 'components/input/InputOnChange';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import { generateReportNursing } from './Report/Nursing';
+import { GetByMail } from 'api/clients/UserClient';
+import ViewPDF from 'components/components/ViewPDF';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -129,10 +132,24 @@ const UpdateNoteInfirmary = () => {
     const [lsContingencia, setLsContingencia] = useState([]);
 
     const [resultData, setResultData] = useState([]);
+    const [dataPDF, setDataPDF] = useState(null);
 
     const methods = useForm();
 
     const { handleSubmit } = methods;
+
+    //Metodo Imprimir
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdNoteInfirmary(1);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data);
+
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
@@ -388,7 +405,8 @@ const UpdateNoteInfirmary = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ReportNoteInfirmary id={resultData.id} />
+                {/* VISUALIZACIÓN DEL REPORTE */}
+                <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
             <ControlModal
@@ -467,7 +485,7 @@ const UpdateNoteInfirmary = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA ATENCIÓN</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
@@ -626,7 +644,7 @@ const UpdateNoteInfirmary = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                        <Button variant="outlined" fullWidth onClick={handleClickReport}>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>
