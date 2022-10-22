@@ -141,6 +141,7 @@ const OccupationalExaminationProgra = Loadable(lazy(() => import('modules/Progra
 const UpdateClinicHistory = Loadable(lazy(() => import('modules/Programming/Attention/UpdateClinicHistory')));
 const UpdateEvolutionNoteProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateEvolutionNote')));
 const UpdatePsychological = Loadable(lazy(() => import('modules/Programming/Attention/UpdatePsychological')));
+const UpdateOthersAdvice = Loadable(lazy(() => import('modules/Programming/Attention/UpdateOtherAdvice')));
 const UpdateMedicalAdviceProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateMedicalAdvice')));
 const UpdateNoteInfirmaryProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateNoteInfirmary')));
 const UpdateAlcoholAndDrugTestings = Loadable(lazy(() => import('modules/Programming/Attention/UpdateAlcoholAndDrugTesting')));
@@ -619,7 +620,7 @@ const MainRoutes = {
         },
         {
             path: '/programming/other/:id',
-            element: <UpdatePsychological />
+            element: <UpdateOthersAdvice />
         },
         {
             path: '/programming/medical-attention/:id',

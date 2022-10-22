@@ -26,7 +26,7 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
-import { InsertAdvice } from 'api/clients/AdviceClient';
+import { GetByIdAdvice, InsertAdvice } from 'api/clients/AdviceClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'components/helpers/Enums';
@@ -36,7 +36,9 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import Cargando from 'components/loading/Cargando';
-import ReportPsychological from './Report/ReportPsychological';
+import { generateReport } from './Report/Psychological';
+import ViewPDF from 'components/components/ViewPDF';
+import { GetByMail } from 'api/clients/UserClient';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -69,13 +71,16 @@ const UpdatePsychological = () => {
     const [causaAsesoria, setCausaAsesoria] = useState([]);
 
     const [resultData, setResultData] = useState([]);
+    const [dataPDF, setDataPDF] = useState(null);
 
     const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
+            const usuarioCierre = estadoPac === "PENDIENTE POR ATENCIÓN" ? '' : lsDataUpdate.usuarioCierreAtencion;
+
             const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
                 lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
                 lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
-                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, lsDataUpdate.usuarioCierreAtencion,
+                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, usuarioCierre,
                 lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
                 lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
 
@@ -96,8 +101,6 @@ const UpdatePsychological = () => {
         try {
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
-                await handleUpdateAttentionClose("ESTÁ SIENDO ATENDIDO", lsServerAtencion.data);
-
                 setLsAtencion(lsServerAtencion.data);
                 setDocumento(lsServerAtencion.data.documento);
                 handleLoadingDocument(lsServerAtencion.data.documento);
@@ -160,6 +163,17 @@ const UpdatePsychological = () => {
         }
     }
 
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAdvice(resultData.id);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
@@ -213,7 +227,7 @@ const UpdatePsychological = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ReportPsychological id={resultData.id} />
+                <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
             {timeWait ?
@@ -394,7 +408,7 @@ const UpdatePsychological = () => {
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
@@ -402,7 +416,7 @@ const UpdatePsychological = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

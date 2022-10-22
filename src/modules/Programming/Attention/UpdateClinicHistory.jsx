@@ -20,7 +20,6 @@ import { PutAttention } from 'formatdata/AttentionForm';
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
-import ReportClinicHistory from './Report/ReportClinicHistory';
 import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 
@@ -38,7 +37,6 @@ import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import { FormatDate } from 'components/helpers/Format'
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -46,11 +44,15 @@ import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/help
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { PostAssistance } from 'formatdata/AssistanceForm';
-import { InsertMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import { GetByIdMedicalHistory, InsertMedicalHistory } from 'api/clients/MedicalHistoryClient';
 import Cargando from 'components/loading/Cargando';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReport } from './Report/ClinicHistory';
+import ViewPDF from 'components/components/ViewPDF';
+import InputOnChange from 'components/input/InputOnChange';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -107,24 +109,30 @@ const UpdateClinicHistory = () => {
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
     const [numberId, setNumberId] = useState('');
 
+    const [textDx1, setTextDx1] = useState('');
+    const [textDx2, setTextDx2] = useState('');
+    const [textDx3, setTextDx3] = useState('');
+    const [lsDx1, setLsDx1] = useState([]);
+    const [lsDx2, setLsDx2] = useState([]);
+    const [lsDx3, setLsDx3] = useState([]);
+
     const [openError, setOpenError] = useState(false);
-    const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [openUpdate, setOpenUpdate] = useState(false);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openExamenParaclinico, setOpenExamenParaclinico] = useState(false);
     const [openExamenFisico, setOpenExamenFisico] = useState(false);
-    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
     const [lsAssistance, setLsAssistance] = useState([]);
 
     const [documento, setDocumento] = useState('');
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsContingencia, setLsContingencia] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
 
     const [resultData, setResultData] = useState([]);
+    const [dataPDF, setDataPDF] = useState([]);
 
     const methods = useForm();
 
@@ -144,10 +152,12 @@ const UpdateClinicHistory = () => {
 
     const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
+            const usuarioCierre = estadoPac === "PENDIENTE POR ATENCIÓN" ? '' : lsDataUpdate.usuarioCierreAtencion;
+
             const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
                 lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
                 lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
-                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, lsDataUpdate.usuarioCierreAtencion,
+                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, usuarioCierre,
                 lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
                 lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
 
@@ -164,12 +174,88 @@ const UpdateClinicHistory = () => {
         } catch (error) { }
     }
 
+    const handleDx1 = async (event) => {
+        try {
+            setTextDx1(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx2 = async (event) => {
+        try {
+            setTextDx2(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx2(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx3 = async (event) => {
+        try {
+            setTextDx3(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx3(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
     async function getAll() {
         try {
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
-                await handleUpdateAttentionClose("ESTÁ SIENDO ATENDIDO", lsServerAtencion.data);
-
                 setDocumento(lsServerAtencion.data.documento);
                 handleLoadingDocument(lsServerAtencion.data.documento);
                 setLsAtencion(lsServerAtencion.data);
@@ -195,13 +281,6 @@ const UpdateClinicHistory = () => {
                 label: item.nombre
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
-
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
         } catch (error) { }
     }
 
@@ -209,18 +288,34 @@ const UpdateClinicHistory = () => {
         getAll();
     }, []);
 
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdMedicalHistory(resultData.id);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PostAssistance(documento, FormatDate(datos.fecha), id, datos.idAtencion, datos.idContingencia, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico,
-                datos.examenParaclinico, JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL,
+                datos.examenParaclinico, datos.dx1, datos.dx2, datos.dx3, datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertMedicalHistory(DataToUpdate);
-                if (result.status === 200) {
-                    setResultData(result.data);
-                    setOpenUpdate(true);
+            if (textDx1 === '') {
+                setOpenError(true);
+                setErrorMessage('Por favor, registre por lo menos un Diagnóstico');
+            } else {
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await InsertMedicalHistory(DataToUpdate);
+                    if (result.status === 200) {
+                        setResultData(result.data);
+                        setOpenUpdate(true);
+                    }
                 }
             }
         } catch (error) {
@@ -278,7 +373,7 @@ const UpdateClinicHistory = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ReportClinicHistory id={resultData.id} />
+                <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
             <ControlModal
@@ -306,6 +401,8 @@ const UpdateClinicHistory = () => {
                     />
                     : listMedicalFormula ?
                         <ListMedicalFormula
+                            documento={documento}
+                            tipoOrden={titleModal}
                             setListMedicalFormula={setListMedicalFormula}
                             setNewMedicalFormula={setNewMedicalFormula}
                             setUpdateMedicalFormula={setUpdateMedicalFormula}
@@ -578,15 +675,70 @@ const UpdateClinicHistory = () => {
                     <Grid item xs={12}>
                         <SubCard>
                             <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setDiagnosticoArray(value)}
-                                        value={diagnosticoArray}
-                                        label="Diagnósticos"
-                                        options={lsCie11}
-                                    />
-                                </Grid>
+                                <Fragment>
+                                    <Grid item xs={2}>
+                                        <InputOnChange
+                                            label="Dx 1"
+                                            onKeyDown={handleDx1}
+                                            onChange={(e) => setTextDx1(e?.target.value)}
+                                            value={textDx1}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="dx1"
+                                                label="Dx1"
+                                                defaultValue=""
+                                                options={lsDx1}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <InputOnChange
+                                            label="Dx 2"
+                                            onKeyDown={handleDx2}
+                                            onChange={(e) => setTextDx2(e.target.value)}
+                                            value={textDx2}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="dx2"
+                                                label="Dx2"
+                                                defaultValue=""
+                                                options={lsDx2}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <InputOnChange
+                                            label="Dx 3"
+                                            onKeyDown={handleDx3}
+                                            onChange={(e) => setTextDx3(e.target.value)}
+                                            value={textDx3}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="dx3"
+                                                label="Dx3"
+                                                defaultValue=""
+                                                options={lsDx3}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Fragment>
 
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
@@ -637,7 +789,7 @@ const UpdateClinicHistory = () => {
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
@@ -645,7 +797,7 @@ const UpdateClinicHistory = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

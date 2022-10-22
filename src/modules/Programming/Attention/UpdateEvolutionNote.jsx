@@ -24,7 +24,6 @@ import { PutAttention } from 'formatdata/AttentionForm';
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
-import ReportEvolutionNote from './Report/ReportEvolutionNote';
 import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 
@@ -40,9 +39,8 @@ import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import Cargando from 'components/loading/Cargando';
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
@@ -50,8 +48,13 @@ import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostEvolutionNote } from 'formatdata/EvolutionNoteForm';
-import { InsertEvolutionNote } from 'api/clients/EvolutionNoteClient';
+import { GetByIdEvolutionNote, InsertEvolutionNote } from 'api/clients/EvolutionNoteClient';
 import { FormatDate } from 'components/helpers/Format';
+
+import { generateReport } from './Report/EvolutionNote';
+import { GetByMail } from 'api/clients/UserClient';
+import ViewPDF from 'components/components/ViewPDF';
+import InputOnChange from 'components/input/InputOnChange';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -107,6 +110,13 @@ const UpdateEvolutionNote = () => {
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
     const [numberId, setNumberId] = useState('');
 
+    const [textDx1, setTextDx1] = useState('');
+    const [textDx2, setTextDx2] = useState('');
+    const [textDx3, setTextDx3] = useState('');
+    const [lsDx1, setLsDx1] = useState([]);
+    const [lsDx2, setLsDx2] = useState([]);
+    const [lsDx3, setLsDx3] = useState([]);
+
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
@@ -114,7 +124,6 @@ const UpdateEvolutionNote = () => {
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openExamen, setOpenExamen] = useState(false);
-    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
 
     const [lsAtencionn, setLsAtencionn] = useState([]);
     const [lsAtencion, setLsAtencion] = useState([]);
@@ -124,10 +133,100 @@ const UpdateEvolutionNote = () => {
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
 
     const [resultData, setResultData] = useState([]);
+    const [dataPDF, setDataPDF] = useState(null);
 
     const methods = useForm();
 
     const { handleSubmit } = methods;
+
+    const handleDx1 = async (event) => {
+        try {
+            setTextDx1(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx2 = async (event) => {
+        try {
+            setTextDx2(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx2(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx3 = async (event) => {
+        try {
+            setTextDx3(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx3(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdEvolutionNote(resultData.id);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -143,10 +242,12 @@ const UpdateEvolutionNote = () => {
 
     const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
+            const usuarioCierre = estadoPac === "PENDIENTE POR ATENCIÓN" ? '' : lsDataUpdate.usuarioCierreAtencion;
+
             const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
                 lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
                 lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
-                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, lsDataUpdate.usuarioCierreAtencion,
+                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, usuarioCierre,
                 lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
                 lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
 
@@ -167,8 +268,6 @@ const UpdateEvolutionNote = () => {
         try {
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
-                await handleUpdateAttentionClose("ESTÁ SIENDO ATENDIDO", lsServerAtencion.data);
-
                 setDocumento(lsServerAtencion.data.documento);
                 handleLoadingDocument(lsServerAtencion.data.documento);
                 setLsAtencion(lsServerAtencion.data);
@@ -211,17 +310,20 @@ const UpdateEvolutionNote = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PostEvolutionNote(documento, FormatDate(datos.fecha), id, datos.idAtencion, datos.idContingencia,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.nota, JSON.stringify(diagnosticoArray),
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.nota, datos.dx1, datos.dx2, datos.dx3,
                 datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.email,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
-            console.log(DataToUpdate);
-
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertEvolutionNote(DataToUpdate);
-                if (result.status === 200) {
-                    setOpenUpdate(true);
-                    setResultData(result.data);
+            if (textDx1 === '') {
+                setOpenError(true);
+                setErrorMessage('Por favor, registre por lo menos un Diagnóstico');
+            } else {
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await InsertEvolutionNote(DataToUpdate);
+                    if (result.status === 200) {
+                        setOpenUpdate(true);
+                        setResultData(result.data);
+                    }
                 }
             }
         } catch (error) {
@@ -271,7 +373,7 @@ const UpdateEvolutionNote = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ReportEvolutionNote id={resultData.id} />
+                <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
             <ControlModal
@@ -299,6 +401,8 @@ const UpdateEvolutionNote = () => {
                     />
                     : listMedicalFormula ?
                         <ListMedicalFormula
+                            documento={documento}
+                            tipoOrden={titleModal}
                             setListMedicalFormula={setListMedicalFormula}
                             setNewMedicalFormula={setNewMedicalFormula}
                             setUpdateMedicalFormula={setUpdateMedicalFormula}
@@ -430,15 +534,70 @@ const UpdateEvolutionNote = () => {
                     <Grid item xs={12}>
                         <SubCard>
                             <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setDiagnosticoArray(value)}
-                                        value={diagnosticoArray}
-                                        label="Diagnósticos"
-                                        options={lsCie11}
-                                    />
-                                </Grid>
+                                <Fragment>
+                                    <Grid item xs={2}>
+                                        <InputOnChange
+                                            label="Dx 1"
+                                            onKeyDown={handleDx1}
+                                            onChange={(e) => setTextDx1(e?.target.value)}
+                                            value={textDx1}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="dx1"
+                                                label="Dx1"
+                                                defaultValue=""
+                                                options={lsDx1}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <InputOnChange
+                                            label="Dx 2"
+                                            onKeyDown={handleDx2}
+                                            onChange={(e) => setTextDx2(e.target.value)}
+                                            value={textDx2}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="dx2"
+                                                label="Dx2"
+                                                defaultValue=""
+                                                options={lsDx2}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <InputOnChange
+                                            label="Dx 3"
+                                            onKeyDown={handleDx3}
+                                            onChange={(e) => setTextDx3(e.target.value)}
+                                            value={textDx3}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="dx3"
+                                                label="Dx3"
+                                                defaultValue=""
+                                                options={lsDx3}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Fragment>
 
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
@@ -489,7 +648,7 @@ const UpdateEvolutionNote = () => {
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
@@ -497,7 +656,7 @@ const UpdateEvolutionNote = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

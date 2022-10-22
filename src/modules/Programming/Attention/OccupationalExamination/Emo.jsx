@@ -42,12 +42,13 @@ import { IconEdit } from '@tabler/icons';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import TableAntecedentes from './TableEmo/TableAntecedentes';
 import RespiratorySymptoms from './RespiratorySymptoms';
 import TableExamenesPara from './TableEmo/TableExamenesPara';
+import { MessageError } from 'components/alert/AlertAll';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -89,8 +90,8 @@ const Emo = ({
     setEstadoVacuna,
     estadoVacuna,
     lsEmployee,
-    setArrays,
-    arrays,
+    setTipoFobia,
+    tipoFobia,
     ...methods
 }) => {
     const theme = useTheme();
@@ -124,6 +125,15 @@ const Emo = ({
 
     const [textParaclinico, setTextParaclinico] = useState('');
     const [openParaclinico, setOpenParaclinico] = useState(false);
+
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [textDx1, setTextDx1] = useState('');
+    const [textDx2, setTextDx2] = useState('');
+    const [textDx3, setTextDx3] = useState('');
+    const [lsDx1, setLsDx1] = useState([]);
+    const [lsDx2, setLsDx2] = useState([]);
+    const [lsDx3, setLsDx3] = useState([]);
 
     async function getAll() {
         try {
@@ -260,10 +270,88 @@ const Emo = ({
         getAllConceptos();
     }, [atencion]);
 
+    const handleDx1 = async (event) => {
+        try {
+            setTextDx1(event.target.value);
 
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx2 = async (event) => {
+        try {
+            setTextDx2(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx2(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx3 = async (event) => {
+        try {
+            setTextDx3(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx3(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
 
     return (
         <Fragment>
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <ControlModal
                 maxWidth="md"
                 open={open}
@@ -1318,8 +1406,8 @@ const Emo = ({
                                 <Grid item xs={5} >
                                     <InputMultiSelects
                                         fullWidth
-                                        onChange={(event, value) => setArrays({ ...arrays, tipoFobia: value })}
-                                        value={arrays.tipoFobia}
+                                        onChange={(event, value) => setTipoFobia(value)}
+                                        value={tipoFobia}
                                         label="Tipo de Fobia"
                                         options={lsTipoFobia}
                                     />
@@ -3379,15 +3467,70 @@ const Emo = ({
                         <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">IMPRESIÓN DIAGNÓSTICA Y CONCEPTO FINAL</Typography></>}>
                         <SubCard>
                             <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setArrays({ ...arrays, dx: value })}
-                                        value={arrays.dx}
-                                        label="DX"
-                                        options={lsCie11}
-                                    />
-                                </Grid>
+                                <Fragment>
+                                    <Grid item xs={2}>
+                                        <InputOnChange
+                                            label="Dx 1"
+                                            onKeyDown={handleDx1}
+                                            onChange={(e) => setTextDx1(e?.target.value)}
+                                            value={textDx1}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="dx1"
+                                                label="Dx1"
+                                                defaultValue=""
+                                                options={lsDx1}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <InputOnChange
+                                            label="Dx 2"
+                                            onKeyDown={handleDx2}
+                                            onChange={(e) => setTextDx2(e.target.value)}
+                                            value={textDx2}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="dx2"
+                                                label="Dx2"
+                                                defaultValue=""
+                                                options={lsDx2}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <InputOnChange
+                                            label="Dx 3"
+                                            onKeyDown={handleDx3}
+                                            onChange={(e) => setTextDx3(e.target.value)}
+                                            value={textDx3}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="dx3"
+                                                label="Dx3"
+                                                defaultValue=""
+                                                options={lsDx3}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Fragment>
 
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
@@ -3491,7 +3634,7 @@ const Emo = ({
                         <Typography sx={{ pl: 2 }} variant="h5" color="inherit">TRABAJO EN ALTURA</Typography></>}>
                         <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIÓN EMPRESA</Typography>}>
                             <Grid container spacing={2}>
-                                <Grid item xs={4}>
+                                <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
                                             label="Fecha Del Concepto"
@@ -3501,12 +3644,12 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             defaultValue=""
                                             name="conceptoActitudNETA"
-                                            label="Concepto Aptitud"
+                                            label="Concepto De Aptitud"
                                             options={lsNeConceptoActi}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3514,7 +3657,21 @@ const Emo = ({
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                {/* ESPACIO CONFINADO */}
+                                <Grid item xs={6}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            defaultValue=""
+                                            name="idConceptoEspacioConfinado"
+                                            label="Concepto De Espacio Confinado"
+                                            options={lsNeConceptoActi}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="conceptoAplazadoNETA"
@@ -4060,8 +4217,8 @@ Emo.propTypes = {
     lsEmployee: PropTypes.any,
     documento: PropTypes.any,
     errors: PropTypes.any,
-    setArrays: PropTypes.func,
-    arrays: PropTypes.any,
+    setTipoFobia: PropTypes.func,
+    tipoFobia: PropTypes.any,
     setEstadoVacuna: PropTypes.func,
     estadoVacuna: PropTypes.any,
     lsLastRecord: PropTypes.any,

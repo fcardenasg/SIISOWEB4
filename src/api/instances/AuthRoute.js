@@ -29,6 +29,7 @@ export const Url = {
     PanoramaId: 'api/Panoramariesgo/id',
 
     Recetario: 'api/Recetario',
+    RecetarioByDocAndOrder: 'api/Recetario/GetAllByDocumentAndTypeOrder',
     RecetarioId: 'api/Recetario/id',
 
     Medicamentos: 'api/Medicamentos',
@@ -80,9 +81,6 @@ export const Url = {
     Accidentalidad: 'api/Accidentalidad',
     AccidentalidadId: 'api/Accidentalidad/id',
 
-    RegistroAtencion: 'api/RegistroAtencion',
-    RegistroAtencionId: 'api/RegistroAtencion/id',
-
     HistoriaLaboral: 'api/HistoriaLaboral',
     HistoriaLaboralGetAllByDocument: 'api/HistoriaLaboral/GetAllByDocument',
     HistoriaLaboralId: 'api/HistoriaLaboral/id',
@@ -92,6 +90,7 @@ export const Url = {
     HistoriaLaboralOtrasEmpresasId: 'api/HistoriaLaboralOtrasEmpresas/id',
 
     CIE11: 'api/CIE11',
+    CIE11Search: 'api/CIE11/GetAllByCodeOrName',
     CIE11Id: 'api/CIE11/id',
 
     Plantilla: 'api/Plantilla',

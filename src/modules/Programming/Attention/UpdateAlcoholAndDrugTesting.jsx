@@ -275,7 +275,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                
+
             </ControlModal>
 
             <FullScreenDialog
@@ -290,6 +290,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
+                            title='PRUEBAS DE ALCOHOL Y DROGAS'
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

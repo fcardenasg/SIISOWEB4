@@ -10,9 +10,6 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import User from 'assets/img/user.png';
@@ -35,10 +32,13 @@ import SubCard from 'ui-component/cards/SubCard';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import { InsertMedicalFormula } from 'api/clients/MedicalFormulaClient';
+import { GetByIdMedicalFormula, InsertMedicalFormula } from 'api/clients/MedicalFormulaClient';
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { PostMedicalFormula } from 'formatdata/MedicalFormulaForm';
 import { FormatDate } from 'components/helpers/Format';
+import ViewPDF from 'components/components/ViewPDF';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReport } from './Report';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -61,11 +61,15 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
     const [diagnostico, setDiagnostico] = useState([]);
     const [lsCie11, setLsCie11] = useState([]);
 
+    const [resultData, setResultData] = useState([]);
+    const [openReport, setOpenReport] = useState(false);
+    const [dataPDF, setDataPDF] = useState(null);
+
     const methods = useForm();
     const { handleSubmit, errors, reset } = methods;
 
     useEffect(() => {
-        async function GetAll() {
+        async function getAll() {
             try {
                 const lsServerCie11 = await GetAllCIE11(0, 0);
                 var resultCie11 = lsServerCie11.data.entities.map((item) => ({
@@ -73,13 +77,22 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
                     label: item.dx
                 }));
                 setLsCie11(resultCie11);
-            } catch (error) {
-                console.log(error);
-            }
+            } catch (error) { }
         }
 
-        GetAll();
-    }, [])
+        getAll();
+    }, []);
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdMedicalFormula(resultData.idRecetario);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleClick = async (datos) => {
         try {
@@ -88,7 +101,7 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
                     tipoOrden === 'Imagenes' ? DefaultValue.TIPO_ORDEN_IMAGEN :
                         tipoOrden === 'Examenes' ? DefaultValue.TIPO_ORDEN_EXAMEN : DefaultValue.SINREGISTRO_GLOBAL;
 
-            const DataToInsert = PostMedicalFormula(FormatDate(new Date()), documento, DefaultValue.SINREGISTRO_GLOBAL,
+            const DataToInsert = PostMedicalFormula(FormatDate(new Date()), documento, lsAtencion.motivo,
                 lsAtencion.id, saveTipoOrden, JSON.stringify(diagnostico), datos.descripcion,
                 user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
@@ -98,6 +111,7 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
                     setOpenSuccess(true);
                     setDiagnostico([]);
                     reset();
+                    setResultData(result.data)
                 }
             }
         } catch (error) {
@@ -135,6 +149,15 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
             >
                 <ListMedicalFormula />
             </FullScreenDialog>
+
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -246,23 +269,30 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
 
                             <Grid item xs={12}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={6}>
+                                    <Grid item xs={3}>
                                         <AnimateButton>
-                                            <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                            <Button disabled={resultData.length !== 0 ? true : false} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                                 {TitleButton.Guardar}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={6}>
+                                    <Grid item xs={3}>
+                                        <AnimateButton>
+                                            <Button disabled={resultData.length === 0 ? true : false} variant="outlined" onClick={handleClickReport} fullWidth>
+                                                {TitleButton.Imprimir}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => {
                                                 setUpdateMedicalFormula(false);
                                                 setNewMedicalFormula(false);
                                                 setListMedicalFormula(true);
                                             }}>
-                                                {TitleButton.Cancelar}
-                                            </Button>
+                                                {TitleButton.Cancelar}</Button>
                                         </AnimateButton>
                                     </Grid>
                                 </Grid>

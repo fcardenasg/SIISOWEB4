@@ -64,10 +64,11 @@ export function PostOccupationalExamination(
     fechaRnmLumbosacraEPA = FormatDate(new Date()), resultadoRnmLumbosacraEPA = DefaultValue.SINREGISTRO_GLOBAL, observacionesRnmLumbosacraEPA = "",
     fechaRnmCervicalEPA = FormatDate(new Date()), resultadoRnmCervicalEPA = DefaultValue.SINREGISTRO_GLOBAL, observacionesRnmCervicalEPA = "", observacionEPA = "",
 
-    dxID = "", observacionID = "", recomendacionesID = "", idConceptoActitudID = DefaultValue.SINREGISTRO_GLOBAL,
+    dx1 = "", dx2 = "", dx3 = "", observacionID = "", recomendacionesID = "", idConceptoActitudID = DefaultValue.SINREGISTRO_GLOBAL,
 
     fechaConceptoNETA = FormatDate(new Date()), conceptoAplazadoNETA = DefaultValue.SINREGISTRO_GLOBAL,
-    conceptoActitudNETA = DefaultValue.SINREGISTRO_GLOBAL, motivoAplazoNETA = "", descripcionResultadoNETA = "", recomendacionesNETA = "",
+    conceptoActitudNETA = DefaultValue.SINREGISTRO_GLOBAL, idConceptoEspacioConfinado = DefaultValue.SINREGISTRO_GLOBAL,
+    motivoAplazoNETA = "", descripcionResultadoNETA = "", recomendacionesNETA = "",
     remitidoNETA = DefaultValue.SINREGISTRO_GLOBAL, remididoDondeNETA = DefaultValue.SINREGISTRO_GLOBAL,
 
     idRiesgoCardiovascularNEMTA = DefaultValue.SINREGISTRO_GLOBAL, idClasificacionNEMTA = DefaultValue.SINREGISTRO_GLOBAL,
@@ -168,7 +169,10 @@ export function PostOccupationalExamination(
         resultadoLaboratorioClinicoEPA, observacionesLaboratorioClinicoEPA, fechaCuestionarioSintomaEPA, resultadoCuestionarioSintomaEPA,
         observacionesCuestionarioSintomaEPA, fechaEkgEPA, resultadoEkgEPA, observacionesEkgEPA, fechaRnmLumbosacraEPA, resultadoRnmLumbosacraEPA,
         observacionesRnmLumbosacraEPA, fechaRnmCervicalEPA, resultadoRnmCervicalEPA, observacionesRnmCervicalEPA, observacionEPA,
-        dxID, observacionID, recomendacionesID, idConceptoActitudID, fechaConceptoNETA, conceptoAplazadoNETA, conceptoActitudNETA,
+
+        dx1, dx2, dx3, observacionID, recomendacionesID, idConceptoActitudID, fechaConceptoNETA, conceptoAplazadoNETA, conceptoActitudNETA,
+        idConceptoEspacioConfinado,
+
         motivoAplazoNETA, descripcionResultadoNETA, recomendacionesNETA, remitidoNETA, remididoDondeNETA, idRiesgoCardiovascularNEMTA,
         idClasificacionNEMTA, idMenorEdadNEMTA, idMujerEmbarazadaNEMTA, idArimiaNEMTA, idEnfermedadNEMTA, idHistoriaNEMTA,
         idHipertensionNEMTA, idHipertrigliceridemiaNEMTA, idCifrasNEMTA, idDiabetesNEMTA, idDislipidemiaNEMTA, idDiagnosticoNEMTA,

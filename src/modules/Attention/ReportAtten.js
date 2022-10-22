@@ -63,14 +63,14 @@ export function generateReport(lsDataReport = [], lsDataUser = []) {
 
     /* CUADRO DATOS */
     doc.line(5, 40, 210, 40);
-    doc.line(5, 40, 5, 120);
+    doc.line(5, 40, 5, 160);
     doc.line(40, 40, 40, 74); /* LINEA ONE */
     doc.line(115, 40, 115, 74); /* LINEA TWO */
-    doc.line(210, 40, 210, 120);
+    doc.line(210, 40, 210, 160);
     doc.line(5, 74, 210, 74);
     /* CUADRO OBSERVACIÓN */
     doc.line(5, 84, 210, 84);
-    doc.line(5, 120, 210, 120);
+    doc.line(5, 160, 210, 160);
 
     /* TITULOS DE CONTENIDO */
     doc.text('N° REGISTRO:', 45, 48);
@@ -96,10 +96,6 @@ export function generateReport(lsDataReport = [], lsDataUser = []) {
     doc.text(`${lsDataReport.nameSedeAtencion}`, 145, 69);
 
     doc.text(`${lsDataReport.observaciones}`, 10, 90, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
-
-    /* FIRMA */
-    getFirma(doc, lsDataUser);
-    getFirmaEmployee(doc, lsDataReport);
 
     /* PIE DE PÁGINA */
     getPiePage(doc, lsDataUser);

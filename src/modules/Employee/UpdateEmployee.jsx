@@ -106,7 +106,6 @@ const UpdateEmployee = () => {
 
     async function GetAll() {
         try {
-
             const lsServerEmployeeId = await GetByIdEmployee(id);
             if (lsServerEmployeeId.status === 200) {
                 setEmployee(lsServerEmployeeId.data);
@@ -375,7 +374,7 @@ const UpdateEmployee = () => {
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date(datos.termDate)),
-                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.email, FormatDate(new Date()), imgSrc);
+                1, datos.ges, datos.oficio, employee.usuarioRegistro, employee.fechaRegistro, user.email, FormatDate(new Date()), imgSrc);
 
             if (imgSrc != null) {
                 if (Object.keys(datos.length !== 0)) {
@@ -928,6 +927,19 @@ const UpdateEmployee = () => {
                                         options={lsGes}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.ges}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="oficio"
+                                        label="Oficio"
+                                        defaultValue={employee.oficio}
+                                        options={lsGes}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.oficio}
                                     />
                                 </FormProvider>
                             </Grid>

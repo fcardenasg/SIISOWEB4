@@ -42,7 +42,7 @@ import DetailedIcon from 'components/controllers/DetailedIcon';
 import { PostNoteInfirmary } from 'formatdata/NoteInfirmaryForm';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
@@ -50,6 +50,8 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { InsertNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
 import Cargando from 'components/loading/Cargando';
+import InputOnChange from 'components/input/InputOnChange';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -106,6 +108,14 @@ const UpdateNoteInfirmary = () => {
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
     const [numberId, setNumberId] = useState('');
 
+    const [textDx1, setTextDx1] = useState('');
+    const [textDx2, setTextDx2] = useState('');
+    const [textDx3, setTextDx3] = useState('');
+
+    const [lsDx1, setLsDx1] = useState([]);
+    const [lsDx2, setLsDx2] = useState([]);
+    const [lsDx3, setLsDx3] = useState([]);
+
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
@@ -122,14 +132,16 @@ const UpdateNoteInfirmary = () => {
 
     const methods = useForm();
 
-    const { handleSubmit, errors } = methods;
+    const { handleSubmit } = methods;
 
     const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
+            const usuarioCierre = estadoPac === "PENDIENTE POR ATENCIÓN" ? '' : lsDataUpdate.usuarioCierreAtencion;
+
             const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
                 lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
                 lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
-                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, lsDataUpdate.usuarioCierreAtencion,
+                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, usuarioCierre,
                 lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
                 lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
 
@@ -160,22 +172,133 @@ const UpdateNoteInfirmary = () => {
         }
     }
 
-    async function GetAll() {
+    const handleDx1 = async (event) => {
+        try {
+            setTextDx1(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx2 = async (event) => {
+        try {
+            setTextDx2(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx2(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx3 = async (event) => {
+        try {
+            setTextDx3(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx3(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleAtencion = async (sede, tipoAtencion) => {
+        if (sede === DefaultValue.SEDE_PUERTO && tipoAtencion === DefaultValue.TIPO_ATENCION_ENFERMERIA) {
+
+            var resultMapsTipoAM = [];
+            var resultMapsTipoAE = [];
+            /* AQUÍ SE CARGAN LAS ATENCIONES MÉDICAS */
+            var lsGetTipoAtencionMedica = await GetAllBySubTipoCatalogo(0, 0, 'SER01', 5);
+            if (lsGetTipoAtencionMedica.status === 200) {
+                resultMapsTipoAM = lsGetTipoAtencionMedica.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+            }
+
+            /* AQUÍ SE CARGAN LAS ATENCIONES DE ENFERMERIA */
+            const lsServerAtencionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION_NOTA_ENFERMERIA);
+            if (lsServerAtencionn.status === 200) {
+                resultMapsTipoAE = lsServerAtencionn.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+            }
+
+            const arrayAtencion = resultMapsTipoAE.concat(resultMapsTipoAM);
+            setLsAtencionn(arrayAtencion);
+
+        } else {
+
+            const lsServerAtencionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION_NOTA_ENFERMERIA);
+            if (lsServerAtencionn.status === 200) {
+                var resultAtencionn = lsServerAtencionn.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+
+                setLsAtencionn(resultAtencionn);
+            }
+        }
+    }
+
+    async function getAll() {
         try {
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
-
                 setLsAtencion(lsServerAtencion.data);
                 setDocumento(lsServerAtencion.data.documento);
                 handleLoadingDocument(lsServerAtencion.data.documento);
+                handleAtencion(lsServerAtencion.data.sede, lsServerAtencion.data.tipo);
             }
-
-            const lsServerAtencionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION_NOTA_ENFERMERIA);
-            var resultAtencion = lsServerAtencionn.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsAtencionn(resultAtencion);
 
             const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
             var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
@@ -194,21 +317,36 @@ const UpdateNoteInfirmary = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, []);
 
 
     const handleClick = async (datos) => {
         try {
             const UpdateToInsert = PostNoteInfirmary(id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, JSON.stringify(procedimiento), datos.notaEnfermedad,
+                datos.dx1, datos.dx2, datos.dx3, JSON.stringify(procedimiento), datos.notaEnfermedad,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertNoteInfirmary(UpdateToInsert);
-                if (result.status === 200) {
-                    setOpenUpdate(true);
-                    setResultData(result.data);
+            if (lsAtencion.sede === DefaultValue.SEDE_PUERTO && lsAtencion.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA) {
+                if (textDx1 === '') {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, registre por lo menos un Diagnóstico');
+                } else {
+                    if (Object.keys(datos.length !== 0)) {
+                        const result = await InsertNoteInfirmary(UpdateToInsert);
+                        if (result.status === 200) {
+                            setOpenUpdate(true);
+                            setResultData(result.data);
+                        }
+                    }
+                }
+            } else {
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await InsertNoteInfirmary(UpdateToInsert);
+                    if (result.status === 200) {
+                        setOpenUpdate(true);
+                        setResultData(result.data);
+                    }
                 }
             }
         } catch (error) {
@@ -278,6 +416,8 @@ const UpdateNoteInfirmary = () => {
                     />
                     : listMedicalFormula ?
                         <ListMedicalFormula
+                            documento={documento}
+                            tipoOrden={titleModal}
                             setListMedicalFormula={setListMedicalFormula}
                             setNewMedicalFormula={setNewMedicalFormula}
                             setUpdateMedicalFormula={setUpdateMedicalFormula}
@@ -378,6 +518,74 @@ const UpdateNoteInfirmary = () => {
                                         options={lsProcedimiento}
                                     />
                                 </Grid>
+
+                                {lsAtencion.sede === DefaultValue.SEDE_PUERTO &&
+                                    lsAtencion.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA ?
+                                    <Fragment>
+                                        <Grid item xs={2}>
+                                            <InputOnChange
+                                                label="Dx 1"
+                                                onKeyDown={handleDx1}
+                                                onChange={(e) => setTextDx1(e?.target.value)}
+                                                value={textDx1}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={10}>
+                                            <FormProvider {...methods}>
+                                                <InputSelect
+                                                    name="dx1"
+                                                    label="Dx1"
+                                                    defaultValue=""
+                                                    options={lsDx1}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={2}>
+                                            <InputOnChange
+                                                label="Dx 2"
+                                                onKeyDown={handleDx2}
+                                                onChange={(e) => setTextDx2(e.target.value)}
+                                                value={textDx2}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={10}>
+                                            <FormProvider {...methods}>
+                                                <InputSelect
+                                                    name="dx2"
+                                                    label="Dx2"
+                                                    defaultValue=""
+                                                    options={lsDx2}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={2}>
+                                            <InputOnChange
+                                                label="Dx 3"
+                                                onKeyDown={handleDx3}
+                                                onChange={(e) => setTextDx3(e.target.value)}
+                                                value={textDx3}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={10}>
+                                            <FormProvider {...methods}>
+                                                <InputSelect
+                                                    name="dx3"
+                                                    label="Dx3"
+                                                    defaultValue=""
+                                                    options={lsDx3}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+                                    </Fragment> : null
+                                }
 
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
