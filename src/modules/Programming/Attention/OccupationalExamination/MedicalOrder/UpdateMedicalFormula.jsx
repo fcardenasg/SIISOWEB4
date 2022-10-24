@@ -10,9 +10,6 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import ListMedicalFormula from 'components/template/ListMedicalFormula';
@@ -39,8 +36,10 @@ import { UpdateMedicalFormulas, GetByIdMedicalFormula } from 'api/clients/Medica
 import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { PutMedicalFormula } from 'formatdata/MedicalFormulaForm';
 import { FormatDate } from 'components/helpers/Format';
-import Cargando from 'components/loading/Cargando';
 import SkeletonMedical from '../Modal/SkeletonMedical';
+import { GetByMail } from 'api/clients/UserClient';
+import ViewPDF from 'components/components/ViewPDF';
+import { generateReport } from './Report';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -66,6 +65,9 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
     const [diagnostico, setDiagnostico] = useState([]);
     const [lsCie11, setLsCie11] = useState([]);
 
+    const [openReport, setOpenReport] = useState(false);
+    const [dataPDF, setDataPDF] = useState(null);
+
     const methods = useForm();
     const { handleSubmit, errors } = methods;
 
@@ -84,14 +86,23 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
                 label: item.dx
             }));
             setLsCie11(resultCie11);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
         GetAll();
     }, [])
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdMedicalFormula(numberId);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleClick = async (datos) => {
         try {
@@ -119,7 +130,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
     };
 
     setTimeout(() => {
-        if (lsMedicalFormula.length != 0) {
+        if (lsMedicalFormula.length !== 0) {
             setTimeWait(true);
         }
     }, 1500);
@@ -153,6 +164,15 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
             >
                 <ListMedicalFormula />
             </FullScreenDialog>
+
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
 
             {timeWait != 0 ?
                 <Grid container spacing={2}>
@@ -265,7 +285,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={2}>
-                                        <Grid item xs={6}>
+                                        <Grid item xs={3}>
                                             <AnimateButton>
                                                 <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                                     {TitleButton.Actualizar}
@@ -273,7 +293,15 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
                                             </AnimateButton>
                                         </Grid>
 
-                                        <Grid item xs={6}>
+                                        <Grid item xs={3}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" onClick={handleClickReport} fullWidth>
+                                                    {TitleButton.Imprimir}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
                                             <AnimateButton>
                                                 <Button variant="outlined" fullWidth onClick={() => {
                                                     setUpdateMedicalFormula(false);

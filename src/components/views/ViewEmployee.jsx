@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Fragment, useState } from "react";
-import { Grid, CardMedia } from '@mui/material'
-import user from 'assets/img/user.png'
+import { Grid, CardMedia } from '@mui/material';
+import user from 'assets/img/user.png';
 import { useTheme } from "@mui/material/styles";
 
 import AnimateButton from 'ui-component/extended/AnimateButton';

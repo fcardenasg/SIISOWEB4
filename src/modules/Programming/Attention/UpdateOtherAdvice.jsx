@@ -50,7 +50,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { useParams } from 'react-router-dom';
 import Cargando from 'components/loading/Cargando';
 import ViewPDF from 'components/components/ViewPDF';
-import { generateReport } from './Report/MedicalAdvice';
+import { generateReport } from './Report/OtherAdvice';
 import { GetByMail } from 'api/clients/UserClient';
 
 const DetailIcons = [
@@ -89,7 +89,7 @@ const dataMedicalOrders = [
     },
 ]
 
-const UpdateMedicalAdvice = () => {
+const UpdateOtherAdvice = () => {
     const { user } = useAuth();
     const { id } = useParams();
     const theme = useTheme();
@@ -204,9 +204,10 @@ const UpdateMedicalAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.ASESORIA_MEDICA, lsAtencion.sede,
-                DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
-                datos.idTipoAsesoria, datos.idMotivo, DefaultData.SINREGISTRO_GLOBAL, datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL,
+            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, lsAtencion.atencion, lsAtencion.sede,
+                DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
+                DefaultData.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo, DefaultData.SINREGISTRO_GLOBAL,
+                datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -324,7 +325,7 @@ const UpdateMedicalAdvice = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="ASESORÍAS MÉDICAS ESPECIALIZADAS"
+                            title="OTRAS ASESORÍAS"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -352,7 +353,6 @@ const UpdateMedicalAdvice = () => {
                                         <InputSelect
                                             name="idMotivo"
                                             label="Motivo"
-                                            defaultValue={lsAtencion.motivo}
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
@@ -481,4 +481,4 @@ const UpdateMedicalAdvice = () => {
     );
 };
 
-export default UpdateMedicalAdvice;
+export default UpdateOtherAdvice;

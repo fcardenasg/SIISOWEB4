@@ -136,18 +136,18 @@ const UpdateAlcoholAndDrugTesting = () => {
 
     const { handleSubmit, errors } = methods;
 
-   //Metodo Imprimir
-   const handleClickReport = async () => {
-    try {
-        setOpenReport(true);
-        const lsDataReport = await GetByIdAlcoholAndDrugTesting(3);
-        const lsDataUser = await GetByMail(user.email);
+    //Metodo Imprimir
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAlcoholAndDrugTesting(3);
+            const lsDataUser = await GetByMail(user.email);
 
-        const dataPDFTwo = generateReportAlcoholtesting(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportAlcoholtesting(lsDataReport.data, lsDataUser.data);
 
-        setDataPDF(dataPDFTwo);
-    } catch (err) { }
-};
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
 
 
@@ -299,9 +299,8 @@ const UpdateAlcoholAndDrugTesting = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                     {/* VISUALIZACIÓN DEL REPORTE */}
-                     <ViewPDF dataPDF={dataPDF} />
-                
+                {/* VISUALIZACIÓN DEL REPORTE */}
+                <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
             <FullScreenDialog
@@ -316,6 +315,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
+                            title='PRUEBAS DE ALCOHOL Y DROGAS'
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

@@ -7,6 +7,7 @@ import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import { useTheme } from '@mui/material/styles';
 import { Button, Card, CardContent, CardMedia, Chip, Grid, Typography } from '@mui/material';
+import user from 'assets/img/user.png'
 
 import { DeleteAttention } from 'api/clients/AttentionClient';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
@@ -18,8 +19,10 @@ import { DefaultValue } from 'components/helpers/Enums';
 import MenuOptions from './MenuOptions';
 import { UpdateAttentions } from 'api/clients/AttentionClient';
 import { PutAttention } from 'formatdata/AttentionForm';
+import useAuth from 'hooks/useAuth';
 
 const ViewProgramming = ({ programming, getAll }) => {
+    const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
 
@@ -47,6 +50,19 @@ const ViewProgramming = ({ programming, getAll }) => {
         } catch (error) { setErrorMessage(`${error}`) }
     }
 
+    const handleUpdateAttentionOpen = async () => {
+        try {
+            const DataToUpdate = PutAttention(programming.id, programming.documento, programming.fecha, programming.sede, programming.tipo,
+                programming.atencion, programming.estadoCaso, programming.observaciones, programming.numeroHistoria, 'ESTÁ SIENDO ATENDIDO',
+                programming.contingencia, programming.turno, programming.diaTurno, programming.motivo, programming.medico,
+                programming.docSolicitante, programming.talla, programming.peso, programming.iMC, user.email,
+                programming.fechaDigitacion, programming.fechaCierreAtencion, programming.duracion,
+                programming.usuarioRegistro, programming.fechaRegistro, programming.usuarioModifico, programming.fechaModifico);
+
+            await UpdateAttentions(DataToUpdate);
+        } catch (error) { }
+    }
+
     const onClickDelete = async (id) => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
@@ -63,41 +79,56 @@ const ViewProgramming = ({ programming, getAll }) => {
 
     const handleClick = () => {
         try {
-            if (programming.tipo === DefaultValue.TIPO_ATENCION_EMO)
+            const tipoAtencion = programming.tipo;
+            const atencion = programming.atencion;
+            const estadoCaso = programming.estadoCaso;
+            const triage = atencion === DefaultValue.TRIAGE_I || atencion === DefaultValue.TRIAGE_II ||
+                atencion === DefaultValue.TRIAGE_III || atencion === DefaultValue.TRIAGE_VI || atencion === DefaultValue.TRIAGE_V;
+
+            handleUpdateAttentionOpen();
+
+            if (tipoAtencion === DefaultValue.TIPO_ATENCION_EMO)
                 navigate(`/programming/emo/${programming.id}`);
 
-            if (programming.atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA)
+            if (atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA)
                 navigate(`/programming/medica/${programming.id}`);
 
-            if (programming.atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO)
+            if (atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO)
                 navigate(`/programming/psychological/${programming.id}`);
 
-            if (programming.tipo === DefaultValue.TIPO_ATENCION_ASESORIAS &&
-                programming.atencion != DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO &&
-                programming.atencion != DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA)
+            if (tipoAtencion === DefaultValue.TIPO_ATENCION_ASESORIAS &&
+                atencion != DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO &&
+                atencion != DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA)
                 navigate(`/programming/other/${programming.id}`);
 
-            if (programming.tipo === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA &&
-                programming.estadoCaso == DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_NUEVO)
+            if (tipoAtencion === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA &&
+                estadoCaso == DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_NUEVO)
                 navigate(`/programming/attention-new/${programming.id}`);
 
-            if (programming.tipo === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA &&
-                programming.estadoCaso == DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_CONTROL)
+            if (tipoAtencion === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA &&
+                estadoCaso == DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_CONTROL)
                 navigate(`/programming/attention-control/${programming.id}`);
 
-            if (programming.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA &&
-                programming.atencion === DefaultValue.ATENCION_ENFERMERIA)
+            if (tipoAtencion === DefaultValue.TIPO_ATENCION_ENFERMERIA &&
+                atencion === DefaultValue.ATENCION_ENFERMERIA)
                 navigate(`/programming/infirmary/${programming.id}`);
 
-            if (programming.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA &&
-                programming.atencion === DefaultValue.ATENCION_PRUEBA_ALCOHOL)
+            if (programming.sede === DefaultValue.SEDE_PUERTO &&
+                tipoAtencion === DefaultValue.TIPO_ATENCION_ENFERMERIA && triage)
+                navigate(`/programming/infirmary/${programming.id}`);
+
+            if (tipoAtencion === DefaultValue.TIPO_ATENCION_ENFERMERIA &&
+                atencion === DefaultValue.ATENCION_PRUEBA_ALCOHOL)
                 navigate(`/programming/alcoholanddrugtesting/${programming.id}`);
         } catch (error) { }
     }
 
-    const disabledButon = programming.estadoPac === 'PENDIENTE POR ATENCIÓN' ? false :
-        programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' ? true :
-            programming.estadoPac === 'ATENDIDO' ? true : false;
+    const disabledButon = programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' &&
+        programming.usuarioCierreAtencion === `${user.email}` ? false :
+
+        programming.estadoPac === 'PENDIENTE POR ATENCIÓN' ? false :
+            programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' ? true :
+                programming.estadoPac === 'ATENDIDO' ? true : false;
 
     const ColorCard = programming.nameAtencion === 'TRIAGE I' ? ColorDrummondltd.RedDrummond :
         programming.nameAtencion === 'TRIAGE II' ? ColorDrummondltd.RedDrummond :
@@ -135,7 +166,8 @@ const ViewProgramming = ({ programming, getAll }) => {
                     <Grid item xs={12} md={6} lg={4}>
                         <Grid container spacing={gridSpacing}>
                             <Grid item xs={12}>
-                                <Avatar alt={programming.nameEmpleado} src={programming.empleadoFoto} sx={{ width: 60, height: 60, m: '-50px auto 0' }} />
+                                <Avatar alt={programming.nameEmpleado} src={programming.empleadoFoto === undefined ? user :
+                                    programming.empleadoFoto === '' ? user : programming.empleadoFoto} sx={{ width: 60, height: 60, m: '-50px auto 0' }} />
                             </Grid>
                         </Grid>
                     </Grid>

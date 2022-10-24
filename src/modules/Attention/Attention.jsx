@@ -44,10 +44,6 @@ const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
-const validationSchema = yup.object().shape({
-    sede: yup.string().required(`${ValidationMessage.Requerido}`),
-});
-
 const Attention = () => {
     const { user } = useAuth();
     const theme = useTheme();
@@ -62,6 +58,7 @@ const Attention = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const [documento, setDocumento] = useState('');
+    const [sede, setSede] = useState('');
     const [tipoAtencion, setTipoAtencion] = useState('');
     const [atencion, setAtencion] = useState('');
     const [motivo, setMotivo] = useState('');
@@ -90,11 +87,9 @@ const Attention = () => {
     const [lsMedicos, setLsMedicos] = useState([]);
     const [result, setResult] = useState([]);
 
-    const methods = useForm(
-        { resolver: yupResolver(validationSchema) }
-    );
+    const methods = useForm();
 
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, reset } = methods;
 
     useEffect(() => {
         async function GetAll() {
@@ -169,7 +164,7 @@ const Attention = () => {
         try {
             setDocumento(event?.target.value);
             if (event.key === 'Enter') {
-                if (event?.target.value != "") {
+                if (event?.target.value !== "") {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
                     if (lsServerEmployee.status === 200) {
@@ -223,22 +218,65 @@ const Attention = () => {
             setAtencion('');
             setTipoAtencion(event.target.value);
 
-            var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+            if (sede === DefaultValue.SEDE_PUERTO && event.target.value === DefaultValue.TIPO_ATENCION_ENFERMERIA) {
 
-            var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
-            if (lsGetTipo.status === 200) {
-                var resultMapsTipo = lsGetTipo.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
+                var resultMapsTipoAM = [];
+                var resultMapsTipoAE = [];
+                /* AQUÍ SE CARGAN LAS ATENCIONES MÉDICAS */
+                var lsGetTipoAtencionMedica = await GetAllBySubTipoCatalogo(0, 0, 'SER01', 5);
+                if (lsGetTipoAtencionMedica.status === 200) {
+                    resultMapsTipoAM = lsGetTipoAtencionMedica.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+                }
 
-                setLsAtencion(resultMapsTipo);
+                /* AQUÍ SE CARGAN LAS ATENCIONES DE ENFERMERIA */
+                var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+
+                var lsGetTipoAtencionEnfermeria = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+                if (lsGetTipoAtencionEnfermeria.status === 200) {
+                    resultMapsTipoAE = lsGetTipoAtencionEnfermeria.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+                }
+
+                const arrayAtencion = resultMapsTipoAE.concat(resultMapsTipoAM);
+                setLsAtencion(arrayAtencion);
+
+            } else {
+                var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+
+                var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+                if (lsGetTipo.status === 200) {
+                    var resultMapsTipo = lsGetTipo.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+
+                    setLsAtencion(resultMapsTipo);
+                }
+            }
+        } catch (error) { }
+    };
+
+    const handleChangeSede = async (event) => {
+        try {
+            setSede(event.target.value);
+
+            if (sede === DefaultValue.SEDE_PUERTO) {
+                setTipoAtencion('');
+                setAtencion('');
+                setLsAtencion([]);
+            } else {
+                setAtencion();
+                setTipoAtencion();
+                setLsAtencion([]);
             }
 
-        } catch (error) {
-            console.log(error);
-        }
-    };
+        } catch (error) { }
+    }
 
     const handleChangeTalla = (event) => {
         try {
@@ -302,12 +340,15 @@ const Attention = () => {
         try {
             const motivoFinal = motivo == '' ? datos.motivo : motivo;
 
-            const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), datos.sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
+            const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (documento !== '' && lsEmployee.length !== 0) {
+            if (documento === '') { setOpenError(true); setErrorMessage(`${Message.ErrorDocumento}`); }
+            else if (sede === '') { setOpenError(true); setErrorMessage('Por favor, seleccione una Sede'); }
+            else if (tipoAtencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione el Tipo Atención'); }
+            else if (atencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione la Atención'); } else {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await InsertAttention(DataToInsert);
                     if (result.status === 200) {
@@ -315,14 +356,12 @@ const Attention = () => {
                         setDocumento('');
                         setTipoAtencion('');
                         setAtencion('');
+                        setSede('');
                         setLsEmployee([]);
                         reset();
                         setResult(result.data)
                     }
                 }
-            } else {
-                setOpenError(true);
-                setErrorMessage(`${Message.ErrorDocumento}`);
             }
         } catch (error) {
             setOpenError(true);
@@ -387,16 +426,14 @@ const Attention = () => {
                             </Grid>
 
                             <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="sede"
-                                        label="Sede de Atención"
-                                        defaultValue=""
-                                        options={lsSede}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.sede}
-                                    />
-                                </FormProvider>
+                                <SelectOnChange
+                                    name="sede"
+                                    label="Sede de Atención"
+                                    value={sede}
+                                    options={lsSede}
+                                    onChange={handleChangeSede}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
                             </Grid>
 
                             <Grid item xs={3}>

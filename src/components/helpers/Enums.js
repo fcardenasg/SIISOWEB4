@@ -229,8 +229,19 @@ export const DefaultValue = {
     RiesgoErgonomicoCargaFisica_Fuerza: 4065,
     RiesgoErgonomicoCargaFisica_Movimiento: 4066,
 
+    /* OPCIONES DE SI NO */
     Opcion_SI: 4005,
     Opcion_NO: 4006,
+
+    /* SEDE */
+    SEDE_PUERTO: 1106,
+
+    /* TRIAGES */
+    TRIAGE_I: 3901,
+    TRIAGE_II: 3902,
+    TRIAGE_III: 3903,
+    TRIAGE_VI: 3904,
+    TRIAGE_V: 3905,
 }
 
 export const TitleButton = {

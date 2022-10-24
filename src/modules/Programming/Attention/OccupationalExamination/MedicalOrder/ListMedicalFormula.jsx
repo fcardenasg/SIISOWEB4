@@ -26,11 +26,11 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 import { ViewFormat } from 'components/helpers/Format';
-import { TitleButton } from 'components/helpers/Enums';
+import { DefaultValue, TitleButton } from 'components/helpers/Enums';
 import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { GetAllMedicalFormula, DeleteMedicalFormula } from 'api/clients/MedicalFormulaClient';
+import { DeleteMedicalFormula, GetAllByDocumentAndTypeOrder } from 'api/clients/MedicalFormulaClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -199,7 +199,7 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListMedicalFormula = ({ setNewMedicalFormula, setListMedicalFormula, setUpdateMedicalFormula, setNumberId }) => {
+const ListMedicalFormula = ({ setNewMedicalFormula, setListMedicalFormula, tipoOrden, documento, setUpdateMedicalFormula, setNumberId }) => {
     const [openDelete, setOpenDelete] = useState(false);
     const [lsMedicalFormula, setLsMedicalFormula] = useState([]);
     const [idCheck, setIdCheck] = useState('');
@@ -215,7 +215,12 @@ const ListMedicalFormula = ({ setNewMedicalFormula, setListMedicalFormula, setUp
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllMedicalFormula(0, 0);
+            const saveTipoOrden = tipoOrden === 'Formula' ? DefaultValue.TIPO_ORDEN_FORMULA :
+                tipoOrden === 'Laboratorio' ? DefaultValue.TIPO_ORDEN_LABORATORIO :
+                    tipoOrden === 'Imagenes' ? DefaultValue.TIPO_ORDEN_IMAGEN :
+                        tipoOrden === 'Examenes' ? DefaultValue.TIPO_ORDEN_EXAMEN : DefaultValue.SINREGISTRO_GLOBAL;
+
+            const lsServer = await GetAllByDocumentAndTypeOrder(0, 0, documento, saveTipoOrden);
             if (lsServer.status === 200) {
                 setLsMedicalFormula(lsServer.data.entities);
                 setRows(lsServer.data.entities);
@@ -510,4 +515,6 @@ ListMedicalFormula.propTypes = {
     setNewMedicalFormula: PropTypes.any,
     setUpdateMedicalFormula: PropTypes.any,
     setNumberId: PropTypes.any,
+    tipoOrden: PropTypes.any,
+    documento: PropTypes.any,
 };

@@ -64,9 +64,10 @@ import UpdateMedicalFormula from './MedicalOrder/UpdateMedicalFormula';
 import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
 
-import { generateReportFramingham } from './Report/Framingham';
+import { generateReportIndex } from './Report/EMO';
 
 import { generateReport } from './Report';
+import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -198,12 +199,7 @@ const OccupationalExamination = () => {
     const [lsAnthropometry, setLsAnthropometry] = useState([]);
     const [lsAtencionEMO, setLsAtencionEMO] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [arrays, setArrays] = useState({
-        tipoFobia: [],
-        dx: [],
-        antecedentesCardio: [],
-        metabolico: [],
-    });
+    const [tipoFobia, setTipoFobia] = useState([]);
 
     const [fuma, setFuma] = useState('');
     const [colesterol, setColesterol] = useState('');
@@ -247,16 +243,93 @@ const OccupationalExamination = () => {
         otrasIM: false,
     });
 
+    async function getDataExploracion(documento) {
+        try {
+            var aniosMpiDLTD = 0, mesMpiDLTD = 0, aniosRuidoDLTD = 0, mesRuidoDLTD = 0;
+            var aniosMpiCompany = 0, mesMpiCompany = 0, aniosRuidoCompany = 0, mesRuidoCompany = 0;
+
+            const lsServerDTLD = await GetAllByHistorico(0, 0, documento);
+            if (lsServerDTLD.status === 200) {
+                var arrayMPI = lsServerDTLD.data.entities;
+                var arrayRUIDO = lsServerDTLD.data.entities;
+
+                if (arrayMPI.length !== 0 || arrayRUIDO.length !== 0) {
+                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico &&
+                        code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico &&
+                        code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                        const datos = arrayReadyRUIDO[index];
+                        aniosRuidoDLTD = aniosRuidoDLTD + datos.anio;
+                        mesRuidoDLTD = mesRuidoDLTD + datos.mes;
+                    }
+
+                    for (let index = 0; index < arrayReadyMPI.length; index++) {
+                        const datos = arrayReadyMPI[index];
+                        aniosMpiDLTD = aniosMpiDLTD + datos.anio;
+                        mesMpiDLTD = mesMpiDLTD + datos.mes;
+                    }
+                }
+            }
+
+            const lsServerOtrasEmpresas = await GetAllByHistoricoCompany(0, 0, documento);
+            if (lsServerOtrasEmpresas.status === 200) {
+                var arrayMPI = lsServerOtrasEmpresas.data.entities;
+                var arrayRUIDO = lsServerOtrasEmpresas.data.entities;
+
+                if (arrayMPI.length !== 0 || arrayRUIDO.length !== 0) {
+                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico && code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico && code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                        const datos = arrayReadyRUIDO[index];
+                        aniosRuidoCompany = aniosRuidoCompany + datos.anio;
+                        mesRuidoCompany = mesRuidoCompany + datos.mes;
+                    }
+
+                    for (let index = 0; index < arrayReadyMPI.length; index++) {
+                        const datos = arrayReadyMPI[index];
+                        aniosMpiCompany = aniosMpiCompany + datos.anio;
+                        mesMpiCompany = mesMpiCompany + datos.mes;
+                    }
+                }
+            }
+
+            return {
+                aniosMpiDLTD, mesMpiDLTD, aniosRuidoDLTD, mesRuidoDLTD,
+                aniosMpiCompany, mesMpiCompany, aniosRuidoCompany, mesRuidoCompany,
+            }
+        } catch (error) { }
+    }
+
     /* Metodo de Reporte */
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdDataReport(1);
             const lsDataUser = await GetByMail(user.email);
+            const resultExpoDLTD = await getDataExploracion(documento);
 
-            /*               const dataPDFTwo = generateReportWorkHeight(lsDataReport.data, lsDataUser.data);  */
-
-            const dataPDFTwo = generateReportFramingham(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD);
 
             setDataPDF(dataPDFTwo);
         } catch (err) { }
@@ -300,10 +373,12 @@ const OccupationalExamination = () => {
 
     const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
+            const usuarioCierre = estadoPac === "PENDIENTE POR ATENCIÓN" ? '' : lsDataUpdate.usuarioCierreAtencion;
+
             const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
                 lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
                 lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
-                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, lsDataUpdate.usuarioCierreAtencion,
+                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, usuarioCierre,
                 lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
                 lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
 
@@ -342,8 +417,6 @@ const OccupationalExamination = () => {
         try {
             const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(documento);
             if (lsServerUltimoRegistro.status === 200) {
-                console.log("lsServerUltimoRegistro =", lsServerUltimoRegistro);
-
                 setLsLastRecord(lsServerUltimoRegistro.data);
 
                 setEstadoVacuna({
@@ -355,12 +428,7 @@ const OccupationalExamination = () => {
                     otrasIM: lsServerUltimoRegistro.data.otrasIM === undefined ? false : lsServerUltimoRegistro.data.otrasIM,
                 });
 
-                setArrays({
-                    tipoFobia: JSON.parse(lsServerUltimoRegistro.data.tipoFobiaHB),
-                    dx: JSON.parse(lsServerUltimoRegistro.data.dxID),
-                    antecedentesCardio: [],
-                    metabolico: [],
-                });
+                setTipoFobia(JSON.parse(lsServerUltimoRegistro.data.tipoFobiaHB));
             }
         } catch (error) { console.log(error) }
     }
@@ -372,7 +440,6 @@ const OccupationalExamination = () => {
                 if (lsServerAtencion.status === 200) {
                     getLastData(lsServerAtencion.data.documento);
                     handleLoadingDocument(lsServerAtencion.data.documento);
-                    await handleUpdateAttentionClose("ESTÁ SIENDO ATENDIDO", lsServerAtencion.data);
 
                     setIMC(lsServerAtencion.data.imc);
                     setTalla(lsServerAtencion.data.talla);
@@ -481,7 +548,7 @@ const OccupationalExamination = () => {
                 datos.fumaHB, datos.cigarrillosDiasFumaHB, datos.aniosCigaFumaHB, datos.mesesCigaFumaHB, datos.observacionFumaHB, datos.fumabaHB,
                 datos.cigarrillosDiasFumabaHB, datos.aniosCigaFumabaHB, datos.mesesCigaFumabaHB, datos.observacionFumabaHB, datos.practicaDeporteHB,
                 datos.idFrecuenciaDeporteHB, datos.idCualDeporteHB, datos.observacionPracticaDeporHB, datos.hobbiesPasatiempoHB, datos.cualHobbiesHB,
-                datos.consumeBebidasAlcoholicasHB, datos.idFrecuenciaBebidaAlHB, datos.cualBebidasAlHB, datos.fobiasHB, JSON.stringify(arrays.tipoFobia),
+                datos.consumeBebidasAlcoholicasHB, datos.idFrecuenciaBebidaAlHB, datos.cualBebidasAlHB, datos.fobiasHB, JSON.stringify(tipoFobia),
                 datos.cualFobiaHB,
 
                 datos.menarquiaGO, datos.idCiclosGO, datos.duracionGO, datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO, datos.vidaMaritalGO,
@@ -514,10 +581,10 @@ const OccupationalExamination = () => {
                 datos.resultadoRnmLumbosacraEPA, datos.observacionesRnmLumbosacraEPA, FormatDate(datos.fechaRnmCervicalEPA), datos.resultadoRnmCervicalEPA,
                 datos.observacionesRnmCervicalEPA, datos.observacionEPA,
 
-                JSON.stringify(arrays.dx), datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
+                datos.dx1, datos.dx2, datos.dx3, datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
 
-                FormatDate(datos.fechaConceptoNETA), datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.motivoAplazoNETA, datos.descripcionResultadoNETA,
-                datos.recomendacionesNETA, datos.remitidoNETA, datos.remididoDondeNETA,
+                FormatDate(datos.fechaConceptoNETA), datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.idConceptoEspacioConfinado,
+                datos.motivoAplazoNETA, datos.descripcionResultadoNETA, datos.recomendacionesNETA, datos.remitidoNETA, datos.remididoDondeNETA,
 
                 datos.idRiesgoCardiovascularNEMTA, datos.idClasificacionNEMTA, datos.idMenorEdadNEMTA, datos.idMujerEmbarazadaNEMTA, datos.idArimiaNEMTA,
                 datos.idEnfermedadNEMTA, datos.idHistoriaNEMTA, datos.idHipertensionNEMTA, datos.idHipertrigliceridemiaNEMTA, datos.idCifrasNEMTA,
@@ -609,6 +676,8 @@ const OccupationalExamination = () => {
                             />
                             : listMedicalFormula ?
                                 <ListMedicalFormula
+                                    documento={documento}
+                                    tipoOrden={titleModal}
                                     setListMedicalFormula={setListMedicalFormula}
                                     setNewMedicalFormula={setNewMedicalFormula}
                                     setUpdateMedicalFormula={setUpdateMedicalFormula}
@@ -804,8 +873,8 @@ const OccupationalExamination = () => {
 
                             documento={documento}
                             errors={errors}
-                            setArrays={setArrays}
-                            arrays={arrays}
+                            setTipoFobia={setTipoFobia}
+                            tipoFobia={tipoFobia}
                             setEstadoVacuna={setEstadoVacuna}
                             estadoVacuna={estadoVacuna}
                             lsEmployee={lsEmployee}
