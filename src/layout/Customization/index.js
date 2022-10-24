@@ -299,7 +299,7 @@ const Customization = () => {
                         </Grid>
                         <Grid item xs={12}>
                             {/* Theme Preset Color */}
-                            <SubCard title="Preset Color">
+                            <SubCard title="Color de SIISO">
                                 <Grid item container spacing={2} alignItems="center">
                                     {colorOptions.map((color, index) => (
                                         <PresetColor key={index} color={color} presetColor={presetColor} setPresetColor={setPresetColor} />

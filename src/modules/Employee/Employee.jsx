@@ -84,6 +84,7 @@ const Employee = () => {
     const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState(null);
     const [lsSubArea, setLsSubArea] = useState([]);
     const [imgSrc, setImgSrc] = useState(null);
+    const [lsOficio, setOficio] = useState([]);
     const [open, setOpen] = useState(false);
 
     const methods = useForm(
@@ -289,6 +290,15 @@ const Employee = () => {
                 label: item.nombre
             }));
             setCesantias(resultCesantias);
+
+            const lsServerOficio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Oficio);
+            var resultOficio = lsServerOficio.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setOficio(resultOficio);
+
+
         } catch (error) { }
     }
 
@@ -312,7 +322,7 @@ const Employee = () => {
                 datos.municipioResidenciaTrabaja, dptoResidencia === null ? 1 : dptoNacido, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(datos.termDate),
-                DefaultValue.BANDERA_DRUMMOND, datos.ges, user.email, FormatDate(new Date()), '', FormatDate(new Date()), imgSrc);
+                DefaultValue.BANDERA_DRUMMOND, datos.ges, user.email, FormatDate(new Date()), '', FormatDate(new Date()), imgSrc,datos.oficio);
 
             console.log("Datos =", DataToInsert);
 
@@ -807,6 +817,19 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="oficio"
+                                label="Oficio"
+                                options={lsOficio}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.oficio}
+                            />
+                        </FormProvider>
+                    </Grid>
+
 
                 </Grid>
             </SubCard>

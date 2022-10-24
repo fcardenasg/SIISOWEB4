@@ -103,6 +103,7 @@ const UpdateEmployee = () => {
     const [imgSrc, setImgSrc] = useState(null);
     const [open, setOpen] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
+    const [lsOficio, setOficio] = useState([]);
 
     async function GetAll() {
         try {
@@ -271,6 +272,15 @@ const UpdateEmployee = () => {
                 label: item.descripcionSpa
             }));
             setCompany(resultCompany);
+
+            const lsServerOficio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Oficio);
+            var resultOficio = lsServerOficio.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setOficio(resultOficio);
+
+
         } catch (error) {
             dispatch({
                 type: SNACKBAR_OPEN,
@@ -375,7 +385,7 @@ const UpdateEmployee = () => {
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date(datos.termDate)),
-                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.email, FormatDate(new Date()), imgSrc);
+                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.email, FormatDate(new Date()), imgSrc,datos.oficio);
 
             if (imgSrc != null) {
                 if (Object.keys(datos.length !== 0)) {
@@ -931,6 +941,21 @@ const UpdateEmployee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="oficio"
+                                        label="Oficio"
+                                        defaultValue={employee.oficio}
+                                        options={lsOficio}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.oficio}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
                         </Grid>
                     </SubCard>
                     <Grid sx={{ pb: 2 }} />

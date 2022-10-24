@@ -38,7 +38,7 @@ import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
-import { GetAllEmployee, DeleteEmployee } from 'api/clients/EmployeeClient';
+import { GetAllEmployee, DeleteEmployee, GetByIdEmployee } from 'api/clients/EmployeeClient';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -53,6 +53,11 @@ import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import userEmpleado from 'assets/img/user.png';
+import ViewPDF from 'components/components/ViewPDF';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReportEmployee } from './ReportEmployee';
+import useAuth from 'hooks/useAuth';
+import ControlModal from 'components/controllers/ControlModal';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -257,6 +262,7 @@ EnhancedTableToolbar.propTypes = {
 // ==============================|| RENDER DE LA LISTA ||============================== //
 
 const ListEmployee = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const [employee, setEmployee] = useState([]);
 
@@ -270,6 +276,9 @@ const ListEmployee = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
+    const [dataPDF, setDataPDF] = useState(null);
+    const [openReport, setOpenReport] = useState(false);
+
     /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
     async function GetAll() {
         try {
@@ -280,6 +289,19 @@ const ListEmployee = () => {
             console.log(error);
         }
     }
+
+    //reporte Imprimir
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdEmployee(idCheck);
+            const lsDataUser = await GetByMail(user.email);
+            const dataPDFTwo = generateReportEmployee(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
 
     const [modalStyle] = useState(getModalStyle);
 
@@ -408,6 +430,15 @@ const ListEmployee = () => {
     return (
         <MainCard title="Lista de Empleados" content={false}>
 
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
             {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -480,7 +511,7 @@ const ListEmployee = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/employee/report/')}>
+                        <Tooltip disabled={idCheck === '' ? true : false} title="Impresión" onClick={handleClickReport} sx={{ mx: 1 }}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
