@@ -44,7 +44,6 @@ import { IconFileExport } from '@tabler/icons';
 
 import { generateReport } from './ReportAtten';
 import { GetByIdAttention } from "api/clients/AttentionClient";
-import Cargando from 'components/loading/Cargando';
 import { GetByMail } from 'api/clients/UserClient';
 import useAuth from 'hooks/useAuth';
 import ViewPDF from 'components/components/ViewPDF';

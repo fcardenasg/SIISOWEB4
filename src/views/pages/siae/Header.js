@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
-import PaperHomePageTwo from './Paper/PaperHomePageTwo';
+import Stack from '@mui/material/Stack';
 import { useState } from 'react';
 
 import {
@@ -20,6 +20,7 @@ import {
     IconBrandYoutube,
     IconBrandLinkedin
 } from '@tabler/icons';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { ColorDrummondltd } from 'themes/colors';
 
 const HeaderPage = () => {
@@ -101,18 +102,18 @@ const HeaderPage = () => {
                                 }}
                             >
                                 <Grid container spacing={2} sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                                    <Grid item xs={5}>
+                                    <Grid item xs={6}>
                                         <AnimateButton>
                                             <Button
                                                 fullWidth
                                                 component={RouterLink}
-                                                to="/dashboard/select"
-                                                target="_blank"
+                                                to="/"
                                                 size="large"
-                                                variant="contained"
+                                                variant="outlined"
                                                 color="primary"
+                                                startIcon={<ArrowBackIcon />}
                                             >
-                                                Iniciar sesión
+                                                Regresar al Inicio
                                             </Button>
                                         </AnimateButton>
                                     </Grid>

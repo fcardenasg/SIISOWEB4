@@ -8,11 +8,13 @@ import {
     Container,
     Stack,
     Toolbar,
+    Tooltip,
     Typography,
     useScrollTrigger
 } from '@mui/material';
 
 import Logo from 'ui-component/Logo';
+import { ColorDrummondltd } from 'themes/colors';
 
 function ElevationScroll({ children, window }) {
     const theme = useTheme();
@@ -41,12 +43,16 @@ const AppBar = ({ ...others }) => {
                 <Container>
                     <Toolbar>
                         <Typography component="div" sx={{ flexGrow: 1, textAlign: 'left' }}>
-                            <Logo />
+
                         </Typography>
                         <Stack direction="row" sx={{ display: { xs: 'none', sm: 'block' } }} spacing={2}>
-                            <Button color="inherit" component={RouterLink} to="login" target="_blank">
-                                Iniciar Sesión
-                            </Button>
+                            <Tooltip title="SISTEMA DE INFORMACIÓN Y ATENCIÓN AL EMPLEADO">
+                                <Button variant="outlined" color="error" size="large"
+                                    sx={{ color: ColorDrummondltd.RedDrummond }}
+                                    component={RouterLink} to="siae" target="_blank">
+                                    SIAE
+                                </Button>
+                            </Tooltip>
                         </Stack>
                     </Toolbar>
                 </Container>

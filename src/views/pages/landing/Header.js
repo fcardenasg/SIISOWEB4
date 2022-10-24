@@ -1,8 +1,8 @@
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Box, Button, Container, Grid, Typography } from '@mui/material';
+import { Box, Button, CardMedia, Container, Grid, Typography } from '@mui/material';
 
 // third party
 import { motion } from 'framer-motion';
@@ -11,7 +11,12 @@ import { motion } from 'framer-motion';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 
+import LogoDrummondLTD from 'assets/img/LogoDrummondLTD.png';
+import LogoDrummondEnergy from 'assets/img/LogoDrummondEnergy.png';
+import { ColorDrummondltd } from 'themes/colors';
+
 const HeaderPage = () => {
+    const navigate = useNavigate();
     const theme = useTheme();
 
     return (
@@ -23,7 +28,7 @@ const HeaderPage = () => {
                 spacing={gridSpacing}
                 sx={{ mt: { xs: 10, sm: 6, md: 18.75 }, mb: { xs: 2.5, md: 10 } }}
             >
-                <Grid item xs={12} md={5}>
+                <Grid item xs={12} md={8}>
                     <Grid container spacing={gridSpacing} sx={{ pr: 10, [theme.breakpoints.down('lg')]: { pr: 0, textAlign: 'center' } }}>
                         <Grid item xs={12}>
                             <motion.div
@@ -43,7 +48,7 @@ const HeaderPage = () => {
                                         lineHeight: 1.4
                                     }}
                                 >
-                                    <Box component="span" sx={{ ml: 2, color: theme.palette.primary.main }}>
+                                    <Box component="span" sx={{ ml: 2, color: ColorDrummondltd.RedDrummond }}>
                                         <b>&#169;</b> SIISO
                                     </Box>
                                 </Typography>
@@ -88,34 +93,27 @@ const HeaderPage = () => {
                                 }}
                             >
                                 <Grid container spacing={2} sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                                    <Grid item xs={5}>
+                                    <Grid item xs={6}>
                                         <AnimateButton>
-                                            <Button
-                                                fullWidth
-                                                component={RouterLink}
-                                                to="/dashboard/select"
-                                                target="_blank"
-                                                size="large"
-                                                variant="contained"
-                                                color="primary"
-                                            >
-                                                Iniciar sesión
+                                            <Button to="login" variant="outlined" color="error"
+                                                sx={{ color: ColorDrummondltd.RedDrummond }} component={RouterLink} target="_blank">
+                                                <CardMedia
+                                                    component="img"
+                                                    image={LogoDrummondLTD}
+                                                    alt="Logo DrummondLTD"
+                                                />
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={5}>
+                                    <Grid item xs={6}>
                                         <AnimateButton>
-                                            <Button
-                                                component={RouterLink}
-                                                to="/siae"
-                                                target="_blank"
-                                                fullWidth
-                                                size="large"
-                                                variant="outlined"
-                                                color="primary"
-                                            >
-                                                SIAE
+                                            <Button onClick={() => navigate("/dashboard/energy", { replace: true })} variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }}>
+                                                <CardMedia
+                                                    component="img"
+                                                    image={LogoDrummondEnergy}
+                                                    alt="Logo DrummondLTD"
+                                                />
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
