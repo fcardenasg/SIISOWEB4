@@ -144,9 +144,9 @@ const ViewProgramming = ({ programming, getAll }) => {
     return (
         <Card
             sx={{
-                background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.grey[50],
-                border: theme.palette.mode === 'dark' ? 'none' : '1px solid',
-                borderColor: theme.palette.grey[100],
+                background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.grey[100],
+                border: theme.palette.mode === 'dark' ? 'none' : '2px solid',
+                borderColor: theme.palette.grey[500],
                 textAlign: 'center'
             }}
         >

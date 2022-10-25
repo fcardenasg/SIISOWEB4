@@ -24,7 +24,6 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import { DefaultValue, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton'
 import SubCard from 'ui-component/cards/SubCard';
@@ -33,13 +32,15 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { UpdateMedicalFormulas, GetByIdMedicalFormula } from 'api/clients/MedicalFormulaClient';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { PutMedicalFormula } from 'formatdata/MedicalFormulaForm';
 import { FormatDate } from 'components/helpers/Format';
 import SkeletonMedical from '../Modal/SkeletonMedical';
 import { GetByMail } from 'api/clients/UserClient';
 import ViewPDF from 'components/components/ViewPDF';
 import { generateReport } from './Report';
+import InputSelect from 'components/input/InputSelect';
+import InputOnChange from 'components/input/InputOnChange';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -62,8 +63,9 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
 
     const [documento, setDocumento] = useState('');
     const [lsMedicalFormula, setLsMedicalFormula] = useState([]);
-    const [diagnostico, setDiagnostico] = useState([]);
-    const [lsCie11, setLsCie11] = useState([]);
+
+    const [lsDx, setLsDx] = useState([]);
+    const [textDx, setTextDx] = useState('');
 
     const [openReport, setOpenReport] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
@@ -71,26 +73,55 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
     const methods = useForm();
     const { handleSubmit, errors } = methods;
 
-    async function GetAll() {
+    const handleDx = async (event) => {
+        try {
+            setTextDx(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    async function getAll() {
         try {
             const lsServerData = await GetByIdMedicalFormula(numberId);
             if (lsServerData.status === 200) {
-                setDiagnostico(JSON.parse(lsServerData.data.diagnostico));
+                var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerData.data.diagnostico);
+
+                if (lsServerCie11.status === 200) {
+                    var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                        value: item.id,
+                        label: item.dx
+                    }));
+                    setLsDx(resultCie11);
+                }
+
+                setTextDx(lsServerData.data.diagnostico);
                 setLsMedicalFormula(lsServerData.data);
                 setDocumento(lsServerData.data.documento);
             }
-
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
         } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClickReport = async () => {
@@ -112,10 +143,8 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
                         tipoOrden === 'Examenes' ? DefaultValue.TIPO_ORDEN_EXAMEN : DefaultValue.SINREGISTRO_GLOBAL;
 
             const DataToInsert = PutMedicalFormula(numberId, FormatDate(new Date()), documento, DefaultValue.SINREGISTRO_GLOBAL,
-                lsAtencion.id, saveTipoOrden, JSON.stringify(diagnostico), datos.descripcion,
+                lsAtencion.id, saveTipoOrden, datos.diagnostico, datos.descripcion,
                 user.email, lsMedicalFormula.usuarioRegistro, lsMedicalFormula.fechaRegistro, user.email, FormatDate(new Date()));
-
-            console.log("Datos = ", DataToInsert);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateMedicalFormulas(DataToInsert);
@@ -236,14 +265,25 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
 
                                 <Grid item xs={12}>
                                     <Grid container spacing={2}>
-                                        <Grid item xs={12}>
-                                            <InputMultiSelects
-                                                fullWidth
-                                                onChange={(event, value) => setDiagnostico(value)}
-                                                value={diagnostico}
-                                                label="Diagnostico"
-                                                options={lsCie11}
+                                        <Grid item xs={3}>
+                                            <InputOnChange
+                                                label="Dx"
+                                                onKeyDown={handleDx}
+                                                onChange={(e) => setTextDx(e?.target.value)}
+                                                value={textDx}
+                                                size={matchesXS ? 'small' : 'medium'}
                                             />
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <FormProvider {...methods}>
+                                                <InputSelect
+                                                    defaultValue={lsMedicalFormula.diagnostico}
+                                                    name="diagnostico"
+                                                    label="Dx"
+                                                    options={lsDx}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </FormProvider>
                                         </Grid>
 
                                         <Grid item xs={12}>
