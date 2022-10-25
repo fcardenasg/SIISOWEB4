@@ -199,7 +199,7 @@ export function generateReportNursing(lsDataReport = [], lsDataUser = []) {
   /* Pag. 1 */
   getHeader(doc);
   pageNursing(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 1, 2);
+  getPiePage(doc, lsDataUser, 1, 1);
 
 
   var dataPDF = doc.output("bloburl");

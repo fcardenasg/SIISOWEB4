@@ -113,8 +113,8 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
 
     /* INFORMACIÓN DE ASESORÍA */
     doc.text(`CONSECUTIVO NRO: ${lsDataReport.id}`, 7, 95);
-    doc.text(`FECHA: ${ViewFormat(lsDataReport.fecha)}`, 90, 95);
-    doc.text(`MOTIVO: ${lsDataReport.nameMotivo}`, marXR - 2, 95, { align: 'right' });
+    doc.text(`FECHA: ${ViewFormat(lsDataReport.fecha)}`, 50, 95);
+    doc.text(`MOTIVO: ${lsDataReport.nameMotivo}`, marXR - 3, 95, { align: 'right' });
 
     /* DESCRIPCIONES DE TEXTO */
     doc.setFontSize(9);

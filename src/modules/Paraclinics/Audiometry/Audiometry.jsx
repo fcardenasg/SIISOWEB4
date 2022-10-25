@@ -75,6 +75,15 @@ const Audiometry = () => {
     const [lsProveedor, setLsProveedor] = useState([]);
 
     const [lsInterpretacion, setLsInterpretacion] = useState([]);
+
+    const [lsCargo, setLsCargo] = useState([]);
+    const [lsProteccionAuditiva, setLsProteccionAuditiva] = useState([]);
+    const [lsSuministradopor, setLsSuministradopor] = useState([]);
+    const [lsUso, setLsUso] = useState([]);
+    const [lsAudiograma, setLsAudiograma] = useState([]);
+
+    const [lsConducta, setLsConducta] = useState([]);
+
     const [textDx1, setTextDx1] = useState('');
     const [lsDx1, setLsDx1] = useState([]);
 
@@ -175,6 +184,65 @@ const Audiometry = () => {
             }));
             setLsInterpretacion(resultInterpretacion);
 
+            //aqui
+
+
+            const lsServerCargo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RosterPosition);
+            var resultCargo = lsServerCargo.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCargo(resultCargo);
+
+
+
+            const lsServerProteccionAuditiva = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_PROTECCIÓNAUDITIVA);
+            var resultProteccionAuditiva = lsServerProteccionAuditiva.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsProteccionAuditiva(resultProteccionAuditiva);
+
+
+            const lsServerSuministradopor = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_SUMINISTRADOPOR);
+            var resultSuministradopor = lsServerSuministradopor.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsSuministradopor(resultSuministradopor);
+
+
+
+            const lsServerUso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_USO);
+            var resultUso = lsServerUso.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsUso(resultUso);
+
+            const lsServerAudiograma = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_RESULTADOAUDIOGRAMA);
+            var resultAudiograma = lsServerAudiograma.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsAudiograma(resultAudiograma);
+
+
+
+
+            const lsServerConducta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONDUCTAAUDIOMETRIA);
+            var resultConducta = lsServerConducta.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsConducta(resultConducta);
+
+
+
+            
+            
+
+
 
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
@@ -182,6 +250,11 @@ const Audiometry = () => {
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
+
+
+
+
+
 
 
 
@@ -197,7 +270,7 @@ const Audiometry = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_LABORATORIO, documento,
+            const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_AUDIOMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
                 '', DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, JSON.stringify(diagnosticoArray),
                 datos.ojoIzquierdo, JSON.stringify(diagnosticoArray1), datos.add1, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
@@ -210,11 +283,13 @@ const Audiometry = () => {
                 datos.observacionGlicemia, datos.resultadoCreatinina, datos.interpretacionCreatinina, datos.observacionCreatinina, datos.resultadoBUN,
                 datos.interpretacionBUN, datos.observacionBUN, datos.idParcialOrina, datos.observacionParcialOrina,
                 datos.hemograma, datos.observacionHemograma, datos.gpt, datos.observacionGPT, datos.got, datos.observacionGOT, datos.bilirrubina,
-                datos.observacionBilirrubina, datos.bilirrubinaDirecta, datos.observacionBilirrubinaDirecta, false, false, false, false, false, false, false, false, false, false, false, false,
-                false, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, '', filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                datos.observacionBilirrubina, datos.bilirrubinaDirecta, datos.observacionBilirrubinaDirecta, datos.otalgiaAOP, datos.otorreaAOP, datos.otitisAOP, datos.acufenosAOP, datos.cirugiaAOP,
+                datos.vertigoAOP, datos.farmacologicosAOP, datos.luritoAOP, datos.familiaresAOP, datos.paralisisAOP,
+                datos.htaaop, datos.tipoAcusiaAOP, datos.diabetesAOP, datos.expoRuidoAOP, datos.anteceTraumaticosAOP,
+                datos.observacionAOP, datos.idEmpresaAO, datos.idCargoAO, datos.tiempoExpoAO, datos.idProteccionAuditivaAO,
+                datos.idSuministradaPorAO, datos.idUsoA, datos.idOdcaeAUDIO,
+                datos.idOdmtAUDIO, datos.idOicaeAUDIO, datos.idOimtAUDIO, datos.idReposoAUDIO, datos.dxAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
+                filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             console.log("DataToInsert =", DataToInsert);
 
@@ -548,7 +623,7 @@ const Audiometry = () => {
                                             name="idCargoAO"
                                             label="Cargo"
                                             defaultValue=""
-                                            options={lsInterpretacion}
+                                            options={lsCargo}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -575,7 +650,7 @@ const Audiometry = () => {
                                             name="idProteccionAuditivaAO"
                                             label="Protección Auditiva"
                                             defaultValue=""
-                                            options={lsInterpretacion}
+                                            options={lsProteccionAuditiva}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -588,7 +663,7 @@ const Audiometry = () => {
                                             name="idSuministradaPorAO"
                                             label="Suministrada Por"
                                             defaultValue=""
-                                            options={lsInterpretacion}
+                                            options={lsSuministradopor}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -601,7 +676,7 @@ const Audiometry = () => {
                                             name="idUsoAO"
                                             label="Uso"
                                             defaultValue=""
-                                            options={lsInterpretacion}
+                                            options={lsUso}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -626,7 +701,7 @@ const Audiometry = () => {
                                             name="idOdcaeAUDIO"
                                             label="OD CAE"
                                             defaultValue=""
-                                            options={lsInterpretacion}
+                                            options={lsAudiograma}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -641,7 +716,7 @@ const Audiometry = () => {
                                             name="idOdmtAUDIO"
                                             label="OD MT"
                                             defaultValue=""
-                                            options={lsInterpretacion}
+                                            options={lsAudiograma}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -654,7 +729,7 @@ const Audiometry = () => {
                                             name="idOicaeAUDIO"
                                             label="OI CAE"
                                             defaultValue=""
-                                            options={lsInterpretacion}
+                                            options={lsAudiograma}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -667,7 +742,7 @@ const Audiometry = () => {
                                             name="idOimtAUDIO"
                                             label="OI MT"
                                             defaultValue=""
-                                            options={lsInterpretacion}
+                                            options={lsAudiograma}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -689,25 +764,25 @@ const Audiometry = () => {
                                 {/* // DX AQUIIIIIIIIIIIIIIII// */}
 
                                 <Grid item xs={12} md={1} lg={2}>
-                                        <InputOnChange
-                                            label="Dx "
-                                            onKeyDown={handleDx1}
-                                            onChange={(e) => setTextDx1(e?.target.value)}
-                                            value={textDx1}
+                                    <InputOnChange
+                                        label="Dx "
+                                        onKeyDown={handleDx1}
+                                        onChange={(e) => setTextDx1(e?.target.value)}
+                                        value={textDx1}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={1} lg={6}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="dxAUDIO"
+                                            label="Dx"
+                                            defaultValue=""
+                                            options={lsDx1}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
-                                    </Grid>
-                                    <Grid item xs={12} md={1} lg={6}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="dxAUDIO"
-                                                label="Dx"
-                                                defaultValue=""
-                                                options={lsDx1}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
+                                    </FormProvider>
+                                </Grid>
 
 
 
@@ -717,7 +792,7 @@ const Audiometry = () => {
                                             name="idConductaClasificacion"
                                             label="Conducta"
                                             defaultValue=""
-                                            options={lsInterpretacion}
+                                            options={lsConducta}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -734,13 +809,6 @@ const Audiometry = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-
-                             
-
-
-
-
 
 
 
