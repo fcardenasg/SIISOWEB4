@@ -6,7 +6,6 @@ import MainRoutes from './MainRoutes';
 import LoginRoutes from './LoginRoutes';
 import AuthenticationRoutes from './AuthenticationRoutes';
 import QuestionnaireRoutes from './QuestionnaireRoutes';
-import SelectionViewRoutes from './SelectionViewRoutes';
 import Loadable from 'ui-component/Loadable';
 
 const PagesLanding = Loadable(lazy(() => import('views/pages/landing')));
@@ -18,7 +17,6 @@ export default function ThemeRoutes() {
     return useRoutes([{ path: '/', element: <PagesLanding /> },
     { path: '/siae', element: <SIAE /> },
         QuestionnaireRoutes,
-        SelectionViewRoutes,
         AuthenticationRoutes,
         LoginRoutes,
         MainRoutes

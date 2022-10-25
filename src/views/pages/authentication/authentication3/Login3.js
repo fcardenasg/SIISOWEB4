@@ -41,7 +41,7 @@ const Login = () => {
                                 <Grid container spacing={2} alignItems="center" justifyContent="center">
                                     <Grid item sx={{ mb: 0.5 }}>
                                         <Link to="#">
-                                            <Logo size={300} />
+                                            <Logo />
                                         </Link>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -75,7 +75,7 @@ const Login = () => {
                                     <Grid item xs={12}>
                                         <AuthLogin />
                                     </Grid>
-                                    
+
                                     <Grid item xs={12}>
                                         <Divider />
                                     </Grid>

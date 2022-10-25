@@ -27,6 +27,7 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
                     <LogoSection />
                 </Box>
             </Box>
+
             <BrowserView>
                 <PerfectScrollbar
                     component="div"

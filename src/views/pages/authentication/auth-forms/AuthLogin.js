@@ -49,14 +49,6 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
     const navigate = useNavigate();
 
     const { firebaseEmailPasswordSignIn, firebaseGoogleSignIn } = useAuth();
-    const googleHandler = async () => {
-        try {
-            await firebaseGoogleSignIn();
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
 
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => {
@@ -84,10 +76,6 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                         const logueado = await firebaseEmailPasswordSignIn(values.email, values.password).then(
                             (userFireBase) => {
                                 return userFireBase;
-                                // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
-                                // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
-                                // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
-                                // github issue: https://github.com/formium/formik/issues/2430
                             },
                             (err) => {
                                 if (scriptedRef.current) {
@@ -102,10 +90,9 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
 
                         const datosFin = await docRef.get().then((doc) => {
                             if (doc.exists) {
-                                /* console.log("Documento datos:", doc.data()); */
+
                                 return doc.data();
                             } else {
-                                // doc.data() will be undefined in this case
                                 console.log("No such document!");
                             }
                         }).catch((error) => {
@@ -121,7 +108,7 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                         if (userData.rol === "visitante") {
                             navigate("/dashboard/questionnaire", { replace: true });
                         } else if (userData.rol === 'admin') {
-                            navigate("/dashboard/select", { replace: true });
+                            navigate("/dashboard/ltd", { replace: true });
                         }
 
                     } catch (err) {
