@@ -194,6 +194,10 @@ const ListLaboratory = Loadable(lazy(() => import('modules/Paraclinics/Laborator
 const Laboratory = Loadable(lazy(() => import('modules/Paraclinics/Laboratory/Laboratory')));
 const UpdateLaboratory = Loadable(lazy(() => import('modules/Paraclinics/Laboratory/UpdateLaboratory')));
 
+const ListAudiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiometry/ListAudiometry')));
+const Audiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiometry/Audiometry')));
+const UpdateAudiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiometry/UpdateAudiometry')));
+
 const ViewReprint = Loadable(lazy(() => import('modules/Reprint/ViewReprint')));
 const ViewExport = Loadable(lazy(() => import('modules/Export/ViewExport')));
 const ViewHistory = Loadable(lazy(() => import('modules/History/ViewHistory')));
@@ -773,6 +777,23 @@ const MainRoutes = {
             path: '/paraclinics/laboratory/update/:id',
             element: <UpdateLaboratory />
         },
+
+
+
+        {
+            path: '/paraclinics/audiometry/list',
+            element: <ListAudiometry />
+        },
+        {
+            path: '/paraclinics/audiometry/add',
+            element: <Audiometry />
+        },
+        {
+            path: '/paraclinics/audiometry/update/:id',
+            element: <UpdateAudiometry />
+        },
+
+
 
         /* Render de Reimprimir */
         {

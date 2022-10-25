@@ -19,12 +19,14 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import InputDatePicker from 'components/input/InputDatePicker';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
+
+
+import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
@@ -42,7 +44,7 @@ import { GetAllSupplier } from 'api/clients/SupplierClient';
 import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
-
+import InputOnChange from 'components/input/InputOnChange';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 
 
@@ -50,7 +52,7 @@ const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
-const Laboratory = () => {
+const Audiometry = () => {
     const { user } = useAuth();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -73,11 +75,42 @@ const Laboratory = () => {
     const [lsProveedor, setLsProveedor] = useState([]);
 
     const [lsInterpretacion, setLsInterpretacion] = useState([]);
-
+    const [textDx1, setTextDx1] = useState('');
+    const [lsDx1, setLsDx1] = useState([]);
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
     const { handleSubmit, errors, reset } = methods;
+
+
+
+    const handleDx1 = async (event) => {
+        try {
+            setTextDx1(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+
 
     const allowedFiles = ['application/pdf'];
     const handleFile = (event) => {
@@ -182,8 +215,8 @@ const Laboratory = () => {
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, '', filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
-          
-                console.log("DataToInsert =", DataToInsert);
+
+            console.log("DataToInsert =", DataToInsert);
 
             if (Object.keys(datos.length !== 0)) {
                 if (filePdf) {
@@ -209,7 +242,7 @@ const Laboratory = () => {
     };
 
     return (
-        <MainCard title="Registrar Laboratorios">
+        <MainCard title="Registrar Audiometría">
             <Fragment>
                 <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
@@ -282,97 +315,31 @@ const Laboratory = () => {
 
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">COLESTEROL (REF: 0-200 MG/DL)</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OTOLÓGICOS Y PERSONALES</Typography>}>
                             <Grid container spacing={2}>
 
-                                <Grid item xs={12} md={1} lg={6}>
+
+
+                                <Grid item xs={12} md={1} lg={2}>
                                     <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="ResultadoColesterol"
-                                            label="Resultado mg/dl"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
+                                        <InputCheckBox
+                                            label="Otalgia"
+                                            name="otalgiaAOP"
+                                            size={25}
+                                            defaultValue={false}
                                         />
                                     </FormProvider>
                                 </Grid>
 
 
 
-                                <Grid item xs={12} md={1} lg={6}>
+                                <Grid item xs={12} md={1} lg={2}>
                                     <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="interpretacionColeste"
-                                            label="Interpretación"
-                                            defaultValue=""
-                                            options={lsInterpretacion}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="observacionColeste"
-                                            label="Observaciones"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            multiline
-                                            rows={6}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-
-                                </Grid>
-
-
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">COLESTEROL HDL (REF: HOMBRE=NORMAL  MAYOR A 35 MG/DL - MUJER =NORMAL MAYOR A 45 MG/DL)</Typography>}>
-                            <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={5}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="resultadoColesteHDL"
-                                            label="Resultado mg/dl"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-
-                                <Grid item xs={12} md={1} lg={5}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="interpretacionColesteHDL"
-                                            label="Interpretación"
-                                            defaultValue=""
-                                            options={lsInterpretacion}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
+                                        <InputCheckBox
+                                            label="Otorrea"
+                                            name="otorreaAOP"
+                                            size={25}
+                                            defaultValue={false}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -381,8 +348,8 @@ const Laboratory = () => {
                                 <Grid item xs={12} md={1} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
-                                            label="dislipidemiaHDL"
-                                            name="dislipidemiaHDL"
+                                            label="Otitis"
+                                            name="otitisAOP"
                                             size={25}
                                             defaultValue={false}
                                         />
@@ -390,12 +357,147 @@ const Laboratory = () => {
                                 </Grid>
 
 
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Acufenos"
+                                            name="acufenosAOP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Cirugía de Oídos"
+                                            name="cirugiaAOP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Vértigo"
+                                            name="vertigoAOP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Farmacológicos"
+                                            name="farmacologicosAOP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Prurito"
+                                            name="luritoAOP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Familiares"
+                                            name="familiaresAOP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Parálisis Facial"
+                                            name="paralisisAOP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="H.T.A."
+                                            name="htaaop"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Hipoacusia"
+                                            name="tipoAcusiaAOP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Diabetes"
+                                            name="diabetesAOP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Exp. A Ruido No Ind."
+                                            name="expoRuidoAOP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={6}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Antecedentes Traumáticos"
+                                            name="anteceTraumaticosAOP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+
+
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="observacionColesteHDL"
+                                            name="observacionAOP"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
@@ -421,19 +523,17 @@ const Laboratory = () => {
                     </Grid>
 
 
-
-
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">TRIGLICÉRIDOS (REF: 0 - 200 MG/DL)</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OCUPACIONALES</Typography>}>
                             <Grid container spacing={2}>
 
-                                <Grid item xs={12} md={1} lg={6}>
+                                <Grid item xs={12} md={1} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="resultadoTrigli"
-                                            label="Resultado mg/dl"
+                                            name="idEmpresaAO"
+                                            label="Empresa"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
@@ -442,11 +542,64 @@ const Laboratory = () => {
 
 
 
-                                <Grid item xs={12} md={1} lg={6}>
+                                <Grid item xs={12} md={1} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="interpretacionTrigli"
-                                            label="Interpretación"
+                                            name="idCargoAO"
+                                            label="Cargo"
+                                            defaultValue=""
+                                            options={lsInterpretacion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={4}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="tiempoExpoAO"
+                                            label="Tiempo Exp."
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+                                <Grid item xs={12} md={1} lg={4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idProteccionAuditivaAO"
+                                            label="Protección Auditiva"
+                                            defaultValue=""
+                                            options={lsInterpretacion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idSuministradaPorAO"
+                                            label="Suministrada Por"
+                                            defaultValue=""
+                                            options={lsInterpretacion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idUsoAO"
+                                            label="Uso"
                                             defaultValue=""
                                             options={lsInterpretacion}
                                             size={matchesXS ? 'small' : 'medium'}
@@ -456,32 +609,6 @@ const Laboratory = () => {
                                 </Grid>
 
 
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="observacionTrigli"
-                                            label="Observaciones"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            multiline
-                                            rows={6}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-
-                                </Grid>
-
-
                             </Grid>
                         </SubCard>
                     </Grid>
@@ -490,29 +617,14 @@ const Laboratory = () => {
 
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">GLICEMIA (REF: 70 - 100 MG/DL)</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">AUDIOGRAMA</Typography>}>
                             <Grid container spacing={2}>
 
-                                <Grid item xs={12} md={1} lg={6}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="resultadoGlicemia"
-                                            label="Resultado mg/dl"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-
-                                <Grid item xs={12} md={1} lg={6}>
+                                <Grid item xs={12} md={1} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="interpretacionGlicemia"
-                                            label="Interpretacion"
+                                            name="idOdcaeAUDIO"
+                                            label="OD CAE"
                                             defaultValue=""
                                             options={lsInterpretacion}
                                             size={matchesXS ? 'small' : 'medium'}
@@ -522,62 +634,12 @@ const Laboratory = () => {
                                 </Grid>
 
 
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="observacionGlicemia"
-                                            label="Observaciones"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            multiline
-                                            rows={6}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
 
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-
-                                </Grid>
-
-
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-
-
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">CREATININA (REF: 0,5 - 1,5 MG/DL)</Typography>}>
-                            <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={6}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="resultadoCreatinina"
-                                            label="Resultado mg/dl"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-
-                                <Grid item xs={12} md={1} lg={6}>
+                                <Grid item xs={12} md={1} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="interpretacionCreatinina"
-                                            label="lsInterpretacion"
+                                            name="idOdmtAUDIO"
+                                            label="OD MT"
                                             defaultValue=""
                                             options={lsInterpretacion}
                                             size={matchesXS ? 'small' : 'medium'}
@@ -586,66 +648,11 @@ const Laboratory = () => {
                                     </FormProvider>
                                 </Grid>
 
-
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="observacionCreatinina"
-                                            label="Observaciones"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            multiline
-                                            rows={6}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-
-                                </Grid>
-
-
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-
-                    ,
-
-
-
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">BUN (Ref: 5 - 25 mg/dl)</Typography>}>
-                            <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={6}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="resultadoBUN"
-                                            label="Resultado mg/dl"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-
-                                <Grid item xs={12} md={1} lg={6}>
+                                <Grid item xs={12} md={1} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="interpretacionBUN"
-                                            label="lsInterpretacion"
+                                            name="idOicaeAUDIO"
+                                            label="OI CAE"
                                             defaultValue=""
                                             options={lsInterpretacion}
                                             size={matchesXS ? 'small' : 'medium'}
@@ -654,13 +661,95 @@ const Laboratory = () => {
                                     </FormProvider>
                                 </Grid>
 
+                                <Grid item xs={12} md={1} lg={4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idOimtAUDIO"
+                                            label="OI MT"
+                                            defaultValue=""
+                                            options={lsInterpretacion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={8}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Reposo Auditivo"
+                                            name="idReposoAUDIO"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+                                {/* // DX AQUIIIIIIIIIIIIIIII// */}
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                        <InputOnChange
+                                            label="Dx "
+                                            onKeyDown={handleDx1}
+                                            onChange={(e) => setTextDx1(e?.target.value)}
+                                            value={textDx1}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={1} lg={6}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="dxAUDIO"
+                                                label="Dx"
+                                                defaultValue=""
+                                                options={lsDx1}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idConductaClasificacion"
+                                            label="Conducta"
+                                            defaultValue=""
+                                            options={lsInterpretacion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Cambio EPP"
+                                            name="idCambioEPP"
+                                            size={25}
+                                            defaultValue={false}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+                             
+
+
+
+
+
+
 
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
-                                            name="observacionBUN"
+                                            name="observacionAUDIO"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
@@ -684,231 +773,6 @@ const Laboratory = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
-
-
-
-
-                    <Grid item xs={12}>
-
-                        <Grid container spacing={2}>
-
-                            <Grid item xs={12} md={1} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idParcialOrina"
-                                        label="Parcial de Orina"
-                                        defaultValue=""
-                                        options={lsInterpretacion}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12} md={1} lg={8}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="observacionParcialOrina"
-                                        label="Observaciones"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-
-
-                        </Grid>
-
-                    </Grid>
-
-                    <Grid item xs={12}>
-
-                        <Grid container spacing={2}>
-
-                            <Grid item xs={12} md={1} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="hemograma"
-                                        label="Hemograma"
-                                        defaultValue=""
-                                        options={lsInterpretacion}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12} md={1} lg={8}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="observacionHemograma"
-                                        label="Observaciones"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-
-
-                        </Grid>
-
-                    </Grid>
-
-                    <Grid item xs={12}>
-
-                        <Grid container spacing={2}>
-
-                            <Grid item xs={12} md={1} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="gpt"
-                                        label="GPT - (Ref: 7 - 33 Normal)"
-                                        defaultValue=""
-                                        options={lsInterpretacion}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12} md={1} lg={8}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="observacionGPT"
-                                        label="Observaciones"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-
-
-                        </Grid>
-
-                    </Grid>
-
-
-
-
-                    <Grid item xs={12}>
-
-                        <Grid container spacing={2}>
-
-                            <Grid item xs={12} md={1} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="got"
-                                        label="GoT - (Ref: 5 - 32 Normal)"
-                                        defaultValue=""
-                                        options={lsInterpretacion}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12} md={1} lg={8}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="observacionGOT"
-                                        label="Observaciones"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-
-
-                        </Grid>
-
-                    </Grid>
-
-                    <Grid item xs={12}>
-
-
-
-                        <Grid container spacing={2}>
-
-                            <Grid item xs={12} md={1} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="bilirrubina"
-                                        label="Bilirrubina Total"
-                                        defaultValue=""
-                                        options={lsInterpretacion}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12} md={1} lg={8}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="observacionBilirrubina"
-                                        label="Observaciones"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-
-
-                        </Grid>
-
-                    </Grid>
-
-                    <Grid item xs={12}>
-
-                        <Grid container spacing={2}>
-
-                            <Grid item xs={12} md={1} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="bilirrubinaDirecta"
-                                        label="Bilirrubina Directa"
-                                        defaultValue=""
-                                        options={lsInterpretacion}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12} md={1} lg={8}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="observacionBilirrubinaDirecta"
-                                        label="Observaciones"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-
-
-                        </Grid>
-
-                    </Grid>
-
 
 
 
@@ -974,4 +838,4 @@ const Laboratory = () => {
     );
 };
 
-export default Laboratory;
+export default Audiometry;

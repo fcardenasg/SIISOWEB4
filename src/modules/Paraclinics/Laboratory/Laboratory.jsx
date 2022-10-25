@@ -381,7 +381,7 @@ const Laboratory = () => {
                                 <Grid item xs={12} md={1} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
-                                            label="dislipidemiaHDL"
+                                            label="Dislipidemia HDL"
                                             name="dislipidemiaHDL"
                                             size={25}
                                             defaultValue={false}
