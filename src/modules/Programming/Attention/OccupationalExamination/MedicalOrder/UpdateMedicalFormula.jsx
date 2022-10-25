@@ -294,7 +294,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
                                                     defaultValue={lsMedicalFormula.descripcion}
                                                     fullWidth
                                                     name="descripcion"
-                                                    label="Descripcion"
+                                                    label="Descripción"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
                                                 />

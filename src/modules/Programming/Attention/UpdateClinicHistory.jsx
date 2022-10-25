@@ -442,7 +442,7 @@ const UpdateClinicHistory = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="ATENCIÓN MEDICA - ESTADO CASO NUEVO"
+                            title="HISTORIA CLÍNICA"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -797,7 +797,7 @@ const UpdateClinicHistory = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                        <Button /* disabled={resultData.length === 0 ? true : false} */ variant="outlined" fullWidth onClick={handleClickReport}>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

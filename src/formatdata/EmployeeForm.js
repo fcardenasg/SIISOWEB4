@@ -17,7 +17,7 @@ export function PostEmployee(documento, nombres, fechaNaci, type = DefaultValue.
         rosterPosition, tipoContrato, generalPosition, genero, sede, direccionResidencia, direccionResidenciaTrabaja,
         municipioResidencia, dptoResidenciaTrabaja, municipioResidenciaTrabaja, dptoResidencia, celular, eps, afp, turno, email,
         telefonoContacto, estadoCivil, empresa, arl, contacto, escolaridad, cesantias, rotation, payStatus, termDate, bandera, ges,
-        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico, imagenUrl,oficio
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico, imagenUrl, oficio
     };
 }
 
@@ -32,12 +32,12 @@ export function PutEmployee(documento, nombres, fechaNaci, type = DefaultValue.S
     turno = DefaultValue.SINREGISTRO_GLOBAL, email, telefonoContacto, estadoCivil, empresa, arl = DefaultValue.SINREGISTRO_GLOBAL,
     contacto, escolaridad = DefaultValue.SINREGISTRO_GLOBAL, cesantias = DefaultValue.SINREGISTRO_GLOBAL, rotation,
     payStatus = DefaultValue.SINREGISTRO_GLOBAL, termDate, bandera = DefaultValue.SINREGISTRO_GLOBAL, ges = DefaultValue.SINREGISTRO_GLOBAL,
-    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico, imagenUrl = '',oficio= DefaultValue.SINREGISTRO_GLOBAL) {
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico, imagenUrl = '', oficio = DefaultValue.SINREGISTRO_GLOBAL) {
     return {
         documento, nombres, fechaNaci, type, departamento, area, subArea, grupo, municipioNacido, dptoNacido, fechaContrato,
         rosterPosition, tipoContrato, generalPosition, genero, sede, direccionResidencia, direccionResidenciaTrabaja,
         municipioResidencia, dptoResidenciaTrabaja, municipioResidenciaTrabaja, dptoResidencia, celular, eps, afp, turno, email,
         telefonoContacto, estadoCivil, empresa, arl, contacto, escolaridad, cesantias, rotation, payStatus, termDate, bandera, ges,
-        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico, imagenUrl,oficio
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico, imagenUrl, oficio
     };
 }

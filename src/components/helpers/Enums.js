@@ -19,7 +19,7 @@ export const CodCatalogo = {
     Arl: 10,
     Ges: 20,
     Cesantias: 19,
-    Oficio:173,
+    Oficio: 173,
 
     AtencionEMO: 138,
 

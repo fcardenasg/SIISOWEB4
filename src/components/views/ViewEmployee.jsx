@@ -289,8 +289,8 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                                     <ViewDataDetails title="Rol" nameData={lsEmployee.nameType} />
                                     <ViewDataDetails title="Tipo de Contrato" nameData={lsEmployee.nameTipoContrato} />
                                     <ViewDataDetails title="Departamento" nameData={lsEmployee.nameDepartamento} />
-                                    <ViewDataDetails title="Area" nameData={lsEmployee.nameArea} />
-                                    <ViewDataDetails title="Subarea" nameData={lsEmployee.nameSubArea} />
+                                    <ViewDataDetails title="Área" nameData={lsEmployee.nameArea} />
+                                    <ViewDataDetails title="Subárea" nameData={lsEmployee.nameSubArea} />
 
                                 </Grid>
 
