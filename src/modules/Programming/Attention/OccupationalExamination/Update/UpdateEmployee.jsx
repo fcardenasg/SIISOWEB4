@@ -91,8 +91,9 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
     const [imgSrc, setImgSrc] = useState(null);
     const [open, setOpen] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
+    const [lsOficio, setOficio] = useState([]);
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerEmployeeId = await GetByIdEmployee(idEmpleado);
             if (lsServerEmployeeId.status === 200) {
@@ -102,6 +103,13 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                 setDptoResidenciaTrabaja(lsServerEmployeeId.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId.data.dptoResidencia);
             }
+
+            const lsServerOficio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Oficio);
+            var resultOficio = lsServerOficio.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setOficio(resultOficio);
 
             const lsServerCatalogo = await GetAllCatalog(0, 0);
             var resultCatalogo = lsServerCatalogo.data.entities.map((item) => ({
@@ -261,7 +269,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, []);
 
     const methods = useForm(
@@ -331,7 +339,8 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date(datos.termDate)),
-                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.email, FormatDate(new Date()), imgSrc);
+                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.email, FormatDate(new Date()), imgSrc,
+                datos.oficio);
 
             if (imgSrc !== null) {
                 if (Object.keys(datos.length !== 0)) {
@@ -891,6 +900,19 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                         options={lsGes}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.ges}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="oficio"
+                                        label="Oficio"
+                                        defaultValue={employee.oficio}
+                                        options={lsOficio}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.oficio}
                                     />
                                 </FormProvider>
                             </Grid>

@@ -121,11 +121,22 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.setFontSize(8);
     doc.text(`${lsDataReport.nota}`, 7, 87, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-    if (lsDataReport.diagnostico !== undefined && lsDataReport !== []) {
+    doc.setFontSize(10);
+
+    if (lsDataReport.dx1 !== "")
+        doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 135, { maxWidth: 200, lineHeightFactor: 1.5 });
+
+    if (lsDataReport.dx2 !== "")
+        doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 143, { maxWidth: 200, lineHeightFactor: 1.5 });
+
+    if (lsDataReport.dx3 !== "")
+        doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 151, { maxWidth: 200, lineHeightFactor: 1.5 });
+
+/*     if (lsDataReport.diagnostico !== undefined && lsDataReport !== []) {
         doc.text(JSON.parse(lsDataReport.diagnostico).map((dx, index) => {
             return String(`DX ${index = index + 1}:  ${dx.label.toUpperCase()}`)
         }), 7, 135, { maxWidth: 200, lineHeightFactor: 1.5 });
-    }
+    } */
 
     doc.text(`${lsDataReport.planManejo}`, 7, 163, { maxWidth: 200, lineHeightFactor: 1.5 });
 

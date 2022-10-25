@@ -65,18 +65,6 @@ const headCells = [
         numeric: false,
         label: 'CIE11',
         align: 'left'
-    },
-    {
-        id: 'nameTipoAtencion',
-        numeric: false,
-        label: 'Tipo de Atención',
-        align: 'left'
-    },
-    {
-        id: 'nameAtencion',
-        numeric: false,
-        label: 'Atención',
-        align: 'left'
     }
 ];
 
@@ -165,7 +153,7 @@ const ListPlantillaAll = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion', 'idCIE11'];
+                const properties = ['id', 'nameCIE11', 'idCIE11'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -277,35 +265,6 @@ const ListPlantillaAll = () => {
                                                 {row.nameCIE11}
                                             </Typography>
                                         </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.nameTipoAtencion}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.nameAtencion}
-                                            </Typography>
-                                        </TableCell>
-
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
                                             <CopyToClipboard

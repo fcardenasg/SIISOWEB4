@@ -262,7 +262,7 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
                                                 defaultValue=""
                                                 fullWidth
                                                 name="descripcion"
-                                                label="Descripcion"
+                                                label="Descripción"
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />
