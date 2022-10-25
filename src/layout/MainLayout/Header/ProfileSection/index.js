@@ -38,7 +38,7 @@ import useAuth from 'hooks/useAuth';
 import User1 from 'assets/images/users/user-round.svg';
 
 // assets
-import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
+import { IconLogout, IconSettings, IconHome } from '@tabler/icons';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -56,6 +56,15 @@ const ProfileSection = () => {
     const handleLogout = async () => {
         try {
             await logout();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleLogoutHome = async () => {
+        try {
+            await logout();
+            navigate("/");
         } catch (err) {
             console.error(err);
         }
@@ -158,7 +167,6 @@ const ProfileSection = () => {
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
                                     <Box sx={{ p: 2 }}>
-
                                         <Stack>
                                             <Stack direction="row" spacing={0.5} alignItems="center">
                                                 <Typography variant="h4">Buenos Días,</Typography>
@@ -168,13 +176,12 @@ const ProfileSection = () => {
                                             </Stack>
                                             <Typography variant="subtitle2">Rol del Usuario</Typography>
                                         </Stack>
-
                                     </Box>
-
 
                                     <List
                                         component="nav"
                                         sx={{
+                                            pl: 1,
                                             width: '100%',
                                             maxWidth: 350,
                                             minWidth: 300,
@@ -201,7 +208,7 @@ const ProfileSection = () => {
 
                                         <ListItemButton
                                             sx={{ borderRadius: `${customization.borderRadius}px` }}
-                                            selected={selectedIndex === 4}
+                                            selected={selectedIndex === 1}
                                             onClick={handleLogout}
                                         >
                                             <ListItemIcon>
@@ -209,6 +216,18 @@ const ProfileSection = () => {
                                             </ListItemIcon>
                                             <ListItemText primary={<Typography variant="body2">Cerrar Sesión</Typography>} />
                                         </ListItemButton>
+
+                                        <ListItemButton
+                                            sx={{ borderRadius: `${customization.borderRadius}px` }}
+                                            selected={selectedIndex === 2}
+                                            onClick={handleLogoutHome}
+                                        >
+                                            <ListItemIcon>
+                                                <IconHome stroke={1.5} size="1.3rem" />
+                                            </ListItemIcon>
+                                            <ListItemText primary={<Typography variant="body2">Inicio Portal</Typography>} />
+                                        </ListItemButton>
+
                                     </List>
                                 </MainCard>
                             </ClickAwayListener>
