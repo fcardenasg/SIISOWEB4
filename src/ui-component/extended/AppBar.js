@@ -43,9 +43,9 @@ const AppBar = ({ ...others }) => {
                 <Container>
                     <Toolbar>
                         <Typography component="div" sx={{ flexGrow: 1, textAlign: 'left' }}>
-                            <Logo size={120} />
+
                         </Typography>
-                        
+
                         <Stack direction="row" sx={{ display: { xs: 'none', sm: 'block' } }} spacing={2}>
                             <Tooltip title="SISTEMA DE INFORMACIÓN Y ATENCIÓN AL EMPLEADO">
                                 <Button variant="outlined" color="error" size="large"
