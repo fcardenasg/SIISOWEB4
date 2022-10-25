@@ -442,7 +442,7 @@ const UpdateEvolutionNote = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="ATENCIÓN MEDICA - ESTADO CASO CONTROL"
+                            title="NOTA DE EVOLUCIÓN"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

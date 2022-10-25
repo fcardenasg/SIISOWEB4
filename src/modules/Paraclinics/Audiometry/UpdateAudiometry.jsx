@@ -50,7 +50,7 @@ const DetailIcons = [
 
 ]
 
-const UpdateLaboratory = () => {
+const UpdateAudiometry = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
@@ -240,7 +240,7 @@ const UpdateLaboratory = () => {
     };
 
     return (
-        <MainCard title="Actualizar Laboratorios">
+        <MainCard title="Actualizar Audiometría">
             <Fragment>
                 <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
@@ -533,4 +533,4 @@ const UpdateLaboratory = () => {
     );
 };
 
-export default UpdateLaboratory;
+export default UpdateAudiometry;

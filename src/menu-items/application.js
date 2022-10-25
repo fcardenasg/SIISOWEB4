@@ -213,10 +213,10 @@ const application = {
                     breadcrumbs: false
                 },
                 {
-                    id: 'button',
+                    id: 'audiometry',
                     title: <FormattedMessage id="Audiometría" />,
                     type: 'item',
-                    url: '/components/button',
+                    url: '/Paraclinics/Audiometry/list',
                     breadcrumbs: false
                 },
                 {
@@ -276,6 +276,7 @@ const application = {
                     url: '/Paraclinics/Cytology/list',
                     breadcrumbs: false
                 },
+              
             ]
         },
         {

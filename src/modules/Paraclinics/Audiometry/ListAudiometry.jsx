@@ -41,7 +41,7 @@ import { ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import FullScreenDialogs from 'components/controllers/FullScreenDialog';
-import Laboratory from './Laboratory';
+import Audiometry from './Audiometry';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -210,7 +210,7 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListLaboratory = () => {
+const ListAudiometry = () => {
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
     const [laboratory, setLaboratory] = useState([]);
@@ -362,8 +362,8 @@ const ListLaboratory = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Laboratorios">
-                            <ExcelSheet data={laboratory} name="Laboratorios">
+                        } filename="Audiometrías">
+                            <ExcelSheet data={laboratory} name="Audiometrías">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Fecha" value="fecha" />
                                 <ExcelColumn label="Documento" value="documento" />
@@ -400,7 +400,7 @@ const ListLaboratory = () => {
                         </Tooltip>
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/paraclinics/laboratory/add")}>
+                            onClick={() => navigate("/paraclinics/audiometry/add")}>
                             {TitleButton.Agregar}
                         </Button>
                     </Grid>
@@ -520,7 +520,7 @@ const ListLaboratory = () => {
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/paraclinics/laboratory/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/paraclinics/audiometry/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -544,10 +544,10 @@ const ListLaboratory = () => {
 
             <FullScreenDialogs
                 open={open}
-                title="IMPRIMIR VISIOMETRIA"
+                title="IMPRIMIR AUDIOMETRIA"
                 handleClose={() => setOpen(false)}
             >
-                <Laboratory />
+                <Audiometry />
             </FullScreenDialogs>
 
             <TablePagination
@@ -563,4 +563,4 @@ const ListLaboratory = () => {
     );
 };
 
-export default ListLaboratory;
+export default ListAudiometry;
