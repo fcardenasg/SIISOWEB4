@@ -123,16 +123,16 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
 
   /* CUADRO DATOS */
   doc.line(5, 40, 210, 40);
-  doc.line(5, 25, 5, 174);
+  doc.line(5, 25, 5, 184);
   doc.line(40, 40, 40, 74); /* LINEA ONE */
   doc.line(115, 40, 115, 74); /* LINEA TWO */
-  doc.line(210, 25, 210, 174);
+  doc.line(210, 25, 210, 184);
   doc.line(5, 74, 210, 74);
   doc.line(5, 82, 210, 82);
   doc.line(5, 91, 210, 91);
-  doc.line(5, 99, 210, 99);
-  doc.line(5, 108, 210, 108);
-  doc.line(5, 174, 210, 174);
+  doc.line(5, 115, 210, 115);
+  doc.line(5, 125, 210, 125);
+  doc.line(5, 184, 210, 184);
  
 
   /* TITULOS DE CONTENIDO */
@@ -150,8 +150,8 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
 
   doc.text("RESUMEN DE LA ATENCIÓN", 6, 79);
   doc.text("CONTINGENCIA:", 6, 88);
-  doc.text("PROCEDIMIENTOS:",6,95);
-  doc.text("DESCRIPCIÓN",6,104);
+  doc.text("PROCEDIMIENTOS:",6,98);
+  doc.text("DESCRIPCIÓN",6,122);
 
 
   /* RENDERIZADO DE CONTENIDO */
@@ -176,10 +176,10 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
   if (lsDataReport.procedimientos !== undefined && lsDataReport !== []) {
     doc.text(JSON.parse(lsDataReport.procedimientos).map((dx, index) => {
         return String(`${dx.label.toUpperCase()}`)
-    }), 40, 95, { maxWidth: 200, lineHeightFactor: 1.5 });
+    }), 40, 98, { maxWidth: 200, lineHeightFactor: 1.5 });
 }
 
-  doc.text(`${lsDataReport.notaEnfermedad}}`, 6, 113, {
+  doc.text(`${lsDataReport.notaEnfermedad}}`, 6, 130, {
     maxWidth: 190,
    /*  align: "justify", */
     lineHeightFactor: 1.0,
