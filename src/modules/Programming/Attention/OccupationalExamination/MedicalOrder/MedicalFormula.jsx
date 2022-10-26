@@ -48,7 +48,7 @@ const DetailIcons = [
     { title: 'Ver Medicamentos', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdateMedicalFormula, tipoOrden, lsEmployee, setDocumento, documento, lsAtencion }) => {
+const MedicalFormula = ({ setListMedicalFormula, contingencia, setNewMedicalFormula, setUpdateMedicalFormula, tipoOrden, lsEmployee, setDocumento, documento, lsAtencion }) => {
     const { user } = useAuth();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -114,17 +114,22 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
                     tipoOrden === 'Imagenes' ? DefaultValue.TIPO_ORDEN_IMAGEN :
                         tipoOrden === 'Examenes' ? DefaultValue.TIPO_ORDEN_EXAMEN : DefaultValue.SINREGISTRO_GLOBAL;
 
-            const DataToInsert = PostMedicalFormula(FormatDate(new Date()), documento, lsAtencion.motivo,
+            const DataToInsert = PostMedicalFormula(FormatDate(new Date()), documento, contingencia,
                 lsAtencion.id, saveTipoOrden, datos.diagnostico, datos.descripcion,
                 user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertMedicalFormula(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    setTextDx('');
-                    reset();
-                    setResultData(result.data)
+            if (contingencia === "") {
+                setOpenError(true);
+                setErrorMessage('Por favor, seleccione una contingencia');
+            } else {
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await InsertMedicalFormula(DataToInsert);
+                    if (result.status === 200) {
+                        setOpenSuccess(true);
+                        setTextDx('');
+                        reset();
+                        setResultData(result.data)
+                    }
                 }
             }
         } catch (error) {
@@ -340,4 +345,5 @@ MedicalFormula.propTypes = {
     setDocumento: PropTypes.any,
     documento: PropTypes.any,
     lsAtencion: PropTypes.any,
+    contingencia: PropTypes.any,
 };

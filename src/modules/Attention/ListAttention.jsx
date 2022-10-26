@@ -217,7 +217,7 @@ EnhancedTableToolbar.propTypes = {
 const ListAttention = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const [idCheck, setIdCheck] = useState('');
+    const [idCheck, setIdCheck] = useState(0);
     const [lsAttention, setLsAttention] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [openReport, setOpenReport] = useState(false);
@@ -298,7 +298,7 @@ const ListAttention = () => {
     };
 
     const handleClick = (event, id) => {
-        if (idCheck === '') setIdCheck(id); else setIdCheck('');
+        setIdCheck(id);
 
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
@@ -330,16 +330,17 @@ const ListAttention = () => {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
                     const result = await DeleteAttention(idCheck);
+
                     if (result.status === 200) {
                         setOpenDelete(true);
                         setSelected([]);
-                        setIdCheck('');
+                        setIdCheck(0);
                         getAll();
                     }
                 } else
                     setSelected([]);
             });
-        } catch (error) { console.log(error) }
+        } catch (error) { }
     }
 
     const handleClose = () => {
@@ -429,7 +430,7 @@ const ListAttention = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip disabled={idCheck === '' ? true : false} title="Impresión" onClick={handleClickReport} sx={{ mx: 1 }}>
+                        <Tooltip title="Impresión" onClick={handleClickReport} sx={{ mx: 1 }}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
@@ -469,13 +470,12 @@ const ListAttention = () => {
                                 return (
                                     <TableRow
                                         hover
-                                        role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                        <TableCell padding="radio" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}

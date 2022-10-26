@@ -6,6 +6,7 @@ import {
     Box,
     CardContent,
     Grid,
+    IconButton,
     InputAdornment,
     Table,
     TableBody,
@@ -16,13 +17,16 @@ import {
     TableRow,
     TableSortLabel,
     TextField,
+    Tooltip,
     Typography,
 } from '@mui/material';
-import Chip from 'ui-component/extended/Chip';
 
 import { visuallyHidden } from '@mui/utils';
+import ControlModal from 'components/controllers/ControlModal';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import SearchIcon from '@mui/icons-material/Search';
-import { GetAllMedicines } from 'api/clients/MedicinesClient';
+import { GetAllByDocumentoPara, GetAllByDocumentoParacli } from 'api/clients/ParaclinicsClient';
+import { ViewFormat } from 'components/helpers/Format';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -49,27 +53,27 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'descripcion',
+        id: 'id',
         numeric: false,
-        label: 'Descripción',
+        label: 'ID',
+        align: 'center'
+    },
+    {
+        id: 'fecha',
+        numeric: false,
+        label: 'Fecha',
         align: 'left'
     },
     {
-        id: 'idUnidad',
+        id: 'idTipoParaclinico',
         numeric: false,
-        label: 'Unidad',
+        label: 'Tipo Examen',
         align: 'left'
     },
     {
-        id: 'cantidad',
+        id: 'nameResultado',
         numeric: false,
-        label: 'Cantidad',
-        align: 'left'
-    },
-    {
-        id: 'existencia',
-        numeric: false,
-        label: 'Existencia',
+        label: 'Resultado',
         align: 'left'
     }
 ];
@@ -104,6 +108,13 @@ function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }
                             </TableSortLabel>
                         </TableCell>
                     ))}
+                {numSelected <= 0 && (
+                    <TableCell sortDirection={false} align="center" sx={{ pr: 3 }}>
+                        <Typography variant="subtitle1" sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}>
+                            Acción
+                        </Typography>
+                    </TableCell>
+                )}
             </TableRow>
         </TableHead>
     );
@@ -117,12 +128,14 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const ListMedicalFormula = () => {
-    const [lsMedical, setLsMedical] = useState([]);
+const ListExamenesPara = ({ documento = '' }) => {
+    const [lsExamemesPara, setLsExamenesPara] = useState([]);
+    const [openViewPdf, setOpenViewPdf] = useState(false);
+    const [dataPdf, setDataPdf] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('descripcion');
+    const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -130,18 +143,16 @@ const ListMedicalFormula = () => {
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
-        async function GetAll() {
+        async function getAll() {
             try {
-                const lsServer = await GetAllMedicines(0, 0);
-                setLsMedical(lsServer.data.entities);
+                const lsServer = await GetAllByDocumentoPara(0, 0, documento);
+                setLsExamenesPara(lsServer.data.entities);
                 setRows(lsServer.data.entities);
-            } catch (error) {
-                console.log(error);
-            }
+            } catch (error) { }
         }
 
-        GetAll();
-    }, [])
+        getAll();
+    }, [documento])
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -151,7 +162,7 @@ const ListMedicalFormula = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['descripcion', 'idUnidad', 'cantidad', 'existencia'];
+                const properties = ['id', 'fecha', 'idTipoParaclinico', 'nameResultado'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -165,9 +176,9 @@ const ListMedicalFormula = () => {
                 }
                 return matches;
             });
-            setLsMedical(newRows);
+            setLsExamenesPara(newRows);
         } else {
-            setLsMedical(rows);
+            setLsExamenesPara(rows);
         }
     };
 
@@ -186,10 +197,27 @@ const ListMedicalFormula = () => {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedical.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsExamemesPara.length) : 0;
 
     return (
         <Fragment>
+            <ControlModal
+                title="VISTA DE EXAMEN"
+                open={openViewPdf}
+                onClose={() => setOpenViewPdf(false)}
+                maxWidth="xl"
+            >
+                <Typography align='center'>
+                    {dataPdf && (
+                        <object type="application/pdf"
+                            data={dataPdf}
+                            width="1400"
+                            height="510"
+                        />
+                    )}
+                </Typography>
+            </ControlModal>
+
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -217,12 +245,12 @@ const ListMedicalFormula = () => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsMedical.length}
+                        rowCount={lsExamemesPara.length}
                         theme={theme}
                         selected={selected}
                     />
                     <TableBody>
-                        {stableSort(lsMedical, getComparator(order, orderBy))
+                        {stableSort(lsExamemesPara, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
@@ -240,13 +268,13 @@ const ListMedicalFormula = () => {
                                             id={labelId}
                                             scope="row"
                                             sx={{ cursor: 'pointer' }}
-                                            align="left"
+                                            align="center"
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.descripcion}
+                                                {row.id}
                                             </Typography>
                                         </TableCell>
 
@@ -260,7 +288,7 @@ const ListMedicalFormula = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idUnidad}
+                                                {ViewFormat(row.fecha)}
                                             </Typography>
                                         </TableCell>
 
@@ -274,7 +302,7 @@ const ListMedicalFormula = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.cantidad}
+                                                {row.idTipoParaclinico}
                                             </Typography>
                                         </TableCell>
 
@@ -288,11 +316,16 @@ const ListMedicalFormula = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.cantidad !== 0 ?
-                                                    <Chip label="EXISTENCIA" size="small" chipcolor="success" /> :
-                                                    <Chip label="SIN EXISTENCIA" size="small" chipcolor="error" />
-                                                }
+                                                {row.nameConclusion}
                                             </Typography>
+                                        </TableCell>
+
+                                        <TableCell align="center" sx={{ pr: 3 }}>
+                                            <Tooltip title="Ver PDF" onClick={() => { setOpenViewPdf(true); setDataPdf(row.url) }}>
+                                                <IconButton size="large">
+                                                    <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                                                </IconButton>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -313,7 +346,7 @@ const ListMedicalFormula = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsMedical.length}
+                count={lsExamemesPara.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -323,4 +356,4 @@ const ListMedicalFormula = () => {
     );
 };
 
-export default ListMedicalFormula;
+export default ListExamenesPara;

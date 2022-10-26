@@ -270,8 +270,8 @@ const Attention = () => {
                 setAtencion('');
                 setLsAtencion([]);
             } else {
-                setAtencion();
-                setTipoAtencion();
+                setAtencion('');
+                setTipoAtencion('');
                 setLsAtencion([]);
             }
 
@@ -345,24 +345,24 @@ const Attention = () => {
                 motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (documento === '') { setOpenError(true); setErrorMessage(`${Message.ErrorDocumento}`); }
-            else if (sede === '') { setOpenError(true); setErrorMessage('Por favor, seleccione una Sede'); }
-            else if (tipoAtencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione el Tipo Atención'); }
-            else if (atencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione la Atención'); } else {
-                if (Object.keys(datos.length !== 0)) {
-                    const result = await InsertAttention(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                        setDocumento('');
-                        setTipoAtencion('');
-                        setAtencion('');
-                        setSede('');
-                        setLsEmployee([]);
-                        reset();
-                        setResult(result.data)
-                    }
-                }
-            }
+            if (documento === '') { setOpenError(true); setErrorMessage(`${Message.ErrorDocumento}`); } else
+                if (sede === '') { setOpenError(true); setErrorMessage('Por favor, seleccione una Sede'); } else
+                    if (tipoAtencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione el Tipo Atención'); } else
+                        if (atencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione la Atención'); } else {
+                            if (Object.keys(datos.length !== 0)) {
+                                const result = await InsertAttention(DataToInsert);
+                                if (result.status === 200) {
+                                    setOpenSuccess(true);
+                                    setDocumento('');
+                                    setTipoAtencion('');
+                                    setAtencion('');
+                                    setSede('');
+                                    setLsEmployee([]);
+                                    reset();
+                                    setResult(result.data)
+                                }
+                            }
+                        }
         } catch (error) {
             setOpenError(true);
             setErrorMessage(`${error}`);

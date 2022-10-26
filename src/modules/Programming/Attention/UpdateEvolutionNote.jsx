@@ -40,9 +40,9 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import Cargando from 'components/loading/Cargando';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
@@ -55,11 +55,26 @@ import { generateReport } from './Report/EvolutionNote';
 import { GetByMail } from 'api/clients/UserClient';
 import ViewPDF from 'components/components/ViewPDF';
 import InputOnChange from 'components/input/InputOnChange';
+import SelectOnChange from 'components/input/SelectOnChange';
+import ListExamenesPara from 'components/template/ListExamenesPara';
+import ListExamenesFisico from 'components/template/ListExamenesFisico';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+
+const validationSchema = yup.object().shape({
+    dx1: yup.string().required(`${ValidationMessage.Requerido}`),
+    idConceptoActitud: yup.string().required(`${ValidationMessage.Requerido}`),
+});
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-    { title: 'Ver Examenes', icons: <AddBoxIcon fontSize="small" /> },
+    { title: 'Ver Examenes Físicos', icons: <DirectionsRunIcon fontSize="small" /> },
+    { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
+
+    { title: 'Historial De Historia Clinica', icons: <AddBoxIcon fontSize="small" /> },
+    { title: 'Historial De Notas De Evolición', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
 const dataMedicalOrders = [
@@ -109,6 +124,7 @@ const UpdateEvolutionNote = () => {
     const [newMedicalFormula, setNewMedicalFormula] = useState(false);
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
     const [numberId, setNumberId] = useState('');
+    const [contingencia, setContingencia] = useState('');
 
     const [textDx1, setTextDx1] = useState('');
     const [textDx2, setTextDx2] = useState('');
@@ -124,20 +140,23 @@ const UpdateEvolutionNote = () => {
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openExamen, setOpenExamen] = useState(false);
+    const [openExamenFisico, setOpenExamenFisico] = useState(false);
+    const [openVistaDisenio, setOpenVistaDisenio] = useState(false);
 
     const [lsAtencionn, setLsAtencionn] = useState([]);
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsContingencia, setLsContingencia] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
 
     const [resultData, setResultData] = useState([]);
     const [dataPDF, setDataPDF] = useState(null);
 
-    const methods = useForm();
+    const methods = useForm({
+        resolver: yupResolver(validationSchema),
+    });
 
-    const { handleSubmit } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
     const handleDx1 = async (event) => {
         try {
@@ -293,13 +312,6 @@ const UpdateEvolutionNote = () => {
                 label: item.nombre
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
-
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
         } catch (error) { }
     }
 
@@ -309,7 +321,7 @@ const UpdateEvolutionNote = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostEvolutionNote(documento, FormatDate(datos.fecha), id, datos.idAtencion, datos.idContingencia,
+            const DataToUpdate = PostEvolutionNote(documento, FormatDate(datos.fecha), id, datos.idAtencion, contingencia,
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.nota, datos.dx1, datos.dx2, datos.dx3,
                 datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.email,
                 FormatDate(new Date()), '', FormatDate(new Date()));
@@ -361,11 +373,31 @@ const UpdateEvolutionNote = () => {
 
             <FullScreenDialog
                 open={openExamen}
-                title="VISTA DE EXAMENES"
+                title="VISTA DE EXAMENES PARACLÍNICOS"
                 handleClose={() => setOpenExamen(false)}
             >
-
+                <ListExamenesPara documento={documento} />
             </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openExamenFisico}
+                title="VISTA DE EXAMEN FÍSICO"
+                handleClose={() => setOpenExamenFisico(false)}
+            >
+                <ListExamenesFisico documento={documento} />
+            </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openVistaDisenio}
+                title="VISTAS A DISEÑAR 1"
+                handleClose={() => setOpenVistaDisenio(false)}
+            ></FullScreenDialog>
+
+            <FullScreenDialog
+                open={openVistaDisenio}
+                title="VISTAS A DISEÑAR 2"
+                handleClose={() => setOpenVistaDisenio(false)}
+            ></FullScreenDialog>
 
             <ControlModal
                 title="VISTA DE REPORTE"
@@ -377,7 +409,7 @@ const UpdateEvolutionNote = () => {
             </ControlModal>
 
             <ControlModal
-                title={"Ordenes Medicas - " + titleModal}
+                title={"Orden de " + titleModal}
                 open={openForm}
                 onClose={() => {
                     setOpenForm(false);
@@ -390,6 +422,7 @@ const UpdateEvolutionNote = () => {
             >
                 {newMedicalFormula ?
                     <MedicalFormula
+                        contingencia={contingencia}
                         setUpdateMedicalFormula={setUpdateMedicalFormula}
                         setListMedicalFormula={setListMedicalFormula}
                         setNewMedicalFormula={setNewMedicalFormula}
@@ -410,6 +443,7 @@ const UpdateEvolutionNote = () => {
                         />
                         : updateMedicalFormula ?
                             <UpdateMedicalFormula
+                                contingencia={contingencia}
                                 setListMedicalFormula={setListMedicalFormula}
                                 setNewMedicalFormula={setNewMedicalFormula}
                                 setUpdateMedicalFormula={setUpdateMedicalFormula}
@@ -422,7 +456,7 @@ const UpdateEvolutionNote = () => {
             </ControlModal>
 
             <DialogFormula
-                title="Ordenes Medicas"
+                title="TIPO DE ORDEN"
                 open={openFormula}
                 handleCloseDialog={() => setOpenFormula(false)}
             >
@@ -478,15 +512,14 @@ const UpdateEvolutionNote = () => {
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idContingencia"
-                                            label="Contingencia"
-                                            defaultValue=""
-                                            options={lsContingencia}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
+                                    <SelectOnChange
+                                        name="idContingencia"
+                                        label="Contingencia"
+                                        onChange={(e) => setContingencia(e?.target.value)}
+                                        value={contingencia}
+                                        options={lsContingencia}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
                             </Grid>
                         </SubCard>
@@ -522,9 +555,27 @@ const UpdateEvolutionNote = () => {
                                     />
 
                                     <DetailedIcon
+                                        title={DetailIcons[3].title}
+                                        onClick={() => setOpenExamenFisico(true)}
+                                        icons={DetailIcons[3].icons}
+                                    />
+
+                                    <DetailedIcon
                                         title={DetailIcons[2].title}
                                         onClick={() => setOpenExamen(true)}
                                         icons={DetailIcons[2].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[4].title}
+                                        onClick={() => setOpenVistaDisenio(true)}
+                                        icons={DetailIcons[4].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[5].title}
+                                        onClick={() => setOpenVistaDisenio(true)}
+                                        icons={DetailIcons[5].icons}
                                     />
                                 </Grid>
                             </Grid>
@@ -551,6 +602,7 @@ const UpdateEvolutionNote = () => {
                                                 label="Dx1"
                                                 defaultValue=""
                                                 options={lsDx1}
+                                                bug={errors.dx1}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>
@@ -640,6 +692,7 @@ const UpdateEvolutionNote = () => {
                                             defaultValue=""
                                             options={lsConceptoAptitud}
                                             size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idConceptoActitud}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -672,7 +725,7 @@ const UpdateEvolutionNote = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -680,7 +733,7 @@ const UpdateEvolutionNote = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                             {TitleButton.CerrarCaso}
                                         </Button>
                                     </AnimateButton>

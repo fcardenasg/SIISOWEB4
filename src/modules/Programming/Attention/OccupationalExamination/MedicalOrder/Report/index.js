@@ -52,7 +52,7 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text(`FECHA: ${ViewFormat(lsDataReport.fecha)}`, marXR - 2, 30, { align: 'right' });
 
     doc.text('DATOS BÁSICOS DE LA ATENCIÓN', 7, 37);
-    doc.text('FORMULA MÉDICA', 7, 85);
+    doc.text('DESCRIPCIÓN', 7, 85);
     doc.setFontSize(10);
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);
@@ -91,13 +91,13 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     /* DATOS DEL REGISTRO */
     doc.setFont("helvetica", "normal");
     doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 45, 30, 30);
-    doc.text(`${lsDataReport.documento}`, 75, 45);
-    doc.text(`${lsDataReport.nameCargo}`, 75, 50);
-    doc.text(`${lsDataReport.nameAfp}`, 75, 55);
-    doc.text(`${lsDataReport.nameSubarea}`, 75, 60);
-    doc.text(`${lsDataReport.nameSede}`, 75, 65);
-    doc.text(`${lsDataReport.nameTurnoEmpleado}`, 75, 70);
-    doc.text(`${lsDataReport.nameTelefono}`, 75, 75);
+    doc.text(`${lsDataReport.documento}`, 72, 45);
+    doc.text(`${lsDataReport.nameCargo}`, 72, 50);
+    doc.text(`${lsDataReport.nameAfp}`, 72, 55);
+    doc.text(`${lsDataReport.nameSubarea}`, 72, 60);
+    doc.text(`${lsDataReport.nameSede}`, 72, 65);
+    doc.text(`${lsDataReport.nameTurnoEmpleado}`, 72, 70);
+    doc.text(`${lsDataReport.nameTelefono}`, 72, 75);
 
     doc.text(`${lsDataReport.nameEmpleado}`, 155, 45);
     doc.text(`${ViewFormat(lsDataReport.fechaContrato)}`, 155, 50);

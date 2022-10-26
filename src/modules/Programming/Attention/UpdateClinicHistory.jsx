@@ -40,7 +40,7 @@ import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -53,6 +53,17 @@ import { GetByMail } from 'api/clients/UserClient';
 import { generateReport } from './Report/ClinicHistory';
 import ViewPDF from 'components/components/ViewPDF';
 import InputOnChange from 'components/input/InputOnChange';
+import ListExamenesPara from 'components/template/ListExamenesPara';
+import ListExamenesFisico from 'components/template/ListExamenesFisico';
+import SelectOnChange from 'components/input/SelectOnChange';
+
+import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+
+const validationSchema = yup.object().shape({
+    dx1: yup.string().required(`${ValidationMessage.Requerido}`),
+    idConceptoActitud: yup.string().required(`${ValidationMessage.Requerido}`),
+});
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -108,6 +119,7 @@ const UpdateClinicHistory = () => {
     const [newMedicalFormula, setNewMedicalFormula] = useState(false);
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
     const [numberId, setNumberId] = useState('');
+    const [contingencia, setContingencia] = useState('');
 
     const [textDx1, setTextDx1] = useState('');
     const [textDx2, setTextDx2] = useState('');
@@ -134,9 +146,11 @@ const UpdateClinicHistory = () => {
     const [resultData, setResultData] = useState([]);
     const [dataPDF, setDataPDF] = useState([]);
 
-    const methods = useForm();
+    const methods = useForm({
+        resolver: yupResolver(validationSchema),
+    });
 
-    const { handleSubmit } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -301,7 +315,7 @@ const UpdateClinicHistory = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostAssistance(documento, FormatDate(datos.fecha), id, datos.idAtencion, datos.idContingencia, DefaultValue.SINREGISTRO_GLOBAL,
+            const DataToUpdate = PostAssistance(documento, FormatDate(datos.fecha), id, datos.idAtencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico,
                 datos.examenParaclinico, datos.dx1, datos.dx2, datos.dx3, datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
@@ -356,7 +370,7 @@ const UpdateClinicHistory = () => {
                 title="VISTA DE EXAMEN FÍSICO"
                 handleClose={() => setOpenExamenFisico(false)}
             >
-
+                <ListExamenesFisico documento={documento} />
             </FullScreenDialog>
 
             <FullScreenDialog
@@ -364,7 +378,7 @@ const UpdateClinicHistory = () => {
                 title="VISTA DE EXAMEN PARACLÍNICO"
                 handleClose={() => setOpenExamenParaclinico(false)}
             >
-
+                <ListExamenesPara documento={documento} />
             </FullScreenDialog>
 
             <ControlModal
@@ -377,7 +391,7 @@ const UpdateClinicHistory = () => {
             </ControlModal>
 
             <ControlModal
-                title={"Ordenes Medicas - " + titleModal}
+                title={"Orden de " + titleModal}
                 open={openForm}
                 onClose={() => {
                     setOpenForm(false);
@@ -390,6 +404,7 @@ const UpdateClinicHistory = () => {
             >
                 {newMedicalFormula ?
                     <MedicalFormula
+                        contingencia={contingencia}
                         setUpdateMedicalFormula={setUpdateMedicalFormula}
                         setListMedicalFormula={setListMedicalFormula}
                         setNewMedicalFormula={setNewMedicalFormula}
@@ -410,6 +425,7 @@ const UpdateClinicHistory = () => {
                         />
                         : updateMedicalFormula ?
                             <UpdateMedicalFormula
+                                contingencia={contingencia}
                                 setListMedicalFormula={setListMedicalFormula}
                                 setNewMedicalFormula={setNewMedicalFormula}
                                 setUpdateMedicalFormula={setUpdateMedicalFormula}
@@ -422,7 +438,7 @@ const UpdateClinicHistory = () => {
             </ControlModal>
 
             <DialogFormula
-                title="Ordenes Medicas"
+                title="TIPO DE ORDEN"
                 open={openFormula}
                 handleCloseDialog={() => setOpenFormula(false)}
             >
@@ -478,15 +494,14 @@ const UpdateClinicHistory = () => {
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idContingencia"
-                                            label="Contingencia"
-                                            defaultValue=""
-                                            options={lsContingencia}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
+                                    <SelectOnChange
+                                        name="idContingencia"
+                                        label="Contingencia"
+                                        onChange={(e) => setContingencia(e?.target.value)}
+                                        value={contingencia}
+                                        options={lsContingencia}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
                             </Grid>
                         </SubCard>
@@ -690,6 +705,7 @@ const UpdateClinicHistory = () => {
                                             <InputSelect
                                                 name="dx1"
                                                 label="Dx1"
+                                                bug={errors.dx1}
                                                 defaultValue=""
                                                 options={lsDx1}
                                                 size={matchesXS ? 'small' : 'medium'}
@@ -780,6 +796,7 @@ const UpdateClinicHistory = () => {
                                             label="Concepto De Aptitud Psicofísica"
                                             defaultValue=""
                                             options={lsConceptoAptitud}
+                                            bug={errors.idConceptoActitud}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -797,7 +814,7 @@ const UpdateClinicHistory = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button /* disabled={resultData.length === 0 ? true : false} */ variant="outlined" fullWidth onClick={handleClickReport}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>
@@ -813,7 +830,7 @@ const UpdateClinicHistory = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -821,7 +838,7 @@ const UpdateClinicHistory = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                             {TitleButton.CerrarCaso}
                                         </Button>
                                     </AnimateButton>

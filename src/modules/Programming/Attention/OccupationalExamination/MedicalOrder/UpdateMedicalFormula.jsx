@@ -48,7 +48,7 @@ const DetailIcons = [
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, setListMedicalFormula, tipoOrden, lsEmployee, numberId, lsAtencion }) => {
+const UpdateMedicalFormula = ({ setNewMedicalFormula, contingencia, setUpdateMedicalFormula, setListMedicalFormula, tipoOrden, lsEmployee, numberId, lsAtencion }) => {
     const { user } = useAuth();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -142,7 +142,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
                     tipoOrden === 'Imagenes' ? DefaultValue.TIPO_ORDEN_IMAGEN :
                         tipoOrden === 'Examenes' ? DefaultValue.TIPO_ORDEN_EXAMEN : DefaultValue.SINREGISTRO_GLOBAL;
 
-            const DataToInsert = PutMedicalFormula(numberId, FormatDate(new Date()), documento, DefaultValue.SINREGISTRO_GLOBAL,
+            const DataToInsert = PutMedicalFormula(numberId, FormatDate(new Date()), documento, contingencia,
                 lsAtencion.id, saveTipoOrden, datos.diagnostico, datos.descripcion,
                 user.email, lsMedicalFormula.usuarioRegistro, lsMedicalFormula.fechaRegistro, user.email, FormatDate(new Date()));
 
@@ -373,4 +373,5 @@ UpdateMedicalFormula.propTypes = {
     lsEmployee: PropTypes.any,
     numberId: PropTypes.any,
     lsAtencion: PropTypes.any,
+    contingencia: PropTypes.any,
 };

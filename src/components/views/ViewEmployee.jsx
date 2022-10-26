@@ -128,7 +128,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                             </Stack>
                         </Grid>
 
-                        <Grid item xs={6}>
+                        <Grid item xs={2}>
                             {lsEmployee.namePayStatus != null ?
                                 <Chip
                                     size="small"
@@ -136,6 +136,12 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                                     chipcolor={true ? 'success' : 'error'}
                                     sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
                                 /> : <></>}
+                        </Grid>
+
+                        <Grid item xs={4}>
+                            <Typography variant="h4">
+                                <b>Oficio:</b> {lsEmployee.nameOficio}
+                            </Typography>
                         </Grid>
                     </Grid>
 
@@ -173,7 +179,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                         <Typography variant="h5">
                             Fecha de Contrato:
                             <Typography variant="h6">
-                                {lsEmployee.fechaContrato == null ? '' : ViewFormat(lsEmployee.fechaContrato)}
+                                {lsEmployee.fechaContrato === null ? '' : ViewFormat(lsEmployee.fechaContrato)}
                             </Typography>
                         </Typography>
                     </Grid>
@@ -212,7 +218,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
 
                     <ViewData
                         icons={ViewEmployeeDetails[4].icons}
-                        nameData={lsEmployee.fechaNaci == null ? '' : ViewFormat(lsEmployee.fechaNaci)}
+                        nameData={lsEmployee.fechaNaci === null ? '' : ViewFormat(lsEmployee.fechaNaci)}
                         label={ViewEmployeeDetails[4].label}
                     />
 

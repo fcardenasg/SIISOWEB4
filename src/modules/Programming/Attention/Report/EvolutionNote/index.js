@@ -102,12 +102,12 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     /* DATOS DEL REGISTRO */
     doc.setFont("helvetica", "normal");
     doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 42, 30, 30);
-    doc.text(`${lsDataReport.documento}`, 75, 45);
-    doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 75, 50);
-    doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 75, 55);
-    doc.text(`${lsDataReport.nameCargo}`, 75, 60);
-    doc.text(`${lsDataReport.nameSede}`, 75, 65);
-    doc.text(`${lsDataReport.nameTelefono}`, 75, 70);
+    doc.text(`${lsDataReport.documento}`, 70, 45);
+    doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 70, 50);
+    doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 70, 55);
+    doc.text(`${lsDataReport.nameCargo}`, 70, 60);
+    doc.text(`${lsDataReport.nameSede}`, 70, 65);
+    doc.text(`${lsDataReport.nameTelefono}`, 70, 70);
 
     doc.text(`${lsDataReport.nameEmpleado}`, 155, 45);
     doc.text(`${lsDataReport.nameDepartamento}`, 155, 50);
@@ -127,16 +127,10 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
         doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 135, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     if (lsDataReport.dx2 !== "")
-        doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 143, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 140, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     if (lsDataReport.dx3 !== "")
-        doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 151, { maxWidth: 200, lineHeightFactor: 1.5 });
-
-/*     if (lsDataReport.diagnostico !== undefined && lsDataReport !== []) {
-        doc.text(JSON.parse(lsDataReport.diagnostico).map((dx, index) => {
-            return String(`DX ${index = index + 1}:  ${dx.label.toUpperCase()}`)
-        }), 7, 135, { maxWidth: 200, lineHeightFactor: 1.5 });
-    } */
+        doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 145, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     doc.text(`${lsDataReport.planManejo}`, 7, 163, { maxWidth: 200, lineHeightFactor: 1.5 });
 
