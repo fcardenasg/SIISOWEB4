@@ -109,7 +109,7 @@ function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }
                         </TableCell>
                     ))}
                 {numSelected <= 0 && (
-                    <TableCell sortDirection={false} align="center" sx={{ pr: 3 }}>
+                    <TableCell sortDirection={false} align="center" sx={{ pr: 2 }}>
                         <Typography variant="subtitle1" sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}>
                             Acción
                         </Typography>

@@ -9,6 +9,7 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import swal from 'sweetalert';
 import { ParamCloseCase } from 'components/alert/AlertAll';
 
@@ -51,6 +52,9 @@ import { PostEvolutionNote } from 'formatdata/EvolutionNoteForm';
 import { GetByIdEvolutionNote, InsertEvolutionNote } from 'api/clients/EvolutionNoteClient';
 import { FormatDate } from 'components/helpers/Format';
 
+
+import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
+
 import { generateReport } from './Report/EvolutionNote';
 import { GetByMail } from 'api/clients/UserClient';
 import ViewPDF from 'components/components/ViewPDF';
@@ -73,9 +77,12 @@ const DetailIcons = [
     { title: 'Ver Examenes Físicos', icons: <DirectionsRunIcon fontSize="small" /> },
     { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
 
-    { title: 'Historial De Historia Clinica', icons: <AddBoxIcon fontSize="small" /> },
-    { title: 'Historial De Notas De Evolición', icons: <AddBoxIcon fontSize="small" /> },
+    { title: 'Historial De Historia Clínica', icons: <MedicalInformationIcon fontSize="small" /> },
+    { title: 'Historial De Notas De Evolición', icons: <MedicalServicesIcon fontSize="small" /> },
 ]
+
+
+
 
 const dataMedicalOrders = [
     {
@@ -360,7 +367,7 @@ const UpdateEvolutionNote = () => {
                 onClose={() => setOpen(false)}
                 title="DICTADO POR VOZ"
             >
-                <ControllerListen />
+              <ControllerListen />
             </ControlModal>
 
             <FullScreenDialog
@@ -377,6 +384,7 @@ const UpdateEvolutionNote = () => {
                 handleClose={() => setOpenExamen(false)}
             >
                 <ListExamenesPara documento={documento} />
+
             </FullScreenDialog>
 
             <FullScreenDialog
@@ -389,13 +397,13 @@ const UpdateEvolutionNote = () => {
 
             <FullScreenDialog
                 open={openVistaDisenio}
-                title="VISTAS A DISEÑAR 1"
+                title="VISTA HISTORICO NOTAS DE EVOLUCIÓN"
                 handleClose={() => setOpenVistaDisenio(false)}
             ></FullScreenDialog>
 
             <FullScreenDialog
                 open={openVistaDisenio}
-                title="VISTAS A DISEÑAR 2"
+                title="VISTA HISTORICO DE HISTORIAS CLINICAS"
                 handleClose={() => setOpenVistaDisenio(false)}
             ></FullScreenDialog>
 
@@ -553,17 +561,16 @@ const UpdateEvolutionNote = () => {
                                         onClick={() => setOpen(true)}
                                         icons={DetailIcons[1].icons}
                                     />
-
                                     <DetailedIcon
-                                        title={DetailIcons[3].title}
+                                        title={DetailIcons[2].title}
                                         onClick={() => setOpenExamenFisico(true)}
-                                        icons={DetailIcons[3].icons}
+                                        icons={DetailIcons[2].icons}
                                     />
 
                                     <DetailedIcon
-                                        title={DetailIcons[2].title}
+                                        title={DetailIcons[3].title}
                                         onClick={() => setOpenExamen(true)}
-                                        icons={DetailIcons[2].icons}
+                                        icons={DetailIcons[3].icons}
                                     />
 
                                     <DetailedIcon

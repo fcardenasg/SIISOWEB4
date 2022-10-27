@@ -487,7 +487,7 @@ const Attention = () => {
                                         </Grid>
                                     </Fragment> : tipoAtencion === DefaultValue.TIP_AT_ENFERME && atencion === DefaultValue.AT_PAD ?
                                         <Fragment>
-                                            <Grid item xs={3}>
+                                    {/*         <Grid item xs={3}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
                                                         name="turno"
@@ -497,7 +497,7 @@ const Attention = () => {
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
                                                 </FormProvider>
-                                            </Grid>
+                                            </Grid> */}
 
                                             <Grid item xs={3}>
                                                 <SelectOnChange
