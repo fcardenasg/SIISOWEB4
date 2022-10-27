@@ -55,6 +55,7 @@ import { generateReport } from './Report/MedicalAdvice';
 import { GetByMail } from 'api/clients/UserClient';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import SelectOnChange from 'components/input/SelectOnChange';
+import ViewCall from './ViewCall';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -116,6 +117,7 @@ const UpdateMedicalAdvice = () => {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
+    const [callVideo, setCallVideo] = useState(false);
 
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsMotivo, setLsMotivo] = useState([]);
@@ -205,6 +207,10 @@ const UpdateMedicalAdvice = () => {
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
+
+    const handleCallClick = () => {
+        setCallVideo(true);
+    }
 
     const handleClick = async (datos) => {
         try {
@@ -380,12 +386,18 @@ const UpdateMedicalAdvice = () => {
                                 {textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ?
                                     <Grid item xs={1}>
                                         <Tooltip title="Video llamada">
-                                            <Button color="error" sx={{ color: ColorDrummondltd.RedDrummond }} variant="outlined" /* onClick={handleAddClick} */>
+                                            <Button color="error" sx={{ color: ColorDrummondltd.RedDrummond }}
+                                                variant="outlined" onClick={handleCallClick}
+                                            >
                                                 <VideoCallIcon fontSize="large" />
                                             </Button>
                                         </Tooltip>
                                     </Grid> : null
                                 }
+
+                                <Grid item xs={12}>
+                                    <ViewCall user={[]} callVideo={callVideo} onCancel={setCallVideo} />
+                                </Grid>
 
                                 <Grid item xs={12}>
                                     <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
