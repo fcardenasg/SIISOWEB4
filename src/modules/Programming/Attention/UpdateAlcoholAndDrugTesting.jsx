@@ -75,9 +75,9 @@ const UpdateAlcoholAndDrugTesting = () => {
     const [documento, setDocumento] = useState('');
     const [realizada, setRealizada] = useState(DefaultValue.Opcion_SI);
 
-    const [cocaina, setCocaina] = useState('');
-    const [marihuana, setMarihuana] = useState('');
-    const [alcohol, setAlcohol] = useState('');
+    const [cocaina, setCocaina] = useState('4095');
+    const [marihuana, setMarihuana] = useState('4095');
+    const [alcohol, setAlcohol] = useState('4095');
     const [conceptoAptitud, setConceptoAptitud] = useState('');
 
     const [lsAtencion, setLsAtencion] = useState([]);
@@ -88,6 +88,7 @@ const UpdateAlcoholAndDrugTesting = () => {
     const [lsMuestraAD, setLsMuestraAD] = useState([]);
     const [lsMuestraA, setLsMuestraA] = useState([]);
     const [lsResultado, setLsResultado] = useState([]);
+    const [resultData, setResultData] = useState([]);
     const [dataPDF, setDataPDF] = useState(null);
 
     const handleLoadingDocumento = async (idEmployee) => {
@@ -104,43 +105,37 @@ const UpdateAlcoholAndDrugTesting = () => {
         }
     }
 
-
-    const handleUpdateAttentionClose = async (estadoPac = '') => {
+    const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
-            const DataToUpdate = PutAttention(id, lsAtencion.documento, lsAtencion.fecha, lsAtencion.sede, lsAtencion.tipo, lsAtencion.atencion,
-                lsAtencion.estadoCaso, lsAtencion.observaciones, lsAtencion.numeroHistoria, estadoPac, lsAtencion.contingencia,
-                lsAtencion.turno, lsAtencion.diaTurno, lsAtencion.motivo, lsAtencion.medico, lsAtencion.docSolicitante, lsAtencion.talla, lsAtencion.peso,
-                lsAtencion.iMC, lsAtencion.usuarioCierreAtencion, lsAtencion.fechaDigitacion, lsAtencion.fechaCierreAtencion, lsAtencion.duracion,
-                lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, lsAtencion.usuarioModifico, lsAtencion.fechaModifico);
+            const usuarioCierre = estadoPac === "PENDIENTE POR ATENCIÓN" ? '' : lsDataUpdate.usuarioCierreAtencion;
+
+            const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
+                lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
+                lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
+                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, usuarioCierre,
+                lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
+                lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
 
             await UpdateAttentions(DataToUpdate);
-        } catch (error) { }
-    }
 
-
-
-
-    const handleCerrarCaso = () => {
-        try {
-            swal(ParamCloseCase).then(async (willDelete) => {
-                if (willDelete) {
-                    handleUpdateAttentionClose("ATENDIDO");
-                    navigate("/programming/list");
-                }
-            });
+            if (estadoPac === "ATENDIDO") {
+                swal(ParamCloseCase).then(async (willDelete) => {
+                    if (willDelete)
+                        navigate("/programming/list");
+                });
+            } else if (estadoPac === "PENDIENTE POR ATENCIÓN")
+                navigate("/programming/list");
 
         } catch (error) { }
     }
 
     const methods = useForm();
-
     const { handleSubmit, errors } = methods;
 
-    //Metodo Imprimir
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAlcoholAndDrugTesting(3);
+            const lsDataReport = await GetByIdAlcoholAndDrugTesting(2);
             const lsDataUser = await GetByMail(user.email);
 
             const dataPDFTwo = generateReportAlcoholtesting(lsDataReport.data, lsDataUser.data);
@@ -148,8 +143,6 @@ const UpdateAlcoholAndDrugTesting = () => {
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
-
-
 
     const handleDocumentoSolicita = async (event) => {
         try {
@@ -172,7 +165,7 @@ const UpdateAlcoholAndDrugTesting = () => {
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsAtencion = await GetByIdAttention(id);
             if (lsAtencion.status === 200) {
@@ -229,7 +222,7 @@ const UpdateAlcoholAndDrugTesting = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
@@ -249,6 +242,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                         const result = await InsertAlcoholAndDrugTesting(DataToInsert);
                         if (result.status === 200) {
                             setOpenSuccess(true);
+                            setResultData(result.data);
                         }
                     }
                 } else {
@@ -326,7 +320,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">PRUEBA DE ALCOHOL Y DROGAS</Typography>}>
+                        <SubCard>
                             <Grid container justifyContent="center" alignItems="center" spacing={2}>
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
@@ -401,7 +395,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                                 label="Cocaína"
                                                                 name="sustancia1"
                                                                 size={30}
-                                                                defaultValue={false}
+                                                                defaultValue={true}
                                                             />
                                                         </FormProvider>
                                                     </Grid>
@@ -411,7 +405,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                             <InputSelect
                                                                 name="idMuestra1"
                                                                 label="Muestra"
-                                                                defaultValue=""
+                                                                defaultValue="4098"
                                                                 options={lsMuestraAD}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 bug={errors}
@@ -445,7 +439,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                                 label="Marihuana"
                                                                 name="sustancia2"
                                                                 size={30}
-                                                                defaultValue={false}
+                                                                defaultValue={true}
                                                             />
                                                         </FormProvider>
                                                     </Grid>
@@ -455,7 +449,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                             <InputSelect
                                                                 name="idMuestra2"
                                                                 label="Muestra"
-                                                                defaultValue=""
+                                                                defaultValue="4098"
                                                                 options={lsMuestraAD}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 bug={errors}
@@ -490,7 +484,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                                 label="Morfina"
                                                                 name="sustancia3"
                                                                 size={30}
-                                                                defaultValue={false}
+                                                                defaultValue={true}
                                                             />
                                                         </FormProvider>
                                                     </Grid>
@@ -500,7 +494,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                             <InputSelect
                                                                 name="idMuestra3"
                                                                 label="Muestra"
-                                                                defaultValue=""
+                                                                defaultValue="4098"
                                                                 options={lsMuestraAD}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 bug={errors}
@@ -513,7 +507,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                             <InputSelect
                                                                 name="idResultado3"
                                                                 label="Resultados"
-                                                                defaultValue=""
+                                                                defaultValue="4095"
                                                                 options={lsResultado}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 bug={errors}
@@ -527,7 +521,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                                 label="Benzodiazepina"
                                                                 name="sustancia4"
                                                                 size={30}
-                                                                defaultValue={false}
+                                                                defaultValue={true}
                                                             />
                                                         </FormProvider>
                                                     </Grid>
@@ -537,7 +531,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                             <InputSelect
                                                                 name="idMuestra4"
                                                                 label="Muestra"
-                                                                defaultValue=""
+                                                                defaultValue="4098"
                                                                 options={lsMuestraAD}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 bug={errors}
@@ -550,7 +544,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                             <InputSelect
                                                                 name="idResultado4"
                                                                 label="Resultados"
-                                                                defaultValue=""
+                                                                defaultValue="4095"
                                                                 options={lsResultado}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 bug={errors}
@@ -564,7 +558,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                                 label="Anfetaminas"
                                                                 name="sustancia5"
                                                                 size={30}
-                                                                defaultValue={false}
+                                                                defaultValue={true}
                                                             />
                                                         </FormProvider>
                                                     </Grid>
@@ -574,7 +568,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                             <InputSelect
                                                                 name="idMuestra5"
                                                                 label="Muestra"
-                                                                defaultValue=""
+                                                                defaultValue="4098"
                                                                 options={lsMuestraAD}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 bug={errors}
@@ -587,7 +581,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                             <InputSelect
                                                                 name="idResultado5"
                                                                 label="Resultados"
-                                                                defaultValue=""
+                                                                defaultValue="4095"
                                                                 options={lsResultado}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 bug={errors}
@@ -601,7 +595,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                                 label="Alcohol"
                                                                 name="sustancia6"
                                                                 size={30}
-                                                                defaultValue={false}
+                                                                defaultValue={true}
                                                             />
                                                         </FormProvider>
                                                     </Grid>
@@ -611,7 +605,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                             <InputSelect
                                                                 name="idMuestra6"
                                                                 label="Muestra"
-                                                                defaultValue=""
+                                                                defaultValue="4101"
                                                                 options={lsMuestraA}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                                 bug={errors}
@@ -724,36 +718,33 @@ const UpdateAlcoholAndDrugTesting = () => {
                             </Grid>
 
                             <Grid container spacing={2} sx={{ pt: 4 }}>
-                                <Grid item xs={6} md={3} lg={2}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={6} md={3} lg={2}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={6} md={3} lg={2}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => {
-                                            navigate("/programming/list");
-                                            handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN");
-                                        }}>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={6} md={3} lg={2}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={handleCerrarCaso}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                             {TitleButton.CerrarCaso}
                                         </Button>
                                     </AnimateButton>
