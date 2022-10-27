@@ -80,11 +80,11 @@ const Attention = () => {
     const [lsSede, setLsSede] = useState([]);
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [lsMotivoPAD, setLsMotivoPAD] = useState([]);
-    const [lsTurno, setLsTurno] = useState([]);
     const [lsEstadoCaso, setLsEstadoCaso] = useState([]);
     const [lsMotivoMedica, setLsMotivoMedica] = useState([]);
     const [lsMotivoPsico, setLsMotivoPsico] = useState([]);
     const [lsMedicos, setLsMedicos] = useState([]);
+    const [lsPsicologia, setLsPsicologia] = useState([]);
     const [result, setResult] = useState([]);
 
     const methods = useForm();
@@ -102,18 +102,20 @@ const Attention = () => {
                 setLsSede(resultSede);
 
                 const lsServerMedicos = await GetAllUser(0, 0);
-                var resultMedico = lsServerMedicos.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.nombre
-                }));
-                setLsMedicos(resultMedico);
 
-                const lsServerTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Turno);
-                var resultTurno = lsServerTurno.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsTurno(resultTurno);
+                var resultPsicologia = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_PSICOLOGIA)
+                    .map((item) => ({
+                        value: item.id,
+                        label: item.nombre
+                    }));
+                setLsPsicologia(resultPsicologia);
+
+                var resultMedico = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_MEDICO)
+                    .map((item) => ({
+                        value: item.id,
+                        label: item.nombre
+                    }));
+                setLsMedicos(resultMedico);
 
                 const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCaso);
                 var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
@@ -487,18 +489,6 @@ const Attention = () => {
                                         </Grid>
                                     </Fragment> : tipoAtencion === DefaultValue.TIP_AT_ENFERME && atencion === DefaultValue.AT_PAD ?
                                         <Fragment>
-                                    {/*         <Grid item xs={3}>
-                                                <FormProvider {...methods}>
-                                                    <InputSelect
-                                                        name="turno"
-                                                        label="Turno"
-                                                        defaultValue=""
-                                                        options={lsTurno}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </FormProvider>
-                                            </Grid> */}
-
                                             <Grid item xs={3}>
                                                 <SelectOnChange
                                                     name="motivo"
@@ -607,9 +597,9 @@ const Attention = () => {
                                                         <FormProvider {...methods}>
                                                             <InputSelect
                                                                 name="medico"
-                                                                label="Médico"
+                                                                label="Psicología"
                                                                 defaultValue=""
-                                                                options={lsMedicos}
+                                                                options={lsPsicologia}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </FormProvider>

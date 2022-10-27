@@ -224,6 +224,14 @@ export const DefaultValue = {
 
     VIDEO_LLAMADA: 7319,
 
+    /* ID ROLES DE USUARIO */
+    ROL_ADMINISTRADOR: 5157,
+    ROL_ENFERMERO: 5159,
+    ROL_HIGIENE: 7320,
+    ROL_MEDICO: 5160,
+    ROL_VISITANTE: 5158,
+    ROL_PSICOLOGIA: 7321,
+
     /* RIESGOS */
     RiesgoEnOtrasEmpresas: 7284,
     RiesgoQuimico: 3949,
