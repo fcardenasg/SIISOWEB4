@@ -56,7 +56,7 @@ const headCells = [
         id: 'id',
         numeric: false,
         label: 'ID',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'fecha',
@@ -71,7 +71,7 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nameResultado',
+        id: 'nameConclusion',
         numeric: false,
         label: 'Resultado',
         align: 'left'
@@ -135,7 +135,7 @@ const ListExamenesPara = ({ documento = '' }) => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('fechaRegistro');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -162,7 +162,7 @@ const ListExamenesPara = ({ documento = '' }) => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'fecha', 'idTipoParaclinico', 'nameResultado'];
+                const properties = ['id', 'fecha', 'idTipoParaclinico', 'nameConclusion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -268,7 +268,7 @@ const ListExamenesPara = ({ documento = '' }) => {
                                             id={labelId}
                                             scope="row"
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
+                                            align="left"
                                         >
                                             <Typography
                                                 variant="subtitle1"

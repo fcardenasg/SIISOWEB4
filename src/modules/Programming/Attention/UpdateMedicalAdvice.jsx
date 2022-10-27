@@ -5,6 +5,7 @@ import {
     Grid,
     useMediaQuery,
     Typography,
+    Tooltip,
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
@@ -40,7 +41,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAdvice, InsertAdvice } from 'api/clients/AdviceClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -52,6 +53,8 @@ import Cargando from 'components/loading/Cargando';
 import ViewPDF from 'components/components/ViewPDF';
 import { generateReport } from './Report/MedicalAdvice';
 import { GetByMail } from 'api/clients/UserClient';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import SelectOnChange from 'components/input/SelectOnChange';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -106,6 +109,7 @@ const UpdateMedicalAdvice = () => {
     const [newMedicalFormula, setNewMedicalFormula] = useState(false);
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
     const [numberId, setNumberId] = useState('');
+    const [textTipoAsesoria, setTextTipoAsesoria] = useState('');
 
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
@@ -204,10 +208,11 @@ const UpdateMedicalAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.ASESORIA_MEDICA, lsAtencion.sede,
-                DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
-                datos.idTipoAsesoria, datos.idMotivo, DefaultData.SINREGISTRO_GLOBAL, datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.ASESORIA_MEDICA,
+                lsAtencion.sede, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
+                DefaultData.SINREGISTRO_GLOBAL, textTipoAsesoria, datos.idMotivo, DefaultData.SINREGISTRO_GLOBAL, datos.observaciones,
+                datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()),
+                '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertAdvice(DataToUpdate);
@@ -259,7 +264,7 @@ const UpdateMedicalAdvice = () => {
             </ControlModal>
 
             <ControlModal
-                title={"Ordenes Medicas - " + titleModal}
+                title={"Orden de " + titleModal}
                 open={openForm}
                 onClose={() => {
                     setOpenForm(false);
@@ -272,6 +277,7 @@ const UpdateMedicalAdvice = () => {
             >
                 {newMedicalFormula ?
                     <MedicalFormula
+                        contingencia={DefaultValue.SINREGISTRO_GLOBAL}
                         setUpdateMedicalFormula={setUpdateMedicalFormula}
                         setListMedicalFormula={setListMedicalFormula}
                         setNewMedicalFormula={setNewMedicalFormula}
@@ -292,6 +298,7 @@ const UpdateMedicalAdvice = () => {
                         />
                         : updateMedicalFormula ?
                             <UpdateMedicalFormula
+                                contingencia={DefaultValue.SINREGISTRO_GLOBAL}
                                 setListMedicalFormula={setListMedicalFormula}
                                 setNewMedicalFormula={setNewMedicalFormula}
                                 setUpdateMedicalFormula={setUpdateMedicalFormula}
@@ -304,7 +311,7 @@ const UpdateMedicalAdvice = () => {
             </ControlModal>
 
             <DialogFormula
-                title="Ordenes Medicas"
+                title="TIPO DE ORDEN"
                 open={openFormula}
                 handleCloseDialog={() => setOpenFormula(false)}
             >
@@ -337,7 +344,7 @@ const UpdateMedicalAdvice = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
                             <Grid container spacing={2}>
-                                <Grid item xs={4}>
+                                <Grid item xs={textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ? 3 : 4}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
                                             label="Fecha"
@@ -360,16 +367,25 @@ const UpdateMedicalAdvice = () => {
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idTipoAsesoria"
-                                            label="Tipo de Asesoría"
-                                            defaultValue=""
-                                            options={tipoAsesoria}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
+                                    <SelectOnChange
+                                        name="idTipoAsesoria"
+                                        label="Tipo de Asesoría"
+                                        onChange={(e) => setTextTipoAsesoria(e?.target.value)}
+                                        value={textTipoAsesoria}
+                                        options={tipoAsesoria}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
+
+                                {textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ?
+                                    <Grid item xs={1}>
+                                        <Tooltip title="Video llamada">
+                                            <Button color="error" sx={{ color: ColorDrummondltd.RedDrummond }} variant="outlined" /* onClick={handleAddClick} */>
+                                                <VideoCallIcon fontSize="large" />
+                                            </Button>
+                                        </Tooltip>
+                                    </Grid> : null
+                                }
 
                                 <Grid item xs={12}>
                                     <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
@@ -459,7 +475,7 @@ const UpdateMedicalAdvice = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -467,7 +483,7 @@ const UpdateMedicalAdvice = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                             {TitleButton.CerrarCaso}
                                         </Button>
                                     </AnimateButton>
