@@ -424,7 +424,7 @@ const UpdatePsychological = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -432,7 +432,7 @@ const UpdatePsychological = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                             {TitleButton.CerrarCaso}
                                         </Button>
                                     </AnimateButton>
