@@ -25,7 +25,6 @@ import { PutAttention } from 'formatdata/AttentionForm';
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
-import ReportNoteInfirmary from './Report/ReportNoteInfirmary';
 import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 

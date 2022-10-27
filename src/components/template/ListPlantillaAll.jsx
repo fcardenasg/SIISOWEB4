@@ -272,7 +272,7 @@ const ListPlantillaAll = () => {
                                                 onCopy={() =>
                                                     dispatch({
                                                         type: SNACKBAR_OPEN,
-                                                        anchorOrigin: { vertical: 'top', horizontal: 'right' },
+                                                        anchorOrigin: { vertical: 'button', horizontal: 'right' },
                                                         transition: 'SlideLeft',
                                                         open: true,
                                                         message: 'Texto Copiado',
