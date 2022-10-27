@@ -9,7 +9,7 @@ function getHeader(doc = new jsPDF()) {
     doc.setFontSize(10);
 
     doc.text("DIVISIÓN MÉDICA", 110, 10, { align: 'center' });
-    doc.text("ASESORÍAS MÉDICAS ESPECIALIZADAS", 110, 14, { align: 'center' });
+    doc.text("ASESORÍAS PSICOLÓGICAS", 110, 14, { align: 'center' });
 
     doc.setFontSize(12);
     doc.text("SIG-0410", 170, 12);

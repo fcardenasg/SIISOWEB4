@@ -117,7 +117,7 @@ export const CodCatalogo = {
     ORIGEN_REINTEGRO: 90,
 
     TipoAsesoria: 119,
-    CausaAsesoria: 8,
+    CausaAsesoria: 120,
     EstadoAsesoria: 8,
     EstadoCaso: 48,
     ESTADO_CASO: 38,
