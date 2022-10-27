@@ -90,26 +90,26 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text('NOMBRES:', 120, 45);
     doc.text('DEPARTAMENTO:', 120, 50);
     doc.text('GRUPO:', 120, 55);
-    doc.text('AREA:', 120, 60);
+    doc.text('ÁREA:', 120, 60);
     doc.text('ESTADO CIVIL:', 120, 65);
     doc.text('EMAIL:', 120, 70);
 
     /* DATOS DEL REGISTRO */
     doc.setFont("helvetica", "normal");
     doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 42, 30, 30);
-    doc.text(`${lsDataReport.documento}`, 75, 45);
-    doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 75, 50);
-    doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 75, 55);
-    doc.text(`${lsDataReport.nameCargo}`, 75, 60);
-    doc.text(`${lsDataReport.nameSede}`, 75, 65);
-    doc.text(`${lsDataReport.nameTelefono}`, 75, 70);
+    doc.text(`${lsDataReport.documento}`, 70, 45);
+    doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 70, 50);
+    doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 70, 55);
+    doc.text(`${lsDataReport.nameCargo}`, 70, 60);
+    doc.text(`${lsDataReport.nameSede}`, 70, 65);
+    doc.text(`${lsDataReport.nameTelefono}`, 70, 70);
 
-    doc.text(`${lsDataReport.nameEmpleado}`, 155, 45);
-    doc.text(`${lsDataReport.nameDepartamento}`, 155, 50);
-    doc.text(`${lsDataReport.nameGrupo}`, 155, 55);
-    doc.text(`${lsDataReport.nameArea}`, 155, 60);
-    doc.text(`${lsDataReport.nameEstadoCivil}`, 155, 65);
-    doc.text(`${lsDataReport.nameCorreo}`, 155, 70);
+    doc.text(`${lsDataReport.nameEmpleado}`, 152, 45);
+    doc.text(`${lsDataReport.nameDepartamento}`, 152, 50);
+    doc.text(`${lsDataReport.nameGrupo}`, 152, 55);
+    doc.text(`${lsDataReport.nameArea}`, 152, 60);
+    doc.text(`${lsDataReport.nameEstadoCivil}`, 152, 65);
+    doc.text(`${lsDataReport.nameCorreo}`, 152, 70);
 
     /* INFORMACIÓN DE ASESORÍA */
     doc.text(`CONSECUTIVO NRO: ${lsDataReport.id}`, 7, 90);
