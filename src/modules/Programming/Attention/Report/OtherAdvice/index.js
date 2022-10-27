@@ -9,7 +9,7 @@ function getHeader(doc = new jsPDF(), lsDataReport) {
     doc.setFontSize(10);
 
     doc.text("DIVISIÓN MÉDICA", 110, 12, { align: 'center' });
-    doc.text(`ASESORÍA DE ${lsDataReport.nameTiAtencion}`, 110, 16, { align: 'center' });
+    doc.text(`${lsDataReport.nameTiAtencion}`, 110, 16, { align: 'center' });
 
     doc.setFontSize(12);
     doc.text("SIG-0410", 170, 12);

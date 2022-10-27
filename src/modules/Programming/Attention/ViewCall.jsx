@@ -24,6 +24,7 @@ import User1 from 'assets/images/users/avatar-1.png';
 import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
 import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
 import { Fragment } from 'react';
+import { ArrowCircleRightTwoTone } from '@mui/icons-material';
 
 const avatarImage = require.context('assets/images/users', true);
 
@@ -32,10 +33,12 @@ function ElevationScroll({ children, window }) {
         disableHysteresis: true,
         threshold: 100,
         target: window || undefined
+        
     });
 
     return React.cloneElement(children, {
         style: {
+          
             position: trigger ? 'fixed' : 'relative',
             top: trigger ? 83 : 0,
             width: trigger ? 318 : '100%'
@@ -72,16 +75,16 @@ const ViewCall = ({ user, callVideo, onCancel, onSave, ...others }) => {
                         sx={{
                             background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.grey[50],
                             width: '100%',
-                            maxWidth: 342
+                            maxWidth: 700
                         }}
                         content={false}
                     >
-                        <PerfectScrollbar style={{ height: 'calc(50vh - 83px)', overflowX: 'hidden' }}>
+                        <PerfectScrollbar style={{ height: 'calc(50vh - 5px)', overflowX: 'hidden' }}>
                             <Grid container spacing={gridSpacing} sx={{ p: 3 }}>
                                 <Grid item xs={12}>
                                     <Grid container alignItems="center" spacing={1}>
                                         <Grid item>
-                                            <Avatar alt="User 3" src={avatarProfile} sx={{ width: 64, height: 64 }} />
+                                            <Avatar alt="User 3" src={avatarProfile} sx={{ width: 80, height: 80 }} />
                                         </Grid>
 
                                         <Grid item>
