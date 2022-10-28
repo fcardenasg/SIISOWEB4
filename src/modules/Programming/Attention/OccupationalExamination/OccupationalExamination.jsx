@@ -325,12 +325,11 @@ const OccupationalExamination = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdDataReport(1);
+            const lsDataReport = await GetByIdDataReport(5);
             const lsDataUser = await GetByMail(user.email);
             const resultExpoDLTD = await getDataExploracion(documento);
 
             const dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD);
-
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };

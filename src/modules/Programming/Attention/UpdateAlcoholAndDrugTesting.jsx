@@ -229,29 +229,35 @@ const UpdateAlcoholAndDrugTesting = () => {
         try {
             var MotivoAsistencia = realizada === DefaultValue.Opcion_SI ? 1 : datos.idMotivoAsis;
             var Observacion = realizada === DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
+            var concepto = realizada === DefaultValue.Opcion_NO ? 1 : conceptoAptitud;
 
-            const DataToInsert = PostAlcoholAndDrugTesting(documento, FormatDate(datos.fecha), id, datos.idMotivoPrueba, datos.sustancia1,
+            const DataToInsert = PostAlcoholAndDrugTesting(documento, FormatDate(datos.fecha), id, motivo, datos.sustancia1,
                 datos.idMuestra1, cocaina, datos.sustancia2, datos.idMuestra2, marihuana, datos.sustancia3, datos.idMuestra3,
-                datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5, datos.idResultado5,
-                datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, 0, conceptoAptitud,
+                datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5,
+                datos.idResultado5, datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, 0, concepto,
                 realizada, MotivoAsistencia, Observacion, user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (documento !== '') {
-                if (lsEmployee.length !== 0) {
-                    if (Object.keys(datos.length !== 0)) {
-                        const result = await InsertAlcoholAndDrugTesting(DataToInsert);
-                        if (result.status === 200) {
-                            setOpenSuccess(true);
-                            setResultData(result.data);
+            if (realizada === DefaultValue.Opcion_SI && conceptoAptitud === '') {
+                setOpenError(true);
+                setErrorMessage('Por favor, registrar los resultado');
+            } else {
+                if (documento !== '') {
+                    if (lsEmployee.length !== 0) {
+                        if (Object.keys(datos.length !== 0)) {
+                            const result = await InsertAlcoholAndDrugTesting(DataToInsert);
+                            if (result.status === 200) {
+                                setOpenSuccess(true);
+                                setResultData(result.data);
+                            }
                         }
+                    } else {
+                        setOpenError(true);
+                        setErrorMessage(`${Message.ErrorNoHayDatos}`);
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorNoHayDatos}`);
+                    setErrorMessage(`${Message.ErrorDocumento}`);
                 }
-            } else {
-                setOpenError(true);
-                setErrorMessage(`${Message.ErrorDocumento}`);
             }
         } catch (error) {
             setOpenError(true);
@@ -287,7 +293,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
-            
+
             <ControlModal
                 title="VISTA DE REPORTE"
                 open={openReport}

@@ -72,7 +72,7 @@ export function generateReportIndex(lsDataReport = [], lsDataUser = [], resultEx
 
     doc.setFont("helvetica", "bold");
     getHeader(doc, lsDataReport);
-    generateClinicHistoryDLTD(doc, lsDataReport, lsDataUser, resultExpoDLTD);
+    generateClinicHistoryDLTD(doc, resultExpoDLTD);
     getPiePage(doc, lsDataUser, 4, 10);
 
     doc.addPage();
