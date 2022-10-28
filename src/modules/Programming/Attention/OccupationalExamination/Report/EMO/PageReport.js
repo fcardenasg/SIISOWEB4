@@ -659,6 +659,7 @@ export function generateClinicHistoryDLTD(doc = new jsPDF(), resultExpoDLTD) {
     doc.text(`${resultExpoDLTD.mesMpiDLTD + resultExpoDLTD.mesMpiCompany} MESES`, 190, 97);
     doc.text(`${resultExpoDLTD.aniosRuidoDLTD + resultExpoDLTD.aniosRuidoCompany} AÑOS`, 160, 104);
     doc.text(`${resultExpoDLTD.mesRuidoDLTD + resultExpoDLTD.mesRuidoCompany} MESES`, 190, 104);
+
 }
 
 export function generatePathologicalAntecedents(doc = new jsPDF(), lsDataReport = []) {
@@ -1040,33 +1041,39 @@ export function generateDefinitiveDiagnosis(doc = new jsPDF(), lsDataReport, lsD
     doc.line(5, 250, marXR, 250); /* HORI ULTIMA */
     doc.line(marXR, 31, marXR, 250); /* DERECHA */
 
-    if (lsDataReport.dxID !== undefined && lsDataReport !== []) {
-        const longitud = JSON.parse(lsDataReport.dxID).map(dx => dx);
-        const distancia = (6 * longitud.length);
-        doc.text('OBSERVACIONES', 7, 48 + distancia);
-        doc.text('CONCEPTO DE APTITUD', 7, 70 + distancia);
-        doc.text('RECOMENDACIONES', 7, 85 + distancia);
-        doc.text('CONSENTIMIENTO INFORMADO DEL TRABAJADOR', 7, 130 + distancia);
+    var dxID = [
+        { dx: lsDataReport.dx1, nameDx: lsDataReport.nameDx1 },
+        { dx: lsDataReport.dx2, nameDx: lsDataReport.nameDx2 },
+        { dx: lsDataReport.dx3, nameDx: lsDataReport.nameDx3 },
+    ]
 
-        /* RENDERIZADO DE NUMERACIÓN DEL DX */
-        doc.text(JSON.parse(lsDataReport.dxID).map((dx, index) => {
-            return String(`DX ${index = index + 1}`)
-        }), 7, 45, { maxWidth: 200, lineHeightFactor: 2 });
+    const longitud = JSON.parse(lsDataReport.dxID).map(dx => dx);
+    const distancia = (6 * longitud.length);
 
-        doc.setFontSize(8);
-        doc.setFont("helvetica", "normal");
+    doc.text('OBSERVACIONES', 7, 48 + distancia);
+    doc.text('CONCEPTO DE APTITUD', 7, 70 + distancia);
+    doc.text('RECOMENDACIONES', 7, 85 + distancia);
+    doc.text('CONSENTIMIENTO INFORMADO DEL TRABAJADOR', 7, 130 + distancia);
 
-        doc.text(JSON.parse(lsDataReport.dxID).map((dx, index) => {
-            return String(`${dx.label.toUpperCase()}`)
-        }), 30, 45, { maxWidth: 200, lineHeightFactor: 2 });
+    /* RENDERIZADO DE NUMERACIÓN DEL DX */
+    doc.text(JSON.parse(lsDataReport.dxID).map((dx, index) => {
+        return String(`DX ${index = index + 1}`)
+    }), 7, 45, { maxWidth: 200, lineHeightFactor: 2 });
 
-        doc.text(`${lsDataReport.observacionID}`, 7, 53 + distancia, { maxWidth: 200, lineHeightFactor: 1.5, align: 'justify' });
-        doc.text(`${lsDataReport.nameConceptoActitudID}`, 7, 75 + distancia);
-        doc.text(`${lsDataReport.recomendacionesID}`, 7, 90 + distancia, { maxWidth: 200, lineHeightFactor: 1.5, align: 'justify' });
-        doc.setFontSize(9);
-        doc.text(consentimientoInfo, 7, 137 + distancia,
-            { maxWidth: 200, lineHeightFactor: 1.5, align: 'justify' });
-    }
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+
+    doc.text(JSON.parse(lsDataReport.dxID).map((dx, index) => {
+        return String(`${dx.label.toUpperCase()}`)
+    }), 30, 45, { maxWidth: 200, lineHeightFactor: 2 });
+
+    doc.text(`${lsDataReport.observacionID}`, 7, 53 + distancia, { maxWidth: 200, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text(`${lsDataReport.nameConceptoActitudID}`, 7, 75 + distancia);
+    doc.text(`${lsDataReport.recomendacionesID}`, 7, 90 + distancia, { maxWidth: 200, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFontSize(9);
+    doc.text(consentimientoInfo, 7, 137 + distancia,
+        { maxWidth: 200, lineHeightFactor: 1.5, align: 'justify' });
+
 
     getFirma(doc, lsDataUser);
     getFirmaEmployee(doc, lsDataReport);

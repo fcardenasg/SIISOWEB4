@@ -4,7 +4,7 @@ import ImgWhite from "assets/img/ImgWhite.png";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
 
 /* FIRMAS */
-function getFirma(doc=new jsPDF(), lsDataUser, my = 0) {
+function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
   doc.addImage(
     `${lsDataUser.firma}`,
     "PNG",
@@ -32,7 +32,6 @@ function getFirma(doc=new jsPDF(), lsDataUser, my = 0) {
 }
 
 function getFirmaEmployee(doc, lsDataReport, my = 0) {
- 
   doc.setLineWidth(0.5);
   doc.setDrawColor(128, 128, 128);
   doc.line(
@@ -134,17 +133,14 @@ function pageAlcoholtesting(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 91, 210, 91);
   doc.line(5, 99, 210, 99);
   doc.line(5, 108, 210, 108);
-  
+
   //RESULTADO
   doc.line(5, 118, 210, 118);
   doc.line(5, 128, 210, 128);
   doc.line(5, 138, 210, 138);
   doc.line(5, 148, 210, 148);
-//LINEA FINAL
+  //LINEA FINAL
   doc.line(50, 108, 50, 148);
-
-
- 
 
   /* TITULOS DE CONTENIDO */
   doc.text("CONSECUTIVO:", 45, 46);
@@ -161,28 +157,24 @@ function pageAlcoholtesting(doc, lsDataReport = [], lsDataUser = []) {
 
   doc.text("RESULTADO PRUEBA DE ALCOHOL Y DROGA SIG - 400", 6, 79);
   doc.text("DE:        DEPARTAMENTO DE SALUD OCUPACIONAL", 6, 88);
-  doc.text("PARA:",6,97);
-  doc.text("ÁREA:",120,97);
-  doc.text("RESULTADO",6,105);
+  doc.text("PARA:", 6, 97);
+  doc.text("ÁREA:", 120, 97);
+  doc.text("RESULTADO", 6, 105);
 
-  doc.text("FECHA PRUEBA:",6,114);
-  doc.text("MOTIVO PRUEBA:",6,124);
-  doc.text("CONCEPTO APTITUD:",6,134);
-  doc.text("REALIZADA POR: ",6,144);
-
-
-
-
+  doc.text("FECHA PRUEBA:", 6, 114);
+  doc.text("MOTIVO PRUEBA:", 6, 124);
+  doc.text("CONCEPTO APTITUD:", 6, 134);
+  doc.text("REALIZADA POR: ", 6, 144);
 
   /* RENDERIZADO DE CONTENIDO */
   doc.setFont("helvetica", "normal");
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 42, 30, 30);
- 
+
   doc.text(`${lsDataReport.idPruebasAlcoholDroga}`, 75, 46);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 147, 46);
   doc.text(`${lsDataReport.documento}`, 75, 52);
   doc.text(`${lsDataReport.nameEmpleado}`, 147, 52);
-  
+
   doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 147, 58);
   doc.text(`${lsDataReport.nameGenero}`, 75, 58);
   doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 75, 64);
@@ -205,7 +197,6 @@ function pageAlcoholtesting(doc, lsDataReport = [], lsDataUser = []) {
   getFirma(doc, lsDataUser);
   getFirmaEmployee(doc, lsDataReport);
 }
-
 
 /* Pag. 2 */
 function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
@@ -240,7 +231,7 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 91, 210, 91);
   doc.line(5, 99, 210, 99);
   doc.line(5, 108, 210, 108);
-  
+
   //RESULTADO
   doc.line(5, 118, 210, 118);
   doc.line(5, 128, 210, 128);
@@ -252,9 +243,8 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 188, 210, 188);
   doc.line(5, 198, 210, 198);
   doc.line(5, 210, 210, 210);
-//LINEA FINAL
+  //LINEA FINAL
   doc.line(50, 108, 50, 178);
-
 
   /* TITULOS DE CONTENIDO */
   doc.text("CONSECUTIVO:", 45, 46);
@@ -271,33 +261,32 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
 
   doc.text("RESULTADO", 6, 79);
   doc.text("FECHA PRUEBA:", 6, 88);
-  doc.text("MOTIVO PRUEBA:",120,88);
-  doc.text("CONCEPTO APTITUD:",6,97);
-  doc.text("REALIZADA POR:",120,97);
+  doc.text("MOTIVO PRUEBA:", 120, 88);
+  doc.text("CONCEPTO APTITUD:", 6, 97);
+  doc.text("REALIZADA POR:", 120, 97);
 
-  doc.text("COCAÍNA:",6,114);
-  doc.text("MARIHUANA:",6,124);
-  doc.text("MORFINA:",6,134);
-  doc.text("BENZODIAZEPINA: ",6,144);
-  doc.text("ANFETAMINAS: ",6,154);
-  doc.text("ALCOHOL: ",6,164);
-  doc.text("OBSERVACIONES: ",6,174);
-  doc.text("DATOS DEL SOLICITANTE (SOLO EN CASO DE SOSPECHAS Y ACCIDENTES): ",6,184);
+  doc.text("COCAÍNA:", 6, 114);
+  doc.text("MARIHUANA:", 6, 124);
+  doc.text("MORFINA:", 6, 134);
+  doc.text("BENZODIAZEPINA: ", 6, 144);
+  doc.text("ANFETAMINAS: ", 6, 154);
+  doc.text("ALCOHOL: ", 6, 164);
+  doc.text("OBSERVACIONES: ", 6, 174);
+  doc.text("DATOS DEL SOLICITANTE (SOLO EN CASO DE SOSPECHAS Y ACCIDENTES): ", 6, 184);
 
   doc.text("DOCUMENTO", 10, 194);
   doc.text("NOMBRES", 70, 194);
   doc.text("FIRMA", 160, 194);
 
-
   /* RENDERIZADO DE CONTENIDO */
   doc.setFont("helvetica", "normal");
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 42, 30, 30);
- 
+
   doc.text(`${lsDataReport.idPruebasAlcoholDroga}`, 75, 46);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 147, 46);
   doc.text(`${lsDataReport.documento}`, 75, 52);
   doc.text(`${lsDataReport.nameEmpleado}`, 147, 52);
-  
+
   doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 147, 58);
   doc.text(`${lsDataReport.nameGenero}`, 75, 58);
   doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 75, 64);
@@ -329,15 +318,14 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${lsDataReport.nameResultado6}`, 120, 164);
 
   doc.text(`${lsDataReport.observaciones}`, 55, 174);
-  
+
   doc.text(`${lsDataReport.idDocumentoSolicitante}`, 10, 204);
   doc.text(`${lsDataReport.nameEmpleadoSolicita}`, 55, 204);
 
   /* FIRMA */
-  getFirma(doc, lsDataUser,10);
-  getFirmaEmployee(doc, lsDataReport,10);
+  getFirma(doc, lsDataUser, 10);
+  getFirmaEmployee(doc, lsDataReport, 10);
 }
-
 
 /* Renderizado Principal INDEX  */
 export function generateReportAlcoholtesting(lsDataReport = [], lsDataUser = []) {
@@ -352,7 +340,6 @@ export function generateReportAlcoholtesting(lsDataReport = [], lsDataUser = [])
   getHeader(doc);
   pageAlcoholtestingR(doc, lsDataReport, lsDataUser);
   getPiePage(doc, lsDataUser, 2, 2);
-
 
   var dataPDF = doc.output("bloburl");
   return dataPDF;
