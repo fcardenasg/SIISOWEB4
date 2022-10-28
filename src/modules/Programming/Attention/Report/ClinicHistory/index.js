@@ -159,7 +159,7 @@ function generateReportMedicalAdvicPageTwo(doc = new jsPDF(), lsDataReport = [],
     doc.line(marXR, 32, marXR, 180); /* DERECHA */
 
     /* DESCRIPCIONES DE TEXTO */
-    doc.setFontSize(11);
+    doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
 
     if (lsDataReport.dx1 !== "")

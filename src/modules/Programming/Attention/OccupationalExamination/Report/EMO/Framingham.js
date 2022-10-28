@@ -49,8 +49,38 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
   doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
 }
 
+/* Encabezado */
+export function getHeader(doc) {
+  /* ENCABEZADO REPORTE */
+  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text(
+    "ESTIMACIÓN DE RIESGO ABSOLUTO Y RELATIVO SEGÚN MÉTODO",
+    120,
+    15,
+    null,
+    null,
+    "center"
+  );
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text("SIG-0409", 200, 10, null, null, "center");
+  doc.text("Versión 06", 200, 15, null, null, "center");
+
+  /* LINEA DE DIVISIÓN */
+  doc.setLineWidth(1);
+  doc.setDrawColor(255, 0, 0);
+  doc.line(5, 25, 210, 25);
+}
+
+
 /* Pag. 1 */
-export function pageFramingham(doc, lsDataReport = [], lsDataUser = []) {
+export function pageFramingham(
+  doc, lsDataReport = [], lsDataUser = []) {
   /* LISTA DE DATOS PACIENTE */
   doc.setFontSize(10);
   doc.setLineWidth(0.2);

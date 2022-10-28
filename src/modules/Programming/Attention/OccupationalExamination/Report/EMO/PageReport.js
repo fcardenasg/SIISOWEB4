@@ -56,7 +56,8 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
   doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
 }
 
-function generateImmunization(doc = new jsPDF(), lsDataReport) {
+function generateImmunization(
+  doc = new jsPDF(), lsDataReport) {
   const vacunas = [
     {
       vacuna: lsDataReport.tetanoIM,
@@ -702,9 +703,7 @@ export function generateReportDiagnosis(
   getFirmaEmployee(doc, lsDataReport, 10);
 }
 
-export function generateClinicHistoryOtherCompany(
-  doc = new jsPDF(),
-  lsDataReport = []
+export function generateClinicHistoryOtherCompany( doc = new jsPDF(), lsDataReport = []
 ) {
   var marXR = doc.internal.pageSize.width - 5;
 
@@ -995,21 +994,18 @@ export function generatePathologicalAntecedents(
 
   doc.text(`${lsDataReport.especifiqueAP}`, 7, 104, {
     maxWidth: 200,
-    align: "justify",
     lineHeightFactor: 1.5,
   });
 
   doc.text(`${lsDataReport.anioAT}`, 20, 133);
   doc.text(`${lsDataReport.especifiqueAT}`, 7, 142, {
     maxWidth: 200,
-    align: "justify",
     lineHeightFactor: 1.5,
   });
 
   doc.text(`${lsDataReport.anio1AT}`, 20, 163);
   doc.text(`${lsDataReport.especifique1AT}`, 7, 172, {
     maxWidth: 200,
-    align: "justify",
     lineHeightFactor: 1.5,
   });
 
@@ -1182,7 +1178,6 @@ export function generateSystemReview(doc = new jsPDF(), lsDataReport) {
   doc.text(`${lsDataReport.observacionRS}`, 7, 90, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
-    align: "justify",
   });
 
   generatePhysicalExam(doc, lsDataReport);
@@ -1288,7 +1283,6 @@ export function generateFunctionalExploration(doc = new jsPDF(), lsDataReport) {
   doc.text(`${lsDataReport.observacionRS}`, 7, 110, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
-    align: "justify",
   });
 
   generateExamenParaclinico(doc, lsDataReport);
@@ -1355,19 +1349,16 @@ export function generateDefinitiveDiagnosis(
   doc.text(`${lsDataReport.observacionID}`, 7, 53 + distancia, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
-    align: "justify",
   });
   doc.text(`${lsDataReport.nameConceptoActitudID}`, 7, 75 + distancia);
   doc.text(`${lsDataReport.recomendacionesID}`, 7, 90 + distancia, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
-    align: "justify",
   });
   doc.setFontSize(9);
   doc.text(consentimientoInfo, 7, 137 + distancia, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
-    align: "justify",
   });
 
   getFirma(doc, lsDataUser);

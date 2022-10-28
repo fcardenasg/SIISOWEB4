@@ -2,6 +2,9 @@ import jsPDF from "jspdf";
 import LogoReport from "assets/img/LogoReport.png";
 import { pageCompanyNotification, pageWorkerNotification } from "./TrabajoAl";
 import { pageFramingham } from "./Framingham";
+import { pageCompanyNotificationEC,pageWorkerNotificationEC } from "./ConfinedSpace";
+import { pageQuestionnaireRespiratorySymptomsOne,pageQuestionnaireRespiratorySymptomsTwo,pageQuestionnaireRespiratorySymptomsThree,pageQuestionnaireRespiratorySymptomsFour } from "./QuestionnaireRespiratorySymptoms";
+
 
 import {
   generateReportConceptAptitude,
@@ -34,6 +37,121 @@ function getHeader(doc = new jsPDF(), lsDataReport) {
   doc.setLineWidth(1);
   doc.setDrawColor(255, 0, 0);
   doc.line(5, 25, marXR, 25);
+}
+
+// trabajo en altura
+export function getHeaderTA(doc) {
+  /* ENCABEZADO REPORTE */
+  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text(
+    "ANEXO DE APTITUD PARA TRABAJO EN ALTURAS",
+    120,
+    15,
+    null,
+    null,
+    "center"
+  );
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text("SIG-0409", 200, 10, null, null, "center");
+  doc.text("Versión 06", 200, 15, null, null, "center");
+
+  /* LINEA DE DIVISIÓN */
+  doc.setLineWidth(1);
+  doc.setDrawColor(255, 0, 0);
+  doc.line(5, 25, 210, 25);
+}
+
+// FRaminhang
+export function getHeaderFR(doc) {
+  /* ENCABEZADO REPORTE */
+  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text(
+    "ESTIMACIÓN DE RIESGO ABSOLUTO Y RELATIVO SEGÚN MÉTODO",
+    120,
+    15,
+    null,
+    null,
+    "center"
+  );
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text("SIG-0409", 200, 10, null, null, "center");
+  doc.text("Versión 06", 200, 15, null, null, "center");
+
+  /* LINEA DE DIVISIÓN */
+  doc.setLineWidth(1);
+  doc.setDrawColor(255, 0, 0);
+  doc.line(5, 25, 210, 25);
+}
+
+//Espacio Confinado
+/* Encabezado */
+export function getHeaderEc(doc) {
+  /* ENCABEZADO REPORTE */
+  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text(
+    "ANEXO DE APTITUD PARA ESPACIO CONFINADO",
+    120,
+    15,
+    null,
+    null,
+    "center"
+  );
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text("SIG-0409", 200, 10, null, null, "center");
+  doc.text("Versión 06", 200, 15, null, null, "center");
+
+  /* LINEA DE DIVISIÓN */
+  doc.setLineWidth(1);
+  doc.setDrawColor(255, 0, 0);
+  doc.line(5, 25, 210, 25);
+}
+
+
+//Cuestionario de sintomas
+
+function getHeaderQS(doc) {
+  /* ENCABEZADO REPORTE */
+  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text(
+    "CUESTIONARIO DE SÍNTOMAS RESPIRATORIOS",
+    120,
+    15,
+    null,
+    null,
+    "center"
+  );
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text("SIG-0409", 200, 10, null, null, "center");
+  doc.text("Versión 06", 200, 15, null, null, "center");
+
+  /* LINEA DE DIVISIÓN */
+  doc.setLineWidth(1);
+  doc.setDrawColor(255, 0, 0);
+  doc.line(5, 25, 210, 25);
 }
 
 function getPiePage(doc, lsDataUser, page, pageSize) {
@@ -75,84 +193,127 @@ export function generateReportIndex(
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateReportConceptAptitude(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 1, 10);
+  getPiePage(doc, lsDataUser, 1, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateReportDiagnosis(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 2, 10);
+  getPiePage(doc, lsDataUser, 2, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateClinicHistoryOtherCompany(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 3, 10);
+  getPiePage(doc, lsDataUser, 3, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateClinicHistoryDLTD(doc, resultExpoDLTD);
-  getPiePage(doc, lsDataUser, 4, 10);
+  getPiePage(doc, lsDataUser, 4, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generatePathologicalAntecedents(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 5, 10);
+  getPiePage(doc, lsDataUser, 5, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateHabitsGineco(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 6, 10);
+  getPiePage(doc, lsDataUser, 6, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateSystemReview(doc, lsDataReport);
-  getPiePage(doc, lsDataUser, 7, 10);
+  getPiePage(doc, lsDataUser, 7, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateFunctionalExploration(doc, lsDataReport);
-  getPiePage(doc, lsDataUser, 8, 10);
+  getPiePage(doc, lsDataUser, 8, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateDefinitiveDiagnosis(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 9, 10);
+  getPiePage(doc, lsDataUser, 9, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
-  getHeader(doc, lsDataReport);
+  getHeaderTA(doc, lsDataReport);
   pageCompanyNotification(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 10, 10);
+  getPiePage(doc, lsDataUser, 10, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
-  getHeader(doc, lsDataReport);
+  getHeaderTA(doc, lsDataReport);
   pageWorkerNotification(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 11, 10);
+  getPiePage(doc, lsDataUser, 11, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
-  getHeader(doc, lsDataReport);
+  getHeaderFR(doc, lsDataReport);
   pageFramingham(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 12, 10);
+  getPiePage(doc, lsDataUser, 12, 18);
+
+  doc.addPage();
+
+  doc.setFont("helvetica", "bold");
+  getHeaderEc(doc, lsDataReport);
+  pageCompanyNotificationEC(doc, lsDataReport, lsDataUser);
+  getPiePage(doc, lsDataUser, 13, 18);
+
+  doc.addPage();
+
+  doc.setFont("helvetica", "bold");
+  getHeaderEc(doc, lsDataReport);
+  pageWorkerNotificationEC(doc, lsDataReport, lsDataUser);
+  getPiePage(doc, lsDataUser, 14, 18);
+
+  doc.addPage();
+
+  doc.setFont("helvetica", "bold");
+  getHeaderQS(doc, lsDataReport);
+  pageQuestionnaireRespiratorySymptomsOne(doc, lsDataReport, lsDataUser);
+  getPiePage(doc, lsDataUser, 15, 18);
+
+  doc.addPage();
+
+  doc.setFont("helvetica", "bold");
+  getHeaderQS(doc, lsDataReport);
+  pageQuestionnaireRespiratorySymptomsTwo(doc, lsDataReport, lsDataUser);
+  getPiePage(doc, lsDataUser, 16, 18);
+
+  doc.addPage();
+
+  doc.setFont("helvetica", "bold");
+  getHeaderQS(doc, lsDataReport);
+  pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport, lsDataUser);
+  getPiePage(doc, lsDataUser, 17, 18);
+
+  doc.addPage();
+
+  doc.setFont("helvetica", "bold");
+  getHeaderQS(doc, lsDataReport);
+  pageQuestionnaireRespiratorySymptomsFour(doc, lsDataReport, lsDataUser);
+  getPiePage(doc, lsDataUser, 18, 18);
+
 
   var dataPDF = doc.output("bloburl");
   return dataPDF;

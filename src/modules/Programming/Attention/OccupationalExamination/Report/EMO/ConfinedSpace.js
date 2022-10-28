@@ -4,7 +4,7 @@ import ImgWhite from "assets/img/ImgWhite.png";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
 
 /* FIRMAS */
-function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
+function getFirma(doc=new jsPDF(), lsDataUser, my = 0) {
   doc.addImage(
     `${lsDataUser.firma}`,
     "PNG",
@@ -32,6 +32,7 @@ function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
 }
 
 function getFirmaEmployee(doc, lsDataReport, my = 0) {
+ 
   doc.setLineWidth(0.5);
   doc.setDrawColor(128, 128, 128);
   doc.line(
@@ -59,7 +60,7 @@ export function getHeader(doc) {
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
   doc.text(
-    "ANEXO DE APTITUD PARA TRABAJO EN ALTURAS",
+    "ANEXO DE APTITUD PARA ESPACIO CONFINADO",
     120,
     15,
     null,
@@ -108,7 +109,7 @@ function getPiePage(doc, lsDataUser, page, pageSize) {
 }
 
 /* Pag. 1 */
-export function pageCompanyNotification(
+export function pageCompanyNotificationEC(
   doc, lsDataReport = [], lsDataUser = []) {
   /* CUADRO DATOS */
 
@@ -155,16 +156,8 @@ export function pageCompanyNotification(
   doc.text("CONCEPTO APTITUD APLAZADO:", 6, 105);
   doc.text("MOTIVO DE APLAZO:", 6, 113);
 
-  doc.text(
-    "DESCRIPCIÓN DE RESULTADOS (Resumen de limitaciones o restricciones)",
-    6,
-    137
-  );
-  doc.text(
-    "RECOMENDACIONES (En términos sencillos resumen de cuidados y cotroles requeridos)",
-    6,
-    171
-  );
+  doc.text("DESCRIPCIÓN DE RESULTADOS (Resumen de limitaciones o restricciones)",6,137);
+  doc.text("RECOMENDACIONES (En términos sencillos resumen de cuidados y cotroles requeridos)",6,171);
   doc.text("REMITIDO:", 6, 197);
   doc.text("A DONDE:", 120, 197);
 
@@ -185,14 +178,21 @@ export function pageCompanyNotification(
   doc.text(`${lsDataReport.nameConceptoActitudNETA}`, 75, 96);
   doc.text(`${lsDataReport.nameConceptoAplazadoNETA}`, 75, 104);
 
-
-
-  doc.text(`${lsDataReport.motivoAplazoNETA}}`, 75, 115, {maxWidth: 190,lineHeightFactor: 1.0,
+  doc.text(`${lsDataReport.motivoAplazoNETA}}`, 75, 115, {
+    maxWidth: 190,
+   /*  align: "justify", */
+    lineHeightFactor: 1.0,
   });
 
-  doc.text(`${lsDataReport.descripcionResultadoNETA}`, 6, 148, {maxWidth: 190,lineHeightFactor: 1.0,
+  doc.text(`${lsDataReport.descripcionResultadoNETA}`, 6, 148, {
+    maxWidth: 190,
+   /*  align: "justify", */
+    lineHeightFactor: 1.0,
   });
-  doc.text(`${lsDataReport.recomendacionesNETA}`, 6, 178, {maxWidth: 190,lineHeightFactor: 1.0,
+  doc.text(`${lsDataReport.recomendacionesNETA}`, 6, 178, {
+    maxWidth: 190,
+ /*    align: "justify", */
+    lineHeightFactor: 1.0,
   });
 
   doc.text(`${lsDataReport.nameRemitidoNETA}`, 45, 197);
@@ -203,8 +203,7 @@ export function pageCompanyNotification(
   getFirmaEmployee(doc, lsDataReport);
 }
 /* Pag. 2 */
-export function pageWorkerNotification(
-  doc, lsDataReport = [], lsDataUser = []) {
+export function pageWorkerNotificationEC(doc, lsDataReport = [], lsDataUser = []) {
   /* LISTA DE DATOS PACIENTE */
   doc.setFontSize(10);
   doc.setLineWidth(0.2);
@@ -239,12 +238,12 @@ export function pageWorkerNotification(
   doc.line(5, 82, 210, 82);
 
   /* LINEA FINAL */
-  doc.line(197, 75, 197, 229); /* LINEA DEL SI/NO */
-
+  doc.line(197, 75, 197, 229);    /* LINEA DEL SI/NO */
+  
   doc.line(5, 87, 210, 87);
   doc.line(5, 92, 210, 92);
   doc.line(5, 97, 210, 97);
-
+  
   doc.line(5, 102, 210, 102);
   doc.line(5, 107, 210, 107);
   doc.line(5, 112, 210, 112);
@@ -262,7 +261,7 @@ export function pageWorkerNotification(
   doc.line(5, 172, 210, 172);
   doc.line(5, 177, 210, 177);
   doc.line(5, 182, 210, 182);
-
+  
   doc.line(5, 191, 210, 191);
   doc.line(5, 196, 210, 196);
   doc.line(5, 201, 210, 201);
@@ -270,6 +269,8 @@ export function pageWorkerNotification(
   doc.line(5, 215, 210, 215);
   doc.line(5, 220, 210, 220);
   doc.line(5, 229, 210, 229);
+
+
 
   /* TITULOS DE CONTENIDO */
   doc.text("SEDE:", 45, 48);
@@ -367,20 +368,12 @@ export function pageWorkerNotification(
   );
 
   doc.text(
-    "22. Obesidad Mórbida (IMC mayor a 35) o peso mayor de 120 kg, por limitaciones de sistemas de arneses.",
-    6,
-    195
-  );
+    "22. Obesidad Mórbida (IMC mayor a 35) o peso mayor de 120 kg, por limitaciones de sistemas de arneses.",6,195);
   doc.text(
-    "23. De forma temporal, el uso de medicamentos que produzcan sueño o de privación de sueño más de un turno.",
-    6,
-    200
-  );
+    "23. De forma temporal, el uso de medicamentos que produzcan sueño o de privación de sueño más de un turno.",6,200);
 
   doc.text(
-    "24. Otras alteraciones Cardiovasculares, pulmonares, musculares, hepáticas, sanguíneas o renales, que por su severidad o progreso puedan generar alteraciones del equilibrio o de la conciencia en concepto del Medico tratante",
-    6,
-    205,
+    "24. Otras alteraciones Cardiovasculares, pulmonares, musculares, hepáticas, sanguíneas o renales, que por su severidad o progreso puedan generar alteraciones del equilibrio o de la conciencia en concepto del Medico tratante",6,205,
     {
       maxWidth: 190,
       align: "justify",
@@ -435,12 +428,18 @@ export function pageWorkerNotification(
   doc.text(`${lsDataReport.idDeformaTemporalNEMTA}`, 201, 200);
   doc.text(`${lsDataReport.idOtrasAlteracionesNEMTA}`, 201, 205);
 
+
   doc.text(`${lsDataReport.observacionesNEMTA}`, 6, 223, {
     maxWidth: 190,
     lineHeightFactor: 1.0,
   });
 
+
+
+
   /* FIRMA */
   getFirma(doc, lsDataUser, 22);
   getFirmaEmployee(doc, lsDataReport, 22);
 }
+
+
