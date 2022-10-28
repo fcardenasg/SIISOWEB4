@@ -9,9 +9,10 @@ import {
     TextField,
     useMediaQuery,
     Typography,
-    Avatar
+    Avatar,
 } from '@mui/material';
 
+import Chip from 'ui-component/extended/Chip';
 import PersonalData from './PersonalData';
 import WorkHistory from './WorkHistory/WorkHistory';
 import Emo from './Emo';
@@ -176,7 +177,7 @@ const OccupationalExamination = () => {
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
-    const [resultData, setResultData] = useState(false);
+    const [resultData, setResultData] = useState([]);
 
     const [newMedicalFormula, setNewMedicalFormula] = useState(false);
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
@@ -325,7 +326,7 @@ const OccupationalExamination = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdDataReport(5);
+            const lsDataReport = await GetByIdDataReport(1/* resultData.id */);
             const lsDataUser = await GetByMail(user.email);
             const resultExpoDLTD = await getDataExploracion(documento);
 
@@ -664,6 +665,7 @@ const OccupationalExamination = () => {
                     >
                         {newMedicalFormula ?
                             <MedicalFormula
+                                contingencia={DefaultValue.SINREGISTRO_GLOBAL}
                                 setUpdateMedicalFormula={setUpdateMedicalFormula}
                                 setListMedicalFormula={setListMedicalFormula}
                                 setNewMedicalFormula={setNewMedicalFormula}
@@ -684,6 +686,7 @@ const OccupationalExamination = () => {
                                 />
                                 : updateMedicalFormula ?
                                     <UpdateMedicalFormula
+                                        contingencia={DefaultValue.SINREGISTRO_GLOBAL}
                                         setListMedicalFormula={setListMedicalFormula}
                                         setNewMedicalFormula={setNewMedicalFormula}
                                         setUpdateMedicalFormula={setUpdateMedicalFormula}
@@ -763,7 +766,21 @@ const OccupationalExamination = () => {
                                 <Grid item xs={7}>
                                     <Typography variant="h2" component="div">
                                         {lsEmployee.nombres}
+
+                                        {lsEmployee.namePayStatus != null ?
+                                            <Chip
+                                                size="small"
+                                                label={lsEmployee.namePayStatus}
+                                                chipcolor={lsEmployee.namePayStatus === 'ACTIVO (A)'
+                                                    ? 'success' : 'error'}
+                                                sx={{ borderRadius: '4px', textTransform: 'capitalize', ml: 2 }}
+                                            /> : null}
                                     </Typography>
+
+                                    <Typography variant="h4" component="div">
+                                        {lsEmployee.nameOficio}
+                                    </Typography>
+
                                     <Grid container spacing={1}>
                                         <Grid item>
                                             <Typography variant="h5">{lsEmployee.nameGenero}</Typography>
@@ -911,10 +928,10 @@ const OccupationalExamination = () => {
                         />
                     </TabPanel>
 
-                    <Grid container spacing={2} sx={{ pt: 5 }}>
+                    <Grid container spacing={2} sx={{ pt: 4 }}>
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                     {TitleButton.Guardar}
                                 </Button>
                             </AnimateButton>
@@ -922,7 +939,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
                                     {TitleButton.Imprimir}
                                 </Button>
                             </AnimateButton>
@@ -938,7 +955,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
+                                <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </AnimateButton>
@@ -946,7 +963,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
+                                <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                     {TitleButton.CerrarCaso}
                                 </Button>
                             </AnimateButton>

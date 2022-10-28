@@ -108,7 +108,7 @@ function getPiePage(doc, lsDataUser, page, pageSize) {
 }
 
 /* Pag. 1 */
-function pageCompanyNotification(doc, lsDataReport = [], lsDataUser = []) {
+export function pageCompanyNotification(doc, lsDataReport = [], lsDataUser = []) {
   /* CUADRO DATOS */
 
   /* LISTA DE DATOS PACIENTE */
@@ -209,7 +209,7 @@ function pageCompanyNotification(doc, lsDataReport = [], lsDataUser = []) {
   getFirmaEmployee(doc, lsDataReport);
 }
 /* Pag. 2 */
-function pageWorkerNotification(doc, lsDataReport = [], lsDataUser = []) {
+export function pageWorkerNotification(doc, lsDataReport = [], lsDataUser = []) {
   /* LISTA DE DATOS PACIENTE */
   doc.setFontSize(10);
   doc.setLineWidth(0.2);
@@ -448,22 +448,4 @@ function pageWorkerNotification(doc, lsDataReport = [], lsDataUser = []) {
   /* FIRMA */
   getFirma(doc, lsDataUser, 22);
   getFirmaEmployee(doc, lsDataReport, 22);
-}
-
-/* Renderizado Principal INDEX  */
-export function generateReportWorkHeight(lsDataReport = [], lsDataUser = []) {
-  var doc = new jsPDF("p", "mm", "letter");
-  /* Pag. 1 */
-  getHeader(doc);
-  pageCompanyNotification(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 1, 2);
-
-  doc.addPage();
-
-  getHeader(doc);
-  pageWorkerNotification(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 2, 2);
-
-  /*   var dataPDF = doc.output("bloburl");
-  return dataPDF; */
 }

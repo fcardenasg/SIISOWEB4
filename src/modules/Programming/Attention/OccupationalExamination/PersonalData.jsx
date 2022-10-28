@@ -67,7 +67,7 @@ const DetailsViewOne = [
 
 const DetailsViewTwo = [
     { name: 'Sede de Trabajo', }, { name: 'Dirección de residencia mientras trabaja', }, { name: 'Municipio de residencia mientras trabaja', },
-    { name: 'Departamento', }, { name: 'Area', }, { name: 'Posición/Cargo', }, { name: 'Grupo', },
+    { name: 'Departamento', }, { name: 'Área', }, { name: 'Posición/Cargo', }, { name: 'Grupo', },
     { name: 'Turno', }, { name: 'Tipo Contrato', }, { name: 'Fecha Contrato', }, { name: 'Antiguedad', }, { name: 'GES', },
 ]
 

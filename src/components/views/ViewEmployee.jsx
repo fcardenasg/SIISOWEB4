@@ -133,9 +133,10 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                                 <Chip
                                     size="small"
                                     label={lsEmployee.namePayStatus}
-                                    chipcolor={true ? 'success' : 'error'}
+                                    chipcolor={lsEmployee.namePayStatus === 'ACTIVO (A)'
+                                        ? 'success' : 'error'}
                                     sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
-                                /> : <></>}
+                                /> : null}
                         </Grid>
 
                         <Grid item xs={4}>

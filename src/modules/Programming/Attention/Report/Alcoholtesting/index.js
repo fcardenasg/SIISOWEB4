@@ -217,13 +217,17 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
 
   doc.line(115, 40, 115, 74); /* LINEA TWO */
 
-  doc.line(115, 82, 115, 99); /* LINEA TRES */
+  doc.line(115, 82, 115, 108); /* LINEA TRES */
 
-  doc.line(115, 108, 115, 168); /* LINEA CUATRO */
+  doc.line(115, 108, 115, 158); /* LINEA CUATRO */
 
   doc.line(50, 188, 50, 210); /* LINEA CINCO */
 
   doc.line(115, 188, 115, 210); /* LINEA SEIS */
+
+    //LINEA FINAL
+    doc.line(50, 82, 50, 178);
+
 
   doc.line(210, 25, 210, 210);
   doc.line(5, 74, 210, 74);
@@ -238,13 +242,14 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 138, 210, 138);
   doc.line(5, 148, 210, 148);
   doc.line(5, 158, 210, 158);
-  doc.line(5, 168, 210, 168);
+
+
+
   doc.line(5, 178, 210, 178);
+
   doc.line(5, 188, 210, 188);
   doc.line(5, 198, 210, 198);
   doc.line(5, 210, 210, 210);
-  //LINEA FINAL
-  doc.line(50, 108, 50, 178);
 
   /* TITULOS DE CONTENIDO */
   doc.text("CONSECUTIVO:", 45, 46);
@@ -265,13 +270,13 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
   doc.text("CONCEPTO APTITUD:", 6, 97);
   doc.text("REALIZADA POR:", 120, 97);
 
-  doc.text("COCAÍNA:", 6, 114);
-  doc.text("MARIHUANA:", 6, 124);
-  doc.text("MORFINA:", 6, 134);
-  doc.text("BENZODIAZEPINA: ", 6, 144);
-  doc.text("ANFETAMINAS: ", 6, 154);
-  doc.text("ALCOHOL: ", 6, 164);
-  doc.text("OBSERVACIONES: ", 6, 174);
+  doc.text("COCAÍNA:", 6, 106);
+  doc.text("MARIHUANA:", 6, 116);
+  doc.text("MORFINA:", 6, 124);
+  doc.text("BENZODIAZEPINA: ", 6, 134);
+  doc.text("ANFETAMINAS: ", 6, 144);
+  doc.text("ALCOHOL: ", 6, 154);
+  doc.text("OBSERVACIONES: ", 6, 167);
   doc.text("DATOS DEL SOLICITANTE (SOLO EN CASO DE SOSPECHAS Y ACCIDENTES): ", 6, 184);
 
   doc.text("DOCUMENTO", 10, 194);
@@ -294,34 +299,34 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${lsDataReport.nameEmpresa}`, 147, 70);
   doc.text(`${lsDataReport.nameCargo}`, 147, 64);
 
-  doc.text(`${ViewFormat(lsDataReport.fecha)}`, 48, 88);
+  doc.text(`${ViewFormat(lsDataReport.fecha)}`, 55, 88);
   doc.text(`${lsDataReport.nameMotivo}`, 152, 88);
-  doc.text(`${lsDataReport.nameConcepto}`, 48, 97);
+  doc.text(`${lsDataReport.nameConcepto}`, 55, 97);
   doc.text(`${lsDataUser.nombre}`, 152, 97);
 
-  doc.text(`${lsDataReport.nameMuestra1}`, 55, 114);
-  doc.text(`${lsDataReport.nameResultado1}`, 120, 114);
+  doc.text(`${lsDataReport.nameMuestra1}`, 55, 106);
+  doc.text(`${lsDataReport.nameResultado1}`, 120, 106);
 
-  doc.text(`${lsDataReport.nameMuestra2}`, 55, 124);
-  doc.text(`${lsDataReport.nameResultado2}`, 120, 124);
+  doc.text(`${lsDataReport.nameMuestra2}`, 55, 116);
+  doc.text(`${lsDataReport.nameResultado2}`, 120, 116);
 
-  doc.text(`${lsDataReport.nameMuestra3}`, 55, 134);
-  doc.text(`${lsDataReport.nameResultado3}`, 120, 134);
+  doc.text(`${lsDataReport.nameMuestra3}`, 55, 124);
+  doc.text(`${lsDataReport.nameResultado3}`, 120, 124);
 
-  doc.text(`${lsDataReport.nameMuestra4}`, 55, 144);
-  doc.text(`${lsDataReport.nameResultado4}`, 120, 144);
+  doc.text(`${lsDataReport.nameMuestra4}`, 55, 134);
+  doc.text(`${lsDataReport.nameResultado4}`, 120, 134);
 
-  doc.text(`${lsDataReport.nameMuestra5}`, 55, 154);
-  doc.text(`${lsDataReport.nameResultado5}`, 120, 154);
+  doc.text(`${lsDataReport.nameMuestra5}`, 55, 144);
+  doc.text(`${lsDataReport.nameResultado5}`, 120, 144);
 
-  doc.text(`${lsDataReport.nameMuestra6}`, 55, 164);
-  doc.text(`${lsDataReport.nameResultado6}`, 120, 164);
+  doc.text(`${lsDataReport.nameMuestra6}`, 55, 154);
+  doc.text(`${lsDataReport.nameResultado6}`, 120, 154);
 
-  doc.text(`${lsDataReport.observaciones}`, 55, 174);
+  doc.setFontSize(9);
+    doc.text(`${lsDataReport.observaciones}`, 55, 164, { maxWidth: 200, lineHeightFactor: 1.5 });
 
   doc.text(`${lsDataReport.idDocumentoSolicitante}`, 10, 204);
-  doc.text(`${lsDataReport.nameEmpleadoSolicita}`, 55, 204);
-
+  doc.text(`${lsDataReport.nameEmpleadoSolicita === null ? '' : lsDataReport.nameEmpleadoSolicita}`, 55, 204);
   /* FIRMA */
   getFirma(doc, lsDataUser, 10);
   getFirmaEmployee(doc, lsDataReport, 10);
