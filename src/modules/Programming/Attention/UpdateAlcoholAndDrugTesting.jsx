@@ -135,7 +135,7 @@ const UpdateAlcoholAndDrugTesting = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAlcoholAndDrugTesting(2);
+            const lsDataReport = await GetByIdAlcoholAndDrugTesting(resultData.idPruebasAlcoholDroga);
             const lsDataUser = await GetByMail(user.email);
 
             const dataPDFTwo = generateReportAlcoholtesting(lsDataReport.data, lsDataUser.data);
@@ -287,23 +287,16 @@ const UpdateAlcoholAndDrugTesting = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
+            
             <ControlModal
                 title="VISTA DE REPORTE"
                 open={openReport}
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                {/* VISUALIZACIÓN DEL REPORTE */}
                 <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
-            <FullScreenDialog
-                open={openViewPdf}
-                title="VISTA DE PDF"
-                handleClose={() => setOpenViewPdf(false)}
-            >
-
-            </FullScreenDialog>
 
             {timeWait ?
                 <Grid container spacing={2}>
