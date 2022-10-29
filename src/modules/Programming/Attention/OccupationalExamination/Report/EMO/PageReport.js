@@ -878,7 +878,7 @@ export function generatePathologicalAntecedents(
   var marXR = doc.internal.pageSize.width - 5;
 
   doc.text("4. ANTECEDENTES PERSONALES", 7, 30);
-  doc.text("4.2 ENFERMEDAD PROFESIONAL", 7, 125);
+  doc.text("4.2 ENFERMEDAD LABORAL", 7, 125);
   doc.text("4.3 ACCIDENTE DE TRABAJO", 7, 155);
   doc.text("4.4 INMUNIZACIONES", 7, 185);
 

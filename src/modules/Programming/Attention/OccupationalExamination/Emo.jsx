@@ -858,18 +858,18 @@ const Emo = ({
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Accordion title={<><IconCarCrash />
-                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ACCIDENTES DE TRABAJO</Typography></>}>
+                    <Accordion title={<><IconWheelchair />
+                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ENFERMEDAD LABORAL</Typography></>}>
 
                         <SubCard>
-                            <Grid container spacing={2}>
+                            <Grid container spacing={2} sx={{ pt: 2 }}>
                                 <Grid item xs={3} >
                                     <FormProvider {...methods}>
                                         <InputText
                                             type="number"
-                                            defaultValue={() => validateLastData(lsLastRecord.anioAT, "string")}
+                                            defaultValue={() => validateLastData(lsLastRecord.anio1AT, "string")}
                                             fullWidth
-                                            name="anioAT"
+                                            name="anio1AT"
                                             label="Año"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -882,9 +882,9 @@ const Emo = ({
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={() => validateLastData(lsLastRecord.especifiqueAT, "string")}
+                                            defaultValue={() => validateLastData(lsLastRecord.especifique1AT, "string")}
                                             fullWidth
-                                            name="especifiqueAT"
+                                            name="especifique1AT"
                                             label="Especifique"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -917,18 +917,18 @@ const Emo = ({
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Accordion title={<><IconWheelchair />
-                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ENFERMEDAD LABORAL</Typography></>}>
+                    <Accordion title={<><IconCarCrash />
+                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ACCIDENTES DE TRABAJO</Typography></>}>
 
                         <SubCard>
-                            <Grid container spacing={2} sx={{ pt: 2 }}>
+                            <Grid container spacing={2}>
                                 <Grid item xs={3} >
                                     <FormProvider {...methods}>
                                         <InputText
                                             type="number"
-                                            defaultValue={() => validateLastData(lsLastRecord.anio1AT, "string")}
+                                            defaultValue={() => validateLastData(lsLastRecord.anioAT, "string")}
                                             fullWidth
-                                            name="anio1AT"
+                                            name="anioAT"
                                             label="Año"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -941,9 +941,9 @@ const Emo = ({
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={() => validateLastData(lsLastRecord.especifique1AT, "string")}
+                                            defaultValue={() => validateLastData(lsLastRecord.especifiqueAT, "string")}
                                             fullWidth
-                                            name="especifique1AT"
+                                            name="especifiqueAT"
                                             label="Especifique"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3668,7 +3668,7 @@ const Emo = ({
                                         <InputSelect
                                             defaultValue=""
                                             name="conceptoActitudNETA"
-                                            label="Concepto De Aptitud"
+                                            label="Concepto De Aptitud Para Trabajo en Altura"
                                             options={lsNeConceptoActi}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -3682,7 +3682,7 @@ const Emo = ({
                                         <InputSelect
                                             defaultValue=""
                                             name="idConceptoEspacioConfinado"
-                                            label="Concepto De Espacio Confinado"
+                                            label="Concepto De Aptitud Para Espacio Confinado"
                                             options={lsNeConceptoActi}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}

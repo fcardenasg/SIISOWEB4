@@ -176,9 +176,9 @@ const columnsSignosVitales = [
 ];
 
 const columnsSintomasRespiratorio = [
-    { field: 'formatFecha', headerName: 'Fecha', width: 80 },
-    { field: 'nameAtencion', headerName: 'Atención', width: 100 },
-    { field: 'recoSintR', headerName: 'Recomendaciones/Observaciones', width: 1300 },
+    { field: 'formatFecha', headerName: 'Fecha', width: 150 },
+    { field: 'nameAtencion', headerName: 'Atención', width: 300 },
+    { field: 'recoSintR', headerName: 'Recomendaciones/Observaciones', width: 1000 },
 ];
 
 const TableAntecedentes = ({ param = '', documento = '' }) => {
