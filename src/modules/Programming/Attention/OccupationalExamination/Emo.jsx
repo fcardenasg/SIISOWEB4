@@ -12,14 +12,15 @@ import {
     IconAffiliate,
     IconWoman,
     IconFriends,
-    IconDisabled,
     IconVaccine,
     IconEmpathize,
     IconDeviceDesktopAnalytics,
     IconUserSearch,
     IconHeartRateMonitor,
     IconYoga,
-    IconReportMedical
+    IconReportMedical,
+    IconWheelchair,
+    IconCarCrash
 } from '@tabler/icons';
 
 import Chip from '@mui/material/Chip';
@@ -42,7 +43,7 @@ import { IconEdit } from '@tabler/icons';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
-import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import TableAntecedentes from './TableEmo/TableAntecedentes';
@@ -111,7 +112,6 @@ const Emo = ({
     const [lsGineMetodo, setLsGineMetodo] = useState([]);
     const [lsBiotipo, setLsBiotipo] = useState([]);
     const [lsResultado, setLsResultado] = useState([]);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsCiclos, setLsCiclos] = useState([]);
 
     const [lsNeConceptoActi, setLsNeConceptoActi] = useState([]);
@@ -227,16 +227,10 @@ const Emo = ({
                 label: item.nombre
             }));
             setLsTipoFobia(resultTipoFobia);
-
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
         } catch (error) { }
     }
 
+    /* useEffect */
     useEffect(() => {
         getAll();
     }, [documento]);
@@ -375,6 +369,7 @@ const Emo = ({
                 handleClose={() => setOpenHistory(false)}
             >
                 <TableAntecedentes documento={documento} param={cadenaHistory} />
+                {/* <TableExamenesParaclinicos documento={documento} idTipoParaclinico='cadenaHistory' /> */}
             </FullScreenDialog>
 
             <FullScreenDialog
@@ -863,8 +858,9 @@ const Emo = ({
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Accordion title={<><IconDisabled />
-                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ACCIDENTES DE TRABAJO / ENFERMEDAD LABORAL</Typography></>}>
+                    <Accordion title={<><IconCarCrash />
+                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ACCIDENTES DE TRABAJO</Typography></>}>
+
                         <SubCard>
                             <Grid container spacing={2}>
                                 <Grid item xs={3} >
@@ -916,7 +912,15 @@ const Emo = ({
                                     icons={DetailIcons[2].icons}
                                 />
                             </Grid>
+                        </SubCard>
+                    </Accordion>
+                </Grid>
 
+                <Grid item xs={12}>
+                    <Accordion title={<><IconWheelchair />
+                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ENFERMEDAD LABORAL</Typography></>}>
+
+                        <SubCard>
                             <Grid container spacing={2} sx={{ pt: 2 }}>
                                 <Grid item xs={3} >
                                     <FormProvider {...methods}>
@@ -2906,6 +2910,7 @@ const Emo = ({
                                 <Grid item xs={2}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue={4015}
                                             name="resultadoRxToraxEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -2965,6 +2970,7 @@ const Emo = ({
                                 <Grid item xs={2}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue={4015}
                                             name="resultadoEspirometriaEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3024,6 +3030,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue={4015}
                                             name="resultadoAudiometriaEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3083,6 +3090,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue={4015}
                                             name="resultadoVisiometriaEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3142,6 +3150,7 @@ const Emo = ({
                                 <Grid item xs={2}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue={4015}
                                             name="resultadoLaboratorioClinicoEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3201,6 +3210,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue={4015}
                                             name="resultadoCuestionarioSintomaEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3260,6 +3270,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue={4015}
                                             name="resultadoEkgEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3319,6 +3330,7 @@ const Emo = ({
                                 <Grid item xs={2}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue={4015}
                                             name="resultadoRnmLumbosacraEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3377,6 +3389,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue={4015}
                                             name="resultadoRnmCervicalEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3625,13 +3638,19 @@ const Emo = ({
                 <Grid item xs={12}>
                     <Accordion title={<><IconLungs />
                         <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">SINTOMAS RESPIRATORIOS</Typography></>}>
-                        <RespiratorySymptoms {...methods} />
+                        <RespiratorySymptoms
+                            setCadenaHistory={setCadenaHistory}
+                            setOpen={setOpen}
+                            setOpenHistory={setOpenHistory}
+                            setOpenTemplate={setOpenTemplate}
+                            {...methods}
+                        />
                     </Accordion>
                 </Grid>
 
                 <Grid item xs={12}>
                     <Accordion title={<><IconFall />
-                        <Typography sx={{ pl: 2 }} variant="h5" color="inherit">TRABAJO EN ALTURA</Typography></>}>
+                        <Typography sx={{ pl: 2 }} variant="h5" color="inherit">TRABAJO EN ALTURA / ESPACIO CONFINADO</Typography></>}>
                         <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIÓN EMPRESA</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
@@ -4194,6 +4213,20 @@ const Emo = ({
                                             disabled
                                             defaultValue=""
                                             name="conceptoActitudNETA"
+                                            label="Concepto Aptitud Médica"
+                                            options={lsNeConceptoActi}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            disabled
+                                            defaultValue=""
+                                            name="idConceptoEspacioConfinado"
                                             label="Concepto Aptitud Médica"
                                             options={lsNeConceptoActi}
                                             size={matchesXS ? 'small' : 'medium'}

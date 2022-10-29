@@ -1,6 +1,5 @@
 import jsPDF from "jspdf";
 import LogoReport from "assets/img/LogoReport.png";
-import ImgWhite from "assets/img/ImgWhite.png";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
 
 /* FIRMAS */

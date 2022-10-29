@@ -175,6 +175,12 @@ const columnsSignosVitales = [
     { field: 'temperaturaEF', headerName: 'Temperatura', width: 400 },
 ];
 
+const columnsSintomasRespiratorio = [
+    { field: 'formatFecha', headerName: 'Fecha', width: 80 },
+    { field: 'nameAtencion', headerName: 'Atención', width: 100 },
+    { field: 'recoSintR', headerName: 'Recomendaciones/Observaciones', width: 1300 },
+];
+
 const TableAntecedentes = ({ param = '', documento = '' }) => {
     const [rows, setRows] = useState([]);
 
@@ -218,7 +224,8 @@ const TableAntecedentes = ({ param = '', documento = '' }) => {
                                                                                         param === 'IMPRESION_DIAGNOSTICA' ? colummsImpresionDiagnostico :
                                                                                             param === 'NOTIFICACION_EMPRESA' ? columnsNotificacionEmpresa :
                                                                                                 param === 'NOTIFICACION_EMPLEADO' ? columnsNotificacionEmpleado :
-                                                                                                    param === 'INFORMACION_CARDIOVASCULAR' ? columnsInformacionCardiovascular : []
+                                                                                                    param === 'INFORMACION_CARDIOVASCULAR' ? columnsInformacionCardiovascular :
+                                                                                                        param === 'SINTOMAS_RESPIRATORIOS' ? columnsSintomasRespiratorio : []
                 }
                 pageSize={9}
                 rowsPerPageOptions={[9]}

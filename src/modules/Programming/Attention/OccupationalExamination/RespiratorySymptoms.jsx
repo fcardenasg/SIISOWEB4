@@ -1,12 +1,9 @@
-import PropTypes from 'prop-types';
 import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
-    Divider,
     useMediaQuery,
     Grid, Typography,
 } from '@mui/material';
-
 
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import Accordion from 'components/accordion/Accordion';
@@ -22,12 +19,21 @@ import { CodCatalogo } from 'components/helpers/Enums';
 import FullScreenDialog from 'components/controllers/FullScreenDialog'
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 
-const RespiratorySymptoms = ({ ...methods }) => {
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import DetailedIcon from 'components/controllers/DetailedIcon';
+
+const DetailIcons = [
+    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
+    { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
+]
+
+const RespiratorySymptoms = ({ setOpenTemplate, setOpen, setOpenHistory, setCadenaHistory, ...methods }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [open, setOpen] = useState(false);
-    const [openTemplate, setOpenTemplate] = useState(false);
     const [lsExposicion, setLsExpocision] = useState([]);
 
     async function GetAll() {
@@ -49,23 +55,6 @@ const RespiratorySymptoms = ({ ...methods }) => {
 
     return (
         <Fragment>
-            <ControlModal
-                maxWidth="md"
-                open={open}
-                onClose={() => setOpen(false)}
-                title="DICTADO POR VOZ"
-            >
-                <ControllerListen />
-            </ControlModal>
-
-            <FullScreenDialog
-                open={openTemplate}
-                title="LISTADO DE PLANTILLA"
-                handleClose={() => setOpenTemplate(false)}
-            >
-                <ListPlantillaAll />
-            </FullScreenDialog>
-
             <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
                 <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">TOS</Typography></>}>
                 <SubCard darkTitle title="Tos">
@@ -1093,7 +1082,7 @@ const RespiratorySymptoms = ({ ...methods }) => {
                                     type="number"
                                     fullWidth
                                     name="actDeporA2SintR"
-                                    label="¿Cual deporte o actividad?"
+                                    label="Días a la semana que lo practica"
                                     size="small"
                                 />
                             </FormProvider>
@@ -1105,7 +1094,7 @@ const RespiratorySymptoms = ({ ...methods }) => {
                                     type="number"
                                     fullWidth
                                     name="actDeporA3SintR"
-                                    label="¿Cual deporte o actividad?"
+                                    label="Horas al día que le dedica"
                                     size="small"
                                 />
                             </FormProvider>
@@ -1117,7 +1106,7 @@ const RespiratorySymptoms = ({ ...methods }) => {
                                     type="number"
                                     fullWidth
                                     name="actDeporA4SintR"
-                                    label="¿Cual deporte o actividad?"
+                                    label="Promedio de horas a la semana"
                                     size="small"
                                 />
                             </FormProvider>
@@ -1142,6 +1131,26 @@ const RespiratorySymptoms = ({ ...methods }) => {
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </FormProvider>
+                    </Grid>
+
+                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            title={DetailIcons[0].title}
+                            onClick={() => setOpenTemplate(true)}
+                            icons={DetailIcons[0].icons}
+                        />
+
+                        <DetailedIcon
+                            title={DetailIcons[1].title}
+                            onClick={() => setOpen(true)}
+                            icons={DetailIcons[1].icons}
+                        />
+
+                        <DetailedIcon
+                            title={DetailIcons[2].title}
+                            onClick={() => { setOpenHistory(true); setCadenaHistory('SINTOMAS_RESPIRATORIOS') }}
+                            icons={DetailIcons[2].icons}
+                        />
                     </Grid>
                 </Grid>
             </Accordion>

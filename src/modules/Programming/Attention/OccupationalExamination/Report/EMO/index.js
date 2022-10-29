@@ -2,8 +2,8 @@ import jsPDF from "jspdf";
 import LogoReport from "assets/img/LogoReport.png";
 import { pageCompanyNotification, pageWorkerNotification } from "./TrabajoAl";
 import { pageFramingham } from "./Framingham";
-import { pageCompanyNotificationEC,pageWorkerNotificationEC } from "./ConfinedSpace";
-import { pageQuestionnaireRespiratorySymptomsOne,pageQuestionnaireRespiratorySymptomsTwo,pageQuestionnaireRespiratorySymptomsThree,pageQuestionnaireRespiratorySymptomsFour } from "./QuestionnaireRespiratorySymptoms";
+import { pageCompanyNotificationEC, pageWorkerNotificationEC } from "./ConfinedSpace";
+import { pageQuestionnaireRespiratorySymptomsOne, pageQuestionnaireRespiratorySymptomsTwo, pageQuestionnaireRespiratorySymptomsThree, pageQuestionnaireRespiratorySymptomsFour } from "./QuestionnaireRespiratorySymptoms";
 
 
 import {

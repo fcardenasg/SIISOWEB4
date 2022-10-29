@@ -661,7 +661,7 @@ export function generateReportDiagnosis(
   doc.text("CARGO:", 7, 55);
   doc.text("AREA:", 7, 60);
   doc.text("DEPARTAMENTO:", 7, 65);
-  doc.text("CONCEPTO DE APTITUD:", 7, 73);
+  doc.text("CONCEPTO DE DIAGNÓSTICOS:", 7, 73);
   doc.text("RECOMENDACIONES DE DIAGNÓSTICOS:", 7, 95);
   doc.text(
     `RECOMENDACIONES PARA APTITUD DE ${lsDataReport.nameAtencion}`,
@@ -677,16 +677,8 @@ export function generateReportDiagnosis(
   doc.text(`${lsDataReport.nameArea}`, 55, 60);
   doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 55, 65);
 
-  if (lsDataReport.dxID !== undefined && lsDataReport !== []) {
-    doc.text(
-      JSON.parse(lsDataReport.dxID).map((dx, index) => {
-        return String(`DX ${(index = index + 1)}:  ${dx.label.toUpperCase()}`);
-      }),
-      7,
-      82,
-      { maxWidth: 200, lineHeightFactor: 1.5 }
-    );
-  }
+  if (lsDataReport.dx1 !== "")
+    doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 82, { maxWidth: 200, lineHeightFactor: 1.5 });
 
   doc.text(`${lsDataReport.observacionID}`, 7, 103, {
     maxWidth: 200,
@@ -703,7 +695,7 @@ export function generateReportDiagnosis(
   getFirmaEmployee(doc, lsDataReport, 10);
 }
 
-export function generateClinicHistoryOtherCompany( doc = new jsPDF(), lsDataReport = []
+export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataReport = []
 ) {
   var marXR = doc.internal.pageSize.width - 5;
 
@@ -1310,53 +1302,36 @@ export function generateDefinitiveDiagnosis(
   doc.line(5, 250, marXR, 250); /* HORI ULTIMA */
   doc.line(marXR, 31, marXR, 250); /* DERECHA */
 
-  var dxID = [
-    { dx: lsDataReport.dx1, nameDx: lsDataReport.nameDx1 },
-    { dx: lsDataReport.dx2, nameDx: lsDataReport.nameDx2 },
-    { dx: lsDataReport.dx3, nameDx: lsDataReport.nameDx3 },
-  ];
-
-  const longitud = dxID.map((dx) => dx);
-  const distancia = 6 * longitud.length;
-
-  doc.text("OBSERVACIONES", 7, 48 + distancia);
-  doc.text("CONCEPTO DE APTITUD", 7, 70 + distancia);
-  doc.text("RECOMENDACIONES", 7, 85 + distancia);
-  doc.text("CONSENTIMIENTO INFORMADO DEL TRABAJADOR", 7, 130 + distancia);
-
-  /* RENDERIZADO DE NUMERACIÓN DEL DX */
-  doc.text(
-    dxID.map((dx, index) => {
-      return String(`DX ${(index = index + 1)}   ${dx.dx}`);
-    }),
-    7,
-    45,
-    { maxWidth: 200, lineHeightFactor: 2 }
-  );
+  doc.text("OBSERVACIONES", 7, 73);
+  doc.text("CONCEPTO DE APTITUD", 7, 100);
+  doc.text("RECOMENDACIONES", 7, 120);
+  doc.text("CONSENTIMIENTO INFORMADO DEL TRABAJADOR", 7, 150);
 
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
 
-  doc.text(
-    dxID.map((dx, index) => {
-      return String(`${dx.nameDx.toUpperCase()}`);
-    }),
-    30,
-    45,
-    { maxWidth: 200, lineHeightFactor: 2 }
-  );
+  if (lsDataReport.dx1 !== "")
+    doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 47, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-  doc.text(`${lsDataReport.observacionID}`, 7, 53 + distancia, {
+  if (lsDataReport.dx2 !== "")
+    doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 55, { maxWidth: 200, lineHeightFactor: 1.5 });
+
+  if (lsDataReport.dx3 !== "")
+    doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 63, { maxWidth: 200, lineHeightFactor: 1.5 });
+
+  doc.text(`${lsDataReport.observacionID}`, 7, 79, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
-  doc.text(`${lsDataReport.nameConceptoActitudID}`, 7, 75 + distancia);
-  doc.text(`${lsDataReport.recomendacionesID}`, 7, 90 + distancia, {
+
+  doc.text(`${lsDataReport.nameConceptoActitudID}`, 7, 106);
+  doc.text(`${lsDataReport.recomendacionesID}`, 7, 126, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
+
   doc.setFontSize(9);
-  doc.text(consentimientoInfo, 7, 137 + distancia, {
+  doc.text(consentimientoInfo, 7, 157, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
@@ -1364,9 +1339,3 @@ export function generateDefinitiveDiagnosis(
   getFirma(doc, lsDataUser);
   getFirmaEmployee(doc, lsDataReport);
 }
-
-/* 
-    `FECHA DE SISTEMA:  ${new Date().toLocaleString()}`
-    `${}`
-    ${longitud.length}
-*/
