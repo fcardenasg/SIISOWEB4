@@ -110,6 +110,8 @@ const Emo = ({
     const [lsOpcion, setLsOpcion] = useState([]);
     const [lsNeADonde, setLsNeADonde] = useState([]);
     const [lsRiesClasifi, setLsRiesClasifi] = useState([]);
+    const [lsEspacioConfinado, setLsEspacioConfinado] = useState([]);
+    
 
     const [lsFramDeporte, setLsFramDeporte] = useState([]);
     const [lsFramBebida, setLsFramBebida] = useState([]);
@@ -119,13 +121,7 @@ const Emo = ({
 
     async function GetAll() {
         try {
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
-
+       
             const lsServerRiesClasifi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RIESGO_CLASIFICACION);
             var resultRiesClasifi = lsServerRiesClasifi.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -139,6 +135,16 @@ const Emo = ({
                 label: item.nombre
             }));
             setLsFramDeporte(resultFramDeporte);
+
+            const lsServerEspacioConfinado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CONCEPTO_ESPACIOCONFINADO);
+            var resultEspacioConfinado = lsServerEspacioConfinado.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsEspacioConfinado(resultEspacioConfinado);
+
+
+        
 
             const lsServerFramBebida = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_FRAM_BEBIDAS);
             var resultFramBebida = lsServerFramBebida.data.entities.map((item) => ({

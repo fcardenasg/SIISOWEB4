@@ -107,7 +107,7 @@ const Emo = ({
     const [lsTipoFobia, setLsTipoFobia] = useState([]);
     const [lsFrecuencia, setLsFrecuencia] = useState([]);
     const [lsRefuerzo, setLsRefuerzo] = useState([]);
-
+    const [lsEspacioConfinado, setLsEspacioConfinado] = useState([]);
     const [lsPariente, setLsPariente] = useState([]);
     const [lsGineMetodo, setLsGineMetodo] = useState([]);
     const [lsBiotipo, setLsBiotipo] = useState([]);
@@ -150,6 +150,13 @@ const Emo = ({
                 label: item.nombre
             }));
             setLsNeConceptoActi(resultNeConceptoActi);
+
+            const lsServerEspacioConfinado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CONCEPTO_ESPACIOCONFINADO);
+            var resultEspacioConfinado = lsServerEspacioConfinado.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsEspacioConfinado(resultEspacioConfinado);
 
             const lsServerOpcion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
             var resultOpcion = lsServerOpcion.data.entities.map((item) => ({
@@ -3683,7 +3690,7 @@ const Emo = ({
                                             defaultValue=""
                                             name="idConceptoEspacioConfinado"
                                             label="Concepto De Espacio Confinado"
-                                            options={lsNeConceptoActi}
+                                            options={lsEspacioConfinado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
