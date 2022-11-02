@@ -22,13 +22,21 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
-import { TitleButton } from 'components/helpers/Enums';
+import { DefaultValue, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 import { visuallyHidden } from '@mui/utils';
 import { GetAllTemplate } from 'api/clients/TemplateClient';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
+import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
+import { GetAllOccupationalExamination, GetByIdDataReport } from 'api/clients/OccupationalExaminationClient';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReportIndex } from 'modules/Programming/Attention/OccupationalExamination/Report/EMO';
+import useAuth from 'hooks/useAuth';
+import ViewPDF from 'components/components/ViewPDF';
+import ControlModal from 'components/controllers/ControlModal';
+import { ViewFormat } from 'components/helpers/Format';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -58,22 +66,28 @@ const headCells = [
         id: 'id',
         numeric: false,
         label: 'ID',
-        align: 'center'
+        align: 'left'
     },
     {
-        id: 'cedula',
+        id: 'documento',
         numeric: false,
         label: 'Documento',
         align: 'left'
     },
     {
-        id: 'cedula',
+        id: 'nameEmpleado',
+        numeric: false,
+        label: 'Nombre',
+        align: 'left'
+    },
+    {
+        id: 'nameAtencion',
         numeric: false,
         label: 'Atención',
         align: 'left'
     },
     {
-        id: 'cedula',
+        id: 'fecha',
         numeric: false,
         label: 'Fecha',
         align: 'left'
@@ -131,11 +145,14 @@ EnhancedTableHead.propTypes = {
 };
 
 const TableEmo = () => {
+    const { user } = useAuth();
     const navigate = useNavigate();
-    const [lsTemplate, setLsTemplate] = useState([]);
+    const [lsOccupationalExamination, setLsOccupationalExamination] = useState([]);
+    const [openReport, setOpenReport] = useState(false);
+    const [dataPDF, setDataPDF] = useState(false);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
@@ -146,8 +163,8 @@ const TableEmo = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllTemplate(0, 0);
-                setLsTemplate(lsServer.data.entities);
+                const lsServer = await GetAllOccupationalExamination(0, 0);
+                setLsOccupationalExamination(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
                 console.log(error);
@@ -155,7 +172,98 @@ const TableEmo = () => {
         }
 
         GetAll();
-    }, [])
+    }, []);
+
+    async function getDataExploracion(documento) {
+        try {
+            var aniosMpiDLTD = 0, mesMpiDLTD = 0, aniosRuidoDLTD = 0, mesRuidoDLTD = 0;
+            var aniosMpiCompany = 0, mesMpiCompany = 0, aniosRuidoCompany = 0, mesRuidoCompany = 0;
+
+            const lsServerDTLD = await GetAllByHistorico(0, 0, documento);
+            if (lsServerDTLD.status === 200) {
+                var arrayMPI = lsServerDTLD.data.entities;
+                var arrayRUIDO = lsServerDTLD.data.entities;
+
+                if (arrayMPI.length !== 0 || arrayRUIDO.length !== 0) {
+                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico &&
+                        code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico &&
+                        code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                        const datos = arrayReadyRUIDO[index];
+                        aniosRuidoDLTD = aniosRuidoDLTD + datos.anio;
+                        mesRuidoDLTD = mesRuidoDLTD + datos.mes;
+                    }
+
+                    for (let index = 0; index < arrayReadyMPI.length; index++) {
+                        const datos = arrayReadyMPI[index];
+                        aniosMpiDLTD = aniosMpiDLTD + datos.anio;
+                        mesMpiDLTD = mesMpiDLTD + datos.mes;
+                    }
+                }
+            }
+
+            const lsServerOtrasEmpresas = await GetAllByHistoricoCompany(0, 0, documento);
+            if (lsServerOtrasEmpresas.status === 200) {
+                var arrayMPI = lsServerOtrasEmpresas.data.entities;
+                var arrayRUIDO = lsServerOtrasEmpresas.data.entities;
+
+                if (arrayMPI.length !== 0 || arrayRUIDO.length !== 0) {
+                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico && code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico && code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
+                        .map((riesgo) => ({
+                            anio: riesgo.anio,
+                            mes: riesgo.mes
+                        }));
+
+                    for (let index = 0; index < arrayReadyRUIDO.length; index++) {
+                        const datos = arrayReadyRUIDO[index];
+                        aniosRuidoCompany = aniosRuidoCompany + datos.anio;
+                        mesRuidoCompany = mesRuidoCompany + datos.mes;
+                    }
+
+                    for (let index = 0; index < arrayReadyMPI.length; index++) {
+                        const datos = arrayReadyMPI[index];
+                        aniosMpiCompany = aniosMpiCompany + datos.anio;
+                        mesMpiCompany = mesMpiCompany + datos.mes;
+                    }
+                }
+            }
+
+            return {
+                aniosMpiDLTD, mesMpiDLTD, aniosRuidoDLTD, mesRuidoDLTD,
+                aniosMpiCompany, mesMpiCompany, aniosRuidoCompany, mesRuidoCompany,
+            }
+        } catch (error) { }
+    }
+
+    /* Metodo de Reporte */
+    const handleClickReport = async (id, documento) => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdDataReport(id);
+            const lsDataUser = await GetByMail(user.email);
+            const resultExpoDLTD = await getDataExploracion(documento);
+
+            const dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -165,7 +273,7 @@ const TableEmo = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameAtencion', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -179,9 +287,9 @@ const TableEmo = () => {
                 }
                 return matches;
             });
-            setLsTemplate(newRows);
+            setLsOccupationalExamination(newRows);
         } else {
-            setLsTemplate(rows);
+            setLsOccupationalExamination(rows);
         }
     };
 
@@ -200,10 +308,19 @@ const TableEmo = () => {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsOccupationalExamination.length) : 0;
 
     return (
         <Fragment>
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => { setOpenReport(false); setDataPDF(null) }}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid item xs={11}>
@@ -239,12 +356,12 @@ const TableEmo = () => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsTemplate.length}
+                        rowCount={lsOccupationalExamination.length}
                         theme={theme}
                         selected={selected}
                     />
                     <TableBody>
-                        {stableSort(lsTemplate, getComparator(order, orderBy))
+                        {stableSort(lsOccupationalExamination, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
@@ -262,13 +379,13 @@ const TableEmo = () => {
                                             id={labelId}
                                             scope="row"
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
+                                            align="left"
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                #{row.id}
+                                                {row.id}
                                             </Typography>
                                         </TableCell>
 
@@ -282,7 +399,7 @@ const TableEmo = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameCIE11}
+                                                {row.documento}
                                             </Typography>
                                         </TableCell>
 
@@ -296,7 +413,7 @@ const TableEmo = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameTipoAtencion}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -314,9 +431,22 @@ const TableEmo = () => {
                                             </Typography>
                                         </TableCell>
 
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {ViewFormat(row.fecha)}
+                                            </Typography>
+                                        </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Imprimir">
+                                            <Tooltip title="Imprimir" onClick={() => handleClickReport(row.id, row.documento)}>
                                                 <IconButton size="large">
                                                     <PrintIcon color="info" sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -341,7 +471,7 @@ const TableEmo = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsTemplate.length}
+                count={lsOccupationalExamination.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

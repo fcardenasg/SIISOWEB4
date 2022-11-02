@@ -128,7 +128,7 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     getFirma(doc, lsDataUser, 20);
 }
 
-export function generateReport(lsDataReport = [], lsDataUser) {
+export function generateReportPsycho(lsDataReport = [], lsDataUser) {
     const doc = new jsPDF('p', 'mm', 'letter');
 
     doc.setFont("helvetica", "bold");

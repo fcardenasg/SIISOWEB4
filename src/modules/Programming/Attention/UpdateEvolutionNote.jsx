@@ -51,11 +51,9 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostEvolutionNote } from 'formatdata/EvolutionNoteForm';
 import { GetByIdEvolutionNote, InsertEvolutionNote } from 'api/clients/EvolutionNoteClient';
 import { FormatDate } from 'components/helpers/Format';
-
-
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 
-import { generateReport } from './Report/EvolutionNote';
+import { generateReportEvolutionNote } from './Report/EvolutionNote';
 import { GetByMail } from 'api/clients/UserClient';
 import ViewPDF from 'components/components/ViewPDF';
 import InputOnChange from 'components/input/InputOnChange';
@@ -80,9 +78,6 @@ const DetailIcons = [
     { title: 'Historial De Historia Clínica', icons: <MedicalInformationIcon fontSize="small" /> },
     { title: 'Historial De Notas De Evolición', icons: <MedicalServicesIcon fontSize="small" /> },
 ]
-
-
-
 
 const dataMedicalOrders = [
     {
@@ -249,7 +244,7 @@ const UpdateEvolutionNote = () => {
             const lsDataReport = await GetByIdEvolutionNote(resultData.id);
             const lsDataUser = await GetByMail(user.email);
 
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportEvolutionNote(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -367,7 +362,7 @@ const UpdateEvolutionNote = () => {
                 onClose={() => setOpen(false)}
                 title="DICTADO POR VOZ"
             >
-              <ControllerListen />
+                <ControllerListen />
             </ControlModal>
 
             <FullScreenDialog

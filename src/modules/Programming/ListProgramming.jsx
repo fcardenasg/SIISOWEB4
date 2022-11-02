@@ -80,10 +80,13 @@ const ListProgramming = () => {
 
     const getAll = async () => {
         try {
-            const response = await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO);
-            if (response.status === 200) { setLsProgramming(response.data.entities); setRows(response.data.entities) }
-
-
+            await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO).then(response => {
+                if (response.status === 200) 
+                { 
+                    setLsProgramming(response.data.entities); 
+                    setRows(response.data.entities); 
+                }
+            });
         } catch (error) { }
     };
 

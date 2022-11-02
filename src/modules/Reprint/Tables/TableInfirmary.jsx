@@ -29,6 +29,13 @@ import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import { TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import { GetAllNoteInfirmary, GetByIdNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
+import { ViewFormat } from 'components/helpers/Format';
+import { GetByMail } from 'api/clients/UserClient';
+import useAuth from 'hooks/useAuth';
+import ControlModal from 'components/controllers/ControlModal';
+import ViewPDF from 'components/components/ViewPDF';
+import { generateReportNursing } from 'modules/Programming/Attention/Report/Nursing';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -58,24 +65,24 @@ const headCells = [
         id: 'id',
         numeric: false,
         label: 'ID',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'documento',
         numeric: false,
         label: 'Documento',
-        align: 'center'
-    },
-    {
-        id: 'idContingencia',
-        numeric: false,
-        label: 'Contingencia',
         align: 'left'
     },
     {
-        id: 'idAtencion',
+        id: 'nameEmpleado',
         numeric: false,
-        label: 'Atencion',
+        label: 'Nombre',
+        align: 'left'
+    },
+    {
+        id: 'nameAtencion',
+        numeric: false,
+        label: 'Atención',
         align: 'left'
     },
     {
@@ -137,12 +144,15 @@ EnhancedTableHead.propTypes = {
 };
 
 const TableInfirmary = () => {
+    const { user } = useAuth();
     const navigate = useNavigate();
-    const [lsTemplate, setLsTemplate] = useState([]);
+    const [lsNoteInfirmary, setLsNoteInfirmary] = useState([]);
+    const [openReport, setOpenReport] = useState(false);
+    const [dataPDF, setDataPDF] = useState(null);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('fechaRegistro');
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -152,8 +162,8 @@ const TableInfirmary = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllTemplate(0, 0);
-                setLsTemplate(lsServer.data.entities);
+                const lsServer = await GetAllNoteInfirmary(0, 0);
+                setLsNoteInfirmary(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
                 console.log(error);
@@ -161,7 +171,19 @@ const TableInfirmary = () => {
         }
 
         GetAll();
-    }, [])
+    }, []);
+
+    const handleClickReport = async (id) => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdNoteInfirmary(id);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data);
+
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -171,7 +193,7 @@ const TableInfirmary = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameAtencion', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -185,9 +207,9 @@ const TableInfirmary = () => {
                 }
                 return matches;
             });
-            setLsTemplate(newRows);
+            setLsNoteInfirmary(newRows);
         } else {
-            setLsTemplate(rows);
+            setLsNoteInfirmary(rows);
         }
     };
 
@@ -206,10 +228,19 @@ const TableInfirmary = () => {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsNoteInfirmary.length) : 0;
 
     return (
         <Fragment>
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => { setOpenReport(false); setDataPDF(null) }}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid item xs={11}>
@@ -245,12 +276,12 @@ const TableInfirmary = () => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsTemplate.length}
+                        rowCount={lsNoteInfirmary.length}
                         theme={theme}
                         selected={selected}
                     />
                     <TableBody>
-                        {stableSort(lsTemplate, getComparator(order, orderBy))
+                        {stableSort(lsNoteInfirmary, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
@@ -268,13 +299,13 @@ const TableInfirmary = () => {
                                             id={labelId}
                                             scope="row"
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
+                                            align="left"
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                #{row.id}
+                                                {row.id}
                                             </Typography>
                                         </TableCell>
 
@@ -288,7 +319,7 @@ const TableInfirmary = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameCIE11}
+                                                {row.documento}
                                             </Typography>
                                         </TableCell>
 
@@ -302,7 +333,7 @@ const TableInfirmary = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameTipoAtencion}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -320,9 +351,22 @@ const TableInfirmary = () => {
                                             </Typography>
                                         </TableCell>
 
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {ViewFormat(row.fecha)}
+                                            </Typography>
+                                        </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Imprimir">
+                                            <Tooltip title="Imprimir" onClick={() => handleClickReport(row.id)}>
                                                 <IconButton size="large">
                                                     <PrintIcon color="info" sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -347,7 +391,7 @@ const TableInfirmary = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsTemplate.length}
+                count={lsNoteInfirmary.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

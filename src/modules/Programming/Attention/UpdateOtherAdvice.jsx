@@ -50,7 +50,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { useParams } from 'react-router-dom';
 import Cargando from 'components/loading/Cargando';
 import ViewPDF from 'components/components/ViewPDF';
-import { generateReport } from './Report/OtherAdvice';
+import { generateReportOtherAdvice } from './Report/OtherAdvice';
 import { GetByMail } from 'api/clients/UserClient';
 
 const DetailIcons = [
@@ -197,7 +197,7 @@ const UpdateOtherAdvice = () => {
             const lsDataReport = await GetByIdAdvice(resultData.id);
             const lsDataUser = await GetByMail(user.email);
 
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };

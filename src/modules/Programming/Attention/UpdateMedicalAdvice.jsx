@@ -269,8 +269,6 @@ const UpdateMedicalAdvice = () => {
                 <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
-
-
             <ControlModal
                 title={"Orden de " + titleModal}
                 open={openForm}

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import ReactExport from 'react-export-excel';
 import { Grid, Button } from '@mui/material';
-import { GetAllAdvice } from 'api/clients/AdviceClient';
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
@@ -80,34 +79,31 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Nro Atencion" value="id" />
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                         <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Motivo" value="nameAtencion" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
                                         <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNacimiento)} />
                                         <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
                                         <ExcelColumn label="Departamento" value="nameDepartamentoTrabajo" />
                                         <ExcelColumn label="Area" value="nameArea" />
                                         <ExcelColumn label="Roster Position" value="nameCargo" />
+
+                                        <ExcelColumn label="DX1" value="dx1" />
+                                        <ExcelColumn label="Nombre Dx1" value="nameDx1" />
+                                        <ExcelColumn label="DX2" value="dx2" />
+                                        <ExcelColumn label="Nombre Dx2" value="nameDx2" />
+                                        <ExcelColumn label="DX3" value="dx3" />
+                                        <ExcelColumn label="Nombre Dx3" value="nameDx3" />
+
                                         <ExcelColumn label="General Position" value="namePosicion" />
                                         <ExcelColumn label="Grupo" value="nameGrupo" />
                                         <ExcelColumn label="EPS" value="nameEps" />
                                         <ExcelColumn label="Genero" value="nameGenero" />
                                         <ExcelColumn label="Empresa" value="nameEmpresa" />
-                                        <ExcelColumn label="Cotingencia" value="" />
-                                        <ExcelColumn label="Estado Caso" value="" />
-                                        <ExcelColumn label="Estado Paciente" value="" />
-                                        <ExcelColumn label="Turno" value="nameTurno" />
-                                        <ExcelColumn label="Dia de Turno" value="" />
-                                        <ExcelColumn label="Motivo" value="" />
-                                        <ExcelColumn label="Conducta" value="" />
-                                        <ExcelColumn label="Causa" value="" />
-                                        <ExcelColumn label="Fecha Asesoría" value="" />
-                                        <ExcelColumn label="Sede Atención" value="" />
-                                        <ExcelColumn label="Tipo Asesoría" value="" />
-                                        <ExcelColumn label="Descripción" value="" />
-                                        <ExcelColumn label="Recomendaciones" value="" />
+                                        <ExcelColumn label="Sede Atención" value="nameSede" />
+                                        <ExcelColumn label="Descripción" value="observacionID" />
+                                        <ExcelColumn label="Recomendaciones" value="recomendacionesID" />
                                         <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
                                         <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
-                                        <ExcelColumn label="Usuario Asesoria" value="" />
-                                        <ExcelColumn label="Fecha Digitacion" value="" />
                                     </ExcelSheet>
                                 </ExcelFile> : ''
                             }

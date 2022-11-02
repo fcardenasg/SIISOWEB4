@@ -622,8 +622,6 @@ const OccupationalExamination = () => {
                 datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA,
             );
 
-            console.log("Datos = ", DataToInset);
-
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertOccupationalExamination(DataToInset);
                 if (result.status === 200) {

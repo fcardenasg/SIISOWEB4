@@ -26,9 +26,15 @@ import { TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 import { visuallyHidden } from '@mui/utils';
-import { GetAllTemplate } from 'api/clients/TemplateClient';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
+import { ViewFormat } from 'components/helpers/Format';
+import { GetAllMedicalHistory, GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReportClinicHistory } from 'modules/Programming/Attention/Report/ClinicHistory';
+import useAuth from 'hooks/useAuth';
+import ControlModal from 'components/controllers/ControlModal';
+import ViewPDF from 'components/components/ViewPDF';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -58,22 +64,22 @@ const headCells = [
         id: 'id',
         numeric: false,
         label: 'ID',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'documento',
         numeric: false,
         label: 'Documento',
-        align: 'center'
-    },
-    {
-        id: 'idContingencia',
-        numeric: false,
-        label: 'Contingencia',
         align: 'left'
     },
     {
-        id: 'idAtencion',
+        id: 'nameEmpleado',
+        numeric: false,
+        label: 'Nombre',
+        align: 'left'
+    },
+    {
+        id: 'nameAtencion',
         numeric: false,
         label: 'Atencion',
         align: 'left'
@@ -137,12 +143,15 @@ EnhancedTableHead.propTypes = {
 };
 
 const TableMedicalAttention = () => {
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [lsMedicalAttention, setLsMedicalAttention] = useState([]);
+    const [openReport, setOpenReport] = useState(false);
+    const [dataPDF, setDataPDF] = useState(null);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('fechaRegistro');
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -152,16 +161,28 @@ const TableMedicalAttention = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllTemplate(0, 0);
+                const lsServer = await GetAllMedicalHistory(0, 0);
                 setLsMedicalAttention(lsServer.data.entities);
                 setRows(lsServer.data.entities);
+
             } catch (error) {
                 console.log(error);
             }
         }
 
         GetAll();
-    }, [])
+    }, []);
+
+    const handleClickReport = async (id) => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdMedicalHistory(id);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -171,7 +192,7 @@ const TableMedicalAttention = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameCIE11', 'nameTipoAtencion', 'nameAtencion'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameAtencion', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -210,6 +231,15 @@ const TableMedicalAttention = () => {
 
     return (
         <Fragment>
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => { setOpenReport(false); setDataPDF(null) }}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid item xs={11}>
@@ -268,13 +298,13 @@ const TableMedicalAttention = () => {
                                             id={labelId}
                                             scope="row"
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
+                                            align="left"
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                #{row.id}
+                                                {row.id}
                                             </Typography>
                                         </TableCell>
 
@@ -288,7 +318,7 @@ const TableMedicalAttention = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameCIE11}
+                                                {row.documento}
                                             </Typography>
                                         </TableCell>
 
@@ -302,7 +332,7 @@ const TableMedicalAttention = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameTipoAtencion}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -320,9 +350,22 @@ const TableMedicalAttention = () => {
                                             </Typography>
                                         </TableCell>
 
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {ViewFormat(row.fecha)}
+                                            </Typography>
+                                        </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Imprimir">
+                                            <Tooltip title="Imprimir" onClick={() => handleClickReport(row.id)}>
                                                 <IconButton size="large">
                                                     <PrintIcon color="info" sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>

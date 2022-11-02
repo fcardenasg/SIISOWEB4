@@ -180,7 +180,7 @@ function generateReportMedicalAdvicPageTwo(doc = new jsPDF(), lsDataReport = [],
     getFirma(doc, lsDataUser);
 }
 
-export function generateReport(lsDataReport = [], lsDataUser) {
+export function generateReportClinicHistory(lsDataReport = [], lsDataUser) {
     const doc = new jsPDF('p', 'mm', 'letter');
 
     doc.setFont("helvetica", "bold");

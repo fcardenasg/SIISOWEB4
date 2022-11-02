@@ -50,7 +50,7 @@ import { GetByIdMedicalHistory, InsertMedicalHistory } from 'api/clients/Medical
 import Cargando from 'components/loading/Cargando';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReport } from './Report/ClinicHistory';
+import { generateReportClinicHistory } from './Report/ClinicHistory';
 import ViewPDF from 'components/components/ViewPDF';
 import InputOnChange from 'components/input/InputOnChange';
 import ListExamenesPara from 'components/template/ListExamenesPara';
@@ -308,7 +308,7 @@ const UpdateClinicHistory = () => {
             const lsDataReport = await GetByIdMedicalHistory(resultData.id);
             const lsDataUser = await GetByMail(user.email);
 
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };

@@ -141,7 +141,7 @@ const UpdateNoteInfirmary = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdNoteInfirmary(1);
+            const lsDataReport = await GetByIdNoteInfirmary(resultData.id);
             const lsDataUser = await GetByMail(user.email);
 
             const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data);
@@ -336,7 +336,6 @@ const UpdateNoteInfirmary = () => {
         getAll();
     }, []);
 
-
     const handleClick = async (datos) => {
         try {
             const UpdateToInsert = PostNoteInfirmary(id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia,
@@ -404,7 +403,6 @@ const UpdateNoteInfirmary = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                {/* VISUALIZACIÓN DEL REPORTE */}
                 <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 

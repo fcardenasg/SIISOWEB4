@@ -22,7 +22,7 @@ export const CodCatalogo = {
     Oficio: 173,
 
     AtencionEMO: 138,
-    
+
     CONCEPTO_ESPACIOCONFINADO: 179,
     TIPO_EXAMEN_PARACLINICOS: 68,
     ESTUDIO_EXAMEN_PARACLINICOS: 22,
