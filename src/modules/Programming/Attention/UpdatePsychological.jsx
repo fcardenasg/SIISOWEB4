@@ -36,7 +36,7 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import Cargando from 'components/loading/Cargando';
-import { generateReport } from './Report/Psychological';
+import { generateReportPsycho } from './Report/Psychological';
 import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
 
@@ -169,7 +169,7 @@ const UpdatePsychological = () => {
             const lsDataReport = await GetByIdAdvice(resultData.id);
             const lsDataUser = await GetByMail(user.email);
 
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportPsycho(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };

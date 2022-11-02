@@ -124,9 +124,7 @@ export function getHeaderEc(doc) {
   doc.line(5, 25, 210, 25);
 }
 
-
 //Cuestionario de sintomas
-
 function getHeaderQS(doc) {
   /* ENCABEZADO REPORTE */
   doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);

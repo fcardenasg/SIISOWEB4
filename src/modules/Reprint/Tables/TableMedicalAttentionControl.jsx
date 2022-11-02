@@ -12,31 +12,31 @@ import {
     Table,
     TableBody,
     TableCell,
-    Button,
     TableContainer,
     TableHead,
     TablePagination,
     TableRow,
     TableSortLabel,
+    Button,
     TextField,
     Tooltip,
     Typography,
 } from '@mui/material';
+import { TitleButton } from 'components/helpers/Enums';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 import { visuallyHidden } from '@mui/utils';
-import { DefaultValue, TitleButton } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import { ViewFormat } from 'components/helpers/Format';
-import { GetAllAdvice, GetByIdAdvice } from 'api/clients/AdviceClient';
+import { GetAllMedicalHistory, GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReportClinicHistory } from 'modules/Programming/Attention/Report/ClinicHistory';
 import useAuth from 'hooks/useAuth';
-import { generateReport } from 'modules/Programming/Attention/Report/MedicalAdvice';
-import { generateReportPsycho } from 'modules/Programming/Attention/Report/Psychological';
-import { generateReportOtherAdvice } from 'modules/Programming/Attention/Report/OtherAdvice';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
-import { GetByMail } from 'api/clients/UserClient';
+import { GetAllEvolutionNote, GetByIdEvolutionNote } from 'api/clients/EvolutionNoteClient';
+import { generateReportEvolutionNote } from 'modules/Programming/Attention/Report/EvolutionNote';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -81,9 +81,9 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nameTiAtencion',
+        id: 'nameAtencion',
         numeric: false,
-        label: 'Tipo Asesoria',
+        label: 'Atencion',
         align: 'left'
     },
     {
@@ -91,7 +91,7 @@ const headCells = [
         numeric: false,
         label: 'Fecha',
         align: 'left'
-    },
+    }
 ];
 
 function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
@@ -144,10 +144,12 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const TableConsulting = () => {
+const TableMedicalAttentionControl = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const [lsConsulting, setLsConsulting] = useState([]);
+    const [lsMedicalAttention, setLsMedicalAttention] = useState([]);
+    const [openReport, setOpenReport] = useState(false);
+    const [dataPDF, setDataPDF] = useState(null);
 
     const theme = useTheme();
     const [order, setOrder] = useState('desc');
@@ -158,15 +160,13 @@ const TableConsulting = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    const [openReport, setOpenReport] = useState(false);
-    const [dataPDF, setDataPDF] = useState(null);
-
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllAdvice(0, 0);
-                setLsConsulting(lsServer.data.entities);
+                const lsServer = await GetAllEvolutionNote(0, 0);
+                setLsMedicalAttention(lsServer.data.entities);
                 setRows(lsServer.data.entities);
+
             } catch (error) {
                 console.log(error);
             }
@@ -178,26 +178,11 @@ const TableConsulting = () => {
     const handleClickReport = async (id) => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAdvice(id);
+            const lsDataReport = await GetByIdEvolutionNote(id);
             const lsDataUser = await GetByMail(user.email);
 
-            console.log("ID = ", id, lsDataReport);
-
-            if (lsDataReport.status === 200) {
-                if (lsDataReport.data.idTipoAtencion === DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA) {
-                    const asesoriaMedica = generateReport(lsDataReport.data, lsDataUser.data);
-                    setDataPDF(asesoriaMedica);
-                }
-                if (lsDataReport.data.idTipoAtencion === DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO) {
-                    const asesoriaPsicologica = generateReportPsycho(lsDataReport.data, lsDataUser.data);
-                    setDataPDF(asesoriaPsicologica);
-                }
-                if (lsDataReport.data.idTipoAtencion !== DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA &&
-                    lsDataReport.data.idTipoAtencion !== DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO) {
-                    const asesoriaOtras = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data);
-                    setDataPDF(asesoriaOtras);
-                }
-            }
+            const dataPDFTwo = generateReportEvolutionNote(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
 
@@ -209,7 +194,7 @@ const TableConsulting = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nameEmpleado', 'nameTiAtencion', 'fecha'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameAtencion', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -223,9 +208,9 @@ const TableConsulting = () => {
                 }
                 return matches;
             });
-            setLsConsulting(newRows);
+            setLsMedicalAttention(newRows);
         } else {
-            setLsConsulting(rows);
+            setLsMedicalAttention(rows);
         }
     };
 
@@ -244,7 +229,7 @@ const TableConsulting = () => {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsConsulting.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicalAttention.length) : 0;
 
     return (
         <Fragment>
@@ -292,12 +277,12 @@ const TableConsulting = () => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsConsulting.length}
+                        rowCount={lsMedicalAttention.length}
                         theme={theme}
                         selected={selected}
                     />
                     <TableBody>
-                        {stableSort(lsConsulting, getComparator(order, orderBy))
+                        {stableSort(lsMedicalAttention, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
@@ -363,7 +348,7 @@ const TableConsulting = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameTiAtencion}
+                                                {row.nameAtencion}
                                             </Typography>
                                         </TableCell>
 
@@ -407,7 +392,7 @@ const TableConsulting = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsConsulting.length}
+                count={lsMedicalAttention.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -417,4 +402,4 @@ const TableConsulting = () => {
     );
 };
 
-export default TableConsulting;
+export default TableMedicalAttentionControl;

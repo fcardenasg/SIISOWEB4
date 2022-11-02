@@ -39,12 +39,11 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
 
                 if (sede !== '' && atencion !== '') {
                     result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede && asesoria.idTipoAtencion === atencion).map(datos => datos);
+                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede &&
+                        asesoria.idTipoAtencion === atencion).map(datos => datos);
                     setLsData(result);
                 }
 
-
-                console.log(result);
                 setStatusData(true);
             }
         } catch (error) { }
@@ -81,7 +80,8 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.nameFechaNacimi)} />
+                                        <ExcelColumn label="Tipo Atención" value="nameTiAtencion" />
+                                        <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNacimi)} />
                                         <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
                                         <ExcelColumn label="Departamento" value="nameDepartamento" />
                                         <ExcelColumn label="Area" value="nameArea" />
@@ -91,12 +91,7 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="EPS" value="nameEps" />
                                         <ExcelColumn label="Genero" value="nameGenero" />
                                         <ExcelColumn label="Empresa" value="nameEmpresa" />
-                                        <ExcelColumn label="Cotingencia" value="nameContingencia" />
-                                        <ExcelColumn label="Estado Caso" value="nameEstadoCaso" />
-                                        <ExcelColumn label="Turno" value="nameTurno" />
-                                        <ExcelColumn label="Dia de Turno" value="nameDiaTurno" />
                                         <ExcelColumn label="Motivo" value="nameMotivo" />
-                                        <ExcelColumn label="Causa" value="nameCausa" />
                                         <ExcelColumn label="Sede Atención" value="nameSede" />
                                         <ExcelColumn label="Tipo Asesoría" value="nameTipoAsesoria" />
                                         <ExcelColumn label="Descripción" value="motivo" />

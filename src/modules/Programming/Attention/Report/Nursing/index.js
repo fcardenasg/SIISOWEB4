@@ -179,13 +179,10 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
     }), 40, 98, { maxWidth: 200, lineHeightFactor: 1.5 });
 }
 
-  doc.text(`${lsDataReport.notaEnfermedad}}`, 6, 130, {
+  doc.text(`${lsDataReport.notaEnfermedad}`, 6, 130, {
     maxWidth: 190,
-   /*  align: "justify", */
     lineHeightFactor: 1.0,
   });
-
-  
 
   /* FIRMA */
   getFirma(doc, lsDataUser);
