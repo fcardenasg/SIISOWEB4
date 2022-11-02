@@ -212,11 +212,11 @@ export function pageFramingham(
   doc.text(`${lsDataReport.nameFumaFRA}`, 116, 86);
   doc.text(`${lsDataReport.tencionFRA}`, 116, 91);
   doc.text(`${ViewFormat(lsDataReport.fechaLaboratorioFRA)}`, 116, 96);
-  doc.text(`${lsDataReport.idEnfermedadNEMTA}`, 116, 101);
-  doc.text(`${lsDataReport.colesterolTotalFRA}`, 116, 106);
-  doc.text(`${lsDataReport.hdlfra}`, 116, 111);
-  doc.text(`${lsDataReport.triglicericosFRA}`, 116, 116);
-  doc.text(`${lsDataReport.glisemiaFRA}`, 116, 121);
+/*  doc.text(`${lsDataReport.idEnfermedadNEMTA}`, 116, 101); */
+  doc.text(`${lsDataReport.colesterolTotalFRA}`, 116, 101);
+  doc.text(`${lsDataReport.hdlfra}`, 116, 106);
+  doc.text(`${lsDataReport.triglicericosFRA}`, 116, 111);
+  doc.text(`${lsDataReport.glisemiaFRA}`, 116, 116);
   //resultados
   doc.text(`${lsDataReport.ldlfra}`, 116, 126);
   doc.text(`${lsDataReport.relacionFRA}`, 116, 131);

@@ -1302,11 +1302,22 @@ export function generateDefinitiveDiagnosis(
   doc.line(5, 250, marXR, 250); /* HORI ULTIMA */
   doc.line(marXR, 31, marXR, 250); /* DERECHA */
 
+  doc.line(5, 68, marXR, 68); /* HORI TWO  */
   doc.text("OBSERVACIONES", 7, 73);
-  doc.text("CONCEPTO DE APTITUD", 7, 100);
-  doc.text("RECOMENDACIONES", 7, 120);
-  doc.text("CONSENTIMIENTO INFORMADO DEL TRABAJADOR", 7, 150);
+  doc.line(5, 75, marXR, 75); /* HORI TWO  */
 
+  doc.line(5, 96, marXR, 96); /* HORI TWO  */
+  doc.text("CONCEPTO DE APTITUD", 7, 100);
+  doc.line(5, 102, marXR, 102); /* HORI TWO  */
+
+  doc.line(5, 116, marXR, 116); /* HORI TWO  */
+  doc.text("RECOMENDACIONES", 7, 120);
+  doc.line(5, 122, marXR, 122); /* HORI TWO  */
+
+  doc.line(5, 145, marXR, 145); /* HORI TWO  */
+
+  doc.text("CONSENTIMIENTO INFORMADO DEL TRABAJADOR", 7, 150);
+  doc.line(5, 152, marXR, 152); /* HORI TWO  */
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
 

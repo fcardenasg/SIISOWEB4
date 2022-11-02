@@ -567,15 +567,15 @@ export function pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport = []
   //HISTORIA//
   doc.text(`${lsDataReport.historiaOcupASintR}`, 202, 176);
   doc.text(`${lsDataReport.historiaOcupBSintR}`, 202, 181);
+
+
   doc.text(`${lsDataReport.historiaOcupB1SintR}`, 198, 186);
   doc.text(`${lsDataReport.historiaOcupB2SintR}`, 202, 191);
+  doc.setFontSize(7);
   doc.text(`${lsDataReport.nameHistoriaOcupB3SintR}`, 198, 196);
   doc.text(`${lsDataReport.historiaOcupCSintR}`, 202, 201);
-  doc.text(`${lsDataReport.historiaOcupC1SintR}`, 202, 206);
+  doc.text(`${lsDataReport.historiaOcupC1SintR}`, 200, 206);
   doc.text(`${lsDataReport.historiaOcupC2SintR}`, 202, 211);
-
-
-
   doc.text(`${lsDataReport.tabaquismoASintR}`, 202, 221);
   doc.text(`${lsDataReport.tabaquismoBSintR}`, 202, 226);
   doc.text(`${lsDataReport.tabaquismoCSintR}`, 202, 231);
@@ -662,10 +662,12 @@ export function pageQuestionnaireRespiratorySymptomsFour(doc, lsDataReport = [],
   //RENDER DETALLE
 
   doc.text(`${lsDataReport.actDeportASintR}`, 202, 90);
-  doc.text(`${lsDataReport.actDeporA1SintR}`, 198, 96);
   doc.text(`${lsDataReport.actDeporA2SintR}`, 202, 101);
   doc.text(`${lsDataReport.actDeporA3SintR}`, 202, 107);
   doc.text(`${lsDataReport.actDeporA4SintR}`, 202, 113);
+
+  doc.setFontSize(7);
+  doc.text(`${lsDataReport.actDeporA1SintR}`, 198, 96);
 
 
   doc.text(`${lsDataReport.recoSintR}`, 7, 125,
