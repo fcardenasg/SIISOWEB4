@@ -45,7 +45,6 @@ import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import InputOnChange from 'components/input/InputOnChange';
-import InputMultiSelects from 'components/input/InputMultiSelects';
 
 
 const DetailIcons = [
@@ -88,10 +87,7 @@ const Audiometry = () => {
     const [lsDx1, setLsDx1] = useState([]);
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
     const { handleSubmit, errors, reset } = methods;
-
-
 
     const handleDx1 = async (event) => {
         try {
@@ -119,8 +115,6 @@ const Audiometry = () => {
         }
     }
 
-
-
     const allowedFiles = ['application/pdf'];
     const handleFile = (event) => {
         let selectedFile = event.target.files[0];
@@ -140,9 +134,6 @@ const Audiometry = () => {
             }
         }
     }
-
-
-
 
     const handleDocumento = async (event) => {
         try {
@@ -166,16 +157,14 @@ const Audiometry = () => {
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
-
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsMotivo(resultMotivo);
-
 
             const lsServerInterpretacion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_Interpretacion);
             var resultInterpretacion = lsServerInterpretacion.data.entities.map((item) => ({
@@ -184,17 +173,12 @@ const Audiometry = () => {
             }));
             setLsInterpretacion(resultInterpretacion);
 
-            //aqui
-
-
             const lsServerCargo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RosterPosition);
             var resultCargo = lsServerCargo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsCargo(resultCargo);
-
-
 
             const lsServerProteccionAuditiva = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_PROTECCIÓNAUDITIVA);
             var resultProteccionAuditiva = lsServerProteccionAuditiva.data.entities.map((item) => ({
@@ -203,15 +187,12 @@ const Audiometry = () => {
             }));
             setLsProteccionAuditiva(resultProteccionAuditiva);
 
-
             const lsServerSuministradopor = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_SUMINISTRADOPOR);
             var resultSuministradopor = lsServerSuministradopor.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsSuministradopor(resultSuministradopor);
-
-
 
             const lsServerUso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_USO);
             var resultUso = lsServerUso.data.entities.map((item) => ({
@@ -227,9 +208,6 @@ const Audiometry = () => {
             }));
             setLsAudiograma(resultAudiograma);
 
-
-
-
             const lsServerConducta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONDUCTAAUDIOMETRIA);
             var resultConducta = lsServerConducta.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -237,58 +215,35 @@ const Audiometry = () => {
             }));
             setLsConducta(resultConducta);
 
-
-
-            
-            
-
-
-
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
-
-
-
-
-
-
-
-
-
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_AUDIOMETRIA, documento,
-                FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
-                '', DefaultValue.SINREGISTRO_GLOBAL,'', JSON.stringify(diagnosticoArray),
-                '', JSON.stringify(diagnosticoArray1), '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                false,
-                false, JSON.stringify(diagnosticoArray2), DefaultValue.SINREGISTRO_GLOBAL,
-                '', '', '', '', '', '','',
-                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, '', false, '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
-                DefaultValue.SINREGISTRO_GLOBAL, '',DefaultValue.SINREGISTRO_GLOBAL, '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, '', datos.otalgiaAOP, datos.otorreaAOP, datos.otitisAOP, datos.acufenosAOP, datos.cirugiaAOP,
-                datos.vertigoAOP, datos.farmacologicosAOP, datos.luritoAOP, datos.familiaresAOP, datos.paralisisAOP,
+                FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                datos.idProveedor, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL,
+                DefaultValue.SINREGISTRO_GLOBAL, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '',
+                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, '', false, '',
+                DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
+                '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
+                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
+                '', DefaultValue.SINREGISTRO_GLOBAL, '', datos.otalgiaAOP, datos.otorreaAOP, datos.otitisAOP, datos.acufenosAOP,
+                datos.cirugiaAOP, datos.vertigoAOP, datos.farmacologicosAOP, datos.luritoAOP, datos.familiaresAOP, datos.paralisisAOP,
                 datos.htaaop, datos.tipoAcusiaAOP, datos.diabetesAOP, datos.expoRuidoAOP, datos.anteceTraumaticosAOP,
                 datos.observacionAOP, datos.idEmpresaAO, datos.idCargoAO, datos.tiempoExpoAO, datos.idProteccionAuditivaAO,
-                datos.idSuministradaPorAO, datos.idUsoA, datos.idOdcaeAUDIO,
-                datos.idOdmtAUDIO, datos.idOicaeAUDIO, datos.idOimtAUDIO, datos.idReposoAUDIO, datos.dxAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
+                datos.idSuministradaPorAO, datos.idUsoA, datos.idOdcaeAUDIO, datos.idOdmtAUDIO, datos.idOicaeAUDIO, datos.idOimtAUDIO,
+                datos.idReposoAUDIO, datos.dxAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
                 filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             console.log("DataToInsert =", DataToInsert);
@@ -760,9 +715,6 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-
-                                {/* // DX AQUIIIIIIIIIIIIIIII// */}
-
                                 <Grid item xs={12} md={1} lg={2}>
                                     <InputOnChange
                                         label="Dx "
@@ -783,8 +735,6 @@ const Audiometry = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-
 
                                 <Grid item xs={12} md={1} lg={2}>
                                     <FormProvider {...methods}>
@@ -810,8 +760,6 @@ const Audiometry = () => {
                                     </FormProvider>
                                 </Grid>
 
-
-
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
@@ -833,16 +781,10 @@ const Audiometry = () => {
                                         onClick={() => setOpenTemplate(true)}
                                         icons={DetailIcons[0].icons}
                                     />
-
-
                                 </Grid>
-
-
                             </Grid>
                         </SubCard>
                     </Grid>
-
-
 
                     <Grid item xs={12}>
                         <SubCard darkTitle>
@@ -882,8 +824,6 @@ const Audiometry = () => {
                                         </AnimateButton>
                                     </Grid>
 
-
-
                                     <Grid item xs={6}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/laboratory/list")}>
@@ -895,11 +835,6 @@ const Audiometry = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
-
-
-
-
-
                 </Grid>
             </Fragment>
         </MainCard>

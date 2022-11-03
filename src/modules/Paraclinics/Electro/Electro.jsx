@@ -4,30 +4,21 @@ import {
     Button,
     Grid,
     useMediaQuery,
-    Typography,
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 
 import InputDatePicker from 'components/input/InputDatePicker';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
@@ -48,7 +39,6 @@ const DetailIcons = [
 
 const Electro = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -56,7 +46,6 @@ const Electro = () => {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
-    const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
@@ -70,7 +59,6 @@ const Electro = () => {
 
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
     const { handleSubmit, errors, reset } = methods;
 
     const allowedFiles = ['application/pdf'];
@@ -92,9 +80,6 @@ const Electro = () => {
             }
         }
     }
-
-
-
 
     const handleDocumento = async (event) => {
         try {
@@ -120,8 +105,6 @@ const Electro = () => {
 
     async function GetAll() {
         try {
-
-
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -149,13 +132,7 @@ const Electro = () => {
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
-
-
-
-
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -187,7 +164,6 @@ const Electro = () => {
                         setLsEmployee([]);
                         reset();
                         setFilePdf(null);
-                        setButtonReport(true);
                     }
 
                 } else {
@@ -320,8 +296,6 @@ const Electro = () => {
                                         onClick={() => setOpenTemplate(true)}
                                         icons={DetailIcons[0].icons}
                                     />
-
-
                                 </Grid>
 
                             </Grid>
