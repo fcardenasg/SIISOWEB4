@@ -56,6 +56,7 @@ import { GetByMail } from 'api/clients/UserClient';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import SelectOnChange from 'components/input/SelectOnChange';
 import ViewCall from './ViewCall';
+import UpdateAttMedicalAdvice from './AttentionMedicalAdvice/UpdateAttMedicalAdvice';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -333,178 +334,183 @@ const UpdateMedicalAdvice = () => {
                 )}
             </DialogFormula>
 
-            {timeWait ?
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <ViewEmployee
-                            title="ASESORÍAS MÉDICAS ESPECIALIZADAS"
-                            disabled={true}
-                            key={lsEmployee.documento}
-                            documento={documento}
-                            onChange={(e) => setDocumento(e.target.value)}
-                            lsEmployee={lsEmployee}
-                            handleDocumento={handleLoadingDocument}
-                        />
-                    </Grid>
+            <Fragment>
 
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ? 3 : 4}>
-                                    <FormProvider {...methods}>
-                                        <InputDatePicker
-                                            label="Fecha"
-                                            name="fecha"
-                                            defaultValue={lsAtencion.fecha}
-                                        />
-                                    </FormProvider>
-                                </Grid>
+                <UpdateAttMedicalAdvice>
+                    {timeWait ?
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <ViewEmployee
+                                    disabled={true}
+                                    key={lsEmployee.documento}
+                                    documento={documento}
+                                    onChange={(e) => setDocumento(e.target.value)}
+                                    lsEmployee={lsEmployee}
+                                    handleDocumento={handleLoadingDocument}
+                                />
+                            </Grid>
 
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idMotivo"
-                                            label="Motivo"
-                                            defaultValue={lsAtencion.motivo}
-                                            options={lsMotivo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
-                                </Grid>
+                            <Grid item xs={12}>
+                                <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ? 3 : 4}>
+                                            <FormProvider {...methods}>
+                                                <InputDatePicker
+                                                    label="Fecha"
+                                                    name="fecha"
+                                                    defaultValue={lsAtencion.fecha}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
 
-                                <Grid item xs={4}>
-                                    <SelectOnChange
-                                        name="idTipoAsesoria"
-                                        label="Tipo de Asesoría"
-                                        onChange={(e) => setTextTipoAsesoria(e?.target.value)}
-                                        value={textTipoAsesoria}
-                                        options={tipoAsesoria}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
+                                        <Grid item xs={4}>
+                                            <FormProvider {...methods}>
+                                                <InputSelect
+                                                    name="idMotivo"
+                                                    label="Motivo"
+                                                    defaultValue={lsAtencion.motivo}
+                                                    options={lsMotivo}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
 
-                                {textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ?
-                                    <Grid item xs={1}>
-                                        <Tooltip title="Video llamada">
-                                            <Button color="error" sx={{ color: ColorDrummondltd.RedDrummond }}
-                                                variant="outlined" onClick={handleCallClick}
-                                            >
-                                                <VideoCallIcon fontSize="large" />
-                                            </Button>
-                                        </Tooltip>
-                                    </Grid> : null
-                                }
+                                        <Grid item xs={4}>
+                                            <SelectOnChange
+                                                name="idTipoAsesoria"
+                                                label="Tipo de Asesoría"
+                                                onChange={(e) => setTextTipoAsesoria(e?.target.value)}
+                                                value={textTipoAsesoria}
+                                                options={tipoAsesoria}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
 
-                                <Grid item xs={12}>
-                                    <ViewCall user={[]} callVideo={callVideo} onCancel={setCallVideo} />
-                                </Grid>
+                                        {textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ?
+                                            <Grid item xs={1}>
+                                                <Tooltip title="Video llamada">
+                                                    <Button color="error" sx={{ color: ColorDrummondltd.RedDrummond }}
+                                                        variant="outlined" onClick={handleCallClick}
+                                                    >
+                                                        <VideoCallIcon fontSize="large" />
+                                                    </Button>
+                                                </Tooltip>
+                                            </Grid> : null
+                                        }
 
-                                <Grid item xs={12}>
-                                    <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
                                         <Grid item xs={12}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    multiline
-                                                    rows={4}
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="observaciones"
-                                                    label="Descripción"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <ViewCall user={[]} callVideo={callVideo} onCancel={setCallVideo} />
                                         </Grid>
 
-                                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                            <DetailedIcon
-                                                title={DetailIcons[0].title}
-                                                onClick={() => setOpenTemplate(true)}
-                                                icons={DetailIcons[0].icons}
-                                            />
+                                        <Grid item xs={12}>
+                                            <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
+                                                <Grid item xs={12}>
+                                                    <FormProvider {...methods}>
+                                                        <InputText
+                                                            multiline
+                                                            rows={4}
+                                                            defaultValue=""
+                                                            fullWidth
+                                                            name="observaciones"
+                                                            label="Descripción"
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </FormProvider>
+                                                </Grid>
 
-                                            <DetailedIcon
-                                                title={DetailIcons[1].title}
-                                                onClick={() => setOpen(true)}
-                                                icons={DetailIcons[1].icons}
-                                            />
+                                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                                    <DetailedIcon
+                                                        title={DetailIcons[0].title}
+                                                        onClick={() => setOpenTemplate(true)}
+                                                        icons={DetailIcons[0].icons}
+                                                    />
+
+                                                    <DetailedIcon
+                                                        title={DetailIcons[1].title}
+                                                        onClick={() => setOpen(true)}
+                                                        icons={DetailIcons[1].icons}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} sx={{ pt: 2 }}>
+                                                    <FormProvider {...methods}>
+                                                        <InputText
+                                                            multiline
+                                                            rows={4}
+                                                            defaultValue=""
+                                                            fullWidth
+                                                            name="recomendaciones"
+                                                            label="Recomendaciones"
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </FormProvider>
+                                                </Grid>
+
+                                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                                    <DetailedIcon
+                                                        title={DetailIcons[0].title}
+                                                        onClick={() => setOpenTemplate(true)}
+                                                        icons={DetailIcons[0].icons}
+                                                    />
+
+                                                    <DetailedIcon
+                                                        title={DetailIcons[1].title}
+                                                        onClick={() => setOpen(true)}
+                                                        icons={DetailIcons[1].icons}
+                                                    />
+                                                </Grid>
+                                            </SubCard>
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid container spacing={2} sx={{ pt: 4 }}>
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                                    {TitleButton.Guardar}
+                                                </Button>
+                                            </AnimateButton>
                                         </Grid>
 
-                                        <Grid item xs={12} sx={{ pt: 2 }}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    multiline
-                                                    rows={4}
-                                                    defaultValue=""
-                                                    fullWidth
-                                                    name="recomendaciones"
-                                                    label="Recomendaciones"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                                    {TitleButton.Imprimir}
+                                                </Button>
+                                            </AnimateButton>
                                         </Grid>
 
-                                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                            <DetailedIcon
-                                                title={DetailIcons[0].title}
-                                                onClick={() => setOpenTemplate(true)}
-                                                icons={DetailIcons[0].icons}
-                                            />
-
-                                            <DetailedIcon
-                                                title={DetailIcons[1].title}
-                                                onClick={() => setOpen(true)}
-                                                icons={DetailIcons[1].icons}
-                                            />
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
+                                                    {TitleButton.OrdenesMedicas}
+                                                </Button>
+                                            </AnimateButton>
                                         </Grid>
-                                    </SubCard>
-                                </Grid>
+
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
+                                                    {TitleButton.Cancelar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
+                                                    {TitleButton.CerrarCaso}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
+                                </SubCard>
                             </Grid>
+                        </Grid> : <Cargando />
+                    }
+                </UpdateAttMedicalAdvice>
 
-                            <Grid container spacing={2} sx={{ pt: 4 }}>
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                            {TitleButton.Guardar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
-                                            {TitleButton.Imprimir}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
-                                            {TitleButton.OrdenesMedicas}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
-                                            {TitleButton.CerrarCaso}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-                </Grid> : <Cargando />
-            }
+            </Fragment>
         </Fragment>
     );
 };

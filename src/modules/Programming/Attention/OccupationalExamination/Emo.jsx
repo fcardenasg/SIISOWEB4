@@ -376,12 +376,18 @@ const Emo = ({
                 handleClose={() => setOpenHistory(false)}
             >
                 <TableAntecedentes documento={documento} param={cadenaHistory} />
-                {/* <TableExamenesParaclinicos documento={documento} idTipoParaclinico='cadenaHistory' /> */}
             </FullScreenDialog>
 
             <FullScreenDialog
                 open={openParaclinico}
-                title="EXÁMENES PARACLÍNICOS"
+                title={textParaclinico === DefaultValue.PARACLINICO_AUDIOMETRIA ? 'AUDIOMETRÍA' :
+                    textParaclinico === DefaultValue.PARACLINICO_CITOLOGIA ? 'CITOLIGÍA' :
+                        textParaclinico === DefaultValue.PARACLINICO_ELECTRO ? 'EKG' :
+                            textParaclinico === DefaultValue.PARACLINICO_ESPIROMETRIA ? 'ESPIROMETRÍA' :
+                                textParaclinico === DefaultValue.PARACLINICO_LABORATORIO ? 'LABORATORIO CLÍNICO' :
+                                    textParaclinico === DefaultValue.PARACLINICO_RNM ? 'RNM' :
+                                        textParaclinico === DefaultValue.PARACLINICO_RXTORAX ? 'RX DE TORAX (CRITERIOS OIT)' :
+                                            textParaclinico === DefaultValue.PARACLINICO_VISIOMETRIA ? 'VISIOMETRÍA' : ''}
                 handleClose={() => setOpenParaclinico(false)}
             >
                 <TableExamenesPara idTipoParaclinico={textParaclinico} documento={documento} />
@@ -1963,9 +1969,11 @@ const Emo = ({
                         <SubCard>
                             <SubCard
                                 title="Signos Vitales/Tensión Arterial"
-                                secondary={<Button onClick={() => { setOpenHistory(true); setCadenaHistory('SIGNOS_VITALES') }}>
-                                    <IconEdit stroke={1.5} size="1.3rem" />
-                                </Button>}
+                                secondary={
+                                    <Button onClick={() => { setOpenHistory(true); setCadenaHistory('SIGNOS_VITALES') }}>
+                                        <IconEdit stroke={1.5} size="1.3rem" />
+                                    </Button>
+                                }
                             >
                                 <Grid container spacing={2} alignItems="center">
                                     <Grid item xs={4}>
@@ -3078,7 +3086,7 @@ const Emo = ({
                                         <DetailedIcon
                                             xs={4}
                                             title={DetailIcons[2].title}
-                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_ELECTRO) }}
+                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_AUDIOMETRIA) }}
                                             icons={DetailIcons[2].icons}
                                         />
                                     </Grid>
@@ -3198,7 +3206,7 @@ const Emo = ({
                                         <DetailedIcon
                                             xs={4}
                                             title={DetailIcons[2].title}
-                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_ELECTRO) }}
+                                            onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_LABORATORIO) }}
                                             icons={DetailIcons[2].icons}
                                         />
                                     </Grid>
@@ -4234,8 +4242,8 @@ const Emo = ({
                                             disabled
                                             defaultValue=""
                                             name="idConceptoEspacioConfinado"
-                                            label="Concepto Aptitud Médica"
-                                            options={lsNeConceptoActi}
+                                            label="Concepto De Espacio Confinado"
+                                            options={lsEspacioConfinado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />

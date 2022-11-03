@@ -631,7 +631,7 @@ const OccupationalExamination = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage('Por favor, ingrese la información para poder guardar');
         }
     };
 

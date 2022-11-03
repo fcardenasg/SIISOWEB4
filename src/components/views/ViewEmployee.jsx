@@ -265,7 +265,7 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
 
     return (
         <Fragment>
-            <SubCard title={<Typography variant="h4">{title}</Typography>}>
+            <SubCard title={title !== '' ? <Typography variant="h4">{title}</Typography> : null}>
                 <Grid container alignItems="center">
                     <Grid item xs={3.2}>
                         <CardMedia

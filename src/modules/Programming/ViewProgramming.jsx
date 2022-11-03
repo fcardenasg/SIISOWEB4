@@ -177,7 +177,7 @@ const ViewProgramming = ({ programming, getAll }) => {
                             <Grid item xs={12}>
                                 <Grid container spacing={1}>
                                     <Grid item xs={9}>
-                                        <Typography variant="h6"><b>{programming.nameEmpleado}</b></Typography>
+                                        <Typography variant="h6"><b>{programming.nameEmpleado.toUpperCase()}</b></Typography>
                                     </Grid>
 
                                     <Grid item xs={3}>
