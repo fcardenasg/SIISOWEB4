@@ -272,18 +272,18 @@ const Audiometry = () => {
         try {
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_AUDIOMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
-                '', DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, JSON.stringify(diagnosticoArray),
-                datos.ojoIzquierdo, JSON.stringify(diagnosticoArray1), datos.add1, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                datos.remitidoOftalmo,
-                datos.requiereLentes, JSON.stringify(diagnosticoArray2), DefaultValue.SINREGISTRO_GLOBAL,
-                '', '', '', '', '', '', datos.resultadoColesterol,
-                datos.interpretacionColeste, datos.observacionColeste, datos.resultadoColesteHDL,
-                datos.interpretacionColesteHDL, datos.observacionColesteHDL, datos.dislipidemiaHDL, datos.resultadoTrigli,
-                datos.interpretacionTrigli, datos.observacionTrigli, datos.resultadoGlicemia, datos.interpretacionGlicemia,
-                datos.observacionGlicemia, datos.resultadoCreatinina, datos.interpretacionCreatinina, datos.observacionCreatinina, datos.resultadoBUN,
-                datos.interpretacionBUN, datos.observacionBUN, datos.idParcialOrina, datos.observacionParcialOrina,
-                datos.hemograma, datos.observacionHemograma, datos.gpt, datos.observacionGPT, datos.got, datos.observacionGOT, datos.bilirrubina,
-                datos.observacionBilirrubina, datos.bilirrubinaDirecta, datos.observacionBilirrubinaDirecta, datos.otalgiaAOP, datos.otorreaAOP, datos.otitisAOP, datos.acufenosAOP, datos.cirugiaAOP,
+                '', DefaultValue.SINREGISTRO_GLOBAL,'', JSON.stringify(diagnosticoArray),
+                '', JSON.stringify(diagnosticoArray1), '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                false,
+                false, JSON.stringify(diagnosticoArray2), DefaultValue.SINREGISTRO_GLOBAL,
+                '', '', '', '', '', '','',
+                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
+                DefaultValue.SINREGISTRO_GLOBAL, '', false, '',
+                DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
+                '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
+                DefaultValue.SINREGISTRO_GLOBAL, '',DefaultValue.SINREGISTRO_GLOBAL, '',
+                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
+                '', DefaultValue.SINREGISTRO_GLOBAL, '', datos.otalgiaAOP, datos.otorreaAOP, datos.otitisAOP, datos.acufenosAOP, datos.cirugiaAOP,
                 datos.vertigoAOP, datos.farmacologicosAOP, datos.luritoAOP, datos.familiaresAOP, datos.paralisisAOP,
                 datos.htaaop, datos.tipoAcusiaAOP, datos.diabetesAOP, datos.expoRuidoAOP, datos.anteceTraumaticosAOP,
                 datos.observacionAOP, datos.idEmpresaAO, datos.idCargoAO, datos.tiempoExpoAO, datos.idProteccionAuditivaAO,
@@ -673,7 +673,7 @@ const Audiometry = () => {
                                 <Grid item xs={12} md={1} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idUsoAO"
+                                            name="idUsoA"
                                             label="Uso"
                                             defaultValue=""
                                             options={lsUso}
