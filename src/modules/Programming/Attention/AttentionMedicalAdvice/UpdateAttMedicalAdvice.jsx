@@ -1,52 +1,22 @@
-import { useState, Fragment } from 'react';
-
-import { Button, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 
 import ViewCall from './ViewCall';
-import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import SubCard from 'ui-component/cards/SubCard';
 
-const UpdateAttMedicalAdvice = ({ children }) => {
-
-    const [userDetails, setUserDetails] = useState(false);
-    const [userEdit, setUserEdit] = useState(false);
-    const handleOnAdd = () => {
-        setUserDetails(false);
-        setUserEdit(true);
-    };
+const UpdateAttMedicalAdvice = ({ children, setUserEdit, userEdit }) => {
 
     return (
-        <SubCard title={<Typography variant='ASESORÍAS MÉDICAS ESPECIALIZADAS'>ASESORÍAS MÉDICAS ESPECIALIZADAS</Typography>}
-            secondary={
-                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />} onClick={handleOnAdd}>
-                    Video Llamada
-                </Button>
-            }>
+        <SubCard title={<Typography variant='h4'>ASESORÍAS MÉDICAS ESPECIALIZADAS</Typography>}>
             <Grid container spacing={gridSpacing}>
-                <Grid
-                    className="block"
-                    item
-                    xs
-                    zeroMinWidth
-                    sx={{ display: userDetails || userEdit ? { xs: 'none', md: 'flex' } : 'flex' }}
-                >
+                <Grid className="block" item xs zeroMinWidth sx={{ display: userEdit ? { xs: 'none', md: 'flex' } : 'flex' }}>
                     <Grid container alignItems="center" spacing={gridSpacing}>
-                        <Grid item>
-                            BUTON
-
-                        </Grid>
-
-                        <Fragment>
-                            <Grid item xs={12}>
-                                <Grid container direction="row" spacing={gridSpacing}>
-                                    {children}
-                                </Grid>
+                        <Grid item xs={12}>
+                            <Grid container direction="row" spacing={gridSpacing}>
+                                {children}
                             </Grid>
-                        </Fragment>
-
+                        </Grid>
                     </Grid>
                 </Grid>
 

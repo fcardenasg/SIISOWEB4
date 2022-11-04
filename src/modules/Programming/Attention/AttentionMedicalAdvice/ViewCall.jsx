@@ -54,22 +54,21 @@ ElevationScroll.propTypes = {
 const ViewCall = ({ onCancel, ...others }) => {
     const theme = useTheme();
 
-
     let avatarProfile = User1;
 
     return (
         <ElevationScroll {...others}>
             <SubCard
+                title="VIDEO LLAMADA"
                 sx={{
                     background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.grey[50],
                     width: '100%',
                     maxWidth: 342
                 }}
-                content={false}
+                container={false}
             >
-                <PerfectScrollbar style={{ height: 'calc(80vh - 83px)', overflowX: 'hidden' }}>
-                    <Grid container spacing={gridSpacing} sx={{ p: 3 }}>
-
+                <PerfectScrollbar style={{ height: 'calc(80vh - 80px)', overflowX: 'hidden' }}>
+                    <Grid container spacing={gridSpacing} /* sx={{ p: 3 }} */>
                         <Grid item xs={12}>
                             <Grid container alignItems="center" spacing={1}>
                                 <Grid item>
