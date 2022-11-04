@@ -1,7 +1,6 @@
 import { Grid, Typography } from '@mui/material';
 
 import ViewCall from './ViewCall';
-import { gridSpacing } from 'store/constant';
 
 import SubCard from 'ui-component/cards/SubCard';
 
@@ -9,11 +8,11 @@ const UpdateAttMedicalAdvice = ({ children, setUserEdit, userEdit }) => {
 
     return (
         <SubCard title={<Typography variant='h4'>ASESORÍAS MÉDICAS ESPECIALIZADAS</Typography>}>
-            <Grid container spacing={gridSpacing}>
+            <Grid container spacing={2}>
                 <Grid className="block" item xs zeroMinWidth sx={{ display: userEdit ? { xs: 'none', md: 'flex' } : 'flex' }}>
-                    <Grid container alignItems="center" spacing={gridSpacing}>
+                    <Grid container alignItems="center" spacing={2}>
                         <Grid item xs={12}>
-                            <Grid container direction="row" spacing={gridSpacing}>
+                            <Grid container direction="row" spacing={2}>
                                 {children}
                             </Grid>
                         </Grid>
