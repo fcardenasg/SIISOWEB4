@@ -1,5 +1,6 @@
 import { GetEdad, ViewFormat } from "components/helpers/Format";
 import jsPDF from "jspdf";
+import autoTable  from 'jspdf-autotable'
 import ImgWhite from "assets/img/ImgWhite.png";
 import { DefaultValue } from "components/helpers/Enums";
 
@@ -56,8 +57,7 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
   doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
 }
 
-function generateImmunization(
-  doc = new jsPDF(), lsDataReport) {
+function generateImmunization(doc = new jsPDF(), lsDataReport) {
   const vacunas = [
     {
       vacuna: lsDataReport.tetanoIM,
@@ -678,7 +678,12 @@ export function generateReportDiagnosis(
   doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 55, 65);
 
   if (lsDataReport.dx1 !== "")
-    doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 82, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.text(
+      `Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`,
+      7,
+      82,
+      { maxWidth: 200, lineHeightFactor: 1.5 }
+    );
 
   doc.text(`${lsDataReport.observacionID}`, 7, 103, {
     maxWidth: 200,
@@ -695,7 +700,11 @@ export function generateReportDiagnosis(
   getFirmaEmployee(doc, lsDataReport, 10);
 }
 
-export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataReport = []
+/* REPORTE DE RIESGOS OTRAS EMPRESA */
+export function generateClinicHistoryOtherCompany(
+  doc = new jsPDF(),
+  lsDataReport = [],
+  lsRiesgoHLDO = []
 ) {
   var marXR = doc.internal.pageSize.width - 5;
 
@@ -765,41 +774,57 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text("AÑOS", 160, 131);
   doc.text("MESES", 190, 131);
 
+
+ /* RENDERIZADO */
+ doc.setFont("helvetica", "normal");
+ doc.text(`${lsDataReport.documento}`, 45, 45);
+ doc.text(`${lsDataReport.nameGenero}`, 45, 50);
+ doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 45, 55);
+ doc.text(`${lsDataReport.nameEstadoCivil}`, 45, 60);
+ doc.text(`${lsDataReport.celularEmpleado}`, 45, 65);
+ doc.text(`${lsDataReport.nameGrupo}`, 45, 70);
+ doc.text(`${lsDataReport.direccionEmpleado}`, 45, 75);
+ /* SEGUNDA COLUMNA */
+ doc.text(`${lsDataReport.nameEmpleado}`, 150, 45);
+ doc.text(`${ViewFormat(lsDataReport.fechaNacimiento)}`, 150, 50);
+ doc.text(`${lsDataReport.nameDptoNacimiento}`, 150, 55);
+ doc.text(`${lsDataReport.nameTurno}`, 150, 60);
+ doc.text(`${lsDataReport.correoEmpleado}`, 150, 65);
+ doc.text(`${lsDataReport.nameEps}`, 150, 70);
+ doc.text(`${lsDataReport.nameCiudadNacimiento}`, 150, 75);
+ /* 2. INFORMACIÓN DE EMPRESA Y CARGO */
+ doc.text(`${lsDataReport.nameSede}`, 45, 92);
+ doc.text(`${lsDataReport.nameArea}`, 45, 97);
+ doc.text(`Community Relations Auxiliary`, 45, 102);
+ doc.text(`${ViewFormat(lsDataReport.fechaContratoEmpleado)}`, 45, 107);
+ /* SEGUNDA COLUMNA */
+ doc.text(`${lsDataReport.nameDptoNacimiento}`, 150, 92);
+ doc.text(`${lsDataReport.nameGrupo}`, 150, 97);
+ doc.text(`${lsDataReport.nameTipoContrato}`, 150, 102);
+ doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)}`, 150, 107);
+
+
   /* 3. ANTECEDENTES LABORALES */
   doc.text("3. ANTECEDENTES LABORALES", 7, 115);
   /* 3.1. HISTORIA LABORAL EN OTRAS EMPRESAS */
   doc.text("3.1. HISTORIA LABORAL EN OTRAS EMPRESAS", 7, 123);
+ 
+  //tabla
 
-  /* RENDERIZADO */
-  doc.setFont("helvetica", "normal");
-  doc.text(`${lsDataReport.documento}`, 45, 45);
-  doc.text(`${lsDataReport.nameGenero}`, 45, 50);
-  doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 45, 55);
-  doc.text(`${lsDataReport.nameEstadoCivil}`, 45, 60);
-  doc.text(`${lsDataReport.celularEmpleado}`, 45, 65);
-  doc.text(`${lsDataReport.nameGrupo}`, 45, 70);
-  doc.text(`${lsDataReport.direccionEmpleado}`, 45, 75);
-  /* SEGUNDA COLUMNA */
-  doc.text(`${lsDataReport.nameEmpleado}`, 150, 45);
-  doc.text(`${ViewFormat(lsDataReport.fechaNacimiento)}`, 150, 50);
-  doc.text(`${lsDataReport.nameDptoNacimiento}`, 150, 55);
-  doc.text(`${lsDataReport.nameTurno}`, 150, 60);
-  doc.text(`${lsDataReport.correoEmpleado}`, 150, 65);
-  doc.text(`${lsDataReport.nameEps}`, 150, 70);
-  doc.text(`${lsDataReport.nameCiudadNacimiento}`, 150, 75);
-  /* 2. INFORMACIÓN DE EMPRESA Y CARGO */
-  doc.text(`${lsDataReport.nameSede}`, 45, 92);
-  doc.text(`${lsDataReport.nameArea}`, 45, 97);
-  doc.text(`Community Relations Auxiliary`, 45, 102);
-  doc.text(`${ViewFormat(lsDataReport.fechaContratoEmpleado)}`, 45, 107);
-  /* SEGUNDA COLUMNA */
-  doc.text(`${lsDataReport.nameDptoNacimiento}`, 150, 92);
-  doc.text(`${lsDataReport.nameGrupo}`, 150, 97);
-  doc.text(`${lsDataReport.nameTipoContrato}`, 150, 102);
-  doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)}`, 150, 107);
+ 
+
+
+//fin tabla
+
+ 
 }
 
-export function generateClinicHistoryDLTD(doc = new jsPDF(), resultExpoDLTD) {
+/* REPORTE RIESGOS HLDRUMMOND */
+export function generateClinicHistoryDLTD(
+  doc = new jsPDF(),
+  resultExpoDLTD = [],
+  lsRiesgoHLD = []
+) {
   var marXR = doc.internal.pageSize.width - 5;
 
   doc.text("3.2. HISTORIA LABORAL EN DRUMMOND LTD.", 7, 37);
@@ -1322,13 +1347,28 @@ export function generateDefinitiveDiagnosis(
   doc.setFont("helvetica", "normal");
 
   if (lsDataReport.dx1 !== "")
-    doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 47, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.text(
+      `Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`,
+      7,
+      47,
+      { maxWidth: 200, lineHeightFactor: 1.5 }
+    );
 
   if (lsDataReport.dx2 !== "")
-    doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 55, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.text(
+      `Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`,
+      7,
+      55,
+      { maxWidth: 200, lineHeightFactor: 1.5 }
+    );
 
   if (lsDataReport.dx3 !== "")
-    doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 63, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.text(
+      `Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`,
+      7,
+      63,
+      { maxWidth: 200, lineHeightFactor: 1.5 }
+    );
 
   doc.text(`${lsDataReport.observacionID}`, 7, 79, {
     maxWidth: 200,

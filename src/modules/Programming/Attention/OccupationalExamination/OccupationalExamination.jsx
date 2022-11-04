@@ -68,7 +68,7 @@ import { GetByMail } from 'api/clients/UserClient';
 import { generateReportIndex } from './Report/EMO';
 
 import { generateReport } from './Report';
-import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
+import { GetAllByHistorico, GetAllByHistoricoCompany, GetAllRHL, GetAllRHLOE } from 'api/clients/WorkHistoryRiskClient';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -326,11 +326,16 @@ const OccupationalExamination = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdDataReport(resultData.id);
+           /* resultData.id*/
+            const lsDataReport = await GetByIdDataReport(4);
             const lsDataUser = await GetByMail(user.email);
             const resultExpoDLTD = await getDataExploracion(documento);
+            //reporte riesgos
+            const lsRiesgoHLD = await GetAllRHL(documento);
+            const lsRiesgoHLDO = await GetAllRHLOE(documento);
 
-            const dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD);
+            const dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD,
+                lsRiesgoHLD.data, lsRiesgoHLDO.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -937,7 +942,8 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                            {/* disabled={resultData.length === 0 ? true : false}  */}
+                                <Button  variant="outlined" fullWidth onClick={handleClickReport}>
                                     {TitleButton.Imprimir}
                                 </Button>
                             </AnimateButton>
