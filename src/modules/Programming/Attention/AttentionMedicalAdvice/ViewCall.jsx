@@ -1,32 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import {
-    Avatar,
     Button,
     Grid,
     Typography,
     useScrollTrigger
 } from '@mui/material';
 
-// third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
-// project imports
 import SubCard from 'ui-component/cards/SubCard';
-import { gridSpacing } from 'store/constant';
-import User1 from 'assets/images/users/avatar-1.png';
-
-const avatarImage = require.context('assets/images/users', true);
-
-const jobTypes = [
-    { label: 'Work', id: 1 },
-    { label: 'Personal', id: 2 }
-];
-
-// sticky edit card
+import VideoCall from './VideoCall';
 
 function ElevationScroll({ children, window }) {
     const trigger = useScrollTrigger({
@@ -49,12 +34,9 @@ ElevationScroll.propTypes = {
     window: PropTypes.object
 };
 
-// ==============================|| CONTACT CARD/LIST USER EDIT ||============================== //
-
 const ViewCall = ({ onCancel, ...others }) => {
     const theme = useTheme();
-
-    let avatarProfile = User1;
+    const [inCall, setInCall] = useState(false);
 
     return (
         <ElevationScroll {...others}>
@@ -68,34 +50,40 @@ const ViewCall = ({ onCancel, ...others }) => {
                 container={false}
             >
                 <PerfectScrollbar style={{ height: 'calc(80vh - 80px)', overflowX: 'hidden' }}>
-                    <Grid container spacing={gridSpacing} /* sx={{ p: 3 }} */>
+                    <Grid container spacing={2}>
+                        {inCall ? (
+                            <VideoCall setInCall={setInCall} />
+                        ) : (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => setInCall(true)}
+                            >
+                                Join Call
+                            </Button>
+                        )}
+
+
+
+
                         <Grid item xs={12}>
-                            <Grid container alignItems="center" spacing={1}>
-                                <Grid item>
-                                    <Avatar alt="User 3" src={avatarProfile} sx={{ width: 64, height: 64 }} />
-                                </Grid>
-                                <Grid item xs zeroMinWidth>
-                                    <Grid container spacing={1}>
-                                        <Grid item xs={12}>
-                                            <Button>
-                                                Copiar Link
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={12} sx={{ my: 6 }}>
                             <Typography>
-                                CAMARA NUMERO UNO
+                                DOCTOR
                             </Typography>
                         </Grid>
 
-                        <Grid item xs={12} sx={{ my: 6 }}>
+                        <Grid item xs={12}>
+                            CAMARA 1
+                        </Grid>
+
+                        <Grid item xs={12}>
                             <Typography>
-                                CAMARA NUMERO DOS
+                                PACIENTE
                             </Typography>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            CAMARA 2
                         </Grid>
 
                         <Grid item xs={12}>

@@ -49,12 +49,14 @@ export const Url = {
     RHLByChargeHistorico: 'api/RiesgoHistoriaLaboral/GetAllByChargeHistorico',
     RHLByHistorico: 'api/RiesgoHistoriaLaboral/GetAllByHistorico',
     RHLByChargeAdvance: 'api/RiesgoHistoriaLaboral/GetAllByChargeAdvance',
+    ReportRHL: 'api/RiesgoHistoriaLaboral/GetAllRHL',
 
     RiesgoHistoriaLaboralEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas',
     RiesgoHistoriaLaboralIdEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/id',
     RHLByChargeHistoricoEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllByChargeHistorico',
     RHLByHistoricoEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllByHistorico',
     RHLByChargeAdvanceEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllByChargeAdvance',
+    ReportRHLOE: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllRHL',
 
     Proveedor: 'api/Proveedor',
     ProveedorId: 'api/Proveedor/id',

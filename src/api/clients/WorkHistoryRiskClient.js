@@ -18,3 +18,6 @@ export const GetByIdWorkHistoryRiskCompany = async (id) => await getData(Url.Rie
 export const InsertWorkHistoryRiskCompany = async (riesgoHistoriaLaboralOtrasEmpresas) => await postData(Url.RiesgoHistoriaLaboralEmpresa, riesgoHistoriaLaboralOtrasEmpresas);
 export const UpdateWorkHistoryRisksCompany = async (riesgoHistoriaLaboralOtrasEmpresas) => await putData(Url.RiesgoHistoriaLaboralEmpresa, riesgoHistoriaLaboralOtrasEmpresas);
 export const DeleteWorkHistoryRiskCompany = async (idRiesgoHistoriaLaboralOtrasEmpresas) => await deleteData(Url.RiesgoHistoriaLaboralEmpresa, { idRiesgoHistoriaLaboralOtrasEmpresas });
+
+export const GetAllRHL = async (documento) => await getData(Url.ReportRHL, { documento });
+export const GetAllRHLOE = async (documento) => await getData(Url.ReportRHLOE, { documento });
