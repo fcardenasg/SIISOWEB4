@@ -198,7 +198,7 @@ export function generateReportIndex(
 ) {
   var doc = new jsPDF("p", "mm", "letter");
 
-  /* doc.setFont("helvetica", "bold");
+  doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateReportConceptAptitude(doc, lsDataReport, lsDataUser);
   getPiePage(doc, lsDataUser, 1, 18);
@@ -210,7 +210,7 @@ export function generateReportIndex(
   generateReportDiagnosis(doc, lsDataReport, lsDataUser);
   getPiePage(doc, lsDataUser, 2, 18);
 
-  doc.addPage(); */
+  doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
@@ -224,7 +224,7 @@ export function generateReportIndex(
   generateClinicHistoryDLTD(doc, resultExpoDLTD, lsRiesgoHLD);
   getPiePage(doc, lsDataUser, 4, 18);
 
-  /* doc.addPage();
+  doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
@@ -320,7 +320,7 @@ export function generateReportIndex(
   doc.setFont("helvetica", "bold");
   getHeaderQS(doc, lsDataReport);
   pageQuestionnaireRespiratorySymptomsFour(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 18, 18); */
+  getPiePage(doc, lsDataUser, 18, 18);
 
   var dataPDF = doc.output("bloburl");
   return dataPDF;

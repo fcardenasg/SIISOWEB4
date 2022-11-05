@@ -2925,7 +2925,7 @@ const Emo = ({
                                 <Grid item xs={2}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={4015}
+                                            defaultValue={4017}
                                             name="resultadoRxToraxEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -2985,7 +2985,7 @@ const Emo = ({
                                 <Grid item xs={2}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={4015}
+                                            defaultValue={4017}
                                             name="resultadoEspirometriaEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3045,7 +3045,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={4015}
+                                            defaultValue={4017}
                                             name="resultadoAudiometriaEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3105,7 +3105,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={4015}
+                                            defaultValue={4017}
                                             name="resultadoVisiometriaEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3165,7 +3165,7 @@ const Emo = ({
                                 <Grid item xs={2}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={4015}
+                                            defaultValue={4017}
                                             name="resultadoLaboratorioClinicoEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3225,7 +3225,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={4015}
+                                            defaultValue={4017}
                                             name="resultadoCuestionarioSintomaEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3285,7 +3285,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={4015}
+                                            defaultValue={4017}
                                             name="resultadoEkgEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3345,7 +3345,7 @@ const Emo = ({
                                 <Grid item xs={2}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={4015}
+                                            defaultValue={4017}
                                             name="resultadoRnmLumbosacraEPA"
                                             label="Resultado"
                                             options={lsResultado}
@@ -3404,7 +3404,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={4015}
+                                            defaultValue={4017}
                                             name="resultadoRnmCervicalEPA"
                                             label="Resultado"
                                             options={lsResultado}
