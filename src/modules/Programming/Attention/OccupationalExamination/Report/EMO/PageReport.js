@@ -615,7 +615,6 @@ export function generateReportConceptAptitude(
   doc.setFontSize(9);
   doc.text(`${lsDataReport.recomendacionesNETA}`, 7, 87, {
     maxWidth: 200,
-    align: "justify",
     lineHeightFactor: 1.5,
   });
 
@@ -687,12 +686,10 @@ export function generateReportDiagnosis(
 
   doc.text(`${lsDataReport.observacionID}`, 7, 103, {
     maxWidth: 200,
-    align: "justify",
     lineHeightFactor: 1.5,
   });
   doc.text(`${lsDataReport.recomendacionesID}`, 7, 163, {
     maxWidth: 200,
-    align: "justify",
     lineHeightFactor: 1.5,
   });
 
@@ -724,36 +721,70 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.line(5, 25, 5, 260); /* IZQUIERDA */
   doc.line(5, 32, marXR, 32); /* HORI 1 */
   doc.line(5, 39, marXR, 39); /* HORI 2 */
-  doc.line(5, 48, marXR, 48); /* HORI 3 */
-  doc.line(5, 55, marXR, 55); /* HORI 4 */
-  doc.line(5, 62, marXR, 62); /* HORI 5 */
+  doc.line(5, 45, marXR, 45); /* HORI 3 */
+  doc.line(5, 53, marXR, 53); /* HORI 4 */
+  doc.line(5, 60, marXR, 60); /* HORI 5 */
+  doc.line(5, 66, marXR, 66); /* HORI 5 */
+  doc.line(5, 73, marXR, 73); /* HORI 5 */
+  doc.line(5, 81, marXR, 81); /* HORI 5 */
+  doc.line(5, 88, marXR, 88); /* HORI 5 */
   doc.line(5, 260, marXR, 260); /* HORI 6 */
   doc.line(marXR, 25, marXR, 260); /* DERECHA */
 
   /* TITULOS DE CONTENIDO */
-  doc.text("DOCUMENTO:", 7, 45);
+  doc.text("DOCUMENTO:", 7, 43);
   /* SEGUNDA COLUMNA */
-  doc.text("NOMBRES:", 112, 45);
+  doc.text("NOMBRES:", 112, 43);
 
   /* RENDERIZADO */
   doc.setFont("helvetica", "normal");
-  doc.text(`${lsDataReport.documento}`, 45, 45);
-  doc.text(`${lsDataReport.nameEmpleado}`, 150, 45);
+  doc.text(`${lsDataReport.documento}`, 45, 43);
+  doc.text(`${lsDataReport.nameEmpleado}`, 150, 43);
+
+
+ /* 2. INFORMACION DE LA EMPRESA Y CARGO */
+ doc.setFont("helvetica", "bold");
+ doc.setFontSize(10);
+ doc.text("2. INFORMACION DE LA EMPRESA Y CARGO", 7, 50);
+
+/* PRIMERA COLUMNA */
+doc.setFont("helvetica", "bold");
+ doc.text("SEDE:", 7, 57);
+ doc.text("ÁREA:", 7, 64);
+ doc.text("POSICIÓN:", 7, 71);
+ /* SEGUNDA COLUMNA */
+ doc.text("DPTO. TRABAJO:", 112, 57);
+ doc.text("GRUPO:", 112, 64);
+ doc.text("ANTIGUEDAD:", 112, 71);
+
+ /* 2. RENDERIZADO */
+ doc.setFont("helvetica", "normal");
+ doc.text(`${lsDataReport.nameSede}`, 45, 57);
+ doc.text(`${lsDataReport.nameArea}`, 45, 64);
+ doc.text(`${lsDataReport.nameCargo}`, 45, 71);
+
+  doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 150, 57);
+  doc.text(`${lsDataReport.nameGrupo}`, 150, 64);
+   doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)}`, 150, 71);
+   doc.text("AÑOS", 155, 71);
+
 
   /* 3. ANTECEDENTES LABORALES */
-  doc.text("3. ANTECEDENTES LABORALES", 7, 53);
+  doc.setFont("helvetica", "bold");
+  doc.text("3. ANTECEDENTES LABORALES", 7, 78);
+  doc.setFontSize(10);
   /* 3.1. HISTORIA LABORAL EN OTRAS EMPRESAS */
-  doc.text("3.1. HISTORIA LABORAL EN OTRAS EMPRESAS", 7, 60);
+  doc.text("3.1. HISTORIA LABORAL EN OTRAS EMPRESAS", 7, 86);
+  doc.setFontSize(10);
 
   //TABLA DE RENDERIZADO DE RIESGOS
   autoTable(doc, ({
     styles: { fontSize: 7 },
     theme: 'plain',
     fontStyle: 'normal',
-    margin: { top: 65, left: 7, right: 7 },
+    margin: { top: 90, left: 7, right: 7 },
     body: lsRiesgoHLDO,
     columns: [
-      { header: 'Documento', dataKey: 'documento' },
       { header: 'Fecha', dataKey: 'fechaAnio' },
       { header: 'Empresa', dataKey: 'empresa' },
       { header: 'Cargo', dataKey: 'cargo' },
@@ -795,17 +826,26 @@ export function generateClinicHistoryDLTD(
 
 
   doc.text("3.3 EXPOSICIÓN ACUMULADA DE FACTORES DE RIESGO", 7, 83 + 150);
+  doc.line(5, 242, marXR, 242); /* HORI ULTIMA */
+  doc.text("EN DLTD", 40, 91 + 150, { align: "center" });
+  doc.text("EN OTRAS EMPRESAS", 103, 91 + 150, { align: "center" });
+  doc.text("TOTAL EXPOSICIÓN", 175, 91 + 150, { align: "center" });
 
-  doc.text("EN DLTD", 35, 91 + 150, { align: "center" });
-  doc.text("EN OTRAS EMPRESAS", 105, 91 + 150, { align: "center" });
-  doc.text("TOTALES", 175, 91 + 150, { align: "center" });
-
+  doc.line(40, 242, 40, 260); /* LINEA ONE */
+  doc.line(70, 236, 70, 260); /* LINEA MEDIA */
   doc.text("MPI:", 7, 97 + 150);
   doc.text("RUDIO:", 7, 104 + 150);
+
+  doc.line(102, 242, 102, 260); /* LINEA MEDIA */
+  doc.line(133, 236, 133, 260); /* LINEA FINAL */
+
   doc.text("MPI:", 72, 97 + 150);
   doc.text("RUDIO:", 72, 104 + 150);
-  doc.text("MPI:", 142, 97 + 150);
-  doc.text("RUDIO:", 142, 104 + 150);
+  doc.line(180, 242, 180, 260); /* LINEA MEDIA */
+
+  doc.line(5, 250, marXR, 250); /* HORI ULTIMA */
+  doc.text("MPI:", 130, 97 + 150);
+  doc.text("RUDIO:", 130, 104 + 150);
 
   autoTable(doc, ({
     styles: { fontSize: 7 },
@@ -814,7 +854,6 @@ export function generateClinicHistoryDLTD(
     margin: { top: 40, left: 7, right: 7 },
     body: lsRiesgoHLD,
     columns: [
-      { header: 'Documento', dataKey: 'documento' },
       { header: 'Fecha', dataKey: 'fechaAnio' },
       { header: 'Empresa', dataKey: 'empresa' },
       { header: 'Cargo', dataKey: 'cargo' },
@@ -830,34 +869,34 @@ export function generateClinicHistoryDLTD(
 
   /* RENDERIZADO DE EXPOSICIÓN ACUMULADA DE FACTORES DE RIESGO */
   doc.setFont("helvetica", "normal");
-  doc.text(`${resultExpoDLTD.aniosMpiDLTD} AÑOS`, 25, 97 + 150);
-  doc.text(`${resultExpoDLTD.mesMpiDLTD} MESES`, 50, 97 + 150);
-  doc.text(`${resultExpoDLTD.aniosRuidoDLTD} AÑOS`, 25, 104 + 150);
-  doc.text(`${resultExpoDLTD.mesRuidoDLTD} MESES`, 50, 104 + 150);
+  doc.text(`${resultExpoDLTD.aniosMpiDLTD} AÑOS`, 21, 97 + 150);
+  doc.text(`${resultExpoDLTD.mesMpiDLTD} MESES`, 47, 97 + 150);
+  doc.text(`${resultExpoDLTD.aniosRuidoDLTD} AÑOS`, 21, 104 + 150);
+  doc.text(`${resultExpoDLTD.mesRuidoDLTD} MESES`, 47, 104 + 150);
 
-  doc.text(`${resultExpoDLTD.aniosMpiCompany} AÑOS`, 98, 97 + 150);
-  doc.text(`${resultExpoDLTD.mesMpiCompany} MESES`, 120, 97 + 150);
-  doc.text(`${resultExpoDLTD.aniosRuidoCompany} AÑOS`, 98, 104 + 150);
-  doc.text(`${resultExpoDLTD.mesRuidoCompany} MESES`, 120, 104 + 150);
+  doc.text(`${resultExpoDLTD.aniosMpiCompany} AÑOS`, 85, 97 + 150);
+  doc.text(`${resultExpoDLTD.mesMpiCompany} MESES`, 110, 97 + 150);
+  doc.text(`${resultExpoDLTD.aniosRuidoCompany} AÑOS`, 85, 104 + 150);
+  doc.text(`${resultExpoDLTD.mesRuidoCompany} MESES`, 110, 104 + 150);
 
   doc.text(
     `${resultExpoDLTD.aniosMpiDLTD + resultExpoDLTD.aniosMpiCompany} AÑOS`,
-    160,
+    135,
     97 + 150
   );
   doc.text(
     `${resultExpoDLTD.mesMpiDLTD + resultExpoDLTD.mesMpiCompany} MESES`,
-    190,
+    180,
     97 + 150
   );
   doc.text(
     `${resultExpoDLTD.aniosRuidoDLTD + resultExpoDLTD.aniosRuidoCompany} AÑOS`,
-    160,
+    135,
     104 + 150
   );
   doc.text(
     `${resultExpoDLTD.mesRuidoDLTD + resultExpoDLTD.mesRuidoCompany} MESES`,
-    190,
+    180,
     104 + 150
   );
 }
