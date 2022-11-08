@@ -22,28 +22,32 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                 if (sede === '' && atencion === '') {
                     result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
                         && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin)).map(datos => datos);
+
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion === '') {
                     result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
                         && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede).map(datos => datos);
+
                     setLsData(result);
                 }
 
                 if (sede === '' && atencion !== '') {
                     result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
                         && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idAtencion === atencion).map(datos => datos);
+
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion !== '') {
                     result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede && asesoria.idAtencion === atencion).map(datos => datos);
+                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede &&
+                        asesoria.idAtencion === atencion).map(datos => datos);
+
                     setLsData(result);
                 }
 
-                console.log(result);
                 setStatusData(true);
             }
         } catch (error) { }

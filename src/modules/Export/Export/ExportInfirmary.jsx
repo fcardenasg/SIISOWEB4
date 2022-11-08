@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import ReactExport from 'react-export-excel';
 import { Grid, Button } from '@mui/material';
-import { GetAllAdvice } from 'api/clients/AdviceClient';
-import { ViewFormat } from 'components/helpers/Format';
+import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import { GetAllNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -15,36 +15,40 @@ const ExportInfirmary = ({ sede, atencion, fechaInicio, fechaFin }) => {
 
     async function getDataForExport() {
         try {
-            const lsDataExport = await GetAllAdvice(0, 0);
+            const lsDataExport = await GetAllNoteInfirmary(0, 0);
             if (lsDataExport.status === 200) {
                 var result = [];
 
                 if (sede === '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin)).map(datos => datos);
+                    result = lsDataExport.data.entities.filter(notaEnfer => ViewFormat(notaEnfer.fecha) >= ViewFormat(fechaInicio)
+                        && ViewFormat(notaEnfer.fecha) <= ViewFormat(fechaFin)).map(datos => datos);
+
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede).map(datos => datos);
+                    result = lsDataExport.data.entities.filter(notaEnfer => ViewFormat(notaEnfer.fecha) >= ViewFormat(fechaInicio)
+                        && ViewFormat(notaEnfer.fecha) <= ViewFormat(fechaFin) && notaEnfer.idSede === sede).map(datos => datos);
+
                     setLsData(result);
                 }
 
                 if (sede === '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idTipoAtencion === atencion).map(datos => datos);
+                    result = lsDataExport.data.entities.filter(notaEnfer => ViewFormat(notaEnfer.fecha) >= ViewFormat(fechaInicio)
+                        && ViewFormat(notaEnfer.fecha) <= ViewFormat(fechaFin) && notaEnfer.idTipoAtencion === atencion)
+                        .map(datos => datos);
+
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede && asesoria.idTipoAtencion === atencion).map(datos => datos);
+                    result = lsDataExport.data.entities.filter(notaEnfer => ViewFormat(notaEnfer.fecha) >= ViewFormat(fechaInicio)
+                        && ViewFormat(notaEnfer.fecha) <= ViewFormat(fechaFin) && notaEnfer.idSede === sede &&
+                        notaEnfer.idTipoAtencion === atencion).map(datos => datos);
+
                     setLsData(result);
                 }
 
-
-                console.log(result);
                 setStatusData(true);
             }
         } catch (error) { }
@@ -75,12 +79,36 @@ const ExportInfirmary = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                             DESCARGAR EXCEL
                                         </Button>
                                     </AnimateButton>
-                                } filename="ASESORÍAS">
-                                    <ExcelSheet data={lsData} name="Listado de Asesorías">
-                                        <ExcelColumn label="ID" value="id" />
-                                        <ExcelColumn label="Documento" value="documento" />
+                                } filename="NOTA ENFERMERÍA">
+                                    <ExcelSheet data={lsData} name="Listado de Nota de Enfermería">
+                                        <ExcelColumn label="Nro Atencion" value="id" />
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                        <ExcelColumn label="Sede" value="idSede" />
+                                        <ExcelColumn label="Atención" value="nameAtencion" />
+
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Nombres" value="nameEmpleado" />
+                                        <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNacimi)} />
+                                        <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
+                                        <ExcelColumn label="Departamento" value="nameDepartamento" />
+                                        <ExcelColumn label="Area" value="nameArea" />
+                                        <ExcelColumn label="Roster Position" value="nameCargo" />
+                                        <ExcelColumn label="Grupo" value="nameGrupo" />
+                                        <ExcelColumn label="EPS" value="nameEps" />
+                                        <ExcelColumn label="Genero" value="nameGenero" />
+                                        <ExcelColumn label="Empresa" value="nameEmpresa" />
+                                        <ExcelColumn label="Contingencia" value="nameContingencia" />
+
+                                        <ExcelColumn label="DX1" value="dx1" />
+                                        <ExcelColumn label="Nombre Dx1" value="nameDx1" />
+                                        <ExcelColumn label="DX2" value="dx2" />
+                                        <ExcelColumn label="Nombre Dx2" value="nameDx2" />
+                                        <ExcelColumn label="DX3" value="dx3" />
+                                        <ExcelColumn label="Nombre Dx3" value="nameDx3" />
+
+                                        <ExcelColumn label="Procedimientos" value="procedimientos" />
+                                        <ExcelColumn label="Sede Atiende" value="nameSede" />
+                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
+                                        <ExcelColumn label="Nota Enfermedad" value="notaEnfermedad" />
                                     </ExcelSheet>
                                 </ExcelFile> : ''
                             }
