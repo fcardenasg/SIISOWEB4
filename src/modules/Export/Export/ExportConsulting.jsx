@@ -22,18 +22,21 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                 if (sede === '' && atencion === '') {
                     result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
                         && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin)).map(datos => datos);
+
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion === '') {
                     result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
                         && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede).map(datos => datos);
+
                     setLsData(result);
                 }
 
                 if (sede === '' && atencion !== '') {
                     result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
                         && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idTipoAtencion === atencion).map(datos => datos);
+
                     setLsData(result);
                 }
 
@@ -41,6 +44,7 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                     result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
                         && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede &&
                         asesoria.idTipoAtencion === atencion).map(datos => datos);
+
                     setLsData(result);
                 }
 
