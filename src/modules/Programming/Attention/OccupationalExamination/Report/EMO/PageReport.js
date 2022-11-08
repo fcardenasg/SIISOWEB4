@@ -836,7 +836,7 @@ export function generateClinicHistoryDLTD(
   doc.text("MPI:", 7, 97 + 150);
   doc.text("RUDIO:", 7, 104 + 150);
 
-  doc.line(102, 242, 102, 260); /* LINEA MEDIA */
+  doc.line(106, 242, 106, 260); /* LINEA MEDIA */
   doc.line(133, 236, 133, 260); /* LINEA FINAL */
 
   doc.text("MPI:", 72, 97 + 150);
@@ -844,8 +844,8 @@ export function generateClinicHistoryDLTD(
   doc.line(180, 242, 180, 260); /* LINEA MEDIA */
 
   doc.line(5, 250, marXR, 250); /* HORI ULTIMA */
-  doc.text("MPI:", 130, 97 + 150);
-  doc.text("RUDIO:", 130, 104 + 150);
+  doc.text("MPI:", 135, 97 + 150);
+  doc.text("RUDIO:", 135, 104 + 150);
 
   autoTable(doc, ({
     styles: { fontSize: 7 },
@@ -874,31 +874,15 @@ export function generateClinicHistoryDLTD(
   doc.text(`${resultExpoDLTD.aniosRuidoDLTD} AÑOS`, 21, 104 + 150);
   doc.text(`${resultExpoDLTD.mesRuidoDLTD} MESES`, 47, 104 + 150);
 
-  doc.text(`${resultExpoDLTD.aniosMpiCompany} AÑOS`, 85, 97 + 150);
+  doc.text(`${resultExpoDLTD.aniosMpiCompany} AÑOS`, 87, 97 + 150);
   doc.text(`${resultExpoDLTD.mesMpiCompany} MESES`, 110, 97 + 150);
-  doc.text(`${resultExpoDLTD.aniosRuidoCompany} AÑOS`, 85, 104 + 150);
+  doc.text(`${resultExpoDLTD.aniosRuidoCompany} AÑOS`, 87, 104 + 150);
   doc.text(`${resultExpoDLTD.mesRuidoCompany} MESES`, 110, 104 + 150);
 
-  doc.text(
-    `${resultExpoDLTD.aniosMpiDLTD + resultExpoDLTD.aniosMpiCompany} AÑOS`,
-    135,
-    97 + 150
-  );
-  doc.text(
-    `${resultExpoDLTD.mesMpiDLTD + resultExpoDLTD.mesMpiCompany} MESES`,
-    180,
-    97 + 150
-  );
-  doc.text(
-    `${resultExpoDLTD.aniosRuidoDLTD + resultExpoDLTD.aniosRuidoCompany} AÑOS`,
-    135,
-    104 + 150
-  );
-  doc.text(
-    `${resultExpoDLTD.mesRuidoDLTD + resultExpoDLTD.mesRuidoCompany} MESES`,
-    180,
-    104 + 150
-  );
+  doc.text(`${resultExpoDLTD.aniosMpiDLTD + resultExpoDLTD.aniosMpiCompany} AÑOS`,153,97 + 150);
+  doc.text(`${resultExpoDLTD.mesMpiDLTD + resultExpoDLTD.mesMpiCompany} MESES`,185,97 + 150);
+  doc.text(`${resultExpoDLTD.aniosRuidoDLTD + resultExpoDLTD.aniosRuidoCompany} AÑOS`,153,104 + 150);
+  doc.text(`${resultExpoDLTD.mesRuidoDLTD + resultExpoDLTD.mesRuidoCompany} MESES`,185,104 + 150);
 }
 
 export function generatePathologicalAntecedents(

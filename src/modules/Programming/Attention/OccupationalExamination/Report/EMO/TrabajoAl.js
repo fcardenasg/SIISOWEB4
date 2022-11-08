@@ -186,7 +186,7 @@ export function pageCompanyNotification(
 
 
 
-  doc.text(`${lsDataReport.motivoAplazoNETA}}`, 75, 115, {maxWidth: 130,lineHeightFactor: 1.0,
+  doc.text(`${lsDataReport.motivoAplazoNETA}`, 75, 115, {maxWidth: 130,lineHeightFactor: 1.0,
   });
 
   doc.text(`${lsDataReport.descripcionResultadoNETA}`, 6, 148, {maxWidth: 190,lineHeightFactor: 1.0,
