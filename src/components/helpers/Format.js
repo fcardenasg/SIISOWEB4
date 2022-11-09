@@ -723,7 +723,6 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
                 }
             }
             break;
-
         case 9:
             if (sexo === "MASCULINO") {
                 if (edad < 30) {
@@ -1190,7 +1189,6 @@ function GetRiesgos(puntaje = 0, edad = 0, sexo = '') {
                 }
             }
             break;
-
         case 16:
             if (sexo != "MASCULINO") {
 
@@ -1367,6 +1365,7 @@ function FrFuma(fuma = '') {
 
 function FrLdl_FrRelacion(hdl = 0, colesterol = 0, triglicerios = 0) {
     if (hdl != 0 && colesterol != 0 && triglicerios != 0) {
+
         var ldl = Math.ceil(parseInt(colesterol) - ((parseInt(triglicerios) / 5) + parseInt(hdl)));
         var relacion = (colesterol / hdl).toFixed(1);
 

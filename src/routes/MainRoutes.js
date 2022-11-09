@@ -200,10 +200,9 @@ const UpdateAudiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiome
 
 const ViewReprint = Loadable(lazy(() => import('modules/Reprint/ViewReprint')));
 const ViewExport = Loadable(lazy(() => import('modules/Export/ViewExport')));
-const ViewHistory = Loadable(lazy(() => import('modules/History/ViewHistory')));
+const Indicators = Loadable(lazy(() => import('modules/Indicators/Indicators')));
 
 const ForgotPassword = Loadable(lazy(() => import('modules/ForgotPassword/ForgotPassword')));
-
 
 const MainRoutes = {
     path: '/',
@@ -780,9 +779,6 @@ const MainRoutes = {
             path: '/paraclinics/laboratory/update/:id',
             element: <UpdateLaboratory />
         },
-
-
-
         {
             path: '/paraclinics/audiometry/list',
             element: <ListAudiometry />
@@ -795,9 +791,6 @@ const MainRoutes = {
             path: '/paraclinics/audiometry/update/:id',
             element: <UpdateAudiometry />
         },
-
-
-
         /* Render de Reimprimir */
         {
             path: '/reprint/list',
@@ -807,9 +800,11 @@ const MainRoutes = {
             path: '/export/list',
             element: <ViewExport />
         },
+
+        /* INDICADORES */
         {
-            path: '/history/list',
-            element: <ViewHistory />
+            path: '/indicators/view',
+            element: <Indicators />
         },
 
         /* Render de Recuperar Contraseña */
@@ -817,13 +812,6 @@ const MainRoutes = {
             path: '/forgot-password/view',
             element: <ForgotPassword />
         },
-
-
-
-
-
-
-
 
         {
             path: '/widget/statistics',

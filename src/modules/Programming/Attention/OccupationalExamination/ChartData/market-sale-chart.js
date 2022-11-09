@@ -1,5 +1,3 @@
-
-
 const chartData = {
     height: 200,
     type: 'area',

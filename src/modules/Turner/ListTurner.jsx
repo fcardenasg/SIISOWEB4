@@ -1,16 +1,12 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ControlModal from 'components/controllers/ControlModal';
 
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
-    CardContent,
     Checkbox,
-    Grid,
     IconButton,
-    InputAdornment,
     Table,
     TableBody,
     TableCell,
@@ -19,38 +15,20 @@ import {
     TablePagination,
     TableRow,
     TableSortLabel,
-    TextField,
     Toolbar,
     Tooltip,
     Typography,
-    Button
 } from '@mui/material';
 
-import swal from 'sweetalert';
 import { visuallyHidden } from '@mui/utils';
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { MessageDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllAttention, DeleteAttention } from 'api/clients/AttentionClient';
+import { GetAllAttention } from 'api/clients/AttentionClient';
 
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import SearchIcon from '@mui/icons-material/Search';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
-import { IconFileExport } from '@tabler/icons';
-
-/* import { generateReport } from './ReportAtten'; */
-import { GetByIdAttention } from "api/clients/AttentionClient";
-import { GetByMail } from 'api/clients/UserClient';
-import useAuth from 'hooks/useAuth';
-import ViewPDF from 'components/components/ViewPDF';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -108,7 +86,7 @@ const headCells = [
     },
 ];
 
-function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
+function EnhancedTableHead({ onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -127,11 +105,6 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
                         }}
                     />
                 </TableCell>
-                {numSelected > 0 && (
-                    <TableCell padding="none" colSpan={8}>
-                        <EnhancedTableToolbar numSelected={selected.length} onClick={onClick} />
-                    </TableCell>
-                )}
                 {numSelected <= 0 &&
                     headCells.map((headCell) => (
                         <TableCell
@@ -169,7 +142,6 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
 EnhancedTableHead.propTypes = {
     theme: PropTypes.object,
     selected: PropTypes.array,
-    onClick: PropTypes.func.isRequired,
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     onSelectAllClick: PropTypes.func.isRequired,
@@ -215,12 +187,8 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListTurner = () => {
-    const { user } = useAuth();
-    const navigate = useNavigate();
-    const [idCheck, setIdCheck] = useState(0);
     const [lsAttention, setLsAttention] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
-    const [openReport, setOpenReport] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -228,66 +196,32 @@ const ListTurner = () => {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [search, setSearch] = useState('');
-    const [rows, setRows] = useState([]);
-    const [dataPDF, setDataPDF] = useState(null);
-
-    
-
-    async function getAll() {
-        try {
-            const lsServer = await GetAllAttention(0, 0);
-            setLsAttention(lsServer.data.entities);
-            setRows(lsServer.data.entities);
-        } catch (error) { }
-    }
 
     useEffect(() => {
-        getAll();
-    }, [])
-
-    const handleSearch = (event) => {
-        const newString = event?.target.value;
-        setSearch(newString || '');
-
-        if (newString) {
-            const newRows = rows.filter((row) => {
-                let matches = true;
-
-                const properties = ['id', 'documento', 'nameEmpleado', 'nameTipoAtencion', 'nameAtencion', 'fecha', 'usuarioRegistro'];
-                let containsQuery = false;
-
-                properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
-                        containsQuery = true;
-                    }
-                });
-
-                if (!containsQuery) {
-                    matches = false;
-                }
-                return matches;
-            });
-            setLsAttention(newRows);
-        } else {
-            setLsAttention(rows);
+        async function getAll() {
+            try {
+                const lsServer = await GetAllAttention(0, 0);
+                setLsAttention(lsServer.data.entities);
+            } catch (error) { }
         }
-    };
+
+        getAll();
+    }, []);
+
+    const handleSound = (nombre) => {
+
+        let mensaje = new SpeechSynthesisUtterance();
+        mensaje.voice = ;
+        mensaje.volume = 1;
+        mensaje.rate = 1;
+        mensaje.text = textoAEscuchar;
+        mensaje.pitch = 1;
+    }
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    const handleClickReport = async () => {
-        try {
-            setOpenReport(true);
-            const lsDataReport = await GetByIdAttention(idCheck);
-            const lsDataUser = await GetByMail(user.email);
-      /*       const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data); */
-        /*     setDataPDF(dataPDFTwo); */
-        } catch (err) { }
     };
 
     const handleSelectAllClick = (event) => {
@@ -300,8 +234,6 @@ const ListTurner = () => {
     };
 
     const handleClick = (event, id) => {
-        setIdCheck(id);
-
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
@@ -327,124 +259,12 @@ const ListTurner = () => {
         setPage(0);
     };
 
-    const handleDelete = async () => {
-        try {
-            swal(ParamDelete).then(async (willDelete) => {
-                if (willDelete) {
-                    const result = await DeleteAttention(idCheck);
-
-                    if (result.status === 200) {
-                        setOpenDelete(true);
-                        setSelected([]);
-                        setIdCheck(0);
-                        getAll();
-                    }
-                } else
-                    setSelected([]);
-            });
-        } catch (error) { }
-    }
-
-    const handleClose = () => {
-        setOpenReport(false);
-        setSelected([]);
-        setIdCheck('');
-        setDataPDF(null);
-    }
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsAttention.length) : 0;
 
     return (
-        <MainCard title="Lista de Atención" content={false}>
+        <MainCard content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
-
-            <ControlModal
-                title="VISTA DE REPORTE"
-                open={openReport}
-                onClose={handleClose}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={dataPDF} />
-            </ControlModal>
-
-            <CardContent>
-                <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon fontSize="small" />
-                                    </InputAdornment>
-                                )
-                            }}
-                            onChange={handleSearch}
-                            placeholder="Buscar"
-                            value={search}
-                            size="small"
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Lista de Atención">
-                            <ExcelSheet data={lsAttention} name="Atención">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                <ExcelColumn label="Tipo de Atención" value="nameTipoAtencion" />
-                                <ExcelColumn label="Atención" value="nameAtencion" />
-
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                <ExcelColumn label="Sede Empleado" value="nameSedeEmpleado" />
-                                <ExcelColumn label="Roster Position" value="nameCargo" />
-                                <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                <ExcelColumn label="Correo" value="nameCorreo" />
-                                <ExcelColumn label="Genero" value="nameGenero" />
-                                <ExcelColumn label="Empresa" value="nameEmpresa" />
-                                <ExcelColumn label="Fecha Nacimiento" value={(fe) => ViewFormat(fe.fechaNacimi)} />
-                                <ExcelColumn label="Eps" value="nameEps" />
-                                <ExcelColumn label="Telefono" value="nameTelefono" />
-                                <ExcelColumn label="Fecha Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
-                                <ExcelColumn label="Afp" value="nameAfp" />
-                                <ExcelColumn label="Area" value="nameArea" />
-                                <ExcelColumn label="Ciudad Nacimiento" value="nameCiudadNacido" />
-                                <ExcelColumn label="Ciudad Residencia" value="nameCiudadResidencia" />
-                                <ExcelColumn label="Departamento" value="nameDepartamento" />
-                                <ExcelColumn label="Dirección" value="nameDireccion" />
-                                <ExcelColumn label="Departamento Nacimiento" value="nameDptoNacido" />
-                                <ExcelColumn label="Departamento Residencia" value="nameDptoResidencia" />
-                                <ExcelColumn label="Estado Civil" value="nameEstadoCivil" />
-                                <ExcelColumn label="Grupo" value="nameGrupo" />
-                                <ExcelColumn label="Subarea" value="nameSubarea" />
-                                <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
-                                <ExcelColumn label="Turno Empleado" value="nameTurnoEmpleado" />
-                                <ExcelColumn label="Type" value="nameType" />
-
-                                <ExcelColumn label="Estado Caso" value="nameEstadoCaso" />
-                                <ExcelColumn label="Sede Atención" value="nameSedeAtencion" />
-                                <ExcelColumn label="Observaciones" value="observaciones" />
-                            </ExcelSheet>
-                        </ExcelFile>
-
-                        <Tooltip title="Impresión" onClick={handleClickReport} sx={{ mx: 1 }}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
-
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/attention/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
-                    </Grid>
-                </Grid>
-            </CardContent>
 
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
@@ -563,11 +383,13 @@ const ListTurner = () => {
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/attention/update/${row.id}`)}>
+
+                                            <Tooltip title="Voz" onClick={() => handleSound(row.nameEmpleado)}>
                                                 <IconButton size="large">
-                                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                    <VolumeUpIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
+
                                         </TableCell>
                                     </TableRow>
                                 );
