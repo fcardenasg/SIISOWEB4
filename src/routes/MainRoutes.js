@@ -85,7 +85,7 @@ const AlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrug
 const UpdateAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/UpdateAlcoholAndDrugTesting')));
 const ReportAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/ReportAlcoholAndDrugTesting')));
 
-const Turner = Loadable(lazy(() => import('modules/Turner/Turner')));
+const ListTurner = Loadable(lazy(() => import('modules/Turner/ListTurner')));
 
 const Attention = Loadable(lazy(() => import('modules/Attention/Attention')));
 const UpdateAttention = Loadable(lazy(() => import('modules/Attention/UpdateAttention')));
@@ -415,9 +415,12 @@ const MainRoutes = {
         },
         /* Render de Turner */
         {
-            path: '/turner/add',
-            element: <Turner />
+            path: '/turner/list',
+            element: <ListTurner />
         },
+
+
+
         /* Render de HCO */
         {
             path: '/occupational-examination/list',
