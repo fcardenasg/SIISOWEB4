@@ -365,7 +365,7 @@ const OccupationalExamination = () => {
                 const frRies = GetRiesgos(frPunta, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
                 setRiesgo({
                     dxRiesgo: frRies.dxRiesgo,
-                    riesgoAbsoluto: lsEmployee.nameGenero === 'HOMBRE' ? frRies.riesgoAbsolutoH : frRies.riesgoAbsolutoM,
+                    riesgoAbsoluto: lsEmployee.nameGenero === 'MASCULINO' ? frRies.riesgoAbsolutoH : frRies.riesgoAbsolutoM,
                     riesgoRelativo: frRies.riesgoRelativo
                 });
             } else {
