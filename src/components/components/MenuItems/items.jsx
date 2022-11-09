@@ -4,13 +4,19 @@ import {
   IconGenderBigender,
 } from '@tabler/icons';
 
+import ContactMailIcon from '@mui/icons-material/ContactMail';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import PrintIcon from '@mui/icons-material/Print';
+import InsertChartIcon from '@mui/icons-material/InsertChart';
+import GetAppIcon from '@mui/icons-material/GetApp';
+
 import { ColorDrummondltd } from 'themes/colors';
 
 
 export const itemsMenu = [
   {
     title: "Personal",
-    subtitle: "Empleados,Expats,Contratistas,                 Practicantes y Visitantes",
+    subtitle: "Empleados,Expats,Practicantes y Contratistas",
     icon: IconUser,
     selected: true,
     url: '/employee/list',
@@ -19,23 +25,23 @@ export const itemsMenu = [
   {
     title: "Atención",
     subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
-    icon: IconGenderBigender,
+    icon: ContactMailIcon,
     selected: true,
     url: '/attention/list',
-    color: ColorDrummondltd.OrangeDrummond
+    color: ColorDrummondltd.RedDrummond
   },
   {
     title: "Programación",
     subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
-    icon: IconSchool,
+    icon: PendingActionsIcon,
     selected: true,
     url: '/programming/list',
-    color: ColorDrummondltd.GreenDrummond
+    color: ColorDrummondltd.RedDrummond
   },
   {
     title: "Reimpresión",
     subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
-    icon: IconSchool,
+    icon: PrintIcon,
     selected: false,
     url: '/reprint/list',
     color: ColorDrummondltd.GrayDrummond
@@ -43,18 +49,18 @@ export const itemsMenu = [
   {
     title: "Indicadores",
     subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
-    icon: IconSchool,
+    icon: InsertChartIcon,
     selected: false,
     url: '/indicators/view',
-    color: ColorDrummondltd.BlueSeDrummond
+    color: ColorDrummondltd.GrayDrummond
   },
   {
     title: "Exportar",
     subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
-    icon: IconSchool,
+    icon: GetAppIcon,
     selected: false,
     url: '/export/list',
-    color: ColorDrummondltd.BlueSeDrummond
+    color: ColorDrummondltd.GrayDrummond
   }
 ];
 

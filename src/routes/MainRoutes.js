@@ -862,7 +862,7 @@ const MainRoutes = {
             element: <DashboardDefault />
         },
         {
-            path: '/dashboard/analytics',
+            path: '/indicators/view',
             element: <DashboardAnalytics />
         }
     ]

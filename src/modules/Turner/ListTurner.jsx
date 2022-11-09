@@ -211,10 +211,10 @@ const ListTurner = () => {
     const handleSound = (nombre) => {
 
         let mensaje = new SpeechSynthesisUtterance();
-        mensaje.voice = ;
+        mensaje.voice = 1;
         mensaje.volume = 1;
         mensaje.rate = 1;
-        mensaje.text = textoAEscuchar;
+/*         mensaje.text = textoAEscuchar; */
         mensaje.pitch = 1;
     }
 
@@ -277,7 +277,7 @@ const ListTurner = () => {
                         rowCount={lsAttention.length}
                         theme={theme}
                         selected={selected}
-                        onClick={handleDelete}
+                   /*      onClick={handleDelete} */
                     />
                     <TableBody>
                         {stableSort(lsAttention, getComparator(order, orderBy))

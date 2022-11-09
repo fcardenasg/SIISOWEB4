@@ -20,10 +20,10 @@ const dashboard = {
             breadcrumbs: false
         },
         {
-            id: 'analytics',
-            title: <FormattedMessage id="analytics" />,
+            id: 'Indicadores',
+            title: <FormattedMessage id="Indicadores" />,
             type: 'item',
-            url: '/dashboard/analytics',
+            url: '/indicators/view',
             icon: icons.IconDeviceAnalytics,
             breadcrumbs: false
         }

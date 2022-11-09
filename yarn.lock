@@ -3230,7 +3230,7 @@
   dependencies:
     "agora-rtc-sdk-ng" "^4.3.0"
 
-"agora-rtc-sdk-ng@^4.3.0":
+"agora-rtc-sdk-ng@^4.14.2", "agora-rtc-sdk-ng@^4.3.0":
   "integrity" "sha512-i3xy4wks8webXh0IAYcurIYD/6mqnonw0n+vBS3JcxcqPi38ksrADCBO0BKw+mhB9PNPP3yGG45SaUBqTxGYBw=="
   "resolved" "https://registry.npmjs.org/agora-rtc-sdk-ng/-/agora-rtc-sdk-ng-4.14.2.tgz"
   "version" "4.14.2"
