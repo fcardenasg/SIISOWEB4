@@ -101,7 +101,7 @@ const headCells = [
         id: 'id',
         numeric: false,
         label: 'Foto',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'documento',
@@ -265,8 +265,8 @@ const ListEmployee = () => {
 
     /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('nombres');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -281,7 +281,7 @@ const ListEmployee = () => {
         try {
             const lsServer = await GetAllEmployee(0, 0);
             setEmployee(lsServer.data);
-            setRows(lsServer.data.entities);
+            setRows(lsServer.data);
         } catch (error) {
             console.log(error);
         }
