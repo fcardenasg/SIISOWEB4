@@ -83,32 +83,31 @@ const ExportInfirmary = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                     <ExcelSheet data={lsData} name="Listado de Nota de Enfermería">
                                         <ExcelColumn label="Nro Atencion" value="id" />
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
+                                        <ExcelColumn label="Tipo Atención" value="nameTiAtencion" />
                                         <ExcelColumn label="Atención" value="nameAtencion" />
-
+                                        <ExcelColumn label="Contingencia" value="nameContingencia" />   
                                         <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Nombres" value="nameEmpleado" />
+                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                        <ExcelColumn label="Genero" value="nameGenero" />
+                                        <ExcelColumn label="Motivo" value="nameMotivo" />
                                         <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNacimi)} />
+                                        <ExcelColumn label="EPS" value="nameEps" />
+                                        <ExcelColumn label="Sede Atención" value="nameSede" />
+                                        <ExcelColumn label="Empresa" value="nameEmpresa" />   
                                         <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
                                         <ExcelColumn label="Departamento" value="nameDepartamento" />
                                         <ExcelColumn label="Area" value="nameArea" />
                                         <ExcelColumn label="Roster Position" value="nameCargo" />
-                                        <ExcelColumn label="Grupo" value="nameGrupo" />
-                                        <ExcelColumn label="EPS" value="nameEps" />
-                                        <ExcelColumn label="Genero" value="nameGenero" />
-                                        <ExcelColumn label="Empresa" value="nameEmpresa" />
-                                        <ExcelColumn label="Contingencia" value="nameContingencia" />
-
-                                        <ExcelColumn label="DX1" value="dx1" />
-                                        <ExcelColumn label="Nombre Dx1" value="nameDx1" />
-                                        <ExcelColumn label="DX2" value="dx2" />
-                                        <ExcelColumn label="Nombre Dx2" value="nameDx2" />
-                                        <ExcelColumn label="DX3" value="dx3" />
+                                        <ExcelColumn label="General Position" value="nameGeneralPosition" />
+                                        <ExcelColumn label="Grupo" value="nameGrupo" />                        
+                                        <ExcelColumn label="Nombre Dx1" value="nameDx1" />       
+                                        <ExcelColumn label="Nombre Dx2" value="nameDx2" />               
                                         <ExcelColumn label="Nombre Dx3" value="nameDx3" />
-
                                         <ExcelColumn label="Procedimientos" value="procedimientos" />
-                                        <ExcelColumn label="Sede Atiende" value="nameSede" />
-                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
                                         <ExcelColumn label="Nota Enfermedad" value="notaEnfermedad" />
+                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
+    
                                     </ExcelSheet>
                                 </ExcelFile> : ''
                             }

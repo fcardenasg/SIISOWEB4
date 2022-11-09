@@ -84,20 +84,20 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Tipo Atención" value="nameTiAtencion" />
+                                        <ExcelColumn label="Genero" value="nameGenero" />
+                                        <ExcelColumn label="Motivo" value="nameMotivo" />
+                                        <ExcelColumn label="Tipo Asesoría" value="nameTipoAsesoria" />  
                                         <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNacimi)} />
+                                        <ExcelColumn label="EPS" value="nameEps" />
+                                        <ExcelColumn label="Sede Atención" value="nameSede" />
+                                        <ExcelColumn label="Tipo Atención" value="nameTiAtencion" />
+                                        <ExcelColumn label="Empresa" value="nameEmpresa" />   
                                         <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
                                         <ExcelColumn label="Departamento" value="nameDepartamento" />
                                         <ExcelColumn label="Area" value="nameArea" />
                                         <ExcelColumn label="Roster Position" value="nameCargo" />
                                         <ExcelColumn label="General Position" value="nameGeneralPosition" />
                                         <ExcelColumn label="Grupo" value="nameGrupo" />
-                                        <ExcelColumn label="EPS" value="nameEps" />
-                                        <ExcelColumn label="Genero" value="nameGenero" />
-                                        <ExcelColumn label="Empresa" value="nameEmpresa" />
-                                        <ExcelColumn label="Motivo" value="nameMotivo" />
-                                        <ExcelColumn label="Sede Atención" value="nameSede" />
-                                        <ExcelColumn label="Tipo Asesoría" value="nameTipoAsesoria" />
                                         <ExcelColumn label="Descripción" value="motivo" />
                                         <ExcelColumn label="Recomendaciones" value="recomendaciones" />
                                         <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />

@@ -83,31 +83,30 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Nro Atencion" value="id" />
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                         <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Motivo" value="nameAtencion" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNacimiento)} />
+                                        <ExcelColumn label="Genero" value="nameGenero" />
+                                        <ExcelColumn label="Motivo" value="nameAtencion" />
+                                        <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNacimiento)} />       
+                                        <ExcelColumn label="EPS" value="nameEps" />
+                                        <ExcelColumn label="Sede Atención" value="nameSede" />                            
+                                        <ExcelColumn label="Empresa" value="nameEmpresa" />
                                         <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
                                         <ExcelColumn label="Departamento" value="nameDepartamentoTrabajo" />
                                         <ExcelColumn label="Area" value="nameArea" />
                                         <ExcelColumn label="Roster Position" value="nameCargo" />
-
-                                        <ExcelColumn label="DX1" value="dx1" />
-                                        <ExcelColumn label="Nombre Dx1" value="nameDx1" />
-                                        <ExcelColumn label="DX2" value="dx2" />
-                                        <ExcelColumn label="Nombre Dx2" value="nameDx2" />
-                                        <ExcelColumn label="DX3" value="dx3" />
-                                        <ExcelColumn label="Nombre Dx3" value="nameDx3" />
-
                                         <ExcelColumn label="General Position" value="namePosicion" />
                                         <ExcelColumn label="Grupo" value="nameGrupo" />
-                                        <ExcelColumn label="EPS" value="nameEps" />
-                                        <ExcelColumn label="Genero" value="nameGenero" />
-                                        <ExcelColumn label="Empresa" value="nameEmpresa" />
-                                        <ExcelColumn label="Sede Atención" value="nameSede" />
+                                        <ExcelColumn label="Nombre Dx1" value="nameDx1" />
+                                        <ExcelColumn label="Nombre Dx2" value="nameDx2" />
+                                        <ExcelColumn label="Nombre Dx3" value="nameDx3" />
+                                        <ExcelColumn label="Concepto de Aptitud" value="nameConceptoActitudID" />
+                                        <ExcelColumn label="Concepto Trabajo en Altura" value="nameConceptoActitudNETA" />
+                                        <ExcelColumn label="Concepto en Espacios Confinados" value="nameIdConceptoEspacioConfinado" />
+                                        <ExcelColumn label="Interpretación Framingham" value="interpretacionFRA" />
                                         <ExcelColumn label="Descripción" value="observacionID" />
                                         <ExcelColumn label="Recomendaciones" value="recomendacionesID" />
                                         <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
+                                        <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                     </ExcelSheet>
                                 </ExcelFile> : ''
                             }
