@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-// Componentes de Material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
@@ -30,8 +29,6 @@ import {
     Modal
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-
-// Import de proyectos
 
 import BodyEmployee from './ViewEmployee';
 import { Message, TitleButton } from 'components/helpers/Enums';
@@ -283,7 +280,7 @@ const ListEmployee = () => {
     async function GetAll() {
         try {
             const lsServer = await GetAllEmployee(0, 0);
-            setEmployee(lsServer.data.entities);
+            setEmployee(lsServer.data);
             setRows(lsServer.data.entities);
         } catch (error) {
             console.log(error);
