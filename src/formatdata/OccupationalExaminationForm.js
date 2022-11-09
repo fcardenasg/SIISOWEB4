@@ -21,7 +21,7 @@ export function PostOccupationalExamination(
 
     fumabaHB = false, cigarrillosDiasFumabaHB = 0, aniosCigaFumabaHB = 0, mesesCigaFumabaHB = 0, observacionFumabaHB = "",
     practicaDeporteHB = false, idFrecuenciaDeporteHB = DefaultValue.SINREGISTRO_GLOBAL, idCualDeporteHB = DefaultValue.SINREGISTRO_GLOBAL,
-    observacionPracticaDeporHB = 0, hobbiesPasatiempoHB = false, cualHobbiesHB = "",
+    observacionPracticaDeporHB = "", hobbiesPasatiempoHB = false, cualHobbiesHB = "",
     consumeBebidasAlcoholicasHB = false, idFrecuenciaBebidaAlHB = DefaultValue.SINREGISTRO_GLOBAL, cualBebidasAlHB = "",
     fobiasHB = false, tipoFobiaHB = "", cualFobiaHB = "",
 
