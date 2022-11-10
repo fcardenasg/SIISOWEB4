@@ -374,7 +374,7 @@ const ListCytology = () => {
                                 <ExcelColumn label="Motivo" value="nameMotivo" />
                                 <ExcelColumn label="Conducta" value="nameConductaClasificacion" />                     
                                 <ExcelColumn label="Conclusión" value="nameConclusion" />
-                                <ExcelColumn label="Proveedor" value="iidProveedor" />
+                                <ExcelColumn label="Proveedor" value="nameProveedor" />
                                 <ExcelColumn label="Observaciones" value="observacion" />
                                 <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
@@ -460,7 +460,23 @@ const ListCytology = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idMotivo}
+                                                {row.nameEmpleado}
+                                            </Typography>
+                                        </TableCell>
+
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameMotivo}
                                             </Typography>
                                         </TableCell>
 
@@ -475,7 +491,7 @@ const ListCytology = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idConductaClasificacion}
+                                                {row.nameConductaClasificacion}
                                             </Typography>
                                         </TableCell>
 

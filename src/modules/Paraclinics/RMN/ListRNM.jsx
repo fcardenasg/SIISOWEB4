@@ -375,7 +375,7 @@ const ListRNM = () => {
                                 <ExcelColumn label="Motivo" value="nameMotivo" />
                                 <ExcelColumn label="Conducta" value="nameConductaClasificacion" />                     
                                 <ExcelColumn label="Conclusión" value="nameConclusion" />
-                                <ExcelColumn label="Proveedor" value="iidProveedor" />
+                                <ExcelColumn label="Proveedor" value="nameProveedor" />
                                 <ExcelColumn label="Observaciones" value="observacion" />
                                 <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
