@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { DeleteParaclinics,GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
@@ -36,7 +36,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { DeleteParaclinics,GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
@@ -78,13 +77,19 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'idMotivo',
+        id: 'nameEmpleado',
+        numeric: false,
+        label: 'Nombre',
+        align: 'left'
+    },
+    {
+        id: 'nameMotivo',
         numeric: false,
         label: 'Motivo',
         align: 'left'
     },
     {
-        id: 'idConductaClasificacion',
+        id: 'nameConductaClasificacion',
         numeric: false,
         label: 'Clasifiacacion ILO',
         align: 'left'
@@ -247,7 +252,7 @@ const ListRXTORAX = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'idMotivo', 'idConductaClasificacion', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento','nameEmpleado', 'nameMotivo', 'nameConductaClasificacion', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -365,11 +370,11 @@ const ListRXTORAX = () => {
                             <ExcelSheet data={rxtorax} name="RX TORAX">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="idConductaClasificacion" />
-                                <ExcelColumn label="Conducta" value="idConductaClasificacion" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Clasifiacación ILO" value="idConclusion" />
-                                <ExcelColumn label="Proveedor" value="iidProveedor" />
+                                <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                <ExcelColumn label="Motivo" value="nameMotivo" />
+                                <ExcelColumn label="Conducta" value="nameConductaClasificacion" />          
+                                <ExcelColumn label="Conclusión" value="nameConclusion" />
+                                <ExcelColumn label="Proveedor" value="nameProveedor" />
                                 <ExcelColumn label="Observaciones" value="observacion" />
                                 <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
@@ -455,9 +460,10 @@ const ListRXTORAX = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idMotivo}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
+
 
                                         <TableCell
                                             component="th"
@@ -470,7 +476,25 @@ const ListRXTORAX = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idConductaClasificacion}
+                                                {row.nameMotivo}
+                                            </Typography>
+                                        </TableCell>
+
+
+
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameConductaClasificacion}
                                             </Typography>
                                         </TableCell>
 

@@ -24,6 +24,7 @@ import {
     Typography,
     Button
 } from '@mui/material';
+import { GetAllMedicines, DeleteMedicines } from 'api/clients/MedicinesClient';
 import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 
@@ -39,7 +40,7 @@ import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
-import { GetAllMedicines, DeleteMedicines } from 'api/clients/MedicinesClient';
+
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -224,7 +225,7 @@ const ListMedicines = () => {
                 setRows(lsServer.data.entities);
             }
         } catch (error) {
-            console.log(error);
+     
         }
     }
 

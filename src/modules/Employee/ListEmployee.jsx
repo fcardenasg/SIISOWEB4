@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
+import { GetAllEmployee, DeleteEmployee, GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
@@ -28,14 +29,12 @@ import {
     Avatar,
     Modal
 } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
 
+import { visuallyHidden } from '@mui/utils';
 import BodyEmployee from './ViewEmployee';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
-import { GetAllEmployee, DeleteEmployee, GetByIdEmployee } from 'api/clients/EmployeeClient';
 
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';

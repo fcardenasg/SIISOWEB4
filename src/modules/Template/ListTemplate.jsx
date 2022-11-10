@@ -316,7 +316,7 @@ const ListTemplate = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+     
         }
     }
 
