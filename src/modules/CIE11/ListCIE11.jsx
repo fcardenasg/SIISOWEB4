@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { GetAllCIE11, DeleteCIE11 } from 'api/clients/CIE11Client';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactExport from "react-export-excel";
@@ -29,7 +30,7 @@ import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { GetAllCIE11, DeleteCIE11 } from 'api/clients/CIE11Client';
+
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
