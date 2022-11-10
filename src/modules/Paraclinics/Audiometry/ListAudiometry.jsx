@@ -78,13 +78,13 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'documento',
+        id: 'nameEmpleado',
         numeric: false,
         label: 'Nombres',
         align: 'center'
     }, 
     {
-        id: 'idMotivo',
+        id: 'nameMotivo',
         numeric: false,
         label: 'Motivo',
         align: 'left'
@@ -248,7 +248,7 @@ const ListAudiometry = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'idMotivo', 'idProveedor', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento','nameEmpleado','nameMotivo', 'idProveedor', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -262,7 +262,6 @@ const ListAudiometry = () => {
                 }
                 return matches;
             });
-            setLaboratory(newRows);
         } else {
             setLaboratory(rows);
         }
@@ -365,27 +364,14 @@ const ListAudiometry = () => {
                         } filename="Audiometrías">
                             <ExcelSheet data={laboratory} name="Audiometrías">
                                 <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Fecha" value="fecha" />
+                                <ExcelColumn label="Fecha" value="fecha" />                    
                                 <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="documento" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Proveedor" value="idProveedor" />
-                                <ExcelColumn label="Observaciones" value="observacion" />
-
-                                <ExcelColumn label="Nombre" value="documento" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Proveedor" value="idProveedor" />
-                                <ExcelColumn label="Observaciones" value="observacion" />
-                                <ExcelColumn label="Nombre" value="documento" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Proveedor" value="idProveedor" />
-                                <ExcelColumn label="Observaciones" value="observacion" />
-                                <ExcelColumn label="Nombre" value="documento" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Proveedor" value="idProveedor" />
-                                <ExcelColumn label="Observaciones" value="observacion" />
-
-
+                                <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                <ExcelColumn label="Motivo" value="nameMotivo" />
+                                <ExcelColumn label="Conducta" value="nameConductaClasificacion" />                     
+                                <ExcelColumn label="Conclusión" value="nameConclusion" />
+                                <ExcelColumn label="Proveedor" value="nameProveedor" />  
+                                <ExcelColumn label="DX" value="nameDxAUDIO" />
                                 <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
                                 <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
@@ -470,7 +456,23 @@ const ListAudiometry = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idMotivo}
+                                                {row.nameEmpleado}
+                                            </Typography>
+                                        </TableCell>
+
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameMotivo}
                                             </Typography>
                                         </TableCell>
 
@@ -485,7 +487,7 @@ const ListAudiometry = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idConductaClasificacion}
+                                                {row.nameConductaClasificacion}
                                             </Typography>
                                         </TableCell>
 

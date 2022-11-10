@@ -370,6 +370,7 @@ const ListRNM = () => {
                         } filename="RNM">
                             <ExcelSheet data={rnm} name="RNM">
                                 <ExcelColumn label="Id" value="id" />
+                                <ExcelColumn label="Fecha" value="fecha" />  
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombre" value="nameEmpleado" />
                                 <ExcelColumn label="Motivo" value="nameMotivo" />

@@ -370,12 +370,13 @@ const ListPSA = () => {
                         } filename="PSA">
                             <ExcelSheet data={psa} name="PSA">
                                 <ExcelColumn label="Id" value="id" />
+                                <ExcelColumn label="Fecha" value="fecha" />  
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombre" value="nameEmpleado" />
                                 <ExcelColumn label="Motivo" value="nameMotivo" />
                                 <ExcelColumn label="Conducta" value="nameConductaClasificacion" />                     
                                 <ExcelColumn label="Conclusión" value="nameConclusion" />
-                                <ExcelColumn label="Proveedor" value="iidProveedor" />
+                                <ExcelColumn label="Proveedor" value="nameProveedor" />
                                 <ExcelColumn label="Observaciones" value="observacion" />
                                 <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />

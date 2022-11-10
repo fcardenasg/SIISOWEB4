@@ -245,14 +245,14 @@ const ListCytology = () => {
     }, [])
 
     const handleSearch = (event) => {
-        const newString = event?.target.value;
+        const newString = event?.targetnameMotivo.value;
         setSearch(newString || '');
 
         if (newString) {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameEmpleado','nameMotivo', 'nameConductaClasificacion', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'nameEmpleado','', 'nameConductaClasificacion', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -369,6 +369,7 @@ const ListCytology = () => {
                         } filename="Citología">
                             <ExcelSheet data={cytology} name="Citología">
                                 <ExcelColumn label="Id" value="id" />
+                                <ExcelColumn label="Fecha" value="fecha" />  
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombre" value="nameEmpleado" />
                                 <ExcelColumn label="Motivo" value="nameMotivo" />

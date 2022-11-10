@@ -78,13 +78,19 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'idMotivo',
+        id: 'nameEmpleado',
+        numeric: false,
+        label: 'Nombre',
+        align: 'left'
+    },
+    {
+        id: 'nameMotivo',
         numeric: false,
         label: 'Motivo',
         align: 'left'
     },
     {
-        id: 'idConductaClasificacion',
+        id: 'nameConductaClasificacion',
         numeric: false,
         label: 'Conducta',
         align: 'left'
@@ -247,7 +253,7 @@ const ListElectro = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'idMotivo', 'idConductaClasificacion', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'nameEmpleado','nameMotivo', 'nameConductaClasificacion', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -365,10 +371,10 @@ const ListElectro = () => {
                             <ExcelSheet data={electro} name="Electro Cardiograma">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="idConductaClasificacion" />
-                                <ExcelColumn label="Conducta" value="idConductaClasificacion" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Conclusión" value="idConclusion" />
+                                <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                <ExcelColumn label="Motivo" value="nameMotivo" />
+                                <ExcelColumn label="Conducta" value="nameConductaClasificacion" />                     
+                                <ExcelColumn label="Conclusión" value="nameConclusion" />
                                 <ExcelColumn label="Proveedor" value="iidProveedor" />
                                 <ExcelColumn label="Observaciones" value="observacion" />
                                 <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
@@ -455,7 +461,7 @@ const ListElectro = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idMotivo}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -470,7 +476,22 @@ const ListElectro = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idConductaClasificacion}
+                                                {row.nameMotivo}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameConductaClasificacion}
                                             </Typography>
                                         </TableCell>
 
