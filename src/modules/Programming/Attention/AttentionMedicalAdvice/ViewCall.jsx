@@ -11,11 +11,13 @@ import {
 
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import SubCard from 'ui-component/cards/SubCard';
-import VideoCall from './VideoCall';
 import { Fragment } from 'react';
 import { AgoraVideoPlayer } from "agora-rtc-react";
 
 import { channelName, config, useClient, useMicrophoneAndCameraTracks } from './settings';
+
+import PhoneCallbackIcon from '@mui/icons-material/PhoneCallback';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 function ElevationScroll({ children, window }) {
@@ -38,10 +40,6 @@ ElevationScroll.propTypes = {
     children: PropTypes.node,
     window: PropTypes.object
 };
-
-
-
-
 
 const ViewCall = ({ onCancel, ...others }) => {
     const theme = useTheme();
@@ -108,14 +106,6 @@ const ViewCall = ({ onCancel, ...others }) => {
 
     return (
         <ElevationScroll {...others}>
-            {/* <ControlModal
-                maxWidth="md"
-                open={open}
-                onClose={() => setOpen(false)}
-                title="DICTADO POR VOZ"
-            >
-                <VideoCall setInCall={setInCall} />
-            </ControlModal> */}
 
             <SubCard
                 title="VIDEO LLAMADA"
@@ -128,6 +118,17 @@ const ViewCall = ({ onCancel, ...others }) => {
             >
                 <PerfectScrollbar style={{ height: 'calc(80vh - 80px)', overflowX: 'hidden' }}>
                     <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                            <Button variant="outlined" color='error' fullWidth onClick={onCancel} startIcon={<PhoneCallbackIcon />}>
+                                Colgar
+                            </Button>
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <Button variant="outlined" color='error' fullWidth onClick={onCancel} startIcon={<CloseIcon />}>
+                                Cerrar
+                            </Button>
+                        </Grid>
 
                         {inCall ? (
                             <Fragment>
@@ -135,30 +136,18 @@ const ViewCall = ({ onCancel, ...others }) => {
                                     <Typography>
                                         DOCTOR
                                     </Typography>
+
+                                    <AgoraVideoPlayer videoTrack={tracks[1]} style={{ height: "800%", width: "100%" }} />
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Grid container style={{ height: "100%" }}>
-                                        <Grid item xs={12}>
-                                            {start && tracks &&
-                                                <AgoraVideoPlayer
-                                                    videoTrack={tracks[1]}
-                                                    style={{ height: '100%', width: '40%' }}
-                                                />
-                                            }
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-
-                                {/* <Grid item xs={12}>
                                     <Typography>
                                         PACIENTE
                                     </Typography>
+
+                                    <AgoraVideoPlayer videoTrack={tracks[1]} style={{ height: "800%", width: "100%" }} />
                                 </Grid>
 
-                                <Grid item xs={12}>
-                                    CAMARA 2
-                                </Grid> */}
                             </Fragment>
                         ) : (
                             <Grid item xs={12}>
@@ -172,14 +161,12 @@ const ViewCall = ({ onCancel, ...others }) => {
                                             Join Call
                                         </Button>
                                     </Grid>
-                                    <Grid item xs={6}>
-                                        <Button variant="outlined" fullWidth onClick={onCancel}>
-                                            Cancel
-                                        </Button>
-                                    </Grid>
+
                                 </Grid>
                             </Grid>
                         )}
+
+
                     </Grid>
                 </PerfectScrollbar>
             </SubCard>

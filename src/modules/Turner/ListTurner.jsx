@@ -212,6 +212,12 @@ const ListTurner = () => {
         let mensaje = new SpeechSynthesisUtterance();
         mensaje.text = `${nombre} pasar al consultorio 3`;
         //mensaje.voice = speechSynthesis.getVoices()[2];
+
+        var agnesIndex = speechSynthesis.getVoices().findIndex(function (voice) {
+            return voice.name;
+        });
+
+        console.log("tipos de voces = ", agnesIndex);
         speechSynthesis.speak(mensaje);
     }
 
