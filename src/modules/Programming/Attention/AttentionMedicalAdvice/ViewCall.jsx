@@ -14,6 +14,11 @@ import SubCard from 'ui-component/cards/SubCard';
 import { Fragment } from 'react';
 import { AgoraVideoPlayer } from "agora-rtc-react";
 
+import MicIcon from '@mui/icons-material/Mic';
+import MicOffIcon from '@mui/icons-material/MicOff';
+import VideocamIcon from '@mui/icons-material/Videocam';
+import VideocamOffIcon from '@mui/icons-material/VideocamOff';
+
 import { channelName, config, useClient, useMicrophoneAndCameraTracks } from './settings';
 
 import PhoneCallbackIcon from '@mui/icons-material/PhoneCallback';
@@ -46,6 +51,7 @@ const ViewCall = ({ onCancel, ...others }) => {
     const [inCall, setInCall] = useState(false);
     const [start, setStart] = useState(false);
     const [users, setUsers] = useState([]);
+    const [trackState, setTrackState] = useState({ video: true, audio: true });
 
     const client = useClient();
     const { ready, tracks } = useMicrophoneAndCameraTracks();
@@ -104,6 +110,29 @@ const ViewCall = ({ onCancel, ...others }) => {
         getControles();
     }, [channelName, client, ready, tracks]);
 
+    const mute = async (type) => {
+        if (type === "audio") {
+            await tracks[0].setEnabled(!trackState.audio);
+            setTrackState((ps) => {
+                return { ...ps, audio: !ps.audio };
+            });
+        } else if (type === "video") {
+            await tracks[1].setEnabled(!trackState.video);
+            setTrackState((ps) => {
+                return { ...ps, video: !ps.video };
+            });
+        }
+    };
+
+    const leaveChannel = async () => {
+        await client.leave();
+        client.removeAllListeners();
+        tracks[0].close();
+        tracks[1].close();
+        setStart(false);
+        setInCall(false);
+    };
+
     return (
         <ElevationScroll {...others}>
 
@@ -112,14 +141,14 @@ const ViewCall = ({ onCancel, ...others }) => {
                 sx={{
                     background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.grey[50],
                     width: '100%',
-                    maxWidth: 600 /* 342 */
+                    maxWidth: 600
                 }}
                 container={false}
             >
                 <PerfectScrollbar style={{ height: 'calc(80vh - 80px)', overflowX: 'hidden' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
-                            <Button variant="outlined" color='error' fullWidth onClick={onCancel} startIcon={<PhoneCallbackIcon />}>
+                            <Button variant="outlined" color='error' fullWidth onClick={leaveChannel} startIcon={<PhoneCallbackIcon />}>
                                 Colgar
                             </Button>
                         </Grid>
@@ -132,21 +161,43 @@ const ViewCall = ({ onCancel, ...others }) => {
 
                         {inCall ? (
                             <Fragment>
-                                <Grid item xs={12}>
+
+                                <Grid item xs={12} sx={{ mb: 18 }}>
                                     <Typography>
                                         DOCTOR
                                     </Typography>
 
-                                    <AgoraVideoPlayer videoTrack={tracks[1]} style={{ height: "800%", width: "100%" }} />
+                                    <AgoraVideoPlayer
+                                        videoTrack={tracks[1]}
+                                        style={{ height: "800%", width: "100%" }}
+                                    />
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography>
-                                        PACIENTE
-                                    </Typography>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={3}>
+                                            <Button
+                                                variant="contained"
+                                                color={trackState.audio ? "primary" : "error"}
+                                                onClick={() => mute("audio")}
+                                            >
+                                                {trackState.audio ? <MicIcon /> : <MicOffIcon />}
+                                            </Button>
+                                        </Grid>
 
-                                    <AgoraVideoPlayer videoTrack={tracks[1]} style={{ height: "800%", width: "100%" }} />
+                                        <Grid item xs={3}>
+                                            <Button
+                                                variant="contained"
+                                                color={trackState.video ? "primary" : "error"}
+                                                onClick={() => mute("video")}
+                                            >
+                                                {trackState.video ? <VideocamIcon /> : <VideocamOffIcon />}
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
+
+
 
                             </Fragment>
                         ) : (
