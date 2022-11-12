@@ -78,13 +78,13 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'documento',
+        id: 'nameEmpleado',
         numeric: false,
         label: 'Nombres',
         align: 'center'
     }, 
     {
-        id: 'idMotivo',
+        id: 'nameMotivo',
         numeric: false,
         label: 'Motivo',
         align: 'left'
@@ -248,7 +248,7 @@ const ListLaboratory = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'idMotivo', 'idProveedor', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'nameEmpleado', 'nameMotivo', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -367,25 +367,10 @@ const ListLaboratory = () => {
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Fecha" value="fecha" />
                                 <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="documento" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Proveedor" value="idProveedor" />
+                                <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                <ExcelColumn label="Motivo" value="nameMotivo" />
+                                <ExcelColumn label="Proveedor" value="nameProveedor" />
                                 <ExcelColumn label="Observaciones" value="observacion" />
-
-                                <ExcelColumn label="Nombre" value="documento" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Proveedor" value="idProveedor" />
-                                <ExcelColumn label="Observaciones" value="observacion" />
-                                <ExcelColumn label="Nombre" value="documento" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Proveedor" value="idProveedor" />
-                                <ExcelColumn label="Observaciones" value="observacion" />
-                                <ExcelColumn label="Nombre" value="documento" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Proveedor" value="idProveedor" />
-                                <ExcelColumn label="Observaciones" value="observacion" />
-
-
                                 <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
                                 <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
@@ -470,7 +455,7 @@ const ListLaboratory = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idMotivo}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -485,7 +470,7 @@ const ListLaboratory = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idConductaClasificacion}
+                                                {row.nameMotivo}
                                             </Typography>
                                         </TableCell>
 

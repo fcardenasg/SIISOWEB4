@@ -89,6 +89,12 @@ const headCells = [
         label: 'Motivo',
         align: 'left'
     },
+    {
+        id: 'nameProveedor',
+        numeric: false,
+        label: 'Proveedor',
+        align: 'left'
+    },
     
     {
         id: 'fecha',
@@ -248,7 +254,7 @@ const ListAudiometry = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento','nameEmpleado','nameMotivo', 'idProveedor', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento','nameEmpleado','nameMotivo', 'nameProveedor', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -487,7 +493,7 @@ const ListAudiometry = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameConductaClasificacion}
+                                                {row.nameProveedor}
                                             </Typography>
                                         </TableCell>
 
