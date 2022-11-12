@@ -224,6 +224,7 @@ const Attention = () => {
                 var resultMapsTipoAE = [];
                 /* AQUÍ SE CARGAN LAS ATENCIONES MÉDICAS */
                 var lsGetTipoAtencionMedica = await GetAllBySubTipoCatalogo(0, 0, 'SER01', 5);
+
                 if (lsGetTipoAtencionMedica.status === 200) {
                     resultMapsTipoAM = lsGetTipoAtencionMedica.data.entities.map((item) => ({
                         value: item.idCatalogo,

@@ -39,7 +39,7 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAdvice, InsertAdvice } from 'api/clients/AdviceClient';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -55,7 +55,6 @@ import { generateReport } from './Report/MedicalAdvice';
 import { GetByMail } from 'api/clients/UserClient';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import SelectOnChange from 'components/input/SelectOnChange';
-import ViewCall from './ViewCall';
 import UpdateAttMedicalAdvice from './AttentionMedicalAdvice/UpdateAttMedicalAdvice';
 
 const DetailIcons = [
@@ -111,7 +110,11 @@ const UpdateMedicalAdvice = () => {
     const [newMedicalFormula, setNewMedicalFormula] = useState(false);
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
     const [numberId, setNumberId] = useState('');
+
     const [textTipoAsesoria, setTextTipoAsesoria] = useState('');
+    const [textMotivo, setTextMotivo] = useState('');
+    const [lsSubmotivo, setLsSubmotivo] = useState([]);
+    const [lsCodigoMotivo, setLsCodigoMotivo] = useState([]);
 
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
@@ -154,6 +157,7 @@ const UpdateMedicalAdvice = () => {
                 label: item.nombre
             }));
             setLsMotivo(resultMotivo);
+            setLsCodigoMotivo(lsServerMotivo.data.entities);
         } catch (error) { }
     }
 
@@ -214,12 +218,30 @@ const UpdateMedicalAdvice = () => {
         setUserEdit(true);
     }
 
+    const handleMotivo = async (event) => {
+        try {
+            setTextMotivo(event.target.value);
+
+            var lsResulCode = String(lsCodigoMotivo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+            var lsSubmotivo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+
+            if (lsSubmotivo.status === 200) {
+                var submotivo = lsSubmotivo.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+
+                setLsSubmotivo(submotivo);
+            }
+        } catch (error) { }
+    }
+
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.ASESORIA_MEDICA,
                 lsAtencion.sede, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
-                DefaultData.SINREGISTRO_GLOBAL, textTipoAsesoria, datos.idMotivo, DefaultData.SINREGISTRO_GLOBAL, datos.observaciones,
-                datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()),
+                DefaultData.SINREGISTRO_GLOBAL, textTipoAsesoria, textMotivo, datos.idSubmotivo, DefaultData.SINREGISTRO_GLOBAL,
+                datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()),
                 '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -355,7 +377,7 @@ const UpdateMedicalAdvice = () => {
                                 <Grid item xs={12}>
                                     <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
                                         <Grid container spacing={2}>
-                                            <Grid item xs={textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ? 3 : 4}>
+                                            <Grid item xs={6}>
                                                 <FormProvider {...methods}>
                                                     <InputDatePicker
                                                         label="Fecha"
@@ -365,19 +387,29 @@ const UpdateMedicalAdvice = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={4}>
+                                            <Grid item xs={6}>
+                                                <SelectOnChange
+                                                    name="idMotivo"
+                                                    label="Motivo"
+                                                    onChange={handleMotivo}
+                                                    value={textMotivo}
+                                                    options={lsMotivo}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={6}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
-                                                        name="idMotivo"
-                                                        label="Motivo"
-                                                        defaultValue={lsAtencion.motivo}
-                                                        options={lsMotivo}
+                                                        name="idSubmotivo"
+                                                        label="Submotivo"
+                                                        options={lsSubmotivo}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={4}>
+                                            <Grid item xs={textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ? 5 : 6}>
                                                 <SelectOnChange
                                                     name="idTipoAsesoria"
                                                     label="Tipo de Asesoría"

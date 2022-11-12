@@ -5,13 +5,13 @@ import {
     Grid,
     useMediaQuery,
     Typography,
+    Tooltip
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
 
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
 import BiotechIcon from '@mui/icons-material/Biotech';
@@ -37,9 +37,9 @@ import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format'
 import { SNACKBAR_OPEN } from 'store/actions';
 import { GetByIdAdvice, UpdateAdvices } from 'api/clients/AdviceClient';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetByIdCatalog } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData } from 'components/helpers/Enums';
+import { CodCatalogo, DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -48,10 +48,45 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { useParams } from 'react-router-dom';
 import Cargando from 'components/loading/Cargando';
+import SelectOnChange from 'components/input/SelectOnChange';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReport } from 'modules/Programming/Attention/Report/MedicalAdvice';
+import ViewPDF from 'components/components/ViewPDF';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
+]
+
+const dataMedicalOrders = [
+    {
+        open: true,
+        title: 'Formula',
+        subtitle: 'Formula',
+        iconPrimary: AssignmentIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Laboratorio',
+        subtitle: 'Laboratorio',
+        iconPrimary: BiotechIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Imagenes',
+        subtitle: 'Imagenes',
+        iconPrimary: ImageIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
+    {
+        open: true,
+        title: 'Examenes',
+        subtitle: 'Examenes',
+        iconPrimary: FolderOpenIcon,
+        color: ColorDrummondltd.RedDrummond,
+    },
 ]
 
 const UpdateMedicalAdvice = () => {
@@ -63,9 +98,6 @@ const UpdateMedicalAdvice = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
 
-    const [buttonReport, setButtonReport] = useState(false);
-
-    const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
     const [titleModal, setTitleModal] = useState('');
@@ -73,6 +105,17 @@ const UpdateMedicalAdvice = () => {
     const [newMedicalFormula, setNewMedicalFormula] = useState(false);
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
     const [numberId, setNumberId] = useState('');
+    const [textSubmotivo, setTextSubmotivo] = useState('');
+
+    const [resultData, setResultData] = useState([]);
+    const [lsSubmotivo2, setLsSubmotivo2] = useState([]);
+    const [textTipoAsesoria, setTextTipoAsesoria] = useState('');
+    const [textMotivo, setTextMotivo] = useState('');
+    const [lsSubmotivo, setLsSubmotivo] = useState([]);
+    const [lsCodigoMotivo, setLsCodigoMotivo] = useState([]);
+    const [dataPDF, setDataPDF] = useState(null);
+    const [openReport, setOpenReport] = useState(false);
+    const [userEdit, setUserEdit] = useState(false);
 
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
@@ -80,13 +123,11 @@ const UpdateMedicalAdvice = () => {
     const [medicalAdvice, setMedicalAdvice] = useState([]);
     const [lsMotivo, setLsMotivo] = useState([]);
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
-    const [contingencia, setContingencia] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const lsAtencion = [{ nameAtencion: 'ASESORÍA MÉDICA', id: 0 }];
 
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors } = methods;
 
@@ -94,18 +135,26 @@ const UpdateMedicalAdvice = () => {
         try {
             const lsServerMedicalAdvice = await GetByIdAdvice(id);
             if (lsServerMedicalAdvice.status === 200) {
-                setButtonReport(true);
                 setMedicalAdvice(lsServerMedicalAdvice.data);
                 handleLoadingDocument(lsServerMedicalAdvice.data.documento);
                 setDocumento(lsServerMedicalAdvice.data.documento);
-            }
 
-            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_TIPOASESORIA);
-            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setTipoAsesoria(resultTipoAsesoria);
+                setTextMotivo(lsServerMedicalAdvice.data.idMotivo);
+                setTextTipoAsesoria(lsServerMedicalAdvice.data.idTipoAsesoria);
+                setTextSubmotivo(lsServerMedicalAdvice.data.idSubmotivo);
+
+                var datos = await GetByIdCatalog(lsServerMedicalAdvice.data.idSubmotivo);
+                if (datos.status === 200) {
+                    const resultSubmotivo = [
+                        {
+                            value: datos.data.idCatalogo,
+                            label: datos.data.nombre
+                        }
+                    ]
+
+                    setLsSubmotivo(resultSubmotivo);
+                }
+            }
 
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoMedica);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
@@ -113,9 +162,39 @@ const UpdateMedicalAdvice = () => {
                 label: item.nombre
             }));
             setLsMotivo(resultMotivo);
+            setLsCodigoMotivo(lsServerMotivo.data.entities);
+
+            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_TIPOASESORIA);
+            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setTipoAsesoria(resultTipoAsesoria);
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const handleCallClick = () => {
+        setUserEdit(true);
+    }
+
+    const handleMotivo = async (event) => {
+        try {
+            setTextMotivo(event.target.value);
+
+            var lsResulCode = String(lsCodigoMotivo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+            var lsSubmotivo1 = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+
+            if (lsSubmotivo1.status === 200) {
+                var submotivo = lsSubmotivo1.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+
+                setLsSubmotivo2(submotivo);
+            }
+        } catch (error) { }
     }
 
     const handleLoadingDocument = async (idEmployee) => {
@@ -139,18 +218,30 @@ const UpdateMedicalAdvice = () => {
         }
     }
 
+    const handleClickReport = async () => {
+        try {
+            const idReport = resultData.length !== 0 ? resultData.id : id;
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAdvice(idReport);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
     useEffect(() => {
         GetAll();
     }, [])
 
     const handleClick = async (datos) => {
         try {
-            const DatosVacios = "Sin Registro";
+            const textSubmotivo_DATA = textSubmotivo === '' ? datos.idSubmotivo : textSubmotivo;
 
-            const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), DefaultData.ASESORIA_MEDICA, lsEmployee.sede,
-                DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
-                DefaultData.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo, DefaultData.SINREGISTRO_GLOBAL,
-                datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()),
+            const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), 0, DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA,
+                lsAtencion.sede, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                DefaultValue.SINREGISTRO_GLOBAL, textTipoAsesoria, textMotivo, textSubmotivo_DATA, DefaultValue.SINREGISTRO_GLOBAL,
+                datos.observaciones, datos.recomendaciones, '', DefaultValue.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()),
                 '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -164,7 +255,8 @@ const UpdateMedicalAdvice = () => {
                         alertSeverity: 'success',
                         close: false,
                         transition: 'SlideUp'
-                    })
+                    });
+                    setResultData(result.data);
                 }
             }
         } catch (error) {
@@ -191,6 +283,15 @@ const UpdateMedicalAdvice = () => {
                     >
                         <ListPlantillaAll />
                     </FullScreenDialog>
+
+                    <ControlModal
+                        title="VISTA DE REPORTE"
+                        open={openReport}
+                        onClose={() => setOpenReport(false)}
+                        maxWidth="xl"
+                    >
+                        <ViewPDF dataPDF={dataPDF} />
+                    </ControlModal>
 
                     <ControlModal
                         maxWidth="md"
@@ -245,45 +346,20 @@ const UpdateMedicalAdvice = () => {
                     </ControlModal>
 
                     <DialogFormula
-                        title="Ordenes Medicas"
+                        title="TIPO DE ORDEN"
                         open={openFormula}
                         handleCloseDialog={() => setOpenFormula(false)}
                     >
-                        <Grid item xs={12}>
-                            <HoverSocialCard
-                                onClick={() => { setOpenForm(true); setTitleModal('Formula') }}
-                                secondary="Formula"
-                                iconPrimary={AssignmentIcon}
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <HoverSocialCard
-                                onClick={() => { setOpenForm(true); setTitleModal('Laboratorio') }}
-                                secondary="Laboratorio"
-                                iconPrimary={BiotechIcon}
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <HoverSocialCard
-                                onClick={() => { setOpenForm(true); setTitleModal('Imagenes') }}
-                                secondary="Imagenes"
-                                iconPrimary={ImageIcon}
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <HoverSocialCard
-                                onClick={() => { setOpenForm(true); setTitleModal('Examenes') }}
-                                secondary="Examenes"
-                                iconPrimary={FolderOpenIcon}
-                                color={ColorDrummondltd.RedDrummond}
-                            />
-                        </Grid>
+                        {dataMedicalOrders.map(data =>
+                            <Grid item xs={12}>
+                                <HoverSocialCard
+                                    onClick={() => { setOpenForm(data.open); setTitleModal(data.title) }}
+                                    secondary={data.subtitle}
+                                    iconPrimary={data.iconPrimary}
+                                    color={data.color}
+                                />
+                            </Grid>
+                        )}
                     </DialogFormula>
 
                     <Grid container spacing={2}>
@@ -301,41 +377,73 @@ const UpdateMedicalAdvice = () => {
                         <Grid item xs={12}>
                             <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={4}>
+                                    <Grid item xs={6}>
                                         <FormProvider {...methods}>
                                             <InputDatePicker
                                                 label="Fecha"
                                                 name="fecha"
-                                                defaultValue={medicalAdvice.fecha}
+                                                defaultValue={new Date()}
                                             />
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idMotivo"
-                                                label="Motivo"
-                                                defaultValue={medicalAdvice.idMotivo}
-                                                options={lsMotivo}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
+                                    <Grid item xs={6}>
+                                        <SelectOnChange
+                                            name="idMotivo"
+                                            label="Motivo"
+                                            onChange={handleMotivo}
+                                            value={textMotivo}
+                                            options={lsMotivo}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
-                                    <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idTipoAsesoria"
-                                                label="Tipo de Asesoría"
-                                                defaultValue={medicalAdvice.idTipoAsesoria}
-                                                options={tipoAsesoria}
+                                    <Grid item xs={6}>
+                                        {lsSubmotivo2.length !== 0 ? (
+                                            <SelectOnChange
+                                                name="idSubmotivo"
+                                                label="Submotivo"
+                                                value={textSubmotivo}
+                                                options={lsSubmotivo2}
+                                                onChange={(e) => setTextSubmotivo(e.target.value)}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
-                                        </FormProvider>
+                                        ) : (
+                                            <FormProvider {...methods}>
+                                                <InputSelect
+                                                    name="idSubmotivo"
+                                                    label="Submotivo"
+                                                    defaultValue={medicalAdvice.idSubmotivo}
+                                                    disabled
+                                                    options={lsSubmotivo}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </FormProvider>
+                                        )}
                                     </Grid>
+
+                                    <Grid item xs={textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ? 5 : 6}>
+                                        <SelectOnChange
+                                            name="idTipoAsesoria"
+                                            label="Tipo de Asesoría"
+                                            onChange={(e) => setTextTipoAsesoria(e?.target.value)}
+                                            value={textTipoAsesoria}
+                                            options={tipoAsesoria}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+
+                                    {textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ?
+                                        <Grid item xs={1}>
+                                            <Tooltip title="Video llamada">
+                                                <Button color="error" sx={{ color: ColorDrummondltd.RedDrummond }}
+                                                    variant="outlined" onClick={handleCallClick}
+                                                >
+                                                    <VideoCallIcon fontSize="large" />
+                                                </Button>
+                                            </Tooltip>
+                                        </Grid> : null
+                                    }
 
                                     <Grid item xs={12}>
                                         <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
@@ -409,15 +517,14 @@ const UpdateMedicalAdvice = () => {
                                         </AnimateButton>
                                     </Grid>
 
-                                    {buttonReport ?
-                                        <Grid item xs={2}>
-                                            <AnimateButton>
-                                                <Button variant="outlined" fullWidth onClick={() => navigate(`/medicaladvice/report/${id}`)}>
-                                                    {TitleButton.Imprimir}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid> : <div />
-                                    }
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" disabled={resultData.length === 0 ? true : false}
+                                                fullWidth onClick={handleClickReport}>
+                                                {TitleButton.Imprimir}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
