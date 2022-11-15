@@ -408,6 +408,13 @@ const application = {
                     breadcrumbs: false
                 },
                 {
+                    id: 'snackbar',
+                    title: <FormattedMessage id="Apuntes Personales" />,
+                    type: 'item',
+                    url: '/personal-notes/list',
+                    breadcrumbs: false
+                },
+                {
                     id: 'medicines',
                     title: <FormattedMessage id="Medicamentos" />,
                     type: 'item',

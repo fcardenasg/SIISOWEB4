@@ -1,5 +1,5 @@
 export const Url = {
-    Base: 'https://siiso.eastus.cloudapp.azure.com:44347/',
+    Base: 'https://localhost:44347/',
 
     //'https://localhost:44347/', https://siiso.eastus.cloudapp.azure.com:44347/
 
@@ -80,6 +80,9 @@ export const Url = {
 
     Asesorias: 'api/Asesorias',
     AsesoriasId: 'api/Asesorias/id',
+
+    ApuntesPersonales: 'api/ApuntesPersonales',
+    ApuntesPersonalesId: 'api/ApuntesPersonales/id',
 
     Accidentalidad: 'api/Accidentalidad',
     AccidentalidadId: 'api/Accidentalidad/id',

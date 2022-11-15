@@ -202,6 +202,10 @@ const ViewReprint = Loadable(lazy(() => import('modules/Reprint/ViewReprint')));
 const ViewExport = Loadable(lazy(() => import('modules/Export/ViewExport')));
 const Indicators = Loadable(lazy(() => import('modules/Indicators/Indicators')));
 
+const ListPersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/ListPersonalNotes')));
+const PersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/PersonalNotes')));
+const UpdatePersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/UpdatePersonalNotes')));
+
 const ForgotPassword = Loadable(lazy(() => import('modules/ForgotPassword/ForgotPassword')));
 
 const MainRoutes = {
@@ -239,12 +243,22 @@ const MainRoutes = {
             element: <Catalog />
         },
         {
-            path: '/catalog/report',
-            element: <ReportCatalog />
-        },
-        {
             path: '/catalog/update/:id',
             element: <UpdateCatalog />
+        },
+
+        /* Render de Apuntes personales */
+        {
+            path: '/personal-notes/list',
+            element: <ListPersonalNotes />
+        },
+        {
+            path: '/personal-notes/add',
+            element: <PersonalNotes />
+        },
+        {
+            path: '/personal-notes/update/:id',
+            element: <UpdatePersonalNotes />
         },
         /* Render de Empresas */
         {

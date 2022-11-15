@@ -45,6 +45,7 @@ import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'co
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -59,6 +60,7 @@ import UpdateAttMedicalAdvice from './AttentionMedicalAdvice/UpdateAttMedicalAdv
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Apuntes Personales', icons: <NoteAltIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
@@ -102,6 +104,7 @@ const UpdateMedicalAdvice = () => {
     const [documento, setDocumento] = useState('');
 
     const [timeWait, setTimeWait] = useState(false);
+    const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
@@ -271,6 +274,14 @@ const UpdateMedicalAdvice = () => {
                 open={openTemplate}
                 title="LISTADO DE PLANTILLA"
                 handleClose={() => setOpenTemplate(false)}
+            >
+                <ListPlantillaAll />
+            </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openApuntesPersonales}
+                title="APUNTES PERSONALES"
+                handleClose={() => setOpenApuntesPersonales(false)}
             >
                 <ListPlantillaAll />
             </FullScreenDialog>
@@ -457,8 +468,14 @@ const UpdateMedicalAdvice = () => {
 
                                                         <DetailedIcon
                                                             title={DetailIcons[1].title}
-                                                            onClick={() => setOpen(true)}
+                                                            onClick={() => setOpenApuntesPersonales(true)}
                                                             icons={DetailIcons[1].icons}
+                                                        />
+
+                                                        <DetailedIcon
+                                                            title={DetailIcons[2].title}
+                                                            onClick={() => setOpen(true)}
+                                                            icons={DetailIcons[2].icons}
                                                         />
                                                     </Grid>
 
@@ -485,8 +502,14 @@ const UpdateMedicalAdvice = () => {
 
                                                         <DetailedIcon
                                                             title={DetailIcons[1].title}
-                                                            onClick={() => setOpen(true)}
+                                                            onClick={() => setOpenApuntesPersonales(true)}
                                                             icons={DetailIcons[1].icons}
+                                                        />
+
+                                                        <DetailedIcon
+                                                            title={DetailIcons[2].title}
+                                                            onClick={() => setOpen(true)}
+                                                            icons={DetailIcons[2].icons}
                                                         />
                                                     </Grid>
                                                 </SubCard>
