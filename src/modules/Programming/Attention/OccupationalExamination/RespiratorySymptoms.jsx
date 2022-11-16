@@ -7,8 +7,6 @@ import {
 
 import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 import Accordion from 'components/accordion/Accordion';
-import ControllerListen from 'components/controllers/ControllerListen';
-import ControlModal from 'components/controllers/ControlModal';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { FormProvider } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
@@ -16,21 +14,21 @@ import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
-import FullScreenDialog from 'components/controllers/FullScreenDialog'
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
 
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DetailedIcon from 'components/controllers/DetailedIcon';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Apuntes Personales', icons: <NoteAltIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const RespiratorySymptoms = ({ setOpenTemplate, setOpen, setOpenHistory, setCadenaHistory, ...methods }) => {
+const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpen, setOpenHistory, setCadenaHistory, ...methods }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -1142,14 +1140,20 @@ const RespiratorySymptoms = ({ setOpenTemplate, setOpen, setOpenHistory, setCade
 
                         <DetailedIcon
                             title={DetailIcons[1].title}
-                            onClick={() => setOpen(true)}
+                            onClick={() => setOpenApuntesPersonales(true)}
                             icons={DetailIcons[1].icons}
                         />
 
                         <DetailedIcon
                             title={DetailIcons[2].title}
-                            onClick={() => { setOpenHistory(true); setCadenaHistory('SINTOMAS_RESPIRATORIOS') }}
+                            onClick={() => setOpen(true)}
                             icons={DetailIcons[2].icons}
+                        />
+
+                        <DetailedIcon
+                            title={DetailIcons[3].title}
+                            onClick={() => { setOpenHistory(true); setCadenaHistory('SINTOMAS_RESPIRATORIOS') }}
+                            icons={DetailIcons[3].icons}
                         />
                     </Grid>
                 </Grid>

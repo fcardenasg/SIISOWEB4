@@ -50,9 +50,12 @@ import TableAntecedentes from './TableEmo/TableAntecedentes';
 import RespiratorySymptoms from './RespiratorySymptoms';
 import TableExamenesPara from './TableEmo/TableExamenesPara';
 import { MessageError } from 'components/alert/AlertAll';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Apuntes Personales', icons: <NoteAltIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
@@ -103,6 +106,7 @@ const Emo = ({
     const [openHistory, setOpenHistory] = useState(false);
     const [cadenaHistory, setCadenaHistory] = useState('');
 
+    const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
     const [lsDeporte, setLsDeporte] = useState([]);
     const [lsTipoFobia, setLsTipoFobia] = useState([]);
     const [lsFrecuencia, setLsFrecuencia] = useState([]);
@@ -368,6 +372,14 @@ const Emo = ({
                 handleClose={() => setOpenTemplate(false)}
             >
                 <ListPlantillaAll />
+            </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openApuntesPersonales}
+                title="APUNTES PERSONALES"
+                handleClose={() => setOpenApuntesPersonales(false)}
+            >
+                <ListPersonalNotesAll />
             </FullScreenDialog>
 
             <FullScreenDialog
@@ -743,14 +755,20 @@ const Emo = ({
 
                                 <DetailedIcon
                                     title={DetailIcons[1].title}
-                                    onClick={() => setOpen(true)}
+                                    onClick={() => setOpenApuntesPersonales(true)}
                                     icons={DetailIcons[1].icons}
                                 />
 
                                 <DetailedIcon
                                     title={DetailIcons[2].title}
-                                    onClick={() => { setOpenHistory(true); setCadenaHistory('ANTECEDENTES_PATALOGICOS') }}
+                                    onClick={() => setOpen(true)}
                                     icons={DetailIcons[2].icons}
+                                />
+
+                                <DetailedIcon
+                                    title={DetailIcons[3].title}
+                                    onClick={() => { setOpenHistory(true); setCadenaHistory('ANTECEDENTES_PATALOGICOS') }}
+                                    icons={DetailIcons[3].icons}
                                 />
                             </Grid>
                         </SubCard>
@@ -915,14 +933,20 @@ const Emo = ({
 
                                 <DetailedIcon
                                     title={DetailIcons[1].title}
-                                    onClick={() => setOpen(true)}
+                                    onClick={() => setOpenApuntesPersonales(true)}
                                     icons={DetailIcons[1].icons}
                                 />
 
                                 <DetailedIcon
                                     title={DetailIcons[2].title}
-                                    onClick={() => { setOpenHistory(true); setCadenaHistory('ACCIDENTES_TRABAJO') }}
+                                    onClick={() => setOpen(true)}
                                     icons={DetailIcons[2].icons}
+                                />
+
+                                <DetailedIcon
+                                    title={DetailIcons[3].title}
+                                    onClick={() => { setOpenHistory(true); setCadenaHistory('ACCIDENTES_TRABAJO') }}
+                                    icons={DetailIcons[3].icons}
                                 />
                             </Grid>
                         </SubCard>
@@ -974,14 +998,20 @@ const Emo = ({
 
                                 <DetailedIcon
                                     title={DetailIcons[1].title}
-                                    onClick={() => setOpen(true)}
+                                    onClick={() => setOpenApuntesPersonales(true)}
                                     icons={DetailIcons[1].icons}
                                 />
 
                                 <DetailedIcon
                                     title={DetailIcons[2].title}
-                                    onClick={() => { setOpenHistory(true); setCadenaHistory('ACCIDENTES_TRABAJO') }}
+                                    onClick={() => setOpen(true)}
                                     icons={DetailIcons[2].icons}
+                                />
+
+                                <DetailedIcon
+                                    title={DetailIcons[3].title}
+                                    onClick={() => { setOpenHistory(true); setCadenaHistory('ACCIDENTES_TRABAJO') }}
+                                    icons={DetailIcons[3].icons}
                                 />
                             </Grid>
                         </SubCard>
@@ -1948,14 +1978,20 @@ const Emo = ({
 
                                 <DetailedIcon
                                     title={DetailIcons[1].title}
-                                    onClick={() => setOpen(true)}
+                                    onClick={() => setOpenApuntesPersonales(true)}
                                     icons={DetailIcons[1].icons}
                                 />
 
                                 <DetailedIcon
                                     title={DetailIcons[2].title}
-                                    onClick={() => { setOpenHistory(true); setCadenaHistory('REVISION_SISTEMAS') }}
+                                    onClick={() => setOpen(true)}
                                     icons={DetailIcons[2].icons}
+                                />
+
+                                <DetailedIcon
+                                    title={DetailIcons[3].title}
+                                    onClick={() => { setOpenHistory(true); setCadenaHistory('REVISION_SISTEMAS') }}
+                                    icons={DetailIcons[3].icons}
                                 />
                             </Grid>
 
@@ -2607,14 +2643,20 @@ const Emo = ({
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
                                     />
 
                                     <DetailedIcon
                                         title={DetailIcons[2].title}
-                                        onClick={() => { setOpenHistory(true); setCadenaHistory('EXPLORACION_MORFOLOGICA') }}
+                                        onClick={() => setOpen(true)}
                                         icons={DetailIcons[2].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[3].title}
+                                        onClick={() => { setOpenHistory(true); setCadenaHistory('EXPLORACION_MORFOLOGICA') }}
+                                        icons={DetailIcons[3].icons}
                                     />
                                 </Grid>
                             </SubCard>
@@ -2893,14 +2935,20 @@ const Emo = ({
 
                                 <DetailedIcon
                                     title={DetailIcons[1].title}
-                                    onClick={() => setOpen(true)}
+                                    onClick={() => setOpenApuntesPersonales(true)}
                                     icons={DetailIcons[1].icons}
                                 />
 
                                 <DetailedIcon
                                     title={DetailIcons[2].title}
-                                    onClick={() => { setOpenHistory(true); setCadenaHistory('EXPLORACION_FUNCIONAL') }}
+                                    onClick={() => setOpen(true)}
                                     icons={DetailIcons[2].icons}
+                                />
+
+                                <DetailedIcon
+                                    title={DetailIcons[3].title}
+                                    onClick={() => { setOpenHistory(true); setCadenaHistory('EXPLORACION_FUNCIONAL') }}
+                                    icons={DetailIcons[3].icons}
                                 />
                             </Grid>
                         </SubCard>
@@ -2958,16 +3006,16 @@ const Emo = ({
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[1].title}
+                                            title={DetailIcons[2].title}
                                             onClick={() => setOpen(true)}
-                                            icons={DetailIcons[1].icons}
+                                            icons={DetailIcons[2].icons}
                                         />
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[2].title}
+                                            title={DetailIcons[3].title}
                                             onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_RXTORAX) }}
-                                            icons={DetailIcons[2].icons}
+                                            icons={DetailIcons[3].icons}
                                         />
                                     </Grid>
                                 </Grid>
@@ -3018,16 +3066,16 @@ const Emo = ({
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[1].title}
+                                            title={DetailIcons[2].title}
                                             onClick={() => setOpen(true)}
-                                            icons={DetailIcons[1].icons}
+                                            icons={DetailIcons[2].icons}
                                         />
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[2].title}
+                                            title={DetailIcons[3].title}
                                             onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_ESPIROMETRIA) }}
-                                            icons={DetailIcons[2].icons}
+                                            icons={DetailIcons[3].icons}
                                         />
                                     </Grid>
                                 </Grid>
@@ -3078,16 +3126,16 @@ const Emo = ({
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[1].title}
+                                            title={DetailIcons[2].title}
                                             onClick={() => setOpen(true)}
-                                            icons={DetailIcons[1].icons}
+                                            icons={DetailIcons[2].icons}
                                         />
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[2].title}
+                                            title={DetailIcons[3].title}
                                             onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_AUDIOMETRIA) }}
-                                            icons={DetailIcons[2].icons}
+                                            icons={DetailIcons[3].icons}
                                         />
                                     </Grid>
                                 </Grid>
@@ -3138,16 +3186,16 @@ const Emo = ({
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[1].title}
+                                            title={DetailIcons[2].title}
                                             onClick={() => setOpen(true)}
-                                            icons={DetailIcons[1].icons}
+                                            icons={DetailIcons[2].icons}
                                         />
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[2].title}
+                                            title={DetailIcons[3].title}
                                             onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_VISIOMETRIA) }}
-                                            icons={DetailIcons[2].icons}
+                                            icons={DetailIcons[3].icons}
                                         />
                                     </Grid>
                                 </Grid>
@@ -3198,16 +3246,16 @@ const Emo = ({
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[1].title}
+                                            title={DetailIcons[2].title}
                                             onClick={() => setOpen(true)}
-                                            icons={DetailIcons[1].icons}
+                                            icons={DetailIcons[2].icons}
                                         />
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[2].title}
+                                            title={DetailIcons[3].title}
                                             onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_LABORATORIO) }}
-                                            icons={DetailIcons[2].icons}
+                                            icons={DetailIcons[3].icons}
                                         />
                                     </Grid>
                                 </Grid>
@@ -3258,16 +3306,16 @@ const Emo = ({
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[1].title}
+                                            title={DetailIcons[2].title}
                                             onClick={() => setOpen(true)}
-                                            icons={DetailIcons[1].icons}
+                                            icons={DetailIcons[2].icons}
                                         />
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[2].title}
+                                            title={DetailIcons[3].title}
                                             onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_ELECTRO) }}
-                                            icons={DetailIcons[2].icons}
+                                            icons={DetailIcons[3].icons}
                                         />
                                     </Grid>
                                 </Grid>
@@ -3318,16 +3366,16 @@ const Emo = ({
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[1].title}
+                                            title={DetailIcons[2].title}
                                             onClick={() => setOpen(true)}
-                                            icons={DetailIcons[1].icons}
+                                            icons={DetailIcons[2].icons}
                                         />
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[2].title}
+                                            title={DetailIcons[3].title}
                                             onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_ELECTRO) }}
-                                            icons={DetailIcons[2].icons}
+                                            icons={DetailIcons[3].icons}
                                         />
                                     </Grid>
                                 </Grid>
@@ -3377,16 +3425,16 @@ const Emo = ({
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[1].title}
+                                            title={DetailIcons[2].title}
                                             onClick={() => setOpen(true)}
-                                            icons={DetailIcons[1].icons}
+                                            icons={DetailIcons[2].icons}
                                         />
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[2].title}
+                                            title={DetailIcons[3].title}
                                             onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_RNM) }}
-                                            icons={DetailIcons[2].icons}
+                                            icons={DetailIcons[3].icons}
                                         />
                                     </Grid>
                                 </Grid>
@@ -3437,16 +3485,16 @@ const Emo = ({
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[1].title}
+                                            title={DetailIcons[2].title}
                                             onClick={() => setOpen(true)}
-                                            icons={DetailIcons[1].icons}
+                                            icons={DetailIcons[2].icons}
                                         />
 
                                         <DetailedIcon
                                             xs={4}
-                                            title={DetailIcons[2].title}
+                                            title={DetailIcons[3].title}
                                             onClick={() => { setOpenParaclinico(true); setTextParaclinico(DefaultValue.PARACLINICO_RNM) }}
-                                            icons={DetailIcons[2].icons}
+                                            icons={DetailIcons[3].icons}
                                         />
                                     </Grid>
                                 </Grid>
@@ -3474,15 +3522,15 @@ const Emo = ({
                                     />
 
                                     <DetailedIcon
-                                        title={DetailIcons[1].title}
+                                        title={DetailIcons[2].title}
                                         onClick={() => setOpen(true)}
-                                        icons={DetailIcons[1].icons}
+                                        icons={DetailIcons[2].icons}
                                     />
 
                                     <DetailedIcon
-                                        title={DetailIcons[2].title}
+                                        title={DetailIcons[3].title}
                                         onClick={() => { setOpenHistory(true); setCadenaHistory('EXAMENES_PARACLINICOS') }}
-                                        icons={DetailIcons[2].icons}
+                                        icons={DetailIcons[3].icons}
                                     />
                                 </Grid>
                             </Grid>
@@ -3584,14 +3632,20 @@ const Emo = ({
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
                                     />
 
                                     <DetailedIcon
                                         title={DetailIcons[2].title}
-                                        onClick={() => { setOpenHistory(true); setCadenaHistory('IMPRESION_DIAGNOSTICA') }}
+                                        onClick={() => setOpen(true)}
                                         icons={DetailIcons[2].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[3].title}
+                                        onClick={() => { setOpenHistory(true); setCadenaHistory('IMPRESION_DIAGNOSTICA') }}
+                                        icons={DetailIcons[3].icons}
                                     />
                                 </Grid>
 
@@ -3619,14 +3673,20 @@ const Emo = ({
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
                                     />
 
                                     <DetailedIcon
                                         title={DetailIcons[2].title}
-                                        onClick={() => { setOpenHistory(true); setCadenaHistory('IMPRESION_DIAGNOSTICA') }}
+                                        onClick={() => setOpen(true)}
                                         icons={DetailIcons[2].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[3].title}
+                                        onClick={() => { setOpenHistory(true); setCadenaHistory('IMPRESION_DIAGNOSTICA') }}
+                                        icons={DetailIcons[3].icons}
                                     />
                                 </Grid>
 
@@ -3654,6 +3714,7 @@ const Emo = ({
                     <Accordion title={<><IconLungs />
                         <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">SINTOMAS RESPIRATORIOS</Typography></>}>
                         <RespiratorySymptoms
+                            setOpenApuntesPersonales={setOpenApuntesPersonales}
                             setCadenaHistory={setCadenaHistory}
                             setOpen={setOpen}
                             setOpenHistory={setOpenHistory}
@@ -3742,14 +3803,20 @@ const Emo = ({
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
                                     />
 
                                     <DetailedIcon
                                         title={DetailIcons[2].title}
-                                        onClick={() => { setOpenHistory(true); setCadenaHistory('NOTIFICACION_EMPRESA') }}
+                                        onClick={() => setOpen(true)}
                                         icons={DetailIcons[2].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[3].title}
+                                        onClick={() => { setOpenHistory(true); setCadenaHistory('NOTIFICACION_EMPRESA') }}
+                                        icons={DetailIcons[3].icons}
                                     />
                                 </Grid>
 
@@ -3777,14 +3844,20 @@ const Emo = ({
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
                                     />
 
                                     <DetailedIcon
                                         title={DetailIcons[2].title}
-                                        onClick={() => { setOpenHistory(true); setCadenaHistory('NOTIFICACION_EMPRESA') }}
+                                        onClick={() => setOpen(true)}
                                         icons={DetailIcons[2].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[3].title}
+                                        onClick={() => { setOpenHistory(true); setCadenaHistory('NOTIFICACION_EMPRESA') }}
+                                        icons={DetailIcons[3].icons}
                                     />
                                 </Grid>
 
@@ -3811,15 +3884,15 @@ const Emo = ({
                                     />
 
                                     <DetailedIcon
-                                        title={DetailIcons[1].title}
+                                        title={DetailIcons[2].title}
                                         onClick={() => setOpen(true)}
-                                        icons={DetailIcons[1].icons}
+                                        icons={DetailIcons[2].icons}
                                     />
 
                                     <DetailedIcon
-                                        title={DetailIcons[2].title}
+                                        title={DetailIcons[3].title}
                                         onClick={() => { setOpenHistory(true); setCadenaHistory('NOTIFICACION_EMPRESA') }}
-                                        icons={DetailIcons[2].icons}
+                                        icons={DetailIcons[3].icons}
                                     />
                                 </Grid>
 
@@ -4211,14 +4284,20 @@ const Emo = ({
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
                                     />
 
                                     <DetailedIcon
                                         title={DetailIcons[2].title}
-                                        onClick={() => { setOpenHistory(true); setCadenaHistory('NOTIFICACION_EMPLEADO') }}
+                                        onClick={() => setOpen(true)}
                                         icons={DetailIcons[2].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[3].title}
+                                        onClick={() => { setOpenHistory(true); setCadenaHistory('NOTIFICACION_EMPLEADO') }}
+                                        icons={DetailIcons[3].icons}
                                     />
                                 </Grid>
 
