@@ -54,9 +54,12 @@ import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { generateReportNursing } from './Report/Nursing';
 import { GetByMail } from 'api/clients/UserClient';
 import ViewPDF from 'components/components/ViewPDF';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Apuntes Personales', icons: <NoteAltIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
@@ -100,6 +103,7 @@ const UpdateNoteInfirmary = () => {
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsAtencionn, setLsAtencionn] = useState([]);
 
+    const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -397,6 +401,14 @@ const UpdateNoteInfirmary = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
+            <FullScreenDialog
+                open={openApuntesPersonales}
+                title="APUNTES PERSONALES"
+                handleClose={() => setOpenApuntesPersonales(false)}
+            >
+                <ListPersonalNotesAll />
+            </FullScreenDialog>
+
             <ControlModal
                 title="VISTA DE REPORTE"
                 open={openReport}
@@ -624,8 +636,14 @@ const UpdateNoteInfirmary = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
                                     />
                                 </Grid>
                             </Grid>

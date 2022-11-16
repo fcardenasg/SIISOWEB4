@@ -57,6 +57,7 @@ import { GetByMail } from 'api/clients/UserClient';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import SelectOnChange from 'components/input/SelectOnChange';
 import UpdateAttMedicalAdvice from './AttentionMedicalAdvice/UpdateAttMedicalAdvice';
+import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -283,7 +284,7 @@ const UpdateMedicalAdvice = () => {
                 title="APUNTES PERSONALES"
                 handleClose={() => setOpenApuntesPersonales(false)}
             >
-                <ListPlantillaAll />
+                <ListPersonalNotesAll />
             </FullScreenDialog>
 
             <ControlModal

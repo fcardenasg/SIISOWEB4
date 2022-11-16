@@ -56,9 +56,11 @@ import InputOnChange from 'components/input/InputOnChange';
 import ListExamenesPara from 'components/template/ListExamenesPara';
 import ListExamenesFisico from 'components/template/ListExamenesFisico';
 import SelectOnChange from 'components/input/SelectOnChange';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
 
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
+import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 
 const validationSchema = yup.object().shape({
     dx1: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -67,6 +69,7 @@ const validationSchema = yup.object().shape({
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Apuntes Personales', icons: <NoteAltIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
     { title: 'Ver Examenes Físicos', icons: <DirectionsRunIcon fontSize="small" /> },
     { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
@@ -110,6 +113,7 @@ const UpdateClinicHistory = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -366,6 +370,14 @@ const UpdateClinicHistory = () => {
             </FullScreenDialog>
 
             <FullScreenDialog
+                open={openApuntesPersonales}
+                title="APUNTES PERSONALES"
+                handleClose={() => setOpenApuntesPersonales(false)}
+            >
+                <ListPersonalNotesAll />
+            </FullScreenDialog>
+
+            <FullScreenDialog
                 open={openExamenFisico}
                 title="VISTA DE EXAMEN FÍSICO"
                 handleClose={() => setOpenExamenFisico(false)}
@@ -532,8 +544,14 @@ const UpdateClinicHistory = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
                                     />
                                 </Grid>
 
@@ -559,8 +577,14 @@ const UpdateClinicHistory = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
                                     />
                                 </Grid>
 
@@ -586,8 +610,14 @@ const UpdateClinicHistory = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
                                     />
                                 </Grid>
 
@@ -613,8 +643,14 @@ const UpdateClinicHistory = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
                                     />
                                 </Grid>
 
@@ -640,14 +676,20 @@ const UpdateClinicHistory = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
                                     />
 
                                     <DetailedIcon
                                         title={DetailIcons[2].title}
-                                        onClick={() => setOpenExamenFisico(true)}
+                                        onClick={() => setOpen(true)}
                                         icons={DetailIcons[2].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[3].title}
+                                        onClick={() => setOpenExamenFisico(true)}
+                                        icons={DetailIcons[3].icons}
                                     />
                                 </Grid>
 
@@ -673,14 +715,20 @@ const UpdateClinicHistory = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
                                     />
 
                                     <DetailedIcon
-                                        title={DetailIcons[3].title}
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[4].title}
                                         onClick={() => setOpenExamenParaclinico(true)}
-                                        icons={DetailIcons[3].icons}
+                                        icons={DetailIcons[4].icons}
                                     />
                                 </Grid>
                             </Grid>
@@ -778,8 +826,14 @@ const UpdateClinicHistory = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
                                     />
                                 </Grid>
                             </Grid>

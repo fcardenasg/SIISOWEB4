@@ -63,6 +63,8 @@ import ListExamenesFisico from 'components/template/ListExamenesFisico';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
+import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
 
 const validationSchema = yup.object().shape({
     dx1: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -71,6 +73,7 @@ const validationSchema = yup.object().shape({
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Apuntes Personales', icons: <NoteAltIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
     { title: 'Ver Examenes Físicos', icons: <DirectionsRunIcon fontSize="small" /> },
     { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
@@ -117,6 +120,7 @@ const UpdateEvolutionNote = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -374,6 +378,15 @@ const UpdateEvolutionNote = () => {
             </FullScreenDialog>
 
             <FullScreenDialog
+                open={openApuntesPersonales}
+                title="APUNTES PERSONALES"
+                handleClose={() => setOpenApuntesPersonales(false)}
+            >
+                <ListPersonalNotesAll />
+            </FullScreenDialog>
+
+
+            <FullScreenDialog
                 open={openExamen}
                 title="VISTA DE EXAMENES PARACLÍNICOS"
                 handleClose={() => setOpenExamen(false)}
@@ -546,38 +559,51 @@ const UpdateEvolutionNote = () => {
                                 </Grid>
                                 <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                                     <DetailedIcon
-                                        title={DetailIcons[0].title}
+                                        xs={1}
                                         onClick={() => setOpenTemplate(true)}
                                         icons={DetailIcons[0].icons}
                                     />
 
                                     <DetailedIcon
+                                        xs={1}
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
                                     />
+
                                     <DetailedIcon
+                                        xs={1}
                                         title={DetailIcons[2].title}
-                                        onClick={() => setOpenExamenFisico(true)}
+                                        onClick={() => setOpen(true)}
                                         icons={DetailIcons[2].icons}
                                     />
 
                                     <DetailedIcon
+                                        xs={1}
                                         title={DetailIcons[3].title}
-                                        onClick={() => setOpenExamen(true)}
+                                        onClick={() => setOpenExamenFisico(true)}
                                         icons={DetailIcons[3].icons}
                                     />
 
                                     <DetailedIcon
+                                        xs={1}
                                         title={DetailIcons[4].title}
-                                        onClick={() => setOpenVistaDisenio(true)}
+                                        onClick={() => setOpenExamen(true)}
                                         icons={DetailIcons[4].icons}
                                     />
 
                                     <DetailedIcon
+                                        xs={1}
                                         title={DetailIcons[5].title}
                                         onClick={() => setOpenVistaDisenio(true)}
                                         icons={DetailIcons[5].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        xs={1}
+                                        title={DetailIcons[6].title}
+                                        onClick={() => setOpenVistaDisenio(true)}
+                                        icons={DetailIcons[6].icons}
                                     />
                                 </Grid>
                             </Grid>
@@ -675,8 +701,14 @@ const UpdateEvolutionNote = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
                                     />
                                 </Grid>
                             </Grid>

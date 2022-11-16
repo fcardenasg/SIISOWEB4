@@ -39,9 +39,12 @@ import Cargando from 'components/loading/Cargando';
 import { generateReportPsycho } from './Report/Psychological';
 import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
+    { title: 'Apuntes Personales', icons: <NoteAltIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
@@ -52,6 +55,7 @@ const UpdatePsychological = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
+    const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
 
     const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
@@ -212,6 +216,14 @@ const UpdatePsychological = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
+            <FullScreenDialog
+                open={openApuntesPersonales}
+                title="APUNTES PERSONALES"
+                handleClose={() => setOpenApuntesPersonales(false)}
+            >
+                <ListPersonalNotesAll />
+            </FullScreenDialog>
+
             <ControlModal
                 maxWidth="md"
                 open={open}
@@ -333,8 +345,14 @@ const UpdatePsychological = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
                                     />
                                 </Grid>
 
@@ -360,8 +378,14 @@ const UpdatePsychological = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
                                     />
                                 </Grid>
 
@@ -387,8 +411,14 @@ const UpdatePsychological = () => {
 
                                     <DetailedIcon
                                         title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
+                                        onClick={() => setOpenApuntesPersonales(true)}
                                         icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
                                     />
                                 </Grid>
 
