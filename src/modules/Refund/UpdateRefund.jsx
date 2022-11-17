@@ -13,8 +13,6 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
 import BiotechIcon from '@mui/icons-material/Biotech';
@@ -25,7 +23,6 @@ import ImageIcon from '@mui/icons-material/Image';
 import ListMedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
-import ViewReport from 'modules/Programming/Attention/OccupationalExamination/Report/ViewReport';
 import DialogFormula from 'modules/Programming/Attention/OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 
@@ -241,7 +238,7 @@ const UpdateRefund = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ViewReport />
+                {/* <ViewReport /> */}
             </ControlModal>
 
             <ControlModal

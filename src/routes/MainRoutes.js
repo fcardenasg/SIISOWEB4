@@ -104,6 +104,10 @@ const ListCIE11 = Loadable(lazy(() => import('modules/CIE11/ListCIE11')));
 const CIE11 = Loadable(lazy(() => import('modules/CIE11/CIE11')));
 const UpdateCIE11 = Loadable(lazy(() => import('modules/CIE11/UpdateCIE11')));
 
+const ListAccidentRate = Loadable(lazy(() => import('modules/AccidentRate/ListAccidentRate')));
+const AccidentRate = Loadable(lazy(() => import('modules/AccidentRate/AccidentRate')));
+const UpdateAccidentRate = Loadable(lazy(() => import('modules/AccidentRate/UpdateAccidentRate')));
+
 const ListCharges = Loadable(lazy(() => import('modules/Charges/ListCharges')));
 const Charges = Loadable(lazy(() => import('modules/Charges/Charges')));
 const UpdateCharges = Loadable(lazy(() => import('modules/Charges/UpdateCharges')));
@@ -149,6 +153,10 @@ const UpdateAlcoholAndDrugTestings = Loadable(lazy(() => import('modules/Program
 const ListMedicines = Loadable(lazy(() => import('modules/Medicines/ListMedicines')));
 const UpdateMedicines = Loadable(lazy(() => import('modules/Medicines/UpdateMedicines')));
 const Medicines = Loadable(lazy(() => import('modules/Medicines/Medicines')));
+
+const ListRefund = Loadable(lazy(() => import('modules/Refund/ListRefund')));
+const Refund = Loadable(lazy(() => import('modules/Refund/Refund')));
+const UpdateRefund = Loadable(lazy(() => import('modules/Refund/UpdateRefund')));
 
 const ListUser = Loadable(lazy(() => import('modules/User/ListUser')));
 const UpdateUser = Loadable(lazy(() => import('modules/User/UpdateUser')));
@@ -245,6 +253,20 @@ const MainRoutes = {
         {
             path: '/catalog/update/:id',
             element: <UpdateCatalog />
+        },
+
+        /* Render de Reintegro laboral */
+        {
+            path: '/refund/list',
+            element: <ListRefund />
+        },
+        {
+            path: '/refund/add',
+            element: <Refund />
+        },
+        {
+            path: '/refund/update/:id',
+            element: <UpdateRefund />
         },
 
         /* Render de Apuntes personales */
@@ -507,6 +529,20 @@ const MainRoutes = {
         {
             path: '/cie11/update/:id',
             element: <UpdateCIE11 />
+        },
+
+        /* Render de Accidente de Trabajo */
+        {
+            path: '/accident-rate/list',
+            element: <ListAccidentRate />
+        },
+        {
+            path: '/accident-rate/add',
+            element: <AccidentRate />
+        },
+        {
+            path: '/accident-rate/update/:id',
+            element: <UpdateAccidentRate />
         },
 
         /* Render de Charges */

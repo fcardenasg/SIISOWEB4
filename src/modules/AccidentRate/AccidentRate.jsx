@@ -14,7 +14,6 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
 import ControlModal from 'components/controllers/ControlModal';
 
-import ViewReport from 'modules/Programming/Attention/OccupationalExamination/Report/ViewReport';
 import { FormProvider, useForm } from 'react-hook-form';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
@@ -300,7 +299,7 @@ const AccidentRate = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ViewReport />
+                
             </ControlModal>
 
             <Grid container spacing={2}>

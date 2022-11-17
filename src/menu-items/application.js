@@ -114,7 +114,6 @@ const application = {
                     url: '/customer/product-review',
                     breadcrumbs: false
                 },
-
                 {
                     id: 'product',
                     title: <FormattedMessage id="Medicina Laboral" />,
@@ -276,7 +275,7 @@ const application = {
                     url: '/Paraclinics/Cytology/list',
                     breadcrumbs: false
                 },
-              
+
             ]
         },
         {
@@ -311,44 +310,6 @@ const application = {
                     title: <FormattedMessage id="Masivas" />,
                     type: 'item',
                     url: '/forms/layouts/multi-column-forms'
-                },
-            ]
-        },
-        {
-            id: 'layouts',
-            title: 'Pandemias',
-            type: 'collapse',
-            icon: icons.IconVirus,
-            children: [
-                {
-                    id: 'frm-layouts',
-                    title: <FormattedMessage id="Registro Aislamiento" />,
-                    type: 'item',
-                    url: '/forms/layouts/layouts'
-                },
-                {
-                    id: 'frm-multi-column-forms',
-                    title: <FormattedMessage id="Vacunas" />,
-                    type: 'item',
-                    url: '/forms/layouts/multi-column-forms'
-                },
-                {
-                    id: 'frm-action-bar',
-                    title: <FormattedMessage id="Ordenes de Laboratorio" />,
-                    type: 'item',
-                    url: '/forms/layouts/action-bar'
-                },
-                {
-                    id: 'censo',
-                    title: <FormattedMessage id="Cuestionario y Censo" />,
-                    type: 'item',
-                    url: '/forms/layouts/sticky-action-bar'
-                },
-                {
-                    id: 'tablerocontrol',
-                    title: <FormattedMessage id="Tablero de Control" />,
-                    type: 'item',
-                    url: '/forms/layouts/sticky-action-bar'
                 },
             ]
         },

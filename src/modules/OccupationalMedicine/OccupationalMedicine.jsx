@@ -30,6 +30,7 @@ import SubCard from 'ui-component/cards/SubCard';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { InsertOccupationalMedicine } from 'api/clients/OccupationalMedicineClient';
+import InputDatePicker from 'components/input/InputDatePicker';
 
 const OccupationalMedicine = () => {
     const dispatch = useDispatch();
@@ -66,35 +67,6 @@ const OccupationalMedicine = () => {
     const [lsCie11, setLsCie11] = useState([]);
 
     const [documento, setDocumento] = useState('');
-    const [nombres, setNombres] = useState('');
-    const [email, setEmail] = useState('');
-    const [celular, setCelular] = useState('');
-    const [escolaridad, setEscolaridad] = useState('');
-    const [empresa, setEmpresa] = useState('');
-    const [sede, setSede] = useState('');
-    const [fechaNaci, setFechaNaci] = useState(null);
-    const [genero, setGenero] = useState('');
-    const [estadoCivil, setEstadoCivil] = useState('');
-    const [contacto, setContacto] = useState('');
-    const [telefonoContacto, setTelefonoContacto] = useState('');
-    const [fechaContrato, setFechaContrato] = useState(null);
-    const [tipoContrato, setTipoContrato] = useState('');
-    const [payStatus, setPayStatus] = useState('');
-    const [type, setType] = useState('');
-    const [rosterPosition, setRosterPosition] = useState('');
-    const [generalPosition, setGeneralPosition] = useState('');
-    const [departamento, setDepartamento] = useState('');
-    const [area, setArea] = useState('');
-    const [subArea, setSubArea] = useState('');
-    const [grupo, setGrupo] = useState('');
-    const [turno, setTurno] = useState('');
-    const [direccionResidencia, setDireccionResidencia] = useState('');
-    const [dptoResidencia, setDptoResidencia] = useState('');
-    const [municipioResidencia, setMunicipioResidencia] = useState('');
-    const [municipioNacido, setMunicipioNacido] = useState('');
-    const [dptoNacido, setDptoNacido] = useState('');
-    const [eps, setEps] = useState('');
-    const [afp, setAfp] = useState('');
 
     const [fechaRetiro, setFechaRetiro] = useState(new Date());
     const [fechaEntrega, setFechaEntrega] = useState(new Date());
@@ -121,7 +93,6 @@ const OccupationalMedicine = () => {
     const [fechaPagoRecalificadoInstaFinal, setFechaPagoRecalificadoInstaFinal] = useState(new Date());
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
     const { handleSubmit, errors, reset } = methods;
 
     async function GetAll() {
@@ -321,23 +292,7 @@ const OccupationalMedicine = () => {
         GetAll();
     }, [])
 
-    const CleanCombo = () => {
-        setLsSegmentoAfectado([]); setLsSubsegmento([]); setLsCie11([]); setSegmentoAfectado('');
-        setSubsegmento(''); setSegmentoAgrupado('');
 
-        setFechaRetiro(new Date()); setFechaEntrega(new Date()); setFechaEnvio(new Date()); setFechaCalificacionEps(new Date()); setFechaCalifiOrigenARL(new Date());
-        setFechaCalificacionPclARL(new Date()); setFechaEstructuraARL(new Date()); setFechaRecalificacionPclARL(new Date());
-        setFechaEstructuraRecalificadaARL(new Date()); setFechaCalificaOrigenJRC(new Date()); setFechaCalificacionPclJRC(new Date());
-        setFechaEstructuraPclJRC(new Date()); setFechaRecalificacionPclJRC(new Date()); setFechaRecalificacionEstJRC(new Date());
-        setFechaCalificaOrigenJNC(new Date()); setFechaCalificacionPclJNC(new Date()); setFechaEstructuraJNC(new Date()); setFechaRecalificacionPclJNC(new Date());
-        setFechaEstructuracionOrigenInstaFinal(new Date()); setFechaCalificacionPclInstFinal(new Date()); setFechaEstructuracionPclInstFinal(new Date());
-        setFechaPagoInstaFinal(new Date()); setFechaPagoRecalificadoInstaFinal(new Date());
-
-        setDocumento(''); setNombres(''); setEmail(''); setCelular(''); setEscolaridad('');
-        setEmpresa(''); setSede(''); setFechaNaci(null); setGenero(''); setEstadoCivil(''); setContacto(''); setTelefonoContacto(''); setFechaContrato(null);
-        setTipoContrato(''); setPayStatus(''); setType(''); setRosterPosition(''); setGeneralPosition(''); setDepartamento(''); setArea(''); setSubArea(''); setGrupo('');
-        setTurno(''); setDireccionResidencia(''); setDptoResidencia(''); setMunicipioResidencia(''); setMunicipioNacido(''); setDptoNacido(''); setEps(''); setAfp('');
-    }
 
     const handleClick = async (datos) => {
         try {
@@ -364,7 +319,7 @@ const OccupationalMedicine = () => {
                 FormatDate(fechaEstructuracionPclInstFinal), datos.indemnizado, datos.entregadoMin, FormatDate(fechaPagoInstaFinal), datos.indemnizadoRecalificado,
                 FormatDate(fechaPagoRecalificadoInstaFinal),
                 datos.estadoRHT, datos.reintegro, datos.reubicado, datos.restringido, datos.jornadaLaboral, datos.indemnizacion,
-                sede, usuario, usuario, fechaAhora, fechaAhora, fechaAhora, fechaAhora, "edadCalificado", "antiguedadCalificado", fileUpload);
+                lsEmployee.idSede, usuario, usuario, fechaAhora, fechaAhora, fechaAhora, fechaAhora, "edadCalificado", "antiguedadCalificado", fileUpload);
 
             const DataEnd = ConvertToMedicinaLaboralToFormData(DataToForm);
 
@@ -381,7 +336,6 @@ const OccupationalMedicine = () => {
                         transition: 'SlideUp'
                     })
                     reset();
-                    CleanCombo();
                 }
             }
         } catch (error) {
@@ -411,7 +365,7 @@ const OccupationalMedicine = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN LABORAL</Typography>}>
+                    <SubCard title={<Typography variant="h4">INFORMACIÓN LABORAL</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -426,11 +380,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
-                                <InputDatePick
-                                    label="Fecha Retiro"
-                                    value={fechaRetiro}
-                                    onChange={(e) => setFechaRetiro(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Retiro"
+                                        name="fechaRetiro"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
                                 <SelectOnChange
@@ -541,18 +497,22 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
-                                <InputDatePick
-                                    label="Fecha de Entrega"
-                                    value={fechaEntrega}
-                                    onChange={(e) => setFechaEntrega(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha de Entrega"
+                                        name="fechaEntrega"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
-                                <InputDatePick
-                                    label="Fecha de Envio"
-                                    value={fechaEnvio}
-                                    onChange={(e) => setFechaEnvio(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha de Envío"
+                                        name="fechaEnvio"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -588,11 +548,13 @@ const OccupationalMedicine = () => {
                     <SubCard darkTitle title={<Typography variant="h4">CALIFICACIÓN EPS</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <InputDatePick
-                                    label="Fecha Calificación"
-                                    value={fechaCalificacionEps}
-                                    onChange={(e) => setFechaCalificacionEps(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha de Calificación"
+                                        name="fechaCalificacionEps"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={6}>
                                 <FormProvider {...methods}>
@@ -626,11 +588,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Calificación Origen"
-                                    value={fechaCalifiOrigenARL}
-                                    onChange={(e) => setFechaCalifiOrigenARL(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Calificación Origen"
+                                        name="fechaCalifiOrigenARL"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -645,11 +609,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Calificación PCL"
-                                    value={fechaCalificacionPclARL}
-                                    onChange={(e) => setFechaCalificacionPclARL(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Calificación PCL"
+                                        name="fechaCalificacionPclARL"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -664,18 +630,22 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Estructura"
-                                    value={fechaEstructuraARL}
-                                    onChange={(e) => setFechaEstructuraARL(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Estructura"
+                                        name="fechaEstructuraARL"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha ReCalificación PCL"
-                                    value={fechaRecalificacionPclARL}
-                                    onChange={(e) => setFechaRecalificacionPclARL(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha ReCalificación PCL"
+                                        name="fechaRecalificacionPclARL"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -690,11 +660,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Estructura"
-                                    value={fechaEstructuraRecalificadaARL}
-                                    onChange={(e) => setFechaEstructuraRecalificadaARL(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Estructura"
+                                        name="fechaEstructuraRecalificadaARL"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                         </Grid>
                     </SubCard>
@@ -704,11 +676,13 @@ const OccupationalMedicine = () => {
                     <SubCard darkTitle title={<Typography variant="h4">JRC</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={3}>
-                                <InputDatePick
-                                    label="Fecha Calificación Origen"
-                                    value={fechaCalificaOrigenJRC}
-                                    onChange={(e) => setFechaCalificaOrigenJRC(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Calificación Origen"
+                                        name="fechaCalificaOrigenJRC"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -771,11 +745,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
-                                <InputDatePick
-                                    label="Fecha Calificación PCL"
-                                    value={fechaCalificacionPclJRC}
-                                    onChange={(e) => setFechaCalificacionPclJRC(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Calificación PCL"
+                                        name="fechaCalificacionPclJRC"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -802,11 +778,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
-                                <InputDatePick
-                                    label="Fecha Estructura"
-                                    value={fechaEstructuraPclJRC}
-                                    onChange={(e) => setFechaEstructuraPclJRC(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Estructura"
+                                        name="fechaEstructuraPclJRC"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -821,11 +799,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
-                                <InputDatePick
-                                    label="Fecha ReCalificación PCL"
-                                    value={fechaRecalificacionPclJRC}
-                                    onChange={(e) => setFechaRecalificacionPclJRC(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha ReCalificación PCL"
+                                        name="fechaRecalificacionPclJRC"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -864,11 +844,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={3}>
-                                <InputDatePick
-                                    label="Fecha Recalificación Est."
-                                    value={fechaRecalificacionEstJRC}
-                                    onChange={(e) => setFechaRecalificacionEstJRC(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Recalificación Est."
+                                        name="fechaRecalificacionEstJRC"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                         </Grid>
                     </SubCard>
@@ -878,11 +860,13 @@ const OccupationalMedicine = () => {
                     <SubCard darkTitle title={<Typography variant="h4">JNC</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Calificación Origen"
-                                    value={fechaCalificaOrigenJNC}
-                                    onChange={(e) => setFechaCalificaOrigenJNC(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Calificación Origen"
+                                        name="fechaCalificaOrigenJNC"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -909,11 +893,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Calificación Origen"
-                                    value={fechaCalificacionPclJNC}
-                                    onChange={(e) => setFechaCalificacionPclJNC(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Calificación Origen"
+                                        name="fechaCalificacionPclJNC"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -940,18 +926,22 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Estructura"
-                                    value={fechaEstructuraJNC}
-                                    onChange={(e) => setFechaEstructuraJNC(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Estructura"
+                                        name="fechaEstructuraJNC"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Calificación Origen"
-                                    value={fechaRecalificacionPclJNC}
-                                    onChange={(e) => setFechaRecalificacionPclJNC(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Calificación Origen"
+                                        name="fechaRecalificacionPclJNC"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -997,11 +987,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Estructuración Origen"
-                                    value={fechaEstructuracionOrigenInstaFinal}
-                                    onChange={(e) => setFechaEstructuracionOrigenInstaFinal(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Estructuración Origen"
+                                        name="fechaEstructuracionOrigenInstaFinal"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -1040,18 +1032,22 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Calificación PCL"
-                                    value={fechaCalificacionPclInstFinal}
-                                    onChange={(e) => setFechaCalificacionPclInstFinal(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Calificación PCL"
+                                        name="fechaCalificacionPclInstFinal"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Estructuracion PCL"
-                                    value={fechaEstructuracionPclInstFinal}
-                                    onChange={(e) => setFechaEstructuracionPclInstFinal(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Estructuracion PCL"
+                                        name="fechaEstructuracionPclInstFinal"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -1066,11 +1062,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Pago"
-                                    value={fechaPagoInstaFinal}
-                                    onChange={(e) => setFechaPagoInstaFinal(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Pago"
+                                        name="fechaPagoInstaFinal"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -1097,11 +1095,13 @@ const OccupationalMedicine = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha Pago"
-                                    value={fechaPagoRecalificadoInstaFinal}
-                                    onChange={(e) => setFechaPagoRecalificadoInstaFinal(e)}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Pago"
+                                        name="fechaPagoRecalificadoInstaFinal"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
                             </Grid>
                         </Grid>
                     </SubCard>
@@ -1209,16 +1209,6 @@ const OccupationalMedicine = () => {
                             width="1020"
                             height="500">
                         </object>
-
-                        {/* <iframe
-                            width="1020"
-                            height="500"
-                            src={pdfFile}
-                        /> */}
-
-                        {/* <object data={pdfFile} type="application/pdf">
-                            <iframe src={pdfFile}></iframe>
-                        </object> */}
 
                         <Grid item sx={{ pt: 4 }} xs={12}>
                             <Grid container spacing={1}>

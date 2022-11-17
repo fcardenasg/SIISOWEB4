@@ -18,7 +18,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Transitions from 'ui-component/extended/Transitions';
 import InputOnChange from 'components/input/InputOnChange';
 import InputDatePick from 'components/input/InputDatePick';
-import ViewReport from 'modules/Programming/Attention/OccupationalExamination/Report/ViewReport';
 import useAuth from 'hooks/useAuth';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
@@ -260,7 +259,7 @@ const Refund = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                <ViewReport />
+
             </ControlModal>
 
             <Grid container spacing={2}>
