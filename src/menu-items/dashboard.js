@@ -20,8 +20,8 @@ const dashboard = {
             breadcrumbs: false
         },
         {
-            id: 'Indicadores',
-            title: <FormattedMessage id="Indicadores" />,
+            id: 'Estadísticas',
+            title: <FormattedMessage id="Estadísticas" />,
             type: 'item',
             url: '/indicators/view',
             icon: icons.IconDeviceAnalytics,

@@ -15,8 +15,8 @@ import { ColorDrummondltd } from 'themes/colors';
 
 export const itemsMenu = [
   {
-    title: "Personal",
-    subtitle: "Empleados,Expats,Practicantes y Contratistas",
+    title: "Empleados",
+    subtitle: "Expats,Practicantes y Contratistas",
     icon: IconUser,
     selected: true,
     url: '/employee/list',
@@ -24,7 +24,7 @@ export const itemsMenu = [
   },
   {
     title: "Atención",
-    subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
+    subtitle: "EMO, TRIAGE, Enfermería y Asesorias",
     icon: ContactMailIcon,
     selected: true,
     url: '/attention/list',
@@ -32,7 +32,7 @@ export const itemsMenu = [
   },
   {
     title: "Programación",
-    subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
+    subtitle: "EMO, TRIAGE, Enfermería y Asesorias",
     icon: PendingActionsIcon,
     selected: true,
     url: '/programming/list',
@@ -40,15 +40,15 @@ export const itemsMenu = [
   },
   {
     title: "Reimpresión",
-    subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
+    subtitle: "EMO, TRIAGE, Enfermería y Asesorias",
     icon: PrintIcon,
     selected: false,
     url: '/reprint/list',
     color: ColorDrummondltd.GrayDrummond
   },
   {
-    title: "Indicadores",
-    subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
+    title: "Estadísticas",
+    subtitle: "EMO, TRIAGE, Enfermería y Asesorias",
     icon: InsertChartIcon,
     selected: false,
     url: '/indicators/view',
@@ -56,7 +56,7 @@ export const itemsMenu = [
   },
   {
     title: "Exportar",
-    subtitle: "TRIAGE, Enfermería, Asesorias, EMO y Paraclinicos",
+    subtitle: "EMO, TRIAGE, Enfermería y Asesorias",
     icon: GetAppIcon,
     selected: false,
     url: '/export/list',

@@ -11,7 +11,7 @@ import { Typography } from '@mui/material';
 
 const ITEM_HEIGHT = 48;
 
-const MenuOptions = ({ setAnchorEl, anchorEl, onClickEnable, onClickPreview }) => {
+const MenuOptions = ({ setAnchorEl, anchorEl, onClickEnable, onClickTurno}) => {
     const open = Boolean(anchorEl);
 
     const handleClick = (event) => {
@@ -49,8 +49,8 @@ const MenuOptions = ({ setAnchorEl, anchorEl, onClickEnable, onClickPreview }) =
                     },
                 }}
             >
-                <MenuItem onClick={onClickPreview} disableRipple>
-                    <PreviewIcon /> <Typography sx={{ pl: 2 }} variant='h5'>Ver</Typography>
+                <MenuItem onClick={onClickTurno} disableRipple>
+                    <PreviewIcon /> <Typography sx={{ pl: 2 }} variant='h5'>Turno</Typography>
                 </MenuItem>
 
                 <MenuItem onClick={onClickEnable} disableRipple>
