@@ -11,7 +11,7 @@ import { Typography } from '@mui/material';
 
 const ITEM_HEIGHT = 48;
 
-const MenuOptions = ({ setAnchorEl, anchorEl, onClickEnable, onClickTurno}) => {
+const MenuOptions = ({ setAnchorEl, anchorEl, onClickEnable, onClickTurno }) => {
     const open = Boolean(anchorEl);
 
     const handleClick = (event) => {

@@ -123,6 +123,17 @@ const ViewProgramming = ({ programming, getAll }) => {
         } catch (error) { }
     }
 
+    const handleSound = (nombre, atencion) => {
+        let mensaje = new SpeechSynthesisUtterance();
+        mensaje.text = `${nombre} pasar al consultorio 3 ${atencion}`;
+        //mensaje.voice = speechSynthesis.getVoices()[2];
+
+        var agnesIndex = speechSynthesis.getVoices().findIndex(function (voice) {
+            return voice.name;
+        });
+        speechSynthesis.speak(mensaje);
+    }
+
     const disabledButon = programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' &&
         programming.usuarioCierreAtencion === `${user.email}` ? false :
 
@@ -185,7 +196,8 @@ const ViewProgramming = ({ programming, getAll }) => {
                                             setAnchorEl={setAnchorEl}
                                             anchorEl={anchorEl}
                                             onClickEnable={handleUpdateAttention}
-                                            
+                                            onClickTurno={() => handleSound(programming.nameEmpleado,
+                                                programming.nameAtencion)}
                                         />
                                     </Grid>
                                 </Grid>

@@ -216,8 +216,6 @@ const ListTurner = () => {
         var agnesIndex = speechSynthesis.getVoices().findIndex(function (voice) {
             return voice.name;
         });
-
-        console.log("tipos de voces = ", agnesIndex);
         speechSynthesis.speak(mensaje);
     }
 
