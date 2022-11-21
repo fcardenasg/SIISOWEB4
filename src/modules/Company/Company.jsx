@@ -46,7 +46,7 @@ const Company = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostCompany(datos.Codigo, datos.DescripcionSpa, datos.Email, datos.Celular, datos.Gerente,
+            const DataToInsert = PostCompany(datos.codigo, datos.descripcionSpa, datos.email, datos.celular, datos.gerente,
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {

@@ -454,8 +454,6 @@ const MainRoutes = {
             element: <ListTurner />
         },
 
-
-
         /* Render de HCO */
         {
             path: '/occupational-examination/list',
