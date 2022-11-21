@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect, Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -17,21 +17,19 @@ import {
     TablePagination,
     TableRow,
     TableSortLabel,
-    Button,
     TextField,
     Tooltip,
     Typography,
 } from '@mui/material';
-import { TitleButton } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 
 import { visuallyHidden } from '@mui/utils';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
+
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import SearchIcon from '@mui/icons-material/Search';
-import { ViewFormat } from 'components/helpers/Format';
-import { GetAllMedicalHistory, GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import { GetAllMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import { GetByIdEvolutionNote } from 'api/clients/EvolutionNoteClient';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReportClinicHistory } from 'modules/Programming/Attention/Report/ClinicHistory';
+import { generateReportEvolutionNote } from 'modules/Programming/Attention/Report/EvolutionNote';
 import useAuth from 'hooks/useAuth';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
@@ -64,32 +62,26 @@ const headCells = [
         id: 'id',
         numeric: false,
         label: 'ID',
-        align: 'left'
-    },
-    {
-        id: 'documento',
-        numeric: false,
-        label: 'Documento',
-        align: 'left'
+        align: 'center'
     },
     {
         id: 'nameEmpleado',
         numeric: false,
-        label: 'Nombre',
+        label: 'CIE11',
         align: 'left'
     },
     {
         id: 'nameAtencion',
         numeric: false,
-        label: 'Atencion',
+        label: 'Atención',
         align: 'left'
     },
     {
-        id: 'fecha',
+        id: 'nameConceptoActitud',
         numeric: false,
-        label: 'Fecha',
+        label: 'Concepto De Actitud',
         align: 'left'
-    }
+    },
 ];
 
 function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
@@ -142,16 +134,15 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const TableMedicalAttention = () => {
+const ListPlantillaClinicHistory = () => {
     const { user } = useAuth();
-    const navigate = useNavigate();
-    const [lsMedicalAttention, setLsMedicalAttention] = useState([]);
+    const [lsTemplate, setLsTemplate] = useState([]);
     const [openReport, setOpenReport] = useState(false);
-    const [dataPDF, setDataPDF] = useState(null);
+    const [dataPDF, setDataPDF] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('fecha');
+    const [orderBy, setOrderBy] = useState('id');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -162,12 +153,9 @@ const TableMedicalAttention = () => {
         async function GetAll() {
             try {
                 const lsServer = await GetAllMedicalHistory(0, 0);
-                setLsMedicalAttention(lsServer.data.entities);
+                setLsTemplate(lsServer.data.entities);
                 setRows(lsServer.data.entities);
-
-            } catch (error) {
-                console.log(error);
-            }
+            } catch (error) { }
         }
 
         GetAll();
@@ -176,10 +164,10 @@ const TableMedicalAttention = () => {
     const handleClickReport = async (id) => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdMedicalHistory(id);
+            const lsDataReport = await GetByIdEvolutionNote(id);
             const lsDataUser = await GetByMail(user.email);
 
-            const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportEvolutionNote(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -192,7 +180,7 @@ const TableMedicalAttention = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nameEmpleado', 'nameAtencion', 'fecha'];
+                const properties = ['id', 'nameEmpleado', 'nameAtencion', 'nameConceptoActitud'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -206,9 +194,9 @@ const TableMedicalAttention = () => {
                 }
                 return matches;
             });
-            setLsMedicalAttention(newRows);
+            setLsTemplate(newRows);
         } else {
-            setLsMedicalAttention(rows);
+            setLsTemplate(rows);
         }
     };
 
@@ -227,7 +215,7 @@ const TableMedicalAttention = () => {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicalAttention.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
 
     return (
         <Fragment>
@@ -242,7 +230,7 @@ const TableMedicalAttention = () => {
 
             <CardContent>
                 <Grid container spacing={2}>
-                    <Grid item xs={11}>
+                    <Grid item xs={12} sm={6}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -257,14 +245,6 @@ const TableMedicalAttention = () => {
                             size="small"
                         />
                     </Grid>
-
-                    <Grid item xs={1}>
-                        <AnimateButton>
-                            <Button onClick={() => navigate('/dashboard/ltd')} variant="contained">
-                                {TitleButton.Cancelar}
-                            </Button>
-                        </AnimateButton>
-                    </Grid>
                 </Grid>
             </CardContent>
 
@@ -275,12 +255,12 @@ const TableMedicalAttention = () => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsMedicalAttention.length}
+                        rowCount={lsTemplate.length}
                         theme={theme}
                         selected={selected}
                     />
                     <TableBody>
-                        {stableSort(lsMedicalAttention, getComparator(order, orderBy))
+                        {stableSort(lsTemplate, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
@@ -298,27 +278,13 @@ const TableMedicalAttention = () => {
                                             id={labelId}
                                             scope="row"
                                             sx={{ cursor: 'pointer' }}
-                                            align="left"
+                                            align="center"
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {row.id}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.documento}
                                             </Typography>
                                         </TableCell>
 
@@ -360,14 +326,14 @@ const TableMedicalAttention = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {ViewFormat(row.fecha)}
+                                                {row.nameConceptoActitud}
                                             </Typography>
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Imprimir" onClick={() => handleClickReport(row.id)}>
+                                            <Tooltip title="Ver PDF" onClick={() => handleClickReport(row.id)}>
                                                 <IconButton size="large">
-                                                    <PrintIcon color="info" sx={{ fontSize: '1.3rem' }} />
+                                                    <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
                                         </TableCell>
@@ -390,7 +356,7 @@ const TableMedicalAttention = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsMedicalAttention.length}
+                count={lsTemplate.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -400,4 +366,4 @@ const TableMedicalAttention = () => {
     );
 };
 
-export default TableMedicalAttention;
+export default ListPlantillaClinicHistory;

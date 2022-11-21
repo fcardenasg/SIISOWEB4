@@ -192,7 +192,6 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListPersonalNotes = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [typeCatalog, setTypeCatalog] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);

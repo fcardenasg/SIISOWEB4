@@ -65,6 +65,8 @@ import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import ListPlantillaClinicHistory from 'components/template/ListPlantillaClinicHistory';
+import { GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
 
 const validationSchema = yup.object().shape({
     dx1: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -323,7 +325,7 @@ const UpdateEvolutionNote = () => {
 
     useEffect(() => {
         getAll();
-    }, [])
+    }, []);
 
     const handleClick = async (datos) => {
         try {
@@ -392,7 +394,6 @@ const UpdateEvolutionNote = () => {
                 handleClose={() => setOpenExamen(false)}
             >
                 <ListExamenesPara documento={documento} />
-
             </FullScreenDialog>
 
             <FullScreenDialog
@@ -413,7 +414,9 @@ const UpdateEvolutionNote = () => {
                 open={openVistaDisenio}
                 title="VISTA HISTORICO DE HISTORIAS CLINICAS"
                 handleClose={() => setOpenVistaDisenio(false)}
-            ></FullScreenDialog>
+            >
+                <ListPlantillaClinicHistory />
+            </FullScreenDialog>
 
             <ControlModal
                 title="VISTA DE REPORTE"
