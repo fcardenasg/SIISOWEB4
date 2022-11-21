@@ -26,13 +26,12 @@ import { visuallyHidden } from '@mui/utils';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SearchIcon from '@mui/icons-material/Search';
-import { GetAllMedicalHistory } from 'api/clients/MedicalHistoryClient';
-import { GetByIdEvolutionNote } from 'api/clients/EvolutionNoteClient';
+import { GetAllMedicalHistory, GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReportEvolutionNote } from 'modules/Programming/Attention/Report/EvolutionNote';
 import useAuth from 'hooks/useAuth';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
+import { generateReportClinicHistory } from 'modules/Programming/Attention/Report/ClinicHistory';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -164,10 +163,10 @@ const ListPlantillaClinicHistory = () => {
     const handleClickReport = async (id) => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdEvolutionNote(id);
+            const lsDataReport = await GetByIdMedicalHistory(id);
             const lsDataUser = await GetByMail(user.email);
 
-            const dataPDFTwo = generateReportEvolutionNote(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
