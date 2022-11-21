@@ -24,8 +24,6 @@ import {
     Tooltip,
     Typography,
     Button,
-    Avatar,
-    Modal
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
@@ -38,14 +36,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { DeleteOccupationalExamination, GetAllOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { ViewFormat } from 'components/helpers/Format';
 
 function getModalStyle() {
     const top = 50;
-    const left = 50;
 
     return {
         top: `${top}%`,

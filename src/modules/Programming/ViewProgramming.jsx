@@ -50,21 +50,6 @@ const ViewProgramming = ({ programming, getAll }) => {
         } catch (error) { setErrorMessage(`${error}`) }
     }
 
-    const handleSound = (nombre,nameAtencion) => {
-        let mensaje = new SpeechSynthesisUtterance();
-        mensaje.text = `${nombre} Pasar al consultorio 3 ${nameAtencion} `;
-        //mensaje.voice = speechSynthesis.getVoices()[2];
-
-        var agnesIndex = speechSynthesis.getVoices().findIndex(function (voice) {
-            return voice.name;
-        });
-
-        console.log("tipos de voces = ", agnesIndex);
-        speechSynthesis.speak(mensaje);
-    }
-
-
-
     const handleUpdateAttentionOpen = async () => {
         try {
             const DataToUpdate = PutAttention(programming.id, programming.documento, programming.fecha, programming.sede, programming.tipo,
@@ -200,7 +185,7 @@ const ViewProgramming = ({ programming, getAll }) => {
                                             setAnchorEl={setAnchorEl}
                                             anchorEl={anchorEl}
                                             onClickEnable={handleUpdateAttention}
-                                            onClickTurno={()=>handleSound(programming.nameEmpleado,programming.nameAtencion)}
+                                            
                                         />
                                     </Grid>
                                 </Grid>

@@ -150,7 +150,7 @@ const TableMedicalAttention = () => {
     const [dataPDF, setDataPDF] = useState(null);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('desc');
+    const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);

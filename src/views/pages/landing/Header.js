@@ -108,7 +108,8 @@ const HeaderPage = () => {
 
                                     <Grid item xs={6}>
                                         <AnimateButton>
-                                            <Button onClick={() => navigate("/dashboard/energy", { replace: true })} variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }}>
+                                            <Button to="login" variant="outlined" component={RouterLink} color="error"
+                                                sx={{ color: ColorDrummondltd.RedDrummond }} target="_blank">
                                                 <CardMedia
                                                     component="img"
                                                     image={LogoDrummondEnergy}

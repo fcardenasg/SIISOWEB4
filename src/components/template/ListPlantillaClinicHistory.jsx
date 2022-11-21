@@ -1,14 +1,11 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, Fragment } from 'react';
 import { useDispatch } from 'react-redux';
-import ReactExport from "react-export-excel";
 
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
-    Checkbox,
     Grid,
     IconButton,
     InputAdornment,
@@ -21,31 +18,20 @@ import {
     TableRow,
     TableSortLabel,
     TextField,
-    Toolbar,
     Tooltip,
     Typography,
-    Button
 } from '@mui/material';
+
 import { visuallyHidden } from '@mui/utils';
-import { IconFileExport } from '@tabler/icons';
 
-import swal from 'sweetalert';
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
-import MainCard from 'ui-component/cards/MainCard';
-import { GetAllTypeCatalog, DeleteTypeCatalog } from 'api/clients/TypeCatalogClient';
-
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import SearchIcon from '@mui/icons-material/Search';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { DeletePersonalNotes, GetAllPersonalNotes } from 'api/clients/PersonalNotesClient';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+import { GetAllMedicalHistory, GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import { GetByMail } from 'api/clients/UserClient';
+import useAuth from 'hooks/useAuth';
+import ControlModal from 'components/controllers/ControlModal';
+import ViewPDF from 'components/components/ViewPDF';
+import { generateReportClinicHistory } from 'modules/Programming/Attention/Report/ClinicHistory';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -75,17 +61,29 @@ const headCells = [
         id: 'id',
         numeric: false,
         label: 'ID',
+        align: 'center'
+    },
+    {
+        id: 'nameEmpleado',
+        numeric: false,
+        label: 'CIE11',
         align: 'left'
     },
     {
-        id: 'descripcion',
+        id: 'nameAtencion',
         numeric: false,
-        label: 'Descripción',
+        label: 'Atención',
         align: 'left'
-    }
+    },
+    {
+        id: 'nameConceptoActitud',
+        numeric: false,
+        label: 'Concepto De Actitud',
+        align: 'left'
+    },
 ];
 
-function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
+function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -93,22 +91,6 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox" sx={{ pl: 3 }}>
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts'
-                        }}
-                    />
-                </TableCell>
-                {numSelected > 0 && (
-                    <TableCell padding="none" colSpan={8}>
-                        <EnhancedTableToolbar numSelected={selected.length} onClick={onClick} />
-                    </TableCell>
-                )}
                 {numSelected <= 0 &&
                     headCells.map((headCell) => (
                         <TableCell
@@ -145,57 +127,17 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
 
 EnhancedTableHead.propTypes = {
     theme: PropTypes.object,
-    selected: PropTypes.array,
-    onClick: PropTypes.func.isRequired,
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.oneOf(['asc', 'desc']).isRequired,
     orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired
 };
 
-const EnhancedTableToolbar = ({ numSelected, onClick }) => (
-    <Toolbar
-        sx={{
-            p: 0,
-            pl: 1,
-            pr: 1,
-            ...(numSelected > 0 && {
-                color: (theme) => theme.palette.secondary.main
-            })
-        }}
-    >
-        {numSelected > 0 ? (
-            <Typography color="inherit" variant="h4">
-                {numSelected} {TitleButton.Seleccionadas}
-            </Typography>
-        ) : (
-            <Typography variant="h6" id="tableTitle">
-                Nutrición
-            </Typography>
-        )}
-        <Box sx={{ flexGrow: 1 }} />
-        {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
-        )}
-    </Toolbar>
-);
-
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onClick: PropTypes.func
-};
-
-const ListPersonalNotes = () => {
-    const navigate = useNavigate();
-    const [typeCatalog, setTypeCatalog] = useState([]);
-    const [openDelete, setOpenDelete] = useState(false);
-    const [idCheck, setIdCheck] = useState('');
+const ListPlantillaClinicHistory = () => {
+    const { user } = useAuth();
+    const [lsTemplate, setLsTemplate] = useState([]);
+    const [openReport, setOpenReport] = useState(false);
+    const [dataPDF, setDataPDF] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -206,17 +148,28 @@ const ListPersonalNotes = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function GetAll() {
-        try {
-            const lsServer = await GetAllPersonalNotes(0, 0);
-            setTypeCatalog(lsServer.data.entities);
-            setRows(lsServer.data.entities);
-        } catch (error) { }
-    }
-
     useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetAllMedicalHistory(0, 0);
+                setLsTemplate(lsServer.data.entities);
+                setRows(lsServer.data.entities);
+            } catch (error) { }
+        }
+
         GetAll();
-    }, [])
+    }, []);
+
+    const handleClickReport = async (id) => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdMedicalHistory(id);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -226,7 +179,7 @@ const ListPersonalNotes = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['descripcion', 'id'];
+                const properties = ['id', 'nameEmpleado', 'nameAtencion', 'nameConceptoActitud'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -240,9 +193,9 @@ const ListPersonalNotes = () => {
                 }
                 return matches;
             });
-            setTypeCatalog(newRows);
+            setLsTemplate(newRows);
         } else {
-            setTypeCatalog(rows);
+            setLsTemplate(rows);
         }
     };
 
@@ -250,35 +203,6 @@ const ListPersonalNotes = () => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    const handleSelectAllClick = (event) => {
-
-        if (event.target.checked) {
-            const newSelectedId = typeCatalog.map((n) => n.id);
-            setSelected(newSelectedId);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, id) => {
-        setIdCheck(id);
-
-        const selectedIndex = selected.indexOf(id);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-        }
-
-        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -290,30 +214,21 @@ const ListPersonalNotes = () => {
         setPage(0);
     };
 
-    const handleDelete = async () => {
-        try {
-            swal(ParamDelete).then(async (willDelete) => {
-                if (willDelete) {
-                    const result = await DeletePersonalNotes(idCheck);
-                    if (result.status === 200) {
-                        setOpenDelete(true);
-                    }
-                    setSelected([]);
-                    GetAll();
-                } else
-                    setSelected([]);
-            });
-        } catch (error) { }
-    }
-
-    const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - typeCatalog.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
 
     return (
-        <MainCard title="Lista de Apuntes Personales" content={false}>
-            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+        <Fragment>
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => { setOpenReport(false); setDataPDF(null) }}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
             <CardContent>
-                <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
+                <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <TextField
                             InputProps={{
@@ -329,39 +244,7 @@ const ListPersonalNotes = () => {
                             size="small"
                         />
                     </Grid>
-
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        {/* <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Tipo Catatalogo">
-                            <ExcelSheet data={typeCatalog} name="Tipo Catálogo">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Nombre" value="nombre" />
-                                <ExcelColumn label="Usuario que Registro" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha de Registro" value="fechaRegistro" />
-                                <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha Modifico" value="fechaModifico" />
-                            </ExcelSheet>
-                        </ExcelFile>
-
-                        <Tooltip title="Impresión" onClick={() => navigate('/typecatalog/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip> */}
-
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/personal-notes/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
-
-                    </Grid>
                 </Grid>
-
             </CardContent>
 
             <TableContainer>
@@ -370,49 +253,31 @@ const ListPersonalNotes = () => {
                         numSelected={selected.length}
                         order={order}
                         orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={typeCatalog.length}
+                        rowCount={lsTemplate.length}
                         theme={theme}
                         selected={selected}
-                        onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(typeCatalog, getComparator(order, orderBy))
+                        {stableSort(lsTemplate, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
+                                if (typeof row === 'string') return null;
 
-                                if (typeof row === 'number') return null;
-
-                                const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
                                     <TableRow
                                         hover
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
                                         tabIndex={-1}
                                         key={index}
-                                        selected={isItemSelected}
                                     >
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
-                                                }}
-                                            />
-                                        </TableCell>
-
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="left"
+                                            align="center"
                                         >
                                             <Typography
                                                 variant="subtitle1"
@@ -426,20 +291,48 @@ const ListPersonalNotes = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.descripcion}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameAtencion}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameConceptoActitud}
+                                            </Typography>
+                                        </TableCell>
+
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/personal-notes/update/${row.id}`)}>
+                                            <Tooltip title="Ver PDF" onClick={() => handleClickReport(row.id)}>
                                                 <IconButton size="large">
-                                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                    <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
                                         </TableCell>
@@ -462,14 +355,14 @@ const ListPersonalNotes = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={typeCatalog.length}
+                count={lsTemplate.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </MainCard>
+        </Fragment>
     );
 };
 
-export default ListPersonalNotes;
+export default ListPlantillaClinicHistory;
