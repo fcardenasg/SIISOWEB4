@@ -18,14 +18,14 @@ const pages = {
             icon: icons.IconUsers,
             children: [
                 {
-                    id: 'register3',
-                    title: <FormattedMessage id="register" />,
+                    id: 'Información del Usuario',
+                    title: <FormattedMessage id="Información del Usuario" />,
                     type: 'item',
                     url: '/user/list',
                 },
                 {
                     id: 'Usuarios',
-                    title: <FormattedMessage id="Usuarios Firebase" />,
+                    title: <FormattedMessage id="Usuarios" />,
                     type: 'item',
                     url: '/userfire/list',
                 },
@@ -35,24 +35,24 @@ const pages = {
                     type: 'item',
                     url: '/forgot-password/view',
                 },
-                {
+          /*       {
                     id: 'check-mail3',
                     title: <FormattedMessage id="check-mail" />,
                     type: 'item',
                     url: '/user3/list',
-                },
-                {
+                }, */
+               /*  {
                     id: 'reset-password3',
                     title: <FormattedMessage id="reset-password" />,
                     type: 'item',
                     url: '/user2/list',
-                },
-                {
+                }, */
+            /*     {
                     id: 'code-verification3',
                     title: <FormattedMessage id="code-verification" />,
                     type: 'item',
                     url: '/user1/list',
-                }
+                } */
             ]
         }
     ]

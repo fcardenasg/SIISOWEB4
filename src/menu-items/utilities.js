@@ -10,7 +10,7 @@ const icons = {
     IconLayoutGridAdd
 };
 
-const utilities = {
+/* const utilities = {
     id: 'utilities',
     title: <FormattedMessage id="utilities" />,
     type: 'group',
@@ -46,6 +46,6 @@ const utilities = {
             breadcrumbs: false
         }
     ]
-};
+}; */
 
-export default utilities;
+/* export default utilities; */

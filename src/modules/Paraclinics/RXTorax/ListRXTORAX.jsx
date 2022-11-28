@@ -339,7 +339,7 @@ const ListRXTORAX = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rxtorax.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
+        <MainCard title="Lista de RX de TORAX" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -366,8 +366,8 @@ const ListRXTORAX = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="RX TORAX">
-                            <ExcelSheet data={rxtorax} name="RX TORAX">
+                        } filename="RXTORAX">
+                            <ExcelSheet data={rxtorax} name="RXTORAX">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Fecha" value="fecha" />  
                                 <ExcelColumn label="Documento" value="documento" />

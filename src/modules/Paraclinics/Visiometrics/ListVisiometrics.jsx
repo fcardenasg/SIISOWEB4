@@ -78,13 +78,13 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'documento',
+        id: 'nameEmpleado',
         numeric: false,
         label: 'Nombres',
         align: 'center'
     }, 
     {
-        id: 'idMotivo',
+        id: 'nameMotivo',
         numeric: false,
         label: 'Motivo',
         align: 'left'
@@ -248,7 +248,7 @@ const ListVisiometrics = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'idMotivo', 'idConductaClasificacion', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'nameEmpleado', 'nameMotivo', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -335,7 +335,7 @@ const ListVisiometrics = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - visiometrics.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
+        <MainCard title="Lista de Visiometrías" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -362,15 +362,14 @@ const ListVisiometrics = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Visiometria">
-                            <ExcelSheet data={visiometrics} name="Visiometria">
-                                <ExcelColumn label="Id" value="id" />
+                        } filename="Visiometría">
+                            <ExcelSheet data={visiometrics} name="Visiometría">
+                            <ExcelColumn label="Id" value="id" />
+                                <ExcelColumn label="Fecha" value="fecha" />
                                 <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="idConductaClasificacion" />
-                                <ExcelColumn label="Conducta" value="idConductaClasificacion" />
-                                <ExcelColumn label="Motivo" value="idMotivo" />
-                                <ExcelColumn label="Conclusión" value="idConclusion" />
-                                <ExcelColumn label="Proveedor" value="iidProveedor" />
+                                <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                <ExcelColumn label="Motivo" value="nameMotivo" />
+                                <ExcelColumn label="Proveedor" value="nameProveedor" />
                                 <ExcelColumn label="Observaciones" value="observacion" />
                                 <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />

@@ -56,9 +56,7 @@ const Laboratory = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
-    const [diagnosticoArray1, setDiagnosticoArray1] = useState([]);
-    const [diagnosticoArray2, setDiagnosticoArray2] = useState([]);
+ 
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -166,10 +164,10 @@ const Laboratory = () => {
         try {
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_LABORATORIO, documento,
                 FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
-                '', DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, JSON.stringify(diagnosticoArray),
-                datos.ojoIzquierdo, JSON.stringify(diagnosticoArray1), datos.add1, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                '', DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho,'',
+                datos.ojoIzquierdo, '', datos.add1, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 datos.remitidoOftalmo,
-                datos.requiereLentes, JSON.stringify(diagnosticoArray2), DefaultValue.SINREGISTRO_GLOBAL,
+                datos.requiereLentes, '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', '', '', '', '', '', datos.resultadoColesterol,
                 datos.interpretacionColeste, datos.observacionColeste, datos.resultadoColesteHDL,
                 datos.interpretacionColesteHDL, datos.observacionColesteHDL, datos.dislipidemiaHDL, datos.resultadoTrigli,

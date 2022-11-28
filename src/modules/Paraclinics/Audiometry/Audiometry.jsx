@@ -826,7 +826,7 @@ const Audiometry = () => {
 
                                     <Grid item xs={6}>
                                         <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/laboratory/list")}>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/audiometry/list")}>
                                                 {TitleButton.Cancelar}
                                             </Button>
                                         </AnimateButton>

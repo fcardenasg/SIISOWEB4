@@ -874,11 +874,6 @@ const MainRoutes = {
             element: <WidgetChart />
         },
 
-
-        {
-            path: '/app/chat',
-            element: <AppChat />
-        },
         {
             path: '/app/mail',
             element: <AppMail />

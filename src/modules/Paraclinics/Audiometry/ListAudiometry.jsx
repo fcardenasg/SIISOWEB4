@@ -234,7 +234,7 @@ const ListAudiometry = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllByTypeParaclinics(0, 0,DefaultValue.PARACLINICO_VISIOMETRIA);
+            const lsServer = await GetAllByTypeParaclinics(0, 0,DefaultValue.PARACLINICO_AUDIOMETRIA);
             setLaboratory(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
@@ -340,7 +340,7 @@ const ListAudiometry = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - laboratory.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
+        <MainCard title="Lista de Audiometrías" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>

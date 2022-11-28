@@ -117,7 +117,7 @@ const User = () => {
     };
 
     return (
-        <MainCard title="Registrar Usuarios">
+        <MainCard title="Registrar Información del Usuario">
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

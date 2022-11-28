@@ -131,7 +131,7 @@ const UpdateUser = () => {
     }, 1000);
 
     return (
-        <MainCard title="Actualizar Usuarios">
+        <MainCard title="Actualizar Información del Usuarios">
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

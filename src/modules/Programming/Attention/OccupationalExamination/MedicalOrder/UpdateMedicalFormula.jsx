@@ -104,7 +104,6 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, contingencia, setUpdateMed
             const lsServerData = await GetByIdMedicalFormula(numberId);
             if (lsServerData.status === 200) {
                 var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerData.data.diagnostico);
-
                 if (lsServerCie11.status === 200) {
                     var resultCie11 = lsServerCie11.data.entities.map((item) => ({
                         value: item.id,

@@ -228,7 +228,7 @@ const ListLaboratory = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllByTypeParaclinics(0, 0,DefaultValue.PARACLINICO_VISIOMETRIA);
+            const lsServer = await GetAllByTypeParaclinics(0, 0,DefaultValue.PARACLINICO_LABORATORIO);
             setLaboratory(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
@@ -335,7 +335,7 @@ const ListLaboratory = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - laboratory.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
+        <MainCard title="Lista de Laboratorios" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -529,7 +529,7 @@ const ListLaboratory = () => {
 
             <FullScreenDialogs
                 open={open}
-                title="IMPRIMIR VISIOMETRIA"
+                title="IMPRIMIR LABORATORIOS"
                 handleClose={() => setOpen(false)}
             >
                 <Laboratory />
