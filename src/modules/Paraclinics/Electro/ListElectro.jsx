@@ -340,7 +340,7 @@ const ListElectro = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - electro.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
+        <MainCard title="Lista de ElectroCardiograma" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -367,8 +367,8 @@ const ListElectro = () => {
                                     <IconFileExport />
                                 </IconButton>
                             </Tooltip>
-                        } filename="Electro Cardiograma">
-                            <ExcelSheet data={electro} name="Electro Cardiograma">
+                        } filename="ElectroCardiograma">
+                            <ExcelSheet data={electro} name="ElectroCardiograma">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombre" value="nameEmpleado" />
@@ -550,7 +550,7 @@ const ListElectro = () => {
 
             <FullScreenDialogs
                 open={open}
-                title="IMPRIMIR ELECTRO CARDIOGRAMA"
+                title="IMPRIMIR ELECTROCARDIOGRAMA"
                 handleClose={() => setOpen(false)}
             >
                 <Electro />

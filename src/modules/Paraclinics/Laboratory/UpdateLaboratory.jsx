@@ -15,17 +15,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { FormProvider, useForm } from 'react-hook-form';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
+
 import { FormatDate } from 'components/helpers/Format'
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -33,7 +29,6 @@ import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/help
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { PutParaclinics } from 'formatdata/ParaclinicsForm';
 import { UpdateParaclinicss, GetByIdParaclinics } from 'api/clients/ParaclinicsClient';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
@@ -41,6 +36,9 @@ import Cargando from 'components/loading/Cargando';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import InputOnChange from 'components/input/InputOnChange';
+import InputMultiSelects from 'components/input/InputMultiSelects';
 
 
 const DetailIcons = [
@@ -67,17 +65,13 @@ const UpdateLaboratory = () => {
     const [openTemplate, setOpenTemplate] = useState(false);
     const [lsCie11, setLsCie11] = useState([]);
     const [lsVisiometrics, setLsVisiometrics] = useState([]);
-
-    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
-    const [diagnosticoArray1, setDiagnosticoArray1] = useState([]);
-    const [diagnosticoArray2, setDiagnosticoArray2] = useState([]);
+    const [lsInterpretacion, setLsInterpretacion] = useState([]);
 
     const [documento, setDocumento] = useState('');
 
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
-    const [lsConclusion, setLsConclusion] = useState([]);
-    const [lsConducta, setLsConducta] = useState([]);
+
 
     const [lsLectura, setLsLectura] = useState([]);
     const [lsControl, setLsControl] = useState([]);
@@ -86,14 +80,102 @@ const UpdateLaboratory = () => {
     const [lsOjoDerecho, setLsOjoDerecho] = useState([]);
     const [lsOjoIzquierdo, setLsOjoIzquierdo] = useState([]);
     const [lsAdd1, setLsAdd1] = useState([]);
-    
 
-    
+    const [textDx1, setTextDx1] = useState('');
+    const [lsDx1, setLsDx1] = useState([]);
+
+    const [textDx2, setTextDx2] = useState('');
+    const [lsDx2, setLsDx2] = useState([]);
+
+    const [textDx3, setTextDx3] = useState('');
+    const [lsDx3, setLsDx3] = useState([]);
+
+
 
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors } = methods;
+
+    const handleDx1 = async (event) => {
+        try {
+            setTextDx1(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx2 = async (event) => {
+        try {
+            setTextDx2(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx2(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+
+    const handleDx3 = async (event) => {
+        try {
+            setTextDx3(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx3(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
 
     const allowedFiles = ['application/pdf'];
     const handleFile = (event) => {
@@ -130,44 +212,43 @@ const UpdateLaboratory = () => {
         }
     }
 
+    const handleGetCie11 = async (dx) => {
+        try {
+            var lsServerCie11 = await GetAllByCodeOrName(0, 0, dx);
+            if (lsServerCie11.status === 200) {
+                var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.dx
+                }));
+                return resultCie11;
+            }
+        } catch (err) { }
+    }
+
     async function GetAll() {
         try {
-
-
-
             const serverData = await GetByIdParaclinics(id);
             if (serverData.status === 200) {
+                var lsDxDerecho = await handleGetCie11(serverData.data.dxDerecho);
+                setTextDx1(serverData.data.dxDerecho);
+                setLsDx1(lsDxDerecho);
+
+                var lsdxIzquierdo = await handleGetCie11(serverData.data.dxIzquierdo);
+                setTextDx2(serverData.data.dxIzquierdo);
+                setLsDx2(lsdxIzquierdo);
+
+                var lsdxDiagnostico = await handleGetCie11(serverData.data.dxDiagnostico);
+                setTextDx3(serverData.data.dxDiagnostico);
+                setLsDx3(lsdxDiagnostico);
+
+
+                
+
                 setDocumento(serverData.data.documento);
                 setLsVisiometrics(serverData.data);
-                setDiagnosticoArray(JSON.parse(serverData.data.dxDerecho));
-                setDiagnosticoArray1(JSON.parse(serverData.data.dxIzquierdo));
-                setDiagnosticoArray2(JSON.parse(serverData.data.dxDiagnostico));
                 handleLoadingDocument(serverData.data.documento);
                 setFilePdf(serverData.data.url);
             }
-
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
-
-            const lsServerLectura = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_LECTURA);
-            var resultLectura = lsServerLectura.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsLectura(resultLectura);
-
-       
-
-            const lsServerControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONTROL);
-            var resultControl = lsServerControl.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsControl(resultControl);
 
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
@@ -176,19 +257,16 @@ const UpdateLaboratory = () => {
             }));
             setLsMotivo(resultMotivo);
 
-            const lsServerConducta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
-            var resultConducta = lsServerConducta.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConducta(resultConducta);
 
-            const lsServerConclusion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RESULTADO);
-            var resultConclusion = lsServerConclusion.data.entities.map((item) => ({
+            const lsServerInterpretacion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_Interpretacion);
+            var resultInterpretacion = lsServerInterpretacion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsConclusion(resultConclusion);
+            setLsInterpretacion(resultInterpretacion);
+
+
+
 
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
@@ -196,8 +274,6 @@ const UpdateLaboratory = () => {
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
-
-
 
         } catch (error) {
             console.log(error);
@@ -210,12 +286,12 @@ const UpdateLaboratory = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutParaclinics(id,DefaultValue.PARACLINICO_LABORATORIO, documento,
+            const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_LABORATORIO,  documento,
                 FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
-                '', DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, JSON.stringify(diagnosticoArray),
-                datos.ojoIzquierdo, JSON.stringify(diagnosticoArray1), datos.add1, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                '', DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, '',
+                datos.ojoIzquierdo, '', datos.add1, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 datos.remitidoOftalmo,
-                datos.requiereLentes, JSON.stringify(diagnosticoArray2), DefaultValue.SINREGISTRO_GLOBAL,
+                datos.requiereLentes, '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', '', '', '', '', '', datos.resultadoColesterol,
                 datos.interpretacionColeste, datos.observacionColeste, datos.resultadoColesteHDL,
                 datos.interpretacionColesteHDL, datos.observacionColesteHDL, datos.dislipidemiaHDL, datos.resultadoTrigli,
@@ -318,128 +394,205 @@ const UpdateLaboratory = () => {
                         </Grid>
 
 
+
                         <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">ESTADO REFRACTIVO</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">COLESTEROL (REF: 0-200 MG/DL)</Typography>}>
                             <Grid container spacing={2}>
 
-                                <Grid item xs={12} md={1} lg={3}>
+                                <Grid item xs={12} md={1} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputText
+                                            defaultValue={lsVisiometrics.resultadoColesterol}
                                             fullWidth
-                                            name="ojoDerecho"
-                                            label="Ojo Derecho"
-                                            defaultValue={lsVisiometrics.ojoDerecho}
-                                            options={lsOjoDerecho}
+                                            name="resultadoColesterol"
+                                            label="Resultado mg/dl"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={12} md={1} lg={3}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setDiagnosticoArray(value)}
-                                        value={diagnosticoArray}
-                                        label="Diagnósticos"
-                                        options={lsCie11}
-                                    />
-                                </Grid>
-                           
-                                <Grid item xs={12} md={1} lg={3}>
+
+
+
+                                <Grid item xs={12} md={1} lg={6}>
                                     <FormProvider {...methods}>
-                                        <InputText
-                                            fullWidth
-                                            name="ojoIzquierdo"
-                                            label="Ojo Izquierdo"
-                                            defaultValue={lsVisiometrics.ojoIzquierdo}
-                                            options={lsOjoIzquierdo}
+                                        <InputSelect
+                                            name="interpretacionColeste"
+                                            label="Interpretación"
+                                            defaultValue={lsVisiometrics.interpretacionColeste}
+                                            options={lsInterpretacion}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={12} md={1} lg={3}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setDiagnosticoArray1(value)}
-                                        value={diagnosticoArray1}
-                                        label="Diagnósticos"
-                                        options={lsCie11}
-                                    />
+
+
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                             defaultValue={lsVisiometrics.observacionColeste}
+                                            fullWidth
+                                            name="observacionColeste"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            multiline
+                                            rows={6}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
                                 </Grid>
+
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
+                                    />
+
+
+                                </Grid>
+
+
                             </Grid>
                         </SubCard>
                     </Grid>
+
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">COLESTEROL HDL (REF: HOMBRE=NORMAL  MAYOR A 35 MG/DL - MUJER =NORMAL MAYOR A 45 MG/DL)</Typography>}>
+                            <Grid container spacing={2}>
+
+                                <Grid item xs={12} md={1} lg={5}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue={lsVisiometrics.resultadoColesteHDL}
+                                            fullWidth
+                                            name="resultadoColesteHDL"
+                                            label="Resultado mg/dl"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+
+                                <Grid item xs={12} md={1} lg={5}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="interpretacionColesteHDL"
+                                            label="Interpretación"
+                                            defaultValue={lsVisiometrics.interpretacionColesteHDL}
+                                            options={lsInterpretacion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                           defaultValue={lsVisiometrics.dislipidemiaHDL}
+                                            label="Dislipidemia HDL"
+                                            name="dislipidemiaHDL"
+                                            size={25}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                          defaultValue={lsVisiometrics.observacionColesteHDL}
+                                            fullWidth
+                                            name="observacionColesteHDL"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            multiline
+                                            rows={6}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
+                                    />
+
+
+                                </Grid>
+
+
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+
 
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">LECTURA ADD</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">TRIGLICÉRIDOS (REF: 0 - 200 MG/DL)</Typography>}>
                             <Grid container spacing={2}>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={1} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputText
+                                            defaultValue={lsVisiometrics.resultadoTrigli}
                                             fullWidth
-                                            name="add1"
-                                            label="ADD"
-                                            defaultValue={lsVisiometrics.add1}
-                                            options={lsAdd1}
+                                            name="resultadoTrigli"
+                                            label="Resultado mg/dl"
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={3}>
+
+
+                                <Grid item xs={12} md={1} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idLecturaAdd"
-                                            label="Lectura ADD"
-                                            defaultValue={lsVisiometrics.idLecturaAdd}
-                                            options={lsLectura}
+                                            name="interpretacionTrigli"
+                                            label="Interpretación"
+                                            defaultValue={lsVisiometrics.interpretacionTrigli}
+                                            options={lsInterpretacion}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={3}>
+
+                                <Grid item xs={12}>
                                     <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idControl"
-                                            label="Control"
-                                            defaultValue={lsVisiometrics.idControl}
-                                            options={lsControl}
+                                        <InputText
+                                            defaultValue={lsVisiometrics.observacionTrigli}
+                                            fullWidth
+                                            name="observacionTrigli"
+                                            label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
+                                            multiline
+                                            rows={6}
                                             bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Remitodo a Oftalmologia"
-                                            name="remitidoOftalmo"
-                                            size={25}
-                                            defaultValue={lsVisiometrics.remitidoOftalmo}
-
-                                        />
-                                    </FormProvider>
-                                </Grid>
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
+                                    />
 
 
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Requiere Lentes"
-                                            name="requiereLentes"
-                                            size={25}
-                                            defaultValue={lsVisiometrics.requiereLentes}
-
-                                        />
-                                    </FormProvider>
                                 </Grid>
 
 
@@ -448,39 +601,429 @@ const UpdateLaboratory = () => {
                     </Grid>
 
 
-                        <Grid item xs={12}>
-                            <SubCard darkTitle>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsVisiometrics.observacion}
-                                                fullWidth
-                                                name="observacion"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                multiline
-                                                rows={6}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                        <DetailedIcon
-                                            title={DetailIcons[0].title}
-                                            onClick={() => setOpenTemplate(true)}
-                                            icons={DetailIcons[0].icons}
+
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">GLICEMIA (REF: 70 - 100 MG/DL)</Typography>}>
+                            <Grid container spacing={2}>
+
+                                <Grid item xs={12} md={1} lg={6}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue={lsVisiometrics.resultadoGlicemia}
+                                            fullWidth
+                                            name="resultadoGlicemia"
+                                            label="Resultado mg/dl"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
                                         />
+                                    </FormProvider>
+                                </Grid>
 
 
-                                    </Grid>
+
+                                <Grid item xs={12} md={1} lg={6}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="interpretacionGlicemia"
+                                            label="Interpretacion"
+                                            defaultValue={lsVisiometrics.interpretacionGlicemia}
+                                            options={lsInterpretacion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
 
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue={lsVisiometrics.observacionGlicemia}
+                                            fullWidth
+                                            name="observacionGlicemia"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            multiline
+                                            rows={6}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
+                                    />
 
 
                                 </Grid>
-                            </SubCard>
+
+
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">CREATININA (REF: 0,5 - 1,5 MG/DL)</Typography>}>
+                            <Grid container spacing={2}>
+
+                                <Grid item xs={12} md={1} lg={6}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                           defaultValue={lsVisiometrics.resultadoCreatinina}
+                                            fullWidth
+                                            name="resultadoCreatinina"
+                                            label="Resultado mg/dl"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+
+                                <Grid item xs={12} md={1} lg={6}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="interpretacionCreatinina"
+                                            label="lsInterpretacion"
+                                            defaultValue={lsVisiometrics.interpretacionCreatinina}
+                                            options={lsInterpretacion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                              defaultValue={lsVisiometrics.observacionCreatinina}
+                                            fullWidth
+                                            name="observacionCreatinina"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            multiline
+                                            rows={6}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
+                                    />
+
+
+                                </Grid>
+
+
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+
+                    ,
+
+
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">BUN (Ref: 5 - 25 mg/dl)</Typography>}>
+                            <Grid container spacing={2}>
+
+                                <Grid item xs={12} md={1} lg={6}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                              defaultValue={lsVisiometrics.resultadoBUN}
+                                            fullWidth
+                                            name="resultadoBUN"
+                                            label="Resultado mg/dl"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+
+                                <Grid item xs={12} md={1} lg={6}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="interpretacionBUN"
+                                            label="lsInterpretacion"
+                                            defaultValue={lsVisiometrics.interpretacionBUN}
+                                            options={lsInterpretacion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue={lsVisiometrics.observacionBUN}
+                                            fullWidth
+                                            name="observacionBUN"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            multiline
+                                            rows={6}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
+                                    />
+
+
+                                </Grid>
+
+
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+
+
+
+                    <Grid item xs={12}>
+
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idParcialOrina"
+                                        label="Parcial de Orina"
+                                        defaultValue={lsVisiometrics.idParcialOrina}
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                     defaultValue={lsVisiometrics.observacionParcialOrina}
+                                        fullWidth
+                                        name="observacionParcialOrina"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+
+
                         </Grid>
+
+                    </Grid>
+
+                    <Grid item xs={12}>
+
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="hemograma"
+                                        label="Hemograma"
+                                        defaultValue={lsVisiometrics.hemograma}
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue={lsVisiometrics.observacionHemograma}
+                                        fullWidth
+                                        name="observacionHemograma"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+
+
+                        </Grid>
+
+                    </Grid>
+
+                    <Grid item xs={12}>
+
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="gpt"
+                                        label="GPT - (Ref: 7 - 33 Normal)"
+                                        defaultValue={lsVisiometrics.gpt}
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue={lsVisiometrics.observacionGPT}
+                                        fullWidth
+                                        name="observacionGPT"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+
+
+                        </Grid>
+
+                    </Grid>
+
+
+
+
+                    <Grid item xs={12}>
+
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="got"
+                                        label="GoT - (Ref: 5 - 32 Normal)"
+                                        defaultValue={lsVisiometrics.got}
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                          defaultValue={lsVisiometrics.observacionGOT}
+                                        fullWidth
+                                        name="observacionGOT"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+
+
+                        </Grid>
+
+                    </Grid>
+
+                    <Grid item xs={12}>
+
+
+
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="bilirrubina"
+                                        label="Bilirrubina Total"
+                                        defaultValue={lsVisiometrics.bilirrubina}
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                         defaultValue={lsVisiometrics.observacionBilirrubina}
+                                        fullWidth
+                                        name="observacionBilirrubina"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+
+
+                        </Grid>
+
+                    </Grid>
+
+                    <Grid item xs={12}>
+
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="bilirrubinaDirecta"
+                                        label="Bilirrubina Directa"
+                                        defaultValue={lsVisiometrics.bilirrubinaDirecta}
+                                        options={lsInterpretacion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue={lsVisiometrics.observacionBilirrubinaDirecta}
+                                        fullWidth
+                                        name="observacionBilirrubinaDirecta"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+
+
+                        </Grid>
+
+                    </Grid>
+
+
 
 
                         <Grid item xs={12} sx={{ pt: 2 }}>
@@ -522,7 +1065,7 @@ const UpdateLaboratory = () => {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/visiometrics/list")}>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/laboratory/list")}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>

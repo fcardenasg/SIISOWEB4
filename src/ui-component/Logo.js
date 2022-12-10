@@ -8,7 +8,7 @@ const Logo = ({ size = 300 }) => {
     const theme = useTheme();
 
     return (
-        <img src={theme.palette.mode === 'dark' ? logoDark : LogoDrummondEnergy} alt="Drummondltd" width={size} />
+        <img src={theme.palette.mode === 'dark' ? logoDark : LogoDrummondLTD} alt="Drummondltd" width={size} />
     );
 };
 

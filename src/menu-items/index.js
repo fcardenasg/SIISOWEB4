@@ -3,12 +3,12 @@ import widget from './widget';
 import application from './application';
 import forms from './forms';
 import pages from './pages';
-import utilities from './utilities';
+/* import utilities from './utilities'; */
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-    items: [dashboard, widget, application, forms, pages, utilities]
+    items: [dashboard, widget, application, forms, pages]
 };
 
 export default menuItems;

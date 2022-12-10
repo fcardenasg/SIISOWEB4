@@ -19,7 +19,6 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import InputDatePicker from 'components/input/InputDatePicker';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
@@ -42,7 +41,8 @@ import { GetAllSupplier } from 'api/clients/SupplierClient';
 import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
-
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import InputOnChange from 'components/input/InputOnChange';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 
 
@@ -56,9 +56,7 @@ const Visiometrics = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
-    const [diagnosticoArray1, setDiagnosticoArray1] = useState([]);
-    const [diagnosticoArray2, setDiagnosticoArray2] = useState([]);
+
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -77,9 +75,97 @@ const Visiometrics = () => {
     const [lsConducta, setLsConducta] = useState([]);
     const [lsControl, setLsControl] = useState([]);
 
+    const [textDx1, setTextDx1] = useState('');
+    const [lsDx1, setLsDx1] = useState([]);
+
+    const [textDx2, setTextDx2] = useState('');
+    const [lsDx2, setLsDx2] = useState([]);
+
+    const [textDx3, setTextDx3] = useState('');
+    const [lsDx3, setLsDx3] = useState([]);
+
     const methods = useForm();
     /* { resolver: yupResolver(validationSchema) } */
     const { handleSubmit, errors, reset } = methods;
+
+    const handleDx1 = async (event) => {
+        try {
+            setTextDx1(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx2 = async (event) => {
+        try {
+            setTextDx2(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx2(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+
+    const handleDx3 = async (event) => {
+        try {
+            setTextDx3(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx3(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
 
     const allowedFiles = ['application/pdf'];
     const handleFile = (event) => {
@@ -129,12 +215,7 @@ const Visiometrics = () => {
     async function GetAll() {
         try {
 
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
+      
 
 
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
@@ -197,9 +278,9 @@ const Visiometrics = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_VISIOMETRIA, documento,
-                FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
-                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, JSON.stringify(diagnosticoArray), datos.ojoIzquierdo, JSON.stringify(diagnosticoArray1), datos.add1, datos.idLecturaAdd, datos.idControl, datos.remitidoOftalmo,
-                datos.requiereLentes, JSON.stringify(diagnosticoArray2), DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
+                FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
+                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, datos.DxDerecho, datos.ojoIzquierdo, datos.DxIzquierdo, datos.add1, datos.idLecturaAdd, datos.idControl, datos.remitidoOftalmo,
+                datos.requiereLentes,datos.DxDiagnostico, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
@@ -322,15 +403,29 @@ const Visiometrics = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={12} md={1} lg={3}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setDiagnosticoArray(value)}
-                                        value={diagnosticoArray}
-                                        label="Diagnósticos"
-                                        options={lsCie11}
+
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <InputOnChange
+                                        label="Dx Derecho"
+                                        onKeyDown={handleDx1}
+                                        onChange={(e) => setTextDx1(e?.target.value)}
+                                        value={textDx1}
+                                        size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
+                                <Grid item xs={12} md={1} lg={6}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="DxDerecho"
+                                            label="Dx Derecho"
+                                            defaultValue=""
+                                            options={lsDx1}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
                                 <Grid item xs={12} md={1} lg={3}>
                                     <FormProvider {...methods}>
                                         <InputText
@@ -343,15 +438,31 @@ const Visiometrics = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                                <Grid item xs={12} md={1} lg={3}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setDiagnosticoArray1(value)}
-                                        value={diagnosticoArray1}
-                                        label="Diagnósticos"
-                                        options={lsCie11}
+                      
+                                <Grid item xs={12} md={1} lg={2}>
+                                    <InputOnChange
+                                        label="Dx Izquierdo"
+                                        onKeyDown={handleDx2}
+                                        onChange={(e) => setTextDx2(e?.target.value)}
+                                        value={textDx2}
+                                        size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
+                                <Grid item xs={12} md={1} lg={6}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="DxIzquierdo"
+                                            label="Dx Izquierdo"
+                                            defaultValue=""
+                                            options={lsDx2}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+
+
+
                             </Grid>
                         </SubCard>
                     </Grid>
@@ -432,20 +543,30 @@ const Visiometrics = () => {
 
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">IMPRESIÓN DIAGNÓSTICA</Typography>}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} md={1} lg={6}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setDiagnosticoArray2(value)}
-                                        value={diagnosticoArray2}
-                                        label="Diagnósticos"
-                                        options={lsCie11}
+                        <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                    <InputOnChange
+                                        label="Dx"
+                                        onKeyDown={handleDx3}
+                                        onChange={(e) => setTextDx3(e?.target.value)}
+                                        value={textDx3}
+                                        size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
+                                <Grid item xs={12} md={1} lg={8}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="DxDiagnostico"
+                                            label="Dx"
+                                            defaultValue=""
+                                            options={lsDx3}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                </Grid>
 
-
-
-                            </Grid>
                         </SubCard>
                     </Grid>
 
