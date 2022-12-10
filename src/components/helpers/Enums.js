@@ -283,10 +283,13 @@ export const ValidationMessage = {
 
 export const Message = {
     Guardar: 'Registro guardado con éxito',
-    RiesgoGuardado: 'Riesgos Cargados',
     Actualizar: 'Registro actualizado con éxito',
     Eliminar: 'Registro eliminado con éxito',
 
+    NoRegistro: 'No hay registros',
+    NoExiste: 'Este registro no existe',
+
+    RiesgoGuardado: 'Riesgos Cargados',
     TituloEliminar: '¿Estas seguro?',
     TextoEliminar: 'Este registro se eliminara, ¿esta seguro de eliminarlo?',
 

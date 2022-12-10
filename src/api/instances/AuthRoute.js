@@ -7,6 +7,7 @@ export const Url = {
     Usuario: 'api/Usuario',
 
     TipoCatalogo: 'api/TipoCatalogo',
+    TipoCatalogoCombo: 'api/TipoCatalogo/combo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
 
     Catalogo: 'api/Catalogo',

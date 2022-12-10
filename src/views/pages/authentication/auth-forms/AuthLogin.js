@@ -7,9 +7,7 @@ import { useTheme } from '@mui/material/styles';
 import {
     Box,
     Button,
-    Checkbox,
     FormControl,
-    FormControlLabel,
     FormHelperText,
     Grid,
     IconButton,
@@ -40,8 +38,6 @@ const JWTLogin = ({ loginProp, ...others }) => {
     const { login } = useAuth();
     const scriptedRef = useScriptRef();
 
-    const [checked, setChecked] = useState(true);
-
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -59,14 +55,12 @@ const JWTLogin = ({ loginProp, ...others }) => {
                 submit: null
             }}
             validationSchema={Yup.object().shape({
-                email: Yup.string().max(255).required('Email is required'),
-                password: Yup.string().max(255).required('Password is required')
+                email: Yup.string().max(255).required('El usuario es requerido'),
+                password: Yup.string().max(255).required('La contraseña es requerida')
             })}
             onSubmit={
                 async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        console.log("Valores de envio => ", values);
-
                         await login(values.email, values.password);
 
                         if (scriptedRef.current) {
@@ -86,7 +80,7 @@ const JWTLogin = ({ loginProp, ...others }) => {
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                 <form noValidate onSubmit={handleSubmit} {...others}>
                     <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                        <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
+                        <InputLabel htmlFor="outlined-adornment-email-login">Usuario</InputLabel>
                         <OutlinedInput
                             id="outlined-adornment-email-login"
                             type="email"
@@ -104,7 +98,7 @@ const JWTLogin = ({ loginProp, ...others }) => {
                     </FormControl>
 
                     <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
-                        <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
+                        <InputLabel htmlFor="outlined-adornment-password-login">Contraseña</InputLabel>
                         <OutlinedInput
                             id="outlined-adornment-password-login"
                             type={showPassword ? 'text' : 'password'}
@@ -137,19 +131,6 @@ const JWTLogin = ({ loginProp, ...others }) => {
 
                     <Grid container alignItems="center" justifyContent="space-between">
                         <Grid item>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={checked}
-                                        onChange={(event) => setChecked(event.target.checked)}
-                                        name="checked"
-                                        color="primary"
-                                    />
-                                }
-                                label="Keep me logged in"
-                            />
-                        </Grid>
-                        <Grid item>
                             <Typography
                                 variant="subtitle1"
                                 component={Link}
@@ -161,20 +142,20 @@ const JWTLogin = ({ loginProp, ...others }) => {
                                 color="secondary"
                                 sx={{ textDecoration: 'none' }}
                             >
-                                Forgot Password?
+                                ¿Olvido su Contraseña?
                             </Typography>
                         </Grid>
                     </Grid>
 
                     {errors.submit && (
-                        <Box sx={{ mt: 3 }}>
+                        <Box sx={{ mt: 2 }}>
                             <FormHelperText error>{errors.submit}</FormHelperText>
                         </Box>
                     )}
                     <Box sx={{ mt: 2 }}>
                         <AnimateButton>
                             <Button color="secondary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
-                                Sign In
+                                Iniciar Sesión
                             </Button>
                         </AnimateButton>
                     </Box>

@@ -16,7 +16,7 @@ import { PostTypeCatalog } from 'formatdata/TypeCatalogForm';
 import useAuth from 'hooks/useAuth';
 import { InsertTypeCatalog } from 'api/clients/TypeCatalogClient';
 import InputText from 'components/input/InputText';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
@@ -33,6 +33,7 @@ const TypeCatalog = () => {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [resultMessage, setResultMessage] = useState('');
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -46,21 +47,27 @@ const TypeCatalog = () => {
                 '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertTypeCatalog(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    reset();
-                }
+                await InsertTypeCatalog(DataToInsert).then(result => {
+                    if (result.data.message === Message.Guardar) {
+                        setResultMessage(result.data.message);
+                        setOpenSuccess(true);
+                        reset();
+                    } else {
+                        setOpenError(true);
+                        setErrorMessage(result.data.message);
+                    }
+
+                });
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este tipo de catálogo ya existe');
+            setErrorMessage(`${Message.ErrorServicio}`);
         }
     };
 
     return (
         <MainCard title="Registrar Tipo de Catálogo">
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageSuccess message={resultMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <form onSubmit={handleSubmit(handleClick)}>

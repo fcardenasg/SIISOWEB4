@@ -15,11 +15,11 @@ import { FormatDate } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { InsertCatalog } from 'api/clients/CatalogClient';
-import { GetAllTypeCatalog } from 'api/clients/TypeCatalogClient';
+import { GetAllTypeCatalog, GetAllTypeCatalogCombo } from 'api/clients/TypeCatalogClient';
 import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
@@ -39,6 +39,7 @@ const Catalog = () => {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [resultMessage, setResultMessage] = useState('');
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -49,17 +50,9 @@ const Catalog = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllTypeCatalog(0, 0);
-
-                var result = lsServer.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.nombre
-                }));
-                
-                setTypeCatalog(result);
-            } catch (error) {
-                console.log(error);
-            }
+                const lsServer = await GetAllTypeCatalogCombo();
+                setTypeCatalog(lsServer.data);
+            } catch (error) { }
         }
 
         GetAll();
@@ -71,21 +64,24 @@ const Catalog = () => {
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertCatalog(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    reset();
-                }
+                await InsertCatalog(DataToInsert).then(result => {
+                    if (result.data.message === Message.Guardar) {
+                        setResultMessage(result.data.message);
+                        setOpenSuccess(true);
+                        reset();
+                    } else {
+                        setOpenError(true);
+                        setErrorMessage(result.data.message);
+                    }
+
+                });
             }
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage('Este código ya existe');
-        }
+        } catch (error) { }
     };
 
     return (
         <MainCard title="Registrar Catálogo">
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageSuccess message={resultMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <form onSubmit={handleSubmit(handleClick)}>

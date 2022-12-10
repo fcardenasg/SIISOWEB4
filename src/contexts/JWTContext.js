@@ -103,22 +103,26 @@ export const JWTProvider = ({ children }) => {
             data: { usuario, password },
         });
 
-        const { token, dataUser } = response.data;
+        if (response.data.message === 'Usuario o contraseña invalidos') {
+            throw Error(response.data.message);
+        } else {
+            const { token, dataUser } = response.data;
 
-        setSession(token);
-        setRenderMenu(JSON.stringify(dataUser.menu));
-        dispatch({
-            type: LOGIN,
-            payload: {
-                isLoggedIn: true,
-                user: {
-                    id: dataUser.id,
-                    email: dataUser.correo,
-                    nameuser: dataUser.nombreUsuario,
-                    namerol: dataUser.nombreRol
+            setSession(token);
+            setRenderMenu(JSON.stringify(dataUser.menu));
+            dispatch({
+                type: LOGIN,
+                payload: {
+                    isLoggedIn: true,
+                    user: {
+                        id: dataUser.id,
+                        email: dataUser.correo,
+                        nameuser: dataUser.nombreUsuario,
+                        namerol: dataUser.nombreRol
+                    }
                 }
-            }
-        });
+            });
+        }
     };
 
     const register = async (email, password, firstName, lastName) => {

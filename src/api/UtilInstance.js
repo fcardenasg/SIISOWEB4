@@ -1,5 +1,4 @@
 import { Url } from "./instances/AuthRoute";
-import { getToken } from "./clients/AuthClient";
 import axios from "axios";
 
 export async function postData(url = '', datos = {}, headersVali = false) {
@@ -17,9 +16,7 @@ export async function postData(url = '', datos = {}, headersVali = false) {
             }).catch((error) => {
                 console.log(error);
             })
-        } catch (error) {
-            console.log("catch post ", error);
-        }
+        } catch (error) { }
     } else {
         try {
             return await axios({
@@ -32,9 +29,7 @@ export async function postData(url = '', datos = {}, headersVali = false) {
             }).catch((error) => {
                 console.log(error);
             })
-        } catch (error) {
-            console.log("catch post ", error);
-        }
+        } catch (error) { }
     }
 
 }
@@ -51,9 +46,7 @@ export async function getData(url = '', parametros = {}) {
             }).catch((error) => {
                 console.log(error);
             })
-    } catch (error) {
-        console.log("catch get ", error);
-    }
+    } catch (error) { }
 }
 
 export async function putData(url = '', datos = {}) {
@@ -68,9 +61,7 @@ export async function putData(url = '', datos = {}) {
         }).catch((error) => {
             console.log(error);
         })
-    } catch (error) {
-        console.log("catch put ", error);
-    }
+    } catch (error) { }
 }
 
 export async function deleteData(url = '', parametros = {}) {
@@ -87,7 +78,5 @@ export async function deleteData(url = '', parametros = {}) {
                 console.log(error);
             })
     }
-    catch (error) {
-        console.log("catch delete ", error);
-    }
+    catch (error) { }
 }
