@@ -1,7 +1,10 @@
 export const Url = {
-    Base: 'https://localhost:44347/',
+    Base: 'http://localhost:8242/',
 
     //'https://localhost:44347/', https://siiso.eastus.cloudapp.azure.com:44347/
+
+    Login: 'api/Login',
+    Usuario: 'api/Usuario',
 
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',

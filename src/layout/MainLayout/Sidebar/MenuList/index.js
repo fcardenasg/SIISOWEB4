@@ -8,7 +8,10 @@ import menuItem from 'menu-items';
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 
 const MenuList = () => {
-    const navItems = menuItem.items.map((item) => {
+    const systemMenu = window.localStorage.getItem('systemMenu');
+    const menuRender = JSON.parse(systemMenu);
+
+    const navItems = menuRender?.map((item) => {
         switch (item.type) {
             case 'group':
                 return <NavGroup key={item.id} item={item} />;

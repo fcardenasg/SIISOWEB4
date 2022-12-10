@@ -215,42 +215,42 @@ const application = {
                     id: 'audiometry',
                     title: <FormattedMessage id="Audiometría" />,
                     type: 'item',
-                    url: '/Paraclinics/Audiometry/list',
+                    url: '/paraclinics/audiometry/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'electro',
                     title: <FormattedMessage id="Electrocardiograma" />,
                     type: 'item',
-                    url: '/Paraclinics/Electro/list',
+                    url: '/paraclinics/electro/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'spirometry',
                     title: <FormattedMessage id="Espirometría" />,
                     type: 'item',
-                    url: '/Paraclinics/Spirometry/list',
+                    url: '/paraclinics/spirometry/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'laboratory',
                     title: <FormattedMessage id="Laboratorios" />,
                     type: 'item',
-                    url: '/Paraclinics/Laboratory/list',
+                    url: '/paraclinics/laboratory/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'rxtorax',
                     title: <FormattedMessage id="RX de Torax" />,
                     type: 'item',
-                    url: '/Paraclinics/Rxtorax/list',
+                    url: '/paraclinics/rxtorax/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'visiometrics',
                     title: <FormattedMessage id="Visiometria" />,
                     type: 'item',
-                    url: '/Paraclinics/Visiometrics/list',
+                    url: '/paraclinics/visiometrics/list',
                     breadcrumbs: false
                 },
 
@@ -258,21 +258,21 @@ const application = {
                     id: 'rnm',
                     title: <FormattedMessage id="RMN" />,
                     type: 'item',
-                    url: '/Paraclinics/Rnm/list',
+                    url: '/paraclinics/rnm/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'psa',
                     title: <FormattedMessage id="PSA" />,
                     type: 'item',
-                    url: '/Paraclinics/Psa/list',
+                    url: '/paraclinics/psa/list',
                     breadcrumbs: false
                 },
                 {
                     id: 'citologia',
                     title: <FormattedMessage id="Citología" />,
                     type: 'item',
-                    url: '/Paraclinics/Cytology/list',
+                    url: '/paraclinics/cytology/list',
                     breadcrumbs: false
                 },
 

@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -10,7 +8,6 @@ import {
     Box,
     Button,
     Checkbox,
-    Divider,
     FormControl,
     FormControlLabel,
     FormHelperText,
@@ -19,36 +16,31 @@ import {
     InputAdornment,
     InputLabel,
     OutlinedInput,
-    Stack,
-    Typography,
-    useMediaQuery
+    Typography
 } from '@mui/material';
 
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import firebase from 'firebase/app';
 
 // project imports
+import AnimateButton from 'ui-component/extended/AnimateButton';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import Google from 'assets/images/icons/social-google.svg';
+// ===============================|| JWT LOGIN ||=============================== //
 
-const FirebaseLogin = ({ loginProp, ...others }) => {
+const JWTLogin = ({ loginProp, ...others }) => {
     const theme = useTheme();
-    const scriptedRef = useScriptRef();
-    const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-    const customization = useSelector((state) => state.customization);
-    const [checked, setChecked] = useState(true);
-    const navigate = useNavigate();
 
-    const { firebaseEmailPasswordSignIn, firebaseGoogleSignIn } = useAuth();
+    const { login } = useAuth();
+    const scriptedRef = useScriptRef();
+
+    const [checked, setChecked] = useState(true);
 
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => {
@@ -60,57 +52,27 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
     };
 
     return (
-        <>
-            <Formik
-                initialValues={{
-                    email: '',
-                    password: '',
-                    submit: null
-                }}
-                validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required')
-                })}
-                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+        <Formik
+            initialValues={{
+                email: '',
+                password: '',
+                submit: null
+            }}
+            validationSchema={Yup.object().shape({
+                email: Yup.string().max(255).required('Email is required'),
+                password: Yup.string().max(255).required('Password is required')
+            })}
+            onSubmit={
+                async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        const logueado = await firebaseEmailPasswordSignIn(values.email, values.password).then(
-                            (userFireBase) => {
-                                return userFireBase;
-                            },
-                            (err) => {
-                                if (scriptedRef.current) {
-                                    setStatus({ success: false });
-                                    setErrors({ submit: err.message });
-                                    setSubmitting(false);
-                                }
-                            }
-                        );
+                        console.log("Valores de envio => ", values);
 
-                        var docRef = firebase.firestore().doc(`Usuarios/${logueado.user.uid}`);
+                        await login(values.email, values.password);
 
-                        const datosFin = await docRef.get().then((doc) => {
-                            if (doc.exists) {
-
-                                return doc.data();
-                            } else {
-                                console.log("No such document!");
-                            }
-                        }).catch((error) => {
-                            console.log("Error getting document:", error);
-                        });
-
-                        const userData = {
-                            uid: logueado.user.uid,
-                            email: logueado.user.email,
-                            rol: datosFin.rol
+                        if (scriptedRef.current) {
+                            setStatus({ success: true });
+                            setSubmitting(false);
                         }
-
-                        if (userData.rol === "visitante") {
-                            navigate("/dashboard/questionnaire", { replace: true });
-                        } else if (userData.rol === 'admin') {
-                            navigate("/dashboard/ltd", { replace: true });
-                        }
-
                     } catch (err) {
                         console.error(err);
                         if (scriptedRef.current) {
@@ -120,75 +82,74 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                         }
                     }
                 }}
-            >
-                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-                    <form noValidate onSubmit={handleSubmit} {...others}>
-                        <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
-                            <OutlinedInput
-                                id="outlined-adornment-email-login"
-                                type="email"
-                                value={values.email}
-                                name="email"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                label="Email Address / Username"
-                                inputProps={{}}
-                            />
-                            {touched.email && errors.email && (
-                                <FormHelperText error id="standard-weight-helper-text-email-login">
-                                    {errors.email}
-                                </FormHelperText>
-                            )}
-                        </FormControl>
+        >
+            {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+                <form noValidate onSubmit={handleSubmit} {...others}>
+                    <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
+                        <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-email-login"
+                            type="email"
+                            value={values.email}
+                            name="email"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            inputProps={{}}
+                        />
+                        {touched.email && errors.email && (
+                            <FormHelperText error id="standard-weight-helper-text-email-login">
+                                {errors.email}
+                            </FormHelperText>
+                        )}
+                    </FormControl>
 
-                        <FormControl
-                            fullWidth
-                            error={Boolean(touched.password && errors.password)}
-                            sx={{ ...theme.typography.customInput }}
-                        >
-                            <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
-                            <OutlinedInput
-                                id="outlined-adornment-password-login"
-                                type={showPassword ? 'text' : 'password'}
-                                value={values.password}
-                                name="password"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={handleClickShowPassword}
-                                            onMouseDown={handleMouseDownPassword}
-                                            edge="end"
-                                            size="large"
-                                        >
-                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                label="Password"
-                                inputProps={{}}
-                            />
-                            {touched.password && errors.password && (
-                                <FormHelperText error id="standard-weight-helper-text-password-login">
-                                    {errors.password}
-                                </FormHelperText>
-                            )}
-                        </FormControl>
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+                    <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
+                        <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-password-login"
+                            type={showPassword ? 'text' : 'password'}
+                            value={values.password}
+                            name="password"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        edge="end"
+                                        size="large"
+                                    >
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            inputProps={{}}
+                            label="Password"
+                        />
+                        {touched.password && errors.password && (
+                            <FormHelperText error id="standard-weight-helper-text-password-login">
+                                {errors.password}
+                            </FormHelperText>
+                        )}
+                    </FormControl>
+
+                    <Grid container alignItems="center" justifyContent="space-between">
+                        <Grid item>
                             <FormControlLabel
                                 control={
                                     <Checkbox
                                         checked={checked}
                                         onChange={(event) => setChecked(event.target.checked)}
                                         name="checked"
-                                        sx={{ color: '#0072BC' }}
+                                        color="primary"
                                     />
                                 }
-                                label="Recuérdame"
+                                label="Keep me logged in"
                             />
+                        </Grid>
+                        <Grid item>
                             <Typography
                                 variant="subtitle1"
                                 component={Link}
@@ -197,42 +158,34 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                                         ? `/pages/forgot-password/forgot-password${loginProp}`
                                         : '/pages/forgot-password/forgot-password3'
                                 }
-                                sx={{ textDecoration: 'none', color: '#0072BC' }}
+                                color="secondary"
+                                sx={{ textDecoration: 'none' }}
                             >
-                                ¿Has olvidado tu contraseña?
+                                Forgot Password?
                             </Typography>
-                        </Stack>
-                        {errors.submit && (
-                            <Box sx={{ mt: 3 }}>
-                                <FormHelperText error>{errors.submit}</FormHelperText>
-                            </Box>
-                        )}
+                        </Grid>
+                    </Grid>
 
-                        <Box sx={{ mt: 2 }}>
-                            <AnimateButton>
-                                <Button
-                                    id='buttonlogin'
-                                    disableElevation
-                                    disabled={isSubmitting}
-                                    fullWidth
-                                    size="large"
-                                    type="submit"
-                                    variant="contained"
-                                    sx={{ background: '#E31937' }}
-                                >
-                                    INGRESAR
-                                </Button>
-                            </AnimateButton>
+                    {errors.submit && (
+                        <Box sx={{ mt: 3 }}>
+                            <FormHelperText error>{errors.submit}</FormHelperText>
                         </Box>
-                    </form>
-                )}
-            </Formik>
-        </>
+                    )}
+                    <Box sx={{ mt: 2 }}>
+                        <AnimateButton>
+                            <Button color="secondary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
+                                Sign In
+                            </Button>
+                        </AnimateButton>
+                    </Box>
+                </form>
+            )}
+        </Formik>
     );
 };
 
-FirebaseLogin.propTypes = {
+JWTLogin.propTypes = {
     loginProp: PropTypes.number
 };
 
-export default FirebaseLogin;
+export default JWTLogin;

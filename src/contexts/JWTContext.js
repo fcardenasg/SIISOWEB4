@@ -11,7 +11,9 @@ import accountReducer from 'store/accountReducer';
 
 // project imports
 import Loader from 'ui-component/Loader';
-import axios from 'utils/axios';
+import axios from 'axios';
+//import axios from 'utils/axios';
+import { Url } from 'api/instances/AuthRoute';
 
 const chance = new Chance();
 
@@ -35,11 +37,19 @@ const verifyToken = (serviceToken) => {
 
 const setSession = (serviceToken) => {
     if (serviceToken) {
-        localStorage.setItem('serviceToken', serviceToken);
+        window.localStorage.setItem('serviceToken', serviceToken);
         axios.defaults.headers.common.Authorization = `Bearer ${serviceToken}`;
     } else {
-        localStorage.removeItem('serviceToken');
+        window.localStorage.removeItem('serviceToken');
         delete axios.defaults.headers.common.Authorization;
+    }
+};
+
+const setRenderMenu = (systemMenu) => {
+    if (systemMenu) {
+        window.localStorage.setItem('systemMenu', systemMenu);
+    } else {
+        window.localStorage.removeItem('systemMenu');
     }
 };
 
@@ -53,15 +63,21 @@ export const JWTProvider = ({ children }) => {
         const init = async () => {
             try {
                 const serviceToken = window.localStorage.getItem('serviceToken');
+
                 if (serviceToken && verifyToken(serviceToken)) {
                     setSession(serviceToken);
-                    const response = await axios.get('/api/account/me');
-                    const { user } = response.data;
+                    const response = await axios.get(`${Url.Base}${Url.Usuario}`);
+                    const { dataUser } = response.data;
                     dispatch({
                         type: LOGIN,
                         payload: {
                             isLoggedIn: true,
-                            user
+                            user: {
+                                id: dataUser.id,
+                                email: dataUser.correo,
+                                nameuser: dataUser.nombreUsuario,
+                                namerol: dataUser.nombreRol
+                            }
                         }
                     });
                 } else {
@@ -80,15 +96,27 @@ export const JWTProvider = ({ children }) => {
         init();
     }, []);
 
-    const login = async (email, password) => {
-        const response = await axios.post('/api/account/login', { email, password });
-        const { serviceToken, user } = response.data;
-        setSession(serviceToken);
+    const login = async (usuario, password) => {
+        const response = await axios({
+            method: 'post',
+            url: `${Url.Base}${Url.Login}`,
+            data: { usuario, password },
+        });
+
+        const { token, dataUser } = response.data;
+
+        setSession(token);
+        setRenderMenu(JSON.stringify(dataUser.menu));
         dispatch({
             type: LOGIN,
             payload: {
                 isLoggedIn: true,
-                user
+                user: {
+                    id: dataUser.id,
+                    email: dataUser.correo,
+                    nameuser: dataUser.nombreUsuario,
+                    namerol: dataUser.nombreRol
+                }
             }
         });
     };
@@ -128,14 +156,24 @@ export const JWTProvider = ({ children }) => {
 
     const resetPassword = (email) => console.log(email);
 
-    const updateProfile = () => {};
+    const updateProfile = () => { };
 
     if (state.isInitialized !== undefined && !state.isInitialized) {
         return <Loader />;
     }
 
     return (
-        <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, updateProfile }}>{children}</JWTContext.Provider>
+        <JWTContext.Provider
+            value={{
+                ...state,
+                login,
+                logout,
+                register,
+                resetPassword,
+                updateProfile
+            }}>
+            {children}
+        </JWTContext.Provider>
     );
 };
 

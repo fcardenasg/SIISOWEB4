@@ -4,9 +4,7 @@ import { useNavigate } from 'react-router-dom';
 // project imports
 import useAuth from 'hooks/useAuth';
 import { useEffect } from 'react';
-
-/* Validate */
-import firebase from 'firebase/app';
+import config from 'config';
 
 /**
  * Guest guard for routes having no auth required
@@ -14,43 +12,13 @@ import firebase from 'firebase/app';
  */
 
 const GuestGuard = ({ children }) => {
-    const { isLoggedIn, user } = useAuth();
+    const { isLoggedIn } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        async function getAuth() {
-            try {
-                if (isLoggedIn) {
-                    var docRef = firebase.firestore().doc(`Usuarios/${user.id}`);
-
-                    const datosFin = await docRef.get().then((doc) => {
-                        if (doc.exists) {
-                            return doc.data();
-                        } else {
-                            console.log("No such document!");
-                        }
-                    }).catch((error) => {
-                        console.log("Error getting document:", error);
-                    });
-
-                    const userData = {
-                        uid: user.uid,
-                        email: user.email,
-                        rol: datosFin.rol
-                    }
-
-                    if (userData.rol === "visitante") {
-                        return navigate("/dashboard/questionnaire", { replace: true });
-                    } else {
-                        return navigate("/dashboard/ltd", { replace: true });
-                    }
-                }
-            } catch (error) {
-                console.log(error);
-            }
+        if (isLoggedIn) {
+            navigate(config.defaultPath, { replace: true });
         }
-
-        getAuth();
     }, [isLoggedIn, navigate]);
 
     return children;
