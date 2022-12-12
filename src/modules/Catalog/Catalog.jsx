@@ -15,7 +15,7 @@ import { FormatDate } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { InsertCatalog } from 'api/clients/CatalogClient';
-import { GetAllTypeCatalog, GetAllTypeCatalogCombo } from 'api/clients/TypeCatalogClient';
+import { GetAllTypeCatalogCombo } from 'api/clients/TypeCatalogClient';
 import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
@@ -56,11 +56,11 @@ const Catalog = () => {
         }
 
         GetAll();
-    }, [])
+    }, []);
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostCatalog(datos.nombre, datos.codigo, datos.idTipoCatalogo, user.email,
+            const DataToInsert = PostCatalog(datos.nombre, datos.codigo, datos.idTipoCatalogo, user.nameuser,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -76,7 +76,10 @@ const Catalog = () => {
 
                 });
             }
-        } catch (error) { }
+        } catch (error) {
+            setResultMessage(Message.ErrorServicio);
+            setOpenError(true);
+        }
     };
 
     return (

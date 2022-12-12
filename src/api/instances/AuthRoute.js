@@ -43,6 +43,7 @@ export const Url = {
     PruebasAlcoholDrogaId: 'api/PruebasAlcoholDroga/id',
 
     Empresa: 'api/Empresa',
+    EmpresaCombo: 'api/Empresa/combo',
     EmpresaId: 'api/Empresa/id',
 
     SGSST: 'api/SistemaGestion',

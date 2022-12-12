@@ -30,7 +30,6 @@ import { visuallyHidden } from '@mui/utils';
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
 
@@ -229,7 +228,10 @@ const ListCatalog = () => {
                     setRows(result.data);
                 }
             });
-        } catch (error) { }
+        } catch (error) {
+            setResultMessage(Message.ErrorServicio);
+            setOpenDelete(true);
+        }
     }
 
     useEffect(() => {
@@ -328,7 +330,8 @@ const ListCatalog = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            setResultMessage(Message.ErrorServicio);
+            setOpenDelete(true);
         }
     }
 

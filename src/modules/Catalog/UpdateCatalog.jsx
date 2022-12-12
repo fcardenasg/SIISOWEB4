@@ -77,7 +77,7 @@ const UpdateCatalog = () => {
 
     const onSubmit = async (datos) => {
         const DataToUpdate = PutCatalog(id, datos.nombre, datos.codigo, datos.idTipoCatalogo,
-            lsCatalog.usuarioRegistro, lsCatalog.fechaRegistro, user.email, FormatDate(new Date()));
+            lsCatalog.usuarioRegistro, lsCatalog.fechaRegistro, user.nameuser, FormatDate(new Date()));
         try {
             if (Object.keys(datos.length !== 0)) {
                 await UpdateCatalogs(DataToUpdate).then(result => {

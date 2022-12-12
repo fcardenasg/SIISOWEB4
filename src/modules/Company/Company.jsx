@@ -15,7 +15,7 @@ import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import { InsertCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostCompany } from 'formatdata/CompanyForm';
@@ -38,6 +38,7 @@ const Company = () => {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [resultMessage, setResultMessage] = useState('');
 
     const methods = useForm({
         resolver: yupResolver(validationSchema)
@@ -46,25 +47,30 @@ const Company = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostCompany(datos.codigo, datos.descripcionSpa, datos.email, datos.celular, datos.gerente,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PostCompany(datos.codigo, datos.descripcionSpa, datos.email, datos.celular,
+                datos.gerente, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertCompany(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    reset();
-                }
+                await InsertCompany(DataToInsert).then(result => {
+                    if (result.data.message === Message.Guardar) {
+                        setResultMessage(result.data.message);
+                        setOpenSuccess(true);
+                        reset();
+                    } else {
+                        setOpenError(true);
+                        setErrorMessage(result.data.message);
+                    }
+                });
             }
         } catch (error) {
+            setResultMessage(Message.ErrorServicio);
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
         }
     };
 
     return (
         <MainCard title="Registrar Empresas">
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageSuccess message={resultMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <Grid container spacing={2}>
@@ -73,7 +79,7 @@ const Company = () => {
                         <InputText
                             defaultValue=""
                             fullWidth
-                            name="Codigo"
+                            name="codigo"
                             label="Código"
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors}
@@ -85,7 +91,7 @@ const Company = () => {
                         <InputText
                             defaultValue=""
                             fullWidth
-                            name="DescripcionSpa"
+                            name="descripcionSpa"
                             label="Nombre"
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors}
@@ -97,7 +103,7 @@ const Company = () => {
                         <InputText
                             defaultValue=""
                             fullWidth
-                            name="Email"
+                            name="email"
                             label="Email"
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors}
@@ -109,7 +115,7 @@ const Company = () => {
                         <InputText
                             defaultValue=""
                             fullWidth
-                            name="Celular"
+                            name="celular"
                             label="Celular"
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors}
@@ -121,7 +127,7 @@ const Company = () => {
                         <InputText
                             defaultValue=""
                             fullWidth
-                            name="Gerente"
+                            name="gerente"
                             label="Gerente"
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors}

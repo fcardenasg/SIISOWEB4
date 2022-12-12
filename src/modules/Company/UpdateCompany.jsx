@@ -66,7 +66,7 @@ const UpdateCompany = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PutCompany(datos.codigo, datos.descripcionSpa, datos.email, datos.celular, datos.gerente,
-                lsCompany.usuarioRegistro, lsCompany.fechaRegistro, user.email, FormatDate(new Date()));
+                lsCompany.usuarioRegistro, lsCompany.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
             console.log("Datos = ", datos);
 

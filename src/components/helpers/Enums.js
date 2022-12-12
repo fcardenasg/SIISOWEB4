@@ -300,6 +300,7 @@ export const Message = {
     TextoCargar: 'Se cargaran los riesgos, esto puede demorar un poco',
 
     NoEliminar: 'No se pudo eliminar el registro',
+    ErrorServicio: 'Error de servicio, vuelva a intentar',
 
     ErrorDocumento: 'Por favor, ingrese un número de documento',
     ErrorDeDatos: 'Hubo un error al buscar los datos, vuelva a intentarlo',

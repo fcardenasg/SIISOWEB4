@@ -29,7 +29,7 @@ import { visuallyHidden } from '@mui/utils';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllCompany, DeleteCompany } from 'api/clients/CompanyClient';
 
@@ -190,7 +190,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -213,10 +213,11 @@ const ListCompany = () => {
     const [company, setCompany] = useState([]);
     const [idCheck, setIdCheck] = useState('');
     const [openDelete, setOpenDelete] = useState(false);
+    const [resultMessage, setResultMessage] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('descripcionSpa');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -225,11 +226,18 @@ const ListCompany = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllCompany(0, 0);
-            setCompany(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            await GetAllCompany().then(result => {
+                if (result.data.message === Message.NoRegistro) {
+                    setResultMessage(result.data.message);
+                    setOpenDelete(true);
+                } else {
+                    setCompany(result.data);
+                    setRows(result.data);
+                }
+            });
         } catch (error) {
-            console.log(error);
+            setResultMessage(Message.ErrorServicio);
+            setOpenDelete(true);
         }
     }
 
@@ -313,18 +321,24 @@ const ListCompany = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteCompany(idCheck);
-                    if (result.status === 200) {
-                        setOpenDelete(true);
-                    }
-                    setSearch('');
-                    setSelected([]);
-                    GetAll();
+                    await DeleteCompany(idCheck).then(result => {
+                        if (result.data.message === Message.Eliminar) {
+                            setResultMessage(result.data.message);
+                            setOpenDelete(true);
+                            setSelected([]);
+                            setSearch('');
+                            GetAll();
+                        } else {
+                            setResultMessage(result.data.message);
+                            setOpenDelete(true);
+                        }
+                    });
                 } else
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            setResultMessage(Message.ErrorServicio);
+            setOpenDelete(true);
         }
     }
 
@@ -335,7 +349,8 @@ const ListCompany = () => {
 
     return (
         <MainCard title="Lista de Empresas" content={false}>
-            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+            <MessageDelete message={resultMessage} open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -369,12 +384,6 @@ const ListCompany = () => {
                                 <ExcelColumn label="Celular" value="celular" />
                             </ExcelSheet>
                         </ExcelFile>
-
-                        <Tooltip title="Impresión" onClick={() => navigate('/company/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/company/add")}>
