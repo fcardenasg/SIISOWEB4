@@ -7,13 +7,11 @@ import {
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import useAuth from 'hooks/useAuth';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertSupplier } from 'api/clients/SupplierClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
@@ -25,14 +23,13 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { PostSupplier } from 'formatdata/SupplierForm';
 
+/* Validamos campos, los que sean necesarios */
 const validationSchema = yup.object().shape({
     codiProv: yup.string().required(`${ValidationMessage.Requerido}`),
     nombProv: yup.string().required(`${ValidationMessage.Requerido}`),
     teleProv: yup.string().required(`${ValidationMessage.Requerido}`),
     emaiProv: yup.string().required(`${ValidationMessage.Requerido}`),
-    contaProv: yup.string().required(`${ValidationMessage.Requerido}`),
-    ciudProv: yup.string().required(`${ValidationMessage.Requerido}`),
-    direProv: yup.string().required(`${ValidationMessage.Requerido}`),
+    idTipoProveedor: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
 const Supplier = () => {
@@ -41,9 +38,11 @@ const Supplier = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    /* Se agregan algunos de esto estados */
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [resultMessage, setResultMessage] = useState('');
 
     const [lsSupplier, setLsSupplier] = useState([]);
     const [lsCiudad, setLsCiudad] = useState([]);
@@ -52,54 +51,55 @@ const Supplier = () => {
         resolver: yupResolver(validationSchema)
     });
 
-    const { handleSubmit, errors, reset } = methods;
+    /* Modificamos aquí para validar los campos también */
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
+    /* Modificamos la toma de datos de los combos */
     async function GetAll() {
         try {
-            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPO_PROVEEDOR);
-            var resultSupplier = lsServerSupplier.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsSupplier(resultSupplier);
+            const lsServerSupplier = await GetAllByTipoCatalogo(CodCatalogo.TIPO_PROVEEDOR);
+            setLsSupplier(lsServerSupplier.data);
 
-            const lsServerPais = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CIUDADES);
-            var resultPais = lsServerPais.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCiudad(resultPais);
-        } catch (error) {
-            console.log(error);
-        }
+            const lsServerPais = await GetAllByTipoCatalogo(CodCatalogo.CIUDADES);
+            setLsCiudad(lsServerPais.data);
+        } catch (error) { }
     }
 
     useEffect(() => {
         GetAll();
     }, [])
 
+    /* Hacemos ajustes en el metodo de guardar */
     const handleClick = async (datos) => {
         try {
+            /* Recordar aquí modificar el correo por el nombre de usuario */
             const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
                 datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertSupplier(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    reset();
-                }
+                await InsertSupplier(DataToInsert).then(result => {
+                    if (result.data.message === Message.Guardar) {
+                        setResultMessage(result.data.message);
+                        setOpenSuccess(true);
+                        reset();
+                    } else {
+                        setOpenError(true);
+                        setErrorMessage(result.data.message);
+                    }
+
+                });
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('No se pudo guardar el registro');
+            setErrorMessage(Message.ErrorServicio);
         }
     };
 
     return (
         <MainCard title="Registrar Proveedor">
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            {/* Agregamos el resultado del mensaje */}
+            <MessageSuccess message={resultMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <Grid container spacing={2}>
@@ -110,7 +110,7 @@ const Supplier = () => {
                             name="codiProv"
                             label="Código"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.codiProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -121,7 +121,7 @@ const Supplier = () => {
                             name="nombProv"
                             label="Nombre"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.nombProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -132,7 +132,7 @@ const Supplier = () => {
                             name="teleProv"
                             label="Teléfono"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.teleProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -144,7 +144,7 @@ const Supplier = () => {
                             name="emaiProv"
                             label="Email"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.emaiProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -156,7 +156,7 @@ const Supplier = () => {
                             name="contaProv"
                             label="Contacto"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.contaProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -168,7 +168,7 @@ const Supplier = () => {
                             defaultValue=""
                             options={lsCiudad}
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.ciudProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -180,7 +180,7 @@ const Supplier = () => {
                             defaultValue=""
                             options={lsSupplier}
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.idTipoProveedor}
                         />
                     </FormProvider>
                 </Grid>
@@ -191,7 +191,7 @@ const Supplier = () => {
                             name="direProv"
                             label="Dirrección"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.direProv}
                         />
                     </FormProvider>
                 </Grid>

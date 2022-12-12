@@ -30,7 +30,7 @@ import { IconFileExport } from '@tabler/icons';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllSupplier, DeleteSupplier } from 'api/clients/SupplierClient';
 
@@ -207,6 +207,7 @@ const ListSupplier = () => {
     const [supplier, setSupplier] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [idCheck, setIdCheck] = useState('');
+    const [resultMessage, setResultMessage] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -217,12 +218,13 @@ const ListSupplier = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
+    //Primer metodo a actualizar
     async function GetAll() {
         try {
-            const lsServer = await GetAllSupplier(0, 0);
+            const lsServer = await GetAllSupplier();
             if (lsServer.status === 200) {
-                setSupplier(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                setSupplier(lsServer.data);
+                setRows(lsServer.data);
             }
         } catch (error) {
             console.log(error);
@@ -305,22 +307,29 @@ const ListSupplier = () => {
         setPage(0);
     };
 
+    //Actualizar el eliminar
     const handleDelete = async () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteSupplier(idCheck);
-                    if (result.status === 200) {
-                        setOpenDelete(true);
-                    }
-                    setSearch('');
-                    setSelected([]);
-                    GetAll();
+                    await DeleteSupplier(idCheck).then(result => {
+                        if (result.data.message === Message.Eliminar) {
+                            setResultMessage(result.data.message);
+                            setOpenDelete(true);
+                            setSelected([]);
+                            setSearch('');
+                            GetAll();
+                        } else {
+                            setResultMessage(result.data.message);
+                            setOpenDelete(true);
+                        }
+                    });
                 } else
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            setResultMessage(Message.ErrorServicio);
+            setOpenDelete(true);
         }
     }
 
@@ -329,7 +338,9 @@ const ListSupplier = () => {
 
     return (
         <MainCard title="Lista de Proveedores" content={false}>
-            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+            {/* Agregar el mensaje capturado */}
+            <MessageDelete message={resultMessage} open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -367,11 +378,11 @@ const ListSupplier = () => {
                             </ExcelSheet>
                         </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/supplier/report')}>
+                        {/* <Tooltip title="Impresión" onClick={() => navigate('/supplier/report')}>
                             <IconButton size="large">
                                 <PrintIcon />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/supplier/add")}>

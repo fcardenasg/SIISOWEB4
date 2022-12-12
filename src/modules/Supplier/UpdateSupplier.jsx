@@ -21,10 +21,19 @@ import { UpdateSuppliers, GetByIdSupplier } from 'api/clients/SupplierClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo, Message, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
+
+/* Validamos campos, los que sean necesarios */
+const validationSchema = yup.object().shape({
+    codiProv: yup.string().required(`${ValidationMessage.Requerido}`),
+    nombProv: yup.string().required(`${ValidationMessage.Requerido}`),
+    teleProv: yup.string().required(`${ValidationMessage.Requerido}`),
+    emaiProv: yup.string().required(`${ValidationMessage.Requerido}`),
+    idTipoProveedor: yup.string().required(`${ValidationMessage.Requerido}`),
+});
 
 const UpdateSupplier = () => {
     const { user } = useAuth();
@@ -35,30 +44,31 @@ const UpdateSupplier = () => {
 
     const [supplier, setSupplier] = useState([]);
     const [lsSupplier, setLsSupplier] = useState([]);
-    const [lsPais, setLsPais] = useState([]);
+    const [lsCiudad, setLsCiudad] = useState([]);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    /* Agregar algún estado que necesitemos para mensaje */
+    const [resultMessage, setResultMessage] = useState('');
     const [openError, setOpenError] = useState(false);
 
     async function GetAll() {
         try {
-            const lsServerSupplierId = await GetByIdSupplier(id);
-            if (lsServerSupplierId.status === 200)
-                setSupplier(lsServerSupplierId.data);
+            /* Modificamos el metodo de Obtener los datos por ID */
+            await GetByIdSupplier(id).then(result => {
+                if (result.data.message === Message.NoExiste) {
+                    setOpenError(true);
+                    setErrorMessage(result.data.message);
+                } else {
+                    setSupplier(result.data);
+                }
+            });
 
-            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPO_PROVEEDOR);
-            var resultSupplier = lsServerSupplier.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsSupplier(resultSupplier);
+            /* Ajustamos nuevamente los combos como en el agregar */
+            const lsServerSupplier = await GetAllByTipoCatalogo(CodCatalogo.TIPO_PROVEEDOR);
+            setLsSupplier(lsServerSupplier.data);
 
-            const lsServerPais = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CIUDADES);
-            var resultPais = lsServerPais.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsPais(resultPais);
+            const lsServerPais = await GetAllByTipoCatalogo(CodCatalogo.CIUDADES);
+            setLsCiudad(lsServerPais.data);
         } catch (error) {
             console.log(error);
         }
@@ -68,31 +78,42 @@ const UpdateSupplier = () => {
         GetAll();
     }, [])
 
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-    const { handleSubmit, errors } = methods;
+    /* Ajustamos para la validacion de campos */
+    const methods = useForm({
+        resolver: yupResolver(validationSchema)
+    });
+    const { handleSubmit, formState: { errors } } = methods;
 
     const handleClick = async (datos) => {
         try {
+            /* Modificamos el correo por el nombre del usuario */
             const DataToUpdate = PutSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
                 datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
-                supplier.usuarioRegistro, supplier.fechaRegistro, user.email, FormatDate(new Date()));
+                supplier.usuarioRegistro, supplier.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
+            /* Modificamos el consumo del servicio de actualziar */
             if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateSuppliers(DataToUpdate);
-                if (result.status === 200) {
-                    setOpenUpdate(true);
-                }
+                await UpdateSuppliers(DataToUpdate).then(result => {
+                    if (result.data.message === Message.Actualizar) {
+                        setOpenUpdate(true);
+                        setResultMessage(result.data.message);
+                    } else {
+                        setOpenError(true);
+                        setErrorMessage(result.data.message);
+                    }
+                });
             }
         } catch (error) {
+            /* Validamos errores de servicio */
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.ErrorServicio);
         }
     };
 
     return (
         <MainCard title="Actualizar Proveedor">
-            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+            {/* Indicamos el mensaje que nos da como resultado aquí */}
+            <MessageUpdate message={resultMessage} open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             {supplier.length != 0 ? (
@@ -107,7 +128,7 @@ const UpdateSupplier = () => {
                                     name="codiProv"
                                     label="Código"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.codiProv}
                                 />
                             </FormProvider>
                         </Grid>
@@ -119,7 +140,7 @@ const UpdateSupplier = () => {
                                     name="nombProv"
                                     label="Nombre"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.nombProv}
                                 />
                             </FormProvider>
                         </Grid>
@@ -131,7 +152,7 @@ const UpdateSupplier = () => {
                                     name="teleProv"
                                     label="Teléfono"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.teleProv}
                                 />
                             </FormProvider>
                         </Grid>
@@ -143,7 +164,7 @@ const UpdateSupplier = () => {
                                     name="emaiProv"
                                     label="Email"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.emaiProv}
                                 />
                             </FormProvider>
                         </Grid>
@@ -155,7 +176,7 @@ const UpdateSupplier = () => {
                                     name="contaProv"
                                     label="Contacto"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.contaProv}
                                 />
                             </FormProvider>
                         </Grid>
@@ -165,9 +186,9 @@ const UpdateSupplier = () => {
                                     name="ciudProv"
                                     label="Ciudad"
                                     defaultValue={supplier.ciudProv}
-                                    options={lsPais}
+                                    options={lsCiudad}
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.ciudProv}
                                 />
                             </FormProvider>
                         </Grid>
@@ -179,7 +200,7 @@ const UpdateSupplier = () => {
                                     defaultValue={supplier.tipoProv}
                                     options={lsSupplier}
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.idTipoProveedor}
                                 />
                             </FormProvider>
                         </Grid>
@@ -191,7 +212,7 @@ const UpdateSupplier = () => {
                                     name="direProv"
                                     label="Dirrección"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.direProv}
                                 />
                             </FormProvider>
                         </Grid>
