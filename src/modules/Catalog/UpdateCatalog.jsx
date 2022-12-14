@@ -17,11 +17,11 @@ import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
 import { PutCatalog } from 'formatdata/CatalogForm';
 import { GetByIdCatalog, UpdateCatalogs } from 'api/clients/CatalogClient';
-import { GetAllTypeCatalog, GetAllTypeCatalogCombo } from 'api/clients/TypeCatalogClient';
+import { GetAllTypeCatalog } from 'api/clients/TypeCatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Cargando from 'components/loading/Cargando';
@@ -43,23 +43,21 @@ const UpdateCatalog = () => {
     const [lsCatalog, setLsCatalog] = useState([]);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [resultMessage, setResultMessage] = useState('');
     const [openError, setOpenError] = useState(false);
 
     useEffect(() => {
         async function GetAll() {
             try {
-                await GetByIdCatalog(id).then(result => {
-                    if (result.data.message === Message.NoExiste) {
-                        setOpenError(true);
-                        setErrorMessage(result.data.message);
-                    } else {
-                        setLsCatalog(result.data);
-                    }
-                });
+                const lsServer = await GetAllTypeCatalog(0, 0);
+                var result = lsServer.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
+                setTypeCatalog(result);
 
-                const lsServer = await GetAllTypeCatalogCombo();
-                setTypeCatalog(lsServer.data);
+                const lsServerCatalog = await GetByIdCatalog(id);
+                if (lsServerCatalog.status === 200)
+                    setLsCatalog(lsServerCatalog.data);
             } catch (error) {
                 setOpenError(true);
                 setErrorMessage(`${error}`);
@@ -67,7 +65,7 @@ const UpdateCatalog = () => {
         }
 
         GetAll();
-    }, [id])
+    }, [])
 
     const methods = useForm({
         resolver: yupResolver(validationSchema)
@@ -77,25 +75,23 @@ const UpdateCatalog = () => {
 
     const onSubmit = async (datos) => {
         const DataToUpdate = PutCatalog(id, datos.nombre, datos.codigo, datos.idTipoCatalogo,
-            lsCatalog.usuarioRegistro, lsCatalog.fechaRegistro, user.nameuser, FormatDate(new Date()));
+            lsCatalog.usuarioRegistro, lsCatalog.fechaRegistro, user.email, FormatDate(new Date()));
         try {
             if (Object.keys(datos.length !== 0)) {
-                await UpdateCatalogs(DataToUpdate).then(result => {
-                    if (result.data.message === Message.Actualizar) {
-                        setOpenUpdate(true);
-                        setResultMessage(result.data.message);
-                    } else {
-                        setOpenError(true);
-                        setErrorMessage(result.data.message);
-                    }
-                });
+                const result = await UpdateCatalogs(DataToUpdate);
+                if (result.status === 200) {
+                    setOpenUpdate(true);
+                }
             }
-        } catch (error) { }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(`${error}`);
+        }
     };
 
     return (
         <MainCard title="Actualizar Catálogo">
-            <MessageUpdate message={resultMessage} open={openUpdate} onClose={() => setOpenUpdate(false)} />
+            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             {lsCatalog.length != 0 ?

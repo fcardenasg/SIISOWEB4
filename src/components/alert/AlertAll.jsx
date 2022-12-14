@@ -56,7 +56,7 @@ const Alert = React.forwardRef(
     }
 );
 
-export const MessageSuccess = ({ open, onClose, message = "" }) => {
+export const MessageSuccess = ({ open, onClose }) => {
     return (
         <Snackbar
             TransitionComponent={SlideTransition}
@@ -67,13 +67,13 @@ export const MessageSuccess = ({ open, onClose, message = "" }) => {
             onClose={onClose}
         >
             <Alert severity="success" sx={{ width: '100%' }}>
-                {message}
+                {Message.Guardar}
             </Alert>
         </Snackbar>
     )
 }
 
-export const MessageUpdate = ({ open, onClose, message = "" }) => {
+export const MessageUpdate = ({ open, onClose }) => {
     return (
         <Snackbar
             TransitionComponent={SlideTransition}
@@ -84,13 +84,13 @@ export const MessageUpdate = ({ open, onClose, message = "" }) => {
             onClose={onClose}
         >
             <Alert severity="success" sx={{ width: '100%' }}>
-                {message}
+                {Message.Actualizar}
             </Alert>
         </Snackbar>
     )
 }
 
-export const MessageDelete = ({ open, onClose, message = "" }) => {
+export const MessageDelete = ({ open, onClose }) => {
     return (
         <Snackbar
             TransitionComponent={SlideTransition}
@@ -101,7 +101,7 @@ export const MessageDelete = ({ open, onClose, message = "" }) => {
             onClose={onClose}
         >
             <Alert severity="error" sx={{ width: '100%' }}>
-                {message}
+                {Message.Eliminar}
             </Alert>
         </Snackbar>
     )

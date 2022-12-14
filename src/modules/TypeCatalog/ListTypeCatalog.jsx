@@ -31,7 +31,7 @@ import { IconFileExport } from '@tabler/icons';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllTypeCatalog, DeleteTypeCatalog } from 'api/clients/TypeCatalogClient';
@@ -195,7 +195,6 @@ const ListTypeCatalog = () => {
     const navigate = useNavigate();
     const [typeCatalog, setTypeCatalog] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
-    const [resultMessage, setResultMessage] = useState('');
     const [idCheck, setIdCheck] = useState('');
 
     const theme = useTheme();
@@ -209,16 +208,20 @@ const ListTypeCatalog = () => {
 
     async function GetAll() {
         try {
-            await GetAllTypeCatalog().then(result => {
-                if (result.data.message === Message.NoRegistro) {
-                    setResultMessage(result.data.message);
-                    setOpenDelete(true);
-                } else {
-                    setTypeCatalog(result.data);
-                    setRows(result.data);
-                }
+            const lsServer = await GetAllTypeCatalog(0, 0);
+            setTypeCatalog(lsServer.data.entities);
+            setRows(lsServer.data.entities);
+        } catch (error) {
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${error}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
             })
-        } catch (error) { }
+        }
     }
 
     useEffect(() => {
@@ -301,22 +304,18 @@ const ListTypeCatalog = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    await DeleteTypeCatalog(idCheck).then(result => {
-                        if (result.data.message === Message.Eliminar) {
-                            setResultMessage(result.data.message);
-                            setOpenDelete(true);
-                            setSelected([]);
-                            setSearch('');
-                            GetAll();
-                        } else {
-                            setResultMessage(result.data.message);
-                            setOpenDelete(true);
-                        }
-                    });
+                    const result = await DeleteTypeCatalog(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSelected([]);
+                    GetAll();
                 } else
                     setSelected([]);
             });
-        } catch (error) { }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -324,8 +323,7 @@ const ListTypeCatalog = () => {
 
     return (
         <MainCard title="Lista de Tipo Catálogo" content={false}>
-            <MessageDelete message={resultMessage} open={openDelete} onClose={() => setOpenDelete(false)} />
-
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -429,7 +427,8 @@ const ListTypeCatalog = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                #{row.id}
+                                                {' '}
+                                                #{row.id}{' '}
                                             </Typography>
                                         </TableCell>
                                         <TableCell
@@ -443,7 +442,8 @@ const ListTypeCatalog = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nombre}
+                                                {' '}
+                                                {row.nombre}{' '}
                                             </Typography>
                                         </TableCell>
                                         <TableCell align="center" sx={{ pr: 3 }}>

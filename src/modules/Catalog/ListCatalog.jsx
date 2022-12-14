@@ -29,7 +29,8 @@ import { visuallyHidden } from '@mui/utils';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { TitleButton } from 'components/helpers/Enums';
+import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
 
@@ -88,7 +89,7 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nombreTipoCatalogo',
+        id: 'nameTypeCatalog',
         numeric: false,
         label: 'Tipo Catálogo',
         align: 'left'
@@ -202,15 +203,15 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListCatalog = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [catalog, setCatalog] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [idCheck, setIdCheck] = useState('');
-    const [resultMessage, setResultMessage] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('nombre');
+    const [orderBy, setOrderBy] = useState('calories');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -219,18 +220,19 @@ const ListCatalog = () => {
 
     async function GetAll() {
         try {
-            await GetAllCatalog().then(result => {
-                if (result.data.message === Message.NoRegistro) {
-                    setResultMessage(result.data.message);
-                    setOpenDelete(true);
-                } else {
-                    setCatalog(result.data);
-                    setRows(result.data);
-                }
-            });
+            const lsServer = await GetAllCatalog(0, 0);
+            setCatalog(lsServer.data.entities);
+            setRows(lsServer.data.entities);
         } catch (error) {
-            setResultMessage(Message.ErrorServicio);
-            setOpenDelete(true);
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${error}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
         }
     }
 
@@ -246,7 +248,7 @@ const ListCatalog = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idCatalogo', 'nombre', 'codigo', 'nombreTipoCatalogo'];
+                const properties = ['idCatalogo', 'nombre', 'codigo', 'nameTypeCatalog'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -314,24 +316,17 @@ const ListCatalog = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    await DeleteCatalog(idCheck).then(result => {
-                        if (result.data.message === Message.Eliminar) {
-                            setResultMessage(result.data.message);
-                            setOpenDelete(true);
-                            setSelected([]);
-                            setSearch('');
-                            GetAll();
-                        } else {
-                            setResultMessage(result.data.message);
-                            setOpenDelete(true);
-                        }
-                    });
+                    const result = await DeleteCatalog(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSelected([]);
+                    GetAll();
                 } else
                     setSelected([]);
             });
         } catch (error) {
-            setResultMessage(Message.ErrorServicio);
-            setOpenDelete(true);
+            console.log(error);
         }
     }
 
@@ -340,8 +335,7 @@ const ListCatalog = () => {
 
     return (
         <MainCard title="Lista de Catálogo" content={false}>
-            <MessageDelete message={resultMessage} open={openDelete} onClose={() => setOpenDelete(false)} />
-
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -371,7 +365,7 @@ const ListCatalog = () => {
                                 <ExcelColumn label="Id" value="idCatalogo" />
                                 <ExcelColumn label="Nombre" value="nombre" />
                                 <ExcelColumn label="Código" value="codigo" />
-                                <ExcelColumn label="Tipo Cátalogo" value="nombreTipoCatalogo" />
+                                <ExcelColumn label="Tipo Cátalogo" value="nameTypeCatalog" />
                                 <ExcelColumn label="Usuario que Registro" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha de Registro" value="fechaRegistro" />
                                 <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
@@ -447,7 +441,8 @@ const ListCatalog = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idCatalogo}
+                                                {' '}
+                                                #{row.idCatalogo}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -462,7 +457,7 @@ const ListCatalog = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nombre}
+                                                {row.nombre}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -477,7 +472,7 @@ const ListCatalog = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.codigo}
+                                                {row.codigo}{' '}
                                             </Typography>
                                         </TableCell>
 
@@ -492,7 +487,7 @@ const ListCatalog = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nombreTipoCatalogo}
+                                                {row.nameTypeCatalog}{' '}
                                             </Typography>
                                         </TableCell>
 

@@ -30,7 +30,7 @@ import swal from 'sweetalert';
 import { visuallyHidden } from '@mui/utils';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllAttention, DeleteAttention } from 'api/clients/AttentionClient';
 
@@ -229,26 +229,15 @@ const ListAttention = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
-    const [resultMessage, setResultMessage] = useState('');
     const [rows, setRows] = useState([]);
     const [dataPDF, setDataPDF] = useState(null);
 
     async function getAll() {
         try {
-            await GetAllAttention().then(result => {
-                console.log("result = ", result);
-                if (result.data.length === 0) {
-                    setResultMessage(result.data.message);
-                    setOpenDelete(true);
-                } else {
-                    setLsAttention(result.data);
-                    setRows(result.data);
-                }
-            });
-        } catch (error) {
-            setResultMessage(Message.ErrorServicio);
-            setOpenDelete(true);
-        }
+            const lsServer = await GetAllAttention(0, 0);
+            setLsAttention(lsServer.data.entities);
+            setRows(lsServer.data.entities);
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -340,25 +329,18 @@ const ListAttention = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    await DeleteAttention(idCheck).then(result => {
-                        if (result.data.message === Message.Eliminar) {
-                            setResultMessage(result.data.message);
-                            setOpenDelete(true);
-                            setSelected([]);
-                            setSearch('');
-                            getAll();
-                        } else {
-                            setResultMessage(result.data.message);
-                            setOpenDelete(true);
-                        }
-                    });
+                    const result = await DeleteAttention(idCheck);
+
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                        setSelected([]);
+                        setIdCheck(0);
+                        getAll();
+                    }
                 } else
                     setSelected([]);
             });
-        } catch (error) {
-            setResultMessage(Message.ErrorServicio);
-            setOpenDelete(true);
-        }
+        } catch (error) { }
     }
 
     const handleClose = () => {
@@ -373,7 +355,7 @@ const ListAttention = () => {
 
     return (
         <MainCard title="Lista de Atención" content={false}>
-            <MessageDelete message={resultMessage} open={openDelete} onClose={() => setOpenDelete(false)} />
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
                 title="VISTA DE REPORTE"

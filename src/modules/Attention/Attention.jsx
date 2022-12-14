@@ -33,7 +33,7 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import Chip from '@mui/material/Chip';
-import { GetAllUser, GetByIdRol, GetByMail } from 'api/clients/UserClient';
+import { GetAllUser, GetByMail } from 'api/clients/UserClient';
 import { generateReport } from './ReportAtten';
 import ViewPDF from 'components/components/ViewPDF';
 
@@ -90,42 +90,74 @@ const Attention = () => {
     const { handleSubmit, reset } = methods;
 
     useEffect(() => {
-        async function getAll() {
+        async function GetAll() {
             try {
-                const lsServerSede = await GetAllByTipoCatalogo(CodCatalogo.Sede);
-                setLsSede(lsServerSede.data);
+                const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
+                var resultSede = lsServerSede.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsSede(resultSede);
 
-                const lsServerEstadoCaso = await GetAllByTipoCatalogo(CodCatalogo.EstadoCaso);
-                setLsEstadoCaso(lsServerEstadoCaso.data);
+                const lsServerMedicos = await GetAllUser(0, 0);
 
-                const lsServerMotivoPsico = await GetAllByTipoCatalogo(CodCatalogo.MotivoPsicologia);
-                setLsMotivoPsico(lsServerMotivoPsico.data);
+                var resultPsicologia = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_PSICOLOGIA)
+                    .map((item) => ({
+                        value: item.id,
+                        label: item.nombre
+                    }));
+                setLsPsicologia(resultPsicologia);
 
-                const lsServerMotivoMedica = await GetAllByTipoCatalogo(CodCatalogo.MotivoMedica);
-                setLsMotivoMedica(lsServerMotivoMedica.data);
+                var resultMedico = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_MEDICO)
+                    .map((item) => ({
+                        value: item.id,
+                        label: item.nombre
+                    }));
+                setLsMedicos(resultMedico);
 
-                /* Revisar */
-                const lsServerTipoAtencion = await GetAllByTipoCatalogo(CodCatalogo.TipoAtencion);
-                setLsTipoAtencion(lsServerTipoAtencion.data);
-                setLsCodigoTipo(lsServerTipoAtencion.data);
+                const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCaso);
+                var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsEstadoCaso(resultEstadoCaso);
 
-                const lsServerMotivoPAD = await GetAllByTipoCatalogo(CodCatalogo.PAD_MOTIVO);
-                setLsMotivoPAD(lsServerMotivoPAD.data);
+                const lsServerMotivoPsico = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoPsicologia);
+                var resultMotivoPsico = lsServerMotivoPsico.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsMotivoPsico(resultMotivoPsico);
 
-                const lsServerMedicos = await GetByIdRol(2);
-                setLsMedicos(lsServerMedicos.data);
+                const lsServerMotivoMedica = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoMedica);
+                var resultMotivoMedica = lsServerMotivoMedica.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsMotivoMedica(resultMotivoMedica);
 
-                const lsServerPsico = await GetByIdRol(2/* DefaultValue.ROL_PSICOLOGIA */);
-                setLsPsicologia(lsServerPsico.data);
+                const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAtencion);
+                var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsTipoAtencion(resultTipoAtencion);
+                setLsCodigoTipo(lsServerTipoAtencion.data.entities);
 
-                console.log("Servicios = ", lsServerPsico, lsServerMedicos);
+                const lsServerMotivoPAD = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PAD_MOTIVO);
+                var resultMotivoPAD = lsServerMotivoPAD.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsMotivoPAD(resultMotivoPAD);
+
             } catch (error) {
                 setOpenError(true);
-                setErrorMessage(Message.ErrorServicio);
+                setErrorMessage(`${error}`);
             }
         }
 
-        getAll();
+        GetAll();
     }, []);
 
     const handleDocumento = async (event) => {
@@ -187,26 +219,45 @@ const Attention = () => {
             setTipoAtencion(event.target.value);
 
             if (sede === DefaultValue.SEDE_PUERTO && event.target.value === DefaultValue.TIPO_ATENCION_ENFERMERIA) {
+
                 var resultMapsTipoAM = [];
                 var resultMapsTipoAE = [];
                 /* AQUÍ SE CARGAN LAS ATENCIONES MÉDICAS */
-                var lsGetTipoAtencionMedica = await GetAllBySubTipoCatalogo('SER01', 5);
-                resultMapsTipoAM = lsGetTipoAtencionMedica.data;
+                var lsGetTipoAtencionMedica = await GetAllBySubTipoCatalogo(0, 0, 'SER01', 5);
+
+                if (lsGetTipoAtencionMedica.status === 200) {
+                    resultMapsTipoAM = lsGetTipoAtencionMedica.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+                }
 
                 /* AQUÍ SE CARGAN LAS ATENCIONES DE ENFERMERIA */
-                var lsResulCode = String(lsCodigoTipo.filter(code => code.value === event.target.value).map(code => code.codigo));
+                var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
 
-                var lsGetTipoAtencionEnfermeria = await GetAllBySubTipoCatalogo(lsResulCode, 5);
-                resultMapsTipoAE = lsGetTipoAtencionEnfermeria.data;
+                var lsGetTipoAtencionEnfermeria = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+                if (lsGetTipoAtencionEnfermeria.status === 200) {
+                    resultMapsTipoAE = lsGetTipoAtencionEnfermeria.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+                }
 
                 const arrayAtencion = resultMapsTipoAE.concat(resultMapsTipoAM);
                 setLsAtencion(arrayAtencion);
 
             } else {
-                var lsResulCode = String(lsCodigoTipo.filter(code => code.value === event.target.value).map(code => code.codigo));
+                var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
 
-                var lsGetTipo = await GetAllBySubTipoCatalogo(lsResulCode, 5);
-                setLsAtencion(lsGetTipo.data);
+                var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+                if (lsGetTipo.status === 200) {
+                    var resultMapsTipo = lsGetTipo.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+
+                    setLsAtencion(resultMapsTipo);
+                }
             }
         } catch (error) { }
     };

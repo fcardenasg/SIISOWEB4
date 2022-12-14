@@ -1,5 +1,5 @@
 export const Url = {
-    Base: 'http://localhost:8242/',
+    Base: 'https://localhost:44347/',
 
     //'https://localhost:44347/', https://siiso.eastus.cloudapp.azure.com:44347/
 
@@ -7,7 +7,6 @@ export const Url = {
     Usuario: 'api/Usuario',
 
     TipoCatalogo: 'api/TipoCatalogo',
-    TipoCatalogoCombo: 'api/TipoCatalogo/combo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
 
     Catalogo: 'api/Catalogo',
@@ -43,7 +42,6 @@ export const Url = {
     PruebasAlcoholDrogaId: 'api/PruebasAlcoholDroga/id',
 
     Empresa: 'api/Empresa',
-    EmpresaCombo: 'api/Empresa/combo',
     EmpresaId: 'api/Empresa/id',
 
     SGSST: 'api/SistemaGestion',
@@ -66,10 +64,9 @@ export const Url = {
     Proveedor: 'api/Proveedor',
     ProveedorId: 'api/Proveedor/id',
 
-    Usuarios: 'api/Usuario',
-    UsuariosId: 'api/Usuario/id',
-    UsuariosIdRol: 'api/Usuario/idRol',
-    UsuariosEmail: 'api/Usuario/email',
+    Usuarios: 'api/Usuarios',
+    UsuariosId: 'api/Usuarios/id',
+    UsuariosEmail: 'api/Usuarios/email',
 
     RegistroAtencion: 'api/RegistroAtencion',
     RegistroAtencio_GetAllAtencion: 'api/RegistroAtencion/GetAllAtencion',

@@ -19,7 +19,7 @@ import useAuth from 'hooks/useAuth';
 import { PutTypeCatalog } from 'formatdata/TypeCatalogForm';
 import { UpdateTypeCatalogs } from 'api/clients/TypeCatalogClient';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetByIdTypeCatalog } from 'api/clients/TypeCatalogClient';
@@ -40,7 +40,6 @@ const UpdateTypeCatalog = () => {
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
-    const [resultMessage, setResultMessage] = useState('');
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -51,46 +50,44 @@ const UpdateTypeCatalog = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                await GetByIdTypeCatalog(id).then(result => {
-                    if (result.data.message === Message.NoExiste) {
-                        setOpenError(true);
-                        setErrorMessage(result.data.message);
-                    } else {
-                        setLsTipoCatalogo(result.data);
-                    }
-                });
-            } catch (error) { }
+                const lsServer = await GetByIdTypeCatalog(id);
+                if (lsServer.status === 200) {
+                    setLsTipoCatalogo(lsServer.data);
+                }
+            } catch (error) {
+                setOpenError(true);
+                setErrorMessage(`${error}`);
+            }
         }
 
         GetAll();
-    }, [id]);
+    }, [])
 
     const onSubmit = async (datos) => {
         try {
+
             const DataToUpdate = PutTypeCatalog(id, datos.nombre, lsTipoCatalogo.usuarioRegistro,
                 lsTipoCatalogo.fechaRegistro, user.email, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
-                await UpdateTypeCatalogs(DataToUpdate).then(result => {
-                    if (result.data.message === Message.Actualizar) {
-                        setOpenUpdate(true);
-                        setResultMessage(result.data.message);
-                    } else {
-                        setOpenError(true);
-                        setErrorMessage(result.data.message);
-                    }
-                });
+                const result = await UpdateTypeCatalogs(DataToUpdate);
+                if (result.status === 200) {
+                    setOpenUpdate(true);
+                }
             }
-        } catch (error) { }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(`${error}`);
+        }
     };
 
     return (
         <MainCard title="Actualizar Tipo de Catálogo">
-            <MessageUpdate message={resultMessage} open={openUpdate} onClose={() => setOpenUpdate(false)} />
+            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <form onSubmit={handleSubmit(onSubmit)}>
-                {lsTipoCatalogo.length !== 0 ?
+                {lsTipoCatalogo.length != 0 ?
                     <Fragment>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
