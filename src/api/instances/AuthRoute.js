@@ -9,6 +9,9 @@ export const Url = {
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
 
+    Rol: 'api/Rol',
+    RolId: 'api/Rol/id',
+
     Catalogo: 'api/Catalogo',
     CatalogoId: 'api/Catalogo/id',
     GetAllByTipoCatalogo: 'api/Catalogo/GetAllByTipoCatalogo',

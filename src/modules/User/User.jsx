@@ -18,12 +18,25 @@ import useAuth from 'hooks/useAuth';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { PostUser } from 'formatdata/UserForm';
 import { InsertUser } from 'api/clients/UserClient';
+import { GetAllRol } from 'api/clients/RolClient';
+
+const validationSchema = yup.object().shape({
+    documento: yup.string().required(`${ValidationMessage.Requerido}`),
+    nombreUsuario: yup.string().required(`${ValidationMessage.Requerido}`),
+    nombre: yup.string().required(`${ValidationMessage.Requerido}`),
+    telefono: yup.string().required(`${ValidationMessage.Requerido}`),
+    correo: yup.string().required(`${ValidationMessage.Requerido}`),
+    idRol: yup.string().required(`${ValidationMessage.Requerido}`),
+    registroMedico: yup.string().required(`${ValidationMessage.Requerido}`),
+    licencia: yup.string().required(`${ValidationMessage.Requerido}`),
+    tarjetaProfesional: yup.string().required(`${ValidationMessage.Requerido}`),
+});
 
 const User = () => {
     const { user } = useAuth();
@@ -40,28 +53,28 @@ const User = () => {
     const [lsEspecialidad, setLsEspecialidad] = useState([]);
     const [lsRolUser, setLsRolUser] = useState([]);
 
-    const methods = useForm();
+    const methods = useForm({
+        resolver: yupResolver(validationSchema),
+    });
 
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, reset, formState: { errors } } = methods;
 
     async function GetAll() {
         try {
+            const lsServerRol = await GetAllRol(0, 0);
+            var resultRol = lsServerRol.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombreRol.toUpperCase()
+            }));
+            setLsRolUser(resultRol);
+
             const lsServerEspecialidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESPECIALIDAD_MEDICO);
             var resultEspecialidad = lsServerEspecialidad.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsEspecialidad(resultEspecialidad);
-
-            const lsServerRolUser = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ROL_USUARIO);
-            var resultRolUser = lsServerRolUser.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsRolUser(resultRolUser);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -84,7 +97,7 @@ const User = () => {
             else {
                 setFileImg('');
                 setOpenError(true);
-                setErrorMessage('Seleccione una Imagen');
+                setErrorMessage('Seleccione una Imagen (jpeg/png)');
             }
         }
     }
@@ -96,7 +109,14 @@ const User = () => {
                 fileImg);
 
             if (Object.keys(datos.length !== 0)) {
-                if (fileImg !== null) {
+                if (fileImg === null) {
+                    setOpenError(true);
+                    setErrorMessage('Debe selecionar una Firma');
+                } else if (especialidad.length === 0) {
+                    setOpenError(true);
+                    setErrorMessage('Debe seleccionar por lo menos una Especialidad');
+                }
+                else {
                     const result = await InsertUser(DataToInsert);
                     if (result.status === 200) {
                         setOpenSuccess(true);
@@ -104,10 +124,6 @@ const User = () => {
                         setEspecialidad([]);
                         setFileImg(null);
                     }
-                }
-                else {
-                    setOpenError(true);
-                    setErrorMessage('Debe selecionar una Firma');
                 }
             }
         } catch (error) {
@@ -126,10 +142,22 @@ const User = () => {
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
+                            name="nombreUsuario"
+                            label="Nombre de usuario"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors.nombreUsuario}
+                        />
+                    </FormProvider>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                    <FormProvider {...methods}>
+                        <InputText
+                            defaultValue=""
                             name="documento"
                             label="Documento"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.documento}
                         />
                     </FormProvider>
                 </Grid>
@@ -139,9 +167,9 @@ const User = () => {
                         <InputText
                             defaultValue=""
                             name="nombre"
-                            label="Nombre"
+                            label="Nombres"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.nombre}
                         />
                     </FormProvider>
                 </Grid>
@@ -153,7 +181,7 @@ const User = () => {
                             name="telefono"
                             label="Teléfono"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.telefono}
                         />
                     </FormProvider>
                 </Grid>
@@ -166,7 +194,7 @@ const User = () => {
                             name="correo"
                             label="Correo"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.correo}
                         />
                     </FormProvider>
                 </Grid>
@@ -179,7 +207,7 @@ const User = () => {
                             defaultValue=""
                             options={lsRolUser}
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.idRol}
                         />
                     </FormProvider>
                 </Grid>
@@ -202,7 +230,7 @@ const User = () => {
                             name="registroMedico"
                             label="Registro Médico"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.registroMedico}
                         />
                     </FormProvider>
                 </Grid>
@@ -214,7 +242,7 @@ const User = () => {
                             name="licencia"
                             label="Licencia"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.licencia}
                         />
                     </FormProvider>
                 </Grid>
@@ -226,7 +254,7 @@ const User = () => {
                             name="tarjetaProfesional"
                             label="Tarjeta Profesional"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.tarjetaProfesional}
                         />
                     </FormProvider>
                 </Grid>

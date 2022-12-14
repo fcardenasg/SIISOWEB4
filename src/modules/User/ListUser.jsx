@@ -432,7 +432,7 @@ const ListUser = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
+                                            align="left"
                                         >
                                             <Typography
                                                 variant="subtitle1"
