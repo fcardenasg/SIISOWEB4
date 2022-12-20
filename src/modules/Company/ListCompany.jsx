@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -35,13 +34,13 @@ import { GetAllCompany, DeleteCompany } from 'api/clients/CompanyClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 
 import { IconFileExport } from '@tabler/icons';
 
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -216,7 +215,7 @@ const ListCompany = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('descripcionSpa');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -228,9 +227,7 @@ const ListCompany = () => {
             const lsServer = await GetAllCompany(0, 0);
             setCompany(lsServer.data.entities);
             setRows(lsServer.data.entities);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -323,9 +320,7 @@ const ListCompany = () => {
                 } else
                     setSelected([]);
             });
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     const navigate = useNavigate();
@@ -353,34 +348,41 @@ const ListCompany = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Empresas">
-                            <ExcelSheet data={company} name="Empresas">
-                                <ExcelColumn label="Codigo" value="codigo" />
-                                <ExcelColumn label="Empresa" value="descripcionSpa" />
-                                <ExcelColumn label="Contacto" value="gerente" />
-                                <ExcelColumn label="Correo Electronico" value="email" />
-                                <ExcelColumn label="Celular" value="celular" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Empresas">
+                                    <ExcelSheet data={company} name="Empresas">
+                                        <ExcelColumn label="Codigo" value="codigo" />
+                                        <ExcelColumn label="Empresa" value="descripcionSpa" />
+                                        <ExcelColumn label="Contacto" value="gerente" />
+                                        <ExcelColumn label="Correo Electronico" value="email" />
+                                        <ExcelColumn label="Celular" value="celular" />
+                                    </ExcelSheet>
+                                </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/company/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/company/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/company/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/parameterization/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

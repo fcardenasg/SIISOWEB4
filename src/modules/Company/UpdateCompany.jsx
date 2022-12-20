@@ -6,15 +6,12 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-// Terceros
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import { Url } from 'api/instances/AuthRoute';
-import UpdateData from 'components/form/UpdateData';
 import { GetByIdCompany, UpdateCompanys } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
 import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
@@ -25,7 +22,6 @@ import { PutCompany } from 'formatdata/CompanyForm';
 import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
 
-/* VALIDACIÓN CON YUP */
 const validationSchema = yup.object().shape({
     descripcionSpa: yup.string().required(`${ValidationMessage.Requerido}`),
     codigo: yup.string().required(`${ValidationMessage.Requerido}`)
@@ -153,14 +149,15 @@ const UpdateCompany = () => {
 
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={2}>
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={6}>
+
+                            <Grid item xs={2}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/company/list")}>
                                         {TitleButton.Cancelar}

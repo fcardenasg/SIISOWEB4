@@ -183,7 +183,7 @@ export const itemsParameterization = [
     title: "Proveedor",
     subtitle: "",
     icon: IconTool,
-    selected: false,
+    selected: true,
     url: '/supplier/list',
     color: ColorDrummondltd.RedDrummond
   },
@@ -191,7 +191,7 @@ export const itemsParameterization = [
     title: "CIE11",
     subtitle: "",
     icon: IconTool,
-    selected: false,
+    selected: true,
     url: '/cie11/list',
     color: ColorDrummondltd.RedDrummond
   },
@@ -199,15 +199,15 @@ export const itemsParameterization = [
     title: "Plantilla",
     subtitle: "",
     icon: IconTool,
-    selected: false,
-    url: '',
+    selected: true,
+    url: '/template/list',
     color: ColorDrummondltd.RedDrummond
   },
   {
     title: "Apuntes Personales",
     subtitle: "",
     icon: IconTool,
-    selected: false,
+    selected: true,
     url: '/personal-notes/list',
     color: ColorDrummondltd.RedDrummond
   },
@@ -215,7 +215,7 @@ export const itemsParameterization = [
     title: "Medicamentos",
     subtitle: "",
     icon: IconTool,
-    selected: false,
+    selected: true,
     url: '/medicines/list',
     color: ColorDrummondltd.RedDrummond
   }

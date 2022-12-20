@@ -7,7 +7,6 @@ import {
 } from '@mui/material';
 
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -145,14 +144,15 @@ const UpdateTemplate = () => {
 
                     <Grid item sx={{ pt: 4 }} xs={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={2}>
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={6}>
+
+                            <Grid item xs={2}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/template/list")}>
                                         {TitleButton.Cancelar}

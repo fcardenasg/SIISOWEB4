@@ -36,7 +36,7 @@ import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 
@@ -72,18 +72,12 @@ const headCells = [
         id: 'id',
         numeric: false,
         label: 'ID',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'dx',
         numeric: false,
         label: 'Diagnóstico',
-        align: 'left'
-    },
-    {
-        id: 'nameSubsegmento',
-        numeric: false,
-        label: 'Subsegmento',
         align: 'left'
     }
 ];
@@ -202,7 +196,7 @@ const ListCIE11 = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('fechaRegistro');
+    const [orderBy, setOrderBy] = useState('dx');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -231,7 +225,7 @@ const ListCIE11 = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'dx', 'nameSubsegmento'];
+                const properties = ['id', 'dx'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -336,33 +330,37 @@ const ListCIE11 = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="CIE11">
-                            <ExcelSheet data={cie11} name="CIE11">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Nombre" value="dx" />
-                                <ExcelColumn label="Segmento Agrupado" value="nameSegmentoAgrupado" />
-                                <ExcelColumn label="Segmento Afectado" value="nameSegmentoAfectado" />
-                                <ExcelColumn label="Subsegmento" value="nameSubsegmento" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="CIE11">
+                                    <ExcelSheet data={cie11} name="CIE11">
+                                        <ExcelColumn label="Id" value="id" />
+                                        <ExcelColumn label="Nombre" value="dx" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/cie11/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/cie11/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/cie11/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/parameterization/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>
@@ -415,13 +413,13 @@ const ListCIE11 = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
+                                            align="left"
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                #{row.id}
+                                                {row.id}
                                             </Typography>
                                         </TableCell>
 
@@ -437,21 +435,6 @@ const ListCIE11 = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {row.dx}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.nameSubsegmento}
                                             </Typography>
                                         </TableCell>
 

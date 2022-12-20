@@ -10,8 +10,6 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
@@ -157,14 +155,15 @@ const UpdateMedicines = () => {
 
                     <Grid item xs={12} sx={{ pt: 4 }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={2}>
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={6}>
+
+                            <Grid item xs={2}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/medicines/list")}>
                                         {TitleButton.Cancelar}

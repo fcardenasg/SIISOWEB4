@@ -36,7 +36,7 @@ import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
@@ -225,7 +225,7 @@ const ListMedicines = () => {
                 setRows(lsServer.data.entities);
             }
         } catch (error) {
-     
+
         }
     }
 
@@ -330,6 +330,7 @@ const ListMedicines = () => {
     return (
         <MainCard title="Lista de Medicamentos" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -347,39 +348,46 @@ const ListMedicines = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Medicamentos">
-                            <ExcelSheet data={lsMedicamentos} name="Medicamentos">
-                                <ExcelColumn label="ID" value="id" />
-                                <ExcelColumn label="Código" value="codigo" />
-                                <ExcelColumn label="Descripción" value="descripción" />
-                                <ExcelColumn label="Unidad" value="idUnidad" />
-                                <ExcelColumn label="Cantidad" value="cantidad" />
-                                <ExcelColumn label="Existencia" value="existencia" />
-                                <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
-                                <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha Modifico" value="fechaModifico" />
-                            </ExcelSheet>
-                        </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/medicines/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Medicamentos">
+                                    <ExcelSheet data={lsMedicamentos} name="Medicamentos">
+                                        <ExcelColumn label="ID" value="id" />
+                                        <ExcelColumn label="Código" value="codigo" />
+                                        <ExcelColumn label="Descripción" value="descripción" />
+                                        <ExcelColumn label="Unidad" value="idUnidad" />
+                                        <ExcelColumn label="Cantidad" value="cantidad" />
+                                        <ExcelColumn label="Existencia" value="existencia" />
+                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
+                                        <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
+                                        <ExcelColumn label="Fecha Modifico" value="fechaModifico" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/medicines/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/medicines/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/parameterization/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

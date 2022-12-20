@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -36,16 +35,15 @@ import { GetAllSupplier, DeleteSupplier } from 'api/clients/SupplierClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -211,7 +209,7 @@ const ListSupplier = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('nombProv');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -307,7 +305,6 @@ const ListSupplier = () => {
         setPage(0);
     };
 
-    //Actualizar el eliminar
     const handleDelete = async () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
@@ -338,7 +335,6 @@ const ListSupplier = () => {
 
     return (
         <MainCard title="Lista de Proveedores" content={false}>
-            {/* Agregar el mensaje capturado */}
             <MessageDelete message={resultMessage} open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -358,37 +354,43 @@ const ListSupplier = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Empresas">
-                            <ExcelSheet data={supplier} name="Empresas">
-                                <ExcelColumn label="Código" value="codiProv" />
-                                <ExcelColumn label="Nombre" value="nombProv" />
-                                <ExcelColumn label="Teléfono" value="teleProv" />
-                                <ExcelColumn label="Email" value="emaiProv" />
-                                <ExcelColumn label="Contacto" value="contaProv" />
-                                <ExcelColumn label="Ciudad" value="nameCiudad" />
-                                <ExcelColumn label="Dirección" value="direProv" />
-                                <ExcelColumn label="Tipo de Proveedor" value="tipoProv" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Empresas">
+                                    <ExcelSheet data={supplier} name="Empresas">
+                                        <ExcelColumn label="Código" value="codiProv" />
+                                        <ExcelColumn label="Nombre" value="nombProv" />
+                                        <ExcelColumn label="Teléfono" value="teleProv" />
+                                        <ExcelColumn label="Email" value="emaiProv" />
+                                        <ExcelColumn label="Contacto" value="contaProv" />
+                                        <ExcelColumn label="Ciudad" value="nameCiudad" />
+                                        <ExcelColumn label="Dirección" value="direProv" />
+                                        <ExcelColumn label="Tipo de Proveedor" value="tipoProv" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        {/* <Tooltip title="Impresión" onClick={() => navigate('/supplier/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip> */}
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/supplier/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/supplier/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
-
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/parameterization/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import ReactExport from "react-export-excel";
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -27,25 +25,18 @@ import {
     Button
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import { IconFileExport } from '@tabler/icons';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllTypeCatalog, DeleteTypeCatalog } from 'api/clients/TypeCatalogClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { DeletePersonalNotes, GetAllPersonalNotes } from 'api/clients/PersonalNotesClient';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -172,7 +163,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -330,35 +321,22 @@ const ListPersonalNotes = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        {/* <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Tipo Catatalogo">
-                            <ExcelSheet data={typeCatalog} name="Tipo Catálogo">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Nombre" value="nombre" />
-                                <ExcelColumn label="Usuario que Registro" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha de Registro" value="fechaRegistro" />
-                                <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha Modifico" value="fechaModifico" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/personal-notes/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/typecatalog/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip> */}
-
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/personal-notes/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
-
+                            <Grid item xs={6}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/parameterization/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
 

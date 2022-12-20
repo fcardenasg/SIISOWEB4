@@ -36,11 +36,11 @@ import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -353,36 +353,43 @@ const ListCatalog = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Cátalogos">
-                            <ExcelSheet data={catalog} name="Lista de Catálogos">
-                                <ExcelColumn label="Id" value="idCatalogo" />
-                                <ExcelColumn label="Nombre" value="nombre" />
-                                <ExcelColumn label="Código" value="codigo" />
-                                <ExcelColumn label="Tipo Cátalogo" value="nameTypeCatalog" />
-                                <ExcelColumn label="Usuario que Registro" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha de Registro" value="fechaRegistro" />
-                                <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha Modifico" value="fechaModifico" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Cátalogos">
+                                    <ExcelSheet data={catalog} name="Lista de Catálogos">
+                                        <ExcelColumn label="Id" value="idCatalogo" />
+                                        <ExcelColumn label="Nombre" value="nombre" />
+                                        <ExcelColumn label="Código" value="codigo" />
+                                        <ExcelColumn label="Tipo Cátalogo" value="nameTypeCatalog" />
+                                        <ExcelColumn label="Usuario que Registro" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha de Registro" value="fechaRegistro" />
+                                        <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
+                                        <ExcelColumn label="Fecha Modifico" value="fechaModifico" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/catalog/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/catalog/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/catalog/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/parameterization/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

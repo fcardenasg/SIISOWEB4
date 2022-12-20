@@ -131,14 +131,15 @@ const Company = () => {
 
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        <Grid item xs={6}>
+                        <Grid item xs={2}>
                             <AnimateButton>
                                 <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                     {TitleButton.Guardar}
                                 </Button>
                             </AnimateButton>
                         </Grid>
-                        <Grid item xs={6}>
+
+                        <Grid item xs={2}>
                             <AnimateButton>
                                 <Button variant="outlined" fullWidth onClick={() => navigate("/company/list")}>
                                     {TitleButton.Cancelar}
