@@ -40,6 +40,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { ViewFormat } from 'components/helpers/Format';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -363,34 +364,48 @@ const ListWorkAbsenteeism = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Empresas">
-                            <ExcelSheet data={lsWorkAbsenteeism} name="Empresas">
-                                <ExcelColumn label="Código" value="id" />
-                                <ExcelColumn label="Nombre" value="nombProv" />
-                                <ExcelColumn label="Teléfono" value="teleProv" />
-                                <ExcelColumn label="Correo Electronico" value="emaiProv" />
-                                <ExcelColumn label="Tipo de Proveedor" value="nameTypeSupplier" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Empresas">
+                                    <ExcelSheet data={lsWorkAbsenteeism} name="Empresas">
+                                        <ExcelColumn label="Código" value="id" />
+                                        <ExcelColumn label="Nombre" value="nombProv" />
+                                        <ExcelColumn label="Teléfono" value="teleProv" />
+                                        <ExcelColumn label="Correo Electronico" value="emaiProv" />
+                                        <ExcelColumn label="Tipo de Proveedor" value="nameTypeSupplier" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/work-absenteeism/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                            <Grid item xs={2}>
+                                <Tooltip title="Impresión" onClick={() => navigate('/work-absenteeism/report')}>
+                                    <IconButton size="large">
+                                        <PrintIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/work-absenteeism/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/work-absenteeism/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/occupational-health/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

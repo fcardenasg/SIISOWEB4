@@ -27,6 +27,7 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 import swal from 'sweetalert';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
@@ -344,24 +345,38 @@ const ListRefund = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <Tooltip title="Copiar">
-                            <IconButton size="large">
-                                <FileCopyIcon />
-                            </IconButton>
-                        </Tooltip>
+                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <Tooltip title="Copiar">
+                                    <IconButton size="large">
+                                        <FileCopyIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/refund/report/${idCheck}`)}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                            <Grid item xs={2}>
+                                <Tooltip title="Impresión">
+                                    <IconButton size="large">
+                                        <PrintIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/refund/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/refund/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/occupational-health/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

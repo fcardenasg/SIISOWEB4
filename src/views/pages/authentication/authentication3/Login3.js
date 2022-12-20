@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import { useTheme, createTheme } from '@mui/material/styles';
 import { Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 
 // project imports
@@ -10,25 +10,21 @@ import AuthCardWrapper from '../AuthCardWrapper';
 import AuthLogin from '../auth-forms/AuthLogin';
 import Logo from 'ui-component/Logo';
 import AuthFooter from 'ui-component/cards/AuthFooter';
-import useAuth from 'hooks/useAuth';
 
-import { createTheme } from '@mui/material/styles';
+import { ColorDrummondltd } from 'themes/colors';
 
 const RedDrummond = createTheme({
     palette: {
         primary: {
-            main: '#E31937',
+            main: ColorDrummondltd.RedDrummond,
         },
     },
 });
-
-// assets
 
 // ================================|| AUTH3 - LOGIN ||================================ //
 
 const Login = () => {
     const theme = useTheme();
-    const { isLoggedIn } = useAuth();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
@@ -78,18 +74,6 @@ const Login = () => {
 
                                     <Grid item xs={12}>
                                         <Divider />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Grid item container direction="column" alignItems="center" xs={12}>
-                                            <Typography
-                                                component={Link}
-                                                to={isLoggedIn ? '/pages/register/register3' : '/register'}
-                                                variant="subtitle1"
-                                                sx={{ textDecoration: 'none' }}
-                                            >
-                                                ¿No tienes una cuenta?
-                                            </Typography>
-                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </AuthCardWrapper>

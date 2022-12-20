@@ -2562,10 +2562,10 @@
     "@svgr/plugin-svgo" "^5.5.0"
     "loader-utils" "^2.0.0"
 
-"@tabler/icons@^1.80":
-  "integrity" "sha512-Ij+9AU8DMW68lO4Q2jpDdJNMMNg4B/3mI59K1+l/V0EbiDHTIifTZM/u2oUqWu1Y2Zx3HGnnMA9SeAddkzhQ3Q=="
-  "resolved" "https://registry.npmjs.org/@tabler/icons/-/icons-1.80.0.tgz"
-  "version" "1.80.0"
+"@tabler/icons@1.117":
+  "integrity" "sha512-4UGF8fMcROiy++CCNlzTz6p22rxFQD/fAMfaw/8Uanopl41X2SCZTmpnotS3C6Qdrk99m8eMZySa5w1y99gFqQ=="
+  "resolved" "https://registry.npmjs.org/@tabler/icons/-/icons-1.117.0.tgz"
+  "version" "1.117.0"
 
 "@tootallnate/once@1":
   "integrity" "sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw=="

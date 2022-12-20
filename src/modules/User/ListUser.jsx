@@ -358,6 +358,7 @@ const ListUser = () => {
                             <ExcelSheet data={lsUser} name="Usuarios">
                                 <ExcelColumn label="ID" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
+                                <ExcelColumn label="Usuario" value="nombreUsuario" />
                                 <ExcelColumn label="Nombre" value="nombre" />
                                 <ExcelColumn label="Teléfono" value="telefono" />
                                 <ExcelColumn label="Correo" value="correo" />
@@ -366,14 +367,9 @@ const ListUser = () => {
                                 <ExcelColumn label="Registro Medico" value="registroMedico" />
                                 <ExcelColumn label="Licencia" value="licencia" />
                                 <ExcelColumn label="Tarjeta Profesional" value="tarjetaProfesional" />
+                                <ExcelColumn label="Estado" value="estado" />
                             </ExcelSheet>
                         </ExcelFile>
-
-                        <Tooltip title="Impresión" onClick={() => navigate('/user/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
 
                         <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => navigate("/user/add")}>

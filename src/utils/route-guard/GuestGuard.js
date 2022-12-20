@@ -14,10 +14,15 @@ import config from 'config';
 const GuestGuard = ({ children }) => {
     const { isLoggedIn } = useAuth();
     const navigate = useNavigate();
+    const message = window.localStorage.getItem('mensaje');
 
     useEffect(() => {
         if (isLoggedIn) {
-            navigate(config.defaultPath, { replace: true });
+            if (message === "actualizar") {
+                navigate('/change-password');
+            } else {
+                navigate(config.defaultPath, { replace: true });
+            }
         }
     }, [isLoggedIn, navigate]);
 

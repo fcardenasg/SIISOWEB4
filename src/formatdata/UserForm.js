@@ -1,15 +1,19 @@
-export function PostUser(documento, nombre, telefono, correo,
-    idRol, especialidad, registroMedico, licencia, tarjetaProfesional, firma) {
+export function PostUser(documento, nombreUsuario, password, nombre, telefono,
+    correo, idRol, especialidad, registroMedico, licencia, tarjetaProfesional,
+    firma, estado) {
     return {
-        documento, nombre, telefono, correo,
-        idRol, especialidad, registroMedico, licencia, tarjetaProfesional, firma
+        documento, nombreUsuario, password, nombre, telefono,
+        correo, idRol, especialidad, registroMedico, licencia, tarjetaProfesional,
+        firma, estado
     };
 }
 
-export function PutUser(id, documento, nombre, telefono, correo,
-    idRol, especialidad, registroMedico, licencia, tarjetaProfesional, firma) {
+export function PutUser(id, documento, nombreUsuario, password, nombre, telefono,
+    correo, idRol, especialidad, registroMedico, licencia, tarjetaProfesional,
+    firma, estado) {
     return {
-        id, documento, nombre, telefono, correo,
-        idRol, especialidad, registroMedico, licencia, tarjetaProfesional, firma
+        id, documento, nombreUsuario, password, nombre, telefono,
+        correo, idRol, especialidad, registroMedico, licencia, tarjetaProfesional,
+        firma, estado
     }
 } 

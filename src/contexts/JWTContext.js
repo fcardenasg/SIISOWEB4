@@ -45,6 +45,14 @@ const setSession = (serviceToken) => {
     }
 };
 
+const setMessage = (mensaje) => {
+    if (mensaje) {
+        window.localStorage.setItem('mensaje', mensaje);
+    } else {
+        window.localStorage.removeItem('mensaje');
+    }
+};
+
 const setRenderMenu = (systemMenu) => {
     if (systemMenu) {
         window.localStorage.setItem('systemMenu', systemMenu);
@@ -103,12 +111,15 @@ export const JWTProvider = ({ children }) => {
             data: { usuario, password },
         });
 
-        if (response.data.message === 'Usuario o contraseña invalidos') {
+        if (response.data.message === 'Usuario o contraseña invalidos' ||
+            response.data.message === 'Usuario inactivo') {
             throw Error(response.data.message);
-        } else {
-            const { token, dataUser } = response.data;
+        }
+        if (response.data.token !== undefined) {
+            const { token, dataUser, message } = response.data;
 
             setSession(token);
+            setMessage(message);
             setRenderMenu(JSON.stringify(dataUser.menu));
             dispatch({
                 type: LOGIN,
@@ -122,6 +133,9 @@ export const JWTProvider = ({ children }) => {
                     }
                 }
             });
+        }
+        else {
+            throw Error(response.data.message);
         }
     };
 

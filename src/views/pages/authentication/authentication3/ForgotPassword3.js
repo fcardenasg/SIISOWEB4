@@ -10,7 +10,6 @@ import AuthCardWrapper from '../AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import AuthForgotPassword from '../auth-forms/AuthForgotPassword';
 import AuthFooter from 'ui-component/cards/AuthFooter';
-import useAuth from 'hooks/useAuth';
 
 import { createTheme } from '@mui/material/styles';
 
@@ -22,11 +21,8 @@ const RedDrummond = createTheme({
     },
 });
 
-// ============================|| AUTH3 - FORGOT PASSWORD ||============================ //
-
 const ForgotPassword = () => {
     const theme = useTheme();
-    const { isLoggedIn } = useAuth();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
@@ -65,18 +61,6 @@ const ForgotPassword = () => {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Divider />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Grid item container direction="column" alignItems="center" xs={12}>
-                                            <Typography
-                                                component={Link}
-                                                to={isLoggedIn ? '/pages/login/login3' : '/login'}
-                                                variant="subtitle1"
-                                                sx={{ textDecoration: 'none' }}
-                                            >
-                                                ¿Ya tienes una cuenta?
-                                            </Typography>
-                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </AuthCardWrapper>

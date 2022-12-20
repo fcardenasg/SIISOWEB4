@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import { useTheme, createTheme } from '@mui/material/styles';
 import {
     Box,
     Button,
@@ -29,8 +29,15 @@ import useScriptRef from 'hooks/useScriptRef';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { ColorDrummondltd } from 'themes/colors';
 
-// ===============================|| JWT LOGIN ||=============================== //
+const RedDrummond = createTheme({
+    palette: {
+        primary: {
+            main: ColorDrummondltd.RedDrummond,
+        },
+    },
+});
 
 const JWTLogin = ({ loginProp, ...others }) => {
     const theme = useTheme();
@@ -134,15 +141,10 @@ const JWTLogin = ({ loginProp, ...others }) => {
                             <Typography
                                 variant="subtitle1"
                                 component={Link}
-                                to={
-                                    loginProp
-                                        ? `/pages/forgot-password/forgot-password${loginProp}`
-                                        : '/pages/forgot-password/forgot-password3'
-                                }
-                                color="secondary"
-                                sx={{ textDecoration: 'none' }}
+                                to="/ForgotPassword"
+                                sx={{ textDecoration: 'none', color: 'blue' }}
                             >
-                                ¿Olvido su Contraseña?
+                                ¿Olvidó su Contraseña?
                             </Typography>
                         </Grid>
                     </Grid>
@@ -154,14 +156,23 @@ const JWTLogin = ({ loginProp, ...others }) => {
                     )}
                     <Box sx={{ mt: 2 }}>
                         <AnimateButton>
-                            <Button color="secondary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
+                            <Button
+                                sx={{ background: ColorDrummondltd.RedDrummond }}
+                                color="error"
+                                disabled={isSubmitting}
+                                fullWidth
+                                size="large"
+                                type="submit"
+                                variant="contained"
+                            >
                                 Iniciar Sesión
                             </Button>
                         </AnimateButton>
                     </Box>
                 </form>
-            )}
-        </Formik>
+            )
+            }
+        </Formik >
     );
 };
 

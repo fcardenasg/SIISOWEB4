@@ -23,13 +23,11 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
 
-import Framingham from './Framingham';
 import { ColorDrummondltd } from 'themes/colors';
 import DialogFormula from './Modal/DialogFormula';
 import ListMedicalFormula from './MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './MedicalOrder/UpdateMedicalFormula';
-import ViewReport from './Report/ViewReport';
 
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
@@ -46,7 +44,7 @@ import { InsertOccupationalExamination, GetLastRecordOccupationalExamination } f
 import { Message } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { TitleButton } from 'components/helpers/Enums';
-import { FormatDate, GetEdad, ViewFormat } from 'components/helpers/Format';
+import { FormatDate, GetEdad } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import User from 'assets/img/user.png'
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -338,7 +336,7 @@ const OccupationalExamination = () => {
                     onClose={() => setOpenReport(false)}
                     maxWidth="xl"
                 >
-                    <ViewReport />
+                    
                 </ControlModal>
 
                 <DialogFormula
