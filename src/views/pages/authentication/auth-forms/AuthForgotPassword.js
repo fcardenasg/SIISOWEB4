@@ -13,6 +13,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
 import { SNACKBAR_OPEN } from 'store/actions';
+import { ColorDrummondltd } from 'themes/colors';
 
 // ========================|| FIREBASE - FORGOT PASSWORD ||======================== //
 
@@ -32,7 +33,7 @@ const AuthForgotPassword = ({ ...others }) => {
                 submit: null
             }}
             validationSchema={Yup.object().shape({
-                email: Yup.string().email('Must be a valid email').max(255).required('Email is required')
+                email: Yup.string().email('Debe ser un correo electrónico válido').max(255).required('Correo electrónico obligatorio')
             })}
             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                 try {
@@ -92,13 +93,14 @@ const AuthForgotPassword = ({ ...others }) => {
                     <Box sx={{ mt: 2 }}>
                         <AnimateButton>
                             <Button
+                                sx={{ background: ColorDrummondltd.RedDrummond }}
+                                color="error"
                                 disableElevation
                                 disabled={isSubmitting}
                                 fullWidth
                                 size="large"
                                 type="submit"
                                 variant="contained"
-                                color="secondary"
                             >
                                 Enviar Correo
                             </Button>

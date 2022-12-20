@@ -365,6 +365,7 @@ const UpdateMedicalAdvice = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <ViewEmployee
+                                title="ACTUALIZAR ASESORÍA MÉDICA"
                                 disabled={true}
                                 key={lsEmployee.documento}
                                 documento={documento}

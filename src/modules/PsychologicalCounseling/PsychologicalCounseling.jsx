@@ -225,6 +225,7 @@ const PsychologicalCounseling = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
+                        title="REGISTRAR ASESORÍA PSICOLÓGICA"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -443,14 +444,14 @@ const PsychologicalCounseling = () => {
 
                         <Grid item xs={12} sx={{ pt: 4 }}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/psychologicalcounseling/list")}>
                                             {TitleButton.Cancelar}

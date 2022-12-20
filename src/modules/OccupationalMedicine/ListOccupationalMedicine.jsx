@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -35,6 +34,7 @@ import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
@@ -349,116 +349,131 @@ const ListOccupationalMedicine = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Medicina Laboral">
-                            <ExcelSheet data={occupationalMedicine} name="Medicina Laboral">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Cedula" value="cedula" />
-                                <ExcelColumn label="ResumenCaso" value="resumenCaso" />
-                                <ExcelColumn label="FechaRetiro" value="fechaRetiro" />
-                                <ExcelColumn label="Segmento Agrupado" value="segmentoAgrupado" />
-                                <ExcelColumn label="Segmento Afectado" value="segmentoAfectado" />
-                                <ExcelColumn label="Subsegmento" value="subsegmento" />
-                                <ExcelColumn label="CodDx" value="codDx" />
-                                <ExcelColumn label="Nro. Furel" value="nroFurel" />
-                                <ExcelColumn label="Región" value="regionInfoLaboral" />
-                                <ExcelColumn label="Lateralidad" value="lateralidad" />
-                                <ExcelColumn label="Entidad Que Motiva El Envio" value="entidadQueMotivaEnvio" />
-                                <ExcelColumn label="Entidad a Donde Envia" value="entidadDondeEnvia" />
-                                <ExcelColumn label="Fecha Entrega" value="fechaEntrega" />
-                                <ExcelColumn label="Fecha Envio" value="fechaEnvio" />
-                                <ExcelColumn label="Investigado" value="investigado" />
-                                <ExcelColumn label="Observaciones" value="observaciones" />
+                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Medicina Laboral">
+                                    <ExcelSheet data={occupationalMedicine} name="Medicina Laboral">
+                                        <ExcelColumn label="Id" value="id" />
+                                        <ExcelColumn label="Cedula" value="cedula" />
+                                        <ExcelColumn label="ResumenCaso" value="resumenCaso" />
+                                        <ExcelColumn label="FechaRetiro" value="fechaRetiro" />
+                                        <ExcelColumn label="Segmento Agrupado" value="segmentoAgrupado" />
+                                        <ExcelColumn label="Segmento Afectado" value="segmentoAfectado" />
+                                        <ExcelColumn label="Subsegmento" value="subsegmento" />
+                                        <ExcelColumn label="CodDx" value="codDx" />
+                                        <ExcelColumn label="Nro. Furel" value="nroFurel" />
+                                        <ExcelColumn label="Región" value="regionInfoLaboral" />
+                                        <ExcelColumn label="Lateralidad" value="lateralidad" />
+                                        <ExcelColumn label="Entidad Que Motiva El Envio" value="entidadQueMotivaEnvio" />
+                                        <ExcelColumn label="Entidad a Donde Envia" value="entidadDondeEnvia" />
+                                        <ExcelColumn label="Fecha Entrega" value="fechaEntrega" />
+                                        <ExcelColumn label="Fecha Envio" value="fechaEnvio" />
+                                        <ExcelColumn label="Investigado" value="investigado" />
+                                        <ExcelColumn label="Observaciones" value="observaciones" />
 
-                                <ExcelColumn label="Fecha Calificación" value="fechaCalificacionEps" />
-                                <ExcelColumn label="Origen" value="origenEps" />
+                                        <ExcelColumn label="Fecha Calificación" value="fechaCalificacionEps" />
+                                        <ExcelColumn label="Origen" value="origenEps" />
 
-                                <ExcelColumn label="No. Solicitud" value="noSolicitudARL" />
-                                <ExcelColumn label="Fecha de Calificación Origen" value="fechaCalifiOrigenARL" />
-                                <ExcelColumn label="origen" value="origenARL" />
-                                <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclARL" />
-                                <ExcelColumn label="Pcl" value="pclARL" />
-                                <ExcelColumn label="Fecha Estructura" value="fechaEstructuraARL" />
-                                <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclARL" />
-                                <ExcelColumn label="Pcl Recalificada" value="pclRecalificadaARL" />
-                                <ExcelColumn label="Fecha Estructura Recalificada" value="fechaEstructuraRecalificadaARL" />
+                                        <ExcelColumn label="No. Solicitud" value="noSolicitudARL" />
+                                        <ExcelColumn label="Fecha de Calificación Origen" value="fechaCalifiOrigenARL" />
+                                        <ExcelColumn label="origen" value="origenARL" />
+                                        <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclARL" />
+                                        <ExcelColumn label="Pcl" value="pclARL" />
+                                        <ExcelColumn label="Fecha Estructura" value="fechaEstructuraARL" />
+                                        <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclARL" />
+                                        <ExcelColumn label="Pcl Recalificada" value="pclRecalificadaARL" />
+                                        <ExcelColumn label="Fecha Estructura Recalificada" value="fechaEstructuraRecalificadaARL" />
 
-                                <ExcelColumn label="Fecha Calificación Origen" value="fechaCalificaOrigenJRC" />
-                                <ExcelColumn label="Junta Calificación" value="juntaCalifica" />
-                                <ExcelColumn label="No. Dictamen" value="noDictamenJRC" />
-                                <ExcelColumn label="Origen" value="origenJRC" />
-                                <ExcelColumn label="Controversia" value="controversia" />
-                                <ExcelColumn label="Conclusion" value="conclusion" />
-                                <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclJRC" />
-                                <ExcelColumn label="No. Dictamen Pcl" value="noDictamenPclJRC" />
-                                <ExcelColumn label="Pcl" value="pclJRC" />
-                                <ExcelColumn label="Fecha Estructura Pcl" value="fechaEstructuraPclJRC" />
-                                <ExcelColumn label="No. Acta Recurso" value="noActaRecursoJRC" />
-                                <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclJRC" />
-                                <ExcelColumn label="No. Dictamen Recalificación" value="noDictamenRecalificacionJRC" />
-                                <ExcelColumn label="Junta ReCalificación" value="juntaReCalificacionJRC" />
-                                <ExcelColumn label="Pcl Recalificada" value="pclRecalificadaJRC" />
-                                <ExcelColumn label="Fecha Recalificación Est" value="fechaRecalificacionEstJRC" />
+                                        <ExcelColumn label="Fecha Calificación Origen" value="fechaCalificaOrigenJRC" />
+                                        <ExcelColumn label="Junta Calificación" value="juntaCalifica" />
+                                        <ExcelColumn label="No. Dictamen" value="noDictamenJRC" />
+                                        <ExcelColumn label="Origen" value="origenJRC" />
+                                        <ExcelColumn label="Controversia" value="controversia" />
+                                        <ExcelColumn label="Conclusion" value="conclusion" />
+                                        <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclJRC" />
+                                        <ExcelColumn label="No. Dictamen Pcl" value="noDictamenPclJRC" />
+                                        <ExcelColumn label="Pcl" value="pclJRC" />
+                                        <ExcelColumn label="Fecha Estructura Pcl" value="fechaEstructuraPclJRC" />
+                                        <ExcelColumn label="No. Acta Recurso" value="noActaRecursoJRC" />
+                                        <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclJRC" />
+                                        <ExcelColumn label="No. Dictamen Recalificación" value="noDictamenRecalificacionJRC" />
+                                        <ExcelColumn label="Junta ReCalificación" value="juntaReCalificacionJRC" />
+                                        <ExcelColumn label="Pcl Recalificada" value="pclRecalificadaJRC" />
+                                        <ExcelColumn label="Fecha Recalificación Est" value="fechaRecalificacionEstJRC" />
 
-                                <ExcelColumn label="Fecha Calificación Origen" value="fechaCalificaOrigenJNC" />
-                                <ExcelColumn label="No. Dictamen" value="noDictamenJNC" />
-                                <ExcelColumn label="Origen" value="origenJNC" />
-                                <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclJNC" />
-                                <ExcelColumn label="No. Dictamen Pcl" value="noDictamenPclJNC" />
-                                <ExcelColumn label="Pcl" value="pclJNC" />
-                                <ExcelColumn label="Fecha Estructura" value="fechaEstructuraJNC" />
-                                <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclJNC" />
-                                <ExcelColumn label="No. Dictamen Recalificación" value="noDictamenRecalificacionJNC" />
-                                <ExcelColumn label="Pcl Recalificación" value="pclRecalificacionJNC" />
+                                        <ExcelColumn label="Fecha Calificación Origen" value="fechaCalificaOrigenJNC" />
+                                        <ExcelColumn label="No. Dictamen" value="noDictamenJNC" />
+                                        <ExcelColumn label="Origen" value="origenJNC" />
+                                        <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclJNC" />
+                                        <ExcelColumn label="No. Dictamen Pcl" value="noDictamenPclJNC" />
+                                        <ExcelColumn label="Pcl" value="pclJNC" />
+                                        <ExcelColumn label="Fecha Estructura" value="fechaEstructuraJNC" />
+                                        <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclJNC" />
+                                        <ExcelColumn label="No. Dictamen Recalificación" value="noDictamenRecalificacionJNC" />
+                                        <ExcelColumn label="Pcl Recalificación" value="pclRecalificacionJNC" />
 
-                                <ExcelColumn label="Origen" value="origenInstaFinal" />
-                                <ExcelColumn label="Fecha Estructuracion Origen" value="fechaEstructuracionOrigenInstaFinal" />
-                                <ExcelColumn label="Instancia Origen" value="instanciaOrigenInstaFinal" />
-                                <ExcelColumn label="Pcl Final" value="pclFinalInstaFinal" />
-                                <ExcelColumn label="Instancia Final" value="instanciaFinal" />
-                                <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclInstFinal" />
-                                <ExcelColumn label="Fecha Estructuración Pcl" value="fechaEstructuracionPclInstFinal" />
-                                <ExcelColumn label="Indemnizado" value="indemnizado" />
-                                <ExcelColumn label="EntregadoMin" value="entregadoMin" />
-                                <ExcelColumn label="FechaPago" value="fechaPagoInstaFinal" />
-                                <ExcelColumn label="Indemnizado Recalificado" value="indemnizadoRecalificado" />
-                                <ExcelColumn label="Fecha Pago Recalificado" value="fechaPagoRecalificadoInstaFinal" />
+                                        <ExcelColumn label="Origen" value="origenInstaFinal" />
+                                        <ExcelColumn label="Fecha Estructuracion Origen" value="fechaEstructuracionOrigenInstaFinal" />
+                                        <ExcelColumn label="Instancia Origen" value="instanciaOrigenInstaFinal" />
+                                        <ExcelColumn label="Pcl Final" value="pclFinalInstaFinal" />
+                                        <ExcelColumn label="Instancia Final" value="instanciaFinal" />
+                                        <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclInstFinal" />
+                                        <ExcelColumn label="Fecha Estructuración Pcl" value="fechaEstructuracionPclInstFinal" />
+                                        <ExcelColumn label="Indemnizado" value="indemnizado" />
+                                        <ExcelColumn label="EntregadoMin" value="entregadoMin" />
+                                        <ExcelColumn label="FechaPago" value="fechaPagoInstaFinal" />
+                                        <ExcelColumn label="Indemnizado Recalificado" value="indemnizadoRecalificado" />
+                                        <ExcelColumn label="Fecha Pago Recalificado" value="fechaPagoRecalificadoInstaFinal" />
 
-                                <ExcelColumn label="EstadoRHT" value="estadoRHT" />
-                                <ExcelColumn label="Reintegro" value="reintegro" />
-                                <ExcelColumn label="Reubicado" value="reubicado" />
-                                <ExcelColumn label="Restringido" value="restringido" />
-                                <ExcelColumn label="JornadaLaboral" value="jornadaLaboral" />
-                                <ExcelColumn label="Indemnizacion" value="indemnizacion" />
+                                        <ExcelColumn label="EstadoRHT" value="estadoRHT" />
+                                        <ExcelColumn label="Reintegro" value="reintegro" />
+                                        <ExcelColumn label="Reubicado" value="reubicado" />
+                                        <ExcelColumn label="Restringido" value="restringido" />
+                                        <ExcelColumn label="JornadaLaboral" value="jornadaLaboral" />
+                                        <ExcelColumn label="Indemnizacion" value="indemnizacion" />
 
-                                <ExcelColumn label="Sede" value="sede" />
-                                <ExcelColumn label="Usuario" value="usuario" />
-                                <ExcelColumn label="UsuarioReporte" value="usuarioReporte" />
-                                <ExcelColumn label="FechaSistema" value="fechaSistema" />
-                                <ExcelColumn label="FechaInforme" value="fechaInforme" />
-                                <ExcelColumn label="FechaReporte" value="fechaReporte" />
-                                <ExcelColumn label="FechaSistemaReporte" value="fechaSistemaReporte" />
-                                <ExcelColumn label="EdadCalificado" value="edadCalificado" />
-                                <ExcelColumn label="AntiguedadCalificado" value="antiguedadCalificado" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                                        <ExcelColumn label="Sede" value="sede" />
+                                        <ExcelColumn label="Usuario" value="usuario" />
+                                        <ExcelColumn label="UsuarioReporte" value="usuarioReporte" />
+                                        <ExcelColumn label="FechaSistema" value="fechaSistema" />
+                                        <ExcelColumn label="FechaInforme" value="fechaInforme" />
+                                        <ExcelColumn label="FechaReporte" value="fechaReporte" />
+                                        <ExcelColumn label="FechaSistemaReporte" value="fechaSistemaReporte" />
+                                        <ExcelColumn label="EdadCalificado" value="edadCalificado" />
+                                        <ExcelColumn label="AntiguedadCalificado" value="antiguedadCalificado" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/occupationalmedicine/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                            <Grid item xs={2}>
+                                <Tooltip title="Impresión">
+                                    <IconButton size="large">
+                                        <PrintIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/occupationalmedicine/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/occupationalmedicine/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/occupational-health/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
 
                     </Grid>
                 </Grid>

@@ -278,7 +278,7 @@ export const TitleButton = {
 }
 
 export const ValidationMessage = {
-    Requerido: 'Por favor ingrese la descripción'
+    Requerido: 'Por favor ingrese la descripción',
 }
 
 export const Message = {
@@ -300,7 +300,7 @@ export const Message = {
     TextoCargar: 'Se cargaran los riesgos, esto puede demorar un poco',
 
     NoEliminar: 'No se pudo eliminar el registro',
-    ErrorServicio: 'Error de servicio, vuelva a intentar',
+    RegistroNoGuardado: 'No se pudo guardar el registro',
 
     ErrorDocumento: 'Por favor, ingrese un número de documento',
     ErrorDeDatos: 'Hubo un error al buscar los datos, vuelva a intentarlo',

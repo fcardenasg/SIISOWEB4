@@ -1212,14 +1212,14 @@ const OccupationalMedicine = () => {
 
                         <Grid item sx={{ pt: 4 }} xs={12}>
                             <Grid container spacing={1}>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/occupationalmedicine/list")}>
                                             {TitleButton.Cancelar}

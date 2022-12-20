@@ -9,22 +9,8 @@ import AuthGuard from 'utils/route-guard/AuthGuard';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const DashboardAnalytics = Loadable(lazy(() => import('views/dashboard/Analytics')));
 
-// widget routing
-const WidgetStatistics = Loadable(lazy(() => import('views/widget/Statistics')));
-const WidgetData = Loadable(lazy(() => import('views/widget/Data')));
-const WidgetChart = Loadable(lazy(() => import('views/widget/Chart')));
-
-// application routing
-const AppChat = Loadable(lazy(() => import('views/application/chat')));
-const AppKanban = Loadable(lazy(() => import('views/application/kanban')));
-const AppMail = Loadable(lazy(() => import('views/application/mail')));
-const AppCalendar = Loadable(lazy(() => import('views/application/calendar')));
-const AppContactCard = Loadable(lazy(() => import('views/application/contact/Card')));
-const AppContactList = Loadable(lazy(() => import('views/application/contact/List')));
-
 //Nuestros import
 const ListTypeCatalog = Loadable(lazy(() => import('modules/TypeCatalog/ListTypeCatalog')));
-const ReportTypeCatolog = Loadable(lazy(() => import('components/report/ReportTypeCatolog')));
 const TypeCatalog = Loadable(lazy(() => import('modules/TypeCatalog/TypeCatalog')));
 const UpdateTypeCatalog = Loadable(lazy(() => import('modules/TypeCatalog/UpdateTypeCatalog')));
 
@@ -32,38 +18,31 @@ const ListProgramming = Loadable(lazy(() => import('modules/Programming/ListProg
 
 const ListCatalog = Loadable(lazy(() => import('modules/Catalog/ListCatalog')));
 const Catalog = Loadable(lazy(() => import('modules/Catalog/Catalog')));
-const ReportCatalog = Loadable(lazy(() => import('components/report/ReportCatalog')));
 const UpdateCatalog = Loadable(lazy(() => import('modules/Catalog/UpdateCatalog')));
 
 const ListCompany = Loadable(lazy(() => import('modules/Company/ListCompany')));
 const Company = Loadable(lazy(() => import('modules/Company/Company')));
 const UpdateCompany = Loadable(lazy(() => import('modules/Company/UpdateCompany')));
-const ReportCompany = Loadable(lazy(() => import('components/report/ReportCompany')));
 
 const ListEmployee = Loadable(lazy(() => import('modules/Employee/ListEmployee')));
 const Employee = Loadable(lazy(() => import('modules/Employee/Employee')));
 const UpdateEmployee = Loadable(lazy(() => import('modules/Employee/UpdateEmployee')));
-const ReportEmployee = Loadable(lazy(() => import('components/report/ReportEmployee')));
 
 const ListSupplier = Loadable(lazy(() => import('modules/Supplier/ListSupplier')));
 const Supplier = Loadable(lazy(() => import('modules/Supplier/Supplier')));
-const ReportSupplier = Loadable(lazy(() => import('components/report/ReportSupplier')));
 const UpdateSupplier = Loadable(lazy(() => import('modules/Supplier/UpdateSupplier')));
 
 const ListAssistance = Loadable(lazy(() => import('modules/Assistance/ListAssistance')));
 const Assistance = Loadable(lazy(() => import('modules/Assistance/Assistance')));
 const UpdateAssistance = Loadable(lazy(() => import('modules/Assistance/UpdateAssistance')));
-const ReportAssistance = Loadable(lazy(() => import('modules/Assistance/ReportAssistance')));
 
 const ListEvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/ListEvolutionNote')));
 const EvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/EvolutionNote')));
 const UpdateEvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/UpdateEvolutionNote')));
-const ReportEvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/ReportEvolutionNote')));
 
 const ListMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/ListMedicalAdvice')));
 const MedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/MedicalAdvice')));
 const UpdateMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/UpdateMedicalAdvice')));
-const ReportMedicalAdvice = Loadable(lazy(() => import('components/report/ReportMedicalAdvice')));
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
@@ -73,17 +52,14 @@ const ReportPsychological = Loadable(lazy(() => import('modules/PsychologicalCou
 const ListNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/ListNoteInfirmary')));
 const NoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/NoteInfirmary')));
 const UpdateNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/UpdateNoteInfirmary')));
-const ReportNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/ReportNoteInfirmary')));
 
 const ListMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/ListMedicalFormula')));
 const MedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/MedicalFormula')));
 const UpdateMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/UpdateMedicalFormula')));
-const ReportMedicalFormula = Loadable(lazy(() => import('components/report/ReportMedicalFormula')));
 
 const ListAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/ListAlcoholAndDrugTesting')));
 const AlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/AlcoholAndDrugTesting')));
 const UpdateAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/UpdateAlcoholAndDrugTesting')));
-const ReportAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/ReportAlcoholAndDrugTesting')));
 
 const ListTurner = Loadable(lazy(() => import('modules/Turner/ListTurner')));
 
@@ -93,12 +69,10 @@ const ListAttention = Loadable(lazy(() => import('modules/Attention/ListAttentio
 
 const ListOccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/ListOccupationalExamination')));
 const OccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/OccupationalExamination')));
-const ReportOccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/Report/ReportOccupationalExamination')));
 
 const ListOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/ListOtherAdvice')));
 const OtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/OtherAdvice')));
 const UpdateOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/UpdateOtherAdvice')));
-const ReportOtherAdvice = Loadable(lazy(() => import('components/report/ReportOtherAdvice')));
 
 const ListCIE11 = Loadable(lazy(() => import('modules/CIE11/ListCIE11')));
 const CIE11 = Loadable(lazy(() => import('modules/CIE11/CIE11')));
@@ -132,10 +106,6 @@ const ListWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/
 const WorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/WorkAbsenteeism')));
 const UpdateWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/UpdateWorkAbsenteeism')));
 
-const ListItems = Loadable(lazy(() => import('modules/Items/ListItems')));
-const Items = Loadable(lazy(() => import('modules/Items/Items')));
-const UpdateItems = Loadable(lazy(() => import('modules/Items/UpdateItems')));
-
 const ViewOrders = Loadable(lazy(() => import('modules/Orders/ViewOrders')));
 const ListOrdersIndividual = Loadable(lazy(() => import('modules/Orders/ListOrdersIndividual')));
 const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdersIndividual')));
@@ -161,10 +131,6 @@ const UpdateRefund = Loadable(lazy(() => import('modules/Refund/UpdateRefund')))
 const ListUser = Loadable(lazy(() => import('modules/User/ListUser')));
 const UpdateUser = Loadable(lazy(() => import('modules/User/UpdateUser')));
 const User = Loadable(lazy(() => import('modules/User/User')));
-
-const ListUserFirebase = Loadable(lazy(() => import('modules/UserFirebase/ListUserFirebase')));
-const UpdateUserFirebase = Loadable(lazy(() => import('modules/UserFirebase/UpdateUserFirebase')));
-const UserFirebase = Loadable(lazy(() => import('modules/UserFirebase/UserFirebase')));
 
 const ListSGSST = Loadable(lazy(() => import('modules/SGSST/ListSGSST')));
 const UpdateSGSST = Loadable(lazy(() => import('modules/SGSST/UpdateSGSST')));
@@ -216,6 +182,12 @@ const UpdatePersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/Up
 
 const ForgotPassword = Loadable(lazy(() => import('modules/ForgotPassword/ForgotPassword')));
 
+const MenuOccupationalHealth = Loadable(lazy(() => import('modules/Menu/MenuOccupationalHealth')));
+const MenuAdministration = Loadable(lazy(() => import('modules/Menu/MenuAdministration')));
+const MenuConsultancies = Loadable(lazy(() => import('modules/Menu/MenuConsultancies')));
+const MenuParaclinics = Loadable(lazy(() => import('modules/Menu/MenuParaclinics')));
+const MenuParameterization = Loadable(lazy(() => import('modules/Menu/MenuParameterization')));
+
 const MainRoutes = {
     path: '/',
     element: (
@@ -234,10 +206,6 @@ const MainRoutes = {
             element: <TypeCatalog />
         },
         {
-            path: '/typecatalog/report',
-            element: <ReportTypeCatolog />
-        },
-        {
             path: '/typecatalog/update/:id',
             element: <UpdateTypeCatalog />
         },
@@ -254,7 +222,6 @@ const MainRoutes = {
             path: '/catalog/update/:id',
             element: <UpdateCatalog />
         },
-
         /* Render de Reintegro laboral */
         {
             path: '/refund/list',
@@ -268,7 +235,6 @@ const MainRoutes = {
             path: '/refund/update/:id',
             element: <UpdateRefund />
         },
-
         /* Render de Apuntes personales */
         {
             path: '/personal-notes/list',
@@ -295,10 +261,6 @@ const MainRoutes = {
             path: '/company/update/:id',
             element: <UpdateCompany />
         },
-        {
-            path: '/company/report',
-            element: <ReportCompany />
-        },
         /* Render de Empleados */
         {
             path: '/employee/list',
@@ -312,10 +274,6 @@ const MainRoutes = {
             path: '/employee/update/:id',
             element: <UpdateEmployee />
         },
-        {
-            path: '/employee/report/',
-            element: <ReportEmployee />
-        },
         /* Render de Proveedores */
         {
             path: '/supplier/list',
@@ -324,10 +282,6 @@ const MainRoutes = {
         {
             path: '/supplier/add',
             element: <Supplier />
-        },
-        {
-            path: '/supplier/report',
-            element: <ReportSupplier />
         },
         {
             path: '/supplier/update/:id',
@@ -346,10 +300,6 @@ const MainRoutes = {
             path: '/assistance/update/:id',
             element: <UpdateAssistance />
         },
-        {
-            path: '/assistance/report/:id',
-            element: <ReportAssistance />
-        },
         /* Render de NOTAS DE EVOLUCION */
         {
             path: '/evolution-note/list',
@@ -363,15 +313,7 @@ const MainRoutes = {
             path: '/evolution-note/update/:id',
             element: <UpdateEvolutionNote />
         },
-        {
-            path: '/evolution-note/report/:id',
-            element: <ReportEvolutionNote />
-        },
         /* Render de ASESORÍAS MÉDICA */
-        {
-            path: '/medicaladvice/report',
-            element: <ReportMedicalAdvice />
-        },
         {
             path: '/medicaladvice/list',
             element: <ListMedicalAdvice />
@@ -397,10 +339,6 @@ const MainRoutes = {
             path: '/note-infirmary/update/:id',
             element: <UpdateNoteInfirmary />
         },
-        {
-            path: '/note-infirmary/report/:id',
-            element: <ReportNoteInfirmary />
-        },
         /* Render de FORMULAS MEDICAS */
         {
             path: '/medicalformula/list',
@@ -413,10 +351,6 @@ const MainRoutes = {
         {
             path: '/medicalformula/update/:id',
             element: <UpdateMedicalFormula />
-        },
-        {
-            path: '/medicalformula/report',
-            element: <ReportMedicalFormula />
         },
         /* Render de FORMULAS MEDICAS */
         {
@@ -444,16 +378,11 @@ const MainRoutes = {
             path: '/alcoholanddrugtesting/update/:id',
             element: <UpdateAlcoholAndDrugTesting />
         },
-        {
-            path: '/alcoholanddrugtesting/report/:id',
-            element: <ReportAlcoholAndDrugTesting />
-        },
         /* Render de Turner */
         {
             path: '/turner/list',
             element: <ListTurner />
         },
-
         /* Render de HCO */
         {
             path: '/occupational-examination/list',
@@ -462,10 +391,6 @@ const MainRoutes = {
         {
             path: '/occupational-examination/add',
             element: <OccupationalExamination />
-        },
-        {
-            path: '/occupational-examination/report',
-            element: <ReportOccupationalExamination />
         },
         /* Render de Otras Asesorias */
         {
@@ -480,11 +405,6 @@ const MainRoutes = {
             path: '/otheradvice/update/:id',
             element: <UpdateOtherAdvice />
         },
-        {
-            path: '/otheradvice/report',
-            element: <ReportOtherAdvice />
-        },
-
         /* Render de Medicamentos */
         {
             path: '/medicines/list',
@@ -528,7 +448,6 @@ const MainRoutes = {
             path: '/cie11/update/:id',
             element: <UpdateCIE11 />
         },
-
         /* Render de Accidente de Trabajo */
         {
             path: '/accident-rate/list',
@@ -542,7 +461,6 @@ const MainRoutes = {
             path: '/accident-rate/update/:id',
             element: <UpdateAccidentRate />
         },
-
         /* Render de Charges */
         {
             path: '/charges/list',
@@ -556,7 +474,6 @@ const MainRoutes = {
             path: '/charges/update/:id',
             element: <UpdateCharges />
         },
-
         /* Render de Charges */
         {
             path: '/panorama/list',
@@ -628,18 +545,6 @@ const MainRoutes = {
         },
         /* Render de Items */
         {
-            path: '/item/list',
-            element: <ListItems />
-        },
-        {
-            path: '/item/add',
-            element: <Items />
-        },
-        {
-            path: '/item/update/:id',
-            element: <UpdateItems />
-        },
-        {
             path: '/orders/view',
             element: <ViewOrders />
         },
@@ -703,18 +608,6 @@ const MainRoutes = {
         {
             path: '/user/update/:id',
             element: <UpdateUser />
-        },
-        {
-            path: '/userfire/list',
-            element: <ListUserFirebase />
-        },
-        {
-            path: '/userfire/add',
-            element: <UserFirebase />
-        },
-        {
-            path: '/userfire/update/:id',
-            element: <UpdateUserFirebase />
         },
         {
             path: '/sg-sst/list',
@@ -860,43 +753,6 @@ const MainRoutes = {
             path: '/forgot-password/view',
             element: <ForgotPassword />
         },
-
-        {
-            path: '/widget/statistics',
-            element: <WidgetStatistics />
-        },
-        {
-            path: '/widget/data',
-            element: <WidgetData />
-        },
-        {
-            path: '/widget/chart',
-            element: <WidgetChart />
-        },
-        {
-            path: '/app/chat',
-            element: <AppChat />
-        },
-        {
-            path: '/app/mail',
-            element: <AppMail />
-        },
-        {
-            path: '/app/kanban',
-            element: <AppKanban />
-        },
-        {
-            path: '/app/calendar',
-            element: <AppCalendar />
-        },
-        {
-            path: '/app/contact/c-card',
-            element: <AppContactCard />
-        },
-        {
-            path: '/app/contact/c-list',
-            element: <AppContactList />
-        },
         {
             path: '/charges/list',
             element: <ListCharges />
@@ -909,7 +765,29 @@ const MainRoutes = {
         {
             path: '/indicators/view',
             element: <DashboardAnalytics />
-        }
+        },
+
+        /* SUBMENUS */
+        {
+            path: '/occupational-health/menu',
+            element: <MenuOccupationalHealth />
+        },
+        {
+            path: '/consultancies/menu',
+            element: <MenuConsultancies />
+        },
+        {
+            path: '/administration/menu',
+            element: <MenuAdministration />
+        },
+        {
+            path: '/paraclinics/menu',
+            element: <MenuParaclinics />
+        },
+        {
+            path: '/parameterization/menu',
+            element: <MenuParameterization />
+        },
     ]
 };
 

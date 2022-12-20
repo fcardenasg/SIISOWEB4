@@ -3,8 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
-    CardMedia
+    useMediaQuery
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -14,35 +13,34 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import InputMultiSelects from 'components/input/InputMultiSelects';
-import useAuth from 'hooks/useAuth';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo, ValidationMessage, Message } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { PostUser } from 'formatdata/UserForm';
 import { InsertUser } from 'api/clients/UserClient';
 import { GetAllRol } from 'api/clients/RolClient';
+import InputCheck from 'components/input/InputCheck';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().required(`${ValidationMessage.Requerido}`),
     nombreUsuario: yup.string().required(`${ValidationMessage.Requerido}`),
     nombre: yup.string().required(`${ValidationMessage.Requerido}`),
     telefono: yup.string().required(`${ValidationMessage.Requerido}`),
-    correo: yup.string().required(`${ValidationMessage.Requerido}`),
+    correo: yup.string().email(`${ValidationMessage.ValidarCorreo}`).required(`${ValidationMessage.Requerido}`),
     idRol: yup.string().required(`${ValidationMessage.Requerido}`),
-    registroMedico: yup.string().required(`${ValidationMessage.Requerido}`),
-    licencia: yup.string().required(`${ValidationMessage.Requerido}`),
-    tarjetaProfesional: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
 const User = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [checkUsuario, setCheckUsuario] = useState(true);
+    const [checkEstadoUsuario, setCheckEstadoUsuario] = useState(true);
 
     const [especialidad, setEspecialidad] = useState([]);
     const [fileImg, setFileImg] = useState(null);
@@ -59,7 +57,7 @@ const User = () => {
 
     const { handleSubmit, reset, formState: { errors } } = methods;
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerRol = await GetAllRol(0, 0);
             var resultRol = lsServerRol.data.entities.map((item) => ({
@@ -78,7 +76,7 @@ const User = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, []);
 
     const allowedFilesJPEG = ['image/jpeg'];
@@ -104,9 +102,11 @@ const User = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostUser(datos.documento, datos.nombre, datos.telefono, datos.correo,
+            const password = checkUsuario ? datos.nombreUsuario : "12345678";
+
+            const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
                 datos.idRol, JSON.stringify(especialidad), datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-                fileImg);
+                fileImg, checkEstadoUsuario);
 
             if (Object.keys(datos.length !== 0)) {
                 if (fileImg === null) {
@@ -128,7 +128,7 @@ const User = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('No se pudo guardar el registro');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -138,21 +138,22 @@ const User = () => {
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
                             name="nombreUsuario"
-                            label="Nombre de usuario"
+                            label="Usuario"
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors.nombreUsuario}
                         />
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
+                            type="number"
                             defaultValue=""
                             name="documento"
                             label="Documento"
@@ -162,7 +163,7 @@ const User = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -174,9 +175,10 @@ const User = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
+                            type="number"
                             defaultValue=""
                             name="telefono"
                             label="Teléfono"
@@ -186,7 +188,7 @@ const User = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -199,7 +201,7 @@ const User = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputSelect
                             name="idRol"
@@ -212,7 +214,7 @@ const User = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <InputMultiSelects
                         fullWidth
                         onChange={(event, value) => setEspecialidad(value)}
@@ -222,7 +224,7 @@ const User = () => {
                     />
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -235,7 +237,7 @@ const User = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -247,7 +249,7 @@ const User = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -259,7 +261,26 @@ const User = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
+                    <InputCheck
+                        label={`Estado Usuario: ${checkEstadoUsuario ? "Activo" : "Inactivo"}`}
+                        onChange={(e) => setCheckEstadoUsuario(e.target.checked)}
+                        checked={checkEstadoUsuario}
+                        size={30}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={4}>
+                    <InputCheck
+                        disabled
+                        label="¿Desea que la contraseña sea el mismo Usuario?"
+                        onChange={(e) => setCheckUsuario(e.target.checked)}
+                        checked={checkUsuario}
+                        size={30}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={4}>
                     <Grid container>
                         <Grid item xs={12} md={6}>
                             <Button size="large" variant="contained" component="label" startIcon={<EditIcon fontSize="large" />}>
@@ -269,20 +290,10 @@ const User = () => {
                         </Grid>
 
                         <Grid item xs={3}>
-                            <CardMedia
-                                component="img"
-                                height="100"
-                                image={fileImg}
-                                alt="Firma"
-                            />
+                            <img src={fileImg} width="120" />
                         </Grid>
                     </Grid>
                 </Grid>
-
-                <Grid item xs={12} md={2}>
-
-                </Grid>
-
             </Grid>
 
             <Grid item xs={12} sx={{ pt: 4 }}>

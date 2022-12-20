@@ -39,6 +39,8 @@ import { ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import { DeleteAccidentRate, GetAllAccidentRate } from 'api/clients/AccidentRateClient';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import PrintIcon from '@mui/icons-material/PrintTwoTone';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -330,7 +332,7 @@ const ListAccidentRate = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsAccidentRate.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
+        <MainCard title="Lista de Accidente de Trabajo" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -350,23 +352,44 @@ const ListAccidentRate = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Historia Clínica">
-                            <ExcelSheet data={lsAccidentRate} name="Historia Clínica">
-                                <ExcelColumn label="Id" value="id" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Historia Clínica">
+                                    <ExcelSheet data={lsAccidentRate} name="Historia Clínica">
+                                        <ExcelColumn label="Id" value="id" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/accident-rate/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={2}>
+                                <Tooltip title="Impresión">
+                                    <IconButton size="large">
+                                        <PrintIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/accident-rate/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/occupational-health/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>
