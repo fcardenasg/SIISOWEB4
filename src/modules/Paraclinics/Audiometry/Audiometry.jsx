@@ -57,9 +57,7 @@ const Audiometry = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
-    const [diagnosticoArray1, setDiagnosticoArray1] = useState([]);
-    const [diagnosticoArray2, setDiagnosticoArray2] = useState([]);
+ 
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -233,8 +231,8 @@ const Audiometry = () => {
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_AUDIOMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 datos.idProveedor, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', '', '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, '', false, '',
+                DefaultValue.SINREGISTRO_GLOBAL, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '',
+                DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', false, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
@@ -243,10 +241,10 @@ const Audiometry = () => {
                 datos.htaaop, datos.tipoAcusiaAOP, datos.diabetesAOP, datos.expoRuidoAOP, datos.anteceTraumaticosAOP,
                 datos.observacionAOP, datos.idEmpresaAO, datos.idCargoAO, datos.tiempoExpoAO, datos.idProteccionAuditivaAO,
                 datos.idSuministradaPorAO, datos.idUsoA, datos.idOdcaeAUDIO, datos.idOdmtAUDIO, datos.idOicaeAUDIO, datos.idOimtAUDIO,
-                datos.idReposoAUDIO, datos.dxAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
+                datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO,datos.idCambioEPP, datos.observacionAUDIO,
                 filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            console.log("DataToInsert =", DataToInsert);
+                console.log("Datos => ", DataToInsert);
 
             if (Object.keys(datos.length !== 0)) {
                 if (filePdf) {
@@ -739,7 +737,7 @@ const Audiometry = () => {
                                 <Grid item xs={12} md={1} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idConductaClasificacion"
+                                            name="idConductaAUDIO"
                                             label="Conducta"
                                             defaultValue=""
                                             options={lsConducta}

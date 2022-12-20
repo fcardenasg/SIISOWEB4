@@ -4,7 +4,8 @@ import {
     Button,
     Grid,
     useMediaQuery,
-    Typography
+    Typography,
+    fabClasses
 } from '@mui/material';
 
 import * as yup from 'yup';
@@ -292,7 +293,7 @@ const UpdateLaboratory = () => {
                 datos.ojoIzquierdo, '', datos.add1, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 datos.remitidoOftalmo,
                 datos.requiereLentes, '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', '', '', '', '', '', datos.resultadoColesterol,
+                '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, datos.resultadoColesterol,
                 datos.interpretacionColeste, datos.observacionColeste, datos.resultadoColesteHDL,
                 datos.interpretacionColesteHDL, datos.observacionColesteHDL, datos.dislipidemiaHDL, datos.resultadoTrigli,
                 datos.interpretacionTrigli, datos.observacionTrigli, datos.resultadoGlicemia, datos.interpretacionGlicemia,
@@ -300,10 +301,10 @@ const UpdateLaboratory = () => {
                 datos.interpretacionBUN, datos.observacionBUN, datos.idParcialOrina, datos.observacionParcialOrina,
                 datos.hemograma, datos.observacionHemograma, datos.gpt, datos.observacionGPT, datos.got, datos.observacionGOT, datos.bilirrubina,
                 datos.observacionBilirrubina, datos.bilirrubinaDirecta, datos.observacionBilirrubinaDirecta, false, false, false, false, false, false, false, false, false, false, false, false,
-                false, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                false, false, false, '','', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, '', filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,'',
+                DefaultValue.SINREGISTRO_GLOBAL, false,'', filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
 

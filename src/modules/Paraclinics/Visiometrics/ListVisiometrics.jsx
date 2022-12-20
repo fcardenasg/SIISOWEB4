@@ -455,7 +455,7 @@ const ListVisiometrics = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idMotivo}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -470,7 +470,7 @@ const ListVisiometrics = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idConductaClasificacion}
+                                                {row.nameMotivo}
                                             </Typography>
                                         </TableCell>
 
