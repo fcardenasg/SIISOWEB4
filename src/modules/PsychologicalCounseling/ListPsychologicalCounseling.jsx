@@ -28,11 +28,11 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 import { FormatDate } from 'components/helpers/Format';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { DefaultData, Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 
-import { GetAllAdvice, DeleteAdvice } from 'api/clients/AdviceClient';
+import { GetAllAdvice, DeleteAdvice, GetAllByTipoAtencion } from 'api/clients/AdviceClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -232,7 +232,7 @@ const ListPsychologicalCounseling = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllAdvice(0, 0);
+            const lsServer = await GetAllByTipoAtencion(0, 0, DefaultData.AsesoriaPsicologica);
             setMedicalAdvice(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) { }
@@ -338,7 +338,7 @@ const ListPsychologicalCounseling = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medicalAdvice.length) : 0;
 
     return (
-        <MainCard title="Lista de Asesoría Psicológica" content={false}>
+        <MainCard title={<Typography variant="h4">LISTA DE ASESORÍA PSICOLÓGICA</Typography>} content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -356,7 +356,7 @@ const ListPsychologicalCounseling = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <ExcelFile element={
@@ -391,25 +391,15 @@ const ListPsychologicalCounseling = () => {
                                 </ExcelFile>
                             </Grid>
 
-                            <Grid item xs={2}>
-                                <Tooltip title="Impresión" onClick={() => navigate(`/psychologicalcounseling/report/${idCheck}`)}>
-                                    <IconButton disabled={idCheck === '' ? true : false} size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/psychologicalcounseling/add")}>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />} onClick={() => navigate("/psychologicalcounseling/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
-                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/consultancies/menu")}>
-                                    {TitleButton.Agregar}
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />} onClick={() => navigate("/consultancies/menu")}>
+                                    {TitleButton.Cancelar}
                                 </Button>
                             </Grid>
                         </Grid>

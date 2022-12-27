@@ -1,63 +1,52 @@
-// Import de Material-ui
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
     useMediaQuery,
     Typography,
-    Divider,
 } from '@mui/material';
-import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
 
-
-// Terceros
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
-// Import del Proyecto
-import { GetAllBySegAfectado, GetAllBySegAgrupado, GetAllBySubsegmento, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
+import { GetAllBySegAfectado, GetAllBySegAgrupado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
-import InputDatePick from 'components/input/InputDatePick';
-import { FormatDate } from 'components/helpers/Format'
-import Accordion from 'components/accordion/Accordion';
-import PhotoModel from 'components/form/PhotoModel';
-import { SNACKBAR_OPEN } from 'store/actions';
-import { GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
-import { GetAllCompany } from 'api/clients/CompanyClient';
+import { FormatDate } from 'components/helpers/Format';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PutOccupationalMedicine } from 'formatdata/OccupationalMedicineForm';
 import SubCard from 'ui-component/cards/SubCard';
-import InputOnChange from 'components/input/InputOnChange';
+import UploadIcon from '@mui/icons-material/Upload';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetByIdOccupationalMedicine, UpdateOccupationalMedicines } from 'api/clients/OccupationalMedicineClient';
+import InputDatePicker from 'components/input/InputDatePicker';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import InputOnChange from 'components/input/InputOnChange';
+import useAuth from 'hooks/useAuth';
 import Cargando from 'components/loading/Cargando';
+import { PutOccupationalMedicine } from 'formatdata/OccupationalMedicineForm';
 
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-const mic = new SpeechRecognition();
-
-mic.continuous = true;
-mic.interimResults = true;
-mic.lang = 'es-ES';
-
-const UpdateOccupationalMedicine = () => {
-    const dispatch = useDispatch();
+const OccupationalMedicine = () => {
+    const { user } = useAuth();
+    const { id } = useParams();
     const theme = useTheme();
     const navigate = useNavigate();
-    const { id } = useParams();
-    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [lsOccupationalMedicine, setLsOccupationalMedicine] = useState([]);
-    const [fileUpload, setFileUpload] = useState(null);
 
-    const [catalog, setCatalog] = useState([]);
-    const [company, setCompany] = useState([]);
+    const [timeWait, setTimeWait] = useState(false);
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const [filePdf, setFilePdf] = useState(null);
+
+    const [lsEmployee, setLsEmployee] = useState([]);
     const [lsResumenCaso, setLsResumenCaso] = useState([]);
     const [lsRegion, setLsRegion] = useState([]);
     const [lsLateralidad, setLsLateralidad] = useState([]);
@@ -74,204 +63,47 @@ const UpdateOccupationalMedicine = () => {
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
     const [segmentoAfectado, setSegmentoAfectado] = useState('');
     const [lsSubsegmento, setLsSubsegmento] = useState([]);
-    const [subsegmento, setSubsegmento] = useState('');
-    const [lsCie11, setLsCie11] = useState([]);
-
-    const [imgSrc, setImgSrc] = useState(null);
-    const [value, setValue] = useState(0);
-
-    const [document, setDocument] = useState('');
-    const [nombres, setNombres] = useState('');
-    const [email, setEmail] = useState('');
-    const [celular, setCelular] = useState('');
-    const [escolaridad, setEscolaridad] = useState('');
-    const [empresa, setEmpresa] = useState('');
-    const [sede, setSede] = useState('');
-    const [fechaNaci, setFechaNaci] = useState(null);
-    const [genero, setGenero] = useState('');
-    const [estadoCivil, setEstadoCivil] = useState('');
-    const [contacto, setContacto] = useState('');
-    const [telefonoContacto, setTelefonoContacto] = useState('');
-    const [fechaContrato, setFechaContrato] = useState(null);
-    const [tipoContrato, setTipoContrato] = useState('');
-    const [payStatus, setPayStatus] = useState('');
-    const [type, setType] = useState('');
-    const [rosterPosition, setRosterPosition] = useState('');
-    const [generalPosition, setGeneralPosition] = useState('');
-    const [departamento, setDepartamento] = useState('');
-    const [area, setArea] = useState('');
-    const [subArea, setSubArea] = useState('');
-    const [grupo, setGrupo] = useState('');
-    const [turno, setTurno] = useState('');
-    const [direccionResidencia, setDireccionResidencia] = useState('');
-    const [dptoResidencia, setDptoResidencia] = useState('');
-    const [municipioResidencia, setMunicipioResidencia] = useState('');
-    const [municipioNacido, setMunicipioNacido] = useState('');
-    const [dptoNacido, setDptoNacido] = useState('');
-    const [eps, setEps] = useState('');
-    const [afp, setAfp] = useState('');
-
-    const [fechaRetiro, setFechaRetiro] = useState(new Date());
-    const [fechaEntrega, setFechaEntrega] = useState(new Date());
-    const [fechaEnvio, setFechaEnvio] = useState(new Date());
-    const [fechaCalificacionEps, setFechaCalificacionEps] = useState(new Date());
-    const [fechaCalifiOrigenARL, setFechaCalifiOrigenARL] = useState(new Date());
-    const [fechaCalificacionPclARL, setFechaCalificacionPclARL] = useState(new Date());
-    const [fechaEstructuraARL, setFechaEstructuraARL] = useState(new Date());
-    const [fechaRecalificacionPclARL, setFechaRecalificacionPclARL] = useState(new Date());
-    const [fechaEstructuraRecalificadaARL, setFechaEstructuraRecalificadaARL] = useState(new Date());
-    const [fechaCalificaOrigenJRC, setFechaCalificaOrigenJRC] = useState(new Date());
-    const [fechaCalificacionPclJRC, setFechaCalificacionPclJRC] = useState(new Date());
-    const [fechaEstructuraPclJRC, setFechaEstructuraPclJRC] = useState(new Date());
-    const [fechaRecalificacionPclJRC, setFechaRecalificacionPclJRC] = useState(new Date());
-    const [fechaRecalificacionEstJRC, setFechaRecalificacionEstJRC] = useState(new Date());
-    const [fechaCalificaOrigenJNC, setFechaCalificaOrigenJNC] = useState(new Date());
-    const [fechaCalificacionPclJNC, setFechaCalificacionPclJNC] = useState(new Date());
-    const [fechaEstructuraJNC, setFechaEstructuraJNC] = useState(new Date());
-    const [fechaRecalificacionPclJNC, setFechaRecalificacionPclJNC] = useState(new Date());
-    const [fechaEstructuracionOrigenInstaFinal, setFechaEstructuracionOrigenInstaFinal] = useState(new Date());
-    const [fechaCalificacionPclInstFinal, setFechaCalificacionPclInstFinal] = useState(new Date());
-    const [fechaEstructuracionPclInstFinal, setFechaEstructuracionPclInstFinal] = useState(new Date());
-    const [fechaPagoInstaFinal, setFechaPagoInstaFinal] = useState(new Date());
-    const [fechaPagoRecalificadoInstaFinal, setFechaPagoRecalificadoInstaFinal] = useState(new Date());
-
-    const [isListening, setIsListening] = useState(false);
-    const [note, setNote] = useState(null);
-
-    const handleListen = () => {
-        if (isListening) {
-            mic.start()
-            mic.onend = () => {
-                console.log('continue..')
-                mic.start()
-            }
-        } else {
-            mic.stop()
-            mic.onend = () => {
-                console.log('Stopped Mic on Click')
-            }
-        }
-        mic.onstart = () => {
-            console.log('Mics on')
-        }
-        mic.onresult = event => {
-            const transcript = Array.from(event.results)
-                .map(result => result[0])
-                .map(result => result.transcript)
-                .join('')
-            console.log(transcript)
-            setNote(transcript)
-            mic.onerror = event => {
-                console.log(event.error)
-            }
-        }
-    }
+    const [documento, setDocumento] = useState('');
+    const [textDiagnistico, setTextDiagnostico] = useState('');
+    const [lsDiagnistico, setLsDiagnistico] = useState([]);
+    const [lsOccupationalMedicine, setLsOccupationalMedicine] = useState([]);
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit } = methods;
 
-    const handleLoadingDocument = async (idEmployee) => {
+    async function getAll() {
         try {
-            var lsQuestionnaire = await GetByIdEmployee(idEmployee);
-            if (lsQuestionnaire.status === 200) {
-                setImgSrc(lsQuestionnaire.data.imagenUrl);
-                setDocument(lsQuestionnaire.data.documento);
-                setNombres(lsQuestionnaire.data.nombres);
-                setEmail(lsQuestionnaire.data.email);
-                setCelular(lsQuestionnaire.data.celular);
-                setEscolaridad(lsQuestionnaire.data.escolaridad);
-                setEmpresa(lsQuestionnaire.data.empresa);
-                setSede(lsQuestionnaire.data.sede);
-                setFechaNaci(lsQuestionnaire.data.fechaNaci);
-                setGenero(lsQuestionnaire.data.genero);
-                setEstadoCivil(lsQuestionnaire.data.estadoCivil);
-                setContacto(lsQuestionnaire.data.contacto);
-                setTelefonoContacto(lsQuestionnaire.data.telefonoContacto);
-                setFechaContrato(lsQuestionnaire.data.fechaContrato);
-                setTipoContrato(lsQuestionnaire.data.tipoContrato);
-                setPayStatus(lsQuestionnaire.data.payStatus);
-                setType(lsQuestionnaire.data.type);
-                setRosterPosition(lsQuestionnaire.data.rosterPosition);
-                setGeneralPosition(lsQuestionnaire.data.generalPosition);
-                setDepartamento(lsQuestionnaire.data.departamento);
-                setArea(lsQuestionnaire.data.area);
-                setSubArea(lsQuestionnaire.data.subArea);
-                setGrupo(lsQuestionnaire.data.grupo);
-                setTurno(lsQuestionnaire.data.turno);
-                setDireccionResidencia(lsQuestionnaire.data.direccionResidencia);
-                setDptoResidencia(lsQuestionnaire.data.dptoResidencia);
-                setMunicipioResidencia(lsQuestionnaire.data.municipioResidencia);
-                setMunicipioNacido(lsQuestionnaire.data.municipioNacido);
-                setDptoNacido(lsQuestionnaire.data.dptoNacido);
-                setEps(lsQuestionnaire.data.eps);
-                setAfp(lsQuestionnaire.data.afp);
-            }
-        } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${Message.ErrorDeDatos}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
-        }
-    }
+            const lsServerAtencion = await GetByIdOccupationalMedicine(id);
+            if (lsServerAtencion.status === 200) {
+                setDocumento(lsServerAtencion.data.cedula);
+                handleLoadingDocument(lsServerAtencion.data.cedula);
+                setLsOccupationalMedicine(lsServerAtencion.data);
+                setFilePdf(lsServerAtencion.data.urlDocumento);
+                setSegmentoAgrupado(lsServerAtencion.data.segmentoAgrupado);
 
-    async function GetAll() {
-        try {
-            const lsServerAll = await GetByIdOccupationalMedicine(id);
-            if (lsServerAll.status === 200) {
-                setLsOccupationalMedicine(lsServerAll.data);
-                setSegmentoAgrupado(lsServerAll.data.segmentoAgrupado);
-                setSegmentoAfectado(lsServerAll.data.segmentoAfectado);
-                setSubsegmento(lsServerAll.data.subsegmento);
-                handleLoadingDocument(lsServerAll.data.cedula);
-
-                setFechaRetiro(lsServerAll.data.fechaRetiro); setFechaEntrega(lsServerAll.data.fechaEntrega); setFechaEnvio(lsServerAll.data.fechaEnvio);
-                setFechaCalificacionEps(lsServerAll.data.fechaCalificacionEps); setFechaCalifiOrigenARL(lsServerAll.data.fechaCalifiOrigenARL);
-                setFechaCalificacionPclARL(lsServerAll.data.fechaCalificacionPclARL); setFechaEstructuraARL(lsServerAll.data.fechaEstructuraARL);
-                setFechaRecalificacionPclARL(lsServerAll.data.fechaRecalificacionPclARL); setFechaEstructuraRecalificadaARL(lsServerAll.data.fechaEstructuraRecalificadaARL);
-                setFechaCalificaOrigenJRC(lsServerAll.data.fechaCalificaOrigenJRC); setFechaCalificacionPclJRC(lsServerAll.data.fechaCalificacionPclJRC);
-                setFechaEstructuraPclJRC(lsServerAll.data.fechaEstructuraPclJRC); setFechaRecalificacionPclJRC(lsServerAll.data.fechaRecalificacionPclJRC);
-                setFechaRecalificacionEstJRC(lsServerAll.data.fechaRecalificacionEstJRC); setFechaCalificaOrigenJNC(lsServerAll.data.fechaCalificaOrigenJNC);
-                setFechaCalificacionPclJNC(lsServerAll.data.fechaCalificacionPclJNC); setFechaEstructuraJNC(lsServerAll.data.fechaEstructuraJNC);
-                setFechaRecalificacionPclJNC(lsServerAll.data.fechaRecalificacionPclJNC);
-                setFechaEstructuracionOrigenInstaFinal(lsServerAll.data.fechaEstructuracionOrigenInstaFinal);
-                setFechaCalificacionPclInstFinal(lsServerAll.data.fechaCalificacionPclInstFinal);
-                setFechaEstructuracionPclInstFinal(lsServerAll.data.fechaEstructuracionPclInstFinal); setFechaPagoInstaFinal(lsServerAll.data.fechaPagoInstaFinal);
-                setFechaPagoRecalificadoInstaFinal(lsServerAll.data.fechaPagoRecalificadoInstaFinal);
-
-                const lsServerSegAfectado = await GetAllBySegAgrupado(lsServerAll.data.segmentoAgrupado, 0, 0);
+                const lsServerSegAfectado = await GetAllBySegAgrupado(lsServerAtencion.data.segmentoAgrupado, 0, 0);
                 var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
                     value: item.id,
-                    label: item.descripcion
+                    label: item.nombre
                 }));
                 setLsSegmentoAfectado(resultSegAfectado);
+                setSegmentoAfectado(lsServerAtencion.data.segmentoAfectado);
 
-                const lsServerSubsegmento = await GetAllBySegAfectado(lsServerAll.data.segmentoAfectado, 0, 0);
+                const lsServerSubsegmento = await GetAllBySegAfectado(lsServerAtencion.data.segmentoAfectado, 0, 0);
                 var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
                     value: item.id,
-                    label: item.descripcion
+                    label: item.nombre
                 }));
                 setLsSubsegmento(resultSubsegmento);
 
-                const lsServerCie11 = await GetAllBySubsegmento(lsServerAll.data.subsegmento, 0, 0);
+                var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.codDx);
                 var resultCie11 = lsServerCie11.data.entities.map((item) => ({
                     value: item.id,
                     label: item.dx
                 }));
-                setLsCie11(resultCie11);
-
+                setLsDiagnistico(resultCie11);
+                setTextDiagnostico(lsServerAtencion.data.codDx);
             }
-            const lsServerCatalog = await GetAllCatalog(0, 0);
-            var resultCatalogo = lsServerCatalog.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setCatalog(resultCatalogo);
 
             const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
             var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
@@ -349,1325 +181,1075 @@ const UpdateOccupationalMedicine = () => {
                 label: item.nombre
             }));
             setLsEntidadMotiEnvio(resultEntidadMotiEnvio);
+        } catch (error) { }
+    }
 
-            const lsServerCompany = await GetAllCompany(0, 0);
-            var resultCompany = lsServerCompany.data.entities.map((item) => ({
-                value: item.codigo,
-                label: item.descripcionSpa
-            }));
-            setCompany(resultCompany);
+    const handleLoadingDocument = async (idEmployee) => {
+        try {
+            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+
+            if (lsServerEmployee.status === 200)
+                setLsEmployee(lsServerEmployee.data);
         } catch (error) {
-            console.log(error);
+            setLsEmployee([]);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
     const handleChangeSegAgrupado = async (event) => {
         try {
-            setLsSegmentoAfectado([]); setLsSubsegmento([]); setLsCie11([]); setSegmentoAfectado('');
-            setSubsegmento(''); setSegmentoAfectado(''); setSegmentoAgrupado('');
+            setLsSegmentoAfectado([]); setLsSubsegmento([]); setSegmentoAfectado(''); setSegmentoAgrupado('');
+
             setSegmentoAgrupado(event.target.value);
 
             const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
             var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
                 value: item.id,
-                label: item.descripcion
+                label: item.nombre
             }));
             setLsSegmentoAfectado(resultSegAfectado);
-
-            console.log(event.target.value);
         } catch (error) {
-            console.log(error);
             setLsSegmentoAfectado([]);
         }
     }
 
     const handleChangeSegAfectado = async (event) => {
         try {
-            setLsSubsegmento([]); setLsCie11([]); setSubsegmento('');
+            setLsSubsegmento([]);
             setSegmentoAfectado(event.target.value);
 
             const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
             var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
                 value: item.id,
-                label: item.descripcion
+                label: item.nombre
             }));
             setLsSubsegmento(resultSubsegmento);
-
-            console.log(event.target.value);
         } catch (error) {
-            console.log(error);
             setLsSubsegmento([]);
         }
     }
 
-    const handleChangeSubsegmento = async (event) => {
+    const handleDiagnostico = async (event) => {
         try {
-            setSubsegmento(event.target.value);
+            setTextDiagnostico(event.target.value);
 
-            const lsServerCie11 = await GetAllBySubsegmento(event.target.value, 0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
 
-            console.log(event.target.value);
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDiagnistico(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
         } catch (error) {
-            console.log(error);
-            setLsCie11([]);
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const allowedFiles = ['application/pdf'];
+    const handleFile = (event) => {
+        let selectedFile = event.target.files[0];
+
+        if (selectedFile) {
+            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
+                let reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onloadend = (e) => {
+                    setFilePdf(e.target.result);
+                }
+            }
+            else {
+                setFilePdf('');
+                setOpenError(true);
+                setErrorMessage('Este forma no es un PDF');
+            }
         }
     }
 
     useEffect(() => {
-        GetAll();
-        handleListen();
-    }, [isListening])
+        getAll();
+    }, [id])
 
     const handleClick = async (datos) => {
         try {
-            const usuario = "Manuel Vásquez";
-            const fechaAhora = FormatDate(new Date());
-
-            const DataToUpdate = PutOccupationalMedicine(id, document, datos.resumenCaso, FormatDate(fechaRetiro), segmentoAgrupado, segmentoAfectado, subsegmento,
-                datos.codDx, datos.nroFurel, datos.regionInfoLaboral, datos.lateralidad, datos.entidadQueMotivaEnvio, datos.entidadDondeEnvia,
-                FormatDate(fechaEntrega), FormatDate(fechaEnvio), datos.investigado, datos.observaciones,
-                FormatDate(fechaCalificacionEps), datos.origenEps,
-                datos.noSolicitudARL, FormatDate(fechaCalifiOrigenARL), datos.origenARL, FormatDate(fechaCalificacionPclARL), datos.pclARL,
-                FormatDate(fechaEstructuraARL), FormatDate(fechaRecalificacionPclARL),
-                datos.pclRecalificadaARL, FormatDate(fechaEstructuraRecalificadaARL),
-                FormatDate(fechaCalificaOrigenJRC), datos.juntaCalifica, datos.noDictamenJRC, datos.origenJRC, datos.controversia, datos.conclusion,
-                FormatDate(fechaCalificacionPclJRC),
-                datos.noDictamenPclJRC, datos.pclJRC, FormatDate(fechaEstructuraPclJRC),
-                datos.noActaRecursoJRC, FormatDate(fechaRecalificacionPclJRC), datos.noDictamenRecalificacionJRC, datos.juntaReCalificacionJRC, datos.pclRecalificadaJRC,
-                FormatDate(fechaRecalificacionEstJRC),
-                FormatDate(fechaCalificaOrigenJNC), datos.noDictamenJNC, datos.origenJNC, FormatDate(fechaCalificacionPclJNC), datos.noDictamenPclJNC,
-                datos.pclJNC, FormatDate(fechaEstructuraJNC),
-                FormatDate(fechaRecalificacionPclJNC),
-                datos.noDictamenRecalificacionJNC, datos.pclRecalificacionJNC,
-                datos.origenInstaFinal, FormatDate(fechaEstructuracionOrigenInstaFinal), datos.instanciaOrigenInstaFinal, datos.pclFinalInstaFinal, datos.instanciaFinal,
-                FormatDate(fechaCalificacionPclInstFinal),
-                FormatDate(fechaEstructuracionPclInstFinal), datos.indemnizado, datos.entregadoMin, FormatDate(fechaPagoInstaFinal), datos.indemnizadoRecalificado,
-                FormatDate(fechaPagoRecalificadoInstaFinal),
-                datos.estadoRHT, datos.reintegro, datos.reubicado, datos.restringido, datos.jornadaLaboral, datos.indemnizacion,
-                sede, usuario, usuario, fechaAhora, fechaAhora, fechaAhora, fechaAhora, "Edad Calificado", "Antiguedad Calificado");
+            const DataToUpdate = PutOccupationalMedicine(id, documento, datos.resumenCaso, FormatDate(datos.fechaRetiro), segmentoAgrupado, segmentoAfectado, datos.subsegmento,
+                datos.codDx, datos.nroFurel, datos.regionInfoLaboral, datos.lateralidad, datos.entidadQueMotivaEnvio, datos.entidadDondeEnvia, FormatDate(datos.fechaEntrega),
+                FormatDate(datos.fechaEnvio), datos.investigado, datos.observaciones, FormatDate(datos.fechaCalificacionEps), datos.origenEps, datos.noSolicitudARL,
+                FormatDate(datos.fechaCalifiOrigenARL), datos.origenARL, FormatDate(datos.fechaCalificacionPclARL), datos.pclARL, FormatDate(datos.fechaEstructuraARL),
+                FormatDate(datos.fechaRecalificacionPclARL), datos.pclRecalificadaARL, FormatDate(datos.fechaEstructuraRecalificadaARL), FormatDate(datos.fechaCalificaOrigenJRC),
+                datos.juntaCalifica, datos.noDictamenJRC, datos.origenJRC, datos.controversia, datos.conclusion, FormatDate(datos.fechaCalificacionPclJRC), datos.noDictamenPclJRC,
+                datos.pclJRC, FormatDate(datos.fechaEstructuraPclJRC), datos.noActaRecursoJRC, FormatDate(datos.fechaRecalificacionPclJRC), datos.noDictamenRecalificacionJRC,
+                datos.juntaReCalificacionJRC, datos.pclRecalificadaJRC, FormatDate(datos.fechaRecalificacionEstJRC), FormatDate(datos.fechaCalificaOrigenJNC),
+                datos.noDictamenJNC, datos.origenJNC, FormatDate(datos.fechaCalificacionPclJNC), datos.noDictamenPclJNC, datos.pclJNC, FormatDate(datos.fechaEstructuraJNC),
+                FormatDate(datos.fechaRecalificacionPclJNC), datos.noDictamenRecalificacionJNC, datos.pclRecalificacionJNC, datos.origenInstaFinal,
+                FormatDate(datos.fechaEstructuracionOrigenInstaFinal), datos.instanciaOrigenInstaFinal, datos.pclFinalInstaFinal, datos.instanciaFinal,
+                FormatDate(datos.fechaCalificacionPclInstFinal), FormatDate(datos.fechaEstructuracionPclInstFinal), datos.indemnizado, FormatDate(datos.fechaPagoInstaFinal),
+                datos.entregadoMin, datos.indemnizadoRecalificado, FormatDate(datos.fechaPagoRecalificadoInstaFinal), datos.estadoRHT, datos.reintegro, datos.reubicado,
+                datos.restringido, datos.jornadaLaboral, datos.indemnizacion, lsEmployee.sede, user.nameuser, user.nameuser, FormatDate(new Date()), FormatDate(new Date()),
+                FormatDate(new Date()), FormatDate(new Date()), "edadCalificado", "antiguedadCalificado", filePdf);
 
             if (Object.keys(datos.length !== 0)) {
+
                 const result = await UpdateOccupationalMedicines(DataToUpdate);
+
                 if (result.status === 200) {
-                    dispatch({
-                        type: SNACKBAR_OPEN,
-                        open: true,
-                        message: `${Message.Actualizar}`,
-                        variant: 'alert',
-                        alertSeverity: 'success',
-                        close: false,
-                        transition: 'SlideUp'
-                    })
-                    setValue(0);
+                    setOpenSuccess(true);
                 }
             }
         } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
+    setTimeout(() => {
+        if (lsOccupationalMedicine.length !== 0)
+            setTimeWait(true);
+    }, 1500);
+
     return (
-        <MainCard>
-            {lsOccupationalMedicine.length != 0 ? <>
-                <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}>
-                    <Grid container spacing={2} sx={{ pb: 3, pt: 3 }}>
-                        <Grid item xs={3}>
-                            <PhotoModel
-                                disabledCapture
-                                disabledDelete
-                                EstadoImg={imgSrc}
-                            />
-                        </Grid>
-                        <Grid container spacing={2} item xs={9}>
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    label="N° Documento"
-                                    onChange={(e) => setDocument(e?.target.value)}
-                                    value={document}
-                                    disabled
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    required={true}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    label="Nombres"
-                                    value={nombres}
-                                    onChange={(e) => setNombres(e?.target.value)}
-                                    disabled
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    required={true}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    label="Email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e?.target.value)}
-                                    disabled
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    required={true}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    label="Celular"
-                                    value={celular}
-                                    onChange={(e) => setCelular(e?.target.value)}
-                                    disabled
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    required={true}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="escolaridad"
-                                    label="Escolaridad"
-                                    disabled
-                                    options={catalog}
-                                    value={escolaridad}
-                                    onChange={(e) => setEscolaridad(e?.target.value)}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="empresa"
-                                    label="Empresa"
-                                    disabled
-                                    options={company}
-                                    value={empresa}
-                                    onChange={(e) => setEmpresa(e?.target.value)}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="sede"
-                                    label="Sede"
-                                    disabled
-                                    options={catalog}
-                                    value={sede}
-                                    onChange={(e) => setSede(e?.target.value)}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha de Nacimiento"
-                                    value={fechaNaci}
-                                    disabled
-                                    onChange={(e) => setFechaNaci(e)}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="genero"
-                                    label="Genero"
-                                    disabled
-                                    options={catalog}
-                                    value={genero}
-                                    onChange={(e) => setGenero(e?.target.value)}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="estadoCivil"
-                                    label="Estado Civil"
-                                    disabled
-                                    options={catalog}
-                                    value={estadoCivil}
-                                    onChange={(e) => setEstadoCivil(e?.target.value)}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    label="Contacto"
-                                    value={contacto}
-                                    onChange={(e) => setContacto(e?.target.value)}
-                                    disabled
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    required={true}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    label="Teléfono de Contacto"
-                                    value={telefonoContacto}
-                                    onChange={(e) => setTelefonoContacto(e?.target.value)}
-                                    disabled
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    required={true}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </SubCard>
+        <Fragment>
+            {timeWait ?
+                <Fragment>
+                    <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                    <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" sx={{ mr: 0.5 }} />
-                    <Typography variant="subtitle1" color="inherit">Ver mas...</Typography></>}>
-                    <Grid item sx={{ pt: 2, pb: 2 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <InputDatePick
-                                        label="Fecha de Contrato"
-                                        value={fechaContrato}
-                                        disabled
-                                        onChange={(e) => setFechaContrato(e)}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="tipoContrato"
-                                        label="Tipo de Contrato"
-                                        disabled
-                                        options={catalog}
-                                        value={tipoContrato}
-                                        onChange={(e) => setTipoContrato(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="estado"
-                                        label="Estado"
-                                        disabled
-                                        options={catalog}
-                                        value={payStatus}
-                                        onChange={(e) => setPayStatus(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="Rol"
-                                        label="Rol"
-                                        disabled
-                                        options={catalog}
-                                        value={type}
-                                        onChange={(e) => setType(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="rosterPosition"
-                                        label="Roster Position"
-                                        disabled
-                                        options={catalog}
-                                        value={rosterPosition}
-                                        onChange={(e) => setRosterPosition(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="generalPosition"
-                                        label="General Position"
-                                        disabled
-                                        options={catalog}
-                                        value={generalPosition}
-                                        onChange={(e) => setGeneralPosition(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="Departamento"
-                                        label="Departamento"
-                                        disabled
-                                        options={catalog}
-                                        value={departamento}
-                                        onChange={(e) => setDepartamento(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="Area"
-                                        label="Area"
-                                        disabled
-                                        options={catalog}
-                                        value={area}
-                                        onChange={(e) => setArea(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="Subarea"
-                                        label="Subarea"
-                                        disabled
-                                        options={catalog}
-                                        value={subArea}
-                                        onChange={(e) => setSubArea(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="Grupo"
-                                        label="Grupo"
-                                        disabled
-                                        options={catalog}
-                                        value={grupo}
-                                        onChange={(e) => setGrupo(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="Turno"
-                                        label="Turno"
-                                        disabled
-                                        options={catalog}
-                                        value={turno}
-                                        onChange={(e) => setTurno(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <InputOnChange
-                                        label="Dirección de Residencia"
-                                        value={direccionResidencia}
-                                        onChange={(e) => setDireccionResidencia(e?.target.value)}
-                                        disabled
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        required={true}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="dptoResidencia"
-                                        label="Departamento de Residencia"
-                                        disabled
-                                        options={catalog}
-                                        value={dptoResidencia}
-                                        onChange={(e) => setDptoResidencia(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="municipioResidencia"
-                                        label="Municipio de Residencia"
-                                        disabled
-                                        options={catalog}
-                                        value={municipioResidencia}
-                                        onChange={(e) => setMunicipioResidencia(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="municipioNacido"
-                                        label="Municipio de Nacimiento"
-                                        disabled
-                                        options={catalog}
-                                        value={municipioNacido}
-                                        onChange={(e) => setMunicipioNacido(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="dptoNacido"
-                                        label="Departamento de Nacimiento"
-                                        disabled
-                                        options={catalog}
-                                        value={dptoNacido}
-                                        onChange={(e) => setDptoNacido(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="EPS"
-                                        label="EPS"
-                                        disabled
-                                        options={catalog}
-                                        value={eps}
-                                        onChange={(e) => setEps(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <AnimateButton>
-                                    <SelectOnChange
-                                        name="AFP"
-                                        label="AFP"
-                                        disabled
-                                        options={catalog}
-                                        value={afp}
-                                        onChange={(e) => setAfp(e?.target.value)}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Accordion>
-                <Divider />
-
-                <Grid sx={{ pb: 2 }} />
-                <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN LABORAL</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="resumenCaso"
-                                    label="Resumen Caso"
-                                    defaultValue={lsOccupationalMedicine.resumenCaso}
-                                    options={lsResumenCaso}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <InputDatePick
-                                label="Fecha Retiro"
-                                value={fechaRetiro}
-                                onChange={(e) => setFechaRetiro(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <SelectOnChange
-                                name="segmentoAgrupado"
-                                label="Segmento Agrupado"
-                                onChange={handleChangeSegAgrupado}
-                                value={segmentoAgrupado}
-                                options={lsSegmentoAgrupado}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <SelectOnChange
-                                name="segmentoAfectado"
-                                label="Segmento Afectado"
-                                onChange={handleChangeSegAfectado}
-                                value={segmentoAfectado}
-                                options={lsSegmentoAfectado}
-                                disabled={lsSegmentoAfectado.length != 0 ? false : true}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <SelectOnChange
-                                name="subsegmento"
-                                label="Subsegmento"
-                                onChange={handleChangeSubsegmento}
-                                value={subsegmento}
-                                options={lsSubsegmento}
-                                disabled={lsSubsegmento.length != 0 ? false : true}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="codDx"
-                                    label="Diagnóstico"
-                                    defaultValue={lsOccupationalMedicine.codDx}
-                                    options={lsCie11}
-                                    disabled={lsCie11.length != 0 ? false : true}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.nroFurel}
-                                    fullWidth
-                                    name="nroFurel"
-                                    label="No. FUREL"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="regionInfoLaboral"
-                                    label="Región"
-                                    defaultValue={lsOccupationalMedicine.regionInfoLaboral}
-                                    options={lsRegion}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="lateralidad"
-                                    label="Lateralidad"
-                                    defaultValue={lsOccupationalMedicine.lateralidad}
-                                    options={lsLateralidad}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="entidadQueMotivaEnvio"
-                                    label="Entidad que motiva el envio"
-                                    defaultValue={lsOccupationalMedicine.entidadQueMotivaEnvio}
-                                    options={lsEntidadMotiEnvio}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="entidadDondeEnvia"
-                                    label="Entidad Donde Envía"
-                                    defaultValue={lsOccupationalMedicine.entidadDondeEnvia}
-                                    options={lsEntidadDondeEnvia}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <InputDatePick
-                                label="Fecha de Entrega"
-                                value={fechaEntrega}
-                                onChange={(e) => setFechaEntrega(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <InputDatePick
-                                label="Fecha de Envio"
-                                value={fechaEnvio}
-                                onChange={(e) => setFechaEnvio(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="investigado"
-                                    label="Investigado"
-                                    defaultValue={lsOccupationalMedicine.investigado}
-                                    options={lsInvestigado}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.observaciones}
-                                    fullWidth
-                                    multiline
-                                    rows={4}
-                                    name="observaciones"
-                                    label="Observaciones"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                    </Grid>
-                </SubCard>
-
-                <Grid sx={{ pb: 2 }} />
-                <SubCard darkTitle title={<Typography variant="h4">CALIFICACIÓN EPS</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <InputDatePick
-                                label="Fecha Calificación"
-                                value={fechaCalificacionEps}
-                                onChange={(e) => setFechaCalificacionEps(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="origenEps"
-                                    label="Orígenes"
-                                    defaultValue={lsOccupationalMedicine.origenEps}
-                                    options={lsOrigenEPS}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                    </Grid>
-                </SubCard>
-
-                <Grid sx={{ pb: 2 }} />
-                <SubCard darkTitle title={<Typography variant="h4">CALIFICACIÓN ARL</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.noSolicitudARL}
-                                    fullWidth
-                                    name="noSolicitudARL"
-                                    label="Nro. Solicitud"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Calificación Origen"
-                                value={fechaCalifiOrigenARL}
-                                onChange={(e) => setFechaCalifiOrigenARL(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="origenARL"
-                                    label="Origen"
-                                    defaultValue={lsOccupationalMedicine.origenARL}
-                                    options={lsOrigenARL}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Calificación PCL"
-                                value={fechaCalificacionPclARL}
-                                onChange={(e) => setFechaCalificacionPclARL(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.pclARL}
-                                    fullWidth
-                                    name="pclARL"
-                                    label="% PCL"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Estructura"
-                                value={fechaEstructuraARL}
-                                onChange={(e) => setFechaEstructuraARL(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha ReCalificación PCL"
-                                value={fechaRecalificacionPclARL}
-                                onChange={(e) => setFechaRecalificacionPclARL(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.pclRecalificadaARL}
-                                    fullWidth
-                                    name="pclRecalificadaARL"
-                                    label="% PCL Recalificada"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Estructura"
-                                value={fechaEstructuraRecalificadaARL}
-                                onChange={(e) => setFechaEstructuraRecalificadaARL(e)}
-                            />
-                        </Grid>
-                    </Grid>
-                </SubCard>
-
-                <Grid sx={{ pb: 2 }} />
-                <SubCard darkTitle title={<Typography variant="h4">JRC</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={3}>
-                            <InputDatePick
-                                label="Fecha Calificación Origen"
-                                value={fechaCalificaOrigenJRC}
-                                onChange={(e) => setFechaCalificaOrigenJRC(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="juntaCalifica"
-                                    label="Junta Califica"
-                                    defaultValue={lsOccupationalMedicine.juntaCalifica}
-                                    options={lsJuntaCalificadaJRC}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.noDictamenJRC}
-                                    fullWidth
-                                    name="noDictamenJRC"
-                                    label="Nro. Dictamen"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="origenJRC"
-                                    label="Origen"
-                                    defaultValue={lsOccupationalMedicine.origenJRC}
-                                    options={lsOrigenARL}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.controversia}
-                                    fullWidth
-                                    name="controversia"
-                                    label="Controversia"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.conclusion}
-                                    fullWidth
-                                    name="conclusion"
-                                    label="Conclusión"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <InputDatePick
-                                label="Fecha Calificación PCL"
-                                value={fechaCalificacionPclJRC}
-                                onChange={(e) => setFechaCalificacionPclJRC(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.noDictamenPclJRC}
-                                    fullWidth
-                                    name="noDictamenPclJRC"
-                                    label="Nro. Dictamen PCL"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.pclJRC}
-                                    fullWidth
-                                    name="pclJRC"
-                                    label="PCL"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <InputDatePick
-                                label="Fecha Estructura"
-                                value={fechaEstructuraPclJRC}
-                                onChange={(e) => setFechaEstructuraPclJRC(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.noActaRecursoJRC}
-                                    fullWidth
-                                    name="noActaRecursoJRC"
-                                    label="Nro. Acta Recurso"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <InputDatePick
-                                label="Fecha ReCalificación PCL"
-                                value={fechaRecalificacionPclJRC}
-                                onChange={(e) => setFechaRecalificacionPclJRC(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.noDictamenRecalificacionJRC}
-                                    fullWidth
-                                    name="noDictamenRecalificacionJRC"
-                                    label="No Dictamen Recalificación"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.juntaReCalificacionJRC}
-                                    fullWidth
-                                    name="juntaReCalificacionJRC"
-                                    label="Junta Recalificación"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.pclRecalificadaJRC}
-                                    fullWidth
-                                    name="pclRecalificadaJRC"
-                                    label="% PCL Recalificada"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <InputDatePick
-                                label="Fecha Recalificación Est."
-                                value={fechaRecalificacionEstJRC}
-                                onChange={(e) => setFechaRecalificacionEstJRC(e)}
-                            />
-                        </Grid>
-                    </Grid>
-                </SubCard>
-
-                <Grid sx={{ pb: 2 }} />
-                <SubCard darkTitle title={<Typography variant="h4">JNC</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Calificación Origen"
-                                value={fechaCalificaOrigenJNC}
-                                onChange={(e) => setFechaCalificaOrigenJNC(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.noDictamenJNC}
-                                    fullWidth
-                                    name="noDictamenJNC"
-                                    label="Nro. Dictamen"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="origenJNC"
-                                    label="Origen"
-                                    defaultValue={lsOccupationalMedicine.origenJNC}
-                                    options={lsOrigenARL}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Calificación Origen"
-                                value={fechaCalificacionPclJNC}
-                                onChange={(e) => setFechaCalificacionPclJNC(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.noDictamenPclJNC}
-                                    fullWidth
-                                    name="noDictamenPclJNC"
-                                    label="No. Dictamen"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.pclJNC}
-                                    fullWidth
-                                    name="pclJNC"
-                                    label="% PCL"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Estructura"
-                                value={fechaEstructuraJNC}
-                                onChange={(e) => setFechaEstructuraJNC(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Calificación Origen"
-                                value={fechaRecalificacionPclJNC}
-                                onChange={(e) => setFechaRecalificacionPclJNC(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.noDictamenRecalificacionJNC}
-                                    fullWidth
-                                    name="noDictamenRecalificacionJNC"
-                                    label="No. Dictamen"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.pclRecalificacionJNC}
-                                    fullWidth
-                                    name="pclRecalificacionJNC"
-                                    label="% PCL"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                    </Grid>
-                </SubCard>
-
-                <Grid sx={{ pb: 2 }} />
-                <SubCard darkTitle title={<Typography variant="h4">INSTANCIA FINAL</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="origenInstaFinal"
-                                    label="Origen"
-                                    defaultValue={lsOccupationalMedicine.origenInstaFinal}
-                                    options={lsOrigenARL}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Estructuración Origen"
-                                value={fechaEstructuracionOrigenInstaFinal}
-                                onChange={(e) => setFechaEstructuracionOrigenInstaFinal(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="instanciaOrigenInstaFinal"
-                                    label="Instancia Origen"
-                                    defaultValue={lsOccupationalMedicine.instanciaOrigenInstaFinal}
-                                    options={lsInstanciaOrigen}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.pclFinalInstaFinal}
-                                    fullWidth
-                                    name="pclFinalInstaFinal"
-                                    label="% PCL Final"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.instanciaFinal}
-                                    fullWidth
-                                    name="instanciaFinal"
-                                    label="Instancia Final"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Calificación PCL"
-                                value={fechaCalificacionPclInstFinal}
-                                onChange={(e) => setFechaCalificacionPclInstFinal(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Estructuracion PCL"
-                                value={fechaEstructuracionPclInstFinal}
-                                onChange={(e) => setFechaEstructuracionPclInstFinal(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="indemnizado"
-                                    label="Indemnizado"
-                                    defaultValue={lsOccupationalMedicine.indemnizado}
-                                    options={lsInvestigado}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Pago"
-                                value={fechaPagoInstaFinal}
-                                onChange={(e) => setFechaPagoInstaFinal(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="entregadoMin"
-                                    label="Entregado al MIN"
-                                    defaultValue={lsOccupationalMedicine.entregadoMin}
-                                    options={lsInvestigado}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="indemnizadoRecalificado"
-                                    label="Indemnizado Recalificado"
-                                    defaultValue={lsOccupationalMedicine.indemnizadoRecalificado}
-                                    options={lsInvestigado}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <InputDatePick
-                                label="Fecha Pago"
-                                value={fechaPagoRecalificadoInstaFinal}
-                                onChange={(e) => setFechaPagoRecalificadoInstaFinal(e)}
-                            />
-                        </Grid>
-                    </Grid>
-                </SubCard>
-
-                <Grid sx={{ pb: 2 }} />
-                <SubCard darkTitle title={<Typography variant="h4">ESTADO ARL</Typography>}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.estadoRHT}
-                                    fullWidth
-                                    name="estadoRHT"
-                                    label="Estado RHT"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                    rows={4}
-                                    multiline
-                                />
-                            </FormProvider>
+                            <ViewEmployee
+                                title="REGISTRAR MEDICINA LABORAL"
+                                disabled={true}
+                                key={lsEmployee.documento}
+                                documento={documento}
+                                onChange={(e) => setDocumento(e.target.value)}
+                                lsEmployee={lsEmployee}
+                                handleDocumento={handleLoadingDocument}
+                            />
                         </Grid>
+
                         <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.reintegro}
-                                    fullWidth
-                                    name="reintegro"
-                                    label="Reintegro"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                    rows={4}
-                                    multiline
-                                />
-                            </FormProvider>
+                            <SubCard title={<Typography variant="h4">INFORMACIÓN LABORAL</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.resumenCaso}
+                                                name="resumenCaso"
+                                                label="Resumen Caso"
+                                                options={lsResumenCaso}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Retiro"
+                                                name="fechaRetiro"
+                                                defaultValue={lsOccupationalMedicine.fechaRetiro}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <SelectOnChange
+                                            name="segmentoAgrupado"
+                                            label="Segmento Agrupado"
+                                            onChange={handleChangeSegAgrupado}
+                                            value={segmentoAgrupado}
+                                            options={lsSegmentoAgrupado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <SelectOnChange
+                                            name="segmentoAfectado"
+                                            label="Segmento Afectado"
+                                            onChange={handleChangeSegAfectado}
+                                            value={segmentoAfectado}
+                                            options={lsSegmentoAfectado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.subsegmento}
+                                                name="subsegmento"
+                                                label="Subsegmento"
+                                                options={lsSubsegmento}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <InputOnChange
+                                            label="Código de Diagnóstico"
+                                            onKeyDown={handleDiagnostico}
+                                            onChange={(e) => setTextDiagnostico(e?.target.value)}
+                                            value={textDiagnistico}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.codDx}
+                                                name="codDx"
+                                                label="Diagnóstico"
+                                                options={lsDiagnistico}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.nroFurel}
+                                                fullWidth
+                                                name="nroFurel"
+                                                label="No. FUREL"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.regionInfoLaboral}
+                                                name="regionInfoLaboral"
+                                                label="Región"
+                                                options={lsRegion}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.lateralidad}
+                                                name="lateralidad"
+                                                label="Lateralidad"
+                                                options={lsLateralidad}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.entidadQueMotivaEnvio}
+                                                name="entidadQueMotivaEnvio"
+                                                label="Entidad que motiva el envio"
+                                                options={lsEntidadMotiEnvio}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.entidadDondeEnvia}
+                                                name="entidadDondeEnvia"
+                                                label="Entidad Donde Envía"
+                                                options={lsEntidadDondeEnvia}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha de Entrega"
+                                                name="fechaEntrega"
+                                                defaultValue={lsOccupationalMedicine.fechaEntrega}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha de Envío"
+                                                name="fechaEnvio"
+                                                defaultValue={lsOccupationalMedicine.fechaEnvio}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.investigado}
+                                                name="investigado"
+                                                label="Investigado"
+                                                options={lsInvestigado}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.observaciones}
+                                                fullWidth
+                                                multiline
+                                                rows={4}
+                                                name="observaciones"
+                                                label="Observaciones"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
                         </Grid>
+
                         <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.reubicado}
-                                    fullWidth
-                                    name="reubicado"
-                                    label="Reubicado"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                    rows={4}
-                                    multiline
-                                />
-                            </FormProvider>
+                            <SubCard darkTitle title={<Typography variant="h4">CALIFICACIÓN EPS</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha de Calificación"
+                                                name="fechaCalificacionEps"
+                                                defaultValue={lsOccupationalMedicine.fechaCalificacionEps}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.origenEps}
+                                                name="origenEps"
+                                                label="Orígenes"
+                                                options={lsOrigenEPS}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
                         </Grid>
+
                         <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.restringido}
-                                    fullWidth
-                                    name="restringido"
-                                    label="Restringido"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                    rows={4}
-                                    multiline
-                                />
-                            </FormProvider>
+                            <SubCard darkTitle title={<Typography variant="h4">CALIFICACIÓN ARL</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.noSolicitudARL}
+                                                fullWidth
+                                                name="noSolicitudARL"
+                                                label="Nro. Solicitud"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                defaultValue={lsOccupationalMedicine.fechaCalifiOrigenARL}
+                                                label="Fecha Calificación Origen"
+                                                name="fechaCalifiOrigenARL"
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.origenARL}
+                                                name="origenARL"
+                                                label="Origen"
+                                                options={lsOrigenARL}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Calificación PCL"
+                                                name="fechaCalificacionPclARL"
+                                                defaultValue={lsOccupationalMedicine.fechaCalificacionPclARL}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.pclARL}
+                                                type="number"
+                                                fullWidth
+                                                name="pclARL"
+                                                label="% PCL"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Estructura"
+                                                name="fechaEstructuraARL"
+                                                defaultValue={lsOccupationalMedicine.fechaEstructuraARL}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha ReCalificación PCL"
+                                                name="fechaRecalificacionPclARL"
+                                                defaultValue={lsOccupationalMedicine.fechaRecalificacionPclARL}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                type="number"
+                                                fullWidth
+                                                name="pclRecalificadaARL"
+                                                label="% PCL Recalificada"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                defaultValue={lsOccupationalMedicine.pclRecalificadaARL}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Estructura"
+                                                name="fechaEstructuraRecalificadaARL"
+                                                defaultValue={lsOccupationalMedicine.fechaEstructuraRecalificadaARL}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
                         </Grid>
+
                         <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.jornadaLaboral}
-                                    fullWidth
-                                    name="jornadaLaboral"
-                                    label="Jornada Laboral"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                    rows={4}
-                                    multiline
-                                />
-                            </FormProvider>
+                            <SubCard darkTitle title={<Typography variant="h4">JRC</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Calificación Origen"
+                                                name="fechaCalificaOrigenJRC"
+                                                defaultValue={lsOccupationalMedicine.fechaCalificaOrigenJRC}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.juntaCalifica}
+                                                name="juntaCalifica"
+                                                label="Junta Califica"
+                                                options={lsJuntaCalificadaJRC}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.noDictamenJRC}
+                                                fullWidth
+                                                name="noDictamenJRC"
+                                                label="Nro. Dictamen"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.origenJRC}
+                                                name="origenJRC"
+                                                label="Origen"
+                                                options={lsOrigenARL}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.controversia}
+                                                fullWidth
+                                                name="controversia"
+                                                label="Controversia"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.conclusion}
+                                                fullWidth
+                                                name="conclusion"
+                                                label="Conclusión"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Calificación PCL"
+                                                name="fechaCalificacionPclJRC"
+                                                defaultValue={lsOccupationalMedicine.fechaCalificacionPclJRC}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.noDictamenPclJRC}
+                                                fullWidth
+                                                name="noDictamenPclJRC"
+                                                label="Nro. Dictamen PCL"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.pclJRC}
+                                                type="number"
+                                                fullWidth
+                                                name="pclJRC"
+                                                label="PCL"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Estructura"
+                                                name="fechaEstructuraPclJRC"
+                                                defaultValue={lsOccupationalMedicine.fechaEstructuraPclJRC}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.noActaRecursoJRC}
+                                                fullWidth
+                                                name="noActaRecursoJRC"
+                                                label="Nro. Acta Recurso"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha ReCalificación PCL"
+                                                name="fechaRecalificacionPclJRC"
+                                                defaultValue={lsOccupationalMedicine.fechaRecalificacionPclJRC}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.noDictamenRecalificacionJRC}
+                                                type="number"
+                                                fullWidth
+                                                name="noDictamenRecalificacionJRC"
+                                                label="No Dictamen Recalificación"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.juntaReCalificacionJRC}
+                                                type="number"
+                                                fullWidth
+                                                name="juntaReCalificacionJRC"
+                                                label="Junta Recalificación"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.pclRecalificadaJRC}
+                                                type="number"
+                                                fullWidth
+                                                name="pclRecalificadaJRC"
+                                                label="% PCL Recalificada"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Recalificación Est."
+                                                name="fechaRecalificacionEstJRC"
+                                                defaultValue={lsOccupationalMedicine.fechaRecalificacionEstJRC}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
                         </Grid>
+
                         <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsOccupationalMedicine.indemnizacion}
-                                    fullWidth
-                                    name="indemnizacion"
-                                    label="Indemnización"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                    rows={4}
-                                    multiline
-                                />
-                            </FormProvider>
+                            <SubCard darkTitle title={<Typography variant="h4">JNC</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Calificación Origen"
+                                                name="fechaCalificaOrigenJNC"
+                                                defaultValue={lsOccupationalMedicine.fechaCalificaOrigenJNC}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.noDictamenJNC}
+                                                fullWidth
+                                                name="noDictamenJNC"
+                                                label="Nro. Dictamen"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.origenJNC}
+                                                name="origenJNC"
+                                                label="Origen"
+                                                options={lsOrigenARL}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Calificación Origen"
+                                                name="fechaCalificacionPclJNC"
+                                                defaultValue={lsOccupationalMedicine.fechaCalificacionPclJNC}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.noDictamenPclJNC}
+                                                fullWidth
+                                                name="noDictamenPclJNC"
+                                                label="No. Dictamen"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.pclJNC}
+                                                type="number"
+                                                fullWidth
+                                                name="pclJNC"
+                                                label="% PCL"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Estructura"
+                                                name="fechaEstructuraJNC"
+                                                defaultValue={lsOccupationalMedicine.fechaEstructuraJNC}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Calificación Origen"
+                                                name="fechaRecalificacionPclJNC"
+                                                defaultValue={lsOccupationalMedicine.fechaRecalificacionPclJNC}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.noDictamenRecalificacionJNC}
+                                                fullWidth
+                                                name="noDictamenRecalificacionJNC"
+                                                label="No. Dictamen"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.pclRecalificacionJNC}
+                                                type="number"
+                                                fullWidth
+                                                name="pclRecalificacionJNC"
+                                                label="% PCL"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <SubCard darkTitle title={<Typography variant="h4">INSTANCIA FINAL</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.origenInstaFinal}
+                                                name="origenInstaFinal"
+                                                label="Origen"
+                                                options={lsOrigenARL}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Estructuración Origen"
+                                                name="fechaEstructuracionOrigenInstaFinal"
+                                                defaultValue={lsOccupationalMedicine.fechaEstructuracionOrigenInstaFinal}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.instanciaOrigenInstaFinal}
+                                                name="instanciaOrigenInstaFinal"
+                                                label="Instancia Origen"
+                                                options={lsInstanciaOrigen}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.pclFinalInstaFinal}
+                                                type="number"
+                                                fullWidth
+                                                name="pclFinalInstaFinal"
+                                                label="% PCL Final"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.instanciaFinal}
+                                                type="number"
+                                                fullWidth
+                                                name="instanciaFinal"
+                                                label="Instancia Final"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Calificación PCL"
+                                                name="fechaCalificacionPclInstFinal"
+                                                defaultValue={lsOccupationalMedicine.fechaCalificacionPclInstFinal}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Estructuracion PCL"
+                                                name="fechaEstructuracionPclInstFinal"
+                                                defaultValue={lsOccupationalMedicine.fechaEstructuracionPclInstFinal}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.indemnizado}
+                                                name="indemnizado"
+                                                label="Indemnizado"
+                                                options={lsInvestigado}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Pago"
+                                                name="fechaPagoInstaFinal"
+                                                defaultValue={lsOccupationalMedicine.fechaPagoInstaFinal}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.entregadoMin}
+                                                name="entregadoMin"
+                                                label="Entregado al MIN"
+                                                options={lsInvestigado}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.indemnizadoRecalificado}
+                                                name="indemnizadoRecalificado"
+                                                label="Indemnizado Recalificado"
+                                                options={lsInvestigado}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Pago"
+                                                name="fechaPagoRecalificadoInstaFinal"
+                                                defaultValue={lsOccupationalMedicine.fechaPagoRecalificadoInstaFinal}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <SubCard darkTitle title={<Typography variant="h4">ESTADO ARL</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.estadoRHT}
+                                                fullWidth
+                                                name="estadoRHT"
+                                                label="Estado RHT"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={4}
+                                                multiline
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.reintegro}
+                                                fullWidth
+                                                name="reintegro"
+                                                label="Reintegro"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={4}
+                                                multiline
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.reubicado}
+                                                fullWidth
+                                                name="reubicado"
+                                                label="Reubicado"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={4}
+                                                multiline
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.restringido}
+                                                fullWidth
+                                                name="restringido"
+                                                label="Restringido"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={4}
+                                                multiline
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.jornadaLaboral}
+                                                fullWidth
+                                                name="jornadaLaboral"
+                                                label="Jornada Laboral"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={4}
+                                                multiline
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsOccupationalMedicine.indemnizacion}
+                                                fullWidth
+                                                name="indemnizacion"
+                                                label="Indemnización"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={4}
+                                                multiline
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <SubCard title={<Typography variant="h4">RESULTADO INVESTIGACIÓN LABORAL</Typography>}>
+                                <Grid container spacing={12}>
+                                    <Grid textAlign="center" item xs={12}>
+                                        <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                            SUBIR RESULTADO EN PDF
+                                            <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid item xs={12} sx={{ pt: 4 }}>
+                                    {filePdf && (
+                                        <object
+                                            type="application/pdf"
+                                            data={filePdf}
+                                            width="1180"
+                                            height="500"
+                                        />
+                                    )}
+                                </Grid>
+
+                                <Grid item sx={{ pt: 4 }} xs={12}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                                    {TitleButton.Guardar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" fullWidth onClick={() => navigate("/occupationalmedicine/list")}>
+                                                    {TitleButton.Cancelar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
                         </Grid>
                     </Grid>
-                </SubCard>
-
-                <Grid sx={{ pb: 2 }} />
-                <SubCard darkTitle title={<><Typography variant="h4">RESULTADO INVESTIGACIÓN LABORAL</Typography></>}>
-                    <Grid xs={5} sx={{ pl: 4, pt: 4 }} container spacing={2}>
-                        <input type="file" onChange={(e) => setFileUpload(e.target.files[0])} />
-
-                    </Grid>
-                </SubCard>
-
-                <Grid item xs={12} sx={{ pb: 3, pt: 3 }}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={6}>
-                            <AnimateButton>
-                                <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/occupationalmedicine/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </> : <Cargando />}
-        </MainCard >
+                </Fragment> : <Cargando />
+            }
+        </Fragment>
     );
 };
 
-export default UpdateOccupationalMedicine;
+export default OccupationalMedicine;

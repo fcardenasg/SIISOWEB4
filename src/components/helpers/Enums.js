@@ -153,6 +153,8 @@ export const CodCatalogo = {
     AUSLAB_REDEXP: 8,
 
     LISTA_CHEKEO_REINTEGRO: 159,
+
+    TODAS_ASESORIAS: 137,
 }
 
 export const DefaultData = {

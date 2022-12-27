@@ -86,6 +86,8 @@ export const Url = {
 
     Asesorias: 'api/Asesorias',
     AsesoriasId: 'api/Asesorias/id',
+    AsesoriasGetAllByTipoAtencion: 'api/Asesorias/GetAllByTipoAtencion',
+    AsesoriasGetAllByTipoAtencion2: 'api/Asesorias/GetAllByTipoAtencion2',
 
     ApuntesPersonales: 'api/ApuntesPersonales',
     ApuntesPersonalesId: 'api/ApuntesPersonales/id',

@@ -28,10 +28,10 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 import { ViewFormat } from 'components/helpers/Format';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { DefaultData, Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllAdvice, DeleteAdvice } from 'api/clients/AdviceClient';
+import { GetAllAdvice, DeleteAdvice, GetAllByTipoAtencion } from 'api/clients/AdviceClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -224,7 +224,7 @@ const ListMedicalAdvice = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllAdvice(0, 0);
+            const lsServer = await GetAllByTipoAtencion(0, 0, DefaultData.ASESORIA_MEDICA);
             setMedicalAdvice(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
@@ -332,7 +332,7 @@ const ListMedicalAdvice = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medicalAdvice.length) : 0;
 
     return (
-        <MainCard title="Lista de Asesoría Médica" content={false}>
+        <MainCard title={<Typography variant="h4">LISTA DE ASESORÍAS MÉDICAS ESPECIALIZADAS</Typography>} content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>

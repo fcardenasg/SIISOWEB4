@@ -28,15 +28,14 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 import { FormatDate } from 'components/helpers/Format';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { DefaultData, Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 
-import { GetAllAdvice, DeleteAdvice } from 'api/clients/AdviceClient';
+import { DeleteAdvice, GetAllByTipoAtencion2 } from 'api/clients/AdviceClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
@@ -75,7 +74,7 @@ const headCells = [
         id: 'id',
         numeric: false,
         label: 'ID',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'documento',
@@ -84,29 +83,23 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'fecha',
+        id: 'nameTiAtencion',
         numeric: false,
-        label: 'Fecha',
+        label: 'Tipo Atención',
         align: 'left'
     },
     {
-        id: 'usuario',
-        numeric: false,
-        label: 'Usuario',
-        align: 'left'
-    },
-    {
-        id: 'idTipoAtencion',
+        id: 'usuarioRegistro',
         numeric: false,
         label: 'Tipo Atencion',
         align: 'left'
     },
     {
-        id: 'idEstadoCaso',
+        id: 'fecha',
         numeric: false,
-        label: 'Estado Caso',
+        label: 'Fecha',
         align: 'left'
-    }
+    },
 ];
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
@@ -230,9 +223,9 @@ const ListOtherAdvice = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function GetAll() {
+    async function getAll() {
         try {
-            const lsServer = await GetAllAdvice(0, 0);
+            const lsServer = await GetAllByTipoAtencion2(0, 0, DefaultData.ASESORIA_MEDICA, DefaultData.AsesoriaPsicologica);
             setMedicalAdvice(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
@@ -241,7 +234,7 @@ const ListOtherAdvice = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -252,7 +245,7 @@ const ListOtherAdvice = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'fecha', 'usuario', 'idTipoAtencion', 'idEstadoCaso'];
+                const properties = ['id', 'documento', 'fecha', 'usuarioRegistro', 'nameTiAtencion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -331,7 +324,7 @@ const ListOtherAdvice = () => {
                 })
             }
             setSelected([]);
-            GetAll();
+            getAll();
         } catch (error) {
             console.log(error);
         }
@@ -341,7 +334,7 @@ const ListOtherAdvice = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medicalAdvice.length) : 0;
 
     return (
-        <MainCard title="Lista de Otras Asesorías" content={false}>
+        <MainCard title={<Typography variant="h4">LISTA DE OTRAS ASESORÍAS</Typography>} content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -359,7 +352,7 @@ const ListOtherAdvice = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <ExcelFile element={
@@ -394,22 +387,14 @@ const ListOtherAdvice = () => {
                                 </ExcelFile>
                             </Grid>
 
-                            <Grid item xs={2}>
-                                <Tooltip title="Impresión">
-                                    <IconButton size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/otheradvice/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/consultancies/menu")}>
                                     {TitleButton.Cancelar}
@@ -468,7 +453,6 @@ const ListOtherAdvice = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
                                         >
                                             {row.id}
                                         </TableCell>
@@ -499,52 +483,37 @@ const ListOtherAdvice = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
+                                                {row.nameTiAtencion}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.usuarioRegistro}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
                                                 {FormatDate(row.fecha)}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.usuario}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.idTipoAtencion}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.idEstadoCaso}
                                             </Typography>
                                         </TableCell>
 

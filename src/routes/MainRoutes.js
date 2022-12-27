@@ -47,7 +47,6 @@ const UpdateMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/Up
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
 const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/UpdatePsychologicalCounseling')));
-const ReportPsychological = Loadable(lazy(() => import('modules/PsychologicalCounseling/ReportPsychological')));
 
 const ListNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/ListNoteInfirmary')));
 const NoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/NoteInfirmary')));
@@ -430,10 +429,6 @@ const MainRoutes = {
         {
             path: '/psychologicalcounseling/update/:id',
             element: <UpdatePsychologicalCounseling />
-        },
-        {
-            path: '/psychologicalcounseling/report/:id',
-            element: <ReportPsychological />
         },
         /* Render de CIE11 */
         {

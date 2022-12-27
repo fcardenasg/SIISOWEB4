@@ -4,7 +4,8 @@ import {
   IconGenderBigender,
   IconSchool,
   IconReportMedical,
-  IconTool
+  IconTool,
+  IconStethoscope
 } from '@tabler/icons';
 
 import ContactMailIcon from '@mui/icons-material/ContactMail';
@@ -113,7 +114,7 @@ export const itemsOccupationalHealth = [
     title: "Accidente de Trabajo",
     subtitle: "",
     icon: IconClipboardHeart,
-    selected: false,
+    selected: true,
     url: '/accident-rate/list',
     color: ColorDrummondltd.RedDrummond
   },
@@ -121,7 +122,7 @@ export const itemsOccupationalHealth = [
     title: "Ausentismo Laboral",
     subtitle: "",
     icon: IconClipboardHeart,
-    selected: false,
+    selected: true,
     url: '/work-absenteeism/list',
     color: ColorDrummondltd.RedDrummond
   },
@@ -217,6 +218,89 @@ export const itemsParameterization = [
     icon: IconTool,
     selected: true,
     url: '/medicines/list',
+    color: ColorDrummondltd.RedDrummond
+  }
+];
+
+export const itemsParaclinics = [
+  {
+    title: "Ordenes",
+    subtitle: "",
+    icon: IconStethoscope,
+    selected: true,
+    url: '/orders/view',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Audiometría",
+    subtitle: "",
+    icon: IconStethoscope,
+    selected: true,
+    url: '/paraclinics/audiometry/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Electrocardiograma",
+    subtitle: "",
+    icon: IconStethoscope,
+    selected: true,
+    url: '/paraclinics/electro/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Espirometría",
+    subtitle: "",
+    icon: IconStethoscope,
+    selected: true,
+    url: '/paraclinics/spirometry/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Laboratorios",
+    subtitle: "",
+    icon: IconStethoscope,
+    selected: true,
+    url: '/paraclinics/laboratory/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "RX de Torax",
+    subtitle: "",
+    icon: IconStethoscope,
+    selected: true,
+    url: '/paraclinics/rxtorax/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Visiometría",
+    subtitle: "",
+    icon: IconStethoscope,
+    selected: true,
+    url: '/paraclinics/visiometrics/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "RMN",
+    subtitle: "",
+    icon: IconStethoscope,
+    selected: true,
+    url: '/paraclinics/rnm/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "PSA",
+    subtitle: "",
+    icon: IconStethoscope,
+    selected: true,
+    url: '/paraclinics/psa/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Citología",
+    subtitle: "",
+    icon: IconStethoscope,
+    selected: true,
+    url: '/paraclinics/cytology/list',
     color: ColorDrummondltd.RedDrummond
   }
 ];
