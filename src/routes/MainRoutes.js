@@ -44,6 +44,13 @@ const ListMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/List
 const MedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/MedicalAdvice')));
 const UpdateMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/UpdateMedicalAdvice')));
 
+
+const ListOrderEPP = Loadable(lazy(() => import('modules/OrderEPP/ListOrderEPP')));
+const OrderEPP = Loadable(lazy(() => import('modules/OrderEPP/OrderEPP')));
+const UpdateOrderEPP = Loadable(lazy(() => import('modules/OrderEPP/UpdateOrderEPP')));
+
+
+
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
 const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/UpdatePsychologicalCounseling')));
@@ -363,6 +370,19 @@ const MainRoutes = {
         {
             path: '/attention/update/:id',
             element: <UpdateAttention />
+        },
+        /* Render de Ordenes EPP */
+        {
+            path: '/orderepp/list',
+            element: <ListOrderEPP />
+        },
+        {
+            path: '/orderepp/add',
+            element: <OrderEPP />
+        },
+        {
+            path: '/orderepp/update/:id',
+            element: <UpdateOrderEPP />
         },
         /* Render de Pruebas de Alcohol y Droga */
         {

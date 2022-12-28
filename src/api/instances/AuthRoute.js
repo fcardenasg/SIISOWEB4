@@ -89,6 +89,11 @@ export const Url = {
     AsesoriasGetAllByTipoAtencion: 'api/Asesorias/GetAllByTipoAtencion',
     AsesoriasGetAllByTipoAtencion2: 'api/Asesorias/GetAllByTipoAtencion2',
 
+
+    OrdenesEPP: 'api/OrdenesEPP',
+    OrdenesEPPId: 'api/OrdenesEPP/id',
+  
+
     ApuntesPersonales: 'api/ApuntesPersonales',
     ApuntesPersonalesId: 'api/ApuntesPersonales/id',
 
