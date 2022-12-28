@@ -99,6 +99,7 @@ const UpdateMedicalAdvice = () => {
     const [documento, setDocumento] = useState('');
 
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
+    const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
@@ -248,6 +249,11 @@ const UpdateMedicalAdvice = () => {
         }
     };
 
+    setTimeout(() => {
+        if (lsMedicalAdvice.length !== 0)
+            setTimeWait(true);
+    }, 1500);
+
     return (
         <Fragment>
             <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
@@ -352,7 +358,7 @@ const UpdateMedicalAdvice = () => {
             </DialogFormula>
 
             <Fragment>
-                {lsMedicalAdvice.length !== 0 ?
+                {timeWait ?
                     <UpdateAttMedicalAdvice setUserEdit={setUserEdit} userEdit={userEdit}>
                         <Grid item xs={12}>
                             <Grid container spacing={2}>

@@ -32,12 +32,12 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdAdvice, InsertAdvice } from 'api/clients/AdviceClient';
+import { GetByIdAdvice, UpdateAdvices } from 'api/clients/AdviceClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { CodCatalogo, Message, TitleButton, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
+import { PostMedicalAdvice, PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
@@ -48,6 +48,7 @@ import { GetByMail } from 'api/clients/UserClient';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
+import Cargando from 'components/loading/Cargando';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -94,6 +95,7 @@ const UpdateOtherAdvice = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
+    const [timeWait, setTimeWait] = useState(false);
 
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -116,7 +118,6 @@ const UpdateOtherAdvice = () => {
     const [lsEmployee, setLsEmployee] = useState([]);
     const [lsOtherAdvice, setLsOtherAdvice] = useState([]);
 
-    const [resultData, setResultData] = useState([]);
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [dataPDF, setDataPDF] = useState(null);
 
@@ -178,7 +179,7 @@ const UpdateOtherAdvice = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAdvice(resultData.id);
+            const lsDataReport = await GetByIdAdvice(id);
             const lsDataUser = await GetByMail(user.email);
 
             const dataPDFTwo = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data);
@@ -188,18 +189,17 @@ const UpdateOtherAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), 0, datos.idTipoAtencion, lsEmployee.sede,
+            const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), 0, datos.idTipoAtencion, lsEmployee.sede,
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.observaciones, datos.recomendaciones, '', DefaultValue.SINREGISTRO_GLOBAL,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                lsOtherAdvice.usuarioRegistro, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
-                    const result = await InsertAdvice(DataToUpdate);
+                    const result = await UpdateAdvices(DataToUpdate);
                     if (result.status === 200) {
                         setOpenSuccess(true);
-                        setResultData(result.data);
                     }
                 } else {
                     setOpenError(true);
@@ -211,6 +211,11 @@ const UpdateOtherAdvice = () => {
             setErrorMessage(Message.RegistroNoGuardado);
         }
     };
+
+    setTimeout(() => {
+        if (lsOtherAdvice.length !== 0)
+            setTimeWait(true);
+    }, 1500);
 
     return (
         <Fragment>
@@ -313,177 +318,180 @@ const UpdateOtherAdvice = () => {
                 )}
             </DialogFormula>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <ViewEmployee
-                        title="ACTUALIZAR OTRAS ASESORÍAS"
-                        disabled={true}
-                        key={lsEmployee.documento}
-                        documento={documento}
-                        onChange={(e) => setDocumento(e.target.value)}
-                        lsEmployee={lsEmployee}
-                        handleDocumento={handleLoadingDocument}
-                    />
-                </Grid>
+            {timeWait ?
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <ViewEmployee
+                            title="ACTUALIZAR OTRAS ASESORÍAS"
+                            disabled={true}
+                            key={lsEmployee.documento}
+                            documento={documento}
+                            onChange={(e) => setDocumento(e.target.value)}
+                            lsEmployee={lsEmployee}
+                            handleDocumento={handleLoadingDocument}
+                        />
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha"
-                                        name="fecha"
-                                        defaultValue={lsOtherAdvice.fecha}
-                                    />
-                                </FormProvider>
-                            </Grid>
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputDatePicker
+                                            label="Fecha"
+                                            name="fecha"
+                                            defaultValue={lsOtherAdvice.fecha}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        defaultValue={lsOtherAdvice.idTipoAtencion}
-                                        name="idTipoAtencion"
-                                        label="Tipo Atención"
-                                        options={lsTipoAtencion}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
+                                <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            defaultValue={lsOtherAdvice.idTipoAtencion}
+                                            name="idTipoAtencion"
+                                            label="Tipo Atención"
+                                            options={lsTipoAtencion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        defaultValue={lsOtherAdvice.idMotivo}
-                                        name="idMotivo"
-                                        label="Motivo"
-                                        options={lsMotivo}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
+                                <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            defaultValue={lsOtherAdvice.idMotivo}
+                                            name="idMotivo"
+                                            label="Motivo"
+                                            options={lsMotivo}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        defaultValue={lsOtherAdvice.idTipoAsesoria}
-                                        name="idTipoAsesoria"
-                                        label="Tipo de Asesoría"
-                                        options={tipoAsesoria}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
+                                <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            defaultValue={lsOtherAdvice.idTipoAsesoria}
+                                            name="idTipoAsesoria"
+                                            label="Tipo de Asesoría"
+                                            options={tipoAsesoria}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                            <Grid item xs={12}>
-                                <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsOtherAdvice.observaciones}
-                                                fullWidth
-                                                name="observaciones"
-                                                label="Descripción"
-                                                size={matchesXS ? 'small' : 'medium'}
+                                <Grid item xs={12}>
+                                    <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
+                                        <Grid item xs={12}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    multiline
+                                                    rows={4}
+                                                    defaultValue={lsOtherAdvice.motivo}
+                                                    fullWidth
+                                                    name="observaciones"
+                                                    label="Descripción"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                            <DetailedIcon
+                                                title={DetailIcons[0].title}
+                                                onClick={() => setOpenTemplate(true)}
+                                                icons={DetailIcons[0].icons}
                                             />
-                                        </FormProvider>
-                                    </Grid>
 
-                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                        <DetailedIcon
-                                            title={DetailIcons[0].title}
-                                            onClick={() => setOpenTemplate(true)}
-                                            icons={DetailIcons[0].icons}
-                                        />
-
-                                        <DetailedIcon
-                                            title={DetailIcons[1].title}
-                                            onClick={() => setOpenApuntesPersonales(true)}
-                                            icons={DetailIcons[1].icons}
-                                        />
-
-                                        <DetailedIcon
-                                            title={DetailIcons[2].title}
-                                            onClick={() => setOpen(true)}
-                                            icons={DetailIcons[2].icons}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sx={{ pt: 2 }}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsOtherAdvice.recomendaciones}
-                                                fullWidth
-                                                name="recomendaciones"
-                                                label="Recomendaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
+                                            <DetailedIcon
+                                                title={DetailIcons[1].title}
+                                                onClick={() => setOpenApuntesPersonales(true)}
+                                                icons={DetailIcons[1].icons}
                                             />
-                                        </FormProvider>
-                                    </Grid>
 
-                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                        <DetailedIcon
-                                            title={DetailIcons[0].title}
-                                            onClick={() => setOpenTemplate(true)}
-                                            icons={DetailIcons[0].icons}
-                                        />
+                                            <DetailedIcon
+                                                title={DetailIcons[2].title}
+                                                onClick={() => setOpen(true)}
+                                                icons={DetailIcons[2].icons}
+                                            />
+                                        </Grid>
 
-                                        <DetailedIcon
-                                            title={DetailIcons[1].title}
-                                            onClick={() => setOpenApuntesPersonales(true)}
-                                            icons={DetailIcons[1].icons}
-                                        />
+                                        <Grid item xs={12} sx={{ pt: 2 }}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    multiline
+                                                    rows={4}
+                                                    defaultValue={lsOtherAdvice.recomendaciones}
+                                                    fullWidth
+                                                    name="recomendaciones"
+                                                    label="Recomendaciones"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
 
-                                        <DetailedIcon
-                                            title={DetailIcons[2].title}
-                                            onClick={() => setOpen(true)}
-                                            icons={DetailIcons[2].icons}
-                                        />
-                                    </Grid>
-                                </SubCard>
-                            </Grid>
-                        </Grid>
+                                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                            <DetailedIcon
+                                                title={DetailIcons[0].title}
+                                                onClick={() => setOpenTemplate(true)}
+                                                icons={DetailIcons[0].icons}
+                                            />
 
-                        <Grid container spacing={2} sx={{ pt: 4 }}>
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                        {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
+                                            <DetailedIcon
+                                                title={DetailIcons[1].title}
+                                                onClick={() => setOpenApuntesPersonales(true)}
+                                                icons={DetailIcons[1].icons}
+                                            />
 
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
-                                        {TitleButton.Imprimir}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
-                                        {TitleButton.OrdenesMedicas}
-                                    </Button>
-                                </AnimateButton>
+                                            <DetailedIcon
+                                                title={DetailIcons[2].title}
+                                                onClick={() => setOpen(true)}
+                                                icons={DetailIcons[2].icons}
+                                            />
+                                        </Grid>
+                                    </SubCard>
+                                </Grid>
                             </Grid>
 
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/otheradvice/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
+                            <Grid container spacing={2} sx={{ pt: 4 }}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
+                                            {TitleButton.OrdenesMedicas}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/otheradvice/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
-            </Grid>
+                        </SubCard>
+                    </Grid>
+                </Grid> : <Cargando />
+            }
+
         </Fragment>
     );
 };

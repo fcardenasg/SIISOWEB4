@@ -55,6 +55,7 @@ const UpdatePsychologicalCounseling = () => {
     const [openReport, setOpenReport] = useState(false);
 
     const [openUpdate, setOpenUpdate] = useState(false);
+    const [timeWait, setTimeWait] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
     const [open, setOpen] = useState(false);
@@ -167,6 +168,11 @@ const UpdatePsychologicalCounseling = () => {
         }
     };
 
+    setTimeout(() => {
+        if (lsPsychologicalCounseling.length !== 0)
+            setTimeWait(true);
+    }, 1500);
+
     return (
         <Fragment>
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
@@ -206,7 +212,7 @@ const UpdatePsychologicalCounseling = () => {
                 <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
-            {lsPsychologicalCounseling.length !== 0 ?
+            {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
