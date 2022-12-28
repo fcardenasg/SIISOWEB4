@@ -32,12 +32,12 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdAdvice, UpdateAdvices } from 'api/clients/AdviceClient';
+import { GetByIdOrderEPP, UpdateOrderEPPs } from 'api/clients/OrderEPPClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
+import { PutOrderEPP } from 'formatdata/OrderEPPForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import SubCard from 'ui-component/cards/SubCard';
@@ -91,7 +91,7 @@ const dataMedicalOrders = [
 ]
 
 const UpdateOrderEPP = () => {
-    const { id } = useParams();
+    const { idOrdenesEpp } = useParams();
     const { user } = useAuth();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -112,7 +112,7 @@ const UpdateOrderEPP = () => {
     const [textMotivo, setTextMotivo] = useState('');
     const [lsSubmotivo, setLsSubmotivo] = useState([]);
     const [lsCodigoMotivo, setLsCodigoMotivo] = useState([]);
-
+    const [lsProveedor, setLsProveedor] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -140,7 +140,7 @@ const UpdateOrderEPP = () => {
             setLsMotivo(resultMotivo);
             setLsCodigoMotivo(lsServerMotivo.data.entities);
 
-            const lsServerAtencion = await GetByIdAdvice(id);
+            const lsServerAtencion = await GetByIdOrderEPP(idOrdenesEpp);
             if (lsServerAtencion.status === 200) {
                 setLsMedicalAdvice(lsServerAtencion.data);
                 handleLoadingDocument(lsServerAtencion.data.documento);
@@ -168,7 +168,7 @@ const UpdateOrderEPP = () => {
             }));
             setTipoAsesoria(resultTipoAsesoria);
 
-            setLsAtencion([{ id: 0 }]);
+            setLsAtencion([{ idOrdenesEpp: 0 }]);
         } catch (error) { }
     }
 
@@ -193,7 +193,7 @@ const UpdateOrderEPP = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAdvice(id);
+            const lsDataReport = await GetByIdOrderEPP(idOrdenesEpp);
             const lsDataUser = await GetByMail(user.email);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
@@ -225,15 +225,12 @@ const UpdateOrderEPP = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), 0, DefaultData.ASESORIA_MEDICA,
-                lsEmployee.sede, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
-                DefaultData.SINREGISTRO_GLOBAL, textTipoAsesoria, textMotivo, datos.idSubmotivo, DefaultData.SINREGISTRO_GLOBAL,
-                datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL, lsMedicalAdvice.usuarioRegistro,
-                FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
+            const DataToUpdate = PutOrderEPP(idOrdenesEpp, documento, FormatDate(datos.fecha), datos.idProvedor, user.nameuser, FormatDate(new Date()),
+            user.nameuser, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
-                    const result = await UpdateAdvices(DataToUpdate);
+                    const result = await UpdateOrderEPPs(DataToUpdate);
                     if (result.status === 200) {
                         setOpenSuccess(true);
                     }
@@ -368,7 +365,7 @@ const UpdateOrderEPP = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                                    <SubCard darkTitle title={<Typography variant="h4">REGISTRAR ORDENES EPP</Typography>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={6}>
                                                 <FormProvider {...methods}>
@@ -380,102 +377,27 @@ const UpdateOrderEPP = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={6}>
-                                                <SelectOnChange
-                                                    name="idMotivo"
-                                                    label="Motivo"
-                                                    onChange={handleMotivo}
-                                                    value={textMotivo}
-                                                    options={lsMotivo}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </Grid>
+                                
 
                                             <Grid item xs={6}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
                                                         defaultValue={lsMedicalAdvice.idSubmotivo}
-                                                        name="idSubmotivo"
-                                                        label="Submotivo"
-                                                        options={lsSubmotivo}
+                                                        name="idProvedor"
+                                                        label="Provedor"
+                                                        options={lsProveedor}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ? 5 : 6}>
-                                                <SelectOnChange
-                                                    name="idTipoAsesoria"
-                                                    label="Tipo de Asesoría"
-                                                    onChange={(e) => setTextTipoAsesoria(e?.target.value)}
-                                                    value={textTipoAsesoria}
-                                                    options={tipoAsesoria}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </Grid>
+                                      
 
-                                            {textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ?
-                                                <Grid item xs={1}>
-                                                    <Tooltip title="Video llamada">
-                                                        <Button color="error" sx={{ color: ColorDrummondltd.RedDrummond }}
-                                                            variant="outlined" onClick={handleCallClick}
-                                                        >
-                                                            <VideoCallIcon fontSize="large" />
-                                                        </Button>
-                                                    </Tooltip>
-                                                </Grid> : null
-                                            }
+                                      
 
                                             <Grid item xs={12}>
                                                 <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
-                                                    <Grid item xs={12}>
-                                                        <FormProvider {...methods}>
-                                                            <InputText
-                                                                multiline
-                                                                rows={4}
-                                                                defaultValue={lsMedicalAdvice.motivo}
-                                                                fullWidth
-                                                                name="observaciones"
-                                                                label="Descripción"
-                                                                size={matchesXS ? 'small' : 'medium'}
-                                                            />
-                                                        </FormProvider>
-                                                    </Grid>
-
-                                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                                        <DetailedIcon
-                                                            title={DetailIcons[0].title}
-                                                            onClick={() => setOpenTemplate(true)}
-                                                            icons={DetailIcons[0].icons}
-                                                        />
-
-                                                        <DetailedIcon
-                                                            title={DetailIcons[1].title}
-                                                            onClick={() => setOpenApuntesPersonales(true)}
-                                                            icons={DetailIcons[1].icons}
-                                                        />
-
-                                                        <DetailedIcon
-                                                            title={DetailIcons[2].title}
-                                                            onClick={() => setOpen(true)}
-                                                            icons={DetailIcons[2].icons}
-                                                        />
-                                                    </Grid>
-
-                                                    <Grid item xs={12} sx={{ pt: 2 }}>
-                                                        <FormProvider {...methods}>
-                                                            <InputText
-                                                                multiline
-                                                                rows={4}
-                                                                defaultValue={lsMedicalAdvice.recomendaciones}
-                                                                fullWidth
-                                                                name="recomendaciones"
-                                                                label="Recomendaciones"
-                                                                size={matchesXS ? 'small' : 'medium'}
-                                                            />
-                                                        </FormProvider>
-                                                    </Grid>
-
+                                
                                                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                                                         <DetailedIcon
                                                             title={DetailIcons[0].title}
@@ -514,19 +436,11 @@ const UpdateOrderEPP = () => {
                                                         {TitleButton.Imprimir}
                                                     </Button>
                                                 </AnimateButton>
-                                            </Grid>
+                                            </Grid> 
 
                                             <Grid item xs={2.4}>
                                                 <AnimateButton>
-                                                    <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
-                                                        {TitleButton.OrdenesMedicas}
-                                                    </Button>
-                                                </AnimateButton>
-                                            </Grid>
-
-                                            <Grid item xs={2.4}>
-                                                <AnimateButton>
-                                                    <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
+                                                    <Button variant="outlined" fullWidth onClick={() => navigate("/orderepp/list")}>
                                                         {TitleButton.Cancelar}
                                                     </Button>
                                                 </AnimateButton>

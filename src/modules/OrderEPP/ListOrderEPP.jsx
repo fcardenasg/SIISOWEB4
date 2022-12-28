@@ -371,7 +371,7 @@ const ListOrderEPP = () => {
                                         <ExcelColumn label="Nombres" value="nameEmpleado" />
                                         <ExcelColumn label="Proveedor" value="nameProveedor" />
                                         <ExcelColumn label="Fecha" value="fecha" />
-                                        <ExcelColumn label="Usuario" value="usuario" />
+                                        <ExcelColumn label="Usuario" value="usuarioRegistro" />
                                         <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
                                         <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
                                         <ExcelColumn label="Fecha de Actualización" value="fechaActualizacion" />
@@ -417,7 +417,7 @@ const ListOrderEPP = () => {
 
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.id);
+                                const isItemSelected = isSelected(row.idOrdenesEpp);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -429,7 +429,7 @@ const ListOrderEPP = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idOrdenesEpp)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -443,18 +443,18 @@ const ListOrderEPP = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
                                             sx={{ cursor: 'pointer' }}
                                             align="center"
                                         >
-                                            {row.id}
+                                            {row.idOrdenesEpp}
                                         </TableCell>
 
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -469,7 +469,7 @@ const ListOrderEPP = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -484,7 +484,7 @@ const ListOrderEPP = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -499,7 +499,7 @@ const ListOrderEPP = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -511,7 +511,7 @@ const ListOrderEPP = () => {
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/orderepp/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/orderepp/update/${row.idOrdenesEpp}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
