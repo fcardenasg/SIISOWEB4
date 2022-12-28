@@ -28,20 +28,20 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 import { FormatDate } from 'components/helpers/Format';
-import { DefaultData, Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { DefaultData, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
-import { GetAllAdvice, DeleteAdvice, GetAllByTipoAtencion } from 'api/clients/AdviceClient';
+import { DeleteAdvice, GetAllByTipoAtencion } from 'api/clients/AdviceClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import swal from 'sweetalert';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -196,7 +196,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -216,10 +216,10 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListPsychologicalCounseling = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
     const [medicalAdvice, setMedicalAdvice] = useState([]);
+    const [openDelete, setOpenDelete] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -230,7 +230,7 @@ const ListPsychologicalCounseling = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServer = await GetAllByTipoAtencion(0, 0, DefaultData.AsesoriaPsicologica);
             setMedicalAdvice(lsServer.data.entities);
@@ -239,7 +239,7 @@ const ListPsychologicalCounseling = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -286,8 +286,6 @@ const ListPsychologicalCounseling = () => {
     };
 
     const handleClick = (event, id) => {
-        if (idCheck === '') setIdCheck(id); else setIdCheck('');
-
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
@@ -315,20 +313,18 @@ const ListPsychologicalCounseling = () => {
 
     const handleDelete = async () => {
         try {
-            const result = await DeleteAdvice(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteAdvice(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSearch('');
+                    setSelected([]);
+                    getAll();
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
             console.log(error);
         }
@@ -339,6 +335,8 @@ const ListPsychologicalCounseling = () => {
 
     return (
         <MainCard title={<Typography variant="h4">LISTA DE ASESORÍA PSICOLÓGICA</Typography>} content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>

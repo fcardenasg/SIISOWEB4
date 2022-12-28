@@ -26,6 +26,7 @@ import {
     Button
 } from '@mui/material';
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import swal from 'sweetalert';
 import { visuallyHidden } from '@mui/utils';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
@@ -223,7 +224,7 @@ const ListAttention = () => {
     const [openReport, setOpenReport] = useState(false);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
@@ -383,63 +384,78 @@ const ListAttention = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Lista de Atención">
-                            <ExcelSheet data={lsAttention} name="Atención">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                <ExcelColumn label="Tipo de Atención" value="nameTipoAtencion" />
-                                <ExcelColumn label="Atención" value="nameAtencion" />
+                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Lista de Atención">
+                                    <ExcelSheet data={lsAttention} name="Atención">
+                                        <ExcelColumn label="Id" value="id" />
+                                        <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
+                                        <ExcelColumn label="Tipo de Atención" value="nameTipoAtencion" />
+                                        <ExcelColumn label="Atención" value="nameAtencion" />
 
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                <ExcelColumn label="Sede Empleado" value="nameSedeEmpleado" />
-                                <ExcelColumn label="Roster Position" value="nameCargo" />
-                                <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                <ExcelColumn label="Correo" value="nameCorreo" />
-                                <ExcelColumn label="Genero" value="nameGenero" />
-                                <ExcelColumn label="Empresa" value="nameEmpresa" />
-                                <ExcelColumn label="Fecha Nacimiento" value={(fe) => ViewFormat(fe.fechaNacimi)} />
-                                <ExcelColumn label="Eps" value="nameEps" />
-                                <ExcelColumn label="Telefono" value="nameTelefono" />
-                                <ExcelColumn label="Fecha Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
-                                <ExcelColumn label="Afp" value="nameAfp" />
-                                <ExcelColumn label="Area" value="nameArea" />
-                                <ExcelColumn label="Ciudad Nacimiento" value="nameCiudadNacido" />
-                                <ExcelColumn label="Ciudad Residencia" value="nameCiudadResidencia" />
-                                <ExcelColumn label="Departamento" value="nameDepartamento" />
-                                <ExcelColumn label="Dirección" value="nameDireccion" />
-                                <ExcelColumn label="Departamento Nacimiento" value="nameDptoNacido" />
-                                <ExcelColumn label="Departamento Residencia" value="nameDptoResidencia" />
-                                <ExcelColumn label="Estado Civil" value="nameEstadoCivil" />
-                                <ExcelColumn label="Grupo" value="nameGrupo" />
-                                <ExcelColumn label="Subarea" value="nameSubarea" />
-                                <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
-                                <ExcelColumn label="Turno Empleado" value="nameTurnoEmpleado" />
-                                <ExcelColumn label="Type" value="nameType" />
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                        <ExcelColumn label="Sede Empleado" value="nameSedeEmpleado" />
+                                        <ExcelColumn label="Roster Position" value="nameCargo" />
+                                        <ExcelColumn label="General Position" value="nameGeneralPosition" />
+                                        <ExcelColumn label="Correo" value="nameCorreo" />
+                                        <ExcelColumn label="Genero" value="nameGenero" />
+                                        <ExcelColumn label="Empresa" value="nameEmpresa" />
+                                        <ExcelColumn label="Fecha Nacimiento" value={(fe) => ViewFormat(fe.fechaNacimi)} />
+                                        <ExcelColumn label="Eps" value="nameEps" />
+                                        <ExcelColumn label="Telefono" value="nameTelefono" />
+                                        <ExcelColumn label="Fecha Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
+                                        <ExcelColumn label="Afp" value="nameAfp" />
+                                        <ExcelColumn label="Area" value="nameArea" />
+                                        <ExcelColumn label="Ciudad Nacimiento" value="nameCiudadNacido" />
+                                        <ExcelColumn label="Ciudad Residencia" value="nameCiudadResidencia" />
+                                        <ExcelColumn label="Departamento" value="nameDepartamento" />
+                                        <ExcelColumn label="Dirección" value="nameDireccion" />
+                                        <ExcelColumn label="Departamento Nacimiento" value="nameDptoNacido" />
+                                        <ExcelColumn label="Departamento Residencia" value="nameDptoResidencia" />
+                                        <ExcelColumn label="Estado Civil" value="nameEstadoCivil" />
+                                        <ExcelColumn label="Grupo" value="nameGrupo" />
+                                        <ExcelColumn label="Subarea" value="nameSubarea" />
+                                        <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
+                                        <ExcelColumn label="Turno Empleado" value="nameTurnoEmpleado" />
+                                        <ExcelColumn label="Type" value="nameType" />
 
-                                <ExcelColumn label="Estado Caso" value="nameEstadoCaso" />
-                                <ExcelColumn label="Sede Atención" value="nameSedeAtencion" />
-                                <ExcelColumn label="Observaciones" value="observaciones" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                                        <ExcelColumn label="Estado Caso" value="nameEstadoCaso" />
+                                        <ExcelColumn label="Sede Atención" value="nameSedeAtencion" />
+                                        <ExcelColumn label="Observaciones" value="observaciones" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={handleClickReport} sx={{ mx: 1 }}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                            <Grid item xs={2}>
+                                <Tooltip title="Impresión" onClick={handleClickReport}>
+                                    <IconButton size="large">
+                                        <PrintIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/attention/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/attention/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/dashboard/ltd")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

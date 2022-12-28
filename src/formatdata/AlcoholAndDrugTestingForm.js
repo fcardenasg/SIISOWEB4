@@ -9,7 +9,7 @@ export function PostAlcoholAndDrugTesting(documento, fecha, idRegistroAtencion =
     sustancia4 = false, idMuestra4 = DefaultValue.SINREGISTRO_GLOBAL, idResultado4 = DefaultValue.SINREGISTRO_GLOBAL,
     sustancia5 = false, idMuestra5 = DefaultValue.SINREGISTRO_GLOBAL, idResultado5 = DefaultValue.SINREGISTRO_GLOBAL,
     sustancia6 = false, idMuestra6 = DefaultValue.SINREGISTRO_GLOBAL, idResultado6 = DefaultValue.SINREGISTRO_GLOBAL,
-    idRemitido = DefaultValue.SINREGISTRO_GLOBAL, idDocumentoSolicitante = '', idNumeroHistoria = 0,
+    idRemitido = DefaultValue.SINREGISTRO_GLOBAL, idDocumentoSolicitante = '', idNumeroHistoria = "",
     idConcepto = DefaultValue.SINREGISTRO_GLOBAL,
     idRealizada = DefaultValue.SINREGISTRO_GLOBAL, idMotivoAsis = DefaultValue.SINREGISTRO_GLOBAL, observaciones, 
     idMedico,

@@ -327,8 +327,9 @@ const ListAlcoholAndDrugTesting = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsAlcoholAndDrugTesting.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
+        <MainCard title={<Typography variant="h4">LISTA DE PRUEBA DE ALCOHOL Y DROGAS</Typography>} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -347,72 +348,71 @@ const ListAlcoholAndDrugTesting = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Recetario">
-                            <ExcelSheet data={lsAlcoholAndDrugTesting} name="Lista de Recetario">
-                                <ExcelColumn label="Id" value="idPruebasAlcoholDroga" />
-                                <ExcelColumn label="Fecha" value="fecha" />
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre del Empleado" value="nameEmpleado" />
+                    <Grid item xs={12} sm={6} lg={2.5} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={4}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Prueba de Alcohol y Drogas">
+                                    <ExcelSheet data={lsAlcoholAndDrugTesting} name="Lista de Prueba de Alcohol y Drogas">
+                                        <ExcelColumn label="Id" value="idPruebasAlcoholDroga" />
+                                        <ExcelColumn label="Fecha" value="fecha" />
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Nombre del Empleado" value="nameEmpleado" />
 
-                                <ExcelColumn label="Celular" value="nameTelefono" />
-                                <ExcelColumn label="Email" value="nameCorreo" />
+                                        <ExcelColumn label="Celular" value="nameTelefono" />
+                                        <ExcelColumn label="Email" value="nameCorreo" />
 
-                                <ExcelColumn label="Motivo" value="nameMotivo" />
-                                <ExcelColumn label="Sustancia" value="sustancia1" />
-                                <ExcelColumn label="Muestra" value="nameMuestra1" />
-                                <ExcelColumn label="Resultados" value="nameResultado1" />
+                                        <ExcelColumn label="Motivo" value="nameMotivo" />
+                                        <ExcelColumn label="Sustancia" value="sustancia1" />
+                                        <ExcelColumn label="Muestra" value="nameMuestra1" />
+                                        <ExcelColumn label="Resultados" value="nameResultado1" />
 
-                                <ExcelColumn label="Sustancia" value="sustancia2" />
-                                <ExcelColumn label="Muestra" value="nameMuestra2" />
-                                <ExcelColumn label="Resultados" value="nameResultado2" />
+                                        <ExcelColumn label="Sustancia" value="sustancia2" />
+                                        <ExcelColumn label="Muestra" value="nameMuestra2" />
+                                        <ExcelColumn label="Resultados" value="nameResultado2" />
 
-                                <ExcelColumn label="Sustancia" value="sustancia3" />
-                                <ExcelColumn label="Muestra" value="nameMuestra3" />
-                                <ExcelColumn label="Resultados" value="nameResultado3" />
+                                        <ExcelColumn label="Sustancia" value="sustancia3" />
+                                        <ExcelColumn label="Muestra" value="nameMuestra3" />
+                                        <ExcelColumn label="Resultados" value="nameResultado3" />
 
-                                <ExcelColumn label="Sustancia" value="sustancia4" />
-                                <ExcelColumn label="Muestra" value="nameMuestra4" />
-                                <ExcelColumn label="Resultados" value="nameResultado4" />
+                                        <ExcelColumn label="Sustancia" value="sustancia4" />
+                                        <ExcelColumn label="Muestra" value="nameMuestra4" />
+                                        <ExcelColumn label="Resultados" value="nameResultado4" />
 
-                                <ExcelColumn label="Sustancia" value="sustancia5" />
-                                <ExcelColumn label="Muestra" value="nameMuestra5" />
-                                <ExcelColumn label="Resultados" value="nameResultado5" />
+                                        <ExcelColumn label="Sustancia" value="sustancia5" />
+                                        <ExcelColumn label="Muestra" value="nameMuestra5" />
+                                        <ExcelColumn label="Resultados" value="nameResultado5" />
 
-                                <ExcelColumn label="Sustancia" value="sustancia6" />
-                                <ExcelColumn label="Muestra" value="nameMuestra6" />
-                                <ExcelColumn label="Resultados" value="nameResultado6" />
+                                        <ExcelColumn label="Sustancia" value="sustancia6" />
+                                        <ExcelColumn label="Muestra" value="nameMuestra6" />
+                                        <ExcelColumn label="Resultados" value="nameResultado6" />
 
-                                <ExcelColumn label="Realizada" value="nameRemitido" />
-                                <ExcelColumn label="Nombre del Solicitante" value="nameEmpleadoSolicita" />
-                                <ExcelColumn label="Concepto Aptitud" value="nameConcepto" />
-                                <ExcelColumn label="Motivo de No Asistencia" value="nameMotivoAsis" />
-                                <ExcelColumn label="Observaciones y/o Medicamentos Actuales" value="observaciones" />
+                                        <ExcelColumn label="Realizada" value="nameRemitido" />
+                                        <ExcelColumn label="Nombre del Solicitante" value="nameEmpleadoSolicita" />
+                                        <ExcelColumn label="Concepto Aptitud" value="nameConcepto" />
+                                        <ExcelColumn label="Motivo de No Asistencia" value="nameMotivoAsis" />
+                                        <ExcelColumn label="Observaciones y/o Medicamentos Actuales" value="observaciones" />
 
-                                <ExcelColumn label="Usuario" value="usuario" />
-                                <ExcelColumn label="Fecha del Sistema" value="fechaSistema" />
+                                        <ExcelColumn label="Usuario" value="usuario" />
+                                        <ExcelColumn label="Fecha del Sistema" value="fechaSistema" />
 
 
-                            </ExcelSheet>
-                        </ExcelFile>
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => navigate(`/alcoholanddrugtesting/report/${idCheck}`)}>
-                            <IconButton disabled={idCheck === '' ? true : false} size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
-
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/alcoholanddrugtesting/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
-
+                            <Grid item xs={8}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/alcoholanddrugtesting/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

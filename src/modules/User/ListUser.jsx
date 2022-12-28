@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -29,14 +28,13 @@ import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 
 import swal from 'sweetalert';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllSupplier, DeleteSupplier } from 'api/clients/SupplierClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
@@ -225,7 +223,7 @@ const ListUser = () => {
                 setRows(lsServer.data.entities);
             }
         } catch (error) {
-            console.log(error);
+
         }
     }
 
@@ -319,9 +317,7 @@ const ListUser = () => {
                 } else
                     setSelected([]);
             });
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -347,35 +343,48 @@ const ListUser = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Usuarios">
-                            <ExcelSheet data={lsUser} name="Usuarios">
-                                <ExcelColumn label="ID" value="id" />
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Usuario" value="nombreUsuario" />
-                                <ExcelColumn label="Nombre" value="nombre" />
-                                <ExcelColumn label="Teléfono" value="telefono" />
-                                <ExcelColumn label="Correo" value="correo" />
-                                <ExcelColumn label="Rol de Usuario" value="rolUsuario" />
-                                <ExcelColumn label="Especialidad" value="especialidad" />
-                                <ExcelColumn label="Registro Medico" value="registroMedico" />
-                                <ExcelColumn label="Licencia" value="licencia" />
-                                <ExcelColumn label="Tarjeta Profesional" value="tarjetaProfesional" />
-                                <ExcelColumn label="Estado" value="estado" />
-                            </ExcelSheet>
-                        </ExcelFile>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/user/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Usuarios">
+                                    <ExcelSheet data={lsUser} name="Usuarios">
+                                        <ExcelColumn label="ID" value="id" />
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Usuario" value="nombreUsuario" />
+                                        <ExcelColumn label="Nombre" value="nombre" />
+                                        <ExcelColumn label="Teléfono" value="telefono" />
+                                        <ExcelColumn label="Correo" value="correo" />
+                                        <ExcelColumn label="Rol de Usuario" value="rolUsuario" />
+                                        <ExcelColumn label="Especialidad" value="especialidad" />
+                                        <ExcelColumn label="Registro Medico" value="registroMedico" />
+                                        <ExcelColumn label="Licencia" value="licencia" />
+                                        <ExcelColumn label="Tarjeta Profesional" value="tarjetaProfesional" />
+                                        <ExcelColumn label="Estado" value="estado" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/user/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
+
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/administration/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

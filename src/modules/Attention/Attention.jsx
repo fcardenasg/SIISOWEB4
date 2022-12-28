@@ -90,7 +90,7 @@ const Attention = () => {
     const { handleSubmit, reset } = methods;
 
     useEffect(() => {
-        async function GetAll() {
+        async function getAll() {
             try {
                 const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
                 var resultSede = lsServerSede.data.entities.map((item) => ({
@@ -153,11 +153,11 @@ const Attention = () => {
 
             } catch (error) {
                 setOpenError(true);
-                setErrorMessage(`${error}`);
+                setErrorMessage(Message.RegistroNoGuardado);
             }
         }
 
-        GetAll();
+        getAll();
     }, []);
 
     const handleDocumento = async (event) => {
@@ -343,10 +343,10 @@ const Attention = () => {
 
             const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
+                motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), "durancion",
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (documento === '') { setOpenError(true); setErrorMessage(`${Message.ErrorDocumento}`); } else
+            if (documento === '' && lsEmployee.length === 0) { setOpenError(true); setErrorMessage(`${Message.ErrorDocumento}`); } else
                 if (sede === '') { setOpenError(true); setErrorMessage('Por favor, seleccione una Sede'); } else
                     if (tipoAtencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione el Tipo Atención'); } else
                         if (atencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione la Atención'); } else {
@@ -366,7 +366,7 @@ const Attention = () => {
                         }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 

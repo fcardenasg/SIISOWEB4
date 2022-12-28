@@ -66,7 +66,6 @@ const UpdateAlcoholAndDrugTesting = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [openViewPdf, setOpenViewPdf] = useState(false);
 
     const [motivo, setMotivo] = useState('');
     const [documentoSolicita, setDocumentoSolicita] = useState('');
@@ -166,14 +165,6 @@ const UpdateAlcoholAndDrugTesting = () => {
 
     async function getAll() {
         try {
-            const lsAtencion = await GetByIdAttention(id);
-            if (lsAtencion.status === 200) {
-                setLsAtencion(lsAtencion.data);
-                setMotivo(lsAtencion.data.motivo);
-                setDocumento(lsAtencion.data.documento);
-                handleLoadingDocumento(lsAtencion.data.documento);
-            }
-
             const lsServerOpciones = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
             var resultOpciones = lsServerOpciones.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -215,9 +206,15 @@ const UpdateAlcoholAndDrugTesting = () => {
                 label: item.nombre
             }));
             setLsResultado(resultResultado);
-        } catch (error) {
-            console.log(error);
-        }
+
+            const lsAtencion = await GetByIdAttention(id);
+            if (lsAtencion.status === 200) {
+                setLsAtencion(lsAtencion.data);
+                setMotivo(lsAtencion.data.motivo);
+                setDocumento(lsAtencion.data.documento);
+                handleLoadingDocumento(lsAtencion.data.documento);
+            }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -233,8 +230,10 @@ const UpdateAlcoholAndDrugTesting = () => {
             const DataToInsert = PostAlcoholAndDrugTesting(documento, FormatDate(datos.fecha), id, motivo, datos.sustancia1,
                 datos.idMuestra1, cocaina, datos.sustancia2, datos.idMuestra2, marihuana, datos.sustancia3, datos.idMuestra3,
                 datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5,
-                datos.idResultado5, datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, 0, concepto,
+                datos.idResultado5, datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, "", concepto,
                 realizada, MotivoAsistencia, Observacion, user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+
+            console.log("DataToInsert => ", DataToInsert);
 
             if (realizada === DefaultValue.Opcion_SI && conceptoAptitud === '') {
                 setOpenError(true);
@@ -361,7 +360,6 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                 <InputSelect
                                                     name="idMotivoAsis"
                                                     label="Motivo de No Asistencia"
-                                                    defaultValue=""
                                                     options={lsMotivoNoAsistencia}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors}
@@ -700,12 +698,6 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                             title={DetailIcons[1].title}
                                                             onClick={() => setOpen(true)}
                                                             icons={DetailIcons[1].icons}
-                                                        />
-
-                                                        <DetailedIcon
-                                                            title={DetailIcons[2].title}
-                                                            onClick={() => setOpenViewPdf(true)}
-                                                            icons={DetailIcons[2].icons}
                                                         />
                                                     </Grid>
                                                 </Grid>

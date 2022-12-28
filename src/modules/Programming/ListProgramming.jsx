@@ -7,7 +7,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 import { IconSearch } from '@tabler/icons';
-import { GetAllAtencion, DeleteAttention } from 'api/clients/AttentionClient';
+import { GetAllAtencion } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
 import { DefaultValue, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -58,7 +58,7 @@ const ListProgramming = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nameEmpleado', 'nameTipoAtencion', 'nameAtencion', 'fecha', 'usuarioRegistro'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameTipoAtencion', 'nameAtencion', 'fecha', 'usuarioRegistro', 'nameSedeAtencion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -81,10 +81,9 @@ const ListProgramming = () => {
     const getAll = async () => {
         try {
             await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO).then(response => {
-                if (response.status === 200) 
-                { 
-                    setLsProgramming(response.data.entities); 
-                    setRows(response.data.entities); 
+                if (response.status === 200) {
+                    setLsProgramming(response.data.entities);
+                    setRows(response.data.entities);
                 }
             });
         } catch (error) { }
@@ -111,7 +110,7 @@ const ListProgramming = () => {
             title={
                 <Grid container alignItems="center" spacing={gridSpacing}>
                     <Grid item xs={12} md={7}>
-                        <Typography variant="h3">Lista de Programación</Typography>
+                        <Typography variant="h4">LISTA DE PROGRAMACIÓN</Typography>
                     </Grid>
 
                     <Grid item xs={8} md={3}>

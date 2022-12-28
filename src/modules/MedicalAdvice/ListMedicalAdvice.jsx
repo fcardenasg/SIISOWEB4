@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -28,10 +27,9 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 import { ViewFormat } from 'components/helpers/Format';
-import { DefaultData, Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { DefaultData, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllAdvice, DeleteAdvice, GetAllByTipoAtencion } from 'api/clients/AdviceClient';
+import { DeleteAdvice, GetAllByTipoAtencion } from 'api/clients/AdviceClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -40,6 +38,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -208,10 +208,10 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListMedicalAdvice = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
     const [medicalAdvice, setMedicalAdvice] = useState([]);
+    const [openDelete, setOpenDelete] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -222,18 +222,17 @@ const ListMedicalAdvice = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServer = await GetAllByTipoAtencion(0, 0, DefaultData.ASESORIA_MEDICA);
             setMedicalAdvice(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
         }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -309,22 +308,19 @@ const ListMedicalAdvice = () => {
 
     const handleDelete = async () => {
         try {
-            const result = await DeleteAdvice(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteAdvice(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSearch('');
+                    setSelected([]);
+                    getAll();
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
-            console.log(error);
         }
     }
 
@@ -333,6 +329,8 @@ const ListMedicalAdvice = () => {
 
     return (
         <MainCard title={<Typography variant="h4">LISTA DE ASESORÍAS MÉDICAS ESPECIALIZADAS</Typography>} content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>

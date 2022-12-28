@@ -5,7 +5,8 @@ import {
   IconSchool,
   IconReportMedical,
   IconTool,
-  IconStethoscope
+  IconStethoscope,
+  IconUsers
 } from '@tabler/icons';
 
 import ContactMailIcon from '@mui/icons-material/ContactMail';
@@ -303,4 +304,23 @@ export const itemsParaclinics = [
     url: '/paraclinics/cytology/list',
     color: ColorDrummondltd.RedDrummond
   }
+];
+
+export const itemsAdministration = [
+  {
+    title: "Usuarios",
+    subtitle: "",
+    icon: IconUsers,
+    selected: true,
+    url: '/user/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Rol",
+    subtitle: "",
+    icon: IconUsers,
+    selected: true,
+    url: '/rol/list',
+    color: ColorDrummondltd.RedDrummond
+  },
 ];

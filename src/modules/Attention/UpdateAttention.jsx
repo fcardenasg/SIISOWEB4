@@ -10,7 +10,6 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
@@ -45,10 +44,6 @@ const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
-
-const validationSchema = yup.object().shape({
-    sede: yup.string().required(`${ValidationMessage.Requerido}`),
-});
 
 const UpdateAttention = () => {
     const { user } = useAuth();
@@ -96,7 +91,6 @@ const UpdateAttention = () => {
     const [timeWait, setTimeWait] = useState(false);
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, formState: { errors } } = methods;
 
@@ -495,19 +489,6 @@ const UpdateAttention = () => {
                                             </Grid>
                                         </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ENFERME && atencion == DefaultValue.AT_PAD ?
                                             <Fragment>
-                                                <Grid item xs={3}>
-                                                    <FormProvider {...methods}>
-                                                        <InputSelect
-                                                            name="turno"
-                                                            label="Turno"
-                                                            defaultValue=""
-                                                            options={lsTurno}
-                                                            size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors.turno}
-                                                        />
-                                                    </FormProvider>
-                                                </Grid>
-
                                                 <Grid item xs={3}>
                                                     <SelectOnChange
                                                         name="motivo"

@@ -4,13 +4,13 @@ import {
     Button,
     Grid,
     useMediaQuery,
-    Typography,
     Divider,
 } from '@mui/material';
-
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import UserCountCard from 'components/components/UserCountCard';
 import ViewEmployee from 'components/views/ViewEmployee';
 import useAuth from 'hooks/useAuth';
 import InputOnChange from 'components/input/InputOnChange';
@@ -33,9 +33,12 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { InsertAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
+import { GetByIdAlcoholAndDrugTesting, InsertAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
 import { PostAlcoholAndDrugTesting } from 'formatdata/AlcoholAndDrugTestingForm';
 import { FormatDate } from 'components/helpers/Format';
+import ViewPDF from 'components/components/ViewPDF';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReportAlcoholtesting } from '../Programming/Attention/Report/Alcoholtesting';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -49,22 +52,23 @@ const AlcoholAndDrugTesting = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [openReport, setOpenReport] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [openViewPdf, setOpenViewPdf] = useState(false);
 
+    const [motivo, setMotivo] = useState('');
+    const [documentoSolicita, setDocumentoSolicita] = useState('');
+    const [nombreSolicitante, setNombreSolicitante] = useState('');
     const [documento, setDocumento] = useState('');
-    const [nombresEmpleado, setNombreEmpleado] = useState('');
-    const [documentSolicitante, setDocumentoSolicitante] = useState('');
-    const [realizada, setRealizada] = useState(DefaultValue.Opcion_NO);
+    const [realizada, setRealizada] = useState(DefaultValue.Opcion_SI);
 
-    const [cocaina, setCocaina] = useState(1);
-    const [marihuana, setMarihuana] = useState(1);
-    const [alcohol, setAlcohol] = useState(1);
-    const [conceptoAptitud, setConceptoAptitud] = useState(1);
+    const [cocaina, setCocaina] = useState('4095');
+    const [marihuana, setMarihuana] = useState('4095');
+    const [alcohol, setAlcohol] = useState('4095');
+    const [conceptoAptitud, setConceptoAptitud] = useState('');
 
     const [lsEmployee, setLsEmployee] = useState([]);
     const [lsOpciones, setLsOpciones] = useState([]);
@@ -73,38 +77,14 @@ const AlcoholAndDrugTesting = () => {
     const [lsMuestraAD, setLsMuestraAD] = useState([]);
     const [lsMuestraA, setLsMuestraA] = useState([]);
     const [lsResultado, setLsResultado] = useState([]);
-    const [lsConceptoA, setLsConceptoA] = useState([]);
-
-    const handleDocumentoSolicitante = async (event) => {
-        try {
-            setDocumento(event?.target.value);
-            if (event.key === 'Enter') {
-                if (event?.target.value != "") {
-                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
-
-                    if (lsServerEmployee.status === 200) {
-                        setNombreEmpleado(lsServerEmployee.data.nombres);
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
-                }
-            }
-        } catch (error) {
-            setLsEmployee([]);
-            setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
-        }
-    }
-
-    const methods = useForm();
-    const { handleSubmit, errors, reset } = methods;
+    const [resultData, setResultData] = useState([]);
+    const [dataPDF, setDataPDF] = useState(null);
 
     const handleDocumento = async (event) => {
         try {
             setDocumento(event?.target.value);
             if (event.key === 'Enter') {
-                if (event?.target.value != "") {
+                if (event?.target.value !== "") {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
                     if (lsServerEmployee.status === 200) {
@@ -122,9 +102,44 @@ const AlcoholAndDrugTesting = () => {
         }
     }
 
-    async function GetAll() {
-        try {
+    const methods = useForm();
+    const { handleSubmit, reset } = methods;
 
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAlcoholAndDrugTesting(resultData.idPruebasAlcoholDroga);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReportAlcoholtesting(lsDataReport.data, lsDataUser.data);
+
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
+    const handleDocumentoSolicita = async (event) => {
+        try {
+            setDocumentoSolicita(event?.target.value);
+            if (event.key === 'Enter') {
+                if (event?.target.value != "") {
+                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+
+                    if (lsServerEmployee.status === 200) {
+                        setNombreSolicitante(lsServerEmployee.data.nombres);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(`${Message.ErrorDocumento}`);
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(`${Message.ErrorDeDatos}`);
+        }
+    }
+
+    async function getAll() {
+        try {
             const lsServerOpciones = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
             var resultOpciones = lsServerOpciones.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -166,58 +181,53 @@ const AlcoholAndDrugTesting = () => {
                 label: item.nombre
             }));
             setLsResultado(resultResultado);
-
-            const lsServerConceptoA = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PAD_CONCEPTOA);
-            var resultConceptoA = lsServerConceptoA.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConceptoA(resultConceptoA);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
         try {
-            var MotivoAsistencia = realizada === DefaultValue.Opcion_SI ? 1 : datos.idMotivoAsis;
-            var Observacion = realizada === DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
+            const MotivoAsistencia = realizada === DefaultValue.Opcion_SI ? 1 : datos.idMotivoAsis;
+            const Observacion = realizada === DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
+            const concepto = realizada === DefaultValue.Opcion_NO ? 1 : conceptoAptitud;
 
-            const DataToInsert = PostAlcoholAndDrugTesting(documento, FormatDate(datos.fecha), 0, datos.idMotivoPrueba, datos.sustancia1,
+            const DataToInsert = PostAlcoholAndDrugTesting(documento, FormatDate(datos.fecha), 0, motivo, datos.sustancia1,
                 datos.idMuestra1, cocaina, datos.sustancia2, datos.idMuestra2, marihuana, datos.sustancia3, datos.idMuestra3,
-                datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5, datos.idResultado5,
-                datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentSolicitante, 0, conceptoAptitud,
+                datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5,
+                datos.idResultado5, datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, "", concepto,
                 realizada, MotivoAsistencia, Observacion, user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (documento !== '') {
-                if (lsEmployee.length !== 0) {
-                    if (Object.keys(datos.length !== 0)) {
-                        const result = await InsertAlcoholAndDrugTesting(DataToInsert);
-                        if (result.status === 200) {
-                            setOpenSuccess(true);
-                            setLsEmployee([]);
-                            setDocumentoSolicitante('');
-                            setNombreEmpleado('');
-                            setDocumento('');
-                            setRealizada(DefaultValue.Opcion_NO);
-                            reset();
+            if (realizada === DefaultValue.Opcion_SI && conceptoAptitud === '') {
+                setOpenError(true);
+                setErrorMessage('Por favor, registrar los resultado');
+            } else {
+                if (documento !== '') {
+                    if (lsEmployee.length !== 0) {
+                        if (Object.keys(datos.length !== 0)) {
+                            const result = await InsertAlcoholAndDrugTesting(DataToInsert);
+                            if (result.status === 200) {
+                                setOpenSuccess(true); setResultData(result.data); reset();
+                                setLsEmployee([]); setDocumento(''); setConceptoAptitud('');
+                                setRealizada(DefaultValue.Opcion_SI);
+                                setCocaina('4095'); setMarihuana('4095'); setAlcohol('4095');
+                                setMotivo('');
+                            }
                         }
+                    } else {
+                        setOpenError(true);
+                        setErrorMessage(`${Message.ErrorNoHayDatos}`);
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorNoHayDatos}`);
+                    setErrorMessage(`${Message.ErrorDocumento}`);
                 }
-            } else {
-                setOpenError(true);
-                setErrorMessage(`${Message.ErrorDocumento}`);
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -243,17 +253,19 @@ const AlcoholAndDrugTesting = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
-            <FullScreenDialog
-                open={openViewPdf}
-                title="VISTA DE PDF"
-                handleClose={() => setOpenViewPdf(false)}
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
             >
-
-            </FullScreenDialog>
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
+                        title="REGISTRAR PRUEBA DE ALCOHOL Y DROGAS"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -263,7 +275,7 @@ const AlcoholAndDrugTesting = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">PRUEBA DE ALCOHOL Y DROGAS</Typography>}>
+                    <SubCard>
                         <Grid container justifyContent="center" alignItems="center" spacing={2}>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
@@ -271,21 +283,20 @@ const AlcoholAndDrugTesting = () => {
                                         label="Fecha"
                                         name="fecha"
                                         defaultValue={new Date()}
+                                        size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idMotivoPrueba"
-                                        label="Motivo"
-                                        defaultValue=""
-                                        options={lsTipoMotivo}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
+                                <SelectOnChange
+                                    name="idMotivoPrueba"
+                                    label="Motivo"
+                                    value={motivo}
+                                    options={lsTipoMotivo}
+                                    onChange={(e) => setMotivo(e.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={4}>
@@ -296,7 +307,6 @@ const AlcoholAndDrugTesting = () => {
                                     onChange={(e) => setRealizada(e.target.value)}
                                     options={lsOpciones}
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
                                 />
                             </Grid>
 
@@ -307,10 +317,9 @@ const AlcoholAndDrugTesting = () => {
                                             <InputSelect
                                                 name="idMotivoAsis"
                                                 label="Motivo de No Asistencia"
-                                                defaultValue={1}
+                                                defaultValue=""
                                                 options={lsMotivoNoAsistencia}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -323,7 +332,6 @@ const AlcoholAndDrugTesting = () => {
                                                 name="observacionesNoAsistio"
                                                 label="Observaciones del  No Asistencia"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -339,7 +347,7 @@ const AlcoholAndDrugTesting = () => {
                                                             label="Cocaína"
                                                             name="sustancia1"
                                                             size={30}
-                                                            defaultValue={false}
+                                                            defaultValue={true}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -349,10 +357,9 @@ const AlcoholAndDrugTesting = () => {
                                                         <InputSelect
                                                             name="idMuestra1"
                                                             label="Muestra"
-                                                            defaultValue={1}
+                                                            defaultValue="4098"
                                                             options={lsMuestraAD}
                                                             size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -364,14 +371,15 @@ const AlcoholAndDrugTesting = () => {
                                                         value={cocaina}
                                                         onChange={(e) => {
                                                             setCocaina(e.target.value);
-                                                            if (e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO)
+                                                            if (e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                marihuana === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                alcohol === DefaultValue.RESULTADO_PAD_POSITIVO)
                                                                 setConceptoAptitud(DefaultValue.CONCEPTO_PAD_NOAPTO);
                                                             else
                                                                 setConceptoAptitud(DefaultValue.CONCEPTO_PAD_APTO);
                                                         }}
                                                         options={lsResultado}
                                                         size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
                                                     />
                                                 </Grid>
 
@@ -381,7 +389,7 @@ const AlcoholAndDrugTesting = () => {
                                                             label="Marihuana"
                                                             name="sustancia2"
                                                             size={30}
-                                                            defaultValue={false}
+                                                            defaultValue={true}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -391,10 +399,9 @@ const AlcoholAndDrugTesting = () => {
                                                         <InputSelect
                                                             name="idMuestra2"
                                                             label="Muestra"
-                                                            defaultValue={1}
+                                                            defaultValue="4098"
                                                             options={lsMuestraAD}
                                                             size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -406,14 +413,16 @@ const AlcoholAndDrugTesting = () => {
                                                         value={marihuana}
                                                         onChange={(e) => {
                                                             setMarihuana(e.target.value);
-                                                            if (e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO)
+
+                                                            if (cocaina === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                alcohol === DefaultValue.RESULTADO_PAD_POSITIVO)
                                                                 setConceptoAptitud(DefaultValue.CONCEPTO_PAD_NOAPTO);
                                                             else
                                                                 setConceptoAptitud(DefaultValue.CONCEPTO_PAD_APTO);
                                                         }}
                                                         options={lsResultado}
                                                         size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
                                                     />
                                                 </Grid>
 
@@ -423,7 +432,7 @@ const AlcoholAndDrugTesting = () => {
                                                             label="Morfina"
                                                             name="sustancia3"
                                                             size={30}
-                                                            defaultValue={false}
+                                                            defaultValue={true}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -433,10 +442,9 @@ const AlcoholAndDrugTesting = () => {
                                                         <InputSelect
                                                             name="idMuestra3"
                                                             label="Muestra"
-                                                            defaultValue={1}
+                                                            defaultValue="4098"
                                                             options={lsMuestraAD}
                                                             size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -446,10 +454,9 @@ const AlcoholAndDrugTesting = () => {
                                                         <InputSelect
                                                             name="idResultado3"
                                                             label="Resultados"
-                                                            defaultValue={1}
+                                                            defaultValue="4095"
                                                             options={lsResultado}
                                                             size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -460,7 +467,7 @@ const AlcoholAndDrugTesting = () => {
                                                             label="Benzodiazepina"
                                                             name="sustancia4"
                                                             size={30}
-                                                            defaultValue={false}
+                                                            defaultValue={true}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -470,10 +477,9 @@ const AlcoholAndDrugTesting = () => {
                                                         <InputSelect
                                                             name="idMuestra4"
                                                             label="Muestra"
-                                                            defaultValue={1}
+                                                            defaultValue="4098"
                                                             options={lsMuestraAD}
                                                             size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -483,10 +489,9 @@ const AlcoholAndDrugTesting = () => {
                                                         <InputSelect
                                                             name="idResultado4"
                                                             label="Resultados"
-                                                            defaultValue={1}
+                                                            defaultValue="4095"
                                                             options={lsResultado}
                                                             size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -497,7 +502,7 @@ const AlcoholAndDrugTesting = () => {
                                                             label="Anfetaminas"
                                                             name="sustancia5"
                                                             size={30}
-                                                            defaultValue={false}
+                                                            defaultValue={true}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -507,10 +512,9 @@ const AlcoholAndDrugTesting = () => {
                                                         <InputSelect
                                                             name="idMuestra5"
                                                             label="Muestra"
-                                                            defaultValue={1}
+                                                            defaultValue="4098"
                                                             options={lsMuestraAD}
                                                             size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -520,10 +524,9 @@ const AlcoholAndDrugTesting = () => {
                                                         <InputSelect
                                                             name="idResultado5"
                                                             label="Resultados"
-                                                            defaultValue={1}
+                                                            defaultValue="4095"
                                                             options={lsResultado}
                                                             size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -534,7 +537,7 @@ const AlcoholAndDrugTesting = () => {
                                                             label="Alcohol"
                                                             name="sustancia6"
                                                             size={30}
-                                                            defaultValue={false}
+                                                            defaultValue={true}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -544,10 +547,9 @@ const AlcoholAndDrugTesting = () => {
                                                         <InputSelect
                                                             name="idMuestra6"
                                                             label="Muestra"
-                                                            defaultValue={1}
+                                                            defaultValue="4101"
                                                             options={lsMuestraA}
                                                             size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -559,49 +561,58 @@ const AlcoholAndDrugTesting = () => {
                                                         value={alcohol}
                                                         onChange={(e) => {
                                                             setAlcohol(e.target.value);
-                                                            if (e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO)
+                                                            if (cocaina === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                marihuana === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO)
                                                                 setConceptoAptitud(DefaultValue.CONCEPTO_PAD_NOAPTO);
                                                             else
                                                                 setConceptoAptitud(DefaultValue.CONCEPTO_PAD_APTO);
                                                         }}
                                                         options={lsResultado}
                                                         size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
                                                     />
                                                 </Grid>
 
-                                                <Divider />
-
-                                                <Grid item xs={12} md={6} lg={4}>
-                                                    <InputOnChange
-                                                        label="N° Documento"
-                                                        onKeyDown={handleDocumentoSolicitante}
-                                                        onChange={(e) => setDocumentoSolicitante(e?.target.value)}
-                                                        value={documentSolicitante}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
+                                                <Grid item xs={12}>
+                                                    <Divider />
                                                 </Grid>
 
-                                                <Grid item xs={12} md={6} lg={4}>
-                                                    <InputOnChange
-                                                        label="Nombres"
-                                                        value={nombresEmpleado}
-                                                        onChange={(e) => setNombreEmpleado(e?.target.value)}
-                                                        disabled
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </Grid>
+                                                {motivo === DefaultValue.PAD_MOTIVO_SOSPECHA ?
+                                                    <Fragment>
+                                                        <Grid item xs={12} md={6} lg={4}>
+                                                            <InputOnChange
+                                                                label="N° Documento"
+                                                                onKeyDown={handleDocumentoSolicita}
+                                                                onChange={(e) => setDocumentoSolicita(e?.target.value)}
+                                                                value={documentoSolicita}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </Grid>
 
-                                                <Grid item xs={12} md={6} lg={4}>
-                                                    <SelectOnChange
-                                                        disabled
-                                                        name="idConcepto"
-                                                        label="Concepto Aptitud"
-                                                        value={conceptoAptitud}
-                                                        onChange={(e) => setConceptoAptitud(e.target.value)}
-                                                        options={lsConceptoA}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
+                                                        <Grid item xs={12} md={12} lg={8}>
+                                                            <InputOnChange
+                                                                label="Nombres"
+                                                                value={nombreSolicitante}
+                                                                onChange={(e) => setNombreSolicitante(e?.target.value)}
+                                                                disabled
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </Grid>
+                                                    </Fragment> : <Grid />
+                                                }
+
+                                                <Grid item xs={12}>
+                                                    <UserCountCard
+                                                        primary="CONCEPTO APTITUD"
+                                                        secondary={
+                                                            conceptoAptitud === DefaultValue.CONCEPTO_PAD_NOAPTO ? "NO APTO" :
+                                                                conceptoAptitud === DefaultValue.CONCEPTO_PAD_APTO ? 'APTO' : ''
+                                                        }
+                                                        iconPrimary={AssignmentIndIcon}
+                                                        color={conceptoAptitud === DefaultValue.CONCEPTO_PAD_APTO ? theme.palette.success.dark :
+                                                            conceptoAptitud === DefaultValue.CONCEPTO_PAD_NOAPTO ? theme.palette.error.dark :
+                                                                theme.palette.grey[500]
+                                                        }
                                                     />
                                                 </Grid>
 
@@ -615,7 +626,6 @@ const AlcoholAndDrugTesting = () => {
                                                             name="observacionesSi"
                                                             label="Observaciones y/o Medicamentos Actuales"
                                                             size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -632,12 +642,6 @@ const AlcoholAndDrugTesting = () => {
                                                         onClick={() => setOpen(true)}
                                                         icons={DetailIcons[1].icons}
                                                     />
-
-                                                    <DetailedIcon
-                                                        title={DetailIcons[2].title}
-                                                        onClick={() => setOpenViewPdf(true)}
-                                                        icons={DetailIcons[2].icons}
-                                                    />
                                                 </Grid>
                                             </Grid>
                                         </SubCard>
@@ -646,22 +650,29 @@ const AlcoholAndDrugTesting = () => {
                             }
                         </Grid>
 
-                        <Grid item xs={12} sx={{ pt: 4 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={6}>
-                                    <AnimateButton>
-                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                            {TitleButton.Guardar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/alcoholanddrugtesting/list")}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
+                        <Grid container spacing={2} sx={{ pt: 4 }}>
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                        {TitleButton.Imprimir}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/alcoholanddrugtesting/list")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
                             </Grid>
                         </Grid>
                     </SubCard>

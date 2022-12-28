@@ -4,14 +4,14 @@ import { Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import MenuItems from 'components/components/MenuItems/MenuItems';
-import { itemsMenu } from 'components/components/MenuItems/items';
+import { itemsAdministration } from 'components/components/MenuItems/items';
 import HoverSocialCard from 'components/components/HoverSocialCard';
 
 const MenuAdministration = () => {
     const navigate = useNavigate();
 
     const [itemsMenuButton, setItemsMenuButton] = useState([
-        ...itemsMenu,
+        ...itemsAdministration,
     ]);
 
     const selectedItem = (itemSelected = []) => {
