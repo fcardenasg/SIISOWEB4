@@ -4,7 +4,6 @@ import {
     Button,
     Grid,
     useMediaQuery,
-    Typography,
     Divider,
 } from '@mui/material';
 

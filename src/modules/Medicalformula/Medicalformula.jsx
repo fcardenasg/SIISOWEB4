@@ -7,8 +7,6 @@ import {
     Typography
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -23,7 +21,6 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import InputSelect from 'components/input/InputSelect';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
@@ -31,18 +28,17 @@ import AnimateButton from 'ui-component/extended/AnimateButton'
 import SubCard from 'ui-component/cards/SubCard';
 
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { InsertMedicalFormula } from 'api/clients/MedicalFormulaClient';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { PostMedicalFormula } from 'formatdata/MedicalFormulaForm';
 import { FormatDate } from 'components/helpers/Format';
+import InputOnChange from 'components/input/InputOnChange';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-    { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
 const MedicalFormula = () => {
@@ -50,6 +46,9 @@ const MedicalFormula = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [textDx1, setTextDx1] = useState('');
+    const [lsDx1, setLsDx1] = useState([]);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -59,15 +58,12 @@ const MedicalFormula = () => {
     const [openViewPdf, setOpenViewPdf] = useState(false);
 
     const [documento, setDocumento] = useState('');
-    const [diagnostico, setDiagnostico] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsTipoOrden, setLsTipoOrden] = useState([]);
     const [lsContingencia, setLsContingencia] = useState([]);
 
     const methods = useForm();
-    const { handleSubmit, errors, reset } = methods;
-    /* { resolver: yupResolver(validationSchema) } */
+    const { handleSubmit, reset } = methods;
 
     const handleDocumento = async (event) => {
         try {
@@ -91,7 +87,33 @@ const MedicalFormula = () => {
         }
     }
 
-    async function GetAll() {
+    const handleDx1 = async (event) => {
+        try {
+            setTextDx1(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    async function getAll() {
         try {
             const lsServerTipoOrden = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RECE_TIPORDEN);
             var resultTipoOrden = lsServerTipoOrden.data.entities.map((item) => ({
@@ -106,43 +128,41 @@ const MedicalFormula = () => {
                 label: item.nombre
             }));
             setLsContingencia(resultContingencia);
-
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
-
         } catch (error) {
-            console.log(error);
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostMedicalFormula(FormatDate(datos.fecha), documento, datos.idContingencia,
-                datos.numeroHistoria, datos.idTipoRemision, JSON.stringify(diagnostico), datos.descripcion,
-                user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
-
-            console.log("Datos = ", DataToInsert);
+            const DataToInsert = PostMedicalFormula(FormatDate(datos.fecha), documento, datos.idContingencia, 0,
+                datos.idTipoRemision, datos.diagnostico, datos.descripcion, user.nameuser, user.nameuser,
+                FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertMedicalFormula(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    setDocumento('');
-                    setLsEmployee([]);
-                    setDiagnostico([]);
-                    reset();
+                if (documento !== '' && lsEmployee.length !== 0) {
+                    const result = await InsertMedicalFormula(DataToInsert);
+                    if (result.status === 200) {
+                        setOpenSuccess(true);
+                        setDocumento('');
+                        setLsEmployee([]);
+                        setTextDx1('');
+                        setLsDx1([]);
+                        reset();
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
-            console.log(error);
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -179,6 +199,7 @@ const MedicalFormula = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
+                        title="REGISTRAR RECETARIO"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -205,10 +226,8 @@ const MedicalFormula = () => {
                                     <InputSelect
                                         name="idTipoRemision"
                                         label="Tipo de Orden"
-                                        defaultValue=""
                                         options={lsTipoOrden}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -218,10 +237,8 @@ const MedicalFormula = () => {
                                     <InputSelect
                                         name="idContingencia"
                                         label="Contingencia"
-                                        defaultValue=""
                                         options={lsContingencia}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -232,14 +249,24 @@ const MedicalFormula = () => {
                 <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <InputMultiSelects
-                                    fullWidth
-                                    onChange={(event, value) => setDiagnostico(value)}
-                                    value={diagnostico}
-                                    label="Diagnostico"
-                                    options={lsCie11}
+                            <Grid item xs={2}>
+                                <InputOnChange
+                                    label="Dx"
+                                    onKeyDown={handleDx1}
+                                    onChange={(e) => setTextDx1(e?.target.value)}
+                                    value={textDx1}
+                                    size={matchesXS ? 'small' : 'medium'}
                                 />
+                            </Grid>
+                            <Grid item xs={10}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="diagnostico"
+                                        label="Diagnóstico"
+                                        options={lsDx1}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </FormProvider>
                             </Grid>
 
                             <Grid item xs={12}>
@@ -252,7 +279,6 @@ const MedicalFormula = () => {
                                         name="descripcion"
                                         label="Descripcion"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -269,25 +295,20 @@ const MedicalFormula = () => {
                                     onClick={() => setOpen(true)}
                                     icons={DetailIcons[1].icons}
                                 />
-
-                                <DetailedIcon
-                                    title={DetailIcons[2].title}
-                                    onClick={() => setOpenViewPdf(true)}
-                                    icons={DetailIcons[2].icons}
-                                />
                             </Grid>
                         </Grid>
 
                         <Grid item xs={12} sx={{ pt: 4 }}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-                                <Grid item xs={6}>
+
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/medicalformula/list")}>
                                             {TitleButton.Cancelar}

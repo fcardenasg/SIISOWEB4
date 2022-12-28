@@ -35,7 +35,6 @@ import { GetAllMedicalFormula, DeleteMedicalFormula } from 'api/clients/MedicalF
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
@@ -212,9 +211,10 @@ const ListMedicalFormula = () => {
     const [openDelete, setOpenDelete] = useState(false);
     const [lsMedicalFormula, setLsMedicalFormula] = useState([]);
 
+    const [idCheck, setIdCheck] = useState('');
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -228,9 +228,7 @@ const ListMedicalFormula = () => {
                 setLsMedicalFormula(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             }
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -308,8 +306,6 @@ const ListMedicalFormula = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
-
     const handleDelete = async () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
@@ -323,16 +319,14 @@ const ListMedicalFormula = () => {
                 } else
                     setSelected([]);
             });
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicalFormula.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
+        <MainCard title={<Typography variant="h4">LISTA DE RECETARIO</Typography>} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -351,41 +345,36 @@ const ListMedicalFormula = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Recetario">
-                            <ExcelSheet data={lsMedicalFormula} name="Lista de Recetario">
-                                <ExcelColumn label="Id" value="idRecetario" />
-                                <ExcelColumn label="Fecha" value="fecha" />
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre del Empleado" value="nameEmpleado" />
-                                <ExcelColumn label="Contingencia" value="nameContingencia" />
-                                <ExcelColumn label="Número de historia" value="numeroHistoria" />
-                                <ExcelColumn label="Tipo de Orden" value="nameTipoRemision" />
-                                <ExcelColumn label="Diagnostico" value="diagnostico" />
-                                <ExcelColumn label="Descripción" value="descripcion" />
-                                <ExcelColumn label="Médico" value="medico" />
-                                <ExcelColumn label="Usuario" value="usuario" />
-                                <ExcelColumn label="Fecha del Sistema" value="fechaSistema" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={8}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Recetario">
+                                    <ExcelSheet data={lsMedicalFormula} name="Lista de Recetario">
+                                        <ExcelColumn label="Id" value="idRecetario" />
+                                        <ExcelColumn label="Fecha" value="fecha" />
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Nombre del Empleado" value="nameEmpleado" />
+                                        <ExcelColumn label="Contingencia" value="nameContingencia" />
+                                        <ExcelColumn label="Tipo de Orden" value="nameTipoRemision" />
+                                        <ExcelColumn label="Diagnostico" value="diagnostico" />
+                                        <ExcelColumn label="Médico" value="medico" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/medicalformula/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
-
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/medicalformula/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
-
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/medicalformula/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>
