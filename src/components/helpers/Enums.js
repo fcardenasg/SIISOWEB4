@@ -237,6 +237,7 @@ export const DefaultValue = {
 
     /* RIESGOS */
     RiesgoEnOtrasEmpresas: 7284,
+    RiesgoEnDLTD: 7403,
     RiesgoQuimico: 3949,
     RiesgoQuimico_MPI_DLTD: 3955,
     RiesgoQuimico_RUIDO_DLTD: 3960,
