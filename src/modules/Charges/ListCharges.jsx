@@ -80,17 +80,18 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'nameSede',
-        numeric: false,
-        label: 'Sede',
-        align: 'left'
-    },
-    {
         id: 'nameRosterPosition',
         numeric: false,
         label: 'Cargo',
         align: 'left'
-    }
+    },
+    {
+        id: 'nameGES',
+        numeric: false,
+        label: 'GES',
+        align: 'left'
+    },
+
 ];
 
 // ==============================|| TABLE HEADER ||============================== //
@@ -253,7 +254,7 @@ const ListCharges = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idCargo', 'nameSede', 'nameRosterPosition'];
+                const properties = ['idCargo','nameRosterPosition', 'nameGES' ];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -380,8 +381,9 @@ const ListCharges = () => {
                         } filename="Cargo">
                             <ExcelSheet data={charges} name="Cargo">
                                 <ExcelColumn label="Id" value="idCargo" />
-                                <ExcelColumn label="Sede" value="sede" />
-                                <ExcelColumn label="Cargo" value="rosterPosition" />
+                                <ExcelColumn label="Cargo" value="nameRosterPosition" />
+                                <ExcelColumn label="GES" value="nameGES" />
+                            
                             </ExcelSheet>
                         </ExcelFile>
 
@@ -470,7 +472,7 @@ const ListCharges = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameSede}{' '}
+                                                {row.nameRosterPosition}{' '}
                                             </Typography>
                                         </TableCell>
                                         <TableCell
@@ -485,7 +487,7 @@ const ListCharges = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
-                                                {row.nameRosterPosition}{' '}
+                                                {row.nameGES}{' '}
                                             </Typography>
                                         </TableCell>
                                         <TableCell align="center" sx={{ pr: 3 }}>
