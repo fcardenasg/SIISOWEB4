@@ -177,7 +177,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    type="number"
                                     fullWidth
                                     name="esputoESintR"
                                     label="Años"

@@ -15,7 +15,7 @@ export function PostOccupationalExamination(
 
     tetanoIM = false, influenzaIM = false, fiebreAmarillaIM = false, rubeolaSarampionIM = false, covid19IM = false, otrasIM = false,
     anioVacuna1IM = 0, anioVacuna2IM = 0, anioVacuna3IM = 0, anioVacuna4IM = 0, anioVacuna5IM = 0,
-    idRefuerzoIM = DefaultValue.SINREGISTRO_GLOBAL, anioVacuna6IM = 0,
+    idRefuerzoIM = DefaultValue.SINREGISTRO_GLOBAL, anioVacuna6IM = "",
 
     fumaHB = false, cigarrillosDiasFumaHB = 0, aniosCigaFumaHB = 0, mesesCigaFumaHB = 0, observacionFumaHB = "",
 
@@ -89,7 +89,7 @@ export function PostOccupationalExamination(
     /* SINTOMAS RESPIRATORIOS */
     tosAUsualSin = false, tosEnLaSemanaSintR = false, tosMananaSintR = false, tosConsecutivaSintR = false, anosConTosSintR = "",
 
-    esputoASintR = false, esputoBSintR = false, esputoCSintR = false, esputoDSintR = false, esputoESintR = 0,
+    esputoASintR = false, esputoBSintR = false, esputoCSintR = false, esputoDSintR = false, esputoESintR = "",
 
     episoTosEspuASintR = false, episoTosEsputoBSintR = "",
 
