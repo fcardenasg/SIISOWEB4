@@ -28,15 +28,15 @@ import { visuallyHidden } from '@mui/utils';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton,DefaultValue } from 'components/helpers/Enums';
+import { TitleButton, DefaultValue } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { DeleteParaclinics,GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
+import { DeleteParaclinics, GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
@@ -82,7 +82,7 @@ const headCells = [
         numeric: false,
         label: 'Nombres',
         align: 'center'
-    }, 
+    },
     {
         id: 'nameMotivo',
         numeric: false,
@@ -95,7 +95,7 @@ const headCells = [
         label: 'Proveedor',
         align: 'left'
     },
-    
+
     {
         id: 'fecha',
         numeric: false,
@@ -234,7 +234,7 @@ const ListAudiometry = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllByTypeParaclinics(0, 0,DefaultValue.PARACLINICO_AUDIOMETRIA);
+            const lsServer = await GetAllByTypeParaclinics(0, 0, DefaultValue.PARACLINICO_AUDIOMETRIA);
             setLaboratory(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
@@ -254,7 +254,7 @@ const ListAudiometry = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento','nameEmpleado','nameMotivo', 'nameProveedor', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'nameEmpleado', 'nameMotivo', 'nameProveedor', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -340,7 +340,7 @@ const ListAudiometry = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - laboratory.length) : 0;
 
     return (
-        <MainCard title="Lista de Audiometrías" content={false}>
+        <MainCard title="LISTA DE AUDIOMETRÍAS" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -360,41 +360,48 @@ const ListAudiometry = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Audiometrías">
-                            <ExcelSheet data={laboratory} name="Audiometrías">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Fecha" value="fecha" />                    
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                <ExcelColumn label="Motivo" value="nameMotivo" />
-                                <ExcelColumn label="Conducta" value="nameConductaClasificacion" />                     
-                                <ExcelColumn label="Conclusión" value="nameConclusion" />
-                                <ExcelColumn label="Proveedor" value="nameProveedor" />  
-                                <ExcelColumn label="DX" value="nameDxAUDIO" />
-                                <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
-                                <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha de Modificación" value="fechaModifico" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Audiometrías">
+                                    <ExcelSheet data={laboratory} name="Audiometrías">
+                                        <ExcelColumn label="Id" value="id" />
+                                        <ExcelColumn label="Fecha" value="fecha" />
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                        <ExcelColumn label="Motivo" value="nameMotivo" />
+                                        <ExcelColumn label="Conducta" value="nameConductaClasificacion" />
+                                        <ExcelColumn label="Conclusión" value="nameConclusion" />
+                                        <ExcelColumn label="Proveedor" value="nameProveedor" />
+                                        <ExcelColumn label="DX" value="nameDxAUDIO" />
+                                        <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
+                                        <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
+                                        <ExcelColumn label="Fecha de Modificación" value="fechaModifico" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => setOpen(true)}>
-                            <IconButton disabled={idCheck === '' ? true : false} size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/paraclinics/audiometry/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/paraclinics/audiometry/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/paraclinics/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

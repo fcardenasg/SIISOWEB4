@@ -25,18 +25,18 @@ import {
     Button
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton,DefaultValue } from 'components/helpers/Enums';
+import { TitleButton, DefaultValue } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { DeleteParaclinics,GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
+import { DeleteParaclinics, GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
@@ -82,14 +82,14 @@ const headCells = [
         numeric: false,
         label: 'Nombres',
         align: 'center'
-    }, 
+    },
     {
         id: 'nameMotivo',
         numeric: false,
         label: 'Motivo',
         align: 'left'
     },
-    
+
     {
         id: 'fecha',
         numeric: false,
@@ -228,11 +228,11 @@ const ListVisiometrics = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllByTypeParaclinics(0, 0,DefaultValue.PARACLINICO_VISIOMETRIA);
+            const lsServer = await GetAllByTypeParaclinics(0, 0, DefaultValue.PARACLINICO_VISIOMETRIA);
             setVisiometrics(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+
         }
     }
 
@@ -327,7 +327,7 @@ const ListVisiometrics = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+
         }
     }
 
@@ -355,39 +355,46 @@ const ListVisiometrics = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Visiometría">
-                            <ExcelSheet data={visiometrics} name="Visiometría">
-                            <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Fecha" value="fecha" />
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                <ExcelColumn label="Motivo" value="nameMotivo" />
-                                <ExcelColumn label="Proveedor" value="nameProveedor" />
-                                <ExcelColumn label="Observaciones" value="observacion" />
-                                <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
-                                <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha de Modificación" value="fechaModifico" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Visiometría">
+                                    <ExcelSheet data={visiometrics} name="Visiometría">
+                                        <ExcelColumn label="Id" value="id" />
+                                        <ExcelColumn label="Fecha" value="fecha" />
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                        <ExcelColumn label="Motivo" value="nameMotivo" />
+                                        <ExcelColumn label="Proveedor" value="nameProveedor" />
+                                        <ExcelColumn label="Observaciones" value="observacion" />
+                                        <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
+                                        <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
+                                        <ExcelColumn label="Fecha de Modificación" value="fechaModifico" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => setOpen(true)}>
-                            <IconButton disabled={idCheck === '' ? true : false} size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/paraclinics/visiometrics/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/paraclinics/visiometrics/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/paraclinics/menu")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

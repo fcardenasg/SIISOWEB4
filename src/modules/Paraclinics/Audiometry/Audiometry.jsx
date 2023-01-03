@@ -47,7 +47,7 @@ const Audiometry = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
- 
+
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -231,10 +231,10 @@ const Audiometry = () => {
                 datos.htaaop, datos.tipoAcusiaAOP, datos.diabetesAOP, datos.expoRuidoAOP, datos.anteceTraumaticosAOP,
                 datos.observacionAOP, datos.idEmpresaAO, datos.idCargoAO, datos.tiempoExpoAO, datos.idProteccionAuditivaAO,
                 datos.idSuministradaPorAO, datos.idUsoA, datos.idOdcaeAUDIO, datos.idOdmtAUDIO, datos.idOicaeAUDIO, datos.idOimtAUDIO,
-                datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO,datos.idCambioEPP, datos.observacionAUDIO,
+                datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
                 filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-                console.log("Datos => ", DataToInsert);
+            console.log("Datos => ", DataToInsert);
 
             if (Object.keys(datos.length !== 0)) {
                 if (filePdf) {

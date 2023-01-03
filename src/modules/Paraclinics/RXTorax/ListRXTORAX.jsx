@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DeleteParaclinics,GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
+import { DeleteParaclinics, GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
@@ -28,12 +28,12 @@ import { visuallyHidden } from '@mui/utils';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton,DefaultValue } from 'components/helpers/Enums';
+import { TitleButton, DefaultValue } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { ViewFormat } from 'components/helpers/Format';
@@ -223,7 +223,7 @@ const ListRXTORAX = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -232,7 +232,7 @@ const ListRXTORAX = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllByTypeParaclinics(0, 0,DefaultValue.PARACLINICO_RXTORAX);
+            const lsServer = await GetAllByTypeParaclinics(0, 0, DefaultValue.PARACLINICO_RXTORAX);
             setRxtorax(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
@@ -252,7 +252,7 @@ const ListRXTORAX = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento','nameEmpleado', 'nameMotivo', 'nameConductaClasificacion', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'nameEmpleado', 'nameMotivo', 'nameConductaClasificacion', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -359,41 +359,48 @@ const ListRXTORAX = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="RXTORAX">
-                            <ExcelSheet data={rxtorax} name="RXTORAX">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Fecha" value="fecha" />  
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                <ExcelColumn label="Motivo" value="nameMotivo" />
-                                <ExcelColumn label="Conducta" value="nameConductaClasificacion" />          
-                                <ExcelColumn label="Conclusión" value="nameConclusion" />
-                                <ExcelColumn label="Proveedor" value="nameProveedor" />
-                                <ExcelColumn label="Observaciones" value="observacion" />
-                                <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
-                                <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha de Modificación" value="fechaModifico" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="RXTORAX">
+                                    <ExcelSheet data={rxtorax} name="RXTORAX">
+                                        <ExcelColumn label="Id" value="id" />
+                                        <ExcelColumn label="Fecha" value="fecha" />
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                        <ExcelColumn label="Motivo" value="nameMotivo" />
+                                        <ExcelColumn label="Conducta" value="nameConductaClasificacion" />
+                                        <ExcelColumn label="Conclusión" value="nameConclusion" />
+                                        <ExcelColumn label="Proveedor" value="nameProveedor" />
+                                        <ExcelColumn label="Observaciones" value="observacion" />
+                                        <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
+                                        <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
+                                        <ExcelColumn label="Fecha de Modificación" value="fechaModifico" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => setOpen(true)}>
-                            <IconButton disabled={idCheck === '' ? true : false} size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/paraclinics/rxtorax/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/paraclinics/rxtorax/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/paraclinics/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

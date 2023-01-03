@@ -264,6 +264,7 @@ export const DefaultValue = {
 
 export const TitleButton = {
     Guardar: 'Guardar',
+    CambiarContrasenia: 'Cambiar Contraseña',
     CerrarCaso: 'Cerrar Caso',
     OrdenesMedicas: 'Ordenes Medicas',
     SubirArchivo: 'Subir Archivo',

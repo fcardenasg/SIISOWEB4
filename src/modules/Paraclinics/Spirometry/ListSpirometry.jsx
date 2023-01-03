@@ -33,7 +33,7 @@ import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { DeleteParaclinics, GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
@@ -219,7 +219,7 @@ const ListSpirometry = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -355,39 +355,46 @@ const ListSpirometry = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Espirometría">
-                            <ExcelSheet data={spirometry} name="Espirometría">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Fecha" value="fecha" />  
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                <ExcelColumn label="Motivo" value="nameMotivo" />
-                                <ExcelColumn label="Proveedor" value="idProveedor" />
-                                <ExcelColumn label="Observaciones" value="observacion" />
-                                <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
-                                <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha de Modificación" value="fechaModifico" />
-                            </ExcelSheet>
-                        </ExcelFile>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Espirometría">
+                                    <ExcelSheet data={spirometry} name="Espirometría">
+                                        <ExcelColumn label="Id" value="id" />
+                                        <ExcelColumn label="Fecha" value="fecha" />
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                        <ExcelColumn label="Motivo" value="nameMotivo" />
+                                        <ExcelColumn label="Proveedor" value="idProveedor" />
+                                        <ExcelColumn label="Observaciones" value="observacion" />
+                                        <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
+                                        <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
+                                        <ExcelColumn label="Fecha de Modificación" value="fechaModifico" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
 
-                        <Tooltip title="Impresión" onClick={() => setOpen(true)}>
-                            <IconButton disabled={idCheck === '' ? true : false} size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/paraclinics/spirometry/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/paraclinics/spirometry/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                            <Grid item xs={5}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/paraclinics/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

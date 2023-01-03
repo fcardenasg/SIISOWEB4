@@ -14,6 +14,7 @@ import Loader from 'ui-component/Loader';
 import axios from 'axios';
 //import axios from 'utils/axios';
 import { Url } from 'api/instances/AuthRoute';
+import { getData } from 'api/UtilInstance';
 
 const chance = new Chance();
 
@@ -172,7 +173,13 @@ export const JWTProvider = ({ children }) => {
         dispatch({ type: LOGOUT });
     };
 
-    const resetPassword = (email) => console.log(email);
+    const resetPassword = async (correo) => {
+        const response = await getData(Url.RecuperarPasswordCorreo, { correo });
+
+        if (response.data !== 'Correo enviado') {
+            throw Error(response.data);
+        }
+    };
 
     const updateProfile = () => { };
 
