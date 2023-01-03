@@ -2,7 +2,6 @@
 import { useTheme } from '@mui/material/styles';
 import { Box, Button, FormControl, FormHelperText, InputLabel, OutlinedInput } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 // third party
 import * as Yup from 'yup';
@@ -14,13 +13,10 @@ import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
 import { SNACKBAR_OPEN } from 'store/actions';
 
-// ========================|| FIREBASE - FORGOT PASSWORD ||======================== //
-
 const AuthForgotPassword = ({ ...others }) => {
     const theme = useTheme();
     const scriptedRef = useScriptRef();
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const { resetPassword } = useAuth();
 
@@ -70,7 +66,7 @@ const AuthForgotPassword = ({ ...others }) => {
                             name="email"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            label="Dirección de Correo Electrónico / Usuario"
+                            label="Dirección de Correo Electrónico"
                             inputProps={{}}
                         />
                         {touched.email && errors.email && (

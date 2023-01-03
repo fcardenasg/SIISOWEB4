@@ -2,15 +2,12 @@ import { Link } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Divider, Grid, Typography, useMediaQuery } from '@mui/material';
+import { Grid, Typography, useMediaQuery } from '@mui/material';
 
 // project imports
-import AuthWrapper1 from 'views/pages/authentication/AuthWrapper1';
 import AuthCardWrapper from 'views/pages/authentication/AuthCardWrapper';
 import Logo from 'ui-component/Logo';
-import AuthForgotPassword from './AuthForgotPassword'; /* ../auth-forms/AuthForgotPassword */
-import AuthFooter from 'ui-component/cards/AuthFooter';
-import useAuth from 'hooks/useAuth';
+import AuthForgotPassword from './AuthForgotPassword';
 
 import { createTheme } from '@mui/material/styles';
 
@@ -24,7 +21,6 @@ const RedDrummond = createTheme({
 
 const ForgotPassword = () => {
     const theme = useTheme();
-    const { isLoggedIn } = useAuth();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
     return (

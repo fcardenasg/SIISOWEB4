@@ -45,7 +45,7 @@ const AuthForgotPassword = ({ ...others }) => {
                         dispatch({
                             type: SNACKBAR_OPEN,
                             open: true,
-                            message: 'Verifique el correo para restablecer el enlace de contraseña',
+                            message: 'Verifique el correo para restablecer su contraseña',
                             variant: 'alert',
                             alertSeverity: 'success'
                         });
@@ -66,7 +66,7 @@ const AuthForgotPassword = ({ ...others }) => {
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                 <form noValidate onSubmit={handleSubmit} {...others}>
                     <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                        <InputLabel htmlFor="outlined-adornment-email-forgot">Dirección de Correo Electrónico / Usuario</InputLabel>
+                        <InputLabel htmlFor="outlined-adornment-email-forgot">Dirección de Correo Electrónico</InputLabel>
                         <OutlinedInput
                             id="outlined-adornment-email-forgot"
                             type="email"
@@ -74,7 +74,7 @@ const AuthForgotPassword = ({ ...others }) => {
                             name="email"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            label="Dirección de Correo Electrónico / Usuario"
+                            label="Dirección de Correo Electrónico"
                             inputProps={{}}
                         />
                         {touched.email && errors.email && (

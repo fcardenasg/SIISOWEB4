@@ -1,9 +1,12 @@
 export const Url = {
-    Base: 'https://siisonew.drummondltd.com:44347/',
+    Base: 'https://localhost:44347/',
 
     /* https://siisonew.drummondltd.com:44347/ */
+    /* https://localhost:44347/ */
 
     Login: 'api/Login',
+    RecuperarPasswordCorreo: 'api/Login/RecuperarPasswordCorreo',
+    ChangePassword: 'api/Login/ChangePassword',
     Usuario: 'api/Usuario',
 
     TipoCatalogo: 'api/TipoCatalogo',
@@ -92,7 +95,7 @@ export const Url = {
 
     OrdenesEPP: 'api/OrdenesEPP',
     OrdenesEPPId: 'api/OrdenesEPP/id',
-  
+
 
     ApuntesPersonales: 'api/ApuntesPersonales',
     ApuntesPersonalesId: 'api/ApuntesPersonales/id',

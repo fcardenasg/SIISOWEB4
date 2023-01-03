@@ -37,7 +37,7 @@ export async function postData(url = '', datos = {}, headersVali = false) {
 export async function getData(url = '', parametros = {}) {
     try {
         const urlGet = new URL(`${Url.Base}${url}`)
-        Object.keys(parametros).forEach(key => urlGet.searchParams.append(key, parametros[key]))
+        Object.keys(parametros).forEach(key => urlGet.searchParams.append(key, parametros[key]));
 
         return await axios.get(urlGet)
             .then(respuesta => {
