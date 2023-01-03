@@ -781,7 +781,7 @@ const OccupationalExamination = () => {
                                     </Typography>
 
                                     <Typography variant="h4" component="div">
-                                        {lsEmployee.nameOficio}
+                                        {lsEmployee.nameRosterPosition} / {lsEmployee.nameOficio}
                                     </Typography>
 
                                     <Grid container spacing={1}>

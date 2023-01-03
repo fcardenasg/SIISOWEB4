@@ -341,7 +341,7 @@ const Attention = () => {
         try {
             const motivoFinal = motivo == '' ? datos.motivo : motivo;
 
-            const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
+            const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, "", 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), "durancion",
                 user.email, FormatDate(new Date()), '', FormatDate(new Date()));
@@ -642,39 +642,9 @@ const Attention = () => {
                                                             </Grid>
                                                         </Fragment> : <></>
                             }
-
-                            <Grid item xs={12}>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            multiline
-                                            rows={4}
-                                            defaultValue=""
-                                            fullWidth
-                                            name="observaciones"
-                                            label="Nota"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-                                    <DetailedIcon
-                                        title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
-                                        icons={DetailIcons[1].icons}
-                                    />
-                                </Grid>
-                            </Grid>
                         </Grid>
 
-                        <Grid item xs={12} sx={{ pt: 4 }}>
+                        <Grid item xs={12} sx={{ pt: 6 }}>
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <AnimateButton>

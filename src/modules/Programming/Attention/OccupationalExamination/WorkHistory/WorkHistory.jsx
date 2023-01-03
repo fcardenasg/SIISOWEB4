@@ -260,12 +260,15 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
     const handleClickDLTD = async (datos) => {
         try {
-            const DataToInsert = PostWorkHistoryDLTD(FormatDate(new Date()), atencion, documento, DefaultValue.SINREGISTRO_GLOBAL,
+            const DataToInsert = PostWorkHistoryDLTD(FormatDate(new Date()), atencion, documento, "",
                 datos.idCargo, datos.anio, datos.meses, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+
+            console.log("DataToInsert => ", DataToInsert);
 
             if (atencion !== '') {
                 if (Object.keys(datos.length !== 0)) {
                     const result = await InsertWorkHistory(DataToInsert);
+                    console.log("result => ", result);
                     if (result.status === 200) {
                         getSumaRiesgo();
                         reset();
