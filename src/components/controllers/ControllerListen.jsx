@@ -22,7 +22,7 @@ speechRecognitionList.addFromString(grammar, 1);
 recognition.grammars = speechRecognitionList;
 recognition.continuous = true;
 recognition.interimResults = true;
-recognition.lang = 'es-ES'
+recognition.lang = 'es-CO';
 recognition.maxAlternatives = 1;
 
 const ControllerListen = () => {
