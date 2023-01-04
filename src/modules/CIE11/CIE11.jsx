@@ -19,7 +19,7 @@ import InputSelect from 'components/input/InputSelect';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { InsertCIE11 } from 'api/clients/CIE11Client';
 import InputText from 'components/input/InputText';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
@@ -60,13 +60,10 @@ const CIE11 = () => {
             const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
             var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
                 value: item.id,
-                label: item.descripcion
+                label: item.nombre
             }));
             setLsSegmentoAfectado(resultSegAfectado);
-
-            console.log(event.target.value);
         } catch (error) {
-            console.log(error);
             setLsSegmentoAfectado([]);
         }
     }
@@ -78,13 +75,10 @@ const CIE11 = () => {
             const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
             var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
                 value: item.id,
-                label: item.descripcion
+                label: item.nombre
             }));
             setSubsegmento(resultSubsegmento);
-
-            console.log(event.target.value);
         } catch (error) {
-            console.log(error);
             setSubsegmento([]);
         }
     }
@@ -125,7 +119,7 @@ const CIE11 = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -154,7 +148,6 @@ const CIE11 = () => {
                         size={matchesXS ? 'small' : 'medium'}
                         value={segmentoAfectado}
                         onChange={handleChangeSegAfectado}
-                        disabled={lsSegmentoAfectado.length != 0 ? false : true}
                     />
                 </Grid>
 
@@ -167,12 +160,11 @@ const CIE11 = () => {
                             options={subsegmento}
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors}
-                            disabled={subsegmento.length != 0 ? false : true}
                         />
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={2}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
@@ -185,7 +177,7 @@ const CIE11 = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={10}>
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""

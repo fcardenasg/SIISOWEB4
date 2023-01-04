@@ -21,14 +21,15 @@ import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { InsertTemplate } from 'api/clients/TemplateClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
+import InputOnChange from 'components/input/InputOnChange';
 
 const validationSchema = yup.object().shape({
-    idCIE11: yup.string().required(`${ValidationMessage.Requerido}`),
+    dx1: yup.string().required(`${ValidationMessage.Requerido}`),
     descripcion: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
@@ -47,7 +48,8 @@ const Template = () => {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [lsCie11, setLsCie11] = useState([]);
+    const [textDx1, setTextDx1] = useState('');
+    const [lsDx1, setLsDx1] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -55,40 +57,50 @@ const Template = () => {
 
     const { handleSubmit, formState: { errors }, reset } = methods;
 
-    async function getAll() {
+    const handleDx1 = async (event) => {
         try {
-            const lsServerCIE11 = await GetAllCIE11(0, 0);
-            var resultCIE11 = lsServerCIE11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCIE11);
+            setTextDx1(event.target.value);
 
-        } catch (error) { }
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
     }
-
-    useEffect(() => {
-        getAll();
-    }, [])
 
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostTemplate("A1", 1, 1,
-                datos.idCIE11, user.email, 1, 1, 1, datos.descripcion,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
-
-            console.log("DataToInsert = ", DataToInsert);
+                datos.dx1, user.nameuser, 1, 1, 1, datos.descripcion,
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertTemplate(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
+                    setTextDx1('');
+                    setLsDx1([]);
                     reset();
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -107,15 +119,25 @@ const Template = () => {
             </ControlModal>
 
             <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid item xs={2}>
+                    <InputOnChange
+                        label="Dx 1"
+                        onKeyDown={handleDx1}
+                        onChange={(e) => setTextDx1(e?.target.value)}
+                        value={textDx1}
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+
+                <Grid item xs={10}>
                     <FormProvider {...methods}>
                         <InputSelect
-                            name="idCIE11"
-                            label="CIE11"
+                            name="dx1"
+                            label="Dx1"
                             defaultValue=""
-                            options={lsCie11}
+                            options={lsDx1}
+                            bug={errors.dx1}
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.idCIE11}
                         />
                     </FormProvider>
                 </Grid>
