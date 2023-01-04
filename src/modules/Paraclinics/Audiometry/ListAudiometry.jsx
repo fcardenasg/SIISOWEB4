@@ -238,7 +238,7 @@ const ListAudiometry = () => {
             setLaboratory(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+        
         }
     }
 
@@ -332,7 +332,7 @@ const ListAudiometry = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+        
         }
     }
 

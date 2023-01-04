@@ -43,7 +43,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
             }));
             setLsExpocision(resultFramDeporte);
         } catch (error) {
-            console.log(error);
         }
     }
 

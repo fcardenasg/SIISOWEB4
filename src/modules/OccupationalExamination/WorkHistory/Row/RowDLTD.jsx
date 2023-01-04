@@ -100,7 +100,7 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
             }
 
         } catch (error) {
-            console.log(error);
+            
         }
 
     }
@@ -135,7 +135,7 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
             if (lsServerRiesgoECFMovimiento.status === 200)
                 setLsHisECFMovimiento(lsServerRiesgoECFMovimiento.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -173,7 +173,7 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
             if (lsServerRiesgoECFPostura.status === 200)
                 setLsECFPostura(lsServerRiesgoECFPostura.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -222,7 +222,7 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
                 }
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -257,7 +257,7 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
             }
 
         } catch (error) {
-            console.log(error);
+            
         }
 
     }
@@ -267,7 +267,7 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
             if (id == 8) setOpenHistorico(true);
             setNumId(id);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -283,7 +283,7 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
                 }
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

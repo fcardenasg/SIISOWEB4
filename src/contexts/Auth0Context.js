@@ -97,9 +97,11 @@ export const Auth0Provider = ({ children }) => {
         });
     };
 
-    const resetPassword = (email) => console.log(email);
+    const resetPassword = (email) => {
 
-    const updateProfile = () => {};
+    };
+
+    const updateProfile = () => { };
 
     if (state.isInitialized !== undefined && !state.isInitialized) {
         return <Loader />;

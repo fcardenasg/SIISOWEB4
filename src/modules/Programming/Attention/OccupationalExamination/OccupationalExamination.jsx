@@ -332,7 +332,6 @@ const OccupationalExamination = () => {
             const lsRiesgoHLD = await GetAllRHL(documento);
             const lsRiesgoHLDO = await GetAllRHLOE(documento);
 
-            console.log("datos =", lsRiesgoHLDO);
 
             const dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD,
                 lsRiesgoHLD.data, lsRiesgoHLDO.data);
@@ -435,7 +434,7 @@ const OccupationalExamination = () => {
 
                 setTipoFobia(JSON.parse(lsServerUltimoRegistro.data.tipoFobiaHB));
             }
-        } catch (error) { console.log(error) }
+        } catch (error) { }
     }
 
     useEffect(() => {

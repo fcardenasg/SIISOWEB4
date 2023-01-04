@@ -209,7 +209,6 @@ const ListCIE11 = () => {
             setCie11(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
         }
     }
 
@@ -303,7 +302,6 @@ const ListCIE11 = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
         }
     }
 

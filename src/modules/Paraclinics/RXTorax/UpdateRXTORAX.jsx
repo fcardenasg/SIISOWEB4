@@ -157,7 +157,6 @@ const UpdateRXTORAX = () => {
 
 
         } catch (error) {
-            console.log(error);
         }
     }
 

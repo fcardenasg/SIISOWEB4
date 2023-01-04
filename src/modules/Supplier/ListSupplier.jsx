@@ -225,7 +225,6 @@ const ListSupplier = () => {
                 setRows(lsServer.data);
             }
         } catch (error) {
-            console.log(error);
         }
     }
 

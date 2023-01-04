@@ -165,7 +165,7 @@ const OrdersIndividual = () => {
             setLsProveedorCombo({ ...lsProveedorCombo, lsProveedorCombo1: arrayReady });
 
         } catch (error) {
-            console.log(error);
+
         }
     }
     const handleProveedor1 = (event) => {
@@ -175,7 +175,7 @@ const OrdersIndividual = () => {
             var intCiudad = String(lsProveedor.filter(tipo => tipo.codiProv == event.target.value).map(prov => prov.ciudProv));
             setCiudad({ ...ciudad, ciudad1: intCiudad });
         } catch (error) {
-            console.log(error);
+
         }
     }
     /* SEGUNDA */
@@ -192,7 +192,7 @@ const OrdersIndividual = () => {
             setLsProveedorCombo({ ...lsProveedorCombo, lsProveedorCombo2: arrayReady });
 
         } catch (error) {
-            console.log(error);
+
         }
     }
     const handleProveedor2 = (event) => {
@@ -202,7 +202,7 @@ const OrdersIndividual = () => {
             var intCiudad = String(lsProveedor.filter(tipo => tipo.codiProv == event.target.value).map(prov => prov.ciudProv));
             setCiudad({ ...ciudad, ciudad2: intCiudad });
         } catch (error) {
-            console.log(error);
+
         }
     }
     /* TERCERA */
@@ -219,7 +219,7 @@ const OrdersIndividual = () => {
             setLsProveedorCombo({ ...lsProveedorCombo, lsProveedorCombo3: arrayReady });
 
         } catch (error) {
-            console.log(error);
+
         }
     }
     const handleProveedor3 = (event) => {
@@ -229,7 +229,7 @@ const OrdersIndividual = () => {
             var intCiudad = String(lsProveedor.filter(tipo => tipo.codiProv == event.target.value).map(prov => prov.ciudProv));
             setCiudad({ ...ciudad, ciudad3: intCiudad });
         } catch (error) {
-            console.log(error);
+
         }
     }
     /* CUARTA */
@@ -246,7 +246,7 @@ const OrdersIndividual = () => {
             setLsProveedorCombo({ ...lsProveedorCombo, lsProveedorCombo4: arrayReady });
 
         } catch (error) {
-            console.log(error);
+
         }
     }
     const handleProveedor4 = (event) => {
@@ -256,7 +256,7 @@ const OrdersIndividual = () => {
             var intCiudad = String(lsProveedor.filter(tipo => tipo.codiProv == event.target.value).map(prov => prov.ciudProv));
             setCiudad({ ...ciudad, ciudad4: intCiudad });
         } catch (error) {
-            console.log(error);
+
         }
     }
     /* QUINTA */
@@ -273,7 +273,7 @@ const OrdersIndividual = () => {
             setLsProveedorCombo({ ...lsProveedorCombo, lsProveedorCombo5: arrayReady });
 
         } catch (error) {
-            console.log(error);
+
         }
     }
     const handleProveedor5 = (event) => {
@@ -283,7 +283,7 @@ const OrdersIndividual = () => {
             var intCiudad = String(lsProveedor.filter(tipo => tipo.codiProv == event.target.value).map(prov => prov.ciudProv));
             setCiudad({ ...ciudad, ciudad5: intCiudad });
         } catch (error) {
-            console.log(error);
+
         }
     }
     /* SEXTA */
@@ -300,7 +300,7 @@ const OrdersIndividual = () => {
             setLsProveedorCombo({ ...lsProveedorCombo, lsProveedorCombo6: arrayReady });
 
         } catch (error) {
-            console.log(error);
+
         }
     }
     const handleProveedor6 = (event) => {
@@ -310,7 +310,7 @@ const OrdersIndividual = () => {
             var intCiudad = String(lsProveedor.filter(tipo => tipo.codiProv == event.target.value).map(prov => prov.ciudProv));
             setCiudad({ ...ciudad, ciudad6: intCiudad });
         } catch (error) {
-            console.log(error);
+
         }
     }
     /* DECIMA */
@@ -327,7 +327,7 @@ const OrdersIndividual = () => {
             setLsProveedorCombo({ ...lsProveedorCombo, lsProveedorCombo7: arrayReady });
 
         } catch (error) {
-            console.log(error);
+
         }
     }
     const handleProveedor7 = (event) => {
@@ -337,7 +337,7 @@ const OrdersIndividual = () => {
             var intCiudad = String(lsProveedor.filter(tipo => tipo.codiProv == event.target.value).map(prov => prov.ciudProv));
             setCiudad({ ...ciudad, ciudad7: intCiudad });
         } catch (error) {
-            console.log(error);
+
         }
     }
     /* OCTAVA */
@@ -354,7 +354,7 @@ const OrdersIndividual = () => {
             setLsProveedorCombo({ ...lsProveedorCombo, lsProveedorCombo8: arrayReady });
 
         } catch (error) {
-            console.log(error);
+
         }
     }
     const handleProveedor8 = (event) => {
@@ -364,7 +364,7 @@ const OrdersIndividual = () => {
             var intCiudad = String(lsProveedor.filter(tipo => tipo.codiProv == event.target.value).map(prov => prov.ciudProv));
             setCiudad({ ...ciudad, ciudad8: intCiudad });
         } catch (error) {
-            console.log(error);
+
         }
     }
     /* NOVENA */
@@ -381,7 +381,7 @@ const OrdersIndividual = () => {
             setLsProveedorCombo({ ...lsProveedorCombo, lsProveedorCombo9: arrayReady });
 
         } catch (error) {
-            console.log(error);
+
         }
     }
     const handleProveedor9 = (event) => {
@@ -391,7 +391,7 @@ const OrdersIndividual = () => {
             var intCiudad = String(lsProveedor.filter(tipo => tipo.codiProv == event.target.value).map(prov => prov.ciudProv));
             setCiudad({ ...ciudad, ciudad9: intCiudad });
         } catch (error) {
-            console.log(error);
+
         }
     }
     /* DECIMA */
@@ -408,7 +408,7 @@ const OrdersIndividual = () => {
             setLsProveedorCombo({ ...lsProveedorCombo, lsProveedorCombo10: arrayReady });
 
         } catch (error) {
-            console.log(error);
+
         }
     }
     const handleProveedor10 = (event) => {
@@ -418,7 +418,7 @@ const OrdersIndividual = () => {
             var intCiudad = String(lsProveedor.filter(tipo => tipo.codiProv == event.target.value).map(prov => prov.ciudProv));
             setCiudad({ ...ciudad, ciudad10: intCiudad });
         } catch (error) {
-            console.log(error);
+
         }
     }
 
@@ -430,7 +430,7 @@ const OrdersIndividual = () => {
                 setLsEmployee(lsServerDataEmployee.data);
         } catch (error) {
             setLsEmployee([]);
-            console.log(error);
+
         }
     }
 
@@ -482,7 +482,7 @@ const OrdersIndividual = () => {
                 }));
                 setLsEstudioParaclinico(resultEstudioParaclinico);
             } catch (error) {
-                console.log(error);
+
             }
         }
 

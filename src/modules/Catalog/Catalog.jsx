@@ -58,7 +58,6 @@ const Catalog = () => {
 
                 setTypeCatalog(result);
             } catch (error) {
-                console.log(error);
             }
         }
 

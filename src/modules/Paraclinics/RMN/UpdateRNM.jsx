@@ -157,7 +157,6 @@ const UpdateRNM = () => {
 
 
         } catch (error) {
-            console.log(error);
         }
     }
 

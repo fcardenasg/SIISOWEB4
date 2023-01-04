@@ -36,20 +36,20 @@ const ControllerListen = () => {
             if (isListening) {
                 recognition.start()
                 recognition.onend = () => {
-                    console.log('continue..')
+
                     recognition.start()
                 }
             } else {
                 recognition.stop()
                 recognition.onend = () => {
-                    console.log('Stopped Mic on Click')
+
                 }
             }
             recognition.onstart = () => {
-                console.log('Mics on')
+
             }
             recognition.onresult = event => {
-                console.log("Evento = ", event);
+
                 const transcript = Array.from(event.results)
                     .map(result => result[0])
                     .map(result => result.transcript)
@@ -57,11 +57,11 @@ const ControllerListen = () => {
                 setTextNote(transcript);
 
                 recognition.onerror = event => {
-                    console.log(event.error)
+
                 }
             }
         } catch (error) {
-            console.log(error);
+
         }
     }
 

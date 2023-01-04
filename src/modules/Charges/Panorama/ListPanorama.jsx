@@ -227,7 +227,6 @@ const ListPanorama = () => {
             setPanorama(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
         }
     }
 
@@ -326,7 +325,6 @@ const ListPanorama = () => {
             setSelected([]);
             GetAll();
         } catch (error) {
-            console.log(error);
         }
     }
 

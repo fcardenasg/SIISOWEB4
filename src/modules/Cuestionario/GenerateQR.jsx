@@ -26,7 +26,7 @@ const GenerateQR = () => {
     const handleGenerateQrCode = async () => {
         try {
             const response = await QRCode.toDataURL(text);
-            console.log("response = ", response);
+
             setImageUrl(response);
         } catch (error) {
             if (error == "Error: No input text") {

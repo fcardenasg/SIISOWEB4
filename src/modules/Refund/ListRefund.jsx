@@ -224,7 +224,7 @@ const ListRefund = () => {
             setEvolutionNote(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -318,7 +318,7 @@ const ListRefund = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

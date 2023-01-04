@@ -35,7 +35,6 @@ const RespiratorySymptoms = ({ errors, documento, lsEmployee, ...methods }) => {
             }));
             setLsExpocision(resultFramDeporte);
         } catch (error) {
-            console.log(error);
         }
     }
 

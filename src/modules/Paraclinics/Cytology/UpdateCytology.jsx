@@ -157,7 +157,6 @@ const UpdateCytologia = () => {
 
 
         } catch (error) {
-            console.log(error);
         }
     }
 

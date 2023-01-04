@@ -188,7 +188,6 @@ const UpdateAlcoholAndDrugTesting = () => {
             }));
             setLsConceptoA(resultConceptoA);
         } catch (error) {
-            console.log(error);
         }
     }
 

@@ -175,7 +175,7 @@ const UpdateEvolutionNote = () => {
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -190,7 +190,7 @@ const UpdateEvolutionNote = () => {
                 datos.nota, JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.email,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
-            console.log(DataToUpdate);
+            
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateEvolutionNotes(DataToUpdate);

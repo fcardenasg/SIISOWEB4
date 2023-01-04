@@ -13,7 +13,6 @@ const ViewPDF = ({ id }) => {
                 const lsServer = await GetByIdSGSST(id);
                 setLsData(lsServer.data);
             } catch (error) {
-                console.log(error);
             }
         }
 

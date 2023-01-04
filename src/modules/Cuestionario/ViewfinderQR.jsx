@@ -26,7 +26,7 @@ const ViewfinderQR = () => {
     const theme = useTheme();
 
     const [scanResultWebCam, setScanResultWebCam] = useState({});
-    console.log("scanResultWebCam = ", scanResultWebCam);
+    
     const [result, setResult] = useState(false);
     const [lsQuestionnaire, setLsQuestionnaire] = useState([]);
 
@@ -52,7 +52,7 @@ const ViewfinderQR = () => {
                 })
             }
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -71,7 +71,7 @@ const ViewfinderQR = () => {
                             }
 
                             if (!!error) {
-                                console.info(error);
+                                
                             }
                         }}
                         scanDelay={1000}

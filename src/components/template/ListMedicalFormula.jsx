@@ -136,7 +136,6 @@ const ListMedicalFormula = () => {
                 setLsMedical(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
-                console.log(error);
             }
         }
 

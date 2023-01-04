@@ -97,7 +97,6 @@ const Panorama = () => {
             var lresultRiesgo = await GetSubString(lsResulCode);
             setLsClase(lresultRiesgo);
         } catch (error) {
-            console.log(error);
         }
     };
 
@@ -146,7 +145,6 @@ const Panorama = () => {
             }));
             setLsGradoConSinEPP(lresultGradoConSinEPP);
         } catch (error) {
-            console.log(error);
         }
     }
 

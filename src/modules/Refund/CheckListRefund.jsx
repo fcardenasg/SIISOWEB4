@@ -160,7 +160,6 @@ const CheckListRefund = ({ idReintegro }) => {
                         const DataToInsert = PostListRefund(idReintegro, refund.nombre, refund.idCatalogo, '', false,
                             user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-                        console.log(DataToInsert);
 
                         if (DataToInsert) {
                             const result = await InsertListRefund(DataToInsert);

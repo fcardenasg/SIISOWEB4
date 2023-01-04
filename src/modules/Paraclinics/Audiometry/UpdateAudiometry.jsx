@@ -301,7 +301,7 @@ const UpdateAudiometry = () => {
                 datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO,datos.idCambioEPP, datos.observacionAUDIO,
                 filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-                console.log("Datos => ", DataToUpdate);
+                
 
             if (Object.keys(datos.length !== 0)) {
 

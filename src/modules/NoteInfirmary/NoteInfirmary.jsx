@@ -154,7 +154,7 @@ const NoteInfirmary = () => {
             }));
             setLsDiaTurno(resultDiaTurno);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -168,7 +168,7 @@ const NoteInfirmary = () => {
             const DataToInsert = PostNoteInfirmary(documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
                 JSON.stringify(diagnosticoArray), datos.notaEnfermedad, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            console.log("DATOS = ", DataToInsert);
+            
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertNoteInfirmary(DataToInsert);

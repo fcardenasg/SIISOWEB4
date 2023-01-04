@@ -233,7 +233,7 @@ const ListOrderEPP = () => {
 
 
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -329,7 +329,7 @@ const ListOrderEPP = () => {
             setSelected([]);
             GetAll();
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

@@ -190,7 +190,6 @@ const Refund = () => {
                 datos.idTipoHorario, datos.idOrdenadoPorHorario, FormatDate(datos.fechaInicioHorario), FormatDate(datos.fechaFinHorario),
                 datos.idEstadoCaso, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            console.log(DataToInsert);
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {

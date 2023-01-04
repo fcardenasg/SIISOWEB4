@@ -70,7 +70,6 @@ const UpdateSupplier = () => {
             const lsServerPais = await GetAllByTipoCatalogo(CodCatalogo.CIUDADES);
             setLsCiudad(lsServerPais.data);
         } catch (error) {
-            console.log(error);
         }
     }
 

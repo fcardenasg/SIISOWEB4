@@ -231,7 +231,7 @@ const ListLaboratory = () => {
             setLaboratory(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -326,7 +326,7 @@ const ListLaboratory = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

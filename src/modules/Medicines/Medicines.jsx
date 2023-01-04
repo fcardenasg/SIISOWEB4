@@ -59,7 +59,6 @@ const Medicines = () => {
             }));
             setLsUnidad(resultSupplier);
         } catch (error) {
-            console.log(error);
         }
     }
 

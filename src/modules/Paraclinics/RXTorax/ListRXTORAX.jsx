@@ -236,7 +236,7 @@ const ListRXTORAX = () => {
             setRxtorax(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -331,7 +331,7 @@ const ListRXTORAX = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

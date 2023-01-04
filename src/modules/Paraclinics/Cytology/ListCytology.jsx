@@ -235,7 +235,7 @@ const ListCytology = () => {
             setCytology(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+        
         }
     }
 
@@ -330,7 +330,7 @@ const ListCytology = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+        
         }
     }
 

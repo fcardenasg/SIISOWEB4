@@ -79,7 +79,6 @@ const ChangePassword = () => {
                 setErrorMessage('Digite una contraseña distinta a la anterior');
             } else {
                 const result = await PostChangePasswords(DataToInsert);
-                console.log("result => ", result);
 
                 if (result.data.message === 'La contraseña actual no es correcta') {
                     setOpenError(true);

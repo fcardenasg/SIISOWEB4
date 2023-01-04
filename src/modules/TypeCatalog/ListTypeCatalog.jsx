@@ -315,7 +315,6 @@ const ListTypeCatalog = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
         }
     }
 

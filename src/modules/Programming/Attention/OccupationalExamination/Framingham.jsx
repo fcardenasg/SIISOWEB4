@@ -84,7 +84,6 @@ const Framingham = ({
             }));
             setLsOpcion(resultOpcion);
         } catch (error) {
-            console.log(error);
         }
     }
 

@@ -108,7 +108,7 @@ const UpdateSpirometry = () => {
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
-            console.log(lsServerEmployee, idEmployee)
+            
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -125,7 +125,7 @@ const UpdateSpirometry = () => {
 
 
             const serverData = await GetByIdParaclinics(id);
-            console.log(serverData)
+            
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
                 setLsSpirometry(serverData.data);
@@ -172,7 +172,7 @@ const UpdateSpirometry = () => {
 
 
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

@@ -236,7 +236,7 @@ const ListOccupationalExamination = () => {
             setLsOccupationalExamination(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+        
         }
     }
 
@@ -346,7 +346,7 @@ const ListOccupationalExamination = () => {
             setSelected([]);
             GetAll();
         } catch (error) {
-            console.log(error);
+        
         }
     }
 

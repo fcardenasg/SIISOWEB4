@@ -326,7 +326,6 @@ const ListPsychologicalCounseling = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
         }
     }
 

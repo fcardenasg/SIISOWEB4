@@ -198,7 +198,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
             }));
             setLsCargo(resultCargo);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -221,7 +221,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 });
             }
         } catch (error) {
-            console.log(error);
+            
         }
     };
 
@@ -240,7 +240,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 });
             }
         } catch (error) {
-            console.log(error);
+            
         }
     };
 
@@ -271,7 +271,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 })
             }
         } catch (error) {
-            console.log(error);
+            
         }
     };
 
@@ -302,7 +302,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                 })
             }
         } catch (error) {
-            console.log(error);
+            
         }
     };
 

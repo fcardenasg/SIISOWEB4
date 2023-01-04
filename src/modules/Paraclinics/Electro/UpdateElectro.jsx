@@ -157,7 +157,6 @@ const UpdateElectro = () => {
 
 
         } catch (error) {
-            console.log(error);
         }
     }
 

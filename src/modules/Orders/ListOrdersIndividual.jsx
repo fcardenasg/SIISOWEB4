@@ -229,7 +229,7 @@ const ListOrdersIndividual = () => {
             setLsOrders(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -323,7 +323,7 @@ const ListOrdersIndividual = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

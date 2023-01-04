@@ -236,7 +236,6 @@ const ListCharges = () => {
             setCharges(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
         }
     }
 
@@ -341,7 +340,6 @@ const ListCharges = () => {
             setSelected([]);
             GetAll();
         } catch (error) {
-            console.log(error);
         }
     }
 

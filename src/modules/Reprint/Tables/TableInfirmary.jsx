@@ -166,7 +166,6 @@ const TableInfirmary = () => {
                 setLsNoteInfirmary(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
-                console.log(error);
             }
         }
 

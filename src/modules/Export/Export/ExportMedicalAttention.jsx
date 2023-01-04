@@ -19,7 +19,7 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
         try {
             const lsDataExportHistory = await GetAllMedicalHistory(0, 0);
             const lsDataExporNote = await GetAllEvolutionNote(0, 0);
-            console.log(lsDataExportHistory, lsDataExporNote);
+            
 
             if (lsDataExportHistory.status === 200 && lsDataExporNote.status === 200) {
                 var resultHistory = [];

@@ -288,7 +288,6 @@ const UpdateVisiometrics = () => {
             setLsProveedor(resultProveedor);
 
         } catch (error) {
-            console.log(error);
         }
     }
 

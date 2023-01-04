@@ -185,7 +185,7 @@ const Spirometry = () => {
 
 
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -208,7 +208,7 @@ const Spirometry = () => {
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,'',
                 DefaultValue.SINREGISTRO_GLOBAL, false, '', filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-                console.log("Datos => ", DataToInsert);
+                
 
 
             if (Object.keys(datos.length !== 0)) {

@@ -36,7 +36,6 @@ const SubRowHistoricalDLTD = ({ documento }) => {
                 if (lsServer.status === 200)
                     setRows(lsServer.data.entities);
             } catch (error) {
-                console.log(error);
             }
         }
 

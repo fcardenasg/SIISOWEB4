@@ -90,7 +90,7 @@ const DashboardQuestionnaire = () => {
                 }
             }
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -133,7 +133,7 @@ const DashboardQuestionnaire = () => {
             }));
             setLsVacunas(resultVacunas);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

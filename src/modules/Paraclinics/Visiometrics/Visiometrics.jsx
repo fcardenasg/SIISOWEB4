@@ -267,7 +267,6 @@ const Visiometrics = () => {
 
 
         } catch (error) {
-            console.log(error);
         }
     }
 

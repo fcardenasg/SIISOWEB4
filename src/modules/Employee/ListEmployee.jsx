@@ -283,7 +283,7 @@ const ListEmployee = () => {
             setEmployee(lsServer.data);
             setRows(lsServer.data);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -415,7 +415,7 @@ const ListEmployee = () => {
             setSearch('');
             GetAll();
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

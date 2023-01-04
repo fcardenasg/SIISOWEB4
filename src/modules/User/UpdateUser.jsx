@@ -87,7 +87,6 @@ const UpdateUser = () => {
             }));
             setLsEspecialidad(resultEspecialidad);
         } catch (error) {
-            console.log(error);
         }
     }
 

@@ -324,7 +324,7 @@ const Employee = () => {
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(datos.termDate),
                 DefaultValue.BANDERA_DRUMMOND, datos.ges, user.email, FormatDate(new Date()), '', FormatDate(new Date()), imgSrc,datos.oficio);
 
-            console.log("Datos =", DataToInsert);
+            
 
             if (imgSrc != null) {
                 if (Object.keys(datos.length !== 0)) {

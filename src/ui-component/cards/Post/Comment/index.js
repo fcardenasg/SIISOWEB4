@@ -128,7 +128,7 @@ const Comment = ({ comment, handleCommentLikes, handleReplayLikes, postId, reply
 
     const { handleSubmit, errors, reset } = methods;
     const onSubmit = async (reply) => {
-        console.log("Aquí que llega", reply);
+        
         handleChangeReply();
         const replyId = uniqueId('#REPLY_');
         const newReply = {
@@ -148,7 +148,7 @@ const Comment = ({ comment, handleCommentLikes, handleReplayLikes, postId, reply
         reset({ name: '' });
     };
 
-    console.log("onSubmit = ", onSubmit);
+    
 
     return (
         <>

@@ -91,7 +91,7 @@ const ViewCall = ({ onCancel, ...others }) => {
                 try {
                     await client.join(config.appId, name, config.token, null);
                 } catch (error) {
-                    console.log("error");
+                    
                 }
 
                 if (tracks) await client.publish([tracks[0], tracks[1]]);
@@ -102,7 +102,7 @@ const ViewCall = ({ onCancel, ...others }) => {
                 try {
                     init(channelName);
                 } catch (error) {
-                    console.log(error);
+                    
                 }
             }
         }

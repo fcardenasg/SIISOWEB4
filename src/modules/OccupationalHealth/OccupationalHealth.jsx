@@ -109,27 +109,27 @@ const MedicalAdvice = () => {
         if (isListening) {
             mic.start()
             mic.onend = () => {
-                console.log('continue..')
+                
                 mic.start()
             }
         } else {
             mic.stop()
             mic.onend = () => {
-                console.log('Stopped Mic on Click')
+                
             }
         }
         mic.onstart = () => {
-            console.log('Mics on')
+            
         }
         mic.onresult = event => {
             const transcript = Array.from(event.results)
                 .map(result => result[0])
                 .map(result => result.transcript)
                 .join('')
-            console.log(transcript)
+            
             setNote(transcript)
             mic.onerror = event => {
-                console.log(event.error)
+                
             }
         }
     }
@@ -169,7 +169,7 @@ const MedicalAdvice = () => {
             }));
             setCompany(resultCompany);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

@@ -172,7 +172,6 @@ const UpdateAssistance = () => {
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
         } catch (error) {
-            console.log(error);
         }
     }
 

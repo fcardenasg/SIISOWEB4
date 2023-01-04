@@ -73,7 +73,7 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
             }));
             setLsCie11(resultCie11);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -92,7 +92,7 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
                 lsAtencion.id, saveTipoOrden, JSON.stringify(diagnostico), datos.descripcion,
                 user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            console.log("Datos = ", DataToInsert);
+            
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertMedicalFormula(DataToInsert);

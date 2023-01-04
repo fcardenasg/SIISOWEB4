@@ -228,7 +228,7 @@ const ListOccupationalMedicine = () => {
             setOccupationalMedicine(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -322,7 +322,7 @@ const ListOccupationalMedicine = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

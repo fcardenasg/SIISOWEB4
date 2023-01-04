@@ -84,14 +84,12 @@ const UpdateCharges = () => {
             setLsGes(resultGes);
 
             const lsServerCargo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RosterPosition);
-            console.log("lsServerCargo = ", lsServerCargo);
             var resultCargo = lsServerCargo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsCargo(resultCargo);
         } catch (error) {
-            console.log(error);
         }
     }
 

@@ -149,19 +149,14 @@ const Cytologia = () => {
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
-
-
-
-
         } catch (error) {
-            console.log(error);
         }
     }
 
     useEffect(() => {
         GetAll();
     }, [])
-   
+
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_CITOLOGIA, documento,
@@ -174,7 +169,7 @@ const Cytologia = () => {
                 '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
                 false, false, false, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,'',
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
                 DefaultValue.SINREGISTRO_GLOBAL, false, '', filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
 

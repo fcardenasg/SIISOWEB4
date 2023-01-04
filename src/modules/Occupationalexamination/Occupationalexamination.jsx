@@ -149,7 +149,6 @@ const OccupationalExamination = () => {
             if (lsServerUltimoRegistro.status === 200)
                 setLsLastRecord(lsServerUltimoRegistro.data);
         } catch (error) {
-            console.log(error);
         }
     }
 
@@ -163,7 +162,6 @@ const OccupationalExamination = () => {
             handleLastRecord(event.target.value);
         } catch (error) {
             setLsEmployee([]);
-            console.log(error);
         }
     }
 
@@ -181,7 +179,7 @@ const OccupationalExamination = () => {
                 }));
                 setLsAtencionEMO(resultAtencionEMO);
             } catch (error) {
-                console.log(error);
+
             }
         }
 
@@ -279,7 +277,6 @@ const OccupationalExamination = () => {
                 datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA,
             );
 
-            console.log("Datos = ", DataToInset);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertOccupationalExamination(DataToInset);

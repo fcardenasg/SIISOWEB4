@@ -69,10 +69,7 @@ const UpdateCIE11 = () => {
                 label: item.descripcion
             }));
             setLsSegmentoAfectado(resultSegAfectado);
-
-            console.log(event.target.value);
         } catch (error) {
-            console.log(error);
         }
     }
 
@@ -86,9 +83,7 @@ const UpdateCIE11 = () => {
             }));
             setSubsegmento(resultSubsegmento);
 
-            console.log(event.target.value);
         } catch (error) {
-            console.log(error);
         }
     }
 
@@ -122,7 +117,7 @@ const UpdateCIE11 = () => {
             }));
             setLsSegmentoAgrupado(resultSegAgrupado);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

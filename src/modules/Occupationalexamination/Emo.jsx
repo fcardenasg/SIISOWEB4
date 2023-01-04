@@ -260,7 +260,6 @@ const Emo = ({
             setLsTipoFobia(resultTipoFobia);
 
         } catch (error) {
-            console.log(error);
         }
     }
 

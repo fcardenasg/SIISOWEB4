@@ -54,7 +54,6 @@ const UpdateMedicines = () => {
             }));
             setLsSupplier(resultSupplier);
         } catch (error) {
-            console.log(error);
         }
     }
 

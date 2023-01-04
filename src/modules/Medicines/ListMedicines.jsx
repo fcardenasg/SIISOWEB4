@@ -320,7 +320,7 @@ const ListMedicines = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

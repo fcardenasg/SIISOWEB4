@@ -154,7 +154,6 @@ const RNM = () => {
 
 
         } catch (error) {
-            console.log(error);
         }
     }
 

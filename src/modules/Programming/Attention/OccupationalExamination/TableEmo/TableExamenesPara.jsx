@@ -146,11 +146,11 @@ const TableExamenesPara = ({ idTipoParaclinico = '', documento = '' }) => {
         async function GetAll() {
             try {
                 const lsServer = await GetAllByDocumentoParacli(0, 0, idTipoParaclinico, documento);
-                console.log(lsServer)
+                
                 setLsExamenesPara(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
-                console.log(error);
+                
             }
         }
 

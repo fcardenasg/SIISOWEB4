@@ -187,7 +187,7 @@ const WorkAbsenteeism = () => {
             }));
             setLsEstadoCaso(resultEstadoCaso);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -204,7 +204,7 @@ const WorkAbsenteeism = () => {
             }));
             setMunicipioE(resultMunicipio);
         } catch (error) {
-            console.log(error);
+            
         }
     };
 
@@ -221,7 +221,7 @@ const WorkAbsenteeism = () => {
             }));
             setMunicipioMedico(resultMunicipio);
         } catch (error) {
-            console.log(error);
+            
         }
     };
 
@@ -238,7 +238,7 @@ const WorkAbsenteeism = () => {
             }));
             setLsSegmentoAfectado(resultSegAfectado);
         } catch (error) {
-            console.log(error);
+            
             setLsSegmentoAfectado([]);
         }
     }
@@ -255,7 +255,7 @@ const WorkAbsenteeism = () => {
             }));
             setLsSubsegmento(resultSubsegmento);
         } catch (error) {
-            console.log(error);
+            
             setLsSubsegmento([]);
         }
     }
@@ -270,7 +270,7 @@ const WorkAbsenteeism = () => {
                 setLsCIE11(resultCIE11);
             }
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

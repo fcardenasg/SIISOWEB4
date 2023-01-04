@@ -277,7 +277,6 @@ const UpdateLaboratory = () => {
             setLsProveedor(resultProveedor);
 
         } catch (error) {
-            console.log(error);
         }
     }
 

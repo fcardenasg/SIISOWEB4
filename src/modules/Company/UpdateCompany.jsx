@@ -51,7 +51,6 @@ const UpdateCompany = () => {
                 setLsCompany(lsServer.data);
             }
         } catch (error) {
-            console.log(error);
         }
     }
 
@@ -64,7 +63,6 @@ const UpdateCompany = () => {
             const DataToInsert = PutCompany(datos.codigo, datos.descripcionSpa, datos.email, datos.celular, datos.gerente,
                 lsCompany.usuarioRegistro, lsCompany.fechaRegistro, user.email, FormatDate(new Date()));
 
-            console.log("Datos = ", datos);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateCompanys(DataToInsert);

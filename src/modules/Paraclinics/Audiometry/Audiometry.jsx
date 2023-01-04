@@ -234,7 +234,7 @@ const Audiometry = () => {
                 datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
                 filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            console.log("Datos => ", DataToInsert);
+            
 
             if (Object.keys(datos.length !== 0)) {
                 if (filePdf) {

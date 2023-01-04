@@ -152,7 +152,7 @@ const Laboratory = () => {
 
 
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -180,7 +180,7 @@ const Laboratory = () => {
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,'',
                 DefaultValue.SINREGISTRO_GLOBAL, false, '', filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
           
-                console.log("DataToInsert =", DataToInsert);
+                
 
             if (Object.keys(datos.length !== 0)) {
                 if (filePdf) {

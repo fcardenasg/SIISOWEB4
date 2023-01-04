@@ -241,7 +241,7 @@ const ListWorkAbsenteeism = () => {
             setLsWorkAbsenteeism(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -336,7 +336,7 @@ const ListWorkAbsenteeism = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

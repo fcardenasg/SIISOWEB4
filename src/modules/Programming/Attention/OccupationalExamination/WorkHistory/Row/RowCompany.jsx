@@ -98,7 +98,7 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
             }
 
         } catch (error) {
-            console.log(error);
+
         }
 
     }
@@ -132,7 +132,7 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
             const lsServerRiesgoECFMovimiento = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, documento);
             if (lsServerRiesgoECFMovimiento.status === 200)
                 setLsHisECFMovimiento(lsServerRiesgoECFMovimiento.data.entities);
-        } catch (error) { console.log(error); }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -169,7 +169,7 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
             if (lsServerRiesgoECFPostura.status === 200)
                 setLsECFPostura(lsServerRiesgoECFPostura.data.entities);
         } catch (error) {
-            console.log(error);
+
         }
     }
 
@@ -182,7 +182,7 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
             if (id == 8) setOpenHistorico(true);
             setNumId(id);
         } catch (error) {
-            console.log(error);
+
         }
     }
 
@@ -227,7 +227,7 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
                 }
             });
         } catch (error) {
-            console.log(error);
+
         }
     }
 
@@ -262,7 +262,7 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
             }
 
         } catch (error) {
-            console.log(error);
+
         }
 
     }
@@ -279,7 +279,7 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
                 }
             });
         } catch (error) {
-            console.log(error);
+
         }
     }
 

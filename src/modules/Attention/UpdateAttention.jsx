@@ -254,7 +254,6 @@ const UpdateAttention = () => {
             }
 
         } catch (error) {
-            console.log(error);
         }
     };
 

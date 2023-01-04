@@ -65,7 +65,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
                     }
                 }
             } catch (error) {
-                console.log(error);
+                
             }
         }
 
@@ -102,7 +102,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
 
 
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

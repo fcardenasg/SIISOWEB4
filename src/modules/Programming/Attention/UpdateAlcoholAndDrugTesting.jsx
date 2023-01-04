@@ -233,7 +233,6 @@ const UpdateAlcoholAndDrugTesting = () => {
                 datos.idResultado5, datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, "", concepto,
                 realizada, MotivoAsistencia, Observacion, user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            console.log("DataToInsert => ", DataToInsert);
 
             if (realizada === DefaultValue.Opcion_SI && conceptoAptitud === '') {
                 setOpenError(true);

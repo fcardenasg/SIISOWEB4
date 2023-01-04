@@ -24,7 +24,7 @@ import { FormatDate } from 'components/helpers/Format';
 import Accordion from 'components/accordion/Accordion';
 import PhotoModel from 'components/form/PhotoModel';
 import { SNACKBAR_OPEN } from 'store/actions';
-import {  GetByIdWorkAbsenteeism, UpdateWorkAbsenteeisms } from 'api/clients/WorkAbsenteeismClient';
+import { GetByIdWorkAbsenteeism, UpdateWorkAbsenteeisms } from 'api/clients/WorkAbsenteeismClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
@@ -139,27 +139,27 @@ const UpdateWorkAbsenteeism = () => {
         if (isListening) {
             mic.start()
             mic.onend = () => {
-                console.log('continue..')
+
                 mic.start()
             }
         } else {
             mic.stop()
             mic.onend = () => {
-                console.log('Stopped Mic on Click')
+
             }
         }
         mic.onstart = () => {
-            console.log('Mics on')
+
         }
         mic.onresult = event => {
             const transcript = Array.from(event.results)
                 .map(result => result[0])
                 .map(result => result.transcript)
                 .join('')
-            console.log(transcript)
+
             setNote(transcript)
             mic.onerror = event => {
-                console.log(event.error)
+
             }
         }
     }
@@ -303,7 +303,7 @@ const UpdateWorkAbsenteeism = () => {
             }));
             setCompany(resultCompany);
         } catch (error) {
-            console.log(error);
+
         }
     }
 
@@ -369,7 +369,7 @@ const UpdateWorkAbsenteeism = () => {
             }));
             setLsMunicipioE(resultMunicipio);
         } catch (error) {
-            console.log(error);
+
         }
     };
 
@@ -386,7 +386,7 @@ const UpdateWorkAbsenteeism = () => {
             }));
             setLsMunicipioMedico(resultMunicipio);
         } catch (error) {
-            console.log(error);
+
         }
     };
 
@@ -403,7 +403,7 @@ const UpdateWorkAbsenteeism = () => {
             }));
             setLsSegmentoAfectado(resultSegAfectado);
         } catch (error) {
-            console.log(error);
+
             setLsSegmentoAfectado([]);
         }
     }
@@ -420,7 +420,7 @@ const UpdateWorkAbsenteeism = () => {
             }));
             setLsSubsegmento(resultSubsegmento);
         } catch (error) {
-            console.log(error);
+
             setLsSubsegmento([]);
         }
     }
@@ -435,7 +435,7 @@ const UpdateWorkAbsenteeism = () => {
                 setLsCIE11(resultCIE11);
             }
         } catch (error) {
-            console.log(error);
+
         }
     }
 
@@ -474,7 +474,7 @@ const UpdateWorkAbsenteeism = () => {
 
                 datos.observacion, usuario, FormatDate(fechaModifica), usuario, dateNow, tipoContrato, type, dateNow, usuario);
 
-            console.log("DataToUpdate = ", DataToUpdate);
+
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateWorkAbsenteeisms(DataToUpdate);

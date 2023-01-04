@@ -41,7 +41,6 @@ const DetailsEmployee = ({ id }) => {
                 setEmployee(lsServer.data);
             }
         } catch (error) {
-            console.log(error);
         }
     }
 

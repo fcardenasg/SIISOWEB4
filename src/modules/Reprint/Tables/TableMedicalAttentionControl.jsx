@@ -168,7 +168,6 @@ const TableMedicalAttentionControl = () => {
                 setRows(lsServer.data.entities);
 
             } catch (error) {
-                console.log(error);
             }
         }
 

@@ -16,7 +16,6 @@ const UpdateData = ({ children, url }) => {
                 setEntidad(lsServer.data);
             }
         } catch (error) {
-            console.log(error);
         }
     }
 

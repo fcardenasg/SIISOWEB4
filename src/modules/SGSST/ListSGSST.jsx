@@ -222,7 +222,7 @@ const ListSGSST = () => {
             setLsSGSST(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -317,7 +317,7 @@ const ListSGSST = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

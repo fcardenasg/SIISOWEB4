@@ -85,7 +85,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
             }));
             setLsCie11(resultCie11);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -104,7 +104,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, setUpdateMedicalFormula, s
                 lsAtencion.id, saveTipoOrden, JSON.stringify(diagnostico), datos.descripcion,
                 user.email, lsMedicalFormula.usuarioRegistro, lsMedicalFormula.fechaRegistro, user.email, FormatDate(new Date()));
 
-            console.log("Datos = ", DataToInsert);
+            
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateMedicalFormulas(DataToInsert);

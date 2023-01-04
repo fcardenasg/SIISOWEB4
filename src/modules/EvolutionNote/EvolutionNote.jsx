@@ -163,7 +163,7 @@ const EvolutionNote = () => {
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

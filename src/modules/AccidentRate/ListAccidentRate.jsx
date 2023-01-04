@@ -229,7 +229,6 @@ const ListAccidentRate = () => {
             setlsAccidentRate(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
         }
     }
 
@@ -324,7 +323,6 @@ const ListAccidentRate = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
         }
     }
 

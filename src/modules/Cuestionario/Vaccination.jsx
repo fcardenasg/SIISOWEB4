@@ -63,7 +63,7 @@ const Vaccination = () => {
                 }
             }
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -78,7 +78,7 @@ const Vaccination = () => {
             }));
             setCatalog(resultCatalog);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

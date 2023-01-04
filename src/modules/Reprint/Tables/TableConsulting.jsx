@@ -168,7 +168,7 @@ const TableConsulting = () => {
                 setLsConsulting(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
-                console.log(error);
+                
             }
         }
 
@@ -181,7 +181,7 @@ const TableConsulting = () => {
             const lsDataReport = await GetByIdAdvice(id);
             const lsDataUser = await GetByMail(user.email);
 
-            console.log("ID = ", id, lsDataReport);
+            
 
             if (lsDataReport.status === 200) {
                 if (lsDataReport.data.idTipoAtencion === DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA) {

@@ -248,7 +248,7 @@ const ListSupplier = () => {
             setSupplier(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -353,7 +353,7 @@ const ListSupplier = () => {
             setSelected([]);
             GetAll();
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

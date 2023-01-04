@@ -237,7 +237,7 @@ const ListRNM = () => {
             setRnm(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -332,7 +332,7 @@ const ListRNM = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

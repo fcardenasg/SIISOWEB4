@@ -154,7 +154,6 @@ const PSA = () => {
 
 
         } catch (error) {
-            console.log(error);
         }
     }
 

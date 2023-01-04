@@ -228,7 +228,7 @@ const ListMedicalFormula = ({ setNewMedicalFormula, setListMedicalFormula, setUp
                 setRows(lsServer.data.entities);
             }
         } catch (error) {
-            console.log(error);
+    
         }
     }
 
@@ -321,7 +321,7 @@ const ListMedicalFormula = ({ setNewMedicalFormula, setListMedicalFormula, setUp
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+    
         }
     }
 

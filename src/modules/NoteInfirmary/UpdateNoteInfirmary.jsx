@@ -153,7 +153,6 @@ const UpdateNoteInfirmary = () => {
             }));
             setLsDiaTurno(resultDiaTurno);
         } catch (error) {
-            console.log(error);
         }
     }
 

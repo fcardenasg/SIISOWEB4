@@ -229,7 +229,7 @@ const ListOtherAdvice = () => {
             setMedicalAdvice(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -326,7 +326,7 @@ const ListOtherAdvice = () => {
             setSelected([]);
             getAll();
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

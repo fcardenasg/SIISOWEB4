@@ -14,7 +14,6 @@ export async function postData(url = '', datos = {}, headersVali = false) {
                 if (respuesta.status !== 200) throw Error(respuesta.status);
                 return respuesta;
             }).catch((error) => {
-                console.log(error);
             })
         } catch (error) { }
     } else {
@@ -27,7 +26,6 @@ export async function postData(url = '', datos = {}, headersVali = false) {
                 if (respuesta.status !== 200) throw Error(respuesta.status);
                 return respuesta;
             }).catch((error) => {
-                console.log(error);
             })
         } catch (error) { }
     }
@@ -44,7 +42,6 @@ export async function getData(url = '', parametros = {}) {
                 if (respuesta.status !== 200) throw Error(respuesta.status);
                 return respuesta;
             }).catch((error) => {
-                console.log(error);
             })
     } catch (error) { }
 }
@@ -59,7 +56,6 @@ export async function putData(url = '', datos = {}) {
             if (respuesta.status !== 200) throw Error(respuesta.status);
             return respuesta;
         }).catch((error) => {
-            console.log(error);
         })
     } catch (error) { }
 }
@@ -75,7 +71,6 @@ export async function deleteData(url = '', parametros = {}) {
 
                 return respuesta;
             }).catch((error) => {
-                console.log(error);
             })
     }
     catch (error) { }

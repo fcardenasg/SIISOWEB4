@@ -232,7 +232,7 @@ const ListSpirometry = () => {
             setSpirometry(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 
@@ -327,7 +327,7 @@ const ListSpirometry = () => {
                     setSelected([]);
             });
         } catch (error) {
-            console.log(error);
+            
         }
     }
 

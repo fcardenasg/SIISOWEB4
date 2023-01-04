@@ -5,7 +5,6 @@ const FormatDate = (date = new Date()) => {
         const fechaFormat = new Date(date).toISOString().split('T')[0];
         return fechaFormat;
     } catch (error) {
-        console.log(error);
     }
 }
 
@@ -1348,7 +1347,6 @@ function PuntajeFr(frEdad = 0, frColesterol = 0, frHdl = 0, frGlicemia = 0, frTe
             parseInt(frGlicemia) + parseInt(frTensionArterial) + parseInt(frTabaquismo));
         return puntaje;
     } catch (error) {
-        console.log(error)
     }
 }
 

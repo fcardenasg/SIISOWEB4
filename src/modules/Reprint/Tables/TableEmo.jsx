@@ -167,7 +167,7 @@ const TableEmo = () => {
                 setLsOccupationalExamination(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
-                console.log(error);
+                
             }
         }
 
