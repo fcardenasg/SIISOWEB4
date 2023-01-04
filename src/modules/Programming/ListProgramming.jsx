@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Grid, InputAdornment, OutlinedInput, TablePagination, Typography } from '@mui/material';
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import ViewProgramming from './ViewProgramming';
 import MainCard from 'ui-component/cards/MainCard';
@@ -130,12 +131,13 @@ const ListProgramming = () => {
                     </Grid>
 
                     <Grid item xs={4} md={2}>
-                        <AnimateButton>
-                            <Button variant="outlined" fullWidth onClick={() => navigate("/dashboard/ltd")}>
-                                {TitleButton.Cancelar}
-                            </Button>
-                        </AnimateButton>
-                    </Grid>
+                                    <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                        onClick={() => navigate("/dashboard/ltd")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </Grid>
+
+
 
                 </Grid>
             }
