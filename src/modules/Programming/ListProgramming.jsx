@@ -11,7 +11,6 @@ import { IconSearch } from '@tabler/icons';
 import { GetAllAtencion } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
 import { DefaultValue, TitleButton } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import { useNavigate } from 'react-router-dom';
 
 function descendingComparator(a, b, orderBy) {
@@ -42,6 +41,7 @@ const ListProgramming = () => {
     const [lsProgramming, setLsProgramming] = useState([]);
     const [rows, setRows] = useState([]);
     const [search, setSearch] = useState('');
+    const [messageAtencion, setMessageAtencion] = useState('');
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(12);
@@ -81,10 +81,21 @@ const ListProgramming = () => {
 
     const getAll = async () => {
         try {
+            setMessageAtencion('');
+            setLsProgramming([]);
+
             await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO).then(response => {
-                if (response.status === 200) {
+                console.log("respuesta => ", response);
+                if (response.data === 'No hay Atenciones') {
+
+                    setMessageAtencion(response.data);
+
+                } else if (response.data.entities.length !== 0) {
+
                     setLsProgramming(response.data.entities);
                     setRows(response.data.entities);
+                } else {
+
                 }
             });
         } catch (error) { }
@@ -104,14 +115,20 @@ const ListProgramming = () => {
                     <ViewProgramming key={index} programming={programming} getAll={getAll} />
                 </Grid>
             ));
-    } else usersResult = <Cargando />
+    } else if (messageAtencion !== '') {
+        usersResult = (
+            <Grid item xs={12} sm={6} lg={4}>
+                <Typography variant="h3">{messageAtencion}</Typography>
+            </Grid>
+        )
+    }
 
     return (
         <MainCard
             title={
                 <Grid container alignItems="center" spacing={gridSpacing}>
-                    <Grid item xs={12} md={7}>
-                        <Typography variant="h4">LISTA DE PROGRAMACIÓN</Typography>
+                    <Grid item xs={12} md={7.5}>
+                        <Typography variant="h3">LISTA DE PROGRAMACIÓN</Typography>
                     </Grid>
 
                     <Grid item xs={8} md={3}>
@@ -130,15 +147,12 @@ const ListProgramming = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={4} md={2}>
-                                    <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                        onClick={() => navigate("/dashboard/ltd")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </Grid>
-
-
-
+                    <Grid item xs={4} md={1.5}>
+                        <Button fullWidth variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                            onClick={() => navigate("/dashboard/ltd")}>
+                            {TitleButton.Cancelar}
+                        </Button>
+                    </Grid>
                 </Grid>
             }
         >

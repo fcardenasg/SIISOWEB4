@@ -3,14 +3,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { GetAllEmployee, DeleteEmployee, GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -40,9 +38,7 @@ import MainCard from 'ui-component/cards/MainCard';
 // Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
@@ -283,7 +279,7 @@ const ListEmployee = () => {
             setEmployee(lsServer.data);
             setRows(lsServer.data);
         } catch (error) {
-            
+
         }
     }
 
@@ -415,7 +411,7 @@ const ListEmployee = () => {
             setSearch('');
             GetAll();
         } catch (error) {
-            
+
         }
     }
 
@@ -510,30 +506,31 @@ const ListEmployee = () => {
                                         <ExcelColumn label="Fecha de Modificación" value={(fe) => ViewFormat(fe.fechaModifico)} />
                                     </ExcelSheet>
                                 </ExcelFile>
-                           </Grid>
-                           <Grid item xs={2}>
-                                <Tooltip disabled={idCheck === '' ? true : false} title="Impresión" onClick={handleClickReport} sx={{ mx: 1 }}>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Tooltip disabled={idCheck === '' ? true : false} title="Impresión" onClick={handleClickReport}>
                                     <IconButton size="large">
                                         <PrintIcon />
                                     </IconButton>
                                 </Tooltip>
-                                </Grid>
+                            </Grid>
 
-                                {/* product add & dialog */}
-                                <Grid item xs={4}>
-                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                        onClick={() => navigate("/employee/add")}>
-                                        {TitleButton.Agregar}
-                                    </Button>
-                                </Grid>
+                            {/* product add & dialog */}
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/employee/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
-                                <Grid item xs={4}>
-                                    <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                        onClick={() => navigate("/dashboard/ltd")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </Grid>
-                           
+                            <Grid item xs={4}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/dashboard/ltd")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+
                         </Grid>
                     </Grid>
                 </Grid>

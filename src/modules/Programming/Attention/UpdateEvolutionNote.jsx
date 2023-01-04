@@ -65,8 +65,8 @@ import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import ListPlantillaClinicHistory from 'components/template/ListPlantillaClinicHistory';
-import { GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import ListPlantillaClinicHistory from 'components/template/ListPlantillaClinicHistory'
+import ListPlantillaEvolutionNote from 'components/template/ListPlantillaEvolutionNote';
 
 const validationSchema = yup.object().shape({
     dx1: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -149,7 +149,8 @@ const UpdateEvolutionNote = () => {
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openExamen, setOpenExamen] = useState(false);
     const [openExamenFisico, setOpenExamenFisico] = useState(false);
-    const [openVistaDisenio, setOpenVistaDisenio] = useState(false);
+    const [openNotaEvolucion, setOpenNotaEvolucion] = useState(false);
+    const [openHistoriaClinica, setOpenHistoriaClinica] = useState(false);
 
     const [lsAtencionn, setLsAtencionn] = useState([]);
     const [lsAtencion, setLsAtencion] = useState([]);
@@ -405,15 +406,17 @@ const UpdateEvolutionNote = () => {
             </FullScreenDialog>
 
             <FullScreenDialog
-                open={openVistaDisenio}
+                open={openNotaEvolucion}
                 title="VISTA HISTORICO NOTAS DE EVOLUCIÓN"
-                handleClose={() => setOpenVistaDisenio(false)}
-            ></FullScreenDialog>
+                handleClose={() => setOpenNotaEvolucion(false)}
+            >
+                <ListPlantillaEvolutionNote />
+            </FullScreenDialog>
 
             <FullScreenDialog
-                open={openVistaDisenio}
+                open={openHistoriaClinica}
                 title="VISTA HISTORICO DE HISTORIAS CLINICAS"
-                handleClose={() => setOpenVistaDisenio(false)}
+                handleClose={() => setOpenHistoriaClinica(false)}
             >
                 <ListPlantillaClinicHistory />
             </FullScreenDialog>
@@ -563,6 +566,7 @@ const UpdateEvolutionNote = () => {
                                 <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                                     <DetailedIcon
                                         xs={1}
+                                        title={DetailIcons[0].title}
                                         onClick={() => setOpenTemplate(true)}
                                         icons={DetailIcons[0].icons}
                                     />
@@ -598,14 +602,14 @@ const UpdateEvolutionNote = () => {
                                     <DetailedIcon
                                         xs={1}
                                         title={DetailIcons[5].title}
-                                        onClick={() => setOpenVistaDisenio(true)}
+                                        onClick={() => setOpenHistoriaClinica(true)}
                                         icons={DetailIcons[5].icons}
                                     />
 
                                     <DetailedIcon
                                         xs={1}
                                         title={DetailIcons[6].title}
-                                        onClick={() => setOpenVistaDisenio(true)}
+                                        onClick={() => setOpenNotaEvolucion(true)}
                                         icons={DetailIcons[6].icons}
                                     />
                                 </Grid>
