@@ -19,6 +19,9 @@ import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import { generateReport } from '../Programming/Attention/OccupationalExamination/MedicalOrder/Report';
+import { GetByMail } from 'api/clients/UserClient';
+import { GetByIdMedicalFormula  } from 'api/clients/MedicalFormulaClient';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import InputSelect from 'components/input/InputSelect';
@@ -49,7 +52,9 @@ const MedicalFormula = () => {
 
     const [textDx1, setTextDx1] = useState('');
     const [lsDx1, setLsDx1] = useState([]);
-
+    const [openReport, setOpenReport] = useState(false);
+    const [resultData, setResultData] = useState([]);
+    const [dataPDF, setDataPDF] = useState(null);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
@@ -137,6 +142,19 @@ const MedicalFormula = () => {
     useEffect(() => {
         getAll();
     }, [])
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdMedicalFormula(resultData.id);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
+
 
     const handleClick = async (datos) => {
         try {
@@ -307,6 +325,14 @@ const MedicalFormula = () => {
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
+                                
+                                <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                                    {TitleButton.Imprimir}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
