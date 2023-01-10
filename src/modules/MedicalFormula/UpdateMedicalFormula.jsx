@@ -11,7 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import ViewEmployee from 'components/views/ViewEmployee';
-import { MessageSuccess, MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import InputText from 'components/input/InputText';
 import DetailedIcon from 'components/controllers/DetailedIcon';
@@ -36,6 +36,9 @@ import { PutMedicalFormula } from 'formatdata/MedicalFormulaForm';
 import { FormatDate } from 'components/helpers/Format';
 import InputOnChange from 'components/input/InputOnChange';
 import Cargando from 'components/loading/Cargando';
+import ViewPDF from 'components/components/ViewPDF';
+import { generateReport } from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/Report';
+import { GetByMail } from 'api/clients/UserClient';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -52,6 +55,8 @@ const UpdateMedicalFormula = () => {
     const [timeWait, setTimeWait] = useState(false);
     const [textDx1, setTextDx1] = useState('');
     const [lsDx1, setLsDx1] = useState([]);
+    const [openReport, setOpenReport] = useState(false);
+    const [dataPDF, setDataPDF] = useState(null);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -81,6 +86,17 @@ const UpdateMedicalFormula = () => {
             setErrorMessage(`${Message.ErrorDeDatos}`);
         }
     }
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdMedicalFormula(id);
+            const lsDataUser = await GetByMail(user.email);
+
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleDx1 = async (event) => {
         try {
@@ -195,6 +211,15 @@ const UpdateMedicalFormula = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
             {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -308,6 +333,14 @@ const UpdateMedicalFormula = () => {
                                         <AnimateButton>
                                             <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                                 {TitleButton.Actualizar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                                {TitleButton.Imprimir}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>

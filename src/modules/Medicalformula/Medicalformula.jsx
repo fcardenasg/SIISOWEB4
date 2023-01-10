@@ -21,7 +21,7 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import { generateReport } from '../Programming/Attention/OccupationalExamination/MedicalOrder/Report';
 import { GetByMail } from 'api/clients/UserClient';
-import { GetByIdMedicalFormula  } from 'api/clients/MedicalFormulaClient';
+import { GetByIdMedicalFormula } from 'api/clients/MedicalFormulaClient';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import InputSelect from 'components/input/InputSelect';
@@ -38,6 +38,7 @@ import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { PostMedicalFormula } from 'formatdata/MedicalFormulaForm';
 import { FormatDate } from 'components/helpers/Format';
 import InputOnChange from 'components/input/InputOnChange';
+import ViewPDF from 'components/components/ViewPDF';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -60,7 +61,6 @@ const MedicalFormula = () => {
     const [openError, setOpenError] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [openViewPdf, setOpenViewPdf] = useState(false);
 
     const [documento, setDocumento] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
@@ -154,8 +154,6 @@ const MedicalFormula = () => {
         } catch (err) { }
     };
 
-
-
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostMedicalFormula(FormatDate(datos.fecha), documento, datos.idContingencia, 0,
@@ -166,12 +164,13 @@ const MedicalFormula = () => {
                 if (documento !== '' && lsEmployee.length !== 0) {
                     const result = await InsertMedicalFormula(DataToInsert);
                     if (result.status === 200) {
+                        reset();
+                        setResultData(result.data)
                         setOpenSuccess(true);
                         setDocumento('');
                         setLsEmployee([]);
                         setTextDx1('');
                         setLsDx1([]);
-                        reset();
                     }
                 } else {
                     setOpenError(true);
@@ -206,13 +205,14 @@ const MedicalFormula = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
-            <FullScreenDialog
-                open={openViewPdf}
-                title="VISTA DE PDF"
-                handleClose={() => setOpenViewPdf(false)}
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
             >
-
-            </FullScreenDialog>
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -325,14 +325,14 @@ const MedicalFormula = () => {
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-                                
+
                                 <Grid item xs={2}>
-                                            <AnimateButton>
-                                                <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
-                                                    {TitleButton.Imprimir}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
+                                    <AnimateButton>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
