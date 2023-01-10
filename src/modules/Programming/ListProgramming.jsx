@@ -85,7 +85,6 @@ const ListProgramming = () => {
             setLsProgramming([]);
 
             await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO).then(response => {
-                console.log("respuesta => ", response);
                 if (response.data === 'No hay Atenciones') {
 
                     setMessageAtencion(response.data);

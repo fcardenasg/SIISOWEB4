@@ -95,7 +95,6 @@ export const JWTProvider = ({ children }) => {
                     });
                 }
             } catch (err) {
-                console.error(err);
                 dispatch({
                     type: LOGOUT
                 });
