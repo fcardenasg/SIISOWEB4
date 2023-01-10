@@ -56,18 +56,14 @@ const ProfileSection = () => {
     const handleLogout = async () => {
         try {
             await logout();
-        } catch (err) {
-            console.error(err);
-        }
+        } catch (err) { }
     };
 
     const handleLogoutHome = async () => {
         try {
-            await logout();
             navigate("/");
-        } catch (err) {
-            console.error(err);
-        }
+            await logout();
+        } catch (err) { }
     };
 
     const handleClose = (event) => {

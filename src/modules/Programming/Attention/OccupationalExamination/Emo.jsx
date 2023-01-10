@@ -62,20 +62,20 @@ const DetailIcons = [
 
 const validateLastData = (data, tipoCampo = "bool") => {
     if (tipoCampo === "bool") {
-        if (data == undefined)
+        if (data === undefined)
             return false;
         else return data;
     } else if (tipoCampo === "string") {
-        if (data == undefined)
+        if (data === undefined)
             return undefined;
         else return data;
     } else if (tipoCampo === "date") {
-        if (data == undefined)
+        if (data === undefined)
             return new Date();
         else return data;
     } else if (tipoCampo === "number") {
-        if (data == undefined)
-            return DefaultValue.SINREGISTRO_GLOBAL;
+        if (data === undefined)
+            return undefined;
         else return data;
     }
 }
@@ -1199,7 +1199,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.cigarrillosDiasFumaHB, "number")}
+                                            defaultValue={() => validateLastData(lsLastRecord.cigarrillosDiasFumaHB, "string")}
                                             fullWidth
                                             type="number"
                                             name="cigarrillosDiasFumaHB"
@@ -1213,7 +1213,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.aniosCigaFumaHB, "number")}
+                                            defaultValue={() => validateLastData(lsLastRecord.aniosCigaFumaHB, "string")}
                                             fullWidth
                                             type="number"
                                             name="aniosCigaFumaHB"
@@ -1228,7 +1228,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.mesesCigaFumaHB, "number")}
+                                            defaultValue={() => validateLastData(lsLastRecord.mesesCigaFumaHB, "string")}
                                             fullWidth
                                             type="number"
                                             name="mesesCigaFumaHB"
@@ -1268,7 +1268,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.cigarrillosDiasFumabaHB, "number")}
+                                            defaultValue={() => validateLastData(lsLastRecord.cigarrillosDiasFumabaHB, "string")}
                                             fullWidth
                                             type="number"
                                             name="cigarrillosDiasFumabaHB"
@@ -1282,7 +1282,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.aniosCigaFumabaHB, "number")}
+                                            defaultValue={() => validateLastData(lsLastRecord.aniosCigaFumabaHB, "string")}
                                             fullWidth
                                             type="number"
                                             name="aniosCigaFumabaHB"
@@ -1296,7 +1296,7 @@ const Emo = ({
                                 <Grid item xs={2} >
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={() => validateLastData(lsLastRecord.mesesCigaFumabaHB, "number")}
+                                            defaultValue={() => validateLastData(lsLastRecord.mesesCigaFumabaHB, "string")}
                                             fullWidth
                                             type="number"
                                             name="mesesCigaFumabaHB"
@@ -2042,7 +2042,7 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                defaultValue={() => validateLastData(lsLastRecord.pulsoEF, "number")}
+                                                defaultValue={() => validateLastData(lsLastRecord.pulsoEF, "string")}
                                                 type="number"
                                                 name="pulsoEF"
                                                 label="Pulso"
@@ -2056,7 +2056,7 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                defaultValue={() => validateLastData(lsLastRecord.fCEF, "number")}
+                                                defaultValue={() => validateLastData(lsLastRecord.fCEF, "string")}
                                                 type="number"
                                                 name="fCEF"
                                                 label="FC"
@@ -2070,7 +2070,7 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                defaultValue={() => validateLastData(lsLastRecord.fREF, "number")}
+                                                defaultValue={() => validateLastData(lsLastRecord.fREF, "string")}
                                                 type="number"
                                                 name="fREF"
                                                 label="FR"
@@ -2084,7 +2084,7 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                defaultValue={() => validateLastData(lsLastRecord.temperaturaEF, "number")}
+                                                defaultValue={() => validateLastData(lsLastRecord.temperaturaEF, "string")}
                                                 type="number"
                                                 name="temperaturaEF"
                                                 label="Temperatura"
@@ -3750,7 +3750,7 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue=""
+                                            defaultValue={() => validateLastData(lsLastRecord.conceptoActitudNETA, "number")}
                                             name="conceptoActitudNETA"
                                             label="Concepto De Aptitud"
                                             options={lsNeConceptoActi}
@@ -3764,7 +3764,7 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue=""
+                                            defaultValue={() => validateLastData(lsLastRecord.idConceptoEspacioConfinado, "number")}
                                             name="idConceptoEspacioConfinado"
                                             label="Concepto De Espacio Confinado"
                                             options={lsEspacioConfinado}
@@ -3982,6 +3982,7 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue={() => validateLastData(lsLastRecord.idRiesgoCardiovascularNEMTA, "number")}
                                             name="idRiesgoCardiovascularNEMTA"
                                             label="Riesgo Cardiovascular"
                                             options={lsRiesClasifi}
@@ -3994,6 +3995,7 @@ const Emo = ({
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue={() => validateLastData(lsLastRecord.idClasificacionNEMTA, "number")}
                                             name="idClasificacionNEMTA"
                                             label="Clasificación"
                                             options={lsRiesClasifi}
@@ -4009,7 +4011,7 @@ const Emo = ({
                                             label="1. Menor de Edad."
                                             name="idMenorEdadNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idMenorEdadNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4020,7 +4022,7 @@ const Emo = ({
                                             label="2. Mujer embarazada con cualquier edad de Gestacíón."
                                             name="idMujerEmbarazadaNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idMujerEmbarazadaNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4031,7 +4033,7 @@ const Emo = ({
                                             label="3. Arritmias Cardiacas."
                                             name="idArimiaNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idArimiaNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4042,7 +4044,7 @@ const Emo = ({
                                             label="4. Enfermedades o malformaciones cardiacas asintomáticas."
                                             name="idEnfermedadNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idEnfermedadNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4053,7 +4055,7 @@ const Emo = ({
                                             label="5. Historia de Hipotensión ortostática (no basta presentar episodios aislados)."
                                             name="idHistoriaNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idHistoriaNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4064,7 +4066,7 @@ const Emo = ({
                                             label="6. Hipertensión arterial no controlada o resistente al tratamiento."
                                             name="idHipertensionNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idHipertensionNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4075,7 +4077,7 @@ const Emo = ({
                                             label="7. Hipertrigliceridemia aislada severa, con cifras mayores a 500 mg/dl."
                                             name="idHipertrigliceridemiaNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idHipertrigliceridemiaNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4086,7 +4088,7 @@ const Emo = ({
                                             label="8. Cifras LDL mayores a 190 mg/dl."
                                             name="idCifrasNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idCifrasNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4097,7 +4099,7 @@ const Emo = ({
                                             label="9. Diabetes controladas"
                                             name="idDiabetesNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idDiabetesNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4108,7 +4110,7 @@ const Emo = ({
                                             label="10. Dislipemia de moderada a severa asociada a diabetes, HTA, obesidad, hipotiroidismo."
                                             name="idDislipidemiaNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idDislipidemiaNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4119,7 +4121,7 @@ const Emo = ({
                                             label="11. Diagnóstico o sospecha de dislipemia de origen familiar (genético)."
                                             name="idDiagnosticoNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idDiagnosticoNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4130,7 +4132,7 @@ const Emo = ({
                                             label="12. Riesgo Cardivascular a 10 años ≥ 20% según Método de Framingham."
                                             name="idRiesgoCardiovascular1NEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idRiesgoCardiovascular1NEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4141,7 +4143,7 @@ const Emo = ({
                                             label="13. Riesgo Cardiovascular entre 10 y 20% si existen dos o mas factores mayores de riesgo."
                                             name="idRiesgoCardiovascular2NEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idRiesgoCardiovascular2NEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4152,7 +4154,7 @@ const Emo = ({
                                             label="14. Hipertiroidismo no controlado o sintomático."
                                             name="idHipertiroidismoNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idHipertiroidismoNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4163,7 +4165,7 @@ const Emo = ({
                                             label="15. Alteración auditiva severa y bilateral que comprometa bandas conversacionales (500 a 2000 Hz)."
                                             name="idAlteracionAuditivaNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idAlteracionAuditivaNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4174,7 +4176,7 @@ const Emo = ({
                                             label="16. Vertigo y otras alteraciones del equilibrio."
                                             name="idVertigoAlteracionesNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idVertigoAlteracionesNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4185,7 +4187,7 @@ const Emo = ({
                                             label="17. Epilepsia u otra enfermedad neurológica, que pueda generar alteraciones de la conciencia o el equilibrio."
                                             name="idEpilegsiaNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idEpilegsiaNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4196,7 +4198,7 @@ const Emo = ({
                                             label="18. Ceguera Temporal o permanente o alteraciones visuales significativas y severas."
                                             name="idCegueraTemporalNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idCegueraTemporalNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4207,7 +4209,7 @@ const Emo = ({
                                             label="19. Historia de fobias o episodios de pánico relacionados con altura."
                                             name="idHistoriaFobiasNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idHistoriaFobiasNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4218,7 +4220,7 @@ const Emo = ({
                                             label="20. Transtornos psiquiátricos, incluyendo adicciones a sustancias psicoactivas."
                                             name="idTranstornoPsiquiatricoNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idTranstornoPsiquiatricoNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4229,7 +4231,7 @@ const Emo = ({
                                             label="21. Limitacionesn permanentes para deambular por sus propios medios o lesiones con compromiso funcional del cuello, espalda o extremidades, que afecten el agarre requerido en estas labores."
                                             name="idLimitacionesNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idLimitacionesNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4240,7 +4242,7 @@ const Emo = ({
                                             label="22. Obesidad Morbida (IMC mayor a 35) o peso mayor de 120 kg, por limitaciones de sistemas de arneses."
                                             name="idObesidadMorbidaNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idObesidadMorbidaNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4251,7 +4253,7 @@ const Emo = ({
                                             label="23. De forma temporal, el uso de medicamentos que produzcan sueño o deprivación de sueño mas de un turno."
                                             name="idDeformaTemporalNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idDeformaTemporalNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4263,7 +4265,7 @@ const Emo = ({
                                 o progreso puedan general alteraciones del equilibrio o de la conciencia en concepto  del médico tratante."
                                             name="idOtrasAlteracionesNEMTA"
                                             size={30}
-                                            defaultValue={false}
+                                            defaultValue={() => validateLastData(lsLastRecord.idOtrasAlteracionesNEMTA)}
                                         />
                                     </FormProvider>
                                 </Grid>

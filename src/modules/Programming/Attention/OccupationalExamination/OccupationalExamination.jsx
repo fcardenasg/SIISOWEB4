@@ -23,7 +23,7 @@ import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
 import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone';
 
-import { GetByIdDataReport, GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import { GetAllByDocumento, GetByIdDataReport, GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import Transitions from 'ui-component/extended/Transitions';
@@ -481,7 +481,8 @@ const OccupationalExamination = () => {
     useEffect(() => {
         async function getDataForChart() {
             try {
-                const lsAnthropometryTwo = await GetAllOccupationalExamination(0, 0);
+                const lsAnthropometryTwo = await GetAllByDocumento(0, 0, documento);
+
                 if (lsAnthropometryTwo.status === 200 && lsAnthropometryTwo.data.entities.length !== 0) {
                     var resultPeso = lsAnthropometryTwo.data.entities.map((item) => item.pesoEF);
                     var resultImc = lsAnthropometryTwo.data.entities.map((item) => item.imcef);
@@ -530,7 +531,7 @@ const OccupationalExamination = () => {
         }
 
         getDataForChart();
-    }, []);
+    }, [documento]);
 
     const handleClick = async (datos) => {
         try {
@@ -795,7 +796,7 @@ const OccupationalExamination = () => {
                                     <Grid container spacing={2}>
                                         <Grid item>
                                             <Typography variant="h4">
-                                                {lsLastRecord.nameAtencion} - {lsLastRecord.formatFecha}
+                                                {lsLastRecord.nameAtencion !== undefined ? `INFORMACIÓN TOMADA DEL ${lsLastRecord.nameAtencion} - ${lsLastRecord.formatFecha}` : ""}
                                             </Typography>
                                         </Grid>
                                     </Grid>
