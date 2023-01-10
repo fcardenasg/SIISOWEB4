@@ -207,8 +207,6 @@ const UpdateAudiometry = () => {
                 setFilePdf(serverData.data.url);
             }
 
-
-
            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
