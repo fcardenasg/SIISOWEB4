@@ -13,7 +13,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo } from 'components/helpers/Enums';
+import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
@@ -28,7 +28,27 @@ const DetailIcons = [
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpen, setOpenHistory, setCadenaHistory, ...methods }) => {
+const validateLastData = (data, tipoCampo = "bool") => {
+    if (tipoCampo === "bool") {
+        if (data == undefined)
+            return false;
+        else return data;
+    } else if (tipoCampo === "string") {
+        if (data == undefined)
+            return undefined;
+        else return data;
+    } else if (tipoCampo === "date") {
+        if (data == undefined)
+            return new Date();
+        else return data;
+    } else if (tipoCampo === "number") {
+        if (data == undefined)
+            return DefaultValue.SINREGISTRO_GLOBAL;
+        else return data;
+    }
+}
+
+const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpen, setOpenHistory, setCadenaHistory, lsLastRecord, ...methods }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -59,10 +79,10 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputCheckBox
+                                    defaultValue={() => validateLastData(lsLastRecord.tosAUsualSin)}
                                     label="A. ¿Tiene tos usualmente (Incluye con el primer cigarrillo o la primera salida a la calle, excluye carraspeo)?"
                                     name="tosAUsualSin"
                                     size={25}
-                                    defaultValue={false}
                                 />
                             </FormProvider>
                         </Grid>
@@ -70,10 +90,10 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputCheckBox
+                                    defaultValue={() => validateLastData(lsLastRecord.tosEnLaSemanaSintR)}
                                     label="B. ¿Tose 4 a 6 veces al día, durante cuatro o más días de la semana?"
                                     name="tosEnLaSemanaSintR"
                                     size={25}
-                                    defaultValue={false}
                                 />
                             </FormProvider>
                         </Grid>
@@ -81,10 +101,10 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputCheckBox
+                                    defaultValue={() => validateLastData(lsLastRecord.tosMananaSintR)}
                                     label="C. ¿Suele toser levantándose por la mañana a primera hora, durante el resto del día o la noche?"
                                     name="tosMananaSintR"
                                     size={25}
-                                    defaultValue={false}
                                 />
                             </FormProvider>
                         </Grid>
@@ -96,10 +116,10 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputCheckBox
+                                    defaultValue={() => validateLastData(lsLastRecord.tosConsecutivaSintR)}
                                     label="D. ¿Usted suele toser así casi todos los días por 3 meses consecutivos o por más de un año?"
                                     name="tosConsecutivaSintR"
                                     size={25}
-                                    defaultValue={false}
                                 />
                             </FormProvider>
                         </Grid>
@@ -111,6 +131,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
+                                    defaultValue={() => validateLastData(lsLastRecord.anosConTosSintR)}
                                     type="number"
                                     fullWidth
                                     name="anosConTosSintR"
@@ -131,7 +152,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="A. Suele expectorar desde el pecho (Incluye flema con el 1er cigarrillo, 1era salida a la calle y la que se traga, excluye moco o flema de la nariz)"
                                     name="esputoASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.esputoASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -142,7 +163,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="B. ¿Expectora así dos veces al día, al menos cuatro días a la semana?"
                                     name="esputoBSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.esputoBSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -153,7 +174,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="C. ¿Suele expectorar al levantarse o a primera hora de la mañana, durante el resto del día o de la noche?"
                                     name="esputoCSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.esputoCSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -164,7 +185,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="D. ¿Expectora así la mayoría de los días por 3 meses consecutivos o más o durante un año?"
                                     name="esputoDSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.esputoDSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -176,6 +197,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
+                                    defaultValue={() => validateLastData(lsLastRecord.esputoESintR, "string")}
                                     fullWidth
                                     name="esputoESintR"
                                     label="Años"
@@ -195,7 +217,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="A. ¿Ha tenido episodios de tos y flema (o aumento, si usualmente los presenta) que duren 3 o más de un año?"
                                     name="episoTosEspuASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.episoTosEspuASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -207,6 +229,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
+                                    defaultValue={() => validateLastData(lsLastRecord.episoTosEsputoBSintR)}
                                     type="number"
                                     fullWidth
                                     name="episoTosEsputoBSintR"
@@ -227,7 +250,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="A. Su pecho pita, silba o suena"
                                     name="sibilanciasASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.sibilanciasASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -238,7 +261,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="1. Cuando tiene gripa"
                                     name="sibilanciasA1SintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.sibilanciasA1SintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -249,7 +272,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="2. Ocasionalmente aparte de las gripas"
                                     name="sibilanciasA2SintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.sibilanciasA2SintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -260,7 +283,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="3. La mayoría de días y noches"
                                     name="sibilanciasA3SintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.sibilanciasA3SintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -272,6 +295,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
+                                    defaultValue={() => validateLastData(lsLastRecord.sibilanciasBSintR, "string")}
                                     type="number"
                                     fullWidth
                                     name="sibilanciasBSintR"
@@ -295,7 +319,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="A. ¿Alguna vez ha tenido un ataque de silbidos que le haya hecho sentir ahogo?"
                                     name="ataquesSilbiASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.ataquesSilbiASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -307,6 +331,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
+                                    defaultValue={() => validateLastData(lsLastRecord.ataquesSilbiBSintR, "number")}
                                     type="number"
                                     fullWidth
                                     name="ataquesSilbiBSintR"
@@ -322,7 +347,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="C. Ha tenido dos o más episodios"
                                     name="ataquesSilbiCSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.ataquesSilbiCSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -333,7 +358,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="D. ¿Ha necesitado drogas o tratamientos para estos ataques?"
                                     name="ataquesSilbiDSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.ataquesSilbiDSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -349,7 +374,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="A. ¿Presenta inhabilidad por una condición diferente a enfermedad de pulmón o corazón?"
                                     name="otrasEnfInhaASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.otrasEnfInhaASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -360,7 +385,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="B. ¿Usted suele toser así casi todos los días por 3 meses consecutivos o por más de un año?"
                                     name="otrasEnfInhaBSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.otrasEnfInhaBSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -370,7 +395,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                 <InputText
                                     multiline
                                     rows={6}
-                                    defaultValue=""
+                                    defaultValue={() => validateLastData(lsLastRecord.otrasEnfInhaDescriSintR, "string")}
                                     fullWidth
                                     name="otrasEnfInhaDescriSintR"
                                     label="Describa la naturaleza de esta condición:"
@@ -390,7 +415,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="A. ¿Se ahoga al subir de un nivel a otro al caminar por una cuesta suave?"
                                     name="disneaASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.disneaASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -405,7 +430,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="B. ¿Por causa del ahogo tiene que caminar más despacio que la gente de su edad, en una cuesta suave?"
                                     name="disneaBSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.disneaBSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -416,7 +441,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="C. ¿Tiene que detenerse a respirar cuando camina a su paso npor una cuesta suave?"
                                     name="disneaCSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.disneaCSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -427,7 +452,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="D. ¿Tiene que parar a respirar luego de caminar 100 yardas (o luego de algunos minutos) por una cuesta suave?"
                                     name="disneaDSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.disneaDSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -438,7 +463,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="E. ¿El ahogo le dificulta dejar su casa, vestirse o desvestirte?"
                                     name="disneaESintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.disneaESintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -459,7 +484,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="A. ¿Si se resfría se le afecta el pecho?"
                                     name="enferToraxASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.enferToraxASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -470,7 +495,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="B. ¿En los últimos 3 años ha presentado enfermedad que lo aleje de su trabajo, lo mantenga en casa o en cama?"
                                     name="enferToraxBSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.enferToraxBSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -481,7 +506,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="C. Expectoró con alguna de estas enfermedades"
                                     name="enferToraxCSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.enferToraxCSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -493,6 +518,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
+                                    defaultValue={() => validateLastData(lsLastRecord.enferToraxD, "number")}
                                     type="number"
                                     fullWidth
                                     name="enferToraxD"
@@ -513,7 +539,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="A. ¿Tuvo alguna enfermedad pulmonar antes de los 16 años?"
                                     name="antecedentesASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -528,7 +554,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="1. ¿Ataques de bronquitis?"
                                     name="antecedentesB1SintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB1SintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -537,6 +563,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB1ASintR)}
                                     fullWidth
                                     name="antecedentesB1ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
@@ -548,10 +575,10 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={4}>
                             <FormProvider {...methods}>
                                 <InputCheckBox
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB2Sintr)}
                                     label="2. ¿Neumonía o bronconeumonía?"
                                     name="antecedentesB2Sintr"
                                     size={25}
-                                    defaultValue={false}
                                 />
                             </FormProvider>
                         </Grid>
@@ -560,6 +587,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB2ASintR)}
                                     fullWidth
                                     name="antecedentesB2ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
@@ -574,7 +602,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="3. ¿Bronquitis Crónica?"
                                     name="antecedentesB3SintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB3SintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -582,6 +610,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB3ASintR)}
                                     type="number"
                                     fullWidth
                                     name="antecedentesB3ASintR"
@@ -597,7 +626,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="3.1 ¿Aún presenta esta enfermedad?"
                                     name="antecedentesB3BSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB3BSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -607,6 +636,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                 <InputText
                                     type="number"
                                     fullWidth
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB3CSintR, "number")}
                                     name="antecedentesB3CSintR"
                                     label="Edad de Inicio"
                                     size="small"
@@ -620,7 +650,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="4. ¿Enfisema Pulmonar?"
                                     name="antecdentesB4SintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.antecdentesB4SintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -629,6 +659,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedenteB4ASintR, "number")}
                                     fullWidth
                                     name="antecedenteB4ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
@@ -643,7 +674,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="4.1 ¿Aún presenta esta enfermedad?"
                                     name="antecedentesB4BSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB4BSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -651,6 +682,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB4CSintR, "number")}
                                     type="number"
                                     fullWidth
                                     name="antecedentesB4CSintR"
@@ -666,7 +698,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="5. ¿Asma?"
                                     name="antecedentesB5SintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB5SintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -675,6 +707,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB5ASintR, "number")}
                                     fullWidth
                                     name="antecedentesB5ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
@@ -689,7 +722,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="5.1 ¿Aun Presenta esta enfermedad?"
                                     name="antecedentesB5BSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB5BSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -698,6 +731,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB5CSintR, "number")}
                                     fullWidth
                                     name="antecedentesB5CSintR"
                                     label="¿Edad de Inicio?"
@@ -712,7 +746,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="6. Otras enfermedades del tórax"
                                     name="otrasEnfToraxA"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.otrasEnfToraxA)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -720,7 +754,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={8}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue=""
+                                    defaultValue={() => validateLastData(lsLastRecord.otrasEnfToraxB, "string")}
                                     fullWidth
                                     name="otrasEnfToraxB"
                                     label="Especifique"
@@ -734,8 +768,8 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                 <InputCheckBox
                                     label="7. ¿Alguna Cirugía del tórax?"
                                     name="ciruToraxASintR"
+                                    defaultValue={() => validateLastData(lsLastRecord.ciruToraxASintR)}
                                     size={25}
-                                    defaultValue={false}
                                 />
                             </FormProvider>
                         </Grid>
@@ -743,7 +777,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={8}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue=""
+                                    defaultValue={() => validateLastData(lsLastRecord.ciruToraxBSintR, "string")}
                                     fullWidth
                                     name="ciruToraxBSintR"
                                     label="Especifique"
@@ -755,10 +789,10 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={4}>
                             <FormProvider {...methods}>
                                 <InputCheckBox
+                                    defaultValue={() => validateLastData(lsLastRecord.traumaToraxASintR)}
                                     label="8. HISTORIA (algún accidente) del tórax"
                                     name="traumaToraxASintR"
                                     size={25}
-                                    defaultValue={false}
                                 />
                             </FormProvider>
                         </Grid>
@@ -766,7 +800,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={8}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue=""
+                                    defaultValue={() => validateLastData(lsLastRecord.traumaToraxBSintR, "string")}
                                     fullWidth
                                     name="traumaToraxBSintR"
                                     label="Especifique"
@@ -781,7 +815,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="9. ¿Problemas del corazón?"
                                     name="problemCoraASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.problemCoraASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -789,7 +823,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={8}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue=""
+                                    defaultValue={() => validateLastData(lsLastRecord.problemCoraBSintR, "string")}
                                     fullWidth
                                     name="problemCoraBSintR"
                                     label="Especifique"
@@ -804,7 +838,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="¿Ha recibido tratamiento por esta causa los últimos 10 años?"
                                     name="problemaCoraCSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.problemaCoraCSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -814,7 +848,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="10. Presión Alta(Recuerde que debe ser confirmada por el médico)"
                                     name="presionAltaASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.presionAltaASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -824,7 +858,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="10.1 ¿Ha recibido tratamiento por esta causa en los últimos diez años?"
                                     name="presionAltaBSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.presionAltaBSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -844,7 +878,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="A. ¿Ha trabajado tiempo completo (8 horas a la semana o más) por 6 meses o más?"
                                     name="historiaOcupASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -855,7 +889,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="B. ¿Ha trabajado al menos durante 6 meses en un empleo donde tuvo exposición a polvos?"
                                     name="historiaOcupBSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupBSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -863,7 +897,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={4}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue=""
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupB1SintR, "string")}
                                     fullWidth
                                     name="historiaOcupB1SintR"
                                     label="Especifique empleo o Industria"
@@ -876,6 +910,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupB2SintR, "number")}
                                     fullWidth
                                     name="historiaOcupB2SintR"
                                     label="¿Total años trabajados?"
@@ -887,6 +922,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupB3SintR, "number")}
                                     name="historiaOcupB3SintR"
                                     label="La exposición fue:"
                                     options={lsExposicion}
@@ -901,7 +937,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="C. ¿Ha trabajado en un empleo donde haya exposición a humos y gases químicos?"
                                     name="historiaOcupCSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupCSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -909,7 +945,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={4}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue=""
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupC1SintR, "string")}
                                     fullWidth
                                     name="historiaOcupC1SintR"
                                     label="Especifique empleo y ocupación o industria"
@@ -922,6 +958,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupC2SintR, "number")}
                                     fullWidth
                                     name="historiaOcupC2SintR"
                                     label="Total años trabajados"
@@ -933,6 +970,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupC3SintR, "number")}
                                     name="historiaOcupC3SintR"
                                     label="La exposición fue:"
                                     options={lsExposicion}
@@ -948,7 +986,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={6}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue=""
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupD1SintR, "string")}
                                     fullWidth
                                     name="historiaOcupD1SintR"
                                     label="Empleo y Ocupación"
@@ -960,6 +998,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={6}>
                             <FormProvider {...methods}>
                                 <InputText
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupD1SintR, "number")}
                                     type="number"
                                     fullWidth
                                     name="historiaOcupD2SintR"
@@ -972,7 +1011,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue=""
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupD3, "string")}
                                     fullWidth
                                     name="historiaOcupD3"
                                     label="Negocio, campo o Industria"
@@ -992,7 +1031,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="A. ¿Ha fumado cigarrillos, pipa o tabaco (al menos uno(a) al día por un año o 12 onzas de tabaco durante la vida)?"
                                     name="tabaquismoASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.tabaquismoASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1003,7 +1042,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="B. ¿Fuma ahora (incluye un mes atrás)?"
                                     name="tabaquismoBSintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.tabaquismoBSintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1013,6 +1052,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                 <InputText
                                     type="number"
                                     fullWidth
+                                    defaultValue={() => validateLastData(lsLastRecord.tabaquismoCSintR, "number")}
                                     name="tabaquismoCSintR"
                                     label="C. ¿A qué edad comenzó a fumar en forma regular"
                                     size="small"
@@ -1024,6 +1064,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.tabaquismoDSintR, "number")}
                                     fullWidth
                                     name="tabaquismoDSintR"
                                     label="D. ¿Si ya dejo de fumar totalmente, ¿A que edad lo dejó?"
@@ -1036,6 +1077,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.tabaquismoESintR, "number")}
                                     fullWidth
                                     name="tabaquismoESintR"
                                     label="E. ¿Cuantos cigarrillos fuma al día o fumaba?"
@@ -1055,7 +1097,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                                     label="A. ¿Realiza algún deporte?"
                                     name="actDeportASintR"
                                     size={25}
-                                    defaultValue={false}
+                                    defaultValue={() => validateLastData(lsLastRecord.actDeportASintR)}
                                 />
                             </FormProvider>
                         </Grid>
@@ -1063,7 +1105,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={3}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue=""
+                                    defaultValue={() => validateLastData(lsLastRecord.actDeporA1SintR, "string")}
                                     fullWidth
                                     name="actDeporA1SintR"
                                     label="¿Cual deporte o actividad?"
@@ -1076,6 +1118,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.actDeporA2SintR, "number")}
                                     fullWidth
                                     name="actDeporA2SintR"
                                     label="Días a la semana que lo practica"
@@ -1088,6 +1131,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.actDeporA3SintR, "number")}
                                     fullWidth
                                     name="actDeporA3SintR"
                                     label="Horas al día que le dedica"
@@ -1100,6 +1144,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
+                                    defaultValue={() => validateLastData(lsLastRecord.actDeporA4SintR, "number")}
                                     fullWidth
                                     name="actDeporA4SintR"
                                     label="Promedio de horas a la semana"
@@ -1120,7 +1165,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <InputText
                                 multiline
                                 rows={10}
-                                defaultValue=""
+                                defaultValue={() => validateLastData(lsLastRecord.recoSintR, "string")}
                                 fullWidth
                                 name="recoSintR"
                                 label="Recomendaciones/Observaciones"

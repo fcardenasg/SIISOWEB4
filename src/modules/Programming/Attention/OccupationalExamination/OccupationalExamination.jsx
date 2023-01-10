@@ -92,15 +92,15 @@ function a11yProps(index) {
 const tabsOption = [
     {
         label: 'Datos Laborales',
-        icon: <AccountCircleTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+        icon: <AccountCircleTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
     },
     {
         label: 'Historia Laboral',
-        icon: <DescriptionTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+        icon: <DescriptionTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
     },
     {
         label: 'Historia Ocupacional',
-        icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+        icon: <LibraryBooksTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
     }
 ];
 
@@ -642,7 +642,7 @@ const OccupationalExamination = () => {
     setTimeout(() => {
         if (lsAtencion.length !== 0)
             setTimeWait(true);
-    }, 1500);
+    }, 2000);
 
     const onCloseModal = () => {
         setOpenForm(false);
@@ -791,6 +791,14 @@ const OccupationalExamination = () => {
                                             <Typography variant="h5">{GetEdad(new Date(lsEmployee.fechaNaci))} AÑOS</Typography>
                                         </Grid>
                                     </Grid>
+
+                                    <Grid container spacing={2}>
+                                        <Grid item>
+                                            <Typography variant="h4">
+                                                {lsLastRecord.nameAtencion} - {lsLastRecord.formatFecha}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
                                 </Grid> : null
                             }
                         </Grid>
@@ -823,8 +831,6 @@ const OccupationalExamination = () => {
 
                     <Tabs
                         value={value}
-                        indicatorColor="primary"
-                        textColor="primary"
                         onChange={(event, newValue) => setValue(newValue)}
                         aria-label="simple tabs example"
                         variant="scrollable"
@@ -843,7 +849,7 @@ const OccupationalExamination = () => {
                                 justifyContent: 'center'
                             },
                             '& a.Mui-selected': {
-                                color: theme.palette.primary.main
+                                color: theme.palette.error.main
                             },
                             '& .MuiTabs-indicator': {
                                 bottom: 2
@@ -855,7 +861,7 @@ const OccupationalExamination = () => {
                         }}
                     >
                         {tabsOption.map((tab, index) => (
-                            <Tab disabled={atencion === '' ? true : false} key={index} component={Link} to="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
+                            <Tab sx={{ color: "red" }} disabled={atencion === '' ? true : false} key={index} component={Link} to="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
                         ))}
                     </Tabs>
 
