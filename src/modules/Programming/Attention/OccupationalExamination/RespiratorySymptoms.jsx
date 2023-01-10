@@ -43,7 +43,7 @@ const validateLastData = (data, tipoCampo = "bool") => {
         else return data;
     } else if (tipoCampo === "number") {
         if (data == undefined)
-            return DefaultValue.SINREGISTRO_GLOBAL;
+            return undefined;
         else return data;
     }
 }
@@ -229,7 +229,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue={() => validateLastData(lsLastRecord.episoTosEsputoBSintR)}
+                                    defaultValue={() => validateLastData(lsLastRecord.episoTosEsputoBSintR, "string")}
                                     type="number"
                                     fullWidth
                                     name="episoTosEsputoBSintR"
@@ -563,7 +563,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB1ASintR)}
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB1ASintR, "string")}
                                     fullWidth
                                     name="antecedentesB1ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
@@ -587,7 +587,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                             <FormProvider {...methods}>
                                 <InputText
                                     type="number"
-                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB2ASintR)}
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB2ASintR, "string")}
                                     fullWidth
                                     name="antecedentesB2ASintR"
                                     label="¿A qué edad presentó el primer ataque?"
@@ -610,7 +610,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={2}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB3ASintR)}
+                                    defaultValue={() => validateLastData(lsLastRecord.antecedentesB3ASintR, "string")}
                                     type="number"
                                     fullWidth
                                     name="antecedentesB3ASintR"
