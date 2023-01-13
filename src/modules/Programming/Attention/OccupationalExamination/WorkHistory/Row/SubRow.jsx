@@ -11,8 +11,10 @@ import {
     TableRow,
     Tooltip,
     IconButton,
+    Grid,
 } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ModalRisk from '../ModalRisk';
 
 export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, row }) => {
@@ -20,7 +22,7 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
     const [open, setOpen] = useState(false);
     const [idRisk, setIdRisk] = useState(0);
 
-    const handleClick = (event, id) => {
+    const handleClick = (id) => {
         setOpen(true);
         setIdRisk(id);
     };
@@ -69,39 +71,49 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
                                 <TableCell>Clase</TableCell>
                                 {diferen === 'COMPANY' ? null : <TableCell>Grado sin EPP</TableCell>}
                                 {diferen === 'COMPANY' ? null : <TableCell>Grado con EPP</TableCell>}
-                                <TableCell >Medidas de Control</TableCell>
-                                <TableCell >Año</TableCell>
-                                <TableCell >Mes</TableCell>
-                                <TableCell >Acciones</TableCell>
+                                {diferen === 'COMPANY' ? null : <TableCell>Medidas de Control</TableCell>}
+                                <TableCell>Año</TableCell>
+                                <TableCell>Mes</TableCell>
+                                <TableCell>Acciones</TableCell>
                             </TableRow>
                         </TableHead>
 
                         <TableBody>
                             {row.map((historyRow) => (
-                                <TableRow hover key={historyRow.id}>
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.id}</TableCell>
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.nameClase}</TableCell>
+                                <TableRow hover>
+                                    <TableCell>{historyRow.id}</TableCell>
+                                    <TableCell>{historyRow.nameClase}</TableCell>
                                     {diferen === 'COMPANY' ? null :
-                                        <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>
-                                            {historyRow.nameGradoSinEPP}
-                                        </TableCell>
+                                        <TableCell>{historyRow.nameGradoSinEPP}</TableCell>
                                     }
                                     {diferen === 'COMPANY' ? null :
-                                        <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>
-                                            {historyRow.nameGradoConEPP}
-                                        </TableCell>
+                                        <TableCell>{historyRow.nameGradoConEPP}</TableCell>
                                     }
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>
-                                        {FormatArray(historyRow.medidasControl)}
-                                    </TableCell>
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.anio}</TableCell>
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.mes}</TableCell>
+
+                                    {diferen === 'COMPANY' ? null :
+                                        <TableCell>{FormatArray(historyRow.medidasControl)}</TableCell>
+                                    }
+                                    <TableCell>{historyRow.anio}</TableCell>
+                                    <TableCell>{historyRow.mes}</TableCell>
+
                                     <TableCell sx={{ cursor: 'pointer' }}>
-                                        <Tooltip title="Eliminar" onClick={() => onClickDelete(historyRow.id)}>
-                                            <IconButton color="error" size="small">
-                                                <HighlightOffIcon sx={{ fontSize: '2rem' }} />
-                                            </IconButton>
-                                        </Tooltip>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={6}>
+                                                <Tooltip title="Agregar" onClick={() => handleClick(historyRow.id)}>
+                                                    <IconButton color="info" size="small">
+                                                        <AddCircleOutlineIcon sx={{ fontSize: '2rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Grid>
+
+                                            <Grid item xs={6}>
+                                                <Tooltip title="Eliminar" onClick={() => onClickDelete(historyRow.id)}>
+                                                    <IconButton color="error" size="small">
+                                                        <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Grid>
+                                        </Grid>
                                     </TableCell>
                                 </TableRow>
                             ))}

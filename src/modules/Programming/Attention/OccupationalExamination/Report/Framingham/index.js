@@ -1,6 +1,5 @@
 import jsPDF from "jspdf";
 import LogoReport from "assets/img/LogoReport.png";
-import ImgWhite from "assets/img/ImgWhite.png";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
 
 /* FIRMAS */
@@ -25,7 +24,7 @@ function getFirma(doc=new jsPDF(), lsDataUser, my = 0) {
   doc.text(`${lsDataUser.nombre}`, 5, doc.internal.pageSize.height - (44 - my));
   doc.text("MEDICINA GENERAL", 5, doc.internal.pageSize.height - (40 - my));
   doc.text(
-    `Lic: TP ${lsDataUser.licencia} - RM: ${lsDataUser.registroMedico}`,
+    `${lsDataUser.licencia} - ${lsDataUser.registroMedico}`,
     5,
     doc.internal.pageSize.height - (36 - my)
   );

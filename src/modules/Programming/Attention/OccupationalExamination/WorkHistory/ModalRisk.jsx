@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Fragment, useEffect, useState } from 'react';
 
-import { TitleButton } from 'components/helpers/Enums';
+import { CodCatalogo, TitleButton } from 'components/helpers/Enums';
 import Chip from 'ui-component/extended/Chip';
 
 import {
@@ -12,7 +12,6 @@ import {
     DialogContent,
     DialogTitle,
     Grid,
-    Divider,
     List,
     ListItemButton,
     ListItemIcon,
@@ -32,11 +31,11 @@ import SubCard from 'ui-component/cards/SubCard';
 import Cargando from 'components/loading/Cargando';
 
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import RemoveModeratorIcon from '@mui/icons-material/RemoveModerator';
 import userImg from 'assets/img/user.png';
 import { PutWorkHistoryRiskDLTD } from 'formatdata/WorkHistoryRiskForm';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import InputSelect from 'components/input/InputSelect';
+import InputMultiSelects from 'components/input/InputMultiSelects';
 
 const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRisk, title }) => {
 
@@ -45,27 +44,46 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
     const { handleSubmit, errors, reset } = methods;
 
     const [row, setRow] = useState([]);
+    const [medicaControl, setMedicaControl] = useState([]);
+    const [lsMedidasControl, setLsMedidasControl] = useState([]);
+    const [lsGradoConSinEPP, setLsGradoConSinEPP] = useState([]);
     const [openUpdate, setOpenUpdate] = useState(false);
 
     useEffect(() => {
         async function getAllRisk() {
             try {
                 if (idRisk !== 0) {
+                    const lsServerMedidasControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PANO_MEDIDASCONTROL);
+                    var lsResultMedidasControl = lsServerMedidasControl.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+                    setLsMedidasControl(lsResultMedidasControl);
+
+                    const lsServerGradoConSinEPP = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PANO_GRADO_CONSINEPP);
+                    var lresultGradoConSinEPP = lsServerGradoConSinEPP.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+                    setLsGradoConSinEPP(lresultGradoConSinEPP);
+
                     if (diferen == "DLTD") {
                         const lsServerRisk = await GetByIdWorkHistoryRisk(idRisk);
-                        if (lsServerRisk.status === 200)
+                        if (lsServerRisk.status === 200) {
                             setRow(lsServerRisk.data);
+                            setMedicaControl(JSON.parse(lsServerRisk.data.medidasControl));
+                        }
                     }
 
                     if (diferen == "COMPANY") {
                         const lsServerRisk = await GetByIdWorkHistoryRiskCompany(idRisk);
-                        if (lsServerRisk.status === 200)
+                        if (lsServerRisk.status === 200) {
                             setRow(lsServerRisk.data);
+                            setMedicaControl(JSON.parse(lsServerRisk.data.medidasControl));
+                        }
                     }
                 }
-            } catch (error) {
-                
-            }
+            } catch (error) { }
         }
 
         getAllRisk();
@@ -98,11 +116,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                     }
                 }
             }
-
-
-        } catch (error) {
-            
-        }
+        } catch (error) { }
     }
 
     return (
@@ -123,7 +137,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                 <DialogContent>
                     <Grid container spacing={2} sx={{ my: 0 }}>
                         <Grid item xs={12}>
-                            {row.length != 0 ?
+                            {row.length !== 0 ?
                                 <SubCard
                                     title={
                                         <Grid container spacing={1} alignItems="center">
@@ -153,61 +167,61 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                                             <ListItemText primary={<Typography variant="subtitle1">Cargo</Typography>} />
                                             <ListItemSecondaryAction>
                                                 <Typography variant="subtitle2" align="right">
-                                                    {row.nameCargo}
+                                                    {diferen === "COMPANY" ? row.idCargo : row.nameCargo}
                                                 </Typography>
                                             </ListItemSecondaryAction>
                                         </ListItemButton>
-
-                                        <Divider />
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                <AccessibilityNewIcon sx={{ fontSize: '1.3rem' }} />
-                                            </ListItemIcon>
-                                            <ListItemText primary={<Typography variant="subtitle1">Exposición</Typography>} />
-                                            <ListItemSecondaryAction>
-                                                <Typography variant="subtitle2" align="right">
-                                                    {row.nameExpocision}
-                                                </Typography>
-                                            </ListItemSecondaryAction>
-                                        </ListItemButton>
-                                        <Divider />
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                <VerifiedUserIcon sx={{ fontSize: '1.3rem' }} />
-                                            </ListItemIcon>
-                                            <ListItemText primary={<Typography variant="subtitle1">Grado Con EPP</Typography>} />
-                                            <ListItemSecondaryAction>
-                                                <Chip chipcolor={row.nameGradoConEPP === 'BAJO' ? 'success' :
-                                                    row.nameGradoConEPP === 'MEDIO' ? 'warning' :
-                                                        row.nameGradoConEPP === 'CRITICO' ? 'error' : 'error'} label={row.nameGradoConEPP} size="small" />
-                                            </ListItemSecondaryAction>
-                                        </ListItemButton>
-                                        <Divider />
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                <RemoveModeratorIcon sx={{ fontSize: '1.3rem' }} />
-                                            </ListItemIcon>
-                                            <ListItemText primary={<Typography variant="subtitle1">Grado Sin EPP</Typography>} />
-                                            <ListItemSecondaryAction>
-                                                <Chip chipcolor={row.nameGradoSinEPP === 'BAJO' ? 'success' :
-                                                    row.nameGradoSinEPP === 'MEDIO' ? 'warning' :
-                                                        row.nameGradoSinEPP === 'CRITICO' ? 'error' : 'error'} label={row.nameGradoSinEPP} size="small" />
-                                            </ListItemSecondaryAction>
-                                        </ListItemButton>
-                                        <Divider />
                                     </List>
 
                                     <Grid sx={{ pt: 2 }} container spacing={2}>
+                                        {diferen === "COMPANY" ? null :
+                                            <Fragment>
+                                                <Grid item xs={6}>
+                                                    <FormProvider {...methods}>
+                                                        <InputSelect
+                                                            name="gradoConEPP"
+                                                            label="Grado con EPP"
+                                                            defaultValue={row.gradoConEPP}
+                                                            options={lsGradoConSinEPP}
+                                                            size="small"
+                                                        />
+                                                    </FormProvider>
+                                                </Grid>
+
+                                                <Grid item xs={6}>
+                                                    <FormProvider {...methods}>
+                                                        <InputSelect
+                                                            name="gradoSinEPP"
+                                                            label="Grado sin EPP"
+                                                            defaultValue={row.gradoSinEPP}
+                                                            options={lsGradoConSinEPP}
+                                                            size="small"
+                                                        />
+                                                    </FormProvider>
+                                                </Grid>
+
+                                                <Grid item xs={12}>
+                                                    <InputMultiSelects
+                                                        fullWidth
+                                                        onChange={(event, value) => setMedicaControl(value)}
+                                                        value={medicaControl}
+                                                        label="Medidas de control"
+                                                        options={lsMedidasControl}
+                                                        size="small"
+                                                    />
+                                                </Grid>
+                                            </Fragment>
+                                        }
+
                                         <Grid item xs={6}>
                                             <FormProvider {...methods}>
                                                 <InputText
                                                     type="number"
                                                     disabled={row.length != 0 ? false : true}
-                                                    defaultValue=""
+                                                    defaultValue={row.anio}
                                                     name="anio"
                                                     label="Año"
                                                     size="small"
-                                                    bug={errors}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -216,11 +230,10 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                                                 <InputText
                                                     type="number"
                                                     disabled={row.length != 0 ? false : true}
-                                                    defaultValue=""
+                                                    defaultValue={row.mes}
                                                     name="mes"
                                                     label="Mes"
                                                     size="small"
-                                                    bug={errors}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -233,7 +246,9 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
 
                 <DialogActions>
                     <AnimateButton>
-                        <Button variant="contained" onClick={handleSubmit(handleClick)}>{TitleButton.Guardar}</Button>
+                        <Button variant="contained" onClick={handleSubmit(handleClick)}>
+                            {TitleButton.Guardar}
+                        </Button>
                     </AnimateButton>
 
                     <AnimateButton>

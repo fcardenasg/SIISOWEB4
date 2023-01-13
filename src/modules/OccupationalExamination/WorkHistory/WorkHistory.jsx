@@ -320,7 +320,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                     <TableCell sx={{ pl: 3 }} />
                                     <TableCell>Empresa</TableCell>
                                     <TableCell>Cargo</TableCell>
-                                    {/* <TableCell>Fecha</TableCell> */}
                                     <TableCell>Años</TableCell>
                                     <TableCell>
                                         Meses
@@ -412,7 +411,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <Button disabled={lsEmpleado.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedEmpresa(true)}>
                                 + Agregar Cargo
                             </Button>
-                        </Grid> : <></>}
+                        </Grid> : null}
                 </SubCard>
             </Grid>
 
@@ -425,7 +424,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                     <TableCell sx={{ pl: 3 }} />
                                     <TableCell>Empresa</TableCell>
                                     <TableCell>Cargo</TableCell>
-                                    {/* <TableCell>Fecha</TableCell> */}
                                     <TableCell>Años</TableCell>
                                     <TableCell>
                                         Meses
@@ -517,7 +515,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <Button disabled={lsEmpleado.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedDLTD(true)}>
                                 + Agregar Cargo
                             </Button>
-                        </Grid> : <></>}
+                        </Grid> : null}
                 </SubCard>
             </Grid>
 

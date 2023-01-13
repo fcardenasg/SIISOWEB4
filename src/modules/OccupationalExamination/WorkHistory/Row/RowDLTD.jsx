@@ -346,31 +346,31 @@ export default function RowDLTD({ row = [], handleDelete, documento }) {
 
                             {lsQuimico.length != 0 && numId == 1 ?
                                 <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsQuimico} title="Riesgo Químico" />
-                                : <></>}
+                                : null}
 
                             {lsFisico.length != 0 && numId == 2 ?
                                 <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsFisico} title="Riesgo Físico" />
-                                : <></>}
+                                : null}
 
                             {lsPsicosocial.length != 0 && numId == 3 ?
                                 <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsPsicosocial} title="Riesgo Psicosocial" />
-                                : <></>}
+                                : null}
 
                             {lsBiologico.length != 0 && numId == 4 ?
                                 <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsBiologico} title="Riesgo Biológico" />
-                                : <></>}
+                                : null}
 
                             {lsECFPostura.length != 0 && numId == 5 ?
                                 <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFPostura} title="Riesgo ECF - Postura" />
-                                : <></>}
+                                : null}
 
                             {lsECFFuerza.length != 0 && numId == 6 ?
                                 <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFFuerza} title="Riesgo ECF - Fuerza" />
-                                : <></>}
+                                : null}
 
                             {lsECFMovimiento.length != 0 && numId == 7 ?
                                 <SubRow key={row.id} getAll={GetAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFMovimiento} title="Riesgo ECF - Movimiento" />
-                                : <></>}
+                                : null}
 
                         </Box>
                     </Collapse>

@@ -30,42 +30,42 @@ export const itemsMenu = [
   {
     title: "Psicosocial",
     icon: IconSocial,
-    selected: false,
+    selected: true,
     func: 3,
     color: ColorDrummondltd.GreenDrummond
   },
   {
     title: "Biológico",
     icon: IconDna,
-    selected: false,
+    selected: true,
     func: 4,
     color: ColorDrummondltd.GrayDrummond
   },
   {
     title: "ECF - Postura",
     icon: IconFall,
-    selected: false,
+    selected: true,
     func: 5,
     color: ColorDrummondltd.BlueSeDrummond
   },
   {
     title: "ECF - Fuerza",
     icon: IconScale,
-    selected: false,
+    selected: true,
     func: 6,
     color: ColorDrummondltd.BlueSeDrummond
   },
   {
     title: "ECF - Movimiento",
     icon: IconRun,
-    selected: false,
+    selected: true,
     func: 7,
     color: ColorDrummondltd.BlueSeDrummond
   },
   {
     title: "Histórico",
     icon: IconDatabase,
-    selected: false,
+    selected: true,
     func: 8,
     color: ColorDrummondltd.BlueSeDrummond
   },

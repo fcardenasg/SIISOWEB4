@@ -11,14 +11,12 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from "yup";
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
 import { PostPanorama } from 'formatdata/PanoramaForm';
-import { GetAllBySubTipoCatalogo, GetAllCatalog, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllBySubTipoCatalogo,  GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
@@ -84,7 +82,6 @@ const Panorama = () => {
     const [cargo, setCargo] = useState([]);
 
     const methods = useForm();
-    // resolver: yupResolver(validationSchema),
 
     const { handleSubmit, errors, reset } = methods;
 

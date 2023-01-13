@@ -11,8 +11,10 @@ import {
     TableRow,
     Tooltip,
     IconButton,
+    Grid,
 } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ModalRisk from '../ModalRisk';
 
 export const SubRow = ({ title, getAll, diferen, onClickDelete, row }) => {
@@ -20,28 +22,10 @@ export const SubRow = ({ title, getAll, diferen, onClickDelete, row }) => {
     const [open, setOpen] = useState(false);
     const [idRisk, setIdRisk] = useState(0);
 
-    const handleClick = (event, id) => {
+    const handleClick = (id) => {
         setOpen(true);
         setIdRisk(id);
     };
-
-    const FormatArray = (medidasControl = '') => {
-        if (medidasControl != '') {
-            var array = JSON.parse(medidasControl);
-
-            var resultMap = array.map((medida) => ({
-                label: medida.label
-            }));
-
-            for (let index = 0; index < resultMap.length; index++) {
-                const element = resultMap[index];
-                const result = element.label + ' - ';
-                if (index < resultMap.length) {
-                    return result;
-                }
-            }
-        }
-    }
 
     return (
         <Fragment>
@@ -66,10 +50,8 @@ export const SubRow = ({ title, getAll, diferen, onClickDelete, row }) => {
                             <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
                                 <TableCell>Consecutivo</TableCell>
                                 <TableCell>Clase</TableCell>
-                                {/* <TableCell>Exposición</TableCell> */}
-                                {diferen === 'COMPANY' ? <></> : <TableCell>Grado sin EPP</TableCell>}
-                                {diferen === 'COMPANY' ? <></> : <TableCell>Grado con EPP</TableCell>}
-                                <TableCell >Medidas de Control</TableCell>
+                                {diferen === 'COMPANY' ? null : <TableCell>Grado sin EPP</TableCell>}
+                                {diferen === 'COMPANY' ? null : <TableCell>Grado con EPP</TableCell>}
                                 <TableCell >Año</TableCell>
                                 <TableCell >Mes</TableCell>
                                 <TableCell >Acciones</TableCell>
@@ -79,30 +61,36 @@ export const SubRow = ({ title, getAll, diferen, onClickDelete, row }) => {
                         <TableBody>
                             {row.map((historyRow) => (
                                 <TableRow hover key={historyRow.id}>
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.id}</TableCell>
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.nameClase}</TableCell>
-                                    {/* <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.nameExpocision}</TableCell> */}
-                                    {diferen === 'COMPANY' ? <></> :
-                                        <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>
-                                            {historyRow.nameGradoSinEPP}
-                                        </TableCell>
+                                    <TableCell sx={{ cursor: 'pointer' }}>{historyRow.id}</TableCell>
+                                    <TableCell sx={{ cursor: 'pointer' }}>{historyRow.nameClase}</TableCell>
+
+                                    {diferen === 'COMPANY' ? null :
+                                        <TableCell sx={{ cursor: 'pointer' }}>{historyRow.nameGradoSinEPP}</TableCell>
                                     }
-                                    {diferen === 'COMPANY' ? <></> :
-                                        <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>
-                                            {historyRow.nameGradoConEPP}
-                                        </TableCell>
+                                    {diferen === 'COMPANY' ? null :
+                                        <TableCell sx={{ cursor: 'pointer' }}>{historyRow.nameGradoConEPP}</TableCell>
                                     }
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>
-                                        {FormatArray(historyRow.medidasControl)}
-                                    </TableCell>
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.anio}</TableCell>
-                                    <TableCell onClick={(event) => handleClick(event, historyRow.id)} sx={{ cursor: 'pointer' }}>{historyRow.mes}</TableCell>
+                                    <TableCell sx={{ cursor: 'pointer' }}>{historyRow.anio}</TableCell>
+                                    <TableCell sx={{ cursor: 'pointer' }}>{historyRow.mes}</TableCell>
+
                                     <TableCell sx={{ cursor: 'pointer' }}>
-                                        <Tooltip title="Eliminar" onClick={() => onClickDelete(historyRow.id)}>
-                                            <IconButton color="error" size="small">
-                                                <HighlightOffIcon sx={{ fontSize: '2rem' }} />
-                                            </IconButton>
-                                        </Tooltip>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={6}>
+                                                <Tooltip title="Agregar" onClick={() => handleClick(historyRow.id)}>
+                                                    <IconButton size="small">
+                                                        <AddCircleOutlineIcon sx={{ fontSize: '2rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Grid>
+
+                                            <Grid item xs={6}>
+                                                <Tooltip title="Eliminar" onClick={() => onClickDelete(historyRow.id)}>
+                                                    <IconButton color="error" size="small">
+                                                        <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Grid>
+                                        </Grid>
                                     </TableCell>
                                 </TableRow>
                             ))}

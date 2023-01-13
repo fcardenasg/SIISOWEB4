@@ -321,10 +321,10 @@ const Employee = () => {
                 datos.direccionResidencia, datos.direccionResidenciaTrabaja, datos.municipioResidencia, dptoResidenciaTrabaja === null ? 1 : dptoNacido,
                 datos.municipioResidenciaTrabaja, dptoResidencia === null ? 1 : dptoNacido, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
-                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(datos.termDate),
-                DefaultValue.BANDERA_DRUMMOND, datos.ges, user.email, FormatDate(new Date()), '', FormatDate(new Date()), imgSrc,datos.oficio);
+                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date()),
+                DefaultValue.BANDERA_DRUMMOND, datos.ges, user.email, FormatDate(new Date()), '', FormatDate(new Date()), imgSrc, datos.oficio);
 
-            
+
 
             if (imgSrc != null) {
                 if (Object.keys(datos.length !== 0)) {
@@ -464,6 +464,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -475,6 +476,7 @@ const Employee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -637,6 +639,31 @@ const Employee = () => {
                             />
                         </FormProvider>
                     </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="oficio"
+                                label="Profesionalidad"
+                                options={lsOficio}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.oficio}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="ges"
+                                label="Ges"
+                                options={lsGes}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.ges}
+                            />
+                        </FormProvider>
+                    </Grid>
+
                     <Grid item xs={12} md={6} lg={4}>
                         <FormProvider {...methods}>
                             <InputSelect
@@ -795,56 +822,16 @@ const Employee = () => {
             </SubCard>
             <Grid sx={{ pb: 2 }} />
 
-            <SubCard darkTitle title={<Typography variant="h4">DATOS ADICIONALES</Typography>}>
-                <Grid container spacing={2} >
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputDatePicker
-                                label="Fecha de Terminación"
-                                name="termDate"
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="ges"
-                                label="Ges"
-                                options={lsGes}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.ges}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="oficio"
-                                label="Oficio"
-                                options={lsOficio}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.oficio}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-
-                </Grid>
-            </SubCard>
-            <Grid sx={{ pb: 2 }} />
-
             <Grid item xs={12} sx={{ pb: 2 }}>
-                <Grid container spacing={1}>
-                    <Grid item xs={2}>
+                <Grid container spacing={2}>
+                    <Grid item xs={6} md={4} lg={2}>
                         <AnimateButton>
                             <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                 {TitleButton.Guardar}
                             </Button>
                         </AnimateButton>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={6} md={4} lg={2}>
                         <AnimateButton>
                             <Button variant="outlined" fullWidth onClick={() => navigate("/employee/list")}>
                                 {TitleButton.Cancelar}

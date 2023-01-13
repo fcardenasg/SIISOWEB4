@@ -1,54 +1,6 @@
 import jsPDF from "jspdf";
 import LogoReport from "assets/img/LogoReport.png";
-import ImgWhite from "assets/img/ImgWhite.png";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
-
-/* FIRMAS */
-function getFirma(doc=new jsPDF(), lsDataUser, my = 0) {
-  doc.addImage(
-    `${lsDataUser.firma}`,
-    "PNG",
-    5,
-    doc.internal.pageSize.height - (70 - my),
-    50,
-    20
-  );
-  doc.setLineWidth(0.5);
-  doc.setDrawColor(128, 128, 128);
-  doc.line(
-    5,
-    doc.internal.pageSize.height - (48 - my),
-    60,
-    doc.internal.pageSize.height - (48 - my)
-  );
-  doc.setFontSize(8);
-  doc.text(`${lsDataUser.nombre}`, 5, doc.internal.pageSize.height - (44 - my));
-  doc.text("MEDICINA GENERAL", 5, doc.internal.pageSize.height - (40 - my));
-  doc.text(
-    `Lic: TP ${lsDataUser.licencia} - RM: ${lsDataUser.registroMedico}`,
-    5,
-    doc.internal.pageSize.height - (36 - my)
-  );
-}
-
-function getFirmaEmployee(doc, lsDataReport, my = 0) {
- 
-  doc.setLineWidth(0.5);
-  doc.setDrawColor(128, 128, 128);
-  doc.line(
-    130,
-    doc.internal.pageSize.height - (48 - my),
-    195,
-    doc.internal.pageSize.height - (48 - my)
-  );
-  doc.setFontSize(8);
-  doc.text(
-    `${lsDataReport.nameEmpleado}`,
-    130,
-    doc.internal.pageSize.height - (44 - my)
-  );
-  doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
-}
 
 /* Encabezado */
 function getHeader(doc) {
@@ -275,7 +227,6 @@ function pageEmployee(doc, lsDataReport = [], lsDataUser = []) {
  doc.text(`${lsDataReport.ges}`, 160, 226);
 
 }
-
 
 /* Renderizado Principal INDEX  */
 export function generateReportEmployee(lsDataReport = [], lsDataUser = []) {

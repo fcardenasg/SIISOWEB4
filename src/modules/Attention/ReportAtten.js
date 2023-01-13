@@ -1,6 +1,5 @@
 import jsPDF from 'jspdf';
 import LogoReport from 'assets/img/LogoReport.png';
-import ImgWhite from 'assets/img/ImgWhite.png';
 import { ViewFormat } from 'components/helpers/Format';
 
 function getHeader(doc) {
@@ -26,27 +25,6 @@ function getPiePage(doc, lsDataUser) {
     doc.text(`FECHA DE SISTEMA:  ${new Date().toLocaleString()}`, 10, doc.internal.pageSize.height - 4);
     doc.text(`USUARIO ACTIVO:  ${lsDataUser.nombre}`, 90, doc.internal.pageSize.height - 4);
     doc.text("Pag. 1 of 1", 190, doc.internal.pageSize.height - 4);
-}
-
-function getFirma(doc, lsDataUser) {
-    doc.addImage(`${lsDataUser.firma}`, "PNG", 5, doc.internal.pageSize.height - 70, 50, 20);
-    doc.setLineWidth(0.5);
-    doc.setDrawColor(128, 128, 128);
-    doc.line(5, doc.internal.pageSize.height - 48, 60, doc.internal.pageSize.height - 48);
-    doc.setFontSize(8);
-    doc.text(`${lsDataUser.nombre}`, 5, doc.internal.pageSize.height - 44);
-    doc.text('MEDICINA GENERAL', 5, doc.internal.pageSize.height - 40);
-    doc.text(`Lic: TP ${lsDataUser.licencia} - RM: ${lsDataUser.registroMedico}`, 5, doc.internal.pageSize.height - 36);
-}
-
-function getFirmaEmployee(doc, lsDataReport) {
-    doc.addImage(ImgWhite, "PNG", 130, doc.internal.pageSize.height - 70, 50, 20);
-    doc.setLineWidth(0.5);
-    doc.setDrawColor(128, 128, 128);
-    doc.line(130, doc.internal.pageSize.height - 48, 195, doc.internal.pageSize.height - 48);
-    doc.setFontSize(8);
-    doc.text(`${lsDataReport.nameEmpleado}`, 130, doc.internal.pageSize.height - 44);
-    doc.text('FIRMA DEL EMPLEADO', 130, doc.internal.pageSize.height - 40);
 }
 
 export function generateReport(lsDataReport = [], lsDataUser = []) {

@@ -33,7 +33,7 @@ import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'ap
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage, CodCatalogo, Message } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputDatePicker from 'components/input/InputDatePicker';
@@ -296,12 +296,6 @@ const UpdateEmployee = () => {
         GetAll();
     }, []);
 
-    setTimeout(() => {
-        if (employee.length !== 0) {
-            setTimeWait(true);
-        }
-    }, 2000);
-
     const methods = useForm(
         { resolver: yupResolver(validationSchema) }
     );
@@ -382,7 +376,7 @@ const UpdateEmployee = () => {
                 datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidenciaTrabaja,
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
-                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date(datos.termDate)),
+                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date()),
                 1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.email, FormatDate(new Date()), imgSrc, datos.oficio);
 
             if (imgSrc != null) {
@@ -401,9 +395,15 @@ const UpdateEmployee = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
+
+    setTimeout(() => {
+        if (employee.length !== 0) {
+            setTimeWait(true);
+        }
+    }, 2000);
 
     return (
         <MainCard>
@@ -715,6 +715,33 @@ const UpdateEmployee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="oficio"
+                                        label="Profesionalidad"
+                                        defaultValue={employee.oficio}
+                                        options={lsOficio}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.oficio}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="ges"
+                                        label="Ges"
+                                        defaultValue={employee.ges}
+                                        options={lsGes}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.ges}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -915,57 +942,16 @@ const UpdateEmployee = () => {
                     </SubCard>
                     <Grid sx={{ pb: 2 }} />
 
-                    <SubCard darkTitle title={<Typography variant="h4">DATOS ADICIONALES</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha de Terminación"
-                                        name="termDate"
-                                        defaultValue={employee.termDate}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="ges"
-                                        label="Ges"
-                                        defaultValue={employee.ges}
-                                        options={lsGes}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.ges}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="oficio"
-                                        label="Oficio"
-                                        defaultValue={employee.oficio}
-                                        options={lsOficio}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.oficio}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-                    <Grid sx={{ pb: 2 }} />
-
                     <Grid item xs={12} sx={{ pb: 2 }}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={2}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6} md={4} lg={2}>
                                 <AnimateButton>
                                     <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                         {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={2}>
+                            <Grid item xs={6} md={4} lg={2}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/employee/list")}>
                                         {TitleButton.Cancelar}

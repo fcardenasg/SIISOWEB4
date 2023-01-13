@@ -3,8 +3,6 @@ import jsPDF from "jspdf";
 import LogoReport from 'assets/img/LogoReport.png';
 import { GetEdad } from "components/helpers/Format";
 
-
-
 function getHeader(doc = new jsPDF()) {
     var marXR = doc.internal.pageSize.width - 5;
     /* ENCABEZADO REPORTE */
@@ -45,7 +43,7 @@ function getFirma(doc, lsDataUser, my = 0) {
     doc.setFontSize(8);
     doc.text(`${lsDataUser.nombre}`, 7, doc.internal.pageSize.height - (44 - my));
     doc.text('MEDICINA GENERAL', 7, doc.internal.pageSize.height - (40 - my));
-    doc.text(`Lic: TP ${lsDataUser.licencia} - RM: ${lsDataUser.registroMedico}`, 7, doc.internal.pageSize.height - (36 - my));
+    doc.text(`${lsDataUser.licencia} - ${lsDataUser.registroMedico}`, 7, doc.internal.pageSize.height - (36 - my));
 }
 
 function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDataUser) {

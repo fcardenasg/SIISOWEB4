@@ -604,8 +604,7 @@ const ListEmployee = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.documento}{' '}
+                                                {row.documento}
                                             </Typography>
                                         </TableCell>
 
@@ -620,8 +619,7 @@ const ListEmployee = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.nombres}{' '}
+                                                {row.nombres}
                                             </Typography>
                                         </TableCell>
 
@@ -636,8 +634,7 @@ const ListEmployee = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.celular}{' '}
+                                                {row.celular}
                                             </Typography>
                                         </TableCell>
 
@@ -652,8 +649,7 @@ const ListEmployee = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.email}{' '}
+                                                {row.email}
                                             </Typography>
                                         </TableCell>
 
@@ -668,8 +664,7 @@ const ListEmployee = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.nameCompany}{' '}
+                                                {row.nameCompany}
                                             </Typography>
                                         </TableCell>
 
@@ -684,8 +679,7 @@ const ListEmployee = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {' '}
-                                                {row.nameSede}{' '}
+                                                {row.nameSede}
                                             </Typography>
                                         </TableCell>
 
