@@ -232,6 +232,7 @@ const OccupationalExamination = () => {
     const [clasificacionColor, setClasificacionColor] = useState('info');
 
     const [dataPDF, setDataPDF] = useState(null);
+    const [indiceWellsEFU, setIndiceWellsEFU] = useState(false);
 
     const [estadoVacuna, setEstadoVacuna] = useState({
         tetanoIM: false,
@@ -575,7 +576,8 @@ const OccupationalExamination = () => {
                 datos.especifiqueEMEFU, datos.movilidadEFU, datos.equilibrioEFU, datos.marchaEFU, datos.movilidadHombroEFU, datos.movilidadCodoEFU,
                 datos.movilidadMuniecaEFU, datos.signoTinelEFU, datos.signoPhalenEFU, datos.movilidadManosEFU, datos.movilidadCaderaEFU, datos.movilidadRodillaEFU,
                 datos.movilidadTobilloEFU, datos.movilidadCuelloEFU, datos.rOTVisipitalEFU, datos.rOTRotuleanoEFU, datos.extencionEFU, datos.sensibilidadCaraAnteriorEFU,
-                datos.eversionPiesEFU, datos.sensibilidadCaraLateralEFU, datos.rOTAquileanoEFU, datos.signoLasegueEFU, datos.indiceWellsEFU, datos.observacionEFU,
+                datos.eversionPiesEFU, datos.sensibilidadCaraLateralEFU, datos.rOTAquileanoEFU, datos.signoLasegueEFU, indiceWellsEFU, datos.valorIndiceWellsEFU,
+                datos.observacionEFU,
 
                 FormatDate(datos.fechaRxToraxEPA), datos.resultadoRxToraxEPA, datos.observacionesRxToraxEPA, FormatDate(datos.fechaEspirometriaEPA),
                 datos.resultadoEspirometriaEPA, datos.observacionesEspirometriaEPA, FormatDate(datos.fechaAudiometriaEPA), datos.resultadoAudiometriaEPA,
@@ -624,7 +626,7 @@ const OccupationalExamination = () => {
                 datos.actDeporA1SintR, datos.actDeporA2SintR, datos.actDeporA3SintR, datos.actDeporA4SintR, datos.recoSintR,
 
                 datos.parentesco1ANFA, datos.parentesco1ObserANFA, datos.parentesco2ANFA, datos.parentesco2ObserANFA, datos.parentesco3ANFA,
-                datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA,
+                datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA, datos.lateralidadExamenesFisico
             );
 
             if (Object.keys(datos.length !== 0)) {
@@ -895,6 +897,9 @@ const OccupationalExamination = () => {
                             clasificacionColor={clasificacionColor}
                             setClasificacionColor={setClasificacionColor}
                             lsLastRecord={lsLastRecord}
+
+                            setIndiceWellsEFU={setIndiceWellsEFU}
+                            indiceWellsEFU={indiceWellsEFU}
 
                             documento={documento}
                             errors={errors}

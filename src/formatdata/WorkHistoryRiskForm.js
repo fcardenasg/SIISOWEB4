@@ -9,7 +9,7 @@ export function PostWorkHistoryRiskDLTD(idHistoriaLaboral, fecha, documento, idR
 }
 
 export function PutWorkHistoryRiskDLTD(id, idHistoriaLaboral, fecha, documento, idRiesgo, idCargo, idClase, idExposicion,
-    gradoSinEPP, gradoConEPP, medidasControl, anio, mes, usuarioRegistro, fechaRegistro,
+    gradoSinEPP, gradoConEPP, medidasControl, anio = 0, mes = 0, usuarioRegistro, fechaRegistro,
     usuarioModifico, fechaModifico) {
     return {
         id, idHistoriaLaboral, fecha, documento, idRiesgo, idCargo, idClase, idExposicion,

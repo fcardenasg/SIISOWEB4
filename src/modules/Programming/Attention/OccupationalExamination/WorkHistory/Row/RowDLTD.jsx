@@ -179,7 +179,7 @@ export default function RowDLTD({ row = [], getSumaRiesgo, handleDelete, documen
 
     useEffect(() => {
         getAll();
-    }, [row.id]);
+    }, []);
 
     const handleClickNuevo = (id) => {
         try {
