@@ -155,6 +155,7 @@ export const CodCatalogo = {
     LISTA_CHEKEO_REINTEGRO: 159,
 
     TODAS_ASESORIAS: 137,
+    LATERALIDAD: 82,
 }
 
 export const DefaultData = {

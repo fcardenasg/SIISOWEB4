@@ -52,7 +52,7 @@ export function PostOccupationalExamination(
     movilidadMuniecaEFU = false, signoTinelEFU = false, signoPhalenEFU = false, movilidadManosEFU = false, movilidadCaderaEFU = false,
     movilidadRodillaEFU = false, movilidadTobilloEFU = false, movilidadCuelloEFU = false, rotVisipitalEFU = false,
     rotRotuleanoEFU = false, extencionEFU = false, sensibilidadCaraAnteriorEFU = false, eversionPiesEFU = false,
-    sensibilidadCaraLateralEFU = false, rotAquileanoEFU = false, signoLasegueEFU = false, indiceWellsEFU = false, observacionEFU = "",
+    sensibilidadCaraLateralEFU = false, rotAquileanoEFU = false, signoLasegueEFU = false, indiceWellsEFU = false, valorIndiceWellsEFU = "", observacionEFU = "",
 
     fechaRxToraxEPA = FormatDate(new Date()), resultadoRxToraxEPA = DefaultValue.SINREGISTRO_GLOBAL, observacionesRxToraxEPA = "",
     fechaEspirometriaEPA = FormatDate(new Date()), resultadoEspirometriaEPA = DefaultValue.SINREGISTRO_GLOBAL, observacionesEspirometriaEPA = "",
@@ -134,6 +134,7 @@ export function PostOccupationalExamination(
     parentesco2ANFA = DefaultValue.SINREGISTRO_GLOBAL, parentesco2ObserANFA = "",
     parentesco3ANFA = DefaultValue.SINREGISTRO_GLOBAL, parentesco3ObserANFA = "",
     parentesco4ANFA = DefaultValue.SINREGISTRO_GLOBAL, parentesco4ObserANFA = "",
+    lateralidadExamenesFisico = DefaultValue.SINREGISTRO_GLOBAL
 ) {
     return {
         idHistoriaLaboral, documento, fecha, idAtencion, congenitosAP, inmunoPrevenibleAP, infecciososAP,
@@ -163,7 +164,7 @@ export function PostOccupationalExamination(
         marchaEFU, movilidadHombroEFU, movilidadCodoEFU, movilidadMuniecaEFU, signoTinelEFU, signoPhalenEFU, movilidadManosEFU,
         movilidadCaderaEFU, movilidadRodillaEFU, movilidadTobilloEFU, movilidadCuelloEFU, rotVisipitalEFU, rotRotuleanoEFU,
         extencionEFU, sensibilidadCaraAnteriorEFU, eversionPiesEFU, sensibilidadCaraLateralEFU, rotAquileanoEFU, signoLasegueEFU,
-        indiceWellsEFU, observacionEFU, fechaRxToraxEPA, resultadoRxToraxEPA, observacionesRxToraxEPA, fechaEspirometriaEPA,
+        indiceWellsEFU, valorIndiceWellsEFU, observacionEFU, fechaRxToraxEPA, resultadoRxToraxEPA, observacionesRxToraxEPA, fechaEspirometriaEPA,
         resultadoEspirometriaEPA, observacionesEspirometriaEPA, fechaAudiometriaEPA, resultadoAudiometriaEPA,
         observacionesAudiometriaEPA, fechaVisiometriaEPA, resultadoVisiometriaEPA, observacionesVisiometriaEPA, fechaLaboratorioClinicoEPA,
         resultadoLaboratorioClinicoEPA, observacionesLaboratorioClinicoEPA, fechaCuestionarioSintomaEPA, resultadoCuestionarioSintomaEPA,
@@ -202,6 +203,6 @@ export function PostOccupationalExamination(
         tabaquismoASintR, tabaquismoBSintR, tabaquismoCSintR, tabaquismoDSintR, tabaquismoESintR, actDeportASintR,
         actDeporA1SintR, actDeporA2SintR, actDeporA3SintR, actDeporA4SintR, recoSintR, parentesco1ANFA,
         parentesco1ObserANFA, parentesco2ANFA, parentesco2ObserANFA, parentesco3ANFA, parentesco3ObserANFA,
-        parentesco4ANFA, parentesco4ObserANFA,
+        parentesco4ANFA, parentesco4ObserANFA, lateralidadExamenesFisico
     };
 }

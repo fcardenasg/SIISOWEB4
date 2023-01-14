@@ -89,6 +89,9 @@ const Emo = ({
     setClasificacionColor, clasificacionColor,
     lsLastRecord,
 
+    setIndiceWellsEFU,
+    indiceWellsEFU,
+
     errors,
     documento,
     setEstadoVacuna,
@@ -139,6 +142,8 @@ const Emo = ({
     const [lsDx2, setLsDx2] = useState([]);
     const [lsDx3, setLsDx3] = useState([]);
 
+    const [lsLateralidad, setLsLateralidad] = useState([]);
+
     async function getAll() {
         try {
             const lsServerRiesClasifi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RIESGO_CLASIFICACION);
@@ -147,6 +152,13 @@ const Emo = ({
                 label: item.nombre
             }));
             setLsRiesClasifi(resultRiesClasifi);
+
+            const lsServerLateralidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.LATERALIDAD);
+            var resultLateralidad = lsServerLateralidad.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsLateralidad(resultLateralidad);
 
             const lsServerNeConceptoActi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEPTO_APTI_MEDICA);
             var resultNeConceptoActi = lsServerNeConceptoActi.data.entities.map((item) => ({
@@ -741,7 +753,6 @@ const Emo = ({
                                         name="especifiqueAP"
                                         label="Especifique"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -788,7 +799,6 @@ const Emo = ({
                                             defaultValue={() => validateLastData(lsLastRecord.parentesco1ANFA, "number")}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -801,7 +811,6 @@ const Emo = ({
                                             name="parentesco1ObserANFA"
                                             label="Observación"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -814,7 +823,6 @@ const Emo = ({
                                             defaultValue={() => validateLastData(lsLastRecord.parentesco2ANFA, "number")}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -827,7 +835,6 @@ const Emo = ({
                                             name="parentesco2ObserANFA"
                                             label="Observación"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -840,7 +847,6 @@ const Emo = ({
                                             defaultValue={() => validateLastData(lsLastRecord.parentesco3ANFA, "number")}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -853,7 +859,6 @@ const Emo = ({
                                             name="parentesco3ObserANFA"
                                             label="Observación"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -866,7 +871,6 @@ const Emo = ({
                                             defaultValue={() => validateLastData(lsLastRecord.parentesco4ANFA, "number")}
                                             options={lsPariente}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -879,7 +883,6 @@ const Emo = ({
                                             name="parentesco4ObserANFA"
                                             label="Observación"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -903,7 +906,6 @@ const Emo = ({
                                             name="anioAT"
                                             label="Año"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -918,7 +920,6 @@ const Emo = ({
                                             name="especifiqueAT"
                                             label="Especifique"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -968,7 +969,6 @@ const Emo = ({
                                             name="anio1AT"
                                             label="Año"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -983,7 +983,6 @@ const Emo = ({
                                             name="especifique1AT"
                                             label="Especifique"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1087,7 +1086,6 @@ const Emo = ({
                                                 name="anioVacuna1IM"
                                                 label="Año Tetano"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid> : null}
@@ -1101,7 +1099,6 @@ const Emo = ({
                                                 name="anioVacuna2IM"
                                                 label="Año Influenza"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid> : null}
@@ -1115,7 +1112,6 @@ const Emo = ({
                                                 name="anioVacuna3IM"
                                                 label="Año Fiebre Amarilla"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid> : null}
@@ -1129,7 +1125,6 @@ const Emo = ({
                                                 name="anioVacuna4IM"
                                                 label="Año Rubéola - Sarampion"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid> : null}
@@ -1144,7 +1139,6 @@ const Emo = ({
                                                     name="anioVacuna5IM"
                                                     label="Año Esquema Completo"
                                                     size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -1157,7 +1151,6 @@ const Emo = ({
                                                     defaultValue={() => validateLastData(lsLastRecord.idRefuerzoIM, "number")}
                                                     options={lsRefuerzo}
                                                     size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -1171,7 +1164,6 @@ const Emo = ({
                                                 name="anioVacuna6IM"
                                                 label="Observación"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid> : null}
@@ -1205,7 +1197,6 @@ const Emo = ({
                                             name="cigarrillosDiasFumaHB"
                                             label="Cigarrillos Al Día"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1219,7 +1210,6 @@ const Emo = ({
                                             name="aniosCigaFumaHB"
                                             label="Años"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
 
@@ -1234,7 +1224,6 @@ const Emo = ({
                                             name="mesesCigaFumaHB"
                                             label="Meses"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1247,7 +1236,6 @@ const Emo = ({
                                             name="observacionFumaHB"
                                             label="Observación"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1274,7 +1262,6 @@ const Emo = ({
                                             name="cigarrillosDiasFumabaHB"
                                             label="Cigarrillos Al Día"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1288,7 +1275,6 @@ const Emo = ({
                                             name="aniosCigaFumabaHB"
                                             label="Años"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1302,7 +1288,6 @@ const Emo = ({
                                             name="mesesCigaFumabaHB"
                                             label="Meses"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1315,7 +1300,6 @@ const Emo = ({
                                             name="observacionFumabaHB"
                                             label="Observación"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1341,7 +1325,6 @@ const Emo = ({
                                             defaultValue={() => validateLastData(lsLastRecord.idFrecuenciaDeporteHB, "number")}
                                             options={lsFrecuencia}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1354,7 +1337,6 @@ const Emo = ({
                                             defaultValue={() => validateLastData(lsLastRecord.idCualDeporteHB, "number")}
                                             options={lsDeporte}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1367,7 +1349,6 @@ const Emo = ({
                                             name="observacionPracticaDeporHB"
                                             label="Observación"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1393,7 +1374,6 @@ const Emo = ({
                                             name="cualHobbiesHB"
                                             label="Cual"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1419,7 +1399,6 @@ const Emo = ({
                                             defaultValue={() => validateLastData(lsLastRecord.idFrecuenciaBebidaAlHB, "number")}
                                             options={lsFrecuencia}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1432,7 +1411,6 @@ const Emo = ({
                                             name="cualBebidasAlHB"
                                             label="Cual"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1468,7 +1446,6 @@ const Emo = ({
                                             name="cualFobiaHB"
                                             label="Cual"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -1492,7 +1469,6 @@ const Emo = ({
                                                 name="menarquiaGO"
                                                 label="Menarquía (EDAD)"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1505,7 +1481,6 @@ const Emo = ({
                                                 defaultValue={() => validateLastData(lsLastRecord.idCiclosGO, "number")}
                                                 options={lsCiclos}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1519,7 +1494,6 @@ const Emo = ({
                                                 name="duracionGO"
                                                 label="Duración (DIAS)"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1568,7 +1542,6 @@ const Emo = ({
                                                 name="vidaMaritalGO"
                                                 label="Vida Marital (EDAD EN AÑOS)"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1582,7 +1555,6 @@ const Emo = ({
                                                 name="vidaObstetricaGO"
                                                 label="Vida Obstétrica (EDAD EN AÑOS)"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1596,7 +1568,6 @@ const Emo = ({
                                                 name="gGO"
                                                 label="G"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1610,7 +1581,6 @@ const Emo = ({
                                                 name="pGO"
                                                 label="P"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1624,7 +1594,6 @@ const Emo = ({
                                                 name="aGO"
                                                 label="A"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1638,7 +1607,6 @@ const Emo = ({
                                                 name="cSGO"
                                                 label="C"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1652,7 +1620,6 @@ const Emo = ({
                                                 name="vGO"
                                                 label="V"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1698,7 +1665,6 @@ const Emo = ({
                                                 name="cUALGO"
                                                 label="Cúal?"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1757,7 +1723,6 @@ const Emo = ({
                                                 defaultValue={() => validateLastData(lsLastRecord.idMetodoGO, "number")}
                                                 options={lsGineMetodo}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1771,7 +1736,6 @@ const Emo = ({
                                                 name="ultimoAnioCitologiaGO"
                                                 label="Ultimo Año Citologia."
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1784,7 +1748,6 @@ const Emo = ({
                                                 defaultValue={() => validateLastData(lsLastRecord.idResultadoGO, "number")}
                                                 options={lsResultado}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -1964,7 +1927,6 @@ const Emo = ({
                                         name="observacionRS"
                                         label="Observaciones"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -2020,7 +1982,6 @@ const Emo = ({
                                                 name="tASentadoEF"
                                                 label="TA Sentado"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2033,7 +1994,6 @@ const Emo = ({
                                                 name="tAAcostadoEF"
                                                 label="TA Acostado"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2047,7 +2007,6 @@ const Emo = ({
                                                 name="pulsoEF"
                                                 label="Pulso"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2061,7 +2020,6 @@ const Emo = ({
                                                 name="fCEF"
                                                 label="FC"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2075,7 +2033,6 @@ const Emo = ({
                                                 name="fREF"
                                                 label="FR"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2089,7 +2046,6 @@ const Emo = ({
                                                 name="temperaturaEF"
                                                 label="Temperatura"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2146,7 +2102,7 @@ const Emo = ({
                                         />
                                     </Grid>
 
-                                    <Grid item xs={3} >
+                                    <Grid item xs={1.5}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="idBiotipoEF"
@@ -2154,7 +2110,18 @@ const Emo = ({
                                                 defaultValue={() => validateLastData(lsLastRecord.idBiotipoEF, "number")}
                                                 options={lsBiotipo}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={1.5}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="lateralidadExamenesFisico"
+                                                label="Lateralidad"
+                                                defaultValue={() => validateLastData(lsLastRecord.lateralidadExamenesFisico, "number")}
+                                                options={lsLateralidad}
+                                                size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -2636,7 +2603,6 @@ const Emo = ({
                                         name="especifiqueEMEFU"
                                         label="Especifique"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
 
@@ -2909,14 +2875,29 @@ const Emo = ({
 
                                 <Grid item xs={3}>
                                     <FormProvider {...methods}>
-                                        <InputCheckBox
+                                        <InputCheck
                                             label="22. Indice Wells"
-                                            name="indiceWellsEFU"
                                             size={30}
-                                            defaultValue={() => validateLastData(lsLastRecord.indiceWellsEFU)}
+                                            onChange={(e) => setIndiceWellsEFU(e.target.checked)}
+                                            checked={indiceWellsEFU}
                                         />
                                     </FormProvider>
                                 </Grid>
+
+                                {indiceWellsEFU ?
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                type="number"
+                                                fullWidth
+                                                name="valorIndiceWellsEFU"
+                                                label="Valor De IndiceWells"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                defaultValue={() => validateLastData(lsLastRecord.valorIndiceWellsEFU, "string")}
+                                            />
+                                        </FormProvider>
+                                    </Grid> : null
+                                }
                             </Grid>
 
                             <FormProvider {...methods}>
@@ -2928,7 +2909,6 @@ const Emo = ({
                                     name="observacionEFU"
                                     label="Observaciones"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
                                 />
                             </FormProvider>
 
@@ -2984,7 +2964,6 @@ const Emo = ({
                                             label="Resultado"
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -2996,7 +2975,6 @@ const Emo = ({
                                             name="observacionesRxToraxEPA"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3044,7 +3022,6 @@ const Emo = ({
                                             label="Resultado"
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3056,7 +3033,6 @@ const Emo = ({
                                             name="observacionesEspirometriaEPA"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3104,7 +3080,6 @@ const Emo = ({
                                             label="Resultado"
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3116,7 +3091,6 @@ const Emo = ({
                                             name="observacionesAudiometriaEPA"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3164,7 +3138,6 @@ const Emo = ({
                                             label="Resultado"
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3176,7 +3149,6 @@ const Emo = ({
                                             name="observacionesVisiometriaEPA"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3224,7 +3196,6 @@ const Emo = ({
                                             label="Resultado"
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3236,7 +3207,6 @@ const Emo = ({
                                             name="observacionesLaboratorioClinicoEPA"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3284,7 +3254,6 @@ const Emo = ({
                                             label="Resultado"
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3296,7 +3265,6 @@ const Emo = ({
                                             name="observacionesCuestionarioSintomaEPA"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3344,7 +3312,6 @@ const Emo = ({
                                             label="Resultado"
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3356,7 +3323,6 @@ const Emo = ({
                                             name="observacionesEkgEPA"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3404,7 +3370,6 @@ const Emo = ({
                                             label="Resultado"
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3416,7 +3381,6 @@ const Emo = ({
                                             name="observacionesRnmLumbosacraEPA"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3463,7 +3427,6 @@ const Emo = ({
                                             label="Resultado"
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3475,7 +3438,6 @@ const Emo = ({
                                             name="observacionesRnmCervicalEPA"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3515,7 +3477,6 @@ const Emo = ({
                                             name="observacionEPA"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3624,7 +3585,6 @@ const Emo = ({
                                             name="observacionID"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3665,7 +3625,6 @@ const Emo = ({
                                             name="recomendacionesID"
                                             label="Recomendaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3708,7 +3667,6 @@ const Emo = ({
                                                         atencion === DefaultValue.EMO_ATENCION_PROMO ? lsPromo : []
                                             }
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3755,7 +3713,6 @@ const Emo = ({
                                             label="Concepto De Aptitud"
                                             options={lsNeConceptoActi}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3769,7 +3726,6 @@ const Emo = ({
                                             label="Concepto De Espacio Confinado"
                                             options={lsEspacioConfinado}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3782,7 +3738,6 @@ const Emo = ({
                                             defaultValue={() => validateLastData(lsLastRecord.conceptoAplazadoNETA, "number")}
                                             options={lsOpcion}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3797,7 +3752,6 @@ const Emo = ({
                                             name="motivoAplazoNETA"
                                             label="Motivo de Aplazo"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3838,7 +3792,6 @@ const Emo = ({
                                             name="descripcionResultadoNETA"
                                             label="Descripción de resultados(Resumen de limitaciones o restricciones)"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3879,7 +3832,6 @@ const Emo = ({
                                             name="recomendacionesNETA"
                                             label="Recomendaciones (En términos sencillos de cuidados y controles requeridos)"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3912,7 +3864,6 @@ const Emo = ({
                                             defaultValue={() => validateLastData(lsLastRecord.remitidoNETA, "number")}
                                             options={lsOpcion}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3925,7 +3876,6 @@ const Emo = ({
                                             defaultValue={() => validateLastData(lsLastRecord.remididoDondeNETA, "number")}
                                             options={lsNeADonde}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3987,7 +3937,6 @@ const Emo = ({
                                             label="Riesgo Cardiovascular"
                                             options={lsRiesClasifi}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4000,7 +3949,6 @@ const Emo = ({
                                             label="Clasificación"
                                             options={lsRiesClasifi}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4280,7 +4228,6 @@ const Emo = ({
                                             name="observacionesNEMTA"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4320,7 +4267,6 @@ const Emo = ({
                                             label="Concepto Aptitud Médica"
                                             options={lsNeConceptoActi}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4334,7 +4280,6 @@ const Emo = ({
                                             label="Concepto De Espacio Confinado"
                                             options={lsEspacioConfinado}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -4358,6 +4303,9 @@ Emo.propTypes = {
     setEstadoVacuna: PropTypes.func,
     estadoVacuna: PropTypes.any,
     lsLastRecord: PropTypes.any,
+
+    setIndiceWellsEFU: PropTypes.any,
+    indiceWellsEFU: PropTypes.any,
 
     peso: PropTypes.string,
     setPeso: PropTypes.func,

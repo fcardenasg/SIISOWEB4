@@ -36,18 +36,23 @@ import { PutWorkHistoryRiskDLTD } from 'formatdata/WorkHistoryRiskForm';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import InputMultiSelects from 'components/input/InputMultiSelects';
+import SelectOnChange from 'components/input/SelectOnChange';
 
 const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRisk, title }) => {
 
     const { user } = useAuth();
     const methods = useForm();
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, reset } = methods;
+
+    const [gradoConEPP, setGradoConEPP] = useState('');
+    const [gradoSinEPP, setGradoSinEPP] = useState('');
 
     const [row, setRow] = useState([]);
     const [medicaControl, setMedicaControl] = useState([]);
     const [lsMedidasControl, setLsMedidasControl] = useState([]);
     const [lsGradoConSinEPP, setLsGradoConSinEPP] = useState([]);
     const [openUpdate, setOpenUpdate] = useState(false);
+    const [timeWait, setTimeWait] = useState(false);
 
     useEffect(() => {
         async function getAllRisk() {
@@ -68,18 +73,20 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                     setLsGradoConSinEPP(lresultGradoConSinEPP);
 
                     if (diferen == "DLTD") {
-                        const lsServerRisk = await GetByIdWorkHistoryRisk(idRisk);
-                        if (lsServerRisk.status === 200) {
-                            setRow(lsServerRisk.data);
-                            setMedicaControl(JSON.parse(lsServerRisk.data.medidasControl));
+                        const lsServerRisk1 = await GetByIdWorkHistoryRisk(idRisk);
+                        if (lsServerRisk1.status === 200) {
+                            setRow(lsServerRisk1.data);
+                            setMedicaControl(JSON.parse(lsServerRisk1.data.medidasControl));
+
+                            setGradoConEPP(lsServerRisk1.data.gradoConEPP);
+                            setGradoSinEPP(lsServerRisk1.data.gradoSinEPP);
                         }
                     }
 
                     if (diferen == "COMPANY") {
-                        const lsServerRisk = await GetByIdWorkHistoryRiskCompany(idRisk);
-                        if (lsServerRisk.status === 200) {
-                            setRow(lsServerRisk.data);
-                            setMedicaControl(JSON.parse(lsServerRisk.data.medidasControl));
+                        const lsServerRisk2 = await GetByIdWorkHistoryRiskCompany(idRisk);
+                        if (lsServerRisk2.status === 200) {
+                            setRow(lsServerRisk2.data);
                         }
                     }
                 }
@@ -91,33 +98,40 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PutWorkHistoryRiskDLTD(idRisk, row.idHistoriaLaboral, row.fecha, row.documento, row.idRiesgo,
+            const DataToInsertCOMPANY = PutWorkHistoryRiskDLTD(idRisk, row.idHistoriaLaboral, row.fecha, row.documento, row.idRiesgo,
                 row.idCargo, row.idClase, row.idExposicion, row.gradoSinEPP, row.gradoConEPP, row.medidasControl, datos.anio, datos.mes,
                 row.usuarioRegistro, row.fechaRegistro, user.email, FormatDate(new Date()));
 
-            if (DataToInsert) {
-                if (diferen == "DLTD") {
-                    const result = await UpdateWorkHistoryRisks(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenUpdate(true);
-                        reset();
-                        getAll();
-                        getSumaRiesgo();
-                    }
-                }
+            const DataToInsertDLTD = PutWorkHistoryRiskDLTD(idRisk, row.idHistoriaLaboral, row.fecha, row.documento, row.idRiesgo,
+                row.idCargo, row.idClase, row.idExposicion, gradoSinEPP, gradoConEPP, JSON.stringify(medicaControl), datos.anio, datos.mes,
+                row.usuarioRegistro, row.fechaRegistro, user.email, FormatDate(new Date()));
 
-                if (diferen == "COMPANY") {
-                    const result = await UpdateWorkHistoryRisksCompany(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenUpdate(true);
-                        reset();
-                        getAll();
-                        getSumaRiesgo();
-                    }
+            if (diferen === "DLTD") {
+                const result1 = await UpdateWorkHistoryRisks(DataToInsertDLTD);
+                if (result1.status === 200) {
+                    setOpenUpdate(true);
+                    getAll();
+                    getSumaRiesgo();
+                    reset();
+                }
+            }
+
+            if (diferen === "COMPANY") {
+                const result2 = await UpdateWorkHistoryRisksCompany(DataToInsertCOMPANY);
+                if (result2.status === 200) {
+                    setOpenUpdate(true);
+                    getAll();
+                    getSumaRiesgo();
+                    reset();
                 }
             }
         } catch (error) { }
     }
+
+    setTimeout(() => {
+        if (row.length !== 0)
+            setTimeWait(true);
+    }, 2000);
 
     return (
         <Fragment>
@@ -137,7 +151,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                 <DialogContent>
                     <Grid container spacing={2} sx={{ my: 0 }}>
                         <Grid item xs={12}>
-                            {row.length !== 0 ?
+                            {timeWait ?
                                 <SubCard
                                     title={
                                         <Grid container spacing={1} alignItems="center">
@@ -178,10 +192,11 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                                             <Fragment>
                                                 <Grid item xs={6}>
                                                     <FormProvider {...methods}>
-                                                        <InputSelect
-                                                            name="gradoConEPP"
-                                                            label="Grado con EPP"
-                                                            defaultValue={row.gradoConEPP}
+                                                        <SelectOnChange
+                                                            name="gradoSinEPP"
+                                                            label="Grado sin EPP"
+                                                            onChange={(e) => setGradoSinEPP(e.target.value)}
+                                                            value={gradoSinEPP}
                                                             options={lsGradoConSinEPP}
                                                             size="small"
                                                         />
@@ -190,10 +205,11 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
 
                                                 <Grid item xs={6}>
                                                     <FormProvider {...methods}>
-                                                        <InputSelect
-                                                            name="gradoSinEPP"
-                                                            label="Grado sin EPP"
-                                                            defaultValue={row.gradoSinEPP}
+                                                        <SelectOnChange
+                                                            name="gradoConEPP"
+                                                            label="Grado con EPP"
+                                                            onChange={(e) => setGradoConEPP(e.target.value)}
+                                                            value={gradoConEPP}
                                                             options={lsGradoConSinEPP}
                                                             size="small"
                                                         />
@@ -217,8 +233,6 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                                             <FormProvider {...methods}>
                                                 <InputText
                                                     type="number"
-                                                    disabled={row.length != 0 ? false : true}
-                                                    defaultValue={row.anio}
                                                     name="anio"
                                                     label="Año"
                                                     size="small"
@@ -229,8 +243,6 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                                             <FormProvider {...methods}>
                                                 <InputText
                                                     type="number"
-                                                    disabled={row.length != 0 ? false : true}
-                                                    defaultValue={row.mes}
                                                     name="mes"
                                                     label="Mes"
                                                     size="small"

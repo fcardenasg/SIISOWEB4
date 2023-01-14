@@ -23,8 +23,9 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
     const [idRisk, setIdRisk] = useState(0);
 
     const handleClick = (id) => {
-        setOpen(true);
         setIdRisk(id);
+        setOpen(true);
+        console.log("Id => ", id);
     };
 
     const FormatArray = (medidasControl = '') => {
@@ -50,7 +51,6 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
             <ModalRisk
                 diferen={diferen}
                 idRisk={idRisk}
-                key={row.id}
                 getSumaRiesgo={getSumaRiesgo}
                 open={open}
                 title={'Editar ' + title}
