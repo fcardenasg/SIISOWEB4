@@ -785,18 +785,38 @@ doc.setFont("helvetica", "bold");
     margin: { top: 90, left: 7, right: 7 },
     body: lsRiesgoHLDO,
     columns: [
-      { header: 'Fecha', dataKey: 'fechaAnio' },
       { header: 'Empresa', dataKey: 'empresa' },
       { header: 'Cargo', dataKey: 'cargo' },
+      { header: 'Año', dataKey: 'anio' },
+      { header: 'Mes', dataKey: 'mes' },
+    ],
+  }))
+
+  /* 3.1. HISTORIA LABORAL EN OTRAS EMPRESAS */
+  doc.text("3.1.1. EXPOSICIÓN OCUPACIONAL EN OTRAS EMPRESAS", 7, 92);
+  doc.setFontSize(10);
+
+
+   //TABLA DE RENDERIZADO DE RIESGOS
+   autoTable(doc, ({
+    styles: { fontSize: 7 },
+    theme: 'plain',
+    fontStyle: 'normal',
+    margin: { top: 90, left: 7, right: 7 },
+    body: lsRiesgoHLDO,
+    columns: [
       { header: 'Riesgo', dataKey: 'riesgo' },
       { header: 'Clase', dataKey: 'clase' },
       { header: 'Exposición', dataKey: 'exposicion' },
       { header: 'Grado Sin Epp', dataKey: 'gradoSinEpp' },
       { header: 'Grado Con Epp', dataKey: 'gradosConEpp' },
+      { header: 'Medidas ', dataKey: 'gradosConEpp' },
       { header: 'Año', dataKey: 'anio' },
       { header: 'Mes', dataKey: 'mes' },
     ],
   }))
+
+
 
 }
 

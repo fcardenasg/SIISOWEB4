@@ -696,7 +696,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="oficio"
-                                        label="Profesionalidad"
+                                        label="Profesión"
                                         defaultValue={employee.oficio}
                                         options={lsOficio}
                                         size={matchesXS ? 'small' : 'medium'}

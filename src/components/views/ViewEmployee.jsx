@@ -141,7 +141,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
 
                         <Grid item xs={4}>
                             <Typography variant="h4">
-                                <b>Profesionalidad:</b> {lsEmployee.nameOficio}
+                                <b>Profesión:</b> {lsEmployee.nameOficio}
                             </Typography>
                         </Grid>
                     </Grid>

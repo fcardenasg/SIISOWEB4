@@ -644,7 +644,7 @@ const Employee = () => {
                         <FormProvider {...methods}>
                             <InputSelect
                                 name="oficio"
-                                label="Profesionalidad"
+                                label="Profesión"
                                 options={lsOficio}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors.oficio}
