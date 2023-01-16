@@ -596,8 +596,9 @@ export function generateReportConceptAptitude(
 
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 45, 45);
-  doc.text("NOMBRES:", 45, 50);
-  doc.text("CARGO:", 45, 55);
+  doc.text("NOMBRES:", 120, 45);
+  doc.text("CARGO:", 45, 50);
+  doc.text("PROFESIÓN:", 45, 55);
   doc.text("AREA:", 45, 60);
   doc.text("DEPARTAMENTO:", 45, 65);
   doc.text("CONCEPTO DE APTITUD:", 45, 70);
@@ -607,8 +608,9 @@ export function generateReportConceptAptitude(
   doc.setFont("helvetica", "normal");
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 41, 30, 30);
   doc.text(`${lsDataReport.documento}`, 95, 45);
-  doc.text(`${lsDataReport.nameEmpleado}`, 95, 50);
-  doc.text(`${lsDataReport.nameCargo}`, 95, 55);
+  doc.text(`${lsDataReport.nameEmpleado}`, 142, 45);
+  doc.text(`${lsDataReport.nameCargo}`, 95, 50);
+  doc.text(`${lsDataReport.nameOficio}`, 95, 55);
   doc.text(`${lsDataReport.nameArea}`, 95, 60);
   doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 95, 65);
   doc.text(`${lsDataReport.nameConceptoActitudNETA}`, 95, 70);
@@ -742,31 +744,31 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text(`${lsDataReport.nameEmpleado}`, 150, 43);
 
 
- /* 2. INFORMACION DE LA EMPRESA Y CARGO */
- doc.setFont("helvetica", "bold");
- doc.setFontSize(10);
- doc.text("2. INFORMACION DE LA EMPRESA Y CARGO", 7, 50);
+  /* 2. INFORMACION DE LA EMPRESA Y CARGO */
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.text("2. INFORMACION DE LA EMPRESA Y CARGO", 7, 50);
 
-/* PRIMERA COLUMNA */
-doc.setFont("helvetica", "bold");
- doc.text("SEDE:", 7, 57);
- doc.text("ÁREA:", 7, 64);
- doc.text("POSICIÓN:", 7, 71);
- /* SEGUNDA COLUMNA */
- doc.text("DPTO. TRABAJO:", 112, 57);
- doc.text("GRUPO:", 112, 64);
- doc.text("ANTIGUEDAD:", 112, 71);
+  /* PRIMERA COLUMNA */
+  doc.setFont("helvetica", "bold");
+  doc.text("SEDE:", 7, 57);
+  doc.text("ÁREA:", 7, 64);
+  doc.text("POSICIÓN:", 7, 71);
+  /* SEGUNDA COLUMNA */
+  doc.text("DPTO. TRABAJO:", 112, 57);
+  doc.text("GRUPO:", 112, 64);
+  doc.text("ANTIGUEDAD:", 112, 71);
 
- /* 2. RENDERIZADO */
- doc.setFont("helvetica", "normal");
- doc.text(`${lsDataReport.nameSede}`, 45, 57);
- doc.text(`${lsDataReport.nameArea}`, 45, 64);
- doc.text(`${lsDataReport.nameCargo}`, 45, 71);
+  /* 2. RENDERIZADO */
+  doc.setFont("helvetica", "normal");
+  doc.text(`${lsDataReport.nameSede}`, 45, 57);
+  doc.text(`${lsDataReport.nameArea}`, 45, 64);
+  doc.text(`${lsDataReport.nameCargo}`, 45, 71);
 
   doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 150, 57);
   doc.text(`${lsDataReport.nameGrupo}`, 150, 64);
-   doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)}`, 150, 71);
-   doc.text("AÑOS", 155, 71);
+  doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)}`, 150, 71);
+  doc.text("AÑOS", 155, 71);
 
 
   /* 3. ANTECEDENTES LABORALES */
@@ -879,10 +881,10 @@ export function generateClinicHistoryDLTD(
   doc.text(`${resultExpoDLTD.aniosRuidoCompany} AÑOS`, 87, 104 + 150);
   doc.text(`${resultExpoDLTD.mesRuidoCompany} MESES`, 110, 104 + 150);
 
-  doc.text(`${resultExpoDLTD.aniosMpiDLTD + resultExpoDLTD.aniosMpiCompany} AÑOS`,153,97 + 150);
-  doc.text(`${resultExpoDLTD.mesMpiDLTD + resultExpoDLTD.mesMpiCompany} MESES`,185,97 + 150);
-  doc.text(`${resultExpoDLTD.aniosRuidoDLTD + resultExpoDLTD.aniosRuidoCompany} AÑOS`,153,104 + 150);
-  doc.text(`${resultExpoDLTD.mesRuidoDLTD + resultExpoDLTD.mesRuidoCompany} MESES`,185,104 + 150);
+  doc.text(`${resultExpoDLTD.aniosMpiDLTD + resultExpoDLTD.aniosMpiCompany} AÑOS`, 153, 97 + 150);
+  doc.text(`${resultExpoDLTD.mesMpiDLTD + resultExpoDLTD.mesMpiCompany} MESES`, 185, 97 + 150);
+  doc.text(`${resultExpoDLTD.aniosRuidoDLTD + resultExpoDLTD.aniosRuidoCompany} AÑOS`, 153, 104 + 150);
+  doc.text(`${resultExpoDLTD.mesRuidoDLTD + resultExpoDLTD.mesRuidoCompany} MESES`, 185, 104 + 150);
 }
 
 export function generatePathologicalAntecedents(

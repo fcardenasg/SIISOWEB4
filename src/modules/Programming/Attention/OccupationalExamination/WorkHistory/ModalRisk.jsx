@@ -109,20 +109,20 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
             if (diferen === "DLTD") {
                 const result1 = await UpdateWorkHistoryRisks(DataToInsertDLTD);
                 if (result1.status === 200) {
-                    setOpenUpdate(true);
                     getAll();
                     getSumaRiesgo();
                     reset();
+                    setOpenUpdate(true);
                 }
             }
 
             if (diferen === "COMPANY") {
                 const result2 = await UpdateWorkHistoryRisksCompany(DataToInsertCOMPANY);
                 if (result2.status === 200) {
-                    setOpenUpdate(true);
                     getAll();
                     getSumaRiesgo();
                     reset();
+                    setOpenUpdate(true);
                 }
             }
         } catch (error) { }

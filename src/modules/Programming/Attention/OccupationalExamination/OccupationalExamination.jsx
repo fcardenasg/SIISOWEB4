@@ -325,8 +325,7 @@ const OccupationalExamination = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            /* resultData.id */
-            const lsDataReport = await GetByIdDataReport(resultData.id);
+            const lsDataReport = await GetByIdDataReport(5);
             const lsDataUser = await GetByMail(user.email);
             const resultExpoDLTD = await getDataExploracion(documento);
             //reporte riesgos
@@ -953,7 +952,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button disabled={resultData.length === 0 ? true : false}
+                                <Button /* disabled={resultData.length === 0 ? true : false} */
                                     variant="outlined" fullWidth onClick={handleClickReport}
                                 >
                                     {TitleButton.Imprimir}
