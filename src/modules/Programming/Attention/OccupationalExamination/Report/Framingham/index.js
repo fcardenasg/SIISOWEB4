@@ -3,7 +3,7 @@ import LogoReport from "assets/img/LogoReport.png";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
 
 /* FIRMAS */
-function getFirma(doc=new jsPDF(), lsDataUser, my = 0) {
+function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
   doc.addImage(
     `${lsDataUser.firma}`,
     "PNG",
@@ -24,14 +24,14 @@ function getFirma(doc=new jsPDF(), lsDataUser, my = 0) {
   doc.text(`${lsDataUser.nombre}`, 5, doc.internal.pageSize.height - (44 - my));
   doc.text("MEDICINA GENERAL", 5, doc.internal.pageSize.height - (40 - my));
   doc.text(
-    `${lsDataUser.licencia} - ${lsDataUser.registroMedico}`,
+    `Lic: TP ${lsDataUser.licencia} - RM: ${lsDataUser.registroMedico}`,
     5,
     doc.internal.pageSize.height - (36 - my)
   );
 }
 
 function getFirmaEmployee(doc, lsDataReport, my = 0) {
- 
+
   doc.setLineWidth(0.5);
   doc.setDrawColor(128, 128, 128);
   doc.line(
@@ -117,7 +117,7 @@ function pageFramingham(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 32, 210, 32);
 
   doc.text(
-    "DATOS DEL EMPLEADO",7,37);
+    "DATOS DEL EMPLEADO", 7, 37);
 
   /* CUADRO DATOS */
   doc.line(5, 43, 210, 43);
@@ -136,11 +136,11 @@ function pageFramingham(doc, lsDataReport = [], lsDataUser = []) {
 
   /* LINEA FINAL */
   doc.line(115, 75, 115, 181);    /* LINEA DEL SI/NO */
-  
+
   doc.line(5, 87, 210, 87);
   doc.line(5, 92, 210, 92);
   doc.line(5, 97, 210, 97);
-  
+
   doc.line(5, 102, 210, 102);
   doc.line(5, 107, 210, 107);
   doc.line(5, 112, 210, 112);
@@ -158,7 +158,7 @@ function pageFramingham(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 172, 210, 172);
   doc.line(5, 177, 210, 177);
   doc.line(5, 182, 210, 182);
-  
+
   doc.line(5, 191, 210, 191);
   doc.line(5, 196, 210, 196);
 
@@ -183,35 +183,35 @@ function pageFramingham(doc, lsDataReport = [], lsDataUser = []) {
   doc.text("TALLA:", 70, 63);
   doc.text("IMC:", 94, 63);
   doc.text("EPS:", 117, 63);
-  doc.text("RIESGO CARDIOVASCULAR:", 45, 70); 
+  doc.text("RIESGO CARDIOVASCULAR:", 45, 70);
   doc.text("CLASIFICACIÓN:", 117, 70);
   doc.text("DATOS CARDIOVASCULARES", 6, 79);
 
-   
-  
+
+
   doc.text("1. Fuma.", 6, 86);
   doc.text("2. Tensión arterial.", 6, 91);
   doc.text("3. Fecha de laboratorio", 6, 96);
   doc.text("4. Colesterol total", 6, 101);
 
-  doc.text("5. HDL.",6,106);
-  doc.text("6. Triglicéridos.",6,111);
-  doc.text("7. Glicemia.",6,116);
+  doc.text("5. HDL.", 6, 106);
+  doc.text("6. Triglicéridos.", 6, 111);
+  doc.text("7. Glicemia.", 6, 116);
   doc.text("RESULTADOS ", 6, 121);
 
   doc.text("1. LDL.", 6, 126);
-  doc.text("2. Relación.",6,131);
-  doc.text("3. FR Edad.",6,136);
-  doc.text("4. FR Colesterol.",6,141);
-  doc.text("5. Fr HDL.",6,146);
+  doc.text("2. Relación.", 6, 131);
+  doc.text("3. FR Edad.", 6, 136);
+  doc.text("4. FR Colesterol.", 6, 141);
+  doc.text("5. Fr HDL.", 6, 146);
   doc.text("6. Fr Glicemia.", 6, 151);
-  doc.text("7. Fr Tensión Arterial.",6,156);
+  doc.text("7. Fr Tensión Arterial.", 6, 156);
   doc.text("8. Fr Tabaquismo.", 6, 161);
-  doc.text("9. Puntaje.",6,166);
-  doc.text("10. Riegos Absoluto.",6,171);
-  doc.text("11. Riesgo Relativo.",6,176);
-  doc.text("12. Interpretación.",6,181);
-  doc.text("13. Observación.",6,195);
+  doc.text("9. Puntaje.", 6, 166);
+  doc.text("10. Riegos Absoluto.", 6, 171);
+  doc.text("11. Riesgo Relativo.", 6, 176);
+  doc.text("12. Interpretación.", 6, 181);
+  doc.text("13. Observación.", 6, 195);
 
 
   /* RENDERIZADO DE CONTENIDO */
@@ -226,7 +226,7 @@ function pageFramingham(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${lsDataReport.nameRiesgoCardiovascularNEMTA}`, 95, 70);
   doc.text(`${lsDataReport.nameClasificacionNEMTA}`, 148, 70);
   doc.text(`${lsDataReport.namePosicion}`, 138, 58);
-  
+
   doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 57, 58);
   doc.text(`${lsDataReport.nameGenero}`, 88, 58);
 
@@ -235,8 +235,6 @@ function pageFramingham(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${lsDataReport.imcef}`, 103, 63);
   doc.text(`${lsDataReport.nameEps}`, 138, 63);
 
-
-  
   /* RENDERIZADO DE CUESTIONARIO */
 
   doc.text(`${lsDataReport.nameFumaFRA}`, 116, 86);
@@ -247,7 +245,7 @@ function pageFramingham(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${lsDataReport.hdlfra}`, 116, 111);
   doc.text(`${lsDataReport.triglicericosFRA}`, 116, 116);
   doc.text(`${lsDataReport.glisemiaFRA}`, 116, 121);
-//resultados
+  //resultados
   doc.text(`${lsDataReport.ldlfra}`, 116, 126);
   doc.text(`${lsDataReport.relacionFRA}`, 116, 131);
   doc.text(`${lsDataReport.frlEdadFRA}`, 116, 136);

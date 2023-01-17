@@ -287,6 +287,57 @@ const Emo = ({
         getAllConceptos();
     }, [atencion]);
 
+    useEffect(() => {
+        async function getAllDxs() {
+            if (lsLastRecord) {
+                if (lsLastRecord.dx1 !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsLastRecord.dx1);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+
+                    setTextDx1(lsLastRecord.dx1);
+                }
+
+                if (lsLastRecord.dx2 !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsLastRecord.dx2);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx2(resultCie11);
+                    }
+
+                    setTextDx2(lsLastRecord.dx2);
+                }
+
+                if (lsLastRecord.dx3 !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsLastRecord.dx3);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx3(resultCie11);
+                    }
+
+                    setTextDx2(lsLastRecord.dx3);
+                }
+            }
+
+        }
+
+        getAllDxs();
+    }, [lsLastRecord]);
+
     const handleDx1 = async (event) => {
         try {
             setTextDx1(event.target.value);
@@ -1978,7 +2029,7 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                defaultValue={() => validateLastData(lsLastRecord.taSentadoEF, "string")}
+                                                defaultValue=""
                                                 name="tASentadoEF"
                                                 label="TA Sentado"
                                                 size={matchesXS ? 'small' : 'medium'}
@@ -1990,7 +2041,7 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                defaultValue={() => validateLastData(lsLastRecord.taAcostadoEF, "string")}
+                                                defaultValue=""
                                                 name="tAAcostadoEF"
                                                 label="TA Acostado"
                                                 size={matchesXS ? 'small' : 'medium'}
@@ -2002,7 +2053,7 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                defaultValue={() => validateLastData(lsLastRecord.pulsoEF, "string")}
+                                                defaultValue=""
                                                 type="number"
                                                 name="pulsoEF"
                                                 label="Pulso"
@@ -2015,7 +2066,7 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                defaultValue={() => validateLastData(lsLastRecord.fCEF, "string")}
+                                                defaultValue=""
                                                 type="number"
                                                 name="fCEF"
                                                 label="FC"
@@ -2028,7 +2079,7 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                defaultValue={() => validateLastData(lsLastRecord.fREF, "string")}
+                                                defaultValue=""
                                                 type="number"
                                                 name="fREF"
                                                 label="FR"
@@ -2041,7 +2092,7 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
-                                                defaultValue={() => validateLastData(lsLastRecord.temperaturaEF, "string")}
+                                                defaultValue=""
                                                 type="number"
                                                 name="temperaturaEF"
                                                 label="Temperatura"
@@ -3525,7 +3576,7 @@ const Emo = ({
                                             <InputSelect
                                                 name="dx1"
                                                 label="Dx1"
-                                                defaultValue=""
+                                                defaultValue={() => validateLastData(lsLastRecord.dx1, "string")}
                                                 options={lsDx1}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
@@ -3546,7 +3597,7 @@ const Emo = ({
                                             <InputSelect
                                                 name="dx2"
                                                 label="Dx2"
-                                                defaultValue=""
+                                                defaultValue={() => validateLastData(lsLastRecord.dx2, "string")}
                                                 options={lsDx2}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
@@ -3567,7 +3618,7 @@ const Emo = ({
                                             <InputSelect
                                                 name="dx3"
                                                 label="Dx3"
-                                                defaultValue=""
+                                                defaultValue={() => validateLastData(lsLastRecord.dx3, "string")}
                                                 options={lsDx3}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />

@@ -1,5 +1,4 @@
 import jsPDF from "jspdf";
-import LogoReport from "assets/img/LogoReport.png";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
 
 /* FIRMAS */
@@ -48,33 +47,6 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
   );
   doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
 }
-/* Encabezado */
-export function getHeader(doc) {
-  /* ENCABEZADO REPORTE */
-  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "bold");
-  doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "bold");
-  doc.text(
-    "ESTIMACIÓN DE RIESGO ABSOLUTO Y RELATIVO SEGÚN MÉTODO",
-    120,
-    15,
-    null,
-    null,
-    "center"
-  );
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "bold");
-  doc.text("SIG-0409", 200, 10, null, null, "center");
-  doc.text("Versión 06", 200, 15, null, null, "center");
-
-  /* LINEA DE DIVISIÓN */
-  doc.setLineWidth(1);
-  doc.setDrawColor(255, 0, 0);
-  doc.line(5, 25, 210, 25);
-}
 
 /* Pag. 1 */
 export function pageFramingham(
@@ -83,7 +55,6 @@ export function pageFramingham(
   doc.setFontSize(10);
   doc.setLineWidth(0.2);
   doc.setDrawColor(128, 128, 128);
-  doc.text("FRAMINGHAM", 7, 30);
   doc.line(5, 32, 210, 32);
 
   doc.text(
@@ -157,8 +128,6 @@ export function pageFramingham(
   doc.text("CLASIFICACIÓN:", 117, 70);
   doc.text("DATOS CARDIOVASCULARES", 6, 79);
 
-
-
   doc.text("1. Fuma.", 6, 86);
   doc.text("2. Tensión arterial.", 6, 91);
   doc.text("3. Fecha de laboratorio", 6, 96);
@@ -183,10 +152,7 @@ export function pageFramingham(
   doc.text("12. Interpretación.", 6, 181);
   doc.text("13. Observación.", 6, 195);
 
-
   /* RENDERIZADO DE CONTENIDO */
-
-
   doc.setFont("helvetica", "normal");
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7, 44, 34, 29);
   doc.text(`${lsDataReport.nameSede}`, 71, 48);
@@ -205,14 +171,11 @@ export function pageFramingham(
   doc.text(`${lsDataReport.imcef}`, 103, 63);
   doc.text(`${lsDataReport.nameEps}`, 138, 63);
 
-
-
   /* RENDERIZADO DE CUESTIONARIO */
-
   doc.text(`${lsDataReport.nameFumaFRA}`, 116, 86);
   doc.text(`${lsDataReport.tencionFRA}`, 116, 91);
   doc.text(`${ViewFormat(lsDataReport.fechaLaboratorioFRA)}`, 116, 96);
-/*  doc.text(`${lsDataReport.idEnfermedadNEMTA}`, 116, 101); */
+  /*  doc.text(`${lsDataReport.idEnfermedadNEMTA}`, 116, 101); */
   doc.text(`${lsDataReport.colesterolTotalFRA}`, 116, 101);
   doc.text(`${lsDataReport.hdlfra}`, 116, 106);
   doc.text(`${lsDataReport.triglicericosFRA}`, 116, 111);
@@ -228,18 +191,19 @@ export function pageFramingham(
   doc.text(`${lsDataReport.frTabaquismoFRA}`, 116, 161);
   doc.text(`${lsDataReport.puntajeFRA}`, 116, 166);
   doc.text(`${lsDataReport.riesgoAbsolutoFRA}`, 116, 171);
-  doc.text(`${lsDataReport.riesgoRelativoFRA}`, 116, 176);
+  doc.text(`${lsDataReport.riesgoRelativoFRA}%`, 116, 176);
 
+  doc.setFont("helvetica", "bold");
   doc.text(`${lsDataReport.interpretacionFRA}`, 6, 188, {
     maxWidth: 190,
     lineHeightFactor: 1.0,
   });
+
+  doc.setFont("helvetica", "normal");
   doc.text(`${lsDataReport.observacionFRA}`, 6, 200, {
     maxWidth: 190,
     lineHeightFactor: 1.0,
   });
-
-
 
   /* FIRMA */
   getFirma(doc, lsDataUser, 22);

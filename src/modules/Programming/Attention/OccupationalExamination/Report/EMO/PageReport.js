@@ -289,8 +289,8 @@ function generatePhysicalExam(doc = new jsPDF(), lsDataReport) {
   doc.line(5, 116, marXR, 116); /* HORI ONE */
   doc.line(5, 124, marXR, 124); /* HORI TWO */
 
-  doc.text("6.1 SIGNOS VITALES - TENSIÓN ARTERIAL", 7, 113);
-  doc.text("6.2. ANTROPOMETRIA", 112, 113);
+  doc.text("6.2 SIGNOS VITALES - TENSIÓN ARTERIAL", 7, 113);
+  doc.text("6.3 ANTROPOMETRIA", 112, 113);
 
   doc.text("SENTADO", 7, 121);
   doc.text("ACOSTADO", 27, 121);
@@ -658,8 +658,9 @@ export function generateReportDiagnosis(
 
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 7, 45);
-  doc.text("NOMBRES:", 7, 50);
-  doc.text("CARGO:", 7, 55);
+  doc.text("NOMBRES:", 120, 45);
+  doc.text("CARGO:", 7, 50);
+  doc.text("PROFESIÓN:", 7, 55);
   doc.text("AREA:", 7, 60);
   doc.text("DEPARTAMENTO:", 7, 65);
   doc.text("CONCEPTO DE DIAGNÓSTICOS:", 7, 73);
@@ -673,8 +674,9 @@ export function generateReportDiagnosis(
   /* RENDERIZADO */
   doc.setFont("helvetica", "normal");
   doc.text(`${lsDataReport.documento}`, 55, 45);
-  doc.text(`${lsDataReport.nameEmpleado}`, 55, 50);
-  doc.text(`${lsDataReport.nameCargo}`, 55, 55);
+  doc.text(`${lsDataReport.nameEmpleado}`, 142, 45);
+  doc.text(`${lsDataReport.nameCargo}`, 55, 50);
+  doc.text(`${lsDataReport.nameOficio}`, 55, 55);
   doc.text(`${lsDataReport.nameArea}`, 55, 60);
   doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 55, 65);
 
@@ -799,8 +801,8 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.setFontSize(10);
 
 
-   //TABLA DE RENDERIZADO DE RIESGOS
-   autoTable(doc, ({
+  //TABLA DE RENDERIZADO DE RIESGOS
+  autoTable(doc, ({
     styles: { fontSize: 7 },
     theme: 'plain',
     fontStyle: 'normal',
@@ -1135,8 +1137,9 @@ export function generateHabitsGineco(doc = new jsPDF(), lsDataReport) {
 export function generateSystemReview(doc = new jsPDF(), lsDataReport) {
   const marXR = doc.internal.pageSize.width - 5;
 
-  doc.text("6. EXAMEN FISICO", 7, 105);
-  doc.text("6.3 EXPLORACIÓN MORFOLÓGICA - ASPECTOS", 7, 137);
+  doc.text("6. EXAMEN FISICO", 7, 101);
+  doc.text("6.1 LATERALIDAD:", 7, 107);
+  doc.text("6.4 EXPLORACIÓN MORFOLÓGICA - ASPECTOS", 7, 137);
 
   doc.text("5. REVISIÓN POR SISTEMAS - PATOLOGÍAS", 7, 36);
   doc.setFontSize(10);
@@ -1148,7 +1151,8 @@ export function generateSystemReview(doc = new jsPDF(), lsDataReport) {
   doc.line(5, 31, marXR, 31); /* HORI ONE */
   doc.line(5, 39, marXR, 39); /* HORI TWO  */
   doc.line(5, 79, marXR, 79); /* HORI THREE*/
-  doc.line(5, 100, marXR, 100); /* HORI FOUR*/
+  doc.line(5, 97, marXR, 97); /* HORI FOUR*/
+  doc.line(5, 103, marXR, 103); /* HORI FOUR*/
   doc.line(5, 108, marXR, 108); /* HORI FIVE */
 
   doc.line(5, 132, marXR, 132); /* HORI SIX */
@@ -1207,6 +1211,8 @@ export function generateSystemReview(doc = new jsPDF(), lsDataReport) {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
+
+  doc.text(`${lsDataReport.nameLateralidadExamenesFisico}`, 45, 107);
 
   generatePhysicalExam(doc, lsDataReport);
   generateExploracionMorfologica(doc, lsDataReport);
@@ -1306,9 +1312,9 @@ export function generateFunctionalExploration(doc = new jsPDF(), lsDataReport) {
   doc.text(`${lsDataReport.rotAquileanoEFU}`, marXR - 2, 90, {
     align: "right",
   });
-  doc.text(`${lsDataReport.indiceWellsEFU}`, marXR - 2, 95, { align: "right" });
+  doc.text(`${lsDataReport.valorIndiceWellsEFU}`, marXR - 2, 95, { align: "right" });
 
-  doc.text(`${lsDataReport.observacionRS}`, 7, 110, {
+  doc.text(`${lsDataReport.observacionEFU}`, 7, 110, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });

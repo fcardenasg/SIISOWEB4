@@ -84,13 +84,23 @@ export function getHeaderFR(doc) {
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
   doc.text(
-    "ESTIMACIÓN DE RIESGO ABSOLUTO Y RELATIVO SEGÚN MÉTODO",
+    "ESTIMACIÓN DE RIESGO ABSOLUTO Y RELATIVO",
     120,
     15,
     null,
     null,
     "center"
   );
+
+  doc.text(
+    "SEGÚN MÉTODO FRAMINGHAM",
+    120,
+    20,
+    null,
+    null,
+    "center"
+  );
+
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
   doc.text("SIG-0409", 200, 10, null, null, "center");
