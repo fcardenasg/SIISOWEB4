@@ -21,7 +21,7 @@ const InputDatePicker = ({ label, name, defaultValue, size, ...others }) => {
                             onChange={(newValue) => field.onChange(newValue)}
                             value={field.value}
                             label={label}
-                            inputFormat="yyyy/MM/dd"
+                            inputFormat="dd/MM/yyyy"
                             renderInput={(params) => <TextField {...params} fullWidth />}
                             KeyboardButtonProps={{
                                 "aria-label": "change date"

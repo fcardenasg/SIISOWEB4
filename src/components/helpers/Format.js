@@ -10,8 +10,20 @@ const FormatDate = (date = new Date()) => {
 
 const ViewFormat = (fecha = new Date()) => {
     try {
-        const fechaFormat = new Date(fecha).toISOString().split('T')[0];
-        return fechaFormat;
+        /* const event = new Date(fecha);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return event.toLocaleDateString(undefined, options); */
+
+        let day = `${(new Date(fecha).getDate())}`.padStart(2, '0');
+        let month = `${(new Date(fecha).getMonth() + 1)}`.padStart(2, '0');
+        let year = new Date(fecha).getFullYear();
+
+        return `${day}-${month}-${year}`;
+
+        /* const fechaFormat = new Date(fecha).toLocaleDateString('en-US') */
+
+        /* const fechaFormat = new Date(fecha).toISOString().split('T')[0];
+        return fechaFormat; */
     } catch (error) { }
 }
 
