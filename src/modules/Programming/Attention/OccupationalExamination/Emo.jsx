@@ -329,10 +329,9 @@ const Emo = ({
                         setLsDx3(resultCie11);
                     }
 
-                    setTextDx2(lsLastRecord.dx3);
+                    setTextDx3(lsLastRecord.dx3);
                 }
             }
-
         }
 
         getAllDxs();
