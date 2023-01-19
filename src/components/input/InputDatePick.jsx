@@ -11,7 +11,7 @@ const InputDatePick = ({ value, label, onChange, required, ...others }) => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <MobileDatePicker
                     label={label}
-                    inputFormat="yyyy/MM/dd"
+                    inputFormat="dd/MM/yyyy"
                     value={value}
                     onChange={onChange}
                     renderInput={(params) => <TextField {...params} fullWidth />}

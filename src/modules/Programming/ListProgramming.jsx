@@ -108,7 +108,7 @@ const ListProgramming = () => {
     let usersResult = <></>;
 
     if (lsProgramming.length !== 0) {
-        usersResult = stableSort(lsProgramming, getComparator('asc', 'fecha')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        usersResult = stableSort(lsProgramming, getComparator('desc', 'fecha')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((programming, index) => (
                 <Grid key={index} item xs={12} sm={6} lg={3} xl={2}>
                     <ViewProgramming key={index} programming={programming} getAll={getAll} />

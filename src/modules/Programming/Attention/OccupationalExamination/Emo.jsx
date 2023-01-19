@@ -52,6 +52,7 @@ import TableExamenesPara from './TableEmo/TableExamenesPara';
 import { MessageError } from 'components/alert/AlertAll';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import StickyActionBar from './StickyActionBar/StickyActionBar';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -329,10 +330,9 @@ const Emo = ({
                         setLsDx3(resultCie11);
                     }
 
-                    setTextDx2(lsLastRecord.dx3);
+                    setTextDx3(lsLastRecord.dx3);
                 }
             }
-
         }
 
         getAllDxs();
@@ -2016,6 +2016,22 @@ const Emo = ({
                     <Accordion title={<><IconUserSearch />
                         <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">EXAMEN FÍSICO</Typography></>}>
                         <SubCard>
+
+                            <SubCard title="Lateralidad">
+                                <Grid item xs={6}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="lateralidadExamenesFisico"
+                                            label="Lateralidad"
+                                            defaultValue={() => validateLastData(lsLastRecord.lateralidadExamenesFisico, "number")}
+                                            options={lsLateralidad}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                            </SubCard>
+                            <Grid sx={{ pb: 2 }} />
+
                             <SubCard
                                 title="Signos Vitales/Tensión Arterial"
                                 secondary={
@@ -2037,7 +2053,7 @@ const Emo = ({
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={4} >
+                                    <Grid item xs={4}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
@@ -2049,7 +2065,7 @@ const Emo = ({
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={4} >
+                                    <Grid item xs={4}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
@@ -2062,7 +2078,7 @@ const Emo = ({
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={4} >
+                                    <Grid item xs={4}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
@@ -2075,7 +2091,7 @@ const Emo = ({
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={4} >
+                                    <Grid item xs={4}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
@@ -2088,7 +2104,7 @@ const Emo = ({
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={4} >
+                                    <Grid item xs={4}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
@@ -2153,25 +2169,13 @@ const Emo = ({
                                         />
                                     </Grid>
 
-                                    <Grid item xs={1.5}>
+                                    <Grid item xs={3}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="idBiotipoEF"
                                                 label="Biotipo"
                                                 defaultValue={() => validateLastData(lsLastRecord.idBiotipoEF, "number")}
                                                 options={lsBiotipo}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={1.5}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="lateralidadExamenesFisico"
-                                                label="Lateralidad"
-                                                defaultValue={() => validateLastData(lsLastRecord.lateralidadExamenesFisico, "number")}
-                                                options={lsLateralidad}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>

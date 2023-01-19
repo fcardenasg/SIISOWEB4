@@ -8,27 +8,18 @@ import { useTheme } from '@mui/material/styles';
 import {
     Avatar,
     Box,
-    Card,
-    CardContent,
     Chip,
     ClickAwayListener,
-    Divider,
-    Grid,
-    InputAdornment,
     List,
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    OutlinedInput,
     Paper,
     Popper,
     Stack,
-    Switch,
     Typography
 } from '@mui/material';
 
-// third-party
-import PerfectScrollbar from 'react-perfect-scrollbar';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
