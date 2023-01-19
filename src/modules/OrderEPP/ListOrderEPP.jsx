@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ControlModal from 'components/controllers/ControlModal';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -24,23 +25,29 @@ import {
     Typography,
     Button
 } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import swal from 'sweetalert';
+import { visuallyHidden } from '@mui/utils';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { ViewFormat } from 'components/helpers/Format';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCompany, DeleteCompany } from 'api/clients/CompanyClient';
+import { GetAllOrderEPP, DeleteOrderEPP }  from 'api/clients/OrderEPPClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-import { IconFileExport } from '@tabler/icons';
-
+import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { IconFileExport } from '@tabler/icons';
+
+import { generateReport } from './ReportEPP';
+import { GetByIdOrderEPP } from "api/clients/OrderEPPClient";
+import { GetByMail } from 'api/clients/UserClient';
+import useAuth from 'hooks/useAuth';
+import ViewPDF from 'components/components/ViewPDF';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -71,35 +78,37 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'codigo',
+        id: 'idOrdenesEpp',
         numeric: false,
-        label: 'Código',
-        align: 'center'
+        label: 'ID',
+        align: 'left'
     },
+
+
     {
-        id: 'descripcionSpa',
+        id: 'documento',
         numeric: false,
-        label: 'Nombre',
+        label: 'Documento',
         align: 'left'
     },
     {
-        id: 'email',
+        id: 'nameEmpleado',
         numeric: false,
-        label: 'Email',
+        label: 'Nombres',
         align: 'left'
     },
     {
-        id: 'celular',
+        id: 'nameProveedor',
         numeric: false,
-        label: 'Celular',
+        label: 'Proveedor',
         align: 'left'
     },
     {
-        id: 'gerente',
+        id: 'fecha',
         numeric: false,
-        label: 'Contacto',
+        label: 'Fecha',
         align: 'left'
-    }
+    },
 ];
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
@@ -189,7 +198,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-
+                Nutrición
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -208,30 +217,34 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListOrderEpp = () => {
-    const [company, setCompany] = useState([]);
-    const [idCheck, setIdCheck] = useState('');
+const ListOrderEPP = () => {
+    const { user } = useAuth();
+    const navigate = useNavigate();
+    const [idCheck, setIdCheck] = useState(0);
+    const [lsOrderEPP, setLsOrderEPP] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
+    const [openReport, setOpenReport] = useState(false);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('descripcionSpa');
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
+    const [dataPDF, setDataPDF] = useState(null);
 
-    async function GetAll() {
+    async function getAll() {
         try {
-            const lsServer = await GetAllCompany(0, 0);
-            setCompany(lsServer.data.entities);
+            const lsServer = await GetAllOrderEPP(0, 0);
+            setLsOrderEPP(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -242,7 +255,7 @@ const ListOrderEpp = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codigo', 'descripcionSpa', 'email', 'celular', 'gerente'];
+                const properties = ['idOrdenesEpp','documento', 'nameEmpleado', 'nameProveedor','fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -256,9 +269,9 @@ const ListOrderEpp = () => {
                 }
                 return matches;
             });
-            setCompany(newRows);
+            setLsOrderEPP(newRows);
         } else {
-            setCompany(rows);
+            setLsOrderEPP(rows);
         }
     };
 
@@ -268,10 +281,19 @@ const ListOrderEpp = () => {
         setOrderBy(property);
     };
 
-    const handleSelectAllClick = (event) => {
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdOrderEPP(idCheck);
+            const lsDataUser = await GetByMail(user.email);
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
+    const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelectedId = company.map((n) => n.codigo);
+            const newSelectedId = lsOrderEPP.map((n) => n.idOrdenesEpp);
             setSelected(newSelectedId);
             return;
         }
@@ -310,27 +332,43 @@ const ListOrderEpp = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteCompany(idCheck);
+                    const result = await DeleteOrderEPP(idCheck);
+
                     if (result.status === 200) {
                         setOpenDelete(true);
+                        setSelected([]);
+                        setIdCheck(0);
+                        getAll();
                     }
-                    setSearch('');
-                    setSelected([]);
-                    GetAll();
                 } else
                     setSelected([]);
             });
         } catch (error) { }
     }
 
-    const navigate = useNavigate();
+    const handleClose = () => {
+        setOpenReport(false);
+        setSelected([]);
+        setIdCheck('');
+        setDataPDF(null);
+    }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - company.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsOrderEPP.length) : 0;
 
     return (
-        <MainCard title="Lista de Empresas" content={false}>
+        <MainCard title="LISTA DE ORDENES EPP" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={handleClose}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -348,7 +386,7 @@ const ListOrderEpp = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <ExcelFile element={
@@ -357,28 +395,65 @@ const ListOrderEpp = () => {
                                             <IconFileExport />
                                         </IconButton>
                                     </Tooltip>
-                                } filename="Empresas">
-                                    <ExcelSheet data={company} name="Empresas">
-                                        <ExcelColumn label="Codigo" value="codigo" />
-                                        <ExcelColumn label="Empresa" value="descripcionSpa" />
-                                        <ExcelColumn label="Contacto" value="gerente" />
-                                        <ExcelColumn label="Correo Electronico" value="email" />
-                                        <ExcelColumn label="Celular" value="celular" />
+                                } filename="LISTA DE ORDENES EPP">
+                                    <ExcelSheet data={lsOrderEPP} name="Atención">
+                                        <ExcelColumn label="Id" value="idOrdenesEpp" />
+                                        <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
+                                        <ExcelColumn label="Tipo de Atención" value="nameTipoAtencion" />
+                                        <ExcelColumn label="Atención" value="nameAtencion" />
+
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
+                                        <ExcelColumn label="Sede Empleado" value="nameSedeEmpleado" />
+                                        <ExcelColumn label="Roster Position" value="nameCargo" />
+                                        <ExcelColumn label="General Position" value="nameGeneralPosition" />
+                                        <ExcelColumn label="Correo" value="nameCorreo" />
+                                        <ExcelColumn label="Genero" value="nameGenero" />
+                                        <ExcelColumn label="Empresa" value="nameEmpresa" />
+                                        <ExcelColumn label="Fecha Nacimiento" value={(fe) => ViewFormat(fe.fechaNacimi)} />
+                                        <ExcelColumn label="Eps" value="nameEps" />
+                                        <ExcelColumn label="Telefono" value="nameTelefono" />
+                                        <ExcelColumn label="Fecha Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
+                                        <ExcelColumn label="Afp" value="nameAfp" />
+                                        <ExcelColumn label="Area" value="nameArea" />
+                                        <ExcelColumn label="Ciudad Nacimiento" value="nameCiudadNacido" />
+                                        <ExcelColumn label="Ciudad Residencia" value="nameCiudadResidencia" />
+                                        <ExcelColumn label="Departamento" value="nameDepartamento" />
+                                        <ExcelColumn label="Dirección" value="nameDireccion" />
+                                        <ExcelColumn label="Departamento Nacimiento" value="nameDptoNacido" />
+                                        <ExcelColumn label="Departamento Residencia" value="nameDptoResidencia" />
+                                        <ExcelColumn label="Estado Civil" value="nameEstadoCivil" />
+                                        <ExcelColumn label="Grupo" value="nameGrupo" />
+                                        <ExcelColumn label="Subarea" value="nameSubarea" />
+                                        <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
+                                        <ExcelColumn label="Turno Empleado" value="nameTurnoEmpleado" />
+                                        <ExcelColumn label="Type" value="nameType" />
+
+                                        <ExcelColumn label="Estado Caso" value="nameEstadoCaso" />
+                                        <ExcelColumn label="Sede Atención" value="nameSedeAtencion" />
+                                        <ExcelColumn label="Observaciones" value="observaciones" />
                                     </ExcelSheet>
                                 </ExcelFile>
-
                             </Grid>
 
-                            <Grid item xs={5}>
+                            <Grid item xs={2}>
+                                <Tooltip title="Impresión" onClick={handleClickReport}>
+                                    <IconButton size="large">
+                                        <PrintIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+
+                            <Grid item xs={4}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/company/add")}>
+                                    onClick={() => navigate("/orderepp/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={5}>
+                            <Grid item xs={4}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/parameterization/menu")}>
+                                    onClick={() => navigate("/dashboard/ltd")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>
@@ -395,31 +470,30 @@ const ListOrderEpp = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={company.length}
+                        rowCount={lsOrderEPP.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(company, getComparator(order, orderBy))
+                        {stableSort(lsOrderEPP, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
 
-                                if (typeof row === 'number') return null;
+                                if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.codigo);
+                                const isItemSelected = isSelected(row.idOrdenesEpp);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
                                     <TableRow
                                         hover
-                                        role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.codigo)}>
+                                        <TableCell padding="radio" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idOrdenesEpp)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -428,19 +502,35 @@ const ListOrderEpp = () => {
                                                 }}
                                             />
                                         </TableCell>
+
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.codigo)}
+                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                #{row.codigo}
+                                                {row.idOrdenesEpp}
+                                            </Typography>
+                                        </TableCell>
+
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.documento}
                                             </Typography>
                                         </TableCell>
 
@@ -448,14 +538,14 @@ const ListOrderEpp = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.codigo)}
+                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.descripcionSpa}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -463,14 +553,14 @@ const ListOrderEpp = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.codigo)}
+                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.email}
+                                                {row.nameProveedor}
                                             </Typography>
                                         </TableCell>
 
@@ -478,39 +568,24 @@ const ListOrderEpp = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.codigo)}
+                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.celular}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.codigo)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.600' }}
-                                            >
-                                                {row.gerente}
+                                                {ViewFormat(row.fecha)}
                                             </Typography>
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/company/update/${row.codigo}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/orderepp/update/${row.idOrdenesEpp}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                        </TableCell>
+                                        </TableCell>    
                                     </TableRow>
                                 );
                             })}
@@ -530,7 +605,7 @@ const ListOrderEpp = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={company.length}
+                count={lsOrderEPP.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -540,4 +615,4 @@ const ListOrderEpp = () => {
     );
 };
 
-export default ListOrderEpp;
+export default ListOrderEPP;
