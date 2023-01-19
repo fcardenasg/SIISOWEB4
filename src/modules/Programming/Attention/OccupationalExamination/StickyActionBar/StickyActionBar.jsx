@@ -1,0 +1,88 @@
+// material-ui
+import { useTheme } from '@mui/material/styles';
+import {
+    Button,
+    CardContent,
+    CardActions,
+    Divider,
+    Grid,
+    Typography
+} from '@mui/material';
+
+// project imports
+import MainCard from 'ui-component/cards/MainCard';
+import ElevationScroll from './ElevationScroll';
+import { TitleButton } from 'components/helpers/Enums';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { ColorDrummondltd } from 'themes/colors';
+
+// ==============================|| Sticky ActionBar ||============================== //
+
+function StickyActionBar({ children, ...others }) {
+
+    return (
+        <Grid container spacing={3}>
+            <Grid item xs={12}>
+                <MainCard content={false}>
+                    <ElevationScroll {...others}>
+                        <CardActions>
+                            <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
+                                <Grid item>
+                                    <Typography variant="h5" sx={{ m: 0 }}>
+                                        ACTUALIZAR O GUARDAR
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Grid container alignItems="center" justifyContent="flex-end" spacing={2}>
+                                        <Grid item xs={6}>
+                                            <AnimateButton>
+                                                <Button variant="contained" sx={{ background: ColorDrummondltd.RedDrummond }} color="error" fullWidth>
+                                                    {TitleButton.Guardar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" color="error" fullWidth>
+                                                    {TitleButton.Actualizar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </CardActions>
+                    </ElevationScroll>
+                    <Divider />
+
+                    <CardContent>
+                        {children}
+                    </CardContent>
+
+                    <CardActions>
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid item xs={12} lg={4} />
+                            <Grid item xs={12} lg={6}>
+                                <Grid container alignItems="center" spacing={2}>
+                                    <Grid item>
+                                        <Button variant="contained">
+                                            GUARDAR
+                                        </Button>
+                                    </Grid>
+
+                                    <Grid item>
+                                        <Button variant="contained">
+                                            ACTUALIZAR
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </CardActions>
+                </MainCard>
+            </Grid>
+        </Grid>
+    );
+}
+
+export default StickyActionBar;

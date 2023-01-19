@@ -67,6 +67,7 @@ import { GetByMail } from 'api/clients/UserClient';
 
 import { generateReportIndex } from './Report/EMO';
 import { GetAllByHistorico, GetAllByHistoricoCompany, GetAllRHL, GetAllRHLOE } from 'api/clients/WorkHistoryRiskClient';
+import StickyActionBar from './StickyActionBar/StickyActionBar';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -883,62 +884,64 @@ const OccupationalExamination = () => {
                     </TabPanel>
 
                     <TabPanel value={value} index={2}>
-                        <Emo
-                            atencion={atencion}
-                            peso={peso}
-                            setPeso={setPeso}
-                            talla={talla}
-                            setTalla={setTalla}
-                            imc={imc}
-                            setIMC={setIMC}
-                            clasificacion={clasificacion}
-                            setClasificacion={setClasificacion}
-                            clasificacionColor={clasificacionColor}
-                            setClasificacionColor={setClasificacionColor}
-                            lsLastRecord={lsLastRecord}
+                        <StickyActionBar>
+                            <Emo
+                                atencion={atencion}
+                                peso={peso}
+                                setPeso={setPeso}
+                                talla={talla}
+                                setTalla={setTalla}
+                                imc={imc}
+                                setIMC={setIMC}
+                                clasificacion={clasificacion}
+                                setClasificacion={setClasificacion}
+                                clasificacionColor={clasificacionColor}
+                                setClasificacionColor={setClasificacionColor}
+                                lsLastRecord={lsLastRecord}
 
-                            setIndiceWellsEFU={setIndiceWellsEFU}
-                            indiceWellsEFU={indiceWellsEFU}
+                                setIndiceWellsEFU={setIndiceWellsEFU}
+                                indiceWellsEFU={indiceWellsEFU}
 
-                            documento={documento}
-                            errors={errors}
-                            setTipoFobia={setTipoFobia}
-                            tipoFobia={tipoFobia}
-                            setEstadoVacuna={setEstadoVacuna}
-                            estadoVacuna={estadoVacuna}
-                            lsEmployee={lsEmployee}
-                            {...methods}
-                        />
-                        <Framingham
-                            calculoFramingham={calculoFramingham}
-                            frFuma={frFuma}
-                            frColesterol={frColesterol}
-                            frTencion={frTencion}
-                            frEdad={frEdad}
-                            frGlicemia={frGlicemia}
-                            frPuntaje={frPuntaje}
-                            relacion={relacion}
-                            frLdl={frLdl}
-                            frHdl={frHdl}
-                            riesgo={riesgo}
+                                documento={documento}
+                                errors={errors}
+                                setTipoFobia={setTipoFobia}
+                                tipoFobia={tipoFobia}
+                                setEstadoVacuna={setEstadoVacuna}
+                                estadoVacuna={estadoVacuna}
+                                lsEmployee={lsEmployee}
+                                {...methods}
+                            />
+                            <Framingham
+                                calculoFramingham={calculoFramingham}
+                                frFuma={frFuma}
+                                frColesterol={frColesterol}
+                                frTencion={frTencion}
+                                frEdad={frEdad}
+                                frGlicemia={frGlicemia}
+                                frPuntaje={frPuntaje}
+                                relacion={relacion}
+                                frLdl={frLdl}
+                                frHdl={frHdl}
+                                riesgo={riesgo}
 
-                            handleHdl={setHdl}
-                            hdl={hdl}
-                            handleColesterol={setColesterol}
-                            colesterol={colesterol}
-                            handleTrigliceridos={setTrigliceridos}
-                            trigliceridos={trigliceridos}
-                            handleFuma={setFuma}
-                            fuma={fuma}
-                            handleGlicemia={setGlicemia}
-                            glicemia={glicemia}
-                            handleTencion={setTencion}
-                            tencion={tencion}
+                                handleHdl={setHdl}
+                                hdl={hdl}
+                                handleColesterol={setColesterol}
+                                colesterol={colesterol}
+                                handleTrigliceridos={setTrigliceridos}
+                                trigliceridos={trigliceridos}
+                                handleFuma={setFuma}
+                                fuma={fuma}
+                                handleGlicemia={setGlicemia}
+                                glicemia={glicemia}
+                                handleTencion={setTencion}
+                                tencion={tencion}
 
-                            errors={errors}
-                            documento={documento}
-                            {...methods}
-                        />
+                                errors={errors}
+                                documento={documento}
+                                {...methods}
+                            />
+                        </StickyActionBar>
                     </TabPanel>
 
                     <Grid container spacing={2} sx={{ pt: 4 }}>

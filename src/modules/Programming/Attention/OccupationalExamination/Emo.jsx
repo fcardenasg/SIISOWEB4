@@ -52,6 +52,7 @@ import TableExamenesPara from './TableEmo/TableExamenesPara';
 import { MessageError } from 'components/alert/AlertAll';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import StickyActionBar from './StickyActionBar/StickyActionBar';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
