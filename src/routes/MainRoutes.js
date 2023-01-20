@@ -50,6 +50,12 @@ const OrderEPP = Loadable(lazy(() => import('modules/OrderEPP/OrderEPP')));
 const UpdateOrderEPP = Loadable(lazy(() => import('modules/OrderEPP/UpdateOrderEPP')));
 
 
+const ListConceptofAptitude = Loadable(lazy(() => import('modules/ConceptofAptitude/ListConceptofAptitude')));
+const ConceptofAptitude = Loadable(lazy(() => import('modules/ConceptofAptitude/ConceptofAptitude')));
+const UpdateConceptofAptitude = Loadable(lazy(() => import('modules/ConceptofAptitude/UpdateConceptofAptitude')));
+
+
+
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
@@ -384,6 +390,23 @@ const MainRoutes = {
             path: '/orderepp/update/:id',
             element: <UpdateOrderEPP />
         },
+
+        /* Render de conceptos */
+        {
+            path: '/conceptofaptitude/list',
+            element: <ListConceptofAptitude />
+        },
+        {
+            path: '/conceptofaptitude/add',
+            element: <ConceptofAptitude />
+        },
+        {
+            path: '/conceptofaptitude/update/:id',
+            element: <UpdateConceptofAptitude />
+        },
+
+
+
         /* Render de Pruebas de Alcohol y Droga */
         {
             path: '/alcoholanddrugtesting/list',
