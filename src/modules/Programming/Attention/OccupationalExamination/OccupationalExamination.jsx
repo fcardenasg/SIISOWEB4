@@ -23,7 +23,9 @@ import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
 import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone';
 
-import { GetAllByDocumento, GetByIdDataReport, GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import {
+    GetAllByDocumento, GetByIdDataReport, GetLastRecordOccupationalExamination, UpdateOccupationalExaminations, ValidateIdRegistroAtencion
+} from 'api/clients/OccupationalExaminationClient';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import Transitions from 'ui-component/extended/Transitions';
@@ -40,10 +42,11 @@ import ImageIcon from '@mui/icons-material/Image';
 
 import { IconStairsDown, IconStairsUp } from '@tabler/icons';
 import ChartAnthropometry from './ChartData/ChartAnthropometry';
-import { GetAllOccupationalExamination, InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
-import { DefaultValue, Message } from 'components/helpers/Enums';
-import { TitleButton } from 'components/helpers/Enums';
-import { FormatDate, GetEdad, EdadFramigan, GetRiesgos, FrHdl, FrGlicemia, FrFuma, PuntajeFr, FrColesterol, FrTension, FrLdl_FrRelacion } from 'components/helpers/Format';
+import { InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import { DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
+import {
+    FormatDate, GetEdad, EdadFramigan, GetRiesgos, FrHdl, FrGlicemia, FrFuma, PuntajeFr, FrColesterol, FrTension, FrLdl_FrRelacion
+} from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import User from 'assets/img/user.png';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -51,8 +54,7 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostOccupationalExamination } from 'formatdata/OccupationalExaminationForm';
+import { PostOccupationalExamination, PutOccupationalExamination } from 'formatdata/OccupationalExaminationForm';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
@@ -68,6 +70,9 @@ import { GetByMail } from 'api/clients/UserClient';
 import { generateReportIndex } from './Report/EMO';
 import { GetAllByHistorico, GetAllByHistoricoCompany, GetAllRHL, GetAllRHLOE } from 'api/clients/WorkHistoryRiskClient';
 import StickyActionBar from './StickyActionBar/StickyActionBar';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { GetAllByDocumentWorkHistory } from 'api/clients/WorkHistoryClient';
+import { GetAllByDocumentWorkHistoryOtherCompany } from 'api/clients/WorkHistoryOtherCompany';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -176,7 +181,7 @@ const OccupationalExamination = () => {
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
-    const [resultData, setResultData] = useState([]);
+    const [resultData, setResultData] = useState('');
 
     const [newMedicalFormula, setNewMedicalFormula] = useState(false);
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
@@ -201,29 +206,29 @@ const OccupationalExamination = () => {
     const [lsEmployee, setLsEmployee] = useState([]);
     const [tipoFobia, setTipoFobia] = useState([]);
 
-    const [fuma, setFuma] = useState('');
-    const [colesterol, setColesterol] = useState('');
-    const [glicemia, setGlicemia] = useState('');
-    const [tencion, setTencion] = useState('');
+    const [fuma, setFuma] = useState(undefined);
+    const [colesterol, setColesterol] = useState(undefined);
+    const [glicemia, setGlicemia] = useState(undefined);
+    const [tencion, setTencion] = useState(undefined);
 
-    const [frFuma, setFrFuma] = useState(null);
-    const [frLdl, setFrLdl] = useState(null);
-    const [relacion, setRelacion] = useState(null);
+    const [frFuma, setFrFuma] = useState(undefined);
+    const [frLdl, setFrLdl] = useState(undefined);
+    const [relacion, setRelacion] = useState(undefined);
 
-    const [frColesterol, setFrColesterol] = useState(null);
-    const [frGlicemia, setFrGlicemia] = useState(null);
-    const [frTencion, setFrTencion] = useState(null);
-    const [frPuntaje, setFrPuntaje] = useState(null);
+    const [frColesterol, setFrColesterol] = useState(undefined);
+    const [frGlicemia, setFrGlicemia] = useState(undefined);
+    const [frTencion, setFrTencion] = useState(undefined);
+    const [frPuntaje, setFrPuntaje] = useState(undefined);
 
-    const [trigliceridos, setTrigliceridos] = useState(null);
-    const [frHdl, setFrHdl] = useState(null);
-    const [hdl, setHdl] = useState(null);
-    const [frEdad, setFrEdad] = useState(null);
+    const [trigliceridos, setTrigliceridos] = useState(undefined);
+    const [frHdl, setFrHdl] = useState(undefined);
+    const [hdl, setHdl] = useState(undefined);
+    const [frEdad, setFrEdad] = useState(undefined);
 
     const [riesgo, setRiesgo] = useState({
-        riesgoAbsoluto: '',
-        riesgoRelativo: '',
-        dxRiesgo: ''
+        riesgoAbsoluto: undefined,
+        riesgoRelativo: undefined,
+        dxRiesgo: undefined
     });
 
     const [talla, setTalla] = useState('');
@@ -234,6 +239,7 @@ const OccupationalExamination = () => {
 
     const [dataPDF, setDataPDF] = useState(null);
     const [indiceWellsEFU, setIndiceWellsEFU] = useState(false);
+    const [resultIdRegistroAtencion, setResultIdRegistroAtencion] = useState(false);
 
     const [estadoVacuna, setEstadoVacuna] = useState({
         tetanoIM: false,
@@ -325,17 +331,22 @@ const OccupationalExamination = () => {
     /* Metodo de Reporte */
     const handleClickReport = async () => {
         try {
+            setDataPDF(null);
             setOpenReport(true);
-            const lsDataReport = await GetByIdDataReport(11);
-            const lsDataUser = await GetByMail(user.email);
-            const resultExpoDLTD = await getDataExploracion(documento);
+
+            var lsDataReport = await GetByIdDataReport(resultData);
+            var lsDataUser = await GetByMail(user.email);
+            var resultExpoDLTD = await getDataExploracion(documento);
             //reporte riesgos
-            const lsRiesgoHLD = await GetAllRHL(documento);
-            const lsRiesgoHLDO = await GetAllRHLOE(documento);
+            var lsServerWorkHistory = await GetAllByDocumentWorkHistory(0, 0, documento);
+            var lsServerWorkHistoryOtherCompany = await GetAllByDocumentWorkHistoryOtherCompany(0, 0, documento);
 
+            var lsRiesgoHLD = await GetAllRHL(documento);
+            var lsRiesgoHLDO = await GetAllRHLOE(documento);
 
-            const dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD,
-                lsRiesgoHLD.data, lsRiesgoHLDO.data);
+            var dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD,
+                lsRiesgoHLD.data, lsRiesgoHLDO.data, lsServerWorkHistory.data.entities,
+                lsServerWorkHistoryOtherCompany.data.entities);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -423,6 +434,7 @@ const OccupationalExamination = () => {
             const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(documento);
             if (lsServerUltimoRegistro.status === 200) {
                 setLsLastRecord(lsServerUltimoRegistro.data);
+                setResultData(lsServerUltimoRegistro.data.id);
 
                 setEstadoVacuna({
                     tetanoIM: lsServerUltimoRegistro.data.tetanoIM === undefined ? false : lsServerUltimoRegistro.data.tetanoIM,
@@ -432,8 +444,15 @@ const OccupationalExamination = () => {
                     covid19IM: lsServerUltimoRegistro.data.covid19IM === undefined ? false : lsServerUltimoRegistro.data.covid19IM,
                     otrasIM: lsServerUltimoRegistro.data.otrasIM === undefined ? false : lsServerUltimoRegistro.data.otrasIM,
                 });
-
+                setIndiceWellsEFU(lsServerUltimoRegistro.data.indiceWellsEFU);
                 setTipoFobia(JSON.parse(lsServerUltimoRegistro.data.tipoFobiaHB));
+
+                setFuma(lsServerUltimoRegistro.data.fumaFRA);
+                setTencion(lsServerUltimoRegistro.data.tencionFRA);
+                setColesterol(lsServerUltimoRegistro.data.colesterolTotalFRA);
+                setHdl(lsServerUltimoRegistro.data.hdlfra);
+                setTrigliceridos(lsServerUltimoRegistro.data.triglicericosFRA);
+                setGlicemia(lsServerUltimoRegistro.data.glisemiaFRA);
             }
         } catch (error) { }
     }
@@ -457,6 +476,11 @@ const OccupationalExamination = () => {
                     setIMC(resultImc.imc);
                     setClasificacion(resultImc.clasificacion);
                     setClasificacionColor(resultImc.clasificacionColor);
+                }
+
+                const lsServerValidate = await ValidateIdRegistroAtencion(id);
+                if (lsServerValidate.status === 200) {
+                    setResultIdRegistroAtencion(lsServerValidate.data);
                 }
             } catch (error) { }
         }
@@ -600,8 +624,8 @@ const OccupationalExamination = () => {
                 datos.idHistoriaFobiasNEMTA, datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA,
                 datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, datos.conceptoActitudNETA,
 
-                FormatDate(datos.fechaFRA), tencion, frTencion, 'VACIO', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                FormatDate(datos.fechaLaboratorioFRA), colesterol, hdl, trigliceridos, 'VACIO', glicemia,
+                FormatDate(datos.fechaFRA), tencion, frTencion, "", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                FormatDate(datos.fechaLaboratorioFRA), colesterol, hdl, trigliceridos, "", glicemia,
                 fuma, datos.observacionFRA,
 
                 frLdl, relacion, frEdad, frColesterol, frHdl, frGlicemia,
@@ -633,12 +657,130 @@ const OccupationalExamination = () => {
                 const result = await InsertOccupationalExamination(DataToInset);
                 if (result.status === 200) {
                     setOpenSuccess(true);
-                    setResultData(result.data);
+                    setResultData(result.data.id);
+
+                    const lsServerValidate = await ValidateIdRegistroAtencion(id);
+                    if (lsServerValidate.status === 200) {
+                        setResultIdRegistroAtencion(lsServerValidate.data);
+                    }
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Por favor, ingrese la información para poder guardar');
+            setErrorMessage('No se pudo guardar el registro');
+        }
+    };
+
+    const handleClickUpdate = async (datos) => {
+        try {
+            const DataToInset = PutOccupationalExamination(
+                resultData, id, documento, FormatDate(datos.fecha), atencion,
+
+                datos.congenitosAP, datos.inmunoPrevenibleAP, datos.infecciososAP, datos.ojoAP, datos.agudezaVisualAP, datos.oidosAP, datos.nasoFaringeAP,
+                datos.cardiovascularAP, datos.pulmonarAP, datos.gastrointestinalAP, datos.gimitoUrinarioAP, datos.neurologicoAP, datos.transtornoPielAP,
+                datos.osteoMuscularAP, datos.alergicosAP, datos.toxicoAP, datos.faRmacologicosAP, datos.quirurgicosAP, datos.traumaticosAP, datos.tranfuccionesAP,
+                datos.etsAP, datos.deformidadesAP, datos.psiquiatricosAP, datos.farmacoDependenciaAP, datos.emAP, datos.renalAP, datos.asmaAP, datos.orlAP,
+                datos.cancerAP, datos.especifiqueAP,
+
+                datos.anioAT, datos.especifiqueAT, datos.anio1AT, datos.especifique1AT,
+
+                estadoVacuna.tetanoIM, estadoVacuna.influenzaIM, estadoVacuna.fiebreAmarillaIM, estadoVacuna.rubeolaSarampionIM, estadoVacuna.covid19IM,
+                estadoVacuna.otrasIM, datos.anioVacuna1IM, datos.anioVacuna2IM, datos.anioVacuna3IM, datos.anioVacuna4IM, datos.anioVacuna5IM,
+                datos.idRefuerzoIM, datos.anioVacuna6IM,
+
+                datos.fumaHB, datos.cigarrillosDiasFumaHB, datos.aniosCigaFumaHB, datos.mesesCigaFumaHB, datos.observacionFumaHB, datos.fumabaHB,
+                datos.cigarrillosDiasFumabaHB, datos.aniosCigaFumabaHB, datos.mesesCigaFumabaHB, datos.observacionFumabaHB, datos.practicaDeporteHB,
+                datos.idFrecuenciaDeporteHB, datos.idCualDeporteHB, datos.observacionPracticaDeporHB, datos.hobbiesPasatiempoHB, datos.cualHobbiesHB,
+                datos.consumeBebidasAlcoholicasHB, datos.idFrecuenciaBebidaAlHB, datos.cualBebidasAlHB, datos.fobiasHB, JSON.stringify(tipoFobia),
+                datos.cualFobiaHB,
+
+                datos.menarquiaGO, datos.idCiclosGO, datos.duracionGO, datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO, datos.vidaMaritalGO,
+                datos.vidaObstetricaGO, datos.gGO, datos.pGO, datos.aGO, datos.cSGO, datos.vGO, FormatDate(datos.fUPGO), FormatDate(datos.fURGO), datos.eTSGO, datos.cUALGO,
+                datos.quisteOvariosBiomasGO, datos.endometriosisGO, datos.ePIGO, datos.planificaGO, datos.idMetodoGO, datos.ultimoAnioCitologiaGO, datos.idResultadoGO,
+
+                datos.cabezaRS, datos.ojosRS, datos.oidosRS, datos.narizRS, datos.bocaRS, datos.gargantaRS, datos.cuellosRS, datos.cardioRS, datos.gastrointestinalRS,
+                datos.genitoUrinarioRS, datos.osteoRS, datos.neuroRS, datos.pielRS, datos.psiquiatricoRS, datos.observacionRS,
+
+                datos.tASentadoEF, datos.tAAcostadoEF, datos.pulsoEF, datos.fCEF, datos.fREF, datos.temperaturaEF, peso, talla, imc,
+                clasificacion, datos.idBiotipoEF, datos.estadoNitricionalEF, datos.pielFaneraEF, datos.craneoEF, datos.parpadoEF, datos.conjuntivasEF,
+                datos.corniasEF, datos.pupilasEF, datos.reflejoFotomotorEF, datos.reflejoCornialEF, datos.fondoOjosEF, datos.inspeccionEF, datos.otoscopiaEF,
+                datos.inspeccionNarizEF, datos.rinoscopioEF, datos.labiosEF, datos.mucosaEF, datos.enciasEF, datos.paladarEF, datos.dientesEF, datos.lenguaEF,
+                datos.faringeEF, datos.amigdalasEF, datos.cuellosEF, datos.inspeccionToraxEF, datos.auscultacionCardiacaEF, datos.auscultacionRespiratoriaEF,
+                datos.inspeccionAbdomenEF, datos.palpacionAbdomenEF, datos.exploracionHigadoEF, datos.exploracionVasoEF, datos.exploracionRinionesEF,
+                datos.anillosInguinalesEF, datos.anilloUmbilicalEF, datos.genitalesExternosEF, datos.regionAnalEF, datos.tactoRectalEF, datos.tactoVaginalEF,
+                datos.extremidadesSuperioresEF, datos.extremidadesInferioresEF, datos.pulsosEF, datos.columnaVertebralEF, datos.articulacionesEF,
+
+                datos.especifiqueEMEFU, datos.movilidadEFU, datos.equilibrioEFU, datos.marchaEFU, datos.movilidadHombroEFU, datos.movilidadCodoEFU,
+                datos.movilidadMuniecaEFU, datos.signoTinelEFU, datos.signoPhalenEFU, datos.movilidadManosEFU, datos.movilidadCaderaEFU, datos.movilidadRodillaEFU,
+                datos.movilidadTobilloEFU, datos.movilidadCuelloEFU, datos.rOTVisipitalEFU, datos.rOTRotuleanoEFU, datos.extencionEFU, datos.sensibilidadCaraAnteriorEFU,
+                datos.eversionPiesEFU, datos.sensibilidadCaraLateralEFU, datos.rOTAquileanoEFU, datos.signoLasegueEFU, indiceWellsEFU, datos.valorIndiceWellsEFU,
+                datos.observacionEFU,
+
+                FormatDate(datos.fechaRxToraxEPA), datos.resultadoRxToraxEPA, datos.observacionesRxToraxEPA, FormatDate(datos.fechaEspirometriaEPA),
+                datos.resultadoEspirometriaEPA, datos.observacionesEspirometriaEPA, FormatDate(datos.fechaAudiometriaEPA), datos.resultadoAudiometriaEPA,
+                datos.observacionesAudiometriaEPA, FormatDate(datos.fechaVisiometriaEPA), datos.resultadoVisiometriaEPA, datos.observacionesVisiometriaEPA,
+                FormatDate(datos.fechaLaboratorioClinicoEPA), datos.resultadoLaboratorioClinicoEPA, datos.observacionesLaboratorioClinicoEPA,
+                FormatDate(datos.fechaCuestionarioSintomaEPA), datos.resultadoCuestionarioSintomaEPA, datos.observacionesCuestionarioSintomaEPA,
+                FormatDate(datos.fechaEkgEPA), datos.resultadoEkgEPA, datos.observacionesEkgEPA, FormatDate(datos.fechaRnmLumbosacraEPA),
+                datos.resultadoRnmLumbosacraEPA, datos.observacionesRnmLumbosacraEPA, FormatDate(datos.fechaRnmCervicalEPA), datos.resultadoRnmCervicalEPA,
+                datos.observacionesRnmCervicalEPA, datos.observacionEPA,
+
+                datos.dx1, datos.dx2, datos.dx3, datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
+
+                FormatDate(datos.fechaConceptoNETA), datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.idConceptoEspacioConfinado,
+                datos.motivoAplazoNETA, datos.descripcionResultadoNETA, datos.recomendacionesNETA, datos.remitidoNETA, datos.remididoDondeNETA,
+
+                datos.idRiesgoCardiovascularNEMTA, datos.idClasificacionNEMTA, datos.idMenorEdadNEMTA, datos.idMujerEmbarazadaNEMTA, datos.idArimiaNEMTA,
+                datos.idEnfermedadNEMTA, datos.idHistoriaNEMTA, datos.idHipertensionNEMTA, datos.idHipertrigliceridemiaNEMTA, datos.idCifrasNEMTA,
+                datos.idDiabetesNEMTA, datos.idDislipidemiaNEMTA, datos.idDiagnosticoNEMTA, datos.idRiesgoCardiovascular1NEMTA, datos.idRiesgoCardiovascular2NEMTA,
+                datos.idHipertiroidismoNEMTA, datos.idAlteracionAuditivaNEMTA, datos.idVertigoAlteracionesNEMTA, datos.idEpilegsiaNEMTA, datos.idCegueraTemporalNEMTA,
+                datos.idHistoriaFobiasNEMTA, datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA,
+                datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, datos.conceptoActitudNETA,
+
+                FormatDate(datos.fechaFRA), tencion, frTencion, "", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                FormatDate(datos.fechaLaboratorioFRA), colesterol, hdl, trigliceridos, "", glicemia,
+                fuma, datos.observacionFRA,
+
+                frLdl, relacion, frEdad, frColesterol, frHdl, frGlicemia,
+                frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
+                user.email, FormatDate(new Date()), '', FormatDate(new Date()),
+
+                datos.tosAUsualSin, datos.tosEnLaSemanaSintR, datos.tosMananaSintR, datos.tosConsecutivaSintR, datos.anosConTosSintR, datos.esputoASintR,
+                datos.esputoBSintR, datos.esputoCSintR, datos.esputoDSintR, datos.esputoESintR, datos.episoTosEspuASintR, datos.episoTosEsputoBSintR,
+                datos.sibilanciasASintR, datos.sibilanciasA1SintR, datos.sibilanciasA2SintR, datos.sibilanciasA3SintR, datos.sibilanciasBSintR,
+                datos.ataquesSilbiASintR, datos.ataquesSilbiBSintR, datos.ataquesSilbiCSintR, datos.ataquesSilbiDSintR, datos.otrasEnfInhaASintR,
+                datos.otrasEnfInhaBSintR, datos.otrasEnfInhaDescriSintR, datos.disneaASintR, datos.disneaBSintR, datos.disneaCSintR, datos.disneaDSintR,
+                datos.disneaESintR, datos.enferToraxASintR, datos.enferToraxBSintR, datos.enferToraxCSintR, datos.enferToraxD, datos.antecedentesASintR,
+                datos.antecedentesB1SintR, datos.antecedentesB1ASintR, datos.antecedentesB2Sintr, datos.antecedentesB2ASintR,
+                datos.antecedentesB3SintR, datos.antecedentesB3ASintR, datos.antecedentesB3BSintR, datos.antecedentesB3CSintR, datos.antecdentesB4SintR,
+                datos.antecedenteB4ASintR, datos.antecedentesB4BSintR, datos.antecedentesB4CSintR, datos.antecedentesB5SintR, datos.antecedentesB5ASintR,
+                datos.antecedentesB5BSintR, datos.antecedentesB5CSintR, datos.otrasEnfToraxA, datos.otrasEnfToraxB,
+                datos.ciruToraxASintR, datos.ciruToraxBSintR, datos.traumaToraxASintR, datos.traumaToraxBSintR, datos.problemCoraASintR, datos.problemCoraBSintR,
+                datos.problemaCoraCSintR, datos.presionAltaASintR, datos.presionAltaBSintR, datos.historiaOcupASintR, datos.historiaOcupBSintR,
+                datos.historiaOcupB1SintR, datos.historiaOcupB2SintR, datos.historiaOcupB3SintR, datos.historiaOcupCSintR, datos.historiaOcupC1SintR,
+                datos.historiaOcupC2SintR, datos.historiaOcupC3SintR, datos.historiaOcupD1SintR, datos.historiaOcupD2SintR, datos.historiaOcupD3,
+                datos.tabaquismoASintR, datos.tabaquismoBSintR, datos.tabaquismoCSintR, datos.tabaquismoDSintR, datos.tabaquismoESintR, datos.actDeportASintR,
+                datos.actDeporA1SintR, datos.actDeporA2SintR, datos.actDeporA3SintR, datos.actDeporA4SintR, datos.recoSintR,
+
+                datos.parentesco1ANFA, datos.parentesco1ObserANFA, datos.parentesco2ANFA, datos.parentesco2ObserANFA, datos.parentesco3ANFA,
+                datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA, datos.lateralidadExamenesFisico
+            );
+
+            if (Object.keys(datos.length !== 0)) {
+                const result = await UpdateOccupationalExaminations(DataToInset);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                    setResultData(result.data.id);
+
+                    const lsServerValidate = await ValidateIdRegistroAtencion(id);
+                    if (lsServerValidate.status === 200) {
+                        setResultIdRegistroAtencion(lsServerValidate.data);
+                    }
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('No se pudo actualizar el registro');
         }
     };
 
@@ -864,7 +1006,7 @@ const OccupationalExamination = () => {
                         }}
                     >
                         {tabsOption.map((tab, index) => (
-                            <Tab sx={{ color: "red" }} disabled={atencion === '' ? true : false} key={index} component={Link} to="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
+                            <Tab sx={{ color: "red" }} key={index} component={Link} to="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
                         ))}
                     </Tabs>
 
@@ -884,7 +1026,15 @@ const OccupationalExamination = () => {
                     </TabPanel>
 
                     <TabPanel value={value} index={2}>
-                        <StickyActionBar>
+                        <StickyActionBar
+                            onClickSave={handleSubmit(handleClick)}
+                            onClickOrderMedical={() => setOpenFormula(true)}
+                            onClickReport={handleClickReport}
+                            onClickUpdate={handleSubmit(handleClickUpdate)}
+                            disabledUpdate={!resultIdRegistroAtencion}
+                            disabledReport={!resultIdRegistroAtencion}
+                            disabledSave={resultIdRegistroAtencion}
+                        >
                             <Emo
                                 atencion={atencion}
                                 peso={peso}
@@ -947,33 +1097,7 @@ const OccupationalExamination = () => {
                     <Grid container spacing={2} sx={{ pt: 4 }}>
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button /* disabled={resultData.length === 0 ? true : false} */
-                                    variant="outlined" fullWidth onClick={handleClickReport}
-                                >
-                                    {TitleButton.Imprimir}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
-                                    {TitleButton.OrdenesMedicas}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
+                                <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </AnimateButton>
@@ -981,7 +1105,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
+                                <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
                                     {TitleButton.CerrarCaso}
                                 </Button>
                             </AnimateButton>
