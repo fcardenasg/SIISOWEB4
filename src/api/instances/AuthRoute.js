@@ -146,6 +146,7 @@ export const Url = {
     AusentismoLaboralId: 'api/AusentismoLaboral/id',
 
     HistoriaClinicaOcupacional: 'api/HistoriaClinicaOcupacional',
+    HistoriaClinicaOcupacional_ValidateIdRegistroAtencion: 'api/HistoriaClinicaOcupacional/ValidateIdRegistroAtencion',
     HCOGetAllByDocumento: 'api/HistoriaClinicaOcupacional/GetAllByDocumento',
     HistoriaClinicaOcupacionalId: 'api/HistoriaClinicaOcupacional/id',
     HistoriaClinicaOcupacionalReport: 'api/HistoriaClinicaOcupacional/GetById',

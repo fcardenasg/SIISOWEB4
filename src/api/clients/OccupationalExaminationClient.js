@@ -9,3 +9,5 @@ export const GetLastRecordOccupationalExamination = async (documento) => await g
 export const InsertOccupationalExamination = async (historiaClinicaOcupacional) => await postData(Url.HistoriaClinicaOcupacional, historiaClinicaOcupacional);
 export const UpdateOccupationalExaminations = async (historiaClinicaOcupacional) => await putData(Url.HistoriaClinicaOcupacional, historiaClinicaOcupacional);
 export const DeleteOccupationalExamination = async (idHistoriaClinicaOcupacional) => await deleteData(Url.HistoriaClinicaOcupacional, { idHistoriaClinicaOcupacional });
+
+export const ValidateIdRegistroAtencion = async (idRegistroAtencion) => await getData(Url.HistoriaClinicaOcupacional_ValidateIdRegistroAtencion, { idRegistroAtencion });

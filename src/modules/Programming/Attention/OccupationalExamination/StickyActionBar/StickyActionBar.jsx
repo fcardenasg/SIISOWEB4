@@ -1,5 +1,3 @@
-// material-ui
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     CardContent,
@@ -16,9 +14,8 @@ import { TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ColorDrummondltd } from 'themes/colors';
 
-// ==============================|| Sticky ActionBar ||============================== //
-
-function StickyActionBar({ children, ...others }) {
+function StickyActionBar({ children, onClickSave, onClickReport, onClickOrderMedical, onClickUpdate,
+    disabledSave, disabledReport, disabledUpdate, ...others }) {
 
     return (
         <Grid container spacing={3}>
@@ -36,14 +33,14 @@ function StickyActionBar({ children, ...others }) {
                                     <Grid container alignItems="center" justifyContent="flex-end" spacing={2}>
                                         <Grid item xs={6}>
                                             <AnimateButton>
-                                                <Button variant="contained" sx={{ background: ColorDrummondltd.RedDrummond }} color="error" fullWidth>
+                                                <Button variant="contained" disabled={disabledSave} onClick={onClickSave} sx={{ background: ColorDrummondltd.RedDrummond }} color="error" fullWidth>
                                                     {TitleButton.Guardar}
                                                 </Button>
                                             </AnimateButton>
                                         </Grid>
                                         <Grid item xs={6}>
                                             <AnimateButton>
-                                                <Button variant="outlined" color="error" fullWidth>
+                                                <Button variant="outlined" disabled={disabledUpdate} color="error" onClick={onClickUpdate} fullWidth>
                                                     {TitleButton.Actualizar}
                                                 </Button>
                                             </AnimateButton>
@@ -61,19 +58,22 @@ function StickyActionBar({ children, ...others }) {
 
                     <CardActions>
                         <Grid container spacing={2} alignItems="center">
-                            <Grid item xs={12} lg={4} />
-                            <Grid item xs={12} lg={6}>
-                                <Grid container alignItems="center" spacing={2}>
-                                    <Grid item>
-                                        <Button variant="contained">
-                                            GUARDAR
-                                        </Button>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button disabled={disabledReport} variant="outlined" fullWidth onClick={onClickReport}>
+                                                {TitleButton.Imprimir}
+                                            </Button>
+                                        </AnimateButton>
                                     </Grid>
 
-                                    <Grid item>
-                                        <Button variant="contained">
-                                            ACTUALIZAR
-                                        </Button>
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={onClickOrderMedical}>
+                                                {TitleButton.OrdenesMedicas}
+                                            </Button>
+                                        </AnimateButton>
                                     </Grid>
                                 </Grid>
                             </Grid>

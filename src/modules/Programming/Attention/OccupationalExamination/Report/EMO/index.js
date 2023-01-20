@@ -204,7 +204,9 @@ export function generateReportIndex(
   lsDataUser = [],
   resultExpoDLTD,
   lsRiesgoHLD,
-  lsRiesgoHLDO
+  lsRiesgoHLDO,
+  lsWorkHistory,
+  lsWorkHistoryOtherCompany
 ) {
   var doc = new jsPDF("p", "mm", "letter");
 
@@ -224,14 +226,14 @@ export function generateReportIndex(
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
-  generateClinicHistoryOtherCompany(doc, lsDataReport, lsRiesgoHLDO);
+  generateClinicHistoryOtherCompany(doc, lsDataReport, lsRiesgoHLDO, lsWorkHistoryOtherCompany);
   getPiePage(doc, lsDataUser, 3, 18);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
-  generateClinicHistoryDLTD(doc, resultExpoDLTD, lsRiesgoHLD);
+  generateClinicHistoryDLTD(doc, resultExpoDLTD, lsRiesgoHLD, lsWorkHistory);
   getPiePage(doc, lsDataUser, 4, 18);
 
   doc.addPage();

@@ -265,7 +265,7 @@ function generateGineco(doc = new jsPDF(), lsDataReport) {
   } else {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(15);
-    doc.text("NO REFIERE", 12, 167);
+    doc.text("NO APLICA", 12, 167);
   }
 }
 
@@ -460,7 +460,7 @@ function generateExamenParaclinico(doc = new jsPDF(), lsDataReport) {
   doc.text("RESULTADO", 80, 132);
   doc.text("OBSERVACIÓN", 110, 132);
 
-  const parentesco = [
+  const examenes = [
     {
       fecha: lsDataReport.fechaRxToraxEPA,
       estudio: "RX TORAX",
@@ -517,14 +517,14 @@ function generateExamenParaclinico(doc = new jsPDF(), lsDataReport) {
     },
   ];
 
-  const longitud = parentesco.filter((log) => log.resultado !== "SIN REGISTRO");
+  const longitud = examenes.filter((log) => log.resultado !== "SIN RESULTADO");
   doc.text("OBSERVACIONES", 7, 137 + 6 * longitud.length);
 
   doc.setFont("helvetica", "normal");
   doc.text(`${lsDataReport.observacionEPA}`, 7, 142 + 6 * longitud.length);
   doc.text(
-    parentesco
-      .filter((exam) => exam.resultado !== "SIN REGISTRO")
+    examenes
+      .filter((exam) => exam.resultado !== "SIN RESULTADO")
       .map((exam, index) => {
         return String(`${ViewFormat(exam.fecha)}`);
       }),
@@ -533,8 +533,8 @@ function generateExamenParaclinico(doc = new jsPDF(), lsDataReport) {
     { maxWidth: 200, lineHeightFactor: 2 }
   );
   doc.text(
-    parentesco
-      .filter((exam) => exam.resultado !== "SIN REGISTRO")
+    examenes
+      .filter((exam) => exam.resultado !== "SIN RESULTADO")
       .map((exam, index) => {
         return String(`${exam.estudio}`);
       }),
@@ -543,8 +543,8 @@ function generateExamenParaclinico(doc = new jsPDF(), lsDataReport) {
     { maxWidth: 200, lineHeightFactor: 2 }
   );
   doc.text(
-    parentesco
-      .filter((exam) => exam.resultado !== "SIN REGISTRO")
+    examenes
+      .filter((exam) => exam.resultado !== "SIN RESULTADO")
       .map((exam, index) => {
         return String(`${exam.resultado}`);
       }),
@@ -553,8 +553,8 @@ function generateExamenParaclinico(doc = new jsPDF(), lsDataReport) {
     { maxWidth: 200, lineHeightFactor: 2 }
   );
   doc.text(
-    parentesco
-      .filter((exam) => exam.resultado !== "SIN REGISTRO")
+    examenes
+      .filter((exam) => exam.resultado !== "SIN RESULTADO")
       .map((exam, index) => {
         return String(`${exam.observacion}`);
       }),
@@ -702,8 +702,9 @@ export function generateReportDiagnosis(
 }
 
 /* REPORTE DE RIESGOS OTRAS EMPRESA */
-export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataReport = [], lsRiesgoHLDO = []) {
+export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataReport = [], lsRiesgoHLDO = [], lsWorkHistoryOtherCompany = []) {
   var marXR = doc.internal.pageSize.width - 5;
+  var longitud = lsWorkHistoryOtherCompany.length;
 
   doc.text(`TIPO DE EXAMEN:  ${lsDataReport.nameAtencion}`, 7, 30);
   doc.text(`FECHA:  ${ViewFormat(lsDataReport.fecha)}`, 110, 30, {
@@ -733,6 +734,10 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.line(5, 81, marXR, 81); /* HORI 5 */
   doc.line(5, 88, marXR, 88); /* HORI 5 */
   doc.line(5, 260, marXR, 260); /* HORI 6 */
+
+  doc.line(5, 98 + (8 * longitud), marXR, 98 + (8 * longitud)); /* HORI 5 */
+  doc.line(5, 104 + (8 * longitud), marXR, 104 + (8 * longitud)); /* HORI 6 */
+
   doc.line(marXR, 25, marXR, 260); /* DERECHA */
 
   /* TITULOS DE CONTENIDO */
@@ -772,7 +777,6 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)}`, 150, 71);
   doc.text("AÑOS", 155, 71);
 
-
   /* 3. ANTECEDENTES LABORALES */
   doc.setFont("helvetica", "bold");
   doc.text("3. ANTECEDENTES LABORALES", 7, 78);
@@ -783,21 +787,20 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
 
   //TABLA DE RENDERIZADO DE RIESGOS
   autoTable(doc, ({
-    styles: { fontSize: 7 },
+    styles: { fontSize: 10 },
     theme: 'plain',
     fontStyle: 'normal',
     margin: { top: 90, left: 7, right: 7 },
-    body: lsRiesgoHLDO,
+    body: lsWorkHistoryOtherCompany,
     columns: [
       { header: 'Empresa', dataKey: 'empresa' },
       { header: 'Cargo', dataKey: 'cargo' },
       { header: 'Año', dataKey: 'anio' },
-      { header: 'Mes', dataKey: 'mes' },
+      { header: 'Mes', dataKey: 'meses' },
     ],
   }))
-
-  /* 3.1. HISTORIA LABORAL EN OTRAS EMPRESAS */
-  doc.text("3.1.1. EXPOSICIÓN OCUPACIONAL EN OTRAS EMPRESAS", 7, 92);
+  /* doc.setFont("helvetica", "normal"); */
+  doc.text("3.1.1. EXPOSICIÓN OCUPACIONAL EN OTRAS EMPRESAS", 7, 102 + (8 * longitud));
   doc.setFontSize(10);
 
 
@@ -806,9 +809,10 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
     styles: { fontSize: 7 },
     theme: 'plain',
     fontStyle: 'normal',
-    margin: { top: 90, left: 7, right: 7 },
+    margin: { left: 7, right: 7 },
     body: lsRiesgoHLDO,
     columns: [
+      { header: 'Empresa', dataKey: 'empresa' },
       { header: 'Riesgo', dataKey: 'riesgo' },
       { header: 'Clase', dataKey: 'clase' },
       { header: 'Exposición', dataKey: 'exposicion' },
@@ -819,18 +823,17 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
       { header: 'Mes', dataKey: 'mes' },
     ],
   }))
-
-
-
 }
 
 /* REPORTE RIESGOS HLDRUMMOND */
 export function generateClinicHistoryDLTD(
   doc = new jsPDF({ putOnlyUsedFonts: true }),
   resultExpoDLTD = [],
-  lsRiesgoHLD = []
+  lsRiesgoHLD = [],
+  lsWorkHistory = []
 ) {
   var marXR = doc.internal.pageSize.width - 5;
+  var longitud = lsWorkHistory.length;
 
   doc.text("3.2. HISTORIA LABORAL EN DRUMMOND LTD.", 7, 37);
   doc.setFontSize(10);
@@ -871,19 +874,38 @@ export function generateClinicHistoryDLTD(
   doc.text("MPI:", 135, 97 + 150);
   doc.text("RUDIO:", 135, 104 + 150);
 
+  doc.line(5, 48 + (8 * longitud), marXR, 48 + (8 * longitud)); /* HORI 5 */
+  doc.line(5, 54 + (8 * longitud), marXR, 54 + (8 * longitud)); /* HORI 6 */
+
+  autoTable(doc, ({
+    styles: { fontSize: 10 },
+    theme: 'plain',
+    fontStyle: 'normal',
+    margin: { top: 40, left: 7, right: 7 },
+    body: lsWorkHistory,
+    columns: [
+      { header: 'Cargo', dataKey: 'nameCargo' },
+      { header: 'Año', dataKey: 'anio' },
+      { header: 'Mes', dataKey: 'meses' },
+    ],
+  }))
+  /* doc.setFont("helvetica", "normal"); */
+  doc.text("3.1.1. EXPOSICIÓN OCUPACIONAL EN DRUMMOND LTD.", 7, 52 + (8 * longitud));
+  doc.setFontSize(10);
+
+
+  //TABLA DE RENDERIZADO DE RIESGOS
   autoTable(doc, ({
     styles: { fontSize: 7 },
     theme: 'plain',
     fontStyle: 'normal',
-    margin: { top: 40, left: 7, right: 7 },
+    margin: { left: 7, right: 7 },
     body: lsRiesgoHLD,
     columns: [
-      { header: 'Fecha', dataKey: 'fechaAnio' },
-      { header: 'Empresa', dataKey: 'empresa' },
       { header: 'Cargo', dataKey: 'cargo' },
       { header: 'Riesgo', dataKey: 'riesgo' },
       { header: 'Clase', dataKey: 'clase' },
-      { header: 'Exposición', dataKey: 'exposicion' },
+      { header: 'Exposición', dataKey: 'expocision' },
       { header: 'Grado Sin Epp', dataKey: 'gradoSinEpp' },
       { header: 'Grado Con Epp', dataKey: 'gradosConEpp' },
       { header: 'Año', dataKey: 'anio' },

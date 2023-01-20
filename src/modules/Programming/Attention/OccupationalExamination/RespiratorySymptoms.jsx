@@ -30,21 +30,33 @@ const DetailIcons = [
 
 const validateLastData = (data, tipoCampo = "bool") => {
     if (tipoCampo === "bool") {
-        if (data == undefined)
+        if (data === undefined)
             return false;
         else return data;
+
     } else if (tipoCampo === "string") {
-        if (data == undefined)
+        if (data === undefined) {
             return undefined;
-        else return data;
+        }
+        else {
+            return data;
+        }
+
     } else if (tipoCampo === "date") {
-        if (data == undefined)
+        if (data === undefined)
             return new Date();
         else return data;
+
     } else if (tipoCampo === "number") {
-        if (data == undefined)
+        if (data === undefined) {
             return undefined;
-        else return data;
+        }
+        else if (data === DefaultValue.SINREGISTRO_GLOBAL) {
+            return undefined;
+        }
+        else {
+            return data;
+        }
     }
 }
 
@@ -998,7 +1010,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         <Grid item xs={6}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupD1SintR, "string")}
+                                    defaultValue={() => validateLastData(lsLastRecord.historiaOcupD2SintR, "string")}
                                     type="number"
                                     fullWidth
                                     name="historiaOcupD2SintR"
