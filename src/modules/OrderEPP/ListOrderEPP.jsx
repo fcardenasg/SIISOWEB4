@@ -43,7 +43,7 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 
-import { generateReport } from './ReportEPP';
+import { generateReportOrderEPP } from './ReportEPP';
 import { GetByIdOrderEPP } from "api/clients/OrderEPPClient";
 import { GetByMail } from 'api/clients/UserClient';
 import useAuth from 'hooks/useAuth';
@@ -286,7 +286,7 @@ const ListOrderEPP = () => {
             setOpenReport(true);
             const lsDataReport = await GetByIdOrderEPP(idCheck);
             const lsDataUser = await GetByMail(user.email);
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportOrderEPP(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };

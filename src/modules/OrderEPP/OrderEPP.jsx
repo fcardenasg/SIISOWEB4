@@ -29,7 +29,7 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { GetAllUser, GetByMail } from 'api/clients/UserClient';
-import { generateReport } from './ReportEPP';
+import { generateReportOrderEPP } from './ReportEPP';
 import ViewPDF from 'components/components/ViewPDF';
 
 const validationSchema = yup.object().shape({
@@ -96,13 +96,15 @@ const OrderEPP = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdOrderEPP(result.id);
+            const lsDataReport = await GetByIdOrderEPP(result.idOrdenesEpp);
             const lsDataUser = await GetByMail(user.email);
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportOrderEPP(lsDataReport.data, lsDataUser.data);
+
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
 
+   // result.idOrdenesEpp
 
     async function GetAll() {
         try {
@@ -135,6 +137,7 @@ const OrderEPP = () => {
                     setDocumento('');
                     setLsEmployee([]);
                     reset();
+                    setResult(result.data)
                 }
             }
         } catch (error) {

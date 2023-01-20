@@ -10,7 +10,7 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
-
+import ControlModal from 'components/controllers/ControlModal';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 
@@ -35,7 +35,7 @@ import ViewEmployee from 'components/views/ViewEmployee';
 
 import Cargando from 'components/loading/Cargando';
 import { GetAllUser, GetByMail } from 'api/clients/UserClient';
-import { generateReport } from './ReportEPP';
+import { generateReportOrderEPP } from './ReportEPP';
 import ViewPDF from 'components/components/ViewPDF';
 
 const validationSchema = yup.object().shape({
@@ -106,19 +106,39 @@ const UpdateOrderEPP = () => {
         }
     }
 
+    const handleDocumento = async (event) => {
+        try {
+            setDocumento(event?.target.value);
+            if (event.key === 'Enter') {
+                if (event?.target.value !== "") {
+                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
+                    if (lsServerEmployee.status === 200) {
+                        setLsEmployee(lsServerEmployee.data);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(`${Message.ErrorDocumento}`);
+                }
+            }
+        } catch (error) {
+            setLsEmployee([]);
+            setOpenError(true);
+            setErrorMessage(`${Message.ErrorDeDatos}`);
+        }
+    }
 
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdOrderEPP(id);
             const lsDataUser = await GetByMail(user.email);
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportOrderEPP(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
 
- 
+
 
 
 
@@ -170,22 +190,32 @@ const UpdateOrderEPP = () => {
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
 
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
 
             {timeWait ?
                 <Grid container spacing={2}>
+
                     <Grid item xs={12}>
                         <ViewEmployee
-                            disabled={true}
+                            title="ACTUALIZAR ORDENE EPP"
                             key={lsEmployee.documento}
                             documento={documento}
                             onChange={(e) => setDocumento(e.target.value)}
                             lsEmployee={lsEmployee}
-                            handleDocumento={handleLoadingDocument}
+                            handleDocumento={handleDocumento}
                         />
                     </Grid>
 
+
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={3}>
                                     <FormProvider {...methods}>

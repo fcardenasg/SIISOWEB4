@@ -1,22 +1,24 @@
-import jsPDF from 'jspdf';
+import { GetEdad, ViewFormat } from "components/helpers/Format";
+import jsPDF from "jspdf";
 import LogoReport from 'assets/img/LogoReport.png';
-import { ViewFormat } from 'components/helpers/Format';
 
-function getHeader(doc) {
+function getHeader(doc = new jsPDF()) {
+    var marXR = doc.internal.pageSize.width - 5;
     /* ENCABEZADO REPORTE */
     doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("DIVISIÓN MÉDICA", 150, 10, null, null, "center");
-    doc.text("DEPARTAMENTO DE SALUD OCUPACIONAL", 150, 17, null, null, "center");
+    doc.setFontSize(10);
+
+    doc.text("DIVISIÓN MÉDICA", 110, 10, { align: 'center' });
+    doc.text("DEPARTAMENTO DE SALUD OCUPACIONAL", 110, 14, { align: 'center' });
 
     /* LINEA DE DIVISIÓN */
     doc.setLineWidth(1);
     doc.setDrawColor(255, 0, 0);
-    doc.line(5, 25, 210, 25);
+    doc.line(5, 25, marXR, 25);
 }
 
-function getPiePage(doc, lsDataUser) {
+function getPiePage(doc, lsDataUser, page, pageSize) {
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setLineWidth(1);
     doc.setDrawColor(255, 0, 0);
@@ -24,63 +26,159 @@ function getPiePage(doc, lsDataUser) {
 
     doc.text(`FECHA DE SISTEMA:  ${new Date().toLocaleString()}`, 10, doc.internal.pageSize.height - 4);
     doc.text(`USUARIO ACTIVO:  ${lsDataUser.nombre}`, 90, doc.internal.pageSize.height - 4);
-    doc.text("Pag. 1 of 1", 190, doc.internal.pageSize.height - 4);
+    doc.text(`Pag. ${page} of ${pageSize}`, 190, doc.internal.pageSize.height - 4);
 }
 
-export function generateReport(lsDataReport = [], lsDataUser = []) {
-    var doc = new jsPDF('p', 'mm', 'letter');
+function getFirmaEmployee(doc, lsDataReport, my = 0) {
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(128, 128, 128);
+    doc.line(
+      130,
+      doc.internal.pageSize.height - (48 - my),
+      195,
+      doc.internal.pageSize.height - (48 - my)
+    );
+    doc.setFontSize(8);
+    doc.text(
+      `${lsDataReport.nameEmpleado}`,
+      130,
+      doc.internal.pageSize.height - (44 - my)
+    );
+    doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
+  }
 
-    /* ENCABEZADO REPORTE */
-    getHeader(doc);
+function getFirma(doc, lsDataUser, my = 0) {
+    doc.addImage(`${lsDataUser.firma}`, "PNG", 7, doc.internal.pageSize.height - (70 - my), 50, 20);
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(128, 128, 128);
+    doc.line(7, doc.internal.pageSize.height - (48 - my), 60, doc.internal.pageSize.height - (48 - my));
+    doc.setFontSize(8);
+    doc.text(`${lsDataUser.nombre}`, 7, doc.internal.pageSize.height - (44 - my));
+    doc.text('MEDICINA GENERAL', 7, doc.internal.pageSize.height - (40 - my));
+    doc.text(`${lsDataUser.licencia} - ${lsDataUser.registroMedico}`, 7, doc.internal.pageSize.height - (36 - my));
+}
 
-    /* LISTA DE DATOS PACIENTE */
-    doc.text("DATOS DE LA ORDEN", 5, 35);
-    doc.setFontSize(10);
+function generateReportSuministroepp(doc = new jsPDF(), lsDataReport = [], lsDataUser = []) {
+
+    var marXR = doc.internal.pageSize.width - 5;
+    doc.setFontSize(11);
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);
-
-    /* CUADRO DATOS */
-    doc.line(5, 40, 210, 40);
-    doc.line(5, 40, 5, 160);
-    doc.line(40, 40, 40, 74); /* LINEA ONE */
-    doc.line(115, 40, 115, 74); /* LINEA TWO */
-    doc.line(210, 40, 210, 160);
-    doc.line(5, 74, 210, 74);
-    /* CUADRO OBSERVACIÓN */
-    doc.line(5, 84, 210, 84);
-    doc.line(5, 160, 210, 160);
-
+    doc.line(5, doc.internal.pageSize.height - 20, marXR, doc.internal.pageSize.height - 20); /* HORI ULTIMA */
+ 
     /* TITULOS DE CONTENIDO */
-    doc.text('FECHA:', 45, 48);
-    doc.text('PARA:', 120, 48);
-    doc.text('SUPERVISOR BODEGA:', 120, 48);
-    doc.text('DE:', 45, 55);
-    doc.text('REF:', 120, 55);
-    doc.text('SUMINISTRO EPP:', 120, 55);
-    doc.text('El señor(a) Hurtado Maestre,Rigoberto, cédula 77195193 requiere el suministro del siguiente elemento de protección personal(EPP):', 45, 62);
+    doc.text(`No. ORDEN EPP:`, 7, 37);
+    doc.text(`${lsDataReport.idOrdenesEpp}`, 50, 37);
+    doc.text(`FECHA: `, 7, 42);
+    doc.text(`${ViewFormat(lsDataReport.fecha)}`, 50, 42);
+    doc.text(`PARA: `, 7, 47);
+    doc.text(`SUPERVISOR BODEGA`, 50, 47);
+    doc.text(`DE:`, 7, 52);
+    doc.text(`${lsDataUser.nombre}`, 50, 52);
+    doc.text('REF:', 7, 57);
+    doc.text('SUMINISTRO EPP', 50, 57);
 
-    doc.text('EPP:', 45, 55);
-    doc.text('No. PEOPLESOFT:', 120, 55);
+    doc.text('ENTREGA DE SUMINISTRO DEL SIGUIENTE ELEMENTO DE PROTECCION PERSONAL EPP.', 7, 71);
 
-    doc.text('MARCO DE  SEGURIDAD:', 45, 55);
-    doc.text('24435', 120, 55);
+    doc.line(5, 65, marXR, 65); /* HORI ONE */
+    doc.line(5, 75, marXR, 75); /* HORI TWO  */
+
+    doc.text('No. DOCUMENTO', 7, 81);
+    doc.text('NOMBRE DEL EMPLEADO', 56, 81);
+    doc.text('EPP', 133, 81);
+    doc.text('No. PEOPLESOFT', 170, 81);
 
 
-    /* RENDERIZADO DE CONTENIDO */
-    doc.setFont("helvetica", "normal");
-    doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 42, 30, 30);
-    doc.text(`${lsDataReport.id}`, 75, 48);
-    doc.text(`${ViewFormat(lsDataReport.fecha)}`, 145, 48);
-    doc.text(`${lsDataReport.documento}`, 75, 55);
-    doc.text(`${lsDataReport.nameEmpleado}`, 145, 55);
-    doc.text(`${lsDataReport.nameProveedor}`, 75, 62);
+    doc.line(5, 85, marXR, 85); /* HORI THREE */
+   
+     doc.line(5, 65, 5, 95); /* LINEA VERTI ONE */
+     doc.line(41, 75, 41, 95); /* LINEA VERTI ONE */
+     doc.line(114, 75, 114, 95); /* LINEA VERTI ONE */
+     doc.line(162, 75, 162, 95); /* LINEA VERTI ONE */
+     doc.line(211, 65, marXR, 95); /* HORI ONE */
+
+    doc.text(`${lsDataReport.documento}`, 10, 91);
+    doc.text(`${lsDataReport.nameEmpleado}`, 42, 91);
+
+    doc.text('Marco de seguridad', 118, 91);
+    doc.text('24435', 184, 91);
+
+    doc.line(5, 95, marXR, 95); /* HORI THREE */
+
+      /* FIRMA */
+    getFirma(doc, lsDataUser);
+    getFirmaEmployee(doc, lsDataReport);
+
+}
+
+function generateReportInstalacioneppPageTwo(doc = new jsPDF(), lsDataReport = [], lsDataUser = []) {
+    var marXR = doc.internal.pageSize.width - 5;
+    doc.setFontSize(11);
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(128, 128, 128);
+    doc.line(5, doc.internal.pageSize.height - 20, marXR, doc.internal.pageSize.height - 20); /* HORI ULTIMA */
+ 
+    /* TITULOS DE CONTENIDO */
+    doc.text(`No. ORDEN EPP:`, 7, 37);
+    doc.text(`${lsDataReport.idOrdenesEpp}`, 50, 37);
+    doc.text(`FECHA: `, 7, 42);
+    doc.text(`${ViewFormat(lsDataReport.fecha)}`, 50, 42);
+    doc.text(`PARA: `, 7, 47);
+    doc.text(`${lsDataReport.nameProveedor}`, 50, 47);
+    doc.text(`DE:`, 7, 52);
+    doc.text(`${lsDataUser.nombre}`, 50, 52);
+    doc.text('REF:', 7, 57);
+    doc.text('INSTALACION DE LENTES', 50, 57);
+
+  
+    doc.text('SÍRVASE REALIZAR POR NUESTRA CUENTA AL SEÑOR(A)', 7, 71);
+
+    doc.line(5, 65, marXR, 65); /* HORI ONE */
+    doc.line(5, 75, marXR, 75); /* HORI TWO  */
+
+    doc.text('No. DOCUMENTO', 7, 81);
+    doc.text('NOMBRE DEL EMPLEADO', 50, 81);
+    doc.text('INSTALACION DE LENTES CORRECTIVOS EN', 107, 81);
+    doc.text('MARCOS DE SEGURIDAD SEGUN FORMULA ADJUNTA.', 107, 91);
+
+
+    doc.line(5, 85, marXR, 85); /* HORI THREE */
+   
+     doc.line(5, 65, 5, 95); /* LINEA VERTI ONE */
+     doc.line(41, 75, 41, 95); /* LINEA VERTI ONE */
+     doc.line(105, 75, 105, 95); /* LINEA VERTI ONE */
+
+     doc.line(211, 65, marXR, 95); /* HORI ONE */
+
+    doc.text(`${lsDataReport.documento}`, 10, 91);
+    doc.text(`${lsDataReport.nameEmpleado}`, 42, 91);
+
   
 
+    doc.line(5, 95, marXR, 95); /* HORI THREE */
 
- 
+      /* FIRMA */
+    getFirma(doc, lsDataUser);
+    getFirmaEmployee(doc, lsDataReport);
 
-    /* PIE DE PÁGINA */
-    getPiePage(doc, lsDataUser);
+
+
+}
+
+export function generateReportOrderEPP(lsDataReport = [], lsDataUser = []) {
+    const doc = new jsPDF('p', 'mm', 'letter');
+
+    doc.setFont("helvetica", "bold");
+    getHeader(doc);
+    generateReportSuministroepp(doc, lsDataReport, lsDataUser);
+    getPiePage(doc, lsDataUser, 1, 2);
+
+    doc.addPage();
+
+     doc.setFont("helvetica", "bold");
+     getHeader(doc);
+     generateReportInstalacioneppPageTwo(doc, lsDataReport, lsDataUser);
+     getPiePage(doc, lsDataUser, 2, 2);
 
     var dataPDF = doc.output("bloburl");
     return dataPDF;
