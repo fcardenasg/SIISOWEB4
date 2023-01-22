@@ -61,7 +61,7 @@ const ConceptofAptitude = () => {
 
     const [lsConcepto, setConcepto] = useState([]);
     const [idConcepto, setIdConcepto] = useState([]);
-    
+
     const [lsConceptoActitud, setConceptoActitud] = useState([]);
     const [lsCodigoFilterConceptoActitud, setCodigoConceptoActitud] = useState([]);
 
@@ -99,7 +99,7 @@ const ConceptofAptitude = () => {
         }
     }
 
-   
+
 
 
     const handleClickReport = async () => {
@@ -114,40 +114,40 @@ const ConceptofAptitude = () => {
         } catch (err) { }
     };
 
-   // result.idOrdenesEpp
+    // result.idOrdenesEpp
 
-   const handleChangeConcepto = async (event) => {
-    setIdConcepto(event.target.value);
+    const handleChangeConcepto = async (event) => {
+        setIdConcepto(event.target.value);
 
-    var lsResulCode = String(lsCodigoFilterConceptoActitud.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
-    var resultConceptoA = await GetSubString(lsResulCode);
-    setConceptoActitud(resultConceptoA);
-};
+        var lsResulCode = String(lsCodigoFilterConceptoActitud.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+        var resultConceptoA = await GetSubString(lsResulCode);
+        setConceptoActitud(resultConceptoA);
+    };
 
-async function GetSubString(codigo) {
-    try {
-        const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 5);
-        if (lsServerCatalog.status === 200) {
-            var resultConceptoActitud = lsServerCatalog.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            return resultConceptoActitud;
-        } else {
+    async function GetSubString(codigo) {
+        try {
+            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 5);
+            if (lsServerCatalog.status === 200) {
+                var resultConceptoActitud = lsServerCatalog.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                return resultConceptoActitud;
+            } else {
+                setOpenError(true);
+                setErrorMessage('Problemas al traer los datos de combo');
+            }
+        } catch (error) {
             setOpenError(true);
-            setErrorMessage('Problemas al traer los datos de combo');
+            setErrorMessage(`${error}`);
         }
-    } catch (error) {
-        setOpenError(true);
-        setErrorMessage(`${error}`);
     }
-}
 
 
     async function GetAll() {
         try {
-     
-      
+
+
 
             const lsServerConceptoActitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoconceptoApAl);
             var resultConceptoActitud = lsServerConceptoActitud.data.entities.map((item) => ({
@@ -168,11 +168,11 @@ async function GetSubString(codigo) {
 
 
 
- 
+
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostConceptofAptitude(idConcepto,documento, FormatDate(datos.fecha), datos.idConceptoActitud,
-            datos.observacionesNEMTA,user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PostConceptofAptitude(idConcepto, documento, FormatDate(datos.fecha), datos.idConceptoActitud,
+                datos.observacionesNEMTA, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             console.log(DataToInsert)
 
@@ -236,44 +236,44 @@ async function GetSubString(codigo) {
                             </Grid>
 
                             <Grid item xs={4} md={6} lg={4}>
-                        <SelectOnChange
-                            name="idConcepto"
-                            label="Tipo de Concepto"
-                            value={idConcepto}
-                            options={lsConcepto}
-                            onChange={handleChangeConcepto}
-                            size={matchesXS ? 'small' : 'medium'}
-                        />
-                    </Grid>
-                    <Grid item xs={6} md={6} lg={6}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idConceptoActitud"
-                                label="Concepto"
-                                options={lsConceptoActitud}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.idConceptoActitud}
-                            />
-                        </FormProvider>
-                    </Grid>
+                                <SelectOnChange
+                                    name="idConcepto"
+                                    label="Tipo de Concepto"
+                                    value={idConcepto}
+                                    options={lsConcepto}
+                                    onChange={handleChangeConcepto}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+                            <Grid item xs={6} md={6} lg={6}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idConceptoActitud"
+                                        label="Concepto"
+                                        options={lsConceptoActitud}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idConceptoActitud}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                    <Grid item xs={12}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            fullWidth
-                            multiline
-                            rows={5}
-                            name="observacionesNEMTA"
-                            label="Observación"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.observacionesNEMTA}
-                        />
-                    </FormProvider>
-                </Grid>
+                            <Grid item xs={12}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        multiline
+                                        rows={5}
+                                        name="observacionesNEMTA"
+                                        label="Observación"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.observacionesNEMTA}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                       
-                       \
+
+                            \
 
                         </Grid>
 

@@ -13,33 +13,33 @@ import { FormProvider, useForm } from 'react-hook-form';
 import ControlModal from 'components/controllers/ControlModal';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
-
+import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import { SNACKBAR_OPEN } from 'store/actions';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import { GetByIdConceptofAptitude, UpdateConceptofAptitudes } from 'api/clients/ConceptofAptitudeClient';
-import { GetAllSupplier } from 'api/clients/SupplierClient';
+import {  GetAllCatalog } from 'api/clients/CatalogClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, DefaultValue, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PutOrderEPP } from 'formatdata/OrderEPPForm';
+import { PutConceptofAptitude } from 'formatdata/ConceptofAptitudeForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-
+import SelectOnChange from 'components/input/SelectOnChange';
 import ViewEmployee from 'components/views/ViewEmployee';
-
+import InputText from 'components/input/InputText';
 import Cargando from 'components/loading/Cargando';
 import { GetAllUser, GetByMail } from 'api/clients/UserClient';
 import { generateReportConceptofAptitude } from './ReportConceptofAptitude';
 import ViewPDF from 'components/components/ViewPDF';
 
 const validationSchema = yup.object().shape({
-    idProvedor: yup.string().required(`${ValidationMessage.Requerido}`),
+    idConcepto: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
 
@@ -57,19 +57,21 @@ const UpdateOrderEPP = () => {
 
     const [openReport, setOpenReport] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
-
+    const [lsCatalogo, setLsCatalogo] = useState([]);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [lsProveedor, setLsProveedor] = useState([]);
     const [documento, setDocumento] = useState('');
+    const [lsConcepto, setConcepto] = useState([]);
+    const [idConcepto, setIdConcepto] = useState([]);
+    
+    const [lsConceptoActitud, setConceptoActitud] = useState([]);
+    const [lsCodigoFilterConceptoActitud, setCodigoConceptoActitud] = useState([]);
 
-
-    const [motivo, setMotivo] = useState('');
-
+    const dispatch = useDispatch();
     const [lsEmployee, setLsEmployee] = useState([]);
 
-
+    const [idConceptoActitud, setConceptoatp] = useState('');
 
     const [lsDataAtencion, setLsDataAtencion] = useState([]);
     const [timeWait, setTimeWait] = useState(false);
@@ -88,16 +90,29 @@ const UpdateOrderEPP = () => {
             if (lsServerUpdate.status === 200) {
                 setDocumento(lsServerUpdate.data.documento);
                 handleLoadingDocument(lsServerUpdate.data.documento);
+                setIdConcepto(lsServerUpdate.data.idConcepto);
                 setLsDataAtencion(lsServerUpdate.data);
+         
+
             }
 
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
-                value: item.codiProv,
-                label: item.nombProv
+            const lsServerCatalogo = await GetAllCatalog(0, 0);
+            var resultCatalogo = lsServerCatalogo.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
             }));
-            setLsProveedor(resultProveedor);
+            setLsCatalogo(resultCatalogo);
+
+
+            const lsServerConceptoActitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoconceptoApAl);
+            var resultConceptoActitud = lsServerConceptoActitud.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setConcepto(resultConceptoActitud);
+            setCodigoConceptoActitud(lsServerConceptoActitud.data.entities);
+
 
 
         } catch (error) {
@@ -128,17 +143,62 @@ const UpdateOrderEPP = () => {
         }
     }
 
+
+
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdConceptofAptitude(id);
+        //    console.log(lsDataReport)
             const lsDataUser = await GetByMail(user.email);
             const dataPDFTwo = generateReportConceptofAptitude(lsDataReport.data, lsDataUser.data);
+
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
 
+    const handleChangeConcepto = async (event) => {
+        setIdConcepto(event.target.value);
+    
+        var lsResulCode = String(lsCodigoFilterConceptoActitud.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+        var resultConceptoA = await GetSubString(lsResulCode);
+        setConceptoActitud(resultConceptoA);
+    };
+    
+  
 
+    async function GetSubString(codigo) {
+        try {
+            const lsServerCatalog = await GetAllBySubTipoCatalogo(0, 0, codigo, 5);
+            if (lsServerCatalog.status === 200) {
+                var resultConceptoActitud = lsServerCatalog.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                return resultConceptoActitud;
+            } else {
+                dispatch({
+                    type: SNACKBAR_OPEN,
+                    open: true,
+                    message: 'Problemas al traer los datos de combo',
+                    variant: 'alert',
+                    alertSeverity: 'error',
+                    close: false,
+                    transition: 'SlideUp'
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: SNACKBAR_OPEN,
+                open: true,
+                message: `${error}`,
+                variant: 'alert',
+                alertSeverity: 'error',
+                close: false,
+                transition: 'SlideUp'
+            })
+        }
+    }
 
 
 
@@ -162,8 +222,11 @@ const UpdateOrderEPP = () => {
 
 
     const handleClick = async (datos) => {
-        const DataToUpdate = PutOrderEPP(id, documento, FormatDate(datos.fecha), datos.idProvedor,
-            lsDataAtencion.usuarioRegistro, lsDataAtencion.fechaRegistro, user.nameuser, FormatDate(new Date()));
+
+        const idConceptoActitud_DATA = idConceptoActitud == '' ? datos.idConceptoActitud : idConceptoActitud;
+
+        const DataToUpdate = PutConceptofAptitude(id,idConceptoActitud_DATA, idConcepto,documento, FormatDate(datos.fecha), 
+        datos.observacionesNEMTA,user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
 
         try {
             if (Object.keys(datos.length !== 0)) {
@@ -228,19 +291,57 @@ const UpdateOrderEPP = () => {
                                 </Grid>
 
 
+                                <Grid item xs={12} md={6} lg={4}>
+                                <SelectOnChange
+                                    name="idConcepto"
+                                    label="Tipo de Concepto"
+                                    value={idConcepto}
+                                    options={lsConcepto}
+                                    onChange={handleChangeConcepto}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
 
-                                <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
+                                {lsConceptoActitud.length !== 0 ? (
+                                    <SelectOnChange
+                                        name="idConceptoActitud"
+                                        label="Concepto"
+                                        value={idConceptoActitud}
+                                        options={lsConceptoActitud}
+                                        onChange={(e) => setConceptoatp(e.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                ) : (
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idProvedor"
-                                            label="Proveedor"
-                                            defaultValue={lsDataAtencion.idProvedor}
-                                            options={lsProveedor}
+                                            name="idConceptoActitud"
+                                            label="Concepto"
+                                            defaultValue={lsDataAtencion.idConceptoActitud}
+                                            disabled
+                                            options={lsCatalogo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idProvedor}
+                                            bug={errors.idConceptoActitud}
                                         />
                                     </FormProvider>
-                                </Grid>
+                                )}
+                            </Grid>
+                      
+
+                            <Grid item xs={12}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                       defaultValue={lsDataAtencion.observacionesNEMTA}
+                                        fullWidth
+                                        multiline
+                                        rows={5}
+                                        name="observacionesNEMTA"
+                                        label="Observación"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.observacionesNEMTA}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
 
 

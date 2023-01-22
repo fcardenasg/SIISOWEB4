@@ -105,13 +105,14 @@ function getFirma(doc, lsDataUser, my = 0) {
   doc.text("RECOMENDACIONES:", 7, 79);
 
   doc.setFont("helvetica", "normal");
-  doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 41, 30, 30);
+  
+  doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 41, 30, 30);
   doc.text(`${lsDataReport.documento}`, 95, 45);
   doc.text(`${lsDataReport.nameEmpleado}`, 142, 45);
-  // doc.text(`${lsDataReport.nameCargo}`, 95, 50);
-  // doc.text(`${lsDataReport.nameOficio}`, 95, 55);
-  // doc.text(`${lsDataReport.nameArea}`, 95, 60);
-  // doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 95, 65);
+   doc.text(`${lsDataReport.nameCargo}`, 95, 50);
+   doc.text(`${lsDataReport.nameOficio}`, 95, 55);
+   doc.text(`${lsDataReport.nameArea}`, 95, 60);
+   doc.text(`${lsDataReport.nameDepartamento}`, 95, 65);
   doc.text(`${lsDataReport.nameConceptoActitud}`, 95, 70);
   doc.setFontSize(9);
   doc.text(`${lsDataReport.observacionesNEMTA}`, 7, 87, {
