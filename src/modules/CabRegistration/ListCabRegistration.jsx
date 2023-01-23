@@ -43,7 +43,7 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 
-import { generateReportCabRegistration } from './ReportCabRegistration';
+import { generateReporteReportCabRegistration } from './ReportCabRegistration';
 import { GetByIdCabRegistration } from "api/clients/CabRegistrationClient";
 import { GetByMail } from 'api/clients/UserClient';
 import useAuth from 'hooks/useAuth';
@@ -285,7 +285,7 @@ const ListCabRegistration = () => {
             setOpenReport(true);
             const lsDataReport = await GetByIdCabRegistration(idCheck);
             const lsDataUser = await GetByMail(user.email);
-            const dataPDFTwo = generateReportCabRegistration(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };

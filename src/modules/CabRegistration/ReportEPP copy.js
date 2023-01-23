@@ -40,7 +40,7 @@ function getFirma(doc, lsDataUser, my = 0) {
     doc.text(`${lsDataUser.licencia} - ${lsDataUser.registroMedico}`, 7, doc.internal.pageSize.height - (36 - my));
 }
 
-function generateReportSuministroepp(doc = new jsPDF(), lsDataReport = []) {
+function generateReportSuministroepp(doc = new jsPDF(), lsDataReport = [], lsDataUser) {
     var marXR = doc.internal.pageSize.width - 5;
 
     doc.text('DATOS DEL REGISTRO', 7, 37);
@@ -116,12 +116,13 @@ function generateReportSuministroepp(doc = new jsPDF(), lsDataReport = []) {
     doc.text(`${lsDataReport.nameCorreo}`, 150, 70);
 
     /* DESCRIPCIONES DE TEXTO */
-    doc.setFontSize(7);
-    doc.text(`${lsDataReport.motivoConsulta}`, 7, 87, { maxWidth: 200, lineHeightFactor: 1.5 });
-    doc.text(`${lsDataReport.enfermedadActual}`, 7, 117, { maxWidth: 200, lineHeightFactor: 1.5 });
-    doc.text(`${lsDataReport.antecedentes}`, 7, 152, { maxWidth: 200, lineHeightFactor: 1.5 });
-    doc.text(`${lsDataReport.revisionSistema}`, 7, 192, { maxWidth: 200, lineHeightFactor: 1.5 });
-    doc.text(`${lsDataReport.examenFisico}`, 7, 232, { maxWidth: 200, lineHeightFactor: 1.5 });
+
+    doc.text('IMPRESIÓN DIAGNOSTICA:', 7, 37);
+    if (lsDataReport.dx1 !== "")
+    doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 47, { maxWidth: 200, lineHeightFactor: 1.5 });
+
+    getFirma(doc, lsDataUser);
+
 }
 
 function generateReportInstalacioneppPageTwo(doc = new jsPDF(), lsDataReport = [], lsDataUser) {

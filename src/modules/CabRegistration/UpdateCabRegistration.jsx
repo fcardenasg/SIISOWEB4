@@ -35,7 +35,7 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import InputText from 'components/input/InputText';
 import Cargando from 'components/loading/Cargando';
 import { GetAllUser, GetByMail } from 'api/clients/UserClient';
-import { generateReportCabRegistration } from './ReportCabRegistration';
+import { generateReporteReportCabRegistration } from './ReportCabRegistration';
 import ViewPDF from 'components/components/ViewPDF';
 import InputOnChange from 'components/input/InputOnChange';
 
@@ -222,7 +222,7 @@ const UpdateCabRegistration = () => {
             setOpenReport(true);
             const lsDataReport = await GetByIdCabRegistration(id);
             const lsDataUser = await GetByMail(user.email);
-            const dataPDFTwo = generateReportCabRegistration(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
