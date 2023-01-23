@@ -4,13 +4,10 @@ import { Grid, Divider, Typography } from '@mui/material';
 // project imports
 import { useTheme } from '@mui/material/styles';
 import SubCard from 'ui-component/cards/SubCard';
-import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
 import { gridSpacing } from 'store/constant';
-import ResultFramingham from './ResultFramingham';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
-import { Fragment } from 'react';
 
 // ===========================|| WIDGET STATISTICS - CUSTOMER SATISFACTION ||=========================== //
 

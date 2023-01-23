@@ -5,7 +5,7 @@ import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import AuthGuard from 'utils/route-guard/AuthGuard';
 
-// dashboard routing
+// Dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const DashboardAnalytics = Loadable(lazy(() => import('views/dashboard/Analytics')));
 
@@ -44,12 +44,9 @@ const ListMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/List
 const MedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/MedicalAdvice')));
 const UpdateMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/UpdateMedicalAdvice')));
 
-
 const ListOrderEPP = Loadable(lazy(() => import('modules/OrderEPP/ListOrderEPP')));
 const OrderEPP = Loadable(lazy(() => import('modules/OrderEPP/OrderEPP')));
 const UpdateOrderEPP = Loadable(lazy(() => import('modules/OrderEPP/UpdateOrderEPP')));
-
-
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
@@ -137,6 +134,10 @@ const UpdateRefund = Loadable(lazy(() => import('modules/Refund/UpdateRefund')))
 const ListUser = Loadable(lazy(() => import('modules/User/ListUser')));
 const UpdateUser = Loadable(lazy(() => import('modules/User/UpdateUser')));
 const User = Loadable(lazy(() => import('modules/User/User')));
+
+const ListFramingham = Loadable(lazy(() => import('modules/Framingham/ListFramingham')));
+const UpdateFramingham = Loadable(lazy(() => import('modules/Framingham/UpdateFramingham')));
+const AddFramingham = Loadable(lazy(() => import('modules/Framingham/AddFramingham')));
 
 const ListSGSST = Loadable(lazy(() => import('modules/SGSST/ListSGSST')));
 const UpdateSGSST = Loadable(lazy(() => import('modules/SGSST/UpdateSGSST')));
@@ -802,6 +803,20 @@ const MainRoutes = {
         {
             path: '/parameterization/menu',
             element: <MenuParameterization />
+        },
+
+        /* Framingham */
+        {
+            path: '/framingham/add',
+            element: <AddFramingham />
+        },
+        {
+            path: '/framingham/list',
+            element: <ListFramingham />
+        },
+        {
+            path: '/framingham/update/:id',
+            element: <UpdateFramingham />
         },
     ]
 };

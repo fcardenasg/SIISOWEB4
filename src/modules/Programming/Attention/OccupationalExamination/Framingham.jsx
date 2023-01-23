@@ -61,7 +61,6 @@ const Framingham = ({
     handleTencion,
     tencion,
 
-    errors,
     documento,
     ...methods
 }) => {
@@ -75,7 +74,7 @@ const Framingham = ({
     const [openHistory, setOpenHistory] = useState(false);
     const [cadenaHistory, setCadenaHistory] = useState('');
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerOpcion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
             var resultOpcion = lsServerOpcion.data.entities.map((item) => ({
@@ -83,12 +82,11 @@ const Framingham = ({
                 label: item.nombre
             }));
             setLsOpcion(resultOpcion);
-        } catch (error) {
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [documento]);
 
     return (
@@ -143,7 +141,6 @@ const Framingham = ({
                                         onChange={(e) => handleFuma(e.target.value)}
                                         options={lsOpcion}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </Grid>
 
@@ -244,7 +241,6 @@ const Framingham = ({
                                             name="observacionFRA"
                                             label="Observación"
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -307,6 +303,5 @@ Framingham.propTypes = {
     handleTencion: PropTypes.any,
     tencion: PropTypes.any,
 
-    errors: PropTypes.any,
     documento: PropTypes.any,
 };

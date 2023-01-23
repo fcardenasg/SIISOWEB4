@@ -381,7 +381,7 @@ const OccupationalExamination = () => {
                 });
             } else {
                 setOpenError(true);
-                setErrorMessage('Por favor, colocoque todos los datos');
+                setErrorMessage('Por favor, coloque todos los datos');
             }
 
         } catch (error) { }
@@ -1087,7 +1087,6 @@ const OccupationalExamination = () => {
                                 handleTencion={setTencion}
                                 tencion={tencion}
 
-                                errors={errors}
                                 documento={documento}
                                 {...methods}
                             />

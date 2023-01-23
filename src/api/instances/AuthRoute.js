@@ -26,6 +26,9 @@ export const Url = {
     Reintegro: 'api/Reintegro',
     ReintegroId: 'api/Reintegro/id',
 
+    Framingham: 'api/Framingham',
+    FraminghamId: 'api/Framingham/id',
+
     ListaReintegro: 'api/ListaReintegro',
     ListaReintegro_GetAllReintegro: 'api/ListaReintegro/GetAllReintegro',
     ListaReintegroId: 'api/ListaReintegro/id',

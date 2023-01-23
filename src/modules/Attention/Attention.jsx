@@ -11,10 +11,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
-import InputText from 'components/input/InputText';
 import InputOnChange from 'components/input/InputOnChange';
 import SelectOnChange from 'components/input/SelectOnChange';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
@@ -36,11 +34,6 @@ import Chip from '@mui/material/Chip';
 import { GetAllUser, GetByMail } from 'api/clients/UserClient';
 import { generateReport } from './ReportAtten';
 import ViewPDF from 'components/components/ViewPDF';
-
-const DetailIcons = [
-    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-]
 
 const Attention = () => {
     const { user } = useAuth();
