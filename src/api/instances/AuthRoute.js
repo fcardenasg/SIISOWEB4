@@ -103,7 +103,8 @@ export const Url = {
     ConceptosIND: 'api/ConceptosIND',
     ConceptosINDId: 'api/ConceptosIND/id',
     
-
+    RegistroTaxi: 'api/RegistroTaxi',
+    RegistroTaxiId: 'api/RegistroTaxi/id',
 
     ApuntesPersonales: 'api/ApuntesPersonales',
     ApuntesPersonalesId: 'api/ApuntesPersonales/id',
