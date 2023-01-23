@@ -56,6 +56,10 @@ const UpdateConceptofAptitude = Loadable(lazy(() => import('modules/ConceptofApt
 
 
 
+const ListCabRegistration = Loadable(lazy(() => import('modules/CabRegistration/ListCabRegistration')));
+const CabRegistration = Loadable(lazy(() => import('modules/CabRegistration/CabRegistration')));
+const UpdateCabRegistration = Loadable(lazy(() => import('modules/CabRegistration/UpdateCabRegistration')));
+
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
@@ -403,6 +407,21 @@ const MainRoutes = {
         {
             path: '/conceptofaptitude/update/:id',
             element: <UpdateConceptofAptitude />
+        },
+
+
+        /* Render de conceptos */
+        {
+            path: '/cabregistration/list',
+            element: <ListCabRegistration />
+        },
+        {
+            path: '/cabregistration/add',
+            element: <CabRegistration />
+        },
+        {
+            path: '/cabregistration/update/:id',
+            element: <UpdateCabRegistration />
         },
 
 

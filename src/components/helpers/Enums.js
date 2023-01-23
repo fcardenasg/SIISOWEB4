@@ -132,6 +132,12 @@ export const CodCatalogo = {
     SaludOcupacional_Motivo: 8,
     TipoAtencion_Item: 8,
 
+    ORIGEN_RUTA:34,
+    DESTINO_RUTA:35,
+    NRO_TAXI:194,
+    CARGADO_A:195,
+    CUPOS:196,
+
     AHC_ATENCION: 135,
     Opciones_SINO: 88,
     AHC_CONCEP_ACTITUD: 43,
@@ -234,7 +240,7 @@ export const DefaultValue = {
     ROL_ADMINISTRADOR: 1,
     ROL_ENFERMERO: 3,
     ROL_HIGIENE: 7320,
-    ROL_MEDICO: 2,
+    ROL_MEDICO: 1,
     ROL_VISITANTE: 5158,
     ROL_PSICOLOGIA: 4,
 
