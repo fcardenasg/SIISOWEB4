@@ -21,6 +21,8 @@ export const CodCatalogo = {
     Cesantias: 19,
     Oficio: 173,
 
+    TipoconceptoApAl: 192,
+
     AtencionEMO: 138,
 
     CONCEPTO_ESPACIOCONFINADO: 179,

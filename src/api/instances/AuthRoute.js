@@ -100,6 +100,11 @@ export const Url = {
     OrdenesEPPId: 'api/OrdenesEPP/id',
 
 
+    ConceptosIND: 'api/ConceptosIND',
+    ConceptosINDId: 'api/ConceptosIND/id',
+    
+
+
     ApuntesPersonales: 'api/ApuntesPersonales',
     ApuntesPersonalesId: 'api/ApuntesPersonales/id',
 

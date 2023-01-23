@@ -33,7 +33,7 @@ import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllOrderEPP, DeleteOrderEPP }  from 'api/clients/OrderEPPClient';
+import { GetAllConceptofAptitude, DeleteConceptofAptitude }  from 'api/clients/ConceptofAptitudeClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -43,8 +43,8 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 
-import { generateReportOrderEPP } from './ReportEPP';
-import { GetByIdOrderEPP } from "api/clients/OrderEPPClient";
+import { generateReportConceptofAptitude } from './ReportConceptofAptitude';
+import { GetByIdConceptofAptitude } from "api/clients/ConceptofAptitudeClient";
 import { GetByMail } from 'api/clients/UserClient';
 import useAuth from 'hooks/useAuth';
 import ViewPDF from 'components/components/ViewPDF';
@@ -78,7 +78,7 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'idOrdenesEpp',
+        id: 'idTrabajoenAltura',
         numeric: false,
         label: 'ID',
         align: 'left'
@@ -98,9 +98,15 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nameProveedor',
+        id: 'nameConcepto',
         numeric: false,
-        label: 'Proveedor',
+        label: 'Tipo Concepto',
+        align: 'left'
+    },
+    {
+        id: 'nameConceptoActitud',
+        numeric: false,
+        label: 'Concepto Aptitud / Altura',
         align: 'left'
     },
     {
@@ -217,7 +223,7 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListOrderEPP = () => {
+const ListConceptofAptitude = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState(0);
@@ -237,7 +243,7 @@ const ListOrderEPP = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllOrderEPP(0, 0);
+            const lsServer = await GetAllConceptofAptitude(0, 0);
             setLsOrderEPP(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) { }
@@ -255,7 +261,7 @@ const ListOrderEPP = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idOrdenesEpp','documento', 'nameEmpleado', 'nameProveedor','fecha'];
+                const properties = ['idTrabajoenAltura','documento', 'nameEmpleado', 'nameConcepto','nameConceptoActitud','fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -284,16 +290,16 @@ const ListOrderEPP = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdOrderEPP(idCheck);
+            const lsDataReport = await GetByIdConceptofAptitude(idCheck);
             const lsDataUser = await GetByMail(user.email);
-            const dataPDFTwo = generateReportOrderEPP(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportConceptofAptitude(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelectedId = lsOrderEPP.map((n) => n.idOrdenesEpp);
+            const newSelectedId = lsOrderEPP.map((n) => n.idTrabajoenAltura);
             setSelected(newSelectedId);
             return;
         }
@@ -332,7 +338,7 @@ const ListOrderEPP = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteOrderEPP(idCheck);
+                    const result = await DeleteConceptofAptitude(idCheck);
 
                     if (result.status === 200) {
                         setOpenDelete(true);
@@ -357,7 +363,7 @@ const ListOrderEPP = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsOrderEPP.length) : 0;
 
     return (
-        <MainCard title="LISTA DE ORDENES EPP" content={false}>
+        <MainCard title="LISTA DE CONCEPTOS" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
@@ -395,13 +401,14 @@ const ListOrderEPP = () => {
                                             <IconFileExport />
                                         </IconButton>
                                     </Tooltip>
-                                } filename="LISTA DE ORDENES EPP">
-                                    <ExcelSheet data={lsOrderEPP} name="OrderEPP">
-                                        <ExcelColumn label="Id" value="idOrdenesEpp" />
+                                } filename="LISTA DE CONCEPTOS">
+                                    <ExcelSheet data={lsOrderEPP} name="ConceptofAptitude">
+                                        <ExcelColumn label="Id" value="idTrabajoenAltura" />
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Proveedor" value="nameProveedor" />                
+                                        <ExcelColumn label="Tipo Concepto" value="nameConcepto" />
+                                        <ExcelColumn label="Concepto Aptitud" value="nameConceptoActitud" />         
                                         <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
                                         <ExcelColumn label="Fecha de registro" value="fechaRegistro" />
                                         <ExcelColumn label="Usuario que modifica" value="usuarioModifico" />
@@ -422,7 +429,7 @@ const ListOrderEPP = () => {
 
                             <Grid item xs={4}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/orderepp/add")}>
+                                    onClick={() => navigate("/conceptofaptitude/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
@@ -458,7 +465,7 @@ const ListOrderEPP = () => {
 
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.idOrdenesEpp);
+                                const isItemSelected = isSelected(row.idTrabajoenAltura);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -469,7 +476,7 @@ const ListOrderEPP = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        <TableCell padding="radio" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idOrdenesEpp)}>
+                                        <TableCell padding="radio" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idTrabajoenAltura)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -483,14 +490,14 @@ const ListOrderEPP = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
+                                            onClick={(event) => handleClick(event, row.idTrabajoenAltura)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idOrdenesEpp}
+                                                {row.idTrabajoenAltura}
                                             </Typography>
                                         </TableCell>
 
@@ -499,7 +506,7 @@ const ListOrderEPP = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
+                                            onClick={(event) => handleClick(event, row.idTrabajoenAltura)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -514,7 +521,7 @@ const ListOrderEPP = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
+                                            onClick={(event) => handleClick(event, row.idTrabajoenAltura)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -529,14 +536,14 @@ const ListOrderEPP = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
+                                            onClick={(event) => handleClick(event, row.idTrabajoenAltura)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameProveedor}
+                                                {row.nameConcepto}
                                             </Typography>
                                         </TableCell>
 
@@ -544,7 +551,24 @@ const ListOrderEPP = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idOrdenesEpp)}
+                                            onClick={(event) => handleClick(event, row.idTrabajoenAltura)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameConceptoActitud}
+                                            </Typography>
+                                        </TableCell>
+
+
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.idTrabajoenAltura)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -556,7 +580,7 @@ const ListOrderEPP = () => {
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/orderepp/update/${row.idOrdenesEpp}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/conceptofaptitude/update/${row.idTrabajoenAltura}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -591,4 +615,4 @@ const ListOrderEPP = () => {
     );
 };
 
-export default ListOrderEPP;
+export default ListConceptofAptitude;
