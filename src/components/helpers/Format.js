@@ -43,8 +43,6 @@ function GetEdad(dateString) {
     } catch (error) { }
 }
 
-
-
 function EdadFramigan(edad = 0, genero = '') {
     try {
         if (edad > 0 && edad <= 34) {

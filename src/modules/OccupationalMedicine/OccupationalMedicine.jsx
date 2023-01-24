@@ -270,7 +270,7 @@ const OccupationalMedicine = () => {
                 FormatDate(datos.fechaCalificacionPclInstFinal), FormatDate(datos.fechaEstructuracionPclInstFinal), datos.indemnizado, FormatDate(datos.fechaPagoInstaFinal),
                 datos.entregadoMin, datos.indemnizadoRecalificado, FormatDate(datos.fechaPagoRecalificadoInstaFinal), datos.estadoRHT, datos.reintegro, datos.reubicado,
                 datos.restringido, datos.jornadaLaboral, datos.indemnizacion, lsEmployee.sede, user.nameuser, user.nameuser, FormatDate(new Date()), FormatDate(new Date()),
-                FormatDate(new Date()), FormatDate(new Date()), "edadCalificado", "antiguedadCalificado", filePdf);
+                FormatDate(new Date()), FormatDate(new Date()), "", "", filePdf);
 
             if (Object.keys(datos.length !== 0)) {
 

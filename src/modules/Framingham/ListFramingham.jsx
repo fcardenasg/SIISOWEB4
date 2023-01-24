@@ -28,7 +28,7 @@ import { visuallyHidden } from '@mui/utils';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton, DefaultValue } from 'components/helpers/Enums';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -36,7 +36,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { DeleteParaclinics, GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
+import { DeleteParaclinics } from 'api/clients/ParaclinicsClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
@@ -74,13 +74,13 @@ const headCells = [
         id: 'documento',
         numeric: false,
         label: 'Documento',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'nameEmpleado',
         numeric: false,
         label: 'Nombres',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'tencionFRA',
@@ -438,7 +438,7 @@ const ListAudiometry = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
+                                            align="left"
                                         >
                                             {row.documento}
                                         </TableCell>

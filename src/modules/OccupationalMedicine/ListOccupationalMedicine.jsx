@@ -40,6 +40,7 @@ import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
+import { ViewFormat } from 'components/helpers/Format';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -70,33 +71,39 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'id',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
         id: 'cedula',
         numeric: false,
         label: 'Cédula',
         align: 'left'
     },
     {
-        id: 'resumenCaso',
+        id: 'nameEmpleado',
         numeric: false,
-        label: 'Resumen del Caso',
+        label: 'Nombre',
         align: 'left'
     },
     {
-        id: 'codDx',
+        id: 'namePayStatus',
         numeric: false,
-        label: 'Dx',
+        label: 'Situación Del Empleado',
         align: 'left'
     },
     {
-        id: 'usuario',
+        id: 'nameOrigenInstanciaFinal', /* INSTANCIA FINAL */
         numeric: false,
-        label: 'Usuario',
+        label: 'Origen Final',
+        align: 'left'
+    },
+    {
+        id: 'nameCodDx',
+        numeric: false,
+        label: 'DX',
+        align: 'left'
+    },
+    {
+        id: 'fechaSistema',
+        numeric: false,
+        label: 'Fecha',
         align: 'left'
     }
 ];
@@ -215,25 +222,25 @@ const ListOccupationalMedicine = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('id');
+    const [orderBy, setOrderBy] = useState('fechaSistema');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServer = await GetAllOccupationalMedicine(0, 0);
             setOccupationalMedicine(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            
+
         }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -244,7 +251,7 @@ const ListOccupationalMedicine = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'cedula', 'resumenCaso', 'codDx', 'usuario'];
+                const properties = ['id', 'cedula', 'nameEmpleado', 'namePayStatus', 'nameOrigenInstanciaFinal', 'nameCodDx', 'fechaSistema'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -317,12 +324,12 @@ const ListOccupationalMedicine = () => {
                         setOpenDelete(true);
                     }
                     setSelected([]);
-                    GetAll();
+                    getAll();
                 } else
                     setSelected([]);
             });
         } catch (error) {
-            
+
         }
     }
 
@@ -349,7 +356,7 @@ const ListOccupationalMedicine = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <ExcelFile element={
@@ -365,109 +372,18 @@ const ListOccupationalMedicine = () => {
                                         <ExcelColumn label="ResumenCaso" value="resumenCaso" />
                                         <ExcelColumn label="FechaRetiro" value="fechaRetiro" />
                                         <ExcelColumn label="Segmento Agrupado" value="segmentoAgrupado" />
-                                        <ExcelColumn label="Segmento Afectado" value="segmentoAfectado" />
-                                        <ExcelColumn label="Subsegmento" value="subsegmento" />
-                                        <ExcelColumn label="CodDx" value="codDx" />
-                                        <ExcelColumn label="Nro. Furel" value="nroFurel" />
-                                        <ExcelColumn label="Región" value="regionInfoLaboral" />
-                                        <ExcelColumn label="Lateralidad" value="lateralidad" />
-                                        <ExcelColumn label="Entidad Que Motiva El Envio" value="entidadQueMotivaEnvio" />
-                                        <ExcelColumn label="Entidad a Donde Envia" value="entidadDondeEnvia" />
-                                        <ExcelColumn label="Fecha Entrega" value="fechaEntrega" />
-                                        <ExcelColumn label="Fecha Envio" value="fechaEnvio" />
-                                        <ExcelColumn label="Investigado" value="investigado" />
-                                        <ExcelColumn label="Observaciones" value="observaciones" />
-
-                                        <ExcelColumn label="Fecha Calificación" value="fechaCalificacionEps" />
-                                        <ExcelColumn label="Origen" value="origenEps" />
-
-                                        <ExcelColumn label="No. Solicitud" value="noSolicitudARL" />
-                                        <ExcelColumn label="Fecha de Calificación Origen" value="fechaCalifiOrigenARL" />
-                                        <ExcelColumn label="origen" value="origenARL" />
-                                        <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclARL" />
-                                        <ExcelColumn label="Pcl" value="pclARL" />
-                                        <ExcelColumn label="Fecha Estructura" value="fechaEstructuraARL" />
-                                        <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclARL" />
-                                        <ExcelColumn label="Pcl Recalificada" value="pclRecalificadaARL" />
-                                        <ExcelColumn label="Fecha Estructura Recalificada" value="fechaEstructuraRecalificadaARL" />
-
-                                        <ExcelColumn label="Fecha Calificación Origen" value="fechaCalificaOrigenJRC" />
-                                        <ExcelColumn label="Junta Calificación" value="juntaCalifica" />
-                                        <ExcelColumn label="No. Dictamen" value="noDictamenJRC" />
-                                        <ExcelColumn label="Origen" value="origenJRC" />
-                                        <ExcelColumn label="Controversia" value="controversia" />
-                                        <ExcelColumn label="Conclusion" value="conclusion" />
-                                        <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclJRC" />
-                                        <ExcelColumn label="No. Dictamen Pcl" value="noDictamenPclJRC" />
-                                        <ExcelColumn label="Pcl" value="pclJRC" />
-                                        <ExcelColumn label="Fecha Estructura Pcl" value="fechaEstructuraPclJRC" />
-                                        <ExcelColumn label="No. Acta Recurso" value="noActaRecursoJRC" />
-                                        <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclJRC" />
-                                        <ExcelColumn label="No. Dictamen Recalificación" value="noDictamenRecalificacionJRC" />
-                                        <ExcelColumn label="Junta ReCalificación" value="juntaReCalificacionJRC" />
-                                        <ExcelColumn label="Pcl Recalificada" value="pclRecalificadaJRC" />
-                                        <ExcelColumn label="Fecha Recalificación Est" value="fechaRecalificacionEstJRC" />
-
-                                        <ExcelColumn label="Fecha Calificación Origen" value="fechaCalificaOrigenJNC" />
-                                        <ExcelColumn label="No. Dictamen" value="noDictamenJNC" />
-                                        <ExcelColumn label="Origen" value="origenJNC" />
-                                        <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclJNC" />
-                                        <ExcelColumn label="No. Dictamen Pcl" value="noDictamenPclJNC" />
-                                        <ExcelColumn label="Pcl" value="pclJNC" />
-                                        <ExcelColumn label="Fecha Estructura" value="fechaEstructuraJNC" />
-                                        <ExcelColumn label="Fecha Recalificación Pcl" value="fechaRecalificacionPclJNC" />
-                                        <ExcelColumn label="No. Dictamen Recalificación" value="noDictamenRecalificacionJNC" />
-                                        <ExcelColumn label="Pcl Recalificación" value="pclRecalificacionJNC" />
-
-                                        <ExcelColumn label="Origen" value="origenInstaFinal" />
-                                        <ExcelColumn label="Fecha Estructuracion Origen" value="fechaEstructuracionOrigenInstaFinal" />
-                                        <ExcelColumn label="Instancia Origen" value="instanciaOrigenInstaFinal" />
-                                        <ExcelColumn label="Pcl Final" value="pclFinalInstaFinal" />
-                                        <ExcelColumn label="Instancia Final" value="instanciaFinal" />
-                                        <ExcelColumn label="Fecha Calificación Pcl" value="fechaCalificacionPclInstFinal" />
-                                        <ExcelColumn label="Fecha Estructuración Pcl" value="fechaEstructuracionPclInstFinal" />
-                                        <ExcelColumn label="Indemnizado" value="indemnizado" />
-                                        <ExcelColumn label="EntregadoMin" value="entregadoMin" />
-                                        <ExcelColumn label="FechaPago" value="fechaPagoInstaFinal" />
-                                        <ExcelColumn label="Indemnizado Recalificado" value="indemnizadoRecalificado" />
-                                        <ExcelColumn label="Fecha Pago Recalificado" value="fechaPagoRecalificadoInstaFinal" />
-
-                                        <ExcelColumn label="EstadoRHT" value="estadoRHT" />
-                                        <ExcelColumn label="Reintegro" value="reintegro" />
-                                        <ExcelColumn label="Reubicado" value="reubicado" />
-                                        <ExcelColumn label="Restringido" value="restringido" />
-                                        <ExcelColumn label="JornadaLaboral" value="jornadaLaboral" />
-                                        <ExcelColumn label="Indemnizacion" value="indemnizacion" />
-
-                                        <ExcelColumn label="Sede" value="sede" />
-                                        <ExcelColumn label="Usuario" value="usuario" />
-                                        <ExcelColumn label="UsuarioReporte" value="usuarioReporte" />
-                                        <ExcelColumn label="FechaSistema" value="fechaSistema" />
-                                        <ExcelColumn label="FechaInforme" value="fechaInforme" />
-                                        <ExcelColumn label="FechaReporte" value="fechaReporte" />
-                                        <ExcelColumn label="FechaSistemaReporte" value="fechaSistemaReporte" />
-                                        <ExcelColumn label="EdadCalificado" value="edadCalificado" />
-                                        <ExcelColumn label="AntiguedadCalificado" value="antiguedadCalificado" />
                                     </ExcelSheet>
                                 </ExcelFile>
                             </Grid>
 
-                            <Grid item xs={2}>
-                                <Tooltip title="Impresión">
-                                    <IconButton size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/occupationalmedicine/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/occupational-health/menu")}>
                                     {TitleButton.Cancelar}
@@ -526,22 +442,6 @@ const ListOccupationalMedicine = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                #{row.id}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
@@ -562,7 +462,7 @@ const ListOccupationalMedicine = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.resumenCaso}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -577,7 +477,7 @@ const ListOccupationalMedicine = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.codDx}
+                                                {row.namePayStatus}
                                             </Typography>
                                         </TableCell>
 
@@ -592,7 +492,37 @@ const ListOccupationalMedicine = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.usuario}
+                                                {row.nameOrigenInstanciaFinal}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameCodDx}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {ViewFormat(row.fechaSistema)}
                                             </Typography>
                                         </TableCell>
 

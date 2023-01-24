@@ -9,9 +9,9 @@ import {
 
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ControlModal from 'components/controllers/ControlModal';
 
 import { FormProvider, useForm } from 'react-hook-form';
@@ -26,20 +26,22 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format'
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { InsertAccidentRate } from 'api/clients/AccidentRateClient';
-import { PostAccidentRate } from 'formatdata/AccidentRateForm';
+import { GetByIdAccidentRate, UpdateAccidentRates } from 'api/clients/AccidentRateClient';
+import { PutAccidentRate } from 'formatdata/AccidentRateForm';
+import InputOnChange from 'components/input/InputOnChange';
+import ViewPDF from 'components/components/ViewPDF';
+import Cargando from 'components/loading/Cargando';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -48,16 +50,21 @@ const DetailIcons = [
     { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const AccidentRate = () => {
+const validationSchema = yup.object().shape({
+    diagnosticoInicial: yup.string().required(`${ValidationMessage.Requerido}`),
+});
+
+const UpdateAccidentRate = () => {
     const { user } = useAuth();
+    const { id } = useParams();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
-    const [segmentoAgrupado, setSegmentoAgrupado] = useState('');
+    const [segmentoAgrupado, setSegmentoAgrupado] = useState(undefined);
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
-    const [segmentoAfectado, setSegmentoAfectado] = useState('');
+    const [segmentoAfectado, setSegmentoAfectado] = useState(undefined);
     const [subsegmento, setSubsegmento] = useState([]);
 
     const [openReport, setOpenReport] = useState(false);
@@ -67,10 +74,8 @@ const AccidentRate = () => {
     const [openError, setOpenError] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [openExamenParaclinico, setOpenExamenParaclinico] = useState(false);
-    const [openExamenFisico, setOpenExamenFisico] = useState(false);
-    const [diagnosticoInicial, setDiagnosticoInicial] = useState([]);
-    const [diagnosticoFinal, setDiagnosticoFinal] = useState([]);
+    const [openViewArchivo, setOpenViewArchivo] = useState(false);
+    const [timeWait, setTimeWait] = useState(false);
 
     const [lsEmployee, setLsEmployee] = useState([]);
     const [documento, setDocumento] = useState('');
@@ -78,88 +83,83 @@ const AccidentRate = () => {
     const [lsCausa, setLsCausa] = useState([]);
     const [lsEstado, setLsEstado] = useState([]);
     const [lsSubTipo, setLsSubTipo] = useState([]);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsRemitido, setLsRemitido] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
+    const [lsAccidentRate, setLsAccidentRate] = useState([]);
 
-    const methods = useForm();
-    const { handleSubmit, errors, reset } = methods;
+    const [lsDx1, setLsDx1] = useState([]);
+    const [textDx1, setTextDx1] = useState('');
 
-    const handleChangeSegAgrupado = async (event) => {
-        try {
-            setSubsegmento([]);
-            setSegmentoAgrupado(event.target.value);
+    const [lsDx2, setLsDx2] = useState([]);
+    const [textDx2, setTextDx2] = useState('');
 
-            const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
-            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                value: item.id,
-                label: item.descripcion
-            }));
-            setLsSegmentoAfectado(resultSegAfectado);
+    const methods = useForm({
+        resolver: yupResolver(validationSchema),
+    });
+    const { handleSubmit, formState: { errors } } = methods;
 
-        } catch (error) {
-            setLsSegmentoAfectado([]);
-        }
-    }
+    useEffect(() => {
+        async function getData() {
+            try {
+                const lsServerAtencion = await GetByIdAccidentRate(id);
+                if (lsServerAtencion.status === 200) {
+                    setLsAccidentRate(lsServerAtencion.data);
+                    setDocumento(lsServerAtencion.data.documento);
+                    handleLoadingDocument(lsServerAtencion.data.documento);
+                    setSegmentoAgrupado(lsServerAtencion.data.idSegmentoAgrupado);
+                    setSegmentoAfectado(lsServerAtencion.data.idSegmentoAfectado);
+                    setUrlFile(lsServerAtencion.data.url);
 
-    const handleChangeSegAfectado = async (event) => {
-        try {
-            setSegmentoAfectado(event.target.value);
+                    const lsServerSegAfectado = await GetAllBySegAgrupado(lsServerAtencion.data.idSegmentoAgrupado, 0, 0);
+                    var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
+                        value: item.id,
+                        label: item.nombre
+                    }));
+                    setLsSegmentoAfectado(resultSegAfectado);
 
-            const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
-            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                value: item.id,
-                label: item.descripcion
-            }));
-            setSubsegmento(resultSubsegmento);
+                    const lsServerSubsegmento = await GetAllBySegAfectado(lsServerAtencion.data.idSegmentoAfectado, 0, 0);
+                    var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
+                        value: item.id,
+                        label: item.nombre
+                    }));
+                    setSubsegmento(resultSubsegmento);
 
-        } catch (error) {
-            setSubsegmento([]);
-        }
-    }
+                    if (lsServerAtencion.data.diagnosticoInicial !== "") {
+                        var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.diagnosticoInicial);
 
-    const allowedFiles = ['application/pdf'];
-    const handleFile = async (event) => {
-        let selectedFile = event.target.files[0];
+                        if (lsServerCie11.status === 200) {
+                            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                                value: item.id,
+                                label: item.dx
+                            }));
+                            setLsDx1(resultCie11);
+                        }
 
-        if (selectedFile) {
-            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
-                let reader = new FileReader();
-                reader.readAsDataURL(selectedFile);
-                reader.onloadend = async (e) => {
-                    setUrlFile(e.target.result);
-                }
-            }
-            else {
-                setOpenError(true);
-                setErrorMessage('Este forma no es un PDF');
-            }
-        }
-    }
-
-    const handleDocumento = async (event) => {
-        try {
-            setDocumento(event?.target.value);
-            if (event.key === 'Enter') {
-                if (event?.target.value != "") {
-                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
-
-                    if (lsServerEmployee.status === 200) {
-                        setLsEmployee(lsServerEmployee.data);
+                        setTextDx1(lsServerAtencion.data.diagnosticoInicial);
                     }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
-                }
-            }
-        } catch (error) {
-            setLsEmployee([]);
-            setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
-        }
-    }
 
-    async function GetAll() {
+                    if (lsServerAtencion.data.diagnosticoFinal !== "") {
+                        var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.diagnosticoFinal);
+
+                        if (lsServerCie11.status === 200) {
+                            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                                value: item.id,
+                                label: item.dx
+                            }));
+                            setLsDx2(resultCie11);
+                        }
+
+                        setTextDx2(lsServerAtencion.data.diagnosticoFinal);
+                    }
+                }
+            } catch (error) { }
+        }
+
+        getData();
+    }, [id]);
+
+
+    async function getAll() {
         try {
             const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
             var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
@@ -167,13 +167,6 @@ const AccidentRate = () => {
                 label: item.nombre
             }));
             setLsSegmentoAgrupado(resultSegAgrupado);
-
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
 
             const lsServerClase = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CLASE_AT);
             var resultClase = lsServerClase.data.entities.map((item) => ({
@@ -216,48 +209,167 @@ const AccidentRate = () => {
                 label: item.nombre
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
+        } catch (error) { }
+    }
+
+    const handleChangeSegAgrupado = async (event) => {
+        try {
+            setSubsegmento([]);
+            setSegmentoAgrupado(event.target.value);
+
+            const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
+            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setLsSegmentoAfectado(resultSegAfectado);
+
         } catch (error) {
+            setLsSegmentoAfectado([]);
         }
     }
 
-    useEffect(() => {
-        GetAll();
-    }, [])
-
-    const handleClick = async (datos) => {
+    const handleChangeSegAfectado = async (event) => {
         try {
-            const DataToInsert = PostAccidentRate(FormatDate(datos.fecha), documento, datos.idClaseAT, datos.idCausaAT, segmentoAgrupado,
-                segmentoAfectado, datos.idSubsegmento, datos.idSubTipoConsecuencia, JSON.stringify(diagnosticoInicial),
-                JSON.stringify(diagnosticoFinal), datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
-                datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+            setSegmentoAfectado(event.target.value);
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertAccidentRate(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    setDocumento('');
-                    setLsEmployee([]);
-                    setDiagnosticoFinal([]);
-                    setDiagnosticoInicial([]);
+            const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
+            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setSubsegmento(resultSubsegmento);
 
-                    setLsSegmentoAfectado([]);
-                    setSegmentoAgrupado('');
-                    setSegmentoAfectado('');
-                    setSubsegmento([]);
+        } catch (error) {
+            setSubsegmento([]);
+        }
+    }
 
-                    reset();
+    const allowedFiles = ['application/pdf'];
+    const handleFile = async (event) => {
+        let selectedFile = event.target.files[0];
+
+        if (selectedFile) {
+            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
+                let reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onloadend = async (e) => {
+                    setUrlFile(e.target.result);
+                }
+            }
+            else {
+                setOpenError(true);
+                setErrorMessage('Este forma no es un PDF');
+            }
+        }
+    }
+
+    const handleLoadingDocument = async (idEmployee) => {
+        try {
+            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+
+            if (lsServerEmployee.status === 200)
+                setLsEmployee(lsServerEmployee.data);
+        } catch (error) {
+            setLsEmployee([]);
+            setErrorMessage(Message.ErrorDeDatos);
+        }
+    }
+
+    const handleDx1 = async (event) => {
+        try {
+            setTextDx1(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx2 = async (event) => {
+        try {
+            setTextDx2(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx2(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    useEffect(() => {
+        getAll();
+    }, []);
+
+    setTimeout(() => {
+        if (lsAccidentRate.length !== 0)
+            setTimeWait(true);
+    }, 1500);
+
+    const handleClick = async (datos) => {
+        try {
+            const DataToInsert = PutAccidentRate(id, FormatDate(datos.fecha), documento, datos.idClaseAT, datos.idCausaAT, segmentoAgrupado,
+                segmentoAfectado, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
+                datos.diagnosticoFinal, datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
+                datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+
+            if (Object.keys(datos.length !== 0)) {
+                if (lsEmployee.length !== 0) {
+                    if (textDx1 !== '' || textDx2 !== '') {
+                        const result = await UpdateAccidentRates(DataToInsert);
+                        if (result.status === 200) {
+                            setOpenSuccess(true);
+                        }
+                    } else {
+                        setOpenError(true);
+                        setErrorMessage('Ingrese por lo menos un diagnóstico');
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(Message.ErrorNoHayDatos);
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
     return (
         <Fragment>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal
@@ -277,326 +389,352 @@ const AccidentRate = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
-            <FullScreenDialog
-                open={openExamenFisico}
-                title="VISTA DE EXAMEN FÍSICO"
-                handleClose={() => setOpenExamenFisico(false)}
-            >
-
-            </FullScreenDialog>
-
-            <FullScreenDialog
-                open={openExamenParaclinico}
-                title="VISTA DE EXAMEN PARACLÍNICO"
-                handleClose={() => setOpenExamenParaclinico(false)}
-            >
-
-            </FullScreenDialog>
-
             <ControlModal
                 title="VISTA DE REPORTE"
                 open={openReport}
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                
+
             </ControlModal>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <ViewEmployee
-                        key={lsEmployee.documento}
-                        documento={documento}
-                        onChange={(e) => setDocumento(e.target.value)}
-                        lsEmployee={lsEmployee}
-                        handleDocumento={handleDocumento}
-                    />
-                </Grid>
+            <ControlModal
+                title="VISUALIZAR ARCHIVO"
+                open={openViewArchivo}
+                onClose={() => setOpenViewArchivo(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={urlFile} />
+            </ControlModal>
 
-                <Grid item xs={12}>
-                    <SubCard>
-                        <Grid container spacing={2}>
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha"
-                                        name="fecha"
-                                        defaultValue={new Date()}
-                                    />
-                                </FormProvider>
-                            </Grid>
+            {timeWait ?
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <ViewEmployee
+                            title="HISTORIA CLÍNICA"
+                            disabled={true}
+                            key={lsEmployee.documento}
+                            documento={documento}
+                            onChange={(e) => setDocumento(e.target.value)}
+                            lsEmployee={lsEmployee}
+                            handleDocumento={handleLoadingDocument}
+                        />
+                    </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idClaseAT"
-                                        label="Clase AT"
-                                        defaultValue=""
-                                        options={lsClase}
+                    <Grid item xs={12}>
+                        <SubCard>
+                            <Grid container spacing={2}>
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputDatePicker
+                                            label="Fecha"
+                                            name="fecha"
+                                            defaultValue={new Date()}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idClaseAT"
+                                            label="Clase AT"
+                                            options={lsClase}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idClaseAT}
+                                            defaultValue={lsAccidentRate.idClaseAT}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idCausaAT"
+                                            label="Causa AT"
+                                            options={lsCausa}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idCausaAT}
+                                            defaultValue={lsAccidentRate.idCausaAT}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <SelectOnChange
+                                        name="segmentoAgrupado"
+                                        label="Segmento Agrupado"
+                                        options={lsSegmentoAgrupado}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        value={segmentoAgrupado}
+                                        onChange={handleChangeSegAgrupado}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idCausaAT"
-                                        label="Causa AT"
-                                        defaultValue=""
-                                        options={lsCausa}
+                                <Grid item xs={4}>
+                                    <SelectOnChange
+                                        name="segmentoAfectado"
+                                        label="Segmento Afectado"
+                                        options={lsSegmentoAfectado}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        value={segmentoAfectado}
+                                        onChange={handleChangeSegAfectado}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="segmentoAgrupado"
-                                    label="Segmento Agrupado"
-                                    options={lsSegmentoAgrupado}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    value={segmentoAgrupado}
-                                    onChange={handleChangeSegAgrupado}
-                                />
-                            </Grid>
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idSubsegmento"
+                                            label="Subsegmento"
+                                            options={subsegmento}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idSubsegmento}
+                                            defaultValue={lsAccidentRate.idSubsegmento}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="segmentoAfectado"
-                                    label="Segmento Afectado"
-                                    options={lsSegmentoAfectado}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    value={segmentoAfectado}
-                                    onChange={handleChangeSegAfectado}
-                                    disabled={lsSegmentoAfectado.length != 0 ? false : true}
-                                />
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idSubTipoConsecuencia"
+                                            label="SubTipo Consecuencia"
+                                            options={lsSubTipo}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idSubTipoConsecuencia}
+                                            defaultValue={lsAccidentRate.idSubTipoConsecuencia}
+                                        />
+                                    </FormProvider>
+                                </Grid>
                             </Grid>
+                        </SubCard>
+                    </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idSubsegmento"
-                                        label="Subsegmento"
-                                        defaultValue=""
-                                        options={subsegmento}
+                    <Grid item xs={12}>
+                        <SubCard>
+                            <Grid container spacing={2}>
+                                <Grid item xs={2}>
+                                    <InputOnChange
+                                        label="Dx 1"
+                                        onKeyDown={handleDx1}
+                                        onChange={(e) => setTextDx1(e?.target.value)}
+                                        value={textDx1}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                        disabled={subsegmento.length != 0 ? false : true}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
+                                <Grid item xs={10}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="diagnosticoInicial"
+                                            label="Dx1"
+                                            options={lsDx1}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.diagnosticoInicial}
+                                            defaultValue={lsAccidentRate.diagnosticoInicial}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idSubTipoConsecuencia"
-                                        label="SubTipo Consecuencia"
-                                        defaultValue=""
-                                        options={lsSubTipo}
+                                <Grid item xs={2}>
+                                    <InputOnChange
+                                        label="Dx 2"
+                                        onKeyDown={handleDx2}
+                                        onChange={(e) => setTextDx2(e?.target.value)}
+                                        value={textDx2}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
-                                </FormProvider>
+                                </Grid>
+                                <Grid item xs={10}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="diagnosticoFinal"
+                                            label="Dx2"
+                                            options={lsDx2}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.diagnosticoFinal}
+                                            defaultValue={lsAccidentRate.diagnosticoFinal}
+                                        />
+                                    </FormProvider>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
+                        </SubCard>
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <InputMultiSelects
-                                    fullWidth
-                                    onChange={(event, value) => setDiagnosticoInicial(value)}
-                                    value={diagnosticoInicial}
-                                    label="Diagnóstico Inicial"
-                                    options={lsCie11}
-                                />
-                            </Grid>
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">DATOS COMPLEMENTARIOS</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idParaclinicos"
+                                            label="Paraclinicos"
+                                            options={lsRemitido}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idParaclinicos}
+                                            defaultValue={lsAccidentRate.idParaclinicos}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                            <Grid item xs={12}>
-                                <InputMultiSelects
-                                    fullWidth
-                                    onChange={(event, value) => setDiagnosticoFinal(value)}
-                                    value={diagnosticoFinal}
-                                    label="Diagnóstico Final"
-                                    options={lsCie11}
-                                />
-                            </Grid>
+                                <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idConceptoActitudSFI"
+                                            label="Concepto De Aptitud Psicofisica Inicial"
+                                            options={lsConceptoAptitud}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idConceptoActitudSFI}
+                                            defaultValue={lsAccidentRate.idConceptoActitudSFI}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                        </Grid>
-                    </SubCard>
-                </Grid>
+                                <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idConceptoActitudSFF"
+                                            label="Concepto De Aptitud Psicofisica Final"
+                                            options={lsConceptoAptitud}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idConceptoActitudSFF}
+                                            defaultValue={lsAccidentRate.idConceptoActitudSFF}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">DATOS COMPLEMENTARIOS</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idParaclinicos"
-                                        label="Paraclinicos"
-                                        defaultValue=""
-                                        options={lsRemitido}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                <Grid item xs={1.5}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            type="number"
+                                            fullWidth
+                                            name="diasTw"
+                                            label="Días Trabajo Transicional"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.diasTw}
+                                            defaultValue={lsAccidentRate.diasTw}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={1.5}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            type="number"
+                                            fullWidth
+                                            name="diasIncapacidad"
+                                            label="Días de Incapacidad"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.diasIncapacidad}
+                                            defaultValue={lsAccidentRate.diasIncapacidad}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            fullWidth
+                                            name="seguimiento"
+                                            label="Seguimiento"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.seguimiento}
+                                            defaultValue={lsAccidentRate.seguimiento}
+                                            multiline
+                                            rows={6}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
                                     />
-                                </FormProvider>
-                            </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idConceptoActitudSFI"
-                                        label="Concepto De Aptitud Psicofisica Inicial"
-                                        defaultValue=""
-                                        options={lsConceptoAptitud}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                    <DetailedIcon
+                                        title={DetailIcons[1].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[1].icons}
                                     />
-                                </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idStatus"
+                                            label="Estado"
+                                            options={lsEstado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idStatus}
+                                            defaultValue={lsAccidentRate.idStatus}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="idRemitido"
+                                            label="Remitido"
+                                            options={lsRemitido}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idRemitido}
+                                            defaultValue={lsAccidentRate.idRemitido}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
                             </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idConceptoActitudSFF"
-                                        label="Concepto De Aptitud Psicofisica Final"
-                                        defaultValue=""
-                                        options={lsConceptoAptitud}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
+                            <Grid container spacing={2} sx={{ pt: 4 }}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        type="number"
-                                        defaultValue=""
-                                        fullWidth
-                                        name="diasTw"
-                                        label="Días Trabajo Transicional"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        type="number"
-                                        defaultValue=""
-                                        fullWidth
-                                        name="diasIncapacidad"
-                                        label="Días de Incapacidad"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button fullWidth variant="outlined" component="label">
+                                            <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                            {TitleButton.SubirArchivo}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="seguimiento"
-                                        label="Seguimiento"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        multiline
-                                        rows={6}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                <DetailedIcon
-                                    title={DetailIcons[0].title}
-                                    onClick={() => setOpenTemplate(true)}
-                                    icons={DetailIcons[0].icons}
-                                />
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button disabled={urlFile === null ? true : false} variant="outlined" fullWidth onClick={() => setOpenViewArchivo(true)}>
+                                            {TitleButton.VerArchivo}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
-                                <DetailedIcon
-                                    title={DetailIcons[1].title}
-                                    onClick={() => setOpen(true)}
-                                    icons={DetailIcons[1].icons}
-                                />
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/accident-rate/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idStatus"
-                                        label="Estado"
-                                        defaultValue=""
-                                        options={lsEstado}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idRemitido"
-                                        label="Remitido"
-                                        defaultValue=""
-                                        options={lsRemitido}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                        </Grid>
-
-                        <Grid container spacing={2} sx={{ pt: 4 }}>
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                        {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
-                                        {TitleButton.Imprimir}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button fullWidth variant="outlined" component="label">
-                                        <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                        {TitleButton.SubirArchivo}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/accident-rate/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
-            </Grid>
+                        </SubCard>
+                    </Grid>
+                </Grid> : <Cargando />
+            }
         </Fragment>
     );
 };
 
-export default AccidentRate;
+export default UpdateAccidentRate;

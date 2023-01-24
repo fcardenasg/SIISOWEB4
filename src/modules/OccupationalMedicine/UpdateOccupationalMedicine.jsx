@@ -71,40 +71,48 @@ const OccupationalMedicine = () => {
     const methods = useForm();
     const { handleSubmit } = methods;
 
+    useEffect(() => {
+        async function getData() {
+            try {
+                const lsServerAtencion = await GetByIdOccupationalMedicine(id);
+                if (lsServerAtencion.status === 200) {
+                    setDocumento(lsServerAtencion.data.cedula);
+                    handleLoadingDocument(lsServerAtencion.data.cedula);
+                    setLsOccupationalMedicine(lsServerAtencion.data);
+                    setFilePdf(lsServerAtencion.data.urlDocumento);
+                    setSegmentoAgrupado(lsServerAtencion.data.segmentoAgrupado);
+
+                    const lsServerSegAfectado = await GetAllBySegAgrupado(lsServerAtencion.data.segmentoAgrupado, 0, 0);
+                    var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
+                        value: item.id,
+                        label: item.nombre
+                    }));
+                    setLsSegmentoAfectado(resultSegAfectado);
+                    setSegmentoAfectado(lsServerAtencion.data.segmentoAfectado);
+
+                    const lsServerSubsegmento = await GetAllBySegAfectado(lsServerAtencion.data.segmentoAfectado, 0, 0);
+                    var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
+                        value: item.id,
+                        label: item.nombre
+                    }));
+                    setLsSubsegmento(resultSubsegmento);
+
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.codDx);
+                    var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                        value: item.id,
+                        label: item.dx
+                    }));
+                    setLsDiagnistico(resultCie11);
+                    setTextDiagnostico(lsServerAtencion.data.codDx);
+                }
+            } catch (error) { }
+        }
+
+        getData();  
+    }, [id]);
+
     async function getAll() {
         try {
-            const lsServerAtencion = await GetByIdOccupationalMedicine(id);
-            if (lsServerAtencion.status === 200) {
-                setDocumento(lsServerAtencion.data.cedula);
-                handleLoadingDocument(lsServerAtencion.data.cedula);
-                setLsOccupationalMedicine(lsServerAtencion.data);
-                setFilePdf(lsServerAtencion.data.urlDocumento);
-                setSegmentoAgrupado(lsServerAtencion.data.segmentoAgrupado);
-
-                const lsServerSegAfectado = await GetAllBySegAgrupado(lsServerAtencion.data.segmentoAgrupado, 0, 0);
-                var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.nombre
-                }));
-                setLsSegmentoAfectado(resultSegAfectado);
-                setSegmentoAfectado(lsServerAtencion.data.segmentoAfectado);
-
-                const lsServerSubsegmento = await GetAllBySegAfectado(lsServerAtencion.data.segmentoAfectado, 0, 0);
-                var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.nombre
-                }));
-                setLsSubsegmento(resultSubsegmento);
-
-                var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.codDx);
-                var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.dx
-                }));
-                setLsDiagnistico(resultCie11);
-                setTextDiagnostico(lsServerAtencion.data.codDx);
-            }
-
             const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
             var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
                 value: item.id,
@@ -277,7 +285,7 @@ const OccupationalMedicine = () => {
 
     useEffect(() => {
         getAll();
-    }, [id])
+    }, []);
 
     const handleClick = async (datos) => {
         try {
@@ -314,7 +322,7 @@ const OccupationalMedicine = () => {
     setTimeout(() => {
         if (lsOccupationalMedicine.length !== 0)
             setTimeWait(true);
-    }, 1500);
+    }, 2000);
 
     return (
         <Fragment>
@@ -1229,7 +1237,7 @@ const OccupationalMedicine = () => {
                                         <Grid item xs={2}>
                                             <AnimateButton>
                                                 <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                                    {TitleButton.Guardar}
+                                                    {TitleButton.Actualizar}
                                                 </Button>
                                             </AnimateButton>
                                         </Grid>
