@@ -106,6 +106,9 @@ export const Url = {
     RegistroTaxi: 'api/RegistroTaxi',
     RegistroTaxiId: 'api/RegistroTaxi/id',
 
+    Solicitudes: 'api/Solicitudes',
+    SolicitudesId: 'api/Solicitudes/id',
+
     ApuntesPersonales: 'api/ApuntesPersonales',
     ApuntesPersonalesId: 'api/ApuntesPersonales/id',
 
