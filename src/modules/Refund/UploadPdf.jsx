@@ -1,5 +1,4 @@
 import { useState, Fragment, useEffect } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
@@ -23,7 +22,6 @@ import { FormatDate } from 'components/helpers/Format';
 
 const UploadPdf = ({ idListaReintegro }) => {
     const { user } = useAuth();
-    const theme = useTheme();
 
     const [errorMessage, setErrorMessage] = useState('');
     const [openSuccess, setOpenSuccess] = useState(false);

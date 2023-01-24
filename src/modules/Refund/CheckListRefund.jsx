@@ -150,7 +150,7 @@ const CheckListRefund = ({ idReintegro }) => {
     useEffect(() => {
         async function GetAll() {
             try {
-                var lsCheckedReintegro = await GetAllReintegro(0, 0, 2);
+                var lsCheckedReintegro = await GetAllReintegro(0, 0, idReintegro);
                 setListRefund(lsCheckedReintegro.data.entities);
             } catch (error) { }
         }
