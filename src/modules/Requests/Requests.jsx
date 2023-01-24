@@ -224,9 +224,11 @@ const Requests = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostRequests(documento, FormatDate(datos.fecha), datos.diagnostico,
-                datos.motivoTraslado, datos.idContingencia, datos.idRuta, datos.idDestino, datos.nroTaxi, datos.idCargadoa, datos.idCupo, datos.idMedico,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PostRequests(FormatDate(datos.fechaRecibo),datos.recibio,documento,datos.nombre,datos.area,
+                datos.idCargoOficio,datos.idTipoSolicitud,datos.idResponsableRespuesta,FormatDate(datos.fechaLimiteRespuesta),
+                FormatDate(datos.fechaRespuesta),datos.personaResponde,datos.grupo,datos.documentoResponde,datos.entidadSolicitante,
+                datos.medioUtilizado,datos.numeroGuia,datos.observaciones,datos.direccion,datos.correo,datos.telefono,
+                FormatDate(datos.fechaEntrega),FormatDate(datos.fechaReciboDLTD),datos.usuarioReciboDLTD,datos.estado,user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
                 console.log(DataToInsert);
 
@@ -278,13 +280,15 @@ const Requests = () => {
                     />
                 </Grid>
 
+
                 <Grid item xs={12}>
-                    <SubCard>
-                        <Grid container spacing={2}>
+                        <SubCard darkTitle title={<Typography variant="h4">Recibio en DLTD</Typography>}>
+                            <Grid container spacing={2}>
+
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputDatePicker
-                                        label="Fecha"
+                                        label="Fecha de Recibido"
                                         name="fecha"
                                         defaultValue={new Date()}
                                     />
@@ -292,6 +296,170 @@ const Requests = () => {
                             </Grid>
 
 
+                                <Grid item xs={12} md={1} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            fullWidth                  
+                                            label="Recibido por"
+                                            defaultValue={user.nameuser}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">Departamento De Salud E Higiene</Typography>}>
+                            <Grid container spacing={2}>
+
+                            <Grid item xs={3}>
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha de Recibido"
+                                        name="fechaRespuesta"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={3}>
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha Limite de Respuesta "
+                                        name="fechaLimiteRespuesta"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">Datos Del Solicitante</Typography>}>
+                            <Grid container spacing={2}>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth                  
+                                            label="Dirección"
+                                            name="direccion"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                         
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={4}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth                  
+                                            label="Correo Electrónico"
+                                            name="correo"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={1} lg={4}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth                  
+                                            label="Teléfono"
+                                            name="telefono"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                          
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">Detalle de Solicitud</Typography>}>
+                            <Grid container spacing={2}>
+
+                       
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idTipoSolicitud"
+                                        label="Solicitud"
+                                        defaultValue=""
+                                        options={lsRuta}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idTipoSolicitud}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idResponsableRespuesta"
+                                        label="Responsable de respuesta"
+                                        defaultValue=""
+                                        options={lsRuta}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idResponsableRespuesta}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={1} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha de Respuesta"
+                                        name="fechaRespuesta"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+{/* //////////////////////////////////////// */}
+
+
+                <Grid item xs={12}>
+                    <SubCard>
+                        <Grid container spacing={2}>
+                            <Grid item xs={3}>
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha de Recibido"
+                                        name="fecha"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={3}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="ojoIzquierdo"
+                                            label="Usuario"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -387,29 +555,9 @@ const Requests = () => {
                         </Grid>
                         </SubCard>
 
-                        <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Detalle de solicitud</Typography>}>
                         <Grid container spacing={2}>
-                                <Grid item xs={2}>
-                                    <InputOnChange
-                                        label="Dx"
-                                        onKeyDown={handleDx1}
-                                        onChange={(e) => setTextDx1(e?.target.value)}
-                                        value={textDx1}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-                                <Grid item xs={10}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="diagnostico"
-                                            label="Diagnóstico"
-                                            defaultValue=""
-                                            options={lsDx1}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
+                  
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
@@ -426,8 +574,6 @@ const Requests = () => {
                                 </Grid>
 
                             </Grid>
-
-
 
                         <Grid item xs={12} sx={{ pt: 6 }}>
                             <Grid container spacing={2}>

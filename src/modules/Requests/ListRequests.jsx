@@ -83,9 +83,15 @@ const headCells = [
         label: 'ID',
         align: 'left'
     },
+    {
+        id: 'fechaRecibo',
+        numeric: false,
+        label: 'Fecha de Recibido',
+        align: 'left'
+    },
 
     {
-        id: 'documento',
+        id: 'documentoPeticion',
         numeric: false,
         label: 'Documento',
         align: 'left'
@@ -97,15 +103,39 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nameSede',
+        id: 'nameTipoSolicitud',
         numeric: false,
-        label: 'Sede',
+        label: 'Tipo de Solicitud',
         align: 'left'
     },
     {
-        id: 'fecha',
+        id: 'nameResponsableRespuesta',
         numeric: false,
-        label: 'Fecha',
+        label: 'Responsable',
+        align: 'left'
+    },
+    {
+        id: 'fechaLimiteRespuesta',
+        numeric: false,
+        label: 'Fecha Limite de Respuesta',
+        align: 'left'
+    },
+    {
+        id: 'fechaRespuesta',
+        numeric: false,
+        label: 'Fecha de Respuesta',
+        align: 'left'
+    },
+    {
+        id: 'fechaRespuesta',
+        numeric: false,
+        label: 'Días Restantes',
+        align: 'left'
+    },
+    {
+        id: 'nameSede',
+        numeric: false,
+        label: 'Sede',
         align: 'left'
     },
 ];
@@ -220,7 +250,7 @@ const ListRequests = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState(0);
-    const [lsCabRegistration, setLsCabRegistration] = useState([]);
+    const [lsRequests, setLsRequests] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [openReport, setOpenReport] = useState(false);
 
@@ -237,7 +267,7 @@ const ListRequests = () => {
     async function getAll() {
         try {
             const lsServer = await GetAllRequests(0, 0);
-            setLsCabRegistration(lsServer.data.entities);
+            setLsRequests(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) { }
     }
@@ -254,7 +284,8 @@ const ListRequests = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idSolicitudes','documento', 'nameEmpleado', 'nameSede','fecha'];
+                const properties = ['idSolicitudes','fechaRecibo','documentoPeticion', 'nameEmpleado','nameTipoSolicitud','nameResponsableRespuesta',
+                'fechaLimiteRespuesta','fechaRespuesta','fechaRespuesta','nameSede','fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -268,9 +299,9 @@ const ListRequests = () => {
                 }
                 return matches;
             });
-            setLsCabRegistration(newRows);
+            setLsRequests(newRows);
         } else {
-            setLsCabRegistration(rows);
+            setLsRequests(rows);
         }
     };
 
@@ -292,7 +323,7 @@ const ListRequests = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelectedId = lsCabRegistration.map((n) => n.idSolicitudes);
+            const newSelectedId = lsRequests.map((n) => n.idSolicitudes);
             setSelected(newSelectedId);
             return;
         }
@@ -353,7 +384,7 @@ const ListRequests = () => {
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsCabRegistration.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsRequests.length) : 0;
 
     return (
         <MainCard title="LISTA DE SOLICITUDES" content={false}>
@@ -395,24 +426,19 @@ const ListRequests = () => {
                                         </IconButton>
                                     </Tooltip>
                                 } filename="LISTA DE SOLICITUDES">
-                                    <ExcelSheet data={lsCabRegistration} name="Requests">
+                                    <ExcelSheet data={lsRequests} name="Requests">
                                         <ExcelColumn label="Id" value="idSolicitudes" />
-                                        <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fechaRecibo)} />
+                                        <ExcelColumn label="Documento" value="documentoPeticion" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
                                         <ExcelColumn label="Sede" value="nameSede" />  
-                                        <ExcelColumn label="Cargo" value="nameCargo" />  
-                                        <ExcelColumn label="Nro. Celular" value="nameTelefono" />  
-                                        <ExcelColumn label="EPS" value="nameEps" />  
-                                        <ExcelColumn label="Contingencia" value="nameContingencia" />   
-                                        <ExcelColumn label="Ruta" value="nameRuta" />   
-                                        <ExcelColumn label="Destino" value="nameDestino" />   
-                                        <ExcelColumn label="Cargado a" value="nameCargadoa" />   
-                                        <ExcelColumn label="Nro. Taxi" value="nameNrotaxi" />   
-                                        <ExcelColumn label="Cupo" value="nameCupo" />  
-                                        <ExcelColumn label="Asigna" value="nameMedico" />  
-                                        <ExcelColumn label="Diagnostico" value="diagnostico" />  
-                                        <ExcelColumn label="Motivo" value="motivoTraslado" />  
+                                        <ExcelColumn label="Cargo" value="nameCargoOficio" />  
+                                        <ExcelColumn label="Celular" value="telefono" />  
+                                        <ExcelColumn label="Área" value="nameArea" />   
+                                        <ExcelColumn label="Tipo de solicitud" value="nameTipoSolicitud" />   
+                                        <ExcelColumn label="Responsable" value="nameResponsableRespuesta" />   
+                                        <ExcelColumn label="Fecha limite de respuesta" value={(fe) => ViewFormat(fe.fechaLimiteRespuesta)} />
+                                        <ExcelColumn label="Fecha de respuesta" value={(fe) => ViewFormat(fe.fechaRespuesta)} />
                                         <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
                                         <ExcelColumn label="Fecha de registro" value="fechaRegistro" />
                                         <ExcelColumn label="Usuario que modifica" value="usuarioModifico" />
@@ -420,7 +446,6 @@ const ListRequests = () => {
                                     </ExcelSheet>
                                 </ExcelFile>
                             </Grid>
-
 
 
                             <Grid item xs={2}>
@@ -457,13 +482,13 @@ const ListRequests = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsCabRegistration.length}
+                        rowCount={lsRequests.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(lsCabRegistration, getComparator(order, orderBy))
+                        {stableSort(lsRequests, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
 
@@ -517,7 +542,7 @@ const ListRequests = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.documento}
+                                                {row.documentoPeticion}
                                             </Typography>
                                         </TableCell>
 
@@ -592,7 +617,7 @@ const ListRequests = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsCabRegistration.length}
+                count={lsRequests.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

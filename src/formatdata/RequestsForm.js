@@ -1,13 +1,13 @@
 import { DefaultValue } from "components/helpers/Enums";
 
-export function PostRequests(fechaRecibo,recibio,documentoPeticion,nombre,area,
+export function PostRequests(fechaRecibo,recibio,documento,nombre,area,
     idCargoOficio,idTipoSolicitud,idResponsableRespuesta,fechaLimiteRespuesta,
     fechaRespuesta,personaResponde,grupo,documentoResponde,entidadSolicitante,
     medioUtilizado,numeroGuia,observaciones,direccion,correo,telefono,
     fechaEntrega,fechaReciboDLTD,usuarioReciboDLTD,estado,usuarioRegistro,fechaRegistro,
     usuarioModifico,fechaModifico) {
     return {
-        fechaRecibo,recibio,documentoPeticion,nombre,area,
+        fechaRecibo,recibio,documento,nombre,area,
         idCargoOficio,idTipoSolicitud,idResponsableRespuesta,fechaLimiteRespuesta,
         fechaRespuesta,personaResponde,grupo,documentoResponde,entidadSolicitante,
         medioUtilizado,numeroGuia,observaciones,direccion,correo,telefono,
@@ -16,14 +16,14 @@ export function PostRequests(fechaRecibo,recibio,documentoPeticion,nombre,area,
     };
 }
 
-export function PutRequests(idSolicitudes,fechaRecibo,recibio,documentoPeticion,nombre,area,
+export function PutRequests(idSolicitudes,fechaRecibo,recibio,documento,nombre,area,
     idCargoOficio,idTipoSolicitud,idResponsableRespuesta,fechaLimiteRespuesta,
     fechaRespuesta,personaResponde,grupo,documentoResponde,entidadSolicitante,
     medioUtilizado,numeroGuia,observaciones,direccion,correo,telefono,
     fechaEntrega,fechaReciboDLTD,usuarioReciboDLTD,estado,usuarioRegistro,fechaRegistro,
     usuarioModifico,fechaModifico) {
     return {
-        idSolicitudes,fechaRecibo,recibio,documentoPeticion,nombre,area,
+        idSolicitudes,fechaRecibo,recibio,documento,nombre,area,
         idCargoOficio,idTipoSolicitud,idResponsableRespuesta,fechaLimiteRespuesta,
         fechaRespuesta,personaResponde,grupo,documentoResponde,entidadSolicitante,
         medioUtilizado,numeroGuia,observaciones,direccion,correo,telefono,
