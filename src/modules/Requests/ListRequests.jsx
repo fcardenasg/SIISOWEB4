@@ -33,7 +33,7 @@ import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCabRegistration, DeleteCabRegistration }  from 'api/clients/CabRegistrationClient';
+import { GetAllRequests, DeleteRequests }  from 'api/clients/RequestsClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -43,8 +43,8 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 
-import { generateReporteReportCabRegistration } from './ReportCabRegistration';
-import { GetByIdCabRegistration } from "api/clients/CabRegistrationClient";
+import { generateReportRequests } from './ReportRequests';
+import { GetByIdRequests } from "api/clients/RequestsClient";
 import { GetByMail } from 'api/clients/UserClient';
 import useAuth from 'hooks/useAuth';
 import ViewPDF from 'components/components/ViewPDF';
@@ -78,7 +78,7 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'idRegistroTaxi',
+        id: 'idSolicitudes',
         numeric: false,
         label: 'ID',
         align: 'left'
@@ -216,7 +216,7 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListCabRegistration = () => {
+const ListRequests = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState(0);
@@ -236,7 +236,7 @@ const ListCabRegistration = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllCabRegistration(0, 0);
+            const lsServer = await GetAllRequests(0, 0);
             setLsCabRegistration(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) { }
@@ -254,7 +254,7 @@ const ListCabRegistration = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idRegistroTaxi','documento', 'nameEmpleado', 'nameSede','fecha'];
+                const properties = ['idSolicitudes','documento', 'nameEmpleado', 'nameSede','fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -283,16 +283,16 @@ const ListCabRegistration = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdCabRegistration(idCheck);
+            const lsDataReport = await GetByIdRequests(idCheck);
             const lsDataUser = await GetByMail(user.email);
-            const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportRequests(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelectedId = lsCabRegistration.map((n) => n.idRegistroTaxi);
+            const newSelectedId = lsCabRegistration.map((n) => n.idSolicitudes);
             setSelected(newSelectedId);
             return;
         }
@@ -331,7 +331,7 @@ const ListCabRegistration = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteCabRegistration(idCheck);
+                    const result = await DeleteRequests(idCheck);
 
                     if (result.status === 200) {
                         setOpenDelete(true);
@@ -356,7 +356,7 @@ const ListCabRegistration = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsCabRegistration.length) : 0;
 
     return (
-        <MainCard title="LISTA DE REGISTROS DE TAXI" content={false}>
+        <MainCard title="LISTA DE SOLICITUDES" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
@@ -394,9 +394,9 @@ const ListCabRegistration = () => {
                                             <IconFileExport />
                                         </IconButton>
                                     </Tooltip>
-                                } filename="LISTA DE REGISTRO DE TAXIS">
-                                    <ExcelSheet data={lsCabRegistration} name="CabRegistration">
-                                        <ExcelColumn label="Id" value="idRegistroTaxi" />
+                                } filename="LISTA DE SOLICITUDES">
+                                    <ExcelSheet data={lsCabRegistration} name="Requests">
+                                        <ExcelColumn label="Id" value="idSolicitudes" />
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
@@ -433,7 +433,7 @@ const ListCabRegistration = () => {
 
                             <Grid item xs={4}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/cabregistration/add")}>
+                                    onClick={() => navigate("/requests/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
@@ -469,7 +469,7 @@ const ListCabRegistration = () => {
 
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.idRegistroTaxi);
+                                const isItemSelected = isSelected(row.idSolicitudes);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -480,7 +480,7 @@ const ListCabRegistration = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        <TableCell padding="radio" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idRegistroTaxi)}>
+                                        <TableCell padding="radio" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idSolicitudes)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -494,14 +494,14 @@ const ListCabRegistration = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idRegistroTaxi)}
+                                            onClick={(event) => handleClick(event, row.idSolicitudes)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idRegistroTaxi}
+                                                {row.idSolicitudes}
                                             </Typography>
                                         </TableCell>
 
@@ -510,7 +510,7 @@ const ListCabRegistration = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idRegistroTaxi)}
+                                            onClick={(event) => handleClick(event, row.idSolicitudes)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -525,7 +525,7 @@ const ListCabRegistration = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idRegistroTaxi)}
+                                            onClick={(event) => handleClick(event, row.idSolicitudes)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -540,7 +540,7 @@ const ListCabRegistration = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idRegistroTaxi)}
+                                            onClick={(event) => handleClick(event, row.idSolicitudes)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -555,7 +555,7 @@ const ListCabRegistration = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idRegistroTaxi)}
+                                            onClick={(event) => handleClick(event, row.idSolicitudes)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -567,7 +567,7 @@ const ListCabRegistration = () => {
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/cabregistration/update/${row.idRegistroTaxi}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/requests/update/${row.idSolicitudes}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -602,4 +602,4 @@ const ListCabRegistration = () => {
     );
 };
 
-export default ListCabRegistration;
+export default ListRequests;

@@ -19,14 +19,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdCabRegistration, UpdateCabRegistrations } from 'api/clients/CabRegistrationClient';
+import { GetByIdRequests, UpdateRequestss } from 'api/clients/RequestsClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, DefaultValue, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PutCabRegistration } from 'formatdata/CabRegistrationForm';
+import { PutRequests } from 'formatdata/RequestsForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
@@ -35,7 +35,7 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import InputText from 'components/input/InputText';
 import Cargando from 'components/loading/Cargando';
 import { GetAllUser, GetByMail } from 'api/clients/UserClient';
-import { generateReporteReportCabRegistration } from './ReportCabRegistration';
+import { generateReportRequests } from './ReportRequests';
 import ViewPDF from 'components/components/ViewPDF';
 import InputOnChange from 'components/input/InputOnChange';
 
@@ -49,7 +49,7 @@ const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
-const UpdateCabRegistration = () => {
+const UpdateRequests = () => {
     const { user } = useAuth();
     const { id } = useParams();
     const theme = useTheme();
@@ -92,7 +92,7 @@ const UpdateCabRegistration = () => {
         try {
 
 
-            const lsServerUpdate = await GetByIdCabRegistration(id);
+            const lsServerUpdate = await GetByIdRequests(id);
             if (lsServerUpdate.status === 200) {
                 setDocumento(lsServerUpdate.data.documento);
                 handleLoadingDocument(lsServerUpdate.data.documento);
@@ -170,7 +170,7 @@ const UpdateCabRegistration = () => {
 
 
 
-            const lsServerAtencion = await GetByIdCabRegistration(id);
+            const lsServerAtencion = await GetByIdRequests(id);
             if (lsServerAtencion.status === 200) {
                 setTextDx1(lsServerAtencion.data.diagnostico);
                 setLsDataAtencion(lsServerAtencion.data);
@@ -220,9 +220,9 @@ const UpdateCabRegistration = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdCabRegistration(id);
+            const lsDataReport = await GetByIdRequests(id);
             const lsDataUser = await GetByMail(user.email);
-            const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportRequests(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -276,13 +276,13 @@ const UpdateCabRegistration = () => {
 
 
     const handleClick = async (datos) => {
-        const DataToUpdate = PutCabRegistration(id, documento, FormatDate(datos.fecha), datos.diagnostico,
+        const DataToUpdate = PutRequests(id, documento, FormatDate(datos.fecha), datos.diagnostico,
         datos.motivoTraslado, datos.idContingencia, datos.idRuta, datos.idDestino, datos.nroTaxi, datos.idCargadoa, datos.idCupo, datos.idMedico,
         user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
 
         try {
             if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateCabRegistrations(DataToUpdate);
+                const result = await UpdateRequestss(DataToUpdate);
                 if (result.status === 200) {
                     setOpenUpdate(true);
                 }
@@ -319,7 +319,7 @@ const UpdateCabRegistration = () => {
 
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="ACTUALIZAR REGISTRO DE TAXI"
+                            title="ACTUALIZAR SOLICITUDES"
                             key={lsEmployee.documento}
                             documento={documento}
                             onChange={(e) => setDocumento(e.target.value)}
@@ -497,7 +497,7 @@ const UpdateCabRegistration = () => {
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/cabregistration/list")}>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/requests/list")}>
                                                 {TitleButton.Cancelar}
                                             </Button>
                                         </AnimateButton>
@@ -512,4 +512,4 @@ const UpdateCabRegistration = () => {
     );
 };
 
-export default UpdateCabRegistration;
+export default UpdateRequests;

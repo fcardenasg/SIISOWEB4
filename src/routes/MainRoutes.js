@@ -56,6 +56,10 @@ const ListCabRegistration = Loadable(lazy(() => import('modules/CabRegistration/
 const CabRegistration = Loadable(lazy(() => import('modules/CabRegistration/CabRegistration')));
 const UpdateCabRegistration = Loadable(lazy(() => import('modules/CabRegistration/UpdateCabRegistration')));
 
+const ListRequests = Loadable(lazy(() => import('modules/Requests/ListRequests')));
+const Requests = Loadable(lazy(() => import('modules/Requests/Requests')));
+const UpdateRequests = Loadable(lazy(() => import('modules/Requests/UpdateRequests')));
+
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
 const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/UpdatePsychologicalCounseling')));
@@ -423,7 +427,19 @@ const MainRoutes = {
             element: <UpdateCabRegistration />
         },
 
-
+        /* Render de Solicituudes */
+        {
+            path: '/requests/list',
+            element: <ListRequests />
+        },
+        {
+            path: '/requests/add',
+            element: <Requests />
+        },
+        {
+            path: '/requests/update/:id',
+            element: <UpdateRequests />
+        },
 
         /* Render de Pruebas de Alcohol y Droga */
         {

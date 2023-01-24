@@ -135,7 +135,7 @@ function generateReportCabRegistration(
   getFirma(doc, lsDataUser);
 }
 
-export function generateReporteReportCabRegistration(lsDataReport = [], lsDataUser = []) {
+export function generateReportRequests(lsDataReport = [], lsDataUser = []) {
   const doc = new jsPDF('p', 'mm', 'letter');
 
   doc.setFont("helvetica", "bold");

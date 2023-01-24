@@ -7,36 +7,34 @@ import {
     Typography,
 } from '@mui/material';
 
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-
-import ControlModal from 'components/controllers/ControlModal';
-import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
-
 import * as yup from 'yup';
+import { ValidationMessage } from 'components/helpers/Enums';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
+import useAuth from 'hooks/useAuth';
+import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdCabRegistration, UpdateCabRegistrations } from 'api/clients/CabRegistrationClient';
-import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { GetAllSupplier } from 'api/clients/SupplierClient';
-import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdRequests, InsertRequests } from 'api/clients/RequestsClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, DefaultValue, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
+import InputText from 'components/input/InputText';
+import DetailedIcon from 'components/controllers/DetailedIcon';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PutCabRegistration } from 'formatdata/CabRegistrationForm';
+import { PostRequests } from 'formatdata/RequestsForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ViewEmployee from 'components/views/ViewEmployee';
-import InputText from 'components/input/InputText';
-import Cargando from 'components/loading/Cargando';
 import { GetAllUser, GetByMail } from 'api/clients/UserClient';
-import { generateReporteReportCabRegistration } from './ReportCabRegistration';
+import { generateReportRequests } from './ReportRequests';
 import ViewPDF from 'components/components/ViewPDF';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import InputOnChange from 'components/input/InputOnChange';
 
 const validationSchema = yup.object().shape({
@@ -49,16 +47,14 @@ const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
 ]
 
-const UpdateCabRegistration = () => {
+const Requests = () => {
     const { user } = useAuth();
-    const { id } = useParams();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [openReport, setOpenReport] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
-
     const [lsContingencia, setLsContingencia] = useState([]);
     const [lsRuta, setLsRuta] = useState([]);
     const [lsDestino, setLsDestino] = useState([]);
@@ -68,19 +64,15 @@ const UpdateCabRegistration = () => {
     const [lsMedico, setLsMedico] = useState([]);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
-    const [textDx1, setTextDx1] = useState('');
-    const [lsDx1, setLsDx1] = useState([]);
-
-
-    const [openUpdate, setOpenUpdate] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [lsProveedor, setLsProveedor] = useState([]);
+    const [textDx1, setTextDx1] = useState('');
+    const [lsDx1, setLsDx1] = useState([]);
     const [documento, setDocumento] = useState('');
-    const [motivo, setMotivo] = useState('');
+    const [open, setOpen] = useState(false);
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [lsDataAtencion, setLsDataAtencion] = useState([]);
-    const [timeWait, setTimeWait] = useState(false);
+
+    const [result, setResult] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -88,24 +80,76 @@ const UpdateCabRegistration = () => {
 
     const { handleSubmit, formState: { errors }, reset } = methods;
 
-    async function getAll() {
+    const handleDocumento = async (event) => {
+        try {
+            setDocumento(event?.target.value);
+            if (event.key === 'Enter') {
+                if (event?.target.value !== "") {
+                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+
+                    if (lsServerEmployee.status === 200) {
+                        setLsEmployee(lsServerEmployee.data);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(`${Message.ErrorDocumento}`);
+                }
+            }
+        } catch (error) {
+            setLsEmployee([]);
+            setOpenError(true);
+            setErrorMessage(`${Message.ErrorDeDatos}`);
+        }
+    }
+
+
+
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdRequests(result.idSolicitudes);
+            const lsDataUser = await GetByMail(user.email);
+            const dataPDFTwo = generateReportRequests(lsDataReport.data, lsDataUser.data);
+
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
+    const handleDx1 = async (event) => {
+        try {
+            setTextDx1(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+
+
+
+
+    async function GetAll() {
         try {
 
-
-            const lsServerUpdate = await GetByIdCabRegistration(id);
-            if (lsServerUpdate.status === 200) {
-                setDocumento(lsServerUpdate.data.documento);
-                handleLoadingDocument(lsServerUpdate.data.documento);
-                setLsDataAtencion(lsServerUpdate.data);
-            }
-
-
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
-                value: item.codiProv,
-                label: item.nombProv
-            }));
-            setLsProveedor(resultProveedor);
+      
 
             const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
             var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
@@ -115,7 +159,6 @@ const UpdateCabRegistration = () => {
             setLsContingencia(resultContingencia);
 
 
-      
             const lsServerRuta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ORIGEN_RUTA);
             var resultRuta = lsServerRuta.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -154,10 +197,7 @@ const UpdateCabRegistration = () => {
             setLsCupo(resultCupo);
 
 
-
-         
-
-         
+      
         
             const lsServerMedicos = await GetAllUser(0, 0);
 
@@ -170,139 +210,51 @@ const UpdateCabRegistration = () => {
 
 
 
-            const lsServerAtencion = await GetByIdCabRegistration(id);
-            if (lsServerAtencion.status === 200) {
-                setTextDx1(lsServerAtencion.data.diagnostico);
-                setLsDataAtencion(lsServerAtencion.data);
-                handleLoadingDocument(lsServerAtencion.data.documento);
-                setDocumento(lsServerAtencion.data.documento);
-
-                var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.diagnostico);
-                var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.dx
-                }));
-                setLsDx1(resultCie11);
-            }
 
 
-
-
-
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage(`${error}`);
-        }
-    }
-
-    const handleDocumento = async (event) => {
-        try {
-            setDocumento(event?.target.value);
-            if (event.key === 'Enter') {
-                if (event?.target.value !== "") {
-                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
-
-                    if (lsServerEmployee.status === 200) {
-                        setLsEmployee(lsServerEmployee.data);
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
-                }
-            }
-        } catch (error) {
-            setLsEmployee([]);
-            setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
-        }
-    }
-
-    const handleClickReport = async () => {
-        try {
-            setOpenReport(true);
-            const lsDataReport = await GetByIdCabRegistration(id);
-            const lsDataUser = await GetByMail(user.email);
-            const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
-            setDataPDF(dataPDFTwo);
-        } catch (err) { }
-    };
-
-
-    const handleDx1 = async (event) => {
-        try {
-            setTextDx1(event.target.value);
-
-            if (event.key === 'Enter') {
-                if (event.target.value !== "") {
-                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
-
-                    if (lsServerCie11.status === 200) {
-                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                            value: item.id,
-                            label: item.dx
-                        }));
-                        setLsDx1(resultCie11);
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
-                }
-            }
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
-        }
-    }
-
-
-
-    const handleLoadingDocument = async (idEmployee) => {
-        try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
-
-            if (lsServerEmployee.status === 200)
-                setLsEmployee(lsServerEmployee.data);
-        } catch (error) {
-            setLsEmployee([]);
-            setErrorMessage(Message.ErrorDeDatos);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
-        getAll();
+        GetAll();
     }, [])
 
 
 
 
     const handleClick = async (datos) => {
-        const DataToUpdate = PutCabRegistration(id, documento, FormatDate(datos.fecha), datos.diagnostico,
-        datos.motivoTraslado, datos.idContingencia, datos.idRuta, datos.idDestino, datos.nroTaxi, datos.idCargadoa, datos.idCupo, datos.idMedico,
-        user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
-
         try {
+            const DataToInsert = PostRequests(documento, FormatDate(datos.fecha), datos.diagnostico,
+                datos.motivoTraslado, datos.idContingencia, datos.idRuta, datos.idDestino, datos.nroTaxi, datos.idCargadoa, datos.idCupo, datos.idMedico,
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+
+                console.log(DataToInsert);
+
             if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateCabRegistrations(DataToUpdate);
+                const result = await InsertRequests(DataToInsert);
+                
+                console.log(datos);
+
                 if (result.status === 200) {
-                    setOpenUpdate(true);
+                    setOpenSuccess(true);
+                    setDocumento('');
+                    setLsEmployee([]);
+                    reset();
+                    setResult(result.data)
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage('Este código ya existe');
         }
     };
 
-    setTimeout(() => {
-        if (lsDataAtencion.length !== 0) {
-            setTimeWait(true);
-        }
-    }, 2000);
 
     return (
         <Fragment>
-            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
 
 
             <ControlModal
@@ -314,40 +266,39 @@ const UpdateCabRegistration = () => {
                 <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
-            {timeWait ?
-                <Grid container spacing={2}>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <ViewEmployee
+                        title="REGISTRAR SOLICITUDES"
+                        key={lsEmployee.documento}
+                        documento={documento}
+                        onChange={(e) => setDocumento(e.target.value)}
+                        lsEmployee={lsEmployee}
+                        handleDocumento={handleDocumento}
+                    />
+                </Grid>
 
-                    <Grid item xs={12}>
-                        <ViewEmployee
-                            title="ACTUALIZAR REGISTRO DE TAXI"
-                            key={lsEmployee.documento}
-                            documento={documento}
-                            onChange={(e) => setDocumento(e.target.value)}
-                            lsEmployee={lsEmployee}
-                            handleDocumento={handleDocumento}
-                        />
-                    </Grid>
+                <Grid item xs={12}>
+                    <SubCard>
+                        <Grid container spacing={2}>
+                            <Grid item xs={3}>
+                                <FormProvider {...methods}>
+                                    <InputDatePicker
+                                        label="Fecha"
+                                        name="fecha"
+                                        defaultValue={new Date()}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
 
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputDatePicker
-                                            label="Fecha"
-                                            name="fecha"
-                                            defaultValue={lsDataAtencion.fecha}
-                                        />
-                                    </FormProvider>
-                                </Grid>
 
-                                <Grid item xs={3}>
+                            <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idContingencia"
                                         label="Contingencia"
-                                        defaultValue={lsDataAtencion.idContingencia}
+                                        defaultValue=""
                                         options={lsContingencia}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idContingencia}
@@ -360,7 +311,7 @@ const UpdateCabRegistration = () => {
                                     <InputSelect
                                         name="idRuta"
                                         label="Ruta"
-                                        defaultValue={lsDataAtencion.idRuta}
+                                        defaultValue=""
                                         options={lsRuta}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idRuta}
@@ -373,7 +324,7 @@ const UpdateCabRegistration = () => {
                                     <InputSelect
                                         name="idDestino"
                                         label="Destino"
-                                        defaultValue={lsDataAtencion.idDestino}
+                                        defaultValue=""
                                         options={lsDestino}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idDestino}
@@ -386,7 +337,7 @@ const UpdateCabRegistration = () => {
                                     <InputSelect
                                         name="idCargadoa"
                                         label="Cargado a"
-                                        defaultValue={lsDataAtencion.idCargadoa}
+                                        defaultValue=""
                                         options={lsCargadoa}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idCargadoa}
@@ -399,7 +350,7 @@ const UpdateCabRegistration = () => {
                                     <InputSelect
                                         name="idCupo"
                                         label="Cupo"
-                                        defaultValue={lsDataAtencion.idCupo}
+                                        defaultValue=""
                                         options={lsCupo}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idCupo}
@@ -412,7 +363,7 @@ const UpdateCabRegistration = () => {
                                     <InputSelect
                                         name="nroTaxi"
                                         label="Numero Taxi"
-                                        defaultValue={lsDataAtencion.nroTaxi}
+                                        defaultValue=""
                                         options={lsnroTaxi}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.nroTaxi}
@@ -425,17 +376,18 @@ const UpdateCabRegistration = () => {
                                     <InputSelect
                                         name="idMedico"
                                         label="Asigna"
-                                        defaultValue={lsDataAtencion.idMedico}
+                                        defaultValue=""
                                         options={lsMedico}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idMedico}
                                     />
                                 </FormProvider>
                             </Grid>
+                          
+                        </Grid>
+                        </SubCard>
 
-                            </Grid>
-                            </SubCard>
-                            <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
                         <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <InputOnChange
@@ -451,7 +403,7 @@ const UpdateCabRegistration = () => {
                                         <InputSelect
                                             name="diagnostico"
                                             label="Diagnóstico"
-                                            defaultValue={lsDataAtencion.diagnostico}
+                                            defaultValue=""
                                             options={lsDx1}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
@@ -461,7 +413,7 @@ const UpdateCabRegistration = () => {
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                              defaultValue={lsDataAtencion.motivoTraslado}
+                                            defaultValue=""
                                             fullWidth
                                             multiline
                                             rows={5}
@@ -475,41 +427,41 @@ const UpdateCabRegistration = () => {
 
                             </Grid>
 
-                            <Grid item xs={12} sx={{ pt: 4 }}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                                {TitleButton.Actualizar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
 
 
+                        <Grid item xs={12} sx={{ pt: 6 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
+                                {result.length !== 0 ?
                                     <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="contained" onClick={handleClickReport} fullWidth>
                                                 {TitleButton.Imprimir}
                                             </Button>
                                         </AnimateButton>
-                                    </Grid>
+                                    </Grid> : null}
 
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/cabregistration/list")}>
-                                                {TitleButton.Cancelar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/requests/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
                                 </Grid>
                             </Grid>
-                        </SubCard>
-                    </Grid>
-                </Grid > : <Cargando />
-            }
+                        </Grid>
+                    </SubCard>
+                </Grid>
+            </Grid >
         </Fragment >
     );
 };
 
-export default UpdateCabRegistration;
+export default Requests;

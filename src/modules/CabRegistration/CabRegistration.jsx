@@ -32,7 +32,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { GetAllUser, GetByMail } from 'api/clients/UserClient';
-import { generateReportCabRegistration } from './ReportCabRegistration';
+import { generateReporteReportCabRegistration } from './ReportCabRegistration';
 import ViewPDF from 'components/components/ViewPDF';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import InputOnChange from 'components/input/InputOnChange';
@@ -110,7 +110,7 @@ const CabRegistration = () => {
             setOpenReport(true);
             const lsDataReport = await GetByIdCabRegistration(result.idRegistroTaxi);
             const lsDataUser = await GetByMail(user.email);
-            const dataPDFTwo = generateReportCabRegistration(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
 
             setDataPDF(dataPDFTwo);
         } catch (err) { }
