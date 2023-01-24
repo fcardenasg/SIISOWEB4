@@ -350,7 +350,7 @@ const ListAccidentRate = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <ExcelFile element={
@@ -366,22 +366,14 @@ const ListAccidentRate = () => {
                                 </ExcelFile>
                             </Grid>
 
-                            <Grid item xs={2}>
-                                <Tooltip title="Impresión">
-                                    <IconButton size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/accident-rate/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/occupational-health/menu")}>
                                     {TitleButton.Cancelar}

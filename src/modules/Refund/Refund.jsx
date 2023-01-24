@@ -12,6 +12,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -27,11 +28,10 @@ import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo } from 'components/helpers/Enums';
+import { CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
@@ -47,29 +47,29 @@ const DetailIcons = [
     { title: 'Ver Examenes', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
+const validationSchema = yup.object().shape({
+    resumen: yup.string().required(`${ValidationMessage.Requerido}`),
+});
+
 const Refund = () => {
     const { user } = useAuth();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [openReport, setOpenReport] = useState(false);
-    const [viewListRefund, setViewListRefund] = useState(false);
+    const [viewListRefund, setViewListRefund] = useState(true);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [openExamen, setOpenExamen] = useState(false);
     const [fechaFin, setFechaFin] = useState(null);
     const [fechaInicio, setFechaInicio] = useState(null);
-    const [diagnosticoArray, setDiagnosticoArray] = useState([]);
 
     const [numeroDia, setNumeroDia] = useState('');
     const [documento, setDocumento] = useState('');
     const [resultData, setResultData] = useState([]);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [lsEstadoEmpleado, setLsEstadoEmpleado] = useState([]);
     const [lsEstadoRestriccion, setLsEstadoRestriccion] = useState([]);
@@ -81,10 +81,17 @@ const Refund = () => {
     const [lsOrdenadoPor, setLsOrdenadoPor] = useState([]);
     const [lsOrigenReintegro, setLsOrigenReintegro] = useState([]);
 
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
+    const [lsDx1, setLsDx1] = useState([]);
+    const [textDx1, setTextDx1] = useState('');
 
-    const { handleSubmit, errors, reset } = methods;
+    const [lsDx2, setLsDx2] = useState([]);
+    const [textDx2, setTextDx2] = useState('');
+
+    const methods = useForm(
+        { resolver: yupResolver(validationSchema) }
+    );
+
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
     const handleDocumento = async (event) => {
         try {
@@ -109,15 +116,60 @@ const Refund = () => {
         }
     }
 
-    async function GetAll() {
+    const handleDx1 = async (event) => {
         try {
-            const lsServerCie11 = await GetAllCIE11(0, 0);
-            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCie11);
+            setTextDx1(event.target.value);
 
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    const handleDx2 = async (event) => {
+        try {
+            setTextDx2(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx2(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
+
+    async function getAll() {
+        try {
             const lsServerEstadoEmpleado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_EMPLEADO);
             var resultEstadoEmpleado = lsServerEstadoEmpleado.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -173,23 +225,21 @@ const Refund = () => {
                 label: item.nombre
             }));
             setLsOrigenReintegro(resultOrigenReintegro);
-
         } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, []);
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostRefund(documento, JSON.stringify(diagnosticoArray), datos.idOrigen, datos.resumen,
+            const DataToInsert = PostRefund(documento, datos.dx1, datos.dx2, datos.idOrigenDx1, datos.idOrigenDx2, datos.resumen,
                 datos.idEstadoEmpleado, datos.idEstadoRestriccion, datos.idTipoRestriccion, FormatDate(fechaInicio),
                 FormatDate(fechaFin), numeroDia, datos.idOrdenadoPor, datos.idMedico, datos.porcentajePCL, datos.recomendaciones,
                 datos.idConceptoReintegro, FormatDate(datos.inicioReubicacion), FormatDate(datos.finReubicacion), datos.descripcion,
                 datos.idTipoHorario, datos.idOrdenadoPorHorario, FormatDate(datos.fechaInicioHorario), FormatDate(datos.fechaFinHorario),
-                datos.idEstadoCaso, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
-
+                datos.idEstadoCaso, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
@@ -199,7 +249,6 @@ const Refund = () => {
                         setOpenSuccess(true);
                         setDocumento('');
                         setLsEmployee([]);
-                        setDiagnosticoArray([]);
                         setFechaInicio(null);
                         setFechaFin(null);
                         setNumeroDia('');
@@ -218,7 +267,7 @@ const Refund = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -244,26 +293,10 @@ const Refund = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
-            <FullScreenDialog
-                open={openExamen}
-                title="VISTA DE EXAMENES"
-                handleClose={() => setOpenExamen(false)}
-            >
-
-            </FullScreenDialog>
-
-            <ControlModal
-                title="VISTA DE REPORTE"
-                open={openReport}
-                onClose={() => setOpenReport(false)}
-                maxWidth="xl"
-            >
-
-            </ControlModal>
-
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
+                        title="REGISTRAR REINTEGRO"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -274,26 +307,71 @@ const Refund = () => {
 
                 <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN PATOLÓGICA</Typography>}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={8}>
-                                <InputMultiSelects
-                                    fullWidth
-                                    onChange={(event, value) => setDiagnosticoArray(value)}
-                                    value={diagnosticoArray}
-                                    label="Diagnósticos"
-                                    options={lsCie11}
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <InputOnChange
+                                    label="Dx 1"
+                                    onKeyDown={handleDx1}
+                                    onChange={(e) => setTextDx1(e?.target.value)}
+                                    value={textDx1}
+                                    size={matchesXS ? 'small' : 'medium'}
                                 />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="dx1"
+                                        label="Diagnóstico 1"
+                                        options={lsDx1}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.dx1}
+                                    />
+                                </FormProvider>
                             </Grid>
 
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="idOrigen"
+                                        name="idOrigenDx1"
                                         label="Origen"
                                         defaultValue=""
                                         options={lsOrigenReintegro}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.idOrigenDx1}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <InputOnChange
+                                    label="Dx 2"
+                                    onKeyDown={handleDx2}
+                                    onChange={(e) => setTextDx2(e?.target.value)}
+                                    value={textDx2}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="dx2"
+                                        label="Diagnóstico 2"
+                                        options={lsDx2}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.dx2}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idOrigenDx2"
+                                        label="Origen"
+                                        defaultValue=""
+                                        options={lsOrigenReintegro}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idOrigenDx2}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -308,7 +386,7 @@ const Refund = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         multiline
                                         rows={4}
-                                        bug={errors}
+                                        bug={errors.resumen}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -321,7 +399,7 @@ const Refund = () => {
                                         defaultValue=""
                                         options={lsEstadoEmpleado}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.idEstadoEmpleado}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -334,7 +412,7 @@ const Refund = () => {
                                         defaultValue=""
                                         options={lsEstadoRestriccion}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.idEstadoRestriccion}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -347,7 +425,7 @@ const Refund = () => {
                                         defaultValue=""
                                         options={lsTipoRestriccion}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.idTipoRestriccion}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -399,7 +477,7 @@ const Refund = () => {
                                         defaultValue=""
                                         options={lsOrdenadoPor}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.idOrdenadoPor}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -412,7 +490,7 @@ const Refund = () => {
                                         defaultValue=""
                                         options={lsEstadoEmpleado}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.idMedico}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -426,7 +504,7 @@ const Refund = () => {
                                         name="porcentajePCL"
                                         label="% PCL"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.porcentajePCL}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -442,7 +520,7 @@ const Refund = () => {
                                         name="recomendaciones"
                                         label="Recomendaciones / Modificaciones"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.recomendaciones}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -461,7 +539,7 @@ const Refund = () => {
                                         defaultValue=""
                                         options={lsConceptoAptitud}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.idConceptoReintegro}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -502,7 +580,7 @@ const Refund = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         multiline
                                         rows={4}
-                                        bug={errors}
+                                        bug={errors.descripcion}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -532,7 +610,7 @@ const Refund = () => {
                                                     defaultValue=""
                                                     options={lsTipoRestriccion}
                                                     size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
+                                                    bug={errors.idTipoHorario}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -545,7 +623,7 @@ const Refund = () => {
                                                     defaultValue=""
                                                     options={lsOrdenarPorHorario}
                                                     size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
+                                                    bug={errors.idOrdenadoPorHorario}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -582,7 +660,7 @@ const Refund = () => {
                                         defaultValue=""
                                         options={lsEstadoCaso}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.idEstadoCaso}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -602,14 +680,6 @@ const Refund = () => {
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
-                                        {TitleButton.Imprimir}
                                     </Button>
                                 </AnimateButton>
                             </Grid>

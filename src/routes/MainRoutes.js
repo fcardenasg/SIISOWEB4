@@ -48,12 +48,9 @@ const ListOrderEPP = Loadable(lazy(() => import('modules/OrderEPP/ListOrderEPP')
 const OrderEPP = Loadable(lazy(() => import('modules/OrderEPP/OrderEPP')));
 const UpdateOrderEPP = Loadable(lazy(() => import('modules/OrderEPP/UpdateOrderEPP')));
 
-
 const ListConceptofAptitude = Loadable(lazy(() => import('modules/ConceptofAptitude/ListConceptofAptitude')));
 const ConceptofAptitude = Loadable(lazy(() => import('modules/ConceptofAptitude/ConceptofAptitude')));
 const UpdateConceptofAptitude = Loadable(lazy(() => import('modules/ConceptofAptitude/UpdateConceptofAptitude')));
-
-
 
 const ListCabRegistration = Loadable(lazy(() => import('modules/CabRegistration/ListCabRegistration')));
 const CabRegistration = Loadable(lazy(() => import('modules/CabRegistration/CabRegistration')));

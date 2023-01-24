@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect, Fragment } from 'react';
+import { useState, Fragment } from 'react';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -9,22 +9,16 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    Button,
     TableRow,
     TableSortLabel,
     Typography,
-    Grid,
+    Tooltip,
+    IconButton,
 } from '@mui/material';
-import useAuth from 'hooks/useAuth';
 import { ViewFormat } from 'components/helpers/Format';
-import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 
-import UploadIcon from '@mui/icons-material/Upload';
 import { visuallyHidden } from '@mui/utils';
-import { GetAllReintegro } from 'api/clients/ListRefundClient';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import UploadPdf from './UploadPdf';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -51,33 +45,27 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'id',
+        id: 'usuarioRegistro',
         numeric: false,
-        label: 'ID',
+        label: 'Usuario Registro',
         align: 'left'
     },
     {
-        id: 'documento',
+        id: 'fechaRegistro',
         numeric: false,
-        label: 'Documento',
-        align: 'left'
-    },
-    {
-        id: 'estado',
-        numeric: false,
-        label: 'Estado',
+        label: 'Fecha Registro',
         align: 'left'
     },
     {
         id: 'usuarioModifico',
         numeric: false,
-        label: 'Usuario',
+        label: 'Usuario Modifico',
         align: 'left'
     },
     {
         id: 'fechaModifico',
         numeric: false,
-        label: 'Fecha',
+        label: 'Fecha Modifico',
         align: 'left'
     }
 ];
@@ -132,32 +120,11 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const CheckListRefund = ({ idReintegro }) => {
-    const { user } = useAuth();
-    const [listRefund, setListRefund] = useState([]);
-    const [openUpdate, setOpenUpdate] = useState(false);
-    const [openError, setOpenError] = useState(false);
-    const [openListPDF, setOpenListPDF] = useState(false);
-    const [idListPDF, setIdListPDF] = useState(false);
-    const [nameListPDF, setNameListPDF] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-
+const ListaArchivosPDF = ({ lsArchivosCheckReintegro }) => {
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('documento');
+    const [orderBy, setOrderBy] = useState('id');
     const [selected, setSelected] = useState([]);
-
-    useEffect(() => {
-        async function GetAll() {
-            try {
-                var lsCheckedReintegro = await GetAllReintegro(0, 0, idReintegro);
-                setListRefund(lsCheckedReintegro.data.entities);
-            } catch (error) { }
-        }
-
-        GetAll();
-    }, [idReintegro]);
-
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -165,27 +132,8 @@ const CheckListRefund = ({ idReintegro }) => {
         setOrderBy(property);
     };
 
-    const handleModalPDFS = (id, nombre) => {
-        setOpenListPDF(true);
-        setIdListPDF(id);
-        setNameListPDF(nombre);
-    };
-
     return (
         <Fragment>
-            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
-            <FullScreenDialog
-                open={openListPDF}
-                title={"ARCHIVOS DE " + nameListPDF}
-                handleClose={() => setOpenListPDF(false)}
-            >
-                <Grid sx={{ m: 2 }}>
-                    <UploadPdf idListaReintegro={idListPDF} />
-                </Grid>
-            </FullScreenDialog>
-
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -193,12 +141,12 @@ const CheckListRefund = ({ idReintegro }) => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={listRefund.length}
+                        rowCount={lsArchivosCheckReintegro.length}
                         theme={theme}
                         selected={selected}
                     />
                     <TableBody>
-                        {stableSort(listRefund, getComparator(order, orderBy))
+                        {stableSort(lsArchivosCheckReintegro, getComparator(order, orderBy))
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
 
@@ -215,13 +163,12 @@ const CheckListRefund = ({ idReintegro }) => {
                                             id={labelId}
                                             scope="row"
                                             sx={{ cursor: 'pointer' }}
-                                            align="left"
                                         >
                                             <Typography
                                                 variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                #{row.id}
+                                                {row.usuarioRegistro}
                                             </Typography>
                                         </TableCell>
 
@@ -235,21 +182,7 @@ const CheckListRefund = ({ idReintegro }) => {
                                                 variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.documento}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle2"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.estado}
+                                                {ViewFormat(row.fechaRegistro)}
                                             </Typography>
                                         </TableCell>
 
@@ -283,11 +216,11 @@ const CheckListRefund = ({ idReintegro }) => {
 
 
                                         <TableCell align="center">
-                                            <AnimateButton>
-                                                <Button size="small" variant="contained" component="label" onClick={() => handleModalPDFS(row.id, row.documento)}>
-                                                    <UploadIcon fontSize="small" />
-                                                </Button>
-                                            </AnimateButton>
+                                            <Tooltip title="Ver Archivo" /* onClick={() => navigate(`/accident-rate/update/${row.id}`)} */>
+                                                <IconButton size="large">
+                                                    <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                                                </IconButton>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -299,8 +232,8 @@ const CheckListRefund = ({ idReintegro }) => {
     );
 };
 
-export default CheckListRefund;
+export default ListaArchivosPDF;
 
-CheckListRefund.propTypes = {
-    idReintegro: PropTypes.string,
+ListaArchivosPDF.propTypes = {
+    lsArchivosCheckReintegro: PropTypes.any,
 };

@@ -33,6 +33,8 @@ export const Url = {
     ListaReintegro_GetAllReintegro: 'api/ListaReintegro/GetAllReintegro',
     ListaReintegroId: 'api/ListaReintegro/id',
 
+    ListaReintegroArchivo: 'api/ListaReintegroArchivo',
+
     Cargo: 'api/Cargo',
     CargoId: 'api/Cargo/id',
 
@@ -102,7 +104,7 @@ export const Url = {
 
     ConceptosIND: 'api/ConceptosIND',
     ConceptosINDId: 'api/ConceptosIND/id',
-    
+
     RegistroTaxi: 'api/RegistroTaxi',
     RegistroTaxiId: 'api/RegistroTaxi/id',
 
