@@ -113,9 +113,9 @@ function getFirma(doc, lsDataUser, my = 0) {
    doc.text(`${lsDataReport.nameOficio}`, 95, 55);
    doc.text(`${lsDataReport.nameArea}`, 95, 60);
    doc.text(`${lsDataReport.nameDepartamento}`, 95, 65);
-  doc.text(`${lsDataReport.nameConceptoActitud}`, 95, 70);
+  doc.text(`${lsDataReport.nameConceptoActitudID}`, 95, 70);
   doc.setFontSize(9);
-  doc.text(`${lsDataReport.observacionesNEMTA}`, 7, 87, {
+  doc.text(`${lsDataReport.recomendacionesID}`, 7, 87, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
