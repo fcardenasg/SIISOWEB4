@@ -133,9 +133,11 @@ const PersonalData = ({ lsEmployee = [], getDataAttention }) => {
 
             <Grid item lg={6} xs={12}>
                 <SubCard title="Información de la Empresa y Cargo" secondary={
-                    <Button disabled={lsEmployee.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
-                        <IconEdit stroke={1.5} />
-                    </Button>
+                    <Tooltip title="Actualizar Empleado">
+                        <Button disabled={lsEmployee.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
+                            <IconEdit stroke={1.5} />
+                        </Button>
+                    </Tooltip>
                 }>
                     <Grid container direction="column" spacing={2}>
                         <ListDetails name={DetailsViewTwo[0].name} campoRender={lsEmployee.nameSede} />

@@ -415,7 +415,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
                     <Transitions type="collapse" in={addItemClickedDLTD} position="top-left" direction="up">
                         <Grid container sx={{ pt: 5 }} spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={3.5}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idCargo"
@@ -428,7 +428,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         type="number"
@@ -442,7 +442,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         type="number"

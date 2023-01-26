@@ -178,7 +178,7 @@ export function pageCompanyNotificationEC(
   doc.text(`${lsDataReport.nameIdConceptoEspacioConfinado}`, 75, 96);
   doc.text(`${lsDataReport.nameConceptoAplazadoNETA}`, 75, 104);
 
-  doc.text(`${lsDataReport.motivoAplazoNETA}}`, 75, 115, {
+  doc.text(`${lsDataReport.motivoAplazoNETA}`, 75, 115, {
     maxWidth: 130,
     /*  align: "justify", */
     lineHeightFactor: 1.0,

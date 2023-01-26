@@ -10,6 +10,7 @@ import {
     useMediaQuery,
     Typography,
     Avatar,
+    Tooltip,
 } from '@mui/material';
 
 import Chip from 'ui-component/extended/Chip';
@@ -879,11 +880,13 @@ const OccupationalExamination = () => {
                     <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}
                         secondary={
                             <Fragment>
-                                <Button disabled={lsAnthropometry.length === 0 ? true : false}
-                                    onClick={() => setViewChart(viewChart ? false : true)}
-                                >
-                                    {viewChart ? <IconStairsUp stroke={1.5} size="1.3rem" /> : <IconStairsDown stroke={1.5} size="1.3rem" />}
-                                </Button>
+                                <Tooltip title="Gráfico Historico De IMC">
+                                    <Button disabled={lsAnthropometry.length === 0 ? true : false}
+                                        onClick={() => setViewChart(viewChart ? false : true)}
+                                    >
+                                        {viewChart ? <IconStairsUp stroke={1.5} size="1.3rem" /> : <IconStairsDown stroke={1.5} size="1.3rem" />}
+                                    </Button>
+                                </Tooltip>
                             </Fragment>
                         }
                     >

@@ -4,7 +4,7 @@ import ImgWhite from "assets/img/ImgWhite.png";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
 
 /* FIRMAS */
-function getFirma(doc=new jsPDF(), lsDataUser, my = 0) {
+function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
   doc.addImage(
     `${lsDataUser.firma}`,
     "PNG",
@@ -32,7 +32,7 @@ function getFirma(doc=new jsPDF(), lsDataUser, my = 0) {
 }
 
 function getFirmaEmployee(doc, lsDataReport, my = 0) {
- 
+
   doc.setLineWidth(0.5);
   doc.setDrawColor(128, 128, 128);
   doc.line(
@@ -133,7 +133,7 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 115, 210, 115);
   doc.line(5, 125, 210, 125);
   doc.line(5, 184, 210, 184);
- 
+
 
   /* TITULOS DE CONTENIDO */
   doc.text("CONSECUTIVO:", 45, 46);
@@ -150,19 +150,19 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
 
   doc.text("RESUMEN DE LA ATENCIÓN", 6, 79);
   doc.text("CONTINGENCIA:", 6, 88);
-  doc.text("PROCEDIMIENTOS:",6,98);
-  doc.text("DESCRIPCIÓN",6,122);
+  doc.text("PROCEDIMIENTOS:", 6, 98);
+  doc.text("DESCRIPCIÓN", 6, 122);
 
 
   /* RENDERIZADO DE CONTENIDO */
   doc.setFont("helvetica", "normal");
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 42, 30, 30);
- 
+
   doc.text(`${lsDataReport.id}`, 75, 46);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 147, 46);
   doc.text(`${lsDataReport.documento}`, 75, 52);
   doc.text(`${lsDataReport.nameEmpleado}`, 147, 52);
-  
+
   doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 147, 58);
   doc.text(`${lsDataReport.nameGenero}`, 75, 58);
   doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 75, 64);
@@ -175,9 +175,9 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
 
   if (lsDataReport.procedimientos !== undefined && lsDataReport !== []) {
     doc.text(JSON.parse(lsDataReport.procedimientos).map((dx, index) => {
-        return String(`${dx.label.toUpperCase()}`)
+      return String(`${dx.label.toUpperCase()}`)
     }), 40, 98, { maxWidth: 200, lineHeightFactor: 1.5 });
-}
+  }
 
   doc.text(`${lsDataReport.notaEnfermedad}`, 6, 130, {
     maxWidth: 190,

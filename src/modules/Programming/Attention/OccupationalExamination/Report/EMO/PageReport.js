@@ -23,7 +23,13 @@ function getFirma(doc, lsDataUser, my = 0) {
   );
   doc.setFontSize(8);
   doc.text(`${lsDataUser.nombre}`, 7, doc.internal.pageSize.height - (44 - my));
-  doc.text("MEDICINA GENERAL", 7, doc.internal.pageSize.height - (40 - my));
+
+  if (lsDataUser.especialidad !== undefined && lsDataUser !== []) {
+    doc.text(JSON.parse(lsDataUser.especialidad).map((name, index) => {
+      return String(`${name.label.toUpperCase()}`)
+    }), 7, doc.internal.pageSize.height - (40 - my));
+  }
+
   doc.text(
     `${lsDataUser.licencia} - ${lsDataUser.registroMedico}`,
     7,
@@ -585,14 +591,14 @@ export function generateReportConceptAptitude(
   doc.setDrawColor(128, 128, 128);
 
   /* CUADRO DATOS */
-  doc.line(5, 25, 5, 140); /* IZQUIERDA */
+  doc.line(5, 25, 5, 180); /* IZQUIERDA */
   doc.line(5, 32, marXR, 32); /* HORI ONE */
   doc.line(5, 39, marXR, 39); /* HORI TWO  */
-  doc.line(5, 74, marXR, 74); /* HORI THREE */
-  doc.line(5, 82, marXR, 82); /* HORI FOUR */
-  doc.line(5, 140, marXR, 140); /* HORI FIVE */
-  doc.line(40, 39, 40, 74); /* LINEA VERTI ONE */
-  doc.line(marXR, 25, marXR, 140); /* DERECHA */
+  doc.line(5, 78, marXR, 78); /* HORI THREE */
+  doc.line(5, 85, marXR, 85); /* HORI FOUR */
+  doc.line(5, 180, marXR, 180); /* HORI FIVE */
+  doc.line(40, 39, 40, 78); /* LINEA VERTI ONE */
+  doc.line(marXR, 25, marXR, 180); /* DERECHA */
 
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 45, 45);
@@ -603,7 +609,7 @@ export function generateReportConceptAptitude(
   doc.text("DEPARTAMENTO:", 45, 65);
   doc.text("CONCEPTO DE APTITUD:", 45, 70);
 
-  doc.text("RECOMENDACIONES:", 7, 79);
+  doc.text("RECOMENDACIONES:", 7, 82);
 
   doc.setFont("helvetica", "normal");
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 41, 30, 30);
@@ -613,9 +619,13 @@ export function generateReportConceptAptitude(
   doc.text(`${lsDataReport.nameOficio}`, 95, 55);
   doc.text(`${lsDataReport.nameArea}`, 95, 60);
   doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 95, 65);
-  doc.text(`${lsDataReport.nameConceptoActitudNETA}`, 95, 70);
+  doc.text(`${lsDataReport.nameConceptoActitudID}`, 95, 70, {
+    maxWidth: 100,
+    lineHeightFactor: 1.5,
+  });
+
   doc.setFontSize(9);
-  doc.text(`${lsDataReport.recomendacionesNETA}`, 7, 87, {
+  doc.text(`${lsDataReport.recomendacionesID}`, 7, 90, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
@@ -893,7 +903,6 @@ export function generateClinicHistoryDLTD(
   doc.text("3.1.1. EXPOSICIÓN OCUPACIONAL EN DRUMMOND LTD.", 7, 52 + (8 * longitud));
   doc.setFontSize(10);
 
-
   //TABLA DE RENDERIZADO DE RIESGOS
   autoTable(doc, ({
     styles: { fontSize: 7 },
@@ -905,7 +914,7 @@ export function generateClinicHistoryDLTD(
       { header: 'Cargo', dataKey: 'cargo' },
       { header: 'Riesgo', dataKey: 'riesgo' },
       { header: 'Clase', dataKey: 'clase' },
-      { header: 'Exposición', dataKey: 'exposicion' },
+      /* { header: 'Exposición', dataKey: 'exposicion' }, */
       { header: 'Grado Sin Epp', dataKey: 'gradoSinEpp' },
       { header: 'Grado Con Epp', dataKey: 'gradosConEpp' },
       { header: 'Año', dataKey: 'anio' },
