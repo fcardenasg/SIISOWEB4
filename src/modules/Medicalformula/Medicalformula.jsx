@@ -146,7 +146,7 @@ const MedicalFormula = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdMedicalFormula(resultData.id);
+            const lsDataReport = await GetByIdMedicalFormula(resultData.idRecetario);
             const lsDataUser = await GetByMail(user.email);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);

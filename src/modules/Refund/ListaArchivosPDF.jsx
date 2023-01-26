@@ -14,11 +14,17 @@ import {
     Typography,
     Tooltip,
     IconButton,
+    Grid,
 } from '@mui/material';
 import { ViewFormat } from 'components/helpers/Format';
 
 import { visuallyHidden } from '@mui/utils';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ControlModal from 'components/controllers/ControlModal';
+import ViewPDF from 'components/components/ViewPDF';
+import { DeleteListaReintegroArchivo } from 'api/clients/ListRefundClient';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import swal from 'sweetalert';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -45,27 +51,21 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'usuarioRegistro',
+        id: 'id',
         numeric: false,
         label: 'Usuario Registro',
         align: 'left'
     },
     {
-        id: 'fechaRegistro',
+        id: 'usuarioRegistro',
         numeric: false,
         label: 'Fecha Registro',
         align: 'left'
     },
     {
-        id: 'usuarioModifico',
+        id: 'fechaRegistro',
         numeric: false,
         label: 'Usuario Modifico',
-        align: 'left'
-    },
-    {
-        id: 'fechaModifico',
-        numeric: false,
-        label: 'Fecha Modifico',
         align: 'left'
     }
 ];
@@ -120,10 +120,13 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const ListaArchivosPDF = ({ lsArchivosCheckReintegro }) => {
+const ListaArchivosPDF = ({ lsArchivosCheckReintegro, getAll }) => {
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('id');
+    const [openViewArchivo, setOpenViewArchivo] = useState(false);
+    const [filePdf, setFilePdf] = useState(null);
+    const [openDelete, setOpenDelete] = useState(false);
     const [selected, setSelected] = useState([]);
 
     const handleRequestSort = (event, property) => {
@@ -132,8 +135,35 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro }) => {
         setOrderBy(property);
     };
 
+    const handleDelete = async (idCheck) => {
+        try {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteListaReintegroArchivo(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    getAll();
+                }
+            });
+        } catch (error) {
+
+        }
+    }
+
     return (
         <Fragment>
+            <MessageDelete onClose={() => setOpenDelete(true)} open={openDelete} />
+
+            <ControlModal
+                title="VISUALIZAR ARCHIVO"
+                open={openViewArchivo}
+                onClose={() => setOpenViewArchivo(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={filePdf} />
+            </ControlModal>
+
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -168,6 +198,20 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro }) => {
                                                 variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
+                                                {row.id}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle2"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
                                                 {row.usuarioRegistro}
                                             </Typography>
                                         </TableCell>
@@ -186,41 +230,22 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro }) => {
                                             </Typography>
                                         </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle2"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.usuarioModifico}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle2"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {ViewFormat(row.fechaModifico)}
-                                            </Typography>
-                                        </TableCell>
-
-
                                         <TableCell align="center">
-                                            <Tooltip title="Ver Archivo" /* onClick={() => navigate(`/accident-rate/update/${row.id}`)} */>
-                                                <IconButton size="large">
-                                                    <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
+                                            <Grid>
+                                                <Tooltip title="Ver Archivo" onClick={() => { setFilePdf(row.url); setOpenViewArchivo(true); }}>
+                                                    <IconButton size="large">
+                                                        <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Grid>
+
+                                            <Grid>
+                                                <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
+                                                    <IconButton size="large">
+                                                        <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Grid>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -228,7 +253,7 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro }) => {
                     </TableBody>
                 </Table>
             </TableContainer>
-        </Fragment>
+        </Fragment >
     );
 };
 

@@ -40,6 +40,7 @@ import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import CheckListRefund from './CheckListRefund';
 import { PostRefund } from 'formatdata/RefundForm';
 import { InsertRefund } from 'api/clients/RefundClient';
+import { GetAllUser } from 'api/clients/UserClient';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -57,7 +58,7 @@ const Refund = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [viewListRefund, setViewListRefund] = useState(true);
+    const [viewListRefund, setViewListRefund] = useState(false);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -80,6 +81,7 @@ const Refund = () => {
     const [lsEstadoCaso, setLsEstadoCaso] = useState([]);
     const [lsOrdenadoPor, setLsOrdenadoPor] = useState([]);
     const [lsOrigenReintegro, setLsOrigenReintegro] = useState([]);
+    const [lsUsuarios, setLsUsuarios] = useState([]);
 
     const [lsDx1, setLsDx1] = useState([]);
     const [textDx1, setTextDx1] = useState('');
@@ -176,6 +178,13 @@ const Refund = () => {
                 label: item.nombre
             }));
             setLsEstadoEmpleado(resultEstadoEmpleado);
+
+            const lsServerUsuario = await GetAllUser(0, 0);
+            var resultUsuario = lsServerUsuario.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setLsUsuarios(resultUsuario);
 
             const lsServerEstadoRestriccion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_RESTRICCION);
             var resultEstadoRestriccion = lsServerEstadoRestriccion.data.entities.map((item) => ({
@@ -488,7 +497,7 @@ const Refund = () => {
                                         name="idMedico"
                                         label="Médico"
                                         defaultValue=""
-                                        options={lsEstadoEmpleado}
+                                        options={lsUsuarios}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idMedico}
                                     />

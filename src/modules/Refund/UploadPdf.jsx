@@ -4,13 +4,13 @@ import {
     Grid,
     Typography
 } from '@mui/material';
+import useAuth from 'hooks/useAuth';
 
 import UploadIcon from '@mui/icons-material/Upload';
 import SubCard from 'ui-component/cards/SubCard';
-import useAuth from 'hooks/useAuth';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ListaArchivosPDF from './ListaArchivosPDF';
-import { GetAllByIdListaReintegroArchivo } from 'api/clients/ListRefundClient';
+import { GetAllByIdListaReintegroArchivo, InsertListaReintegroArchivo } from 'api/clients/ListRefundClient';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import SaveIcon from '@mui/icons-material/Save';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -69,6 +69,17 @@ const UploadPdf = ({ idListaReintegro }) => {
             const DataToInsert = PostListaArchivoRefund(idListaReintegro, filePdf, user.nameuser,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
+            if (filePdf !== null) {
+                const result = await InsertListaReintegroArchivo(DataToInsert);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                    setFilePdf(null);
+                    getAll();
+                }
+            } else {
+                setOpenError(true);
+                setErrorMessage('Por favor, seleccione un archivo');
+            }
         } catch (error) {
             setOpenError(true);
             setErrorMessage(Message.RegistroNoGuardado);
@@ -113,7 +124,7 @@ const UploadPdf = ({ idListaReintegro }) => {
 
                             <Grid item xs={4}>
                                 <AnimateButton>
-                                    <Button fullWidth variant="outlined" component="label" endIcon={<SaveIcon fontSize="small" />} onClick={handleSave}>
+                                    <Button disabled={filePdf === null ? true : false} fullWidth variant="outlined" component="label" endIcon={<SaveIcon fontSize="small" />} onClick={handleSave}>
                                         {TitleButton.Guardar}
                                     </Button>
                                 </AnimateButton>
@@ -126,7 +137,7 @@ const UploadPdf = ({ idListaReintegro }) => {
                     <SubCard darkTitle title={<Typography variant="h4">LISTA DE ARCHIVO</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                {lsArchivosReintegro.length !== 0 ? <ListaArchivosPDF lsArchivosCheckReintegro={lsArchivosReintegro} />
+                                {lsArchivosReintegro.length !== 0 ? <ListaArchivosPDF lsArchivosCheckReintegro={lsArchivosReintegro} getAll={getAll} />
                                     : <Typography variant='h4'>NO HAY ARCHIVO</Typography>}
                             </Grid>
                         </Grid>

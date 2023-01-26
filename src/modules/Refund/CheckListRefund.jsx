@@ -9,15 +9,14 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    Button,
     TableRow,
     TableSortLabel,
     Typography,
     Grid,
+    Tooltip,
+    IconButton,
 } from '@mui/material';
-import useAuth from 'hooks/useAuth';
 import { ViewFormat } from 'components/helpers/Format';
-import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 
 import UploadIcon from '@mui/icons-material/Upload';
 import { visuallyHidden } from '@mui/utils';
@@ -133,14 +132,10 @@ EnhancedTableHead.propTypes = {
 };
 
 const CheckListRefund = ({ idReintegro }) => {
-    const { user } = useAuth();
     const [listRefund, setListRefund] = useState([]);
-    const [openUpdate, setOpenUpdate] = useState(false);
-    const [openError, setOpenError] = useState(false);
     const [openListPDF, setOpenListPDF] = useState(false);
     const [idListPDF, setIdListPDF] = useState(false);
     const [nameListPDF, setNameListPDF] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -173,9 +168,6 @@ const CheckListRefund = ({ idReintegro }) => {
 
     return (
         <Fragment>
-            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
             <FullScreenDialog
                 open={openListPDF}
                 title={"ARCHIVOS DE " + nameListPDF}
@@ -281,12 +273,13 @@ const CheckListRefund = ({ idReintegro }) => {
                                             </Typography>
                                         </TableCell>
 
-
                                         <TableCell align="center">
                                             <AnimateButton>
-                                                <Button size="small" variant="contained" component="label" onClick={() => handleModalPDFS(row.id, row.documento)}>
-                                                    <UploadIcon fontSize="small" />
-                                                </Button>
+                                                <Tooltip title="Subir Archivo" onClick={() => handleModalPDFS(row.id, row.documento)}>
+                                                    <IconButton size="large">
+                                                        <UploadIcon sx={{ fontSize: '1.3rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
                                             </AnimateButton>
                                         </TableCell>
                                     </TableRow>
