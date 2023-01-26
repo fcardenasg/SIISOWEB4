@@ -422,12 +422,10 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell sx={{ pl: 3 }} />
-                                    <TableCell>Empresa</TableCell>
+                                    {/* <TableCell>Empresa</TableCell> */}
                                     <TableCell>Cargo</TableCell>
                                     <TableCell>Años</TableCell>
-                                    <TableCell>
-                                        Meses
-                                    </TableCell>
+                                    <TableCell>Meses</TableCell>
                                     <TableCell>
                                         Acciones
                                     </TableCell>

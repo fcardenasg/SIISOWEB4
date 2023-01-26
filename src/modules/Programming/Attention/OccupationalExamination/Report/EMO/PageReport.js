@@ -815,10 +815,10 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
       { header: 'Empresa', dataKey: 'empresa' },
       { header: 'Riesgo', dataKey: 'riesgo' },
       { header: 'Clase', dataKey: 'clase' },
-      { header: 'Exposición', dataKey: 'exposicion' },
-      { header: 'Grado Sin Epp', dataKey: 'gradoSinEpp' },
-      { header: 'Grado Con Epp', dataKey: 'gradosConEpp' },
-      { header: 'Medidas ', dataKey: 'gradosConEpp' },
+      // { header: 'Exposición', dataKey: 'exposicion' },
+      // { header: 'Grado Sin Epp', dataKey: 'gradoSinEpp' },
+      // { header: 'Grado Con Epp', dataKey: 'gradosConEpp' },
+      // { header: 'Medidas ', dataKey: 'gradosConEpp' },
       { header: 'Año', dataKey: 'anio' },
       { header: 'Mes', dataKey: 'mes' },
     ],
@@ -905,7 +905,7 @@ export function generateClinicHistoryDLTD(
       { header: 'Cargo', dataKey: 'cargo' },
       { header: 'Riesgo', dataKey: 'riesgo' },
       { header: 'Clase', dataKey: 'clase' },
-      { header: 'Exposición', dataKey: 'expocision' },
+      { header: 'Exposición', dataKey: 'exposicion' },
       { header: 'Grado Sin Epp', dataKey: 'gradoSinEpp' },
       { header: 'Grado Con Epp', dataKey: 'gradosConEpp' },
       { header: 'Año', dataKey: 'anio' },
@@ -1049,14 +1049,14 @@ export function generatePathologicalAntecedents(
     lineHeightFactor: 1.5,
   });
 
-  doc.text(`${lsDataReport.anioAT}`, 20, 133);
-  doc.text(`${lsDataReport.especifiqueAT}`, 7, 142, {
+  doc.text(`${lsDataReport.anio1AT}`, 20, 133);
+  doc.text(`${lsDataReport.especifique1AT}`, 7, 142, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
 
-  doc.text(`${lsDataReport.anio1AT}`, 20, 163);
-  doc.text(`${lsDataReport.especifique1AT}`, 7, 172, {
+  doc.text(`${lsDataReport.anioAT}`, 20, 163);
+  doc.text(`${lsDataReport.especifiqueAT}`, 7, 172, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
