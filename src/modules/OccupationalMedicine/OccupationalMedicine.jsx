@@ -256,7 +256,7 @@ const OccupationalMedicine = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostOccupationalMedicine(documento, datos.resumenCaso, FormatDate(datos.fechaRetiro), segmentoAgrupado, segmentoAfectado, datos.subsegmento,
+            const DataToInsert = PostOccupationalMedicine(documento, datos.resumenCaso, FormatDate(datos.fechaRetiro), segmentoAgrupado, segmentoAfectado, 1/* datos.subsegmento */,
                 datos.codDx, datos.nroFurel, datos.regionInfoLaboral, datos.lateralidad, datos.entidadQueMotivaEnvio, datos.entidadDondeEnvia, FormatDate(datos.fechaEntrega),
                 FormatDate(datos.fechaEnvio), datos.investigado, datos.observaciones, FormatDate(datos.fechaCalificacionEps), datos.origenEps, datos.noSolicitudARL,
                 FormatDate(datos.fechaCalifiOrigenARL), datos.origenARL, FormatDate(datos.fechaCalificacionPclARL), datos.pclARL, FormatDate(datos.fechaEstructuraARL),
@@ -354,7 +354,7 @@ const OccupationalMedicine = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={3}>
+                            {/* <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="subsegmento"
@@ -363,7 +363,7 @@ const OccupationalMedicine = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
-                            </Grid>
+                            </Grid> */}
 
                             <Grid item xs={3}>
                                 <InputOnChange
@@ -375,7 +375,7 @@ const OccupationalMedicine = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={6}>
+                            <Grid item xs={9}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="codDx"

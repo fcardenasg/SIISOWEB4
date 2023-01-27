@@ -282,7 +282,7 @@ const AccidentRate = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostAccidentRate(FormatDate(datos.fecha), documento, datos.idClaseAT, datos.idCausaAT, segmentoAgrupado,
-                segmentoAfectado, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
+                segmentoAfectado, 1, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
                 datos.diagnosticoFinal, datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
                 datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
@@ -431,7 +431,7 @@ const AccidentRate = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={4}>
+                            {/* <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idSubsegmento"
@@ -441,7 +441,7 @@ const AccidentRate = () => {
                                         bug={errors.idSubsegmento}
                                     />
                                 </FormProvider>
-                            </Grid>
+                            </Grid> */}
 
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>

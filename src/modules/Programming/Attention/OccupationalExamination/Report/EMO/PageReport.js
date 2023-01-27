@@ -620,7 +620,7 @@ export function generateReportConceptAptitude(
   doc.text(`${lsDataReport.nameArea}`, 95, 60);
   doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 95, 65);
   doc.text(`${lsDataReport.nameConceptoActitudID}`, 95, 70, {
-    maxWidth: 100,
+    maxWidth: 110,
     lineHeightFactor: 1.5,
   });
 
