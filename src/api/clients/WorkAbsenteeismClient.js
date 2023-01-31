@@ -6,3 +6,6 @@ export const GetByIdWorkAbsenteeism = async (id) => await getData(Url.Ausentismo
 export const InsertWorkAbsenteeism = async (ausentismoLaboral) => await postData(Url.AusentismoLaboral, ausentismoLaboral);
 export const UpdateWorkAbsenteeisms = async (ausentismoLaboral) => await putData(Url.AusentismoLaboral, ausentismoLaboral);
 export const DeleteWorkAbsenteeism = async (idAusentismoLaboral) => await deleteData(Url.AusentismoLaboral, { idAusentismoLaboral });
+
+export const GetAllWorkAbsenteeismDocumento = async (page, pageSize, documento) => await getData(Url.AusentismoLaboral_Documento, { page, pageSize, documento });
+export const GetAllWorkAbsenteeismNumeroDia = async (documento) => await getData(Url.AusentismoLaboral_NumDia, { documento });

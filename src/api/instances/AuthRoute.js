@@ -157,6 +157,8 @@ export const Url = {
     MedicinaLaboralId: 'api/MedicinaLaboralX/id',
 
     AusentismoLaboral: 'api/AusentismoLaboral',
+    AusentismoLaboral_Documento: 'api/AusentismoLaboral/GetAllByDocumento',
+    AusentismoLaboral_NumDia: 'api/AusentismoLaboral/GetAllNumeroDia',
     AusentismoLaboralId: 'api/AusentismoLaboral/id',
 
     HistoriaClinicaOcupacional: 'api/HistoriaClinicaOcupacional',
@@ -173,5 +175,4 @@ export const Url = {
     Cuestionario: 'api/CuestionarioPrevencion',
     CuestionarioSave: 'api/CuestionarioPrevencion/Save',
     CuestionarioId: 'api/CuestionarioPrevencion/id',
-
 }

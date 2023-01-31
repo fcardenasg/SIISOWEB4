@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
     Box,
     Collapse,
+    Grid,
     IconButton,
     TableCell,
     TableRow,
@@ -13,13 +14,13 @@ import {
 import Cargando from 'components/loading/Cargando';
 import SubRowChargeHistory from './SubRowChargeHistory';
 import swal from 'sweetalert';
-import { FormatDate, ViewFormat } from 'components/helpers/Format';
+import { FormatDate } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import { PostWorkHistoryRiskCompany } from 'formatdata/WorkHistoryRiskForm';
 import SubRowHistoricalCompany from './SubRowHistoricalCompany';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import { MessageSuccess, MessageDelete, ParamDelete, ParamLoadingData } from 'components/alert/AlertAll';
-import { InsertWorkHistoryRiskCompany, DeleteWorkHistoryRiskCompany, GetAllByChargeHistoricoCompany, GetAllByChargeWHRAdvanceCompany } from 'api/clients/WorkHistoryRiskClient';
+import { InsertWorkHistoryRiskCompany, DeleteWorkHistoryRiskCompany, GetAllByChargeHistoricoCompany, GetAllByChargeWHRAdvanceCompany, UpdateWorkHistoryRisksCompany } from 'api/clients/WorkHistoryRiskClient';
 import { GetAllByCharge } from 'api/clients/PanoramaClient';
 import { DefaultValue } from 'components/helpers/Enums';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -27,11 +28,14 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { SubRow } from './SubRow';
 import { MenuItem } from '../Menu/MenuItem';
+import ModalEditarRiesgo from '../ModalEditarRiesgo';
 
 export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, documento }) {
     const diferen = "COMPANY";
     const { user } = useAuth();
     const [numId, setNumId] = useState(1);
+    const [numIdRiesgo, setNumIdRiesgo] = useState('');
+    const [openEditarRiesgo, setOpenEditarRiesgo] = useState('');
     const [openDelete, setOpenDelete] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
 
@@ -278,15 +282,25 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
                     }
                 }
             });
-        } catch (error) {
+        } catch (error) { }
+    }
 
-        }
+    const handleUpdate = async (idRiesgo) => {
+
     }
 
     return (
         <Fragment>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
+            <ModalEditarRiesgo
+                title="ACTUALIZAR HISTORIA LABORAL"
+                idRisk={numIdRiesgo}
+                open={openEditarRiesgo}
+                onClose={() => setNumIdRiesgo(true)}
+                diferen={diferen}
+            />
 
             <FullScreenDialog
                 open={openCargoHistorico}
@@ -318,11 +332,23 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
                 <TableCell>{row.anio}</TableCell>
                 <TableCell>{row.meses}</TableCell>
                 <TableCell>
-                    <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
-                        <IconButton color="error" size="small">
-                            <HighlightOffIcon sx={{ fontSize: '2rem' }} />
-                        </IconButton>
-                    </Tooltip>
+                    <Grid container spacing={2}>
+                        {/* <Grid item xs={6}>
+                            <Tooltip title="Editar" onClick={() => handleUpdate(row.id)}>
+                                <IconButton color="error" size="small">
+                                    <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+                                </IconButton>
+                            </Tooltip>
+                        </Grid> */}
+
+                        <Grid item xs={6}>
+                            <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
+                                <IconButton color="error" size="small">
+                                    <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+                                </IconButton>
+                            </Tooltip>
+                        </Grid>
+                    </Grid>
                 </TableCell>
             </TableRow>
 

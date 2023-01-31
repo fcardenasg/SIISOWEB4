@@ -29,6 +29,8 @@ import { GetAllTemplate } from 'api/clients/TemplateClient';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import SearchIcon from '@mui/icons-material/Search';
+import { GetAllWorkAbsenteeismDocumento } from 'api/clients/WorkAbsenteeismClient';
+import { ViewFormat } from 'components/helpers/Format';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -55,17 +57,41 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'id',
+        id: 'fechaInicio',
         numeric: false,
-        label: 'ID',
-        align: 'center'
+        label: 'Fecha Inicio',
+        align: 'left'
     },
     {
-        id: 'nameCIE11',
+        id: 'fechaFin',
         numeric: false,
-        label: 'CIE11',
+        label: 'Fecha Fin',
         align: 'left'
-    }
+    },
+    {
+        id: 'dxFinal',
+        numeric: false,
+        label: 'Dx Final',
+        align: 'left'
+    },
+    {
+        id: 'fechaRegistro',
+        numeric: false,
+        label: 'FechaRegistro',
+        align: 'left'
+    },
+    {
+        id: 'diasSinLaborar',
+        numeric: false,
+        label: 'DiasSinLaborar',
+        align: 'left'
+    },
+    {
+        id: 'usuarioRegistro',
+        numeric: false,
+        label: 'UsuarioRegistro',
+        align: 'left'
+    },
 ];
 
 function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
@@ -98,13 +124,6 @@ function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }
                             </TableSortLabel>
                         </TableCell>
                     ))}
-                {numSelected <= 0 && (
-                    <TableCell sortDirection={false} align="center" sx={{ pr: 3 }}>
-                        <Typography variant="subtitle1" sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}>
-                            Acción
-                        </Typography>
-                    </TableCell>
-                )}
             </TableRow>
         </TableHead>
     );
@@ -118,59 +137,28 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const HistoryWorkAbsenteeism = () => {
+const HistoryWorkAbsenteeism = ({ documento }) => {
     const dispatch = useDispatch();
-    const [lsTemplate, setLsTemplate] = useState([]);
+    const [lsTemplate, setLsHistorialAusentismo] = useState([]);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [search, setSearch] = useState('');
-    const [rows, setRows] = useState([]);
 
     useEffect(() => {
-        async function GetAll() {
+        async function getAll() {
             try {
-                const lsServer = await GetAllTemplate(0, 0);
-                setLsTemplate(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                const lsServer = await GetAllWorkAbsenteeismDocumento(0, 0, documento);
+                setLsHistorialAusentismo(lsServer.data.entities);
             } catch (error) {
             }
         }
 
-        GetAll();
-    }, [])
-
-    const handleSearch = (event) => {
-        const newString = event?.target.value;
-        setSearch(newString || '');
-
-        if (newString) {
-            const newRows = rows.filter((row) => {
-                let matches = true;
-
-                const properties = ['id', 'nameCIE11', 'idCIE11'];
-                let containsQuery = false;
-
-                properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
-                        containsQuery = true;
-                    }
-                });
-
-                if (!containsQuery) {
-                    matches = false;
-                }
-                return matches;
-            });
-            setLsTemplate(newRows);
-        } else {
-            setLsTemplate(rows);
-        }
-    };
+        getAll();
+    }, [documento])
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -191,26 +179,6 @@ const HistoryWorkAbsenteeism = () => {
 
     return (
         <Fragment>
-            <CardContent>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon fontSize="small" />
-                                    </InputAdornment>
-                                )
-                            }}
-                            onChange={handleSearch}
-                            placeholder="Buscar"
-                            value={search}
-                            size="small"
-                        />
-                    </Grid>
-                </Grid>
-            </CardContent>
-
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -241,13 +209,12 @@ const HistoryWorkAbsenteeism = () => {
                                             id={labelId}
                                             scope="row"
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                #{row.id}
+                                                {ViewFormat(row.fechaInicio)}
                                             </Typography>
                                         </TableCell>
 
@@ -261,45 +228,68 @@ const HistoryWorkAbsenteeism = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameCIE11}
+                                                {ViewFormat(row.fechaFin)}
                                             </Typography>
                                         </TableCell>
 
-                                        <TableCell align="center" sx={{ pr: 3 }}>
-                                            <CopyToClipboard
-                                                text={row.descripcion}
-                                                onCopy={() =>
-                                                    dispatch({
-                                                        type: SNACKBAR_OPEN,
-                                                        anchorOrigin: { vertical: 'button', horizontal: 'right' },
-                                                        transition: 'SlideLeft',
-                                                        open: true,
-                                                        message: 'Texto Copiado',
-                                                        variant: 'alert',
-                                                        alertSeverity: 'success',
-                                                        close: false
-                                                    })
-                                                }
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                <Tooltip title="Copiar">
-                                                    <IconButton size="large">
-                                                        <ContentCopyIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </CopyToClipboard>
+                                                {row.dxFinal}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {ViewFormat(row.fechaRegistro)}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.diasSinLaborar}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.usuarioRegistro}
+                                            </Typography>
                                         </TableCell>
                                     </TableRow>
                                 );
                             })}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: 53 * emptyRows
-                                }}
-                            >
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
