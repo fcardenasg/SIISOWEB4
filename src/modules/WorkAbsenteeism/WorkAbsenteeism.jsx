@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 
 import HistoryIcon from '@mui/icons-material/History';
-
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -17,7 +16,7 @@ import { PostWorkAbsenteeism } from 'formatdata/WorkAbsenteeismForm';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate, NumeroDias } from 'components/helpers/Format';
-import { InsertWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
+import { GetAllWorkAbsenteeismNumeroDia, InsertWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
@@ -35,6 +34,7 @@ import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import Accordion from 'components/accordion/Accordion';
+import HistoryWorkAbsenteeism from './HistoryWorkAbsenteeism';
 
 const WorkAbsenteeism = () => {
     const theme = useTheme();
@@ -56,6 +56,7 @@ const WorkAbsenteeism = () => {
 
     const [tipoSoporte, setTipoSoporte] = useState('');
     const [diasSinLaborar, setDiasSinLaborar] = useState('');
+    const [numeroDias, setNumeroDias] = useState(0);
     const [departa, setDeparta] = useState('');
     const [lsDeparta, setLsDeparta] = useState([]);
     const [departamentoIPS, setDepartaMedico] = useState('');
@@ -93,6 +94,9 @@ const WorkAbsenteeism = () => {
                     if (lsServerEmployee.status === 200) {
                         setLsEmployee(lsServerEmployee.data);
                     }
+
+                    const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(event?.target.value);
+                    setNumeroDias(numeroDias1.data);
                 } else {
                     setOpenError(true);
                     setErrorMessage(`${Message.ErrorDocumento}`);
@@ -116,7 +120,7 @@ const WorkAbsenteeism = () => {
 
             const lsServerSubsegmento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_REGION);
             var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                value: item.id,
+                value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsSubsegmento(resultSubsegmento);
@@ -185,9 +189,7 @@ const WorkAbsenteeism = () => {
                 label: item.nombre
             }));
             setLsEstadoCaso(resultEstadoCaso);
-        } catch (error) {
-
-        }
+        } catch (error) { }
     }
 
     const handleChangeDepartamentoIncapa = async (event) => {
@@ -275,7 +277,7 @@ const WorkAbsenteeism = () => {
         try {
             const DataToInsert = PostWorkAbsenteeism(documento, datos.incapacidad, datos.nroIncapacidad, FormatDate(fechaExpedicion), departa,
                 datos.ciudadExpedicion, datos.tipoIncapacidad, datos.contingencia, FormatDate(fechaInicio), FormatDate(fechaFin), diasSinLaborar,
-                textoDx, datos.dxFinal, datos.estadoCaso, datos.segmentoAgrupado, 1, datos.subsegmento, datos.idTipoSoporte, datos.idCategoria,
+                datos.dxFinal, datos.dxFinal, datos.estadoCaso, datos.segmentoAgrupado, 1, datos.segmento, datos.idTipoSoporte, datos.idCategoria,
 
                 datos.proveedor, departamentoIPS, datos.ciudadIPS, datos.nombreProfesional, datos.especialidad, datos.registroProfesional, datos.tipoAtencion,
                 datos.cumplimientoRequisito, datos.expideInCapacidad, datos.observacionCumplimiento,
@@ -298,8 +300,6 @@ const WorkAbsenteeism = () => {
             setOpenError(true);
         }
     };
-
-    const dias = 200;
 
     return (
         <Fragment>
@@ -505,7 +505,7 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="subsegmento"
+                                        name="segmento"
                                         label="Segmento"
                                         defaultValue=""
                                         options={lsSubsegmento}
@@ -742,17 +742,18 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={6}>
                                 <UserCountCard
                                     primary="TOTAL DÍAS ACUMULADO EN INCAPACIDAD"
-                                    secondary="0"
+                                    secondary={numeroDias}
                                     iconPrimary={AccountCircleTwoTone}
-                                    color={dias <= 90 ? theme.palette.warning.main : dias <= 180 ? theme.palette.warning.dark : theme.palette.error.main}
+                                    color={numeroDias >= 75 && numeroDias <= 90 ? theme.palette.warning.main : numeroDias >= 90 && numeroDias <= 180 ? theme.palette.warning.dark :
+                                        numeroDias > 180 ? theme.palette.error.main : theme.palette.grey[400]}
                                 />
                             </Grid>
                         </Grid>
 
                         <Grid item xs={12} sx={{ pt: 4 }}>
-                            <Accordion title={<><HistoryIcon />
-                                <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">HISTORI</Typography></>}>
-
+                            <Accordion title={<><HistoryIcon color='info' />
+                                <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">HISTORIAL DE AUSENTISMO LABORAL</Typography></>}>
+                                <HistoryWorkAbsenteeism documento={documento} />
                             </Accordion>
                         </Grid>
 

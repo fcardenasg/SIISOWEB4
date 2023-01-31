@@ -34,7 +34,6 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import userImg from 'assets/img/user.png';
 import { PutWorkHistoryRiskDLTD } from 'formatdata/WorkHistoryRiskForm';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import SelectOnChange from 'components/input/SelectOnChange';
 
