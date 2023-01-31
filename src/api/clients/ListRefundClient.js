@@ -6,4 +6,4 @@ export const UpdateListRefunds = async (listaReintegro) => await putData(Url.Lis
 
 export const GetAllByIdListaReintegroArchivo = async (page, pageSize, idListaReintro) => await getData(Url.ListaReintegroArchivo, { page, pageSize, idListaReintro });
 export const InsertListaReintegroArchivo = async (listaReintegroArchivo) => await postData(Url.ListaReintegroArchivo, listaReintegroArchivo);
-export const DeleteListaReintegroArchivo = async (idListaReintegroArchivo) => await deleteData(Url.ListaReintegroArchivo, idListaReintegroArchivo);
+export const DeleteListaReintegroArchivo = async (idListaReintegroArchivo) => await deleteData(Url.ListaReintegroArchivo, { idListaReintegroArchivo });

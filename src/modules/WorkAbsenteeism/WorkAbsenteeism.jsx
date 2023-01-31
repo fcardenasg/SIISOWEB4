@@ -7,15 +7,16 @@ import {
     Typography,
 } from '@mui/material';
 
+import HistoryIcon from '@mui/icons-material/History';
+
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import ViewEmployee from 'components/views/ViewEmployee';
 import { PostWorkAbsenteeism } from 'formatdata/WorkAbsenteeismForm';
-import { GetAllBySegAfectado, GetAllBySegAgrupado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import { InsertWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
@@ -30,10 +31,14 @@ import RadioButtonCheckedTwoToneIcon from '@mui/icons-material/RadioButtonChecke
 import UserCountCard from 'ui-component/cards/UserCountCard';
 import AccountCircleTwoTone from '@mui/icons-material/AccountCircleTwoTone';
 import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
-import { GetByIdCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
+import useAuth from 'hooks/useAuth';
+import Accordion from 'components/accordion/Accordion';
 
 const WorkAbsenteeism = () => {
     const theme = useTheme();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -41,16 +46,15 @@ const WorkAbsenteeism = () => {
     const [lsEmployee, setLsEmployee] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
+    const [openSuccess, setOpenSuccess] = useState(false);
 
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
-    const [segmentoAgrupado, setSegmentoAgrupado] = useState('');
-    const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
-    const [segmentoAfectado, setSegmentoAfectado] = useState('');
     const [lsSubsegmento, setLsSubsegmento] = useState([]);
 
-    const [dx, setDx] = useState('');
+    const [textoDx, setTextoDx] = useState('');
     const [lsCIE11, setLsCIE11] = useState([]);
 
+    const [tipoSoporte, setTipoSoporte] = useState('');
     const [diasSinLaborar, setDiasSinLaborar] = useState('');
     const [departa, setDeparta] = useState('');
     const [lsDeparta, setLsDeparta] = useState([]);
@@ -58,6 +62,7 @@ const WorkAbsenteeism = () => {
     const [lsMunicipio, setMunicipioE] = useState([]);
     const [lsMunicipioMedico, setMunicipioMedico] = useState([]);
     const [lsCodigoFilterDpto, setCodigoFilterDpto] = useState([]);
+    const [lsCodigoFilterTipoSoporte, setLsCodigoFilterTipoSoporte] = useState([]);
 
     const [lsTipoInca, setLsTipoInca] = useState([]);
     const [lsEstadoCaso, setLsEstadoCaso] = useState([]);
@@ -100,7 +105,7 @@ const WorkAbsenteeism = () => {
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
             var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
@@ -109,12 +114,12 @@ const WorkAbsenteeism = () => {
             }));
             setLsSegmentoAgrupado(resultSegAgrupado);
 
-            const lsServerSegmentoAgrupado = await GetAllSegmentoAgrupado(0, 0);
-            var resultSegmentoAgrupadoo = lsServerSegmentoAgrupado.data.entities.map((item) => ({
+            const lsServerSubsegmento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_REGION);
+            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
                 value: item.id,
                 label: item.nombre
             }));
-            setLsSegmentoAgrupado(resultSegmentoAgrupadoo);
+            setLsSubsegmento(resultSubsegmento);
 
             const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
             var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
@@ -137,13 +142,7 @@ const WorkAbsenteeism = () => {
                 label: item.nombre
             }));
             setLsTipoSoporte(resultTipoSoporte);
-
-            const lsServerCategoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_CATEGORIA);
-            var resultCategoria = lsServerCategoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCategoria(resultCategoria);
+            setLsCodigoFilterTipoSoporte(lsServerTipoSoporte.data.entities);
 
             const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOATEN);
             var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
@@ -187,7 +186,7 @@ const WorkAbsenteeism = () => {
             }));
             setLsEstadoCaso(resultEstadoCaso);
         } catch (error) {
-            
+
         }
     }
 
@@ -195,8 +194,8 @@ const WorkAbsenteeism = () => {
         try {
             setDeparta(event.target.value);
 
-            var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
-            var lsServerDepartamento = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 2);
+            var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+            var lsServerDepartamento = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
 
             var resultMunicipio = lsServerDepartamento.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -204,7 +203,24 @@ const WorkAbsenteeism = () => {
             }));
             setMunicipioE(resultMunicipio);
         } catch (error) {
-            
+
+        }
+    };
+
+    const handleChangeTipoSoporte = async (event) => {
+        try {
+            setTipoSoporte(event.target.value);
+
+            var lsResulCode = String(lsCodigoFilterTipoSoporte.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+            var lsServerTipoSoporte = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 4);
+
+            var resultCategoria = lsServerTipoSoporte.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCategoria(resultCategoria);
+        } catch (error) {
+
         }
     };
 
@@ -212,8 +228,8 @@ const WorkAbsenteeism = () => {
         try {
             setDepartaMedico(event.target.value);
 
-            var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
-            var lsServerDepartamento = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 2);
+            var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+            var lsServerDepartamento = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
 
             var resultMunicipio = lsServerDepartamento.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -221,101 +237,65 @@ const WorkAbsenteeism = () => {
             }));
             setMunicipioMedico(resultMunicipio);
         } catch (error) {
-            
+
         }
     };
 
-    const handleChangeSegAgrupado = async (event) => {
-        try {
-            setLsSegmentoAfectado([]); setLsSubsegmento([]); setSegmentoAfectado('');
-            setSegmentoAfectado(''); setSegmentoAgrupado('');
-            setSegmentoAgrupado(event.target.value);
-
-            const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
-            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                value: item.id,
-                label: item.descripcion
-            }));
-            setLsSegmentoAfectado(resultSegAfectado);
-        } catch (error) {
-            
-            setLsSegmentoAfectado([]);
-        }
-    }
-
-    const handleChangeSegAfectado = async (event) => {
-        try {
-            setLsSubsegmento([]);
-            setSegmentoAfectado(event.target.value);
-
-            const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
-            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                value: item.id,
-                label: item.descripcion
-            }));
-            setLsSubsegmento(resultSubsegmento);
-        } catch (error) {
-            
-            setLsSubsegmento([]);
-        }
-    }
-
     const handleChangeDx = async (event) => {
         try {
-            setDx(event.target.value);
+            setTextoDx(event.target.value);
 
-            const lsServerCIE11 = await GetByIdCIE11(event.target.value);
-            if (lsServerCIE11.status === 200) {
-                var resultCIE11 = [{ value: lsServerCIE11.data.id, label: lsServerCIE11.data.dx }]
-                setLsCIE11(resultCIE11);
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsCIE11(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
             }
         } catch (error) {
-            
-        }
-    }
-
-    const handleFechaFin = (event) => {
-        try {
-            setFechaFin(event);
-
-            let fechaIni = new Date(fechaInicio);
-            let fechaFinn = new Date(event);
-
-            let milisegundosDia = 24 * 60 * 60 * 1000;
-            let milisegundosTranscurridos = Math.abs(fechaIni.getTime() - fechaFinn.getTime());
-            let diasTranscurridos = Math.round(milisegundosTranscurridos / milisegundosDia);
-            setDiasSinLaborar(diasTranscurridos);
-        } catch (error) {
-
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
         }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
         try {
-            const usuario = "Manuel Vásquez";
-            const dateNow = FormatDate(new Date());
-
             const DataToInsert = PostWorkAbsenteeism(documento, datos.incapacidad, datos.nroIncapacidad, FormatDate(fechaExpedicion), departa,
                 datos.ciudadExpedicion, datos.tipoIncapacidad, datos.contingencia, FormatDate(fechaInicio), FormatDate(fechaFin), diasSinLaborar,
-                dx, datos.dxFinal, datos.estadoCaso, segmentoAgrupado, segmentoAfectado, datos.subsegmento, datos.idTipoSoporte, datos.idCategoria,
+                textoDx, datos.dxFinal, datos.estadoCaso, datos.segmentoAgrupado, 1, datos.subsegmento, datos.idTipoSoporte, datos.idCategoria,
 
                 datos.proveedor, departamentoIPS, datos.ciudadIPS, datos.nombreProfesional, datos.especialidad, datos.registroProfesional, datos.tipoAtencion,
                 datos.cumplimientoRequisito, datos.expideInCapacidad, datos.observacionCumplimiento,
 
-                datos.observacion, usuario, FormatDate(fechaModifica), usuario, dateNow, lsEmployee.tipoContrato, lsEmployee.type, dateNow, usuario);
+                datos.observacion, '', FormatDate(fechaModifica), user.nameuser, FormatDate(new Date()), lsEmployee.tipoContrato, lsEmployee.type,
+                FormatDate(new Date()), user.nameuser);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertWorkAbsenteeism(DataToInsert);
                 if (result.status === 200) {
-
+                    setOpenSuccess(true);
+                    reset();
+                } else {
+                    setErrorMessage(Message.RegistroNoGuardado);
+                    setOpenError(true);
                 }
             }
         } catch (error) {
-
+            setErrorMessage(Message.RegistroNoGuardado);
+            setOpenError(true);
         }
     };
 
@@ -323,9 +303,13 @@ const WorkAbsenteeism = () => {
 
     return (
         <Fragment>
+            <MessageSuccess onClose={() => setOpenSuccess(false)} open={openSuccess} />
+            <MessageError onClose={() => setOpenError(false)} open={openError} error={errorMessage} />
+
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
+                        title="REGISTRAR AUSENTISMO LABORAL"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -349,10 +333,12 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue=""
+                                        type="number"
                                         fullWidth
                                         name="nroIncapacidad"
                                         label="Nro. de Incapacidad"
@@ -361,6 +347,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={4}>
                                 <InputDatePick
                                     label="Fecha de Expedición"
@@ -368,6 +355,7 @@ const WorkAbsenteeism = () => {
                                     onChange={(e) => setFechaExpedicion(e)}
                                 />
                             </Grid>
+
                             <Grid item xs={4}>
                                 <SelectOnChange
                                     name="departamento"
@@ -378,6 +366,7 @@ const WorkAbsenteeism = () => {
                                     onChange={handleChangeDepartamentoIncapa}
                                 />
                             </Grid>
+
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -409,6 +398,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -421,20 +411,35 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <InputDatePick
                                     label="Fecha de Inicio"
                                     value={fechaInicio}
-                                    onChange={(e) => setFechaInicio(e)}
+                                    onChange={(e) => {
+                                        setFechaInicio(e);
+                                        if (fechaFin) {
+                                            var result = NumeroDias(e, fechaFin);
+                                            setDiasSinLaborar(result);
+                                        }
+                                    }}
                                 />
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <InputDatePick
                                     label="Fecha Fin"
                                     value={fechaFin}
-                                    onChange={handleFechaFin}
+                                    onChange={(e) => {
+                                        setFechaFin(e);
+                                        if (fechaInicio) {
+                                            var result = NumeroDias(fechaInicio, e);
+                                            setDiasSinLaborar(result);
+                                        }
+                                    }}
                                 />
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <InputOnChange
                                     defaultValue=""
@@ -447,15 +452,17 @@ const WorkAbsenteeism = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <InputOnChange
                                     label="Código Dx"
-                                    onChange={handleChangeDx}
-                                    value={dx}
+                                    onKeyDown={handleChangeDx}
+                                    onChange={(e) => setTextoDx(e?.target.value)}
+                                    value={textoDx}
                                     size={matchesXS ? 'small' : 'medium'}
-                                    required={true}
                                 />
                             </Grid>
+
                             <Grid item xs={9.6}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -463,12 +470,12 @@ const WorkAbsenteeism = () => {
                                         label="Diagnóstico"
                                         defaultValue=""
                                         options={lsCIE11}
-                                        disabled={lsCIE11.length != 0 ? false : true}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -481,52 +488,44 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="segmentoAgrupado"
-                                    label="Segmento Agrupado"
-                                    options={lsSegmentoAgrupado}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    value={segmentoAgrupado}
-                                    onChange={handleChangeSegAgrupado}
-                                />
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="segmentoAgrupado"
+                                        label="Segmento Agrupado"
+                                        defaultValue=""
+                                        options={lsSegmentoAgrupado}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
                             </Grid>
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="segmentoAfectado"
-                                    label="Segmento Afectado"
-                                    options={lsSegmentoAfectado}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    value={segmentoAfectado}
-                                    disabled={lsSegmentoAfectado.length != 0 ? false : true}
-                                    onChange={handleChangeSegAfectado}
-                                />
-                            </Grid>
+
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="subsegmento"
-                                        label="Subsegmento"
+                                        label="Segmento"
                                         defaultValue=""
                                         options={lsSubsegmento}
-                                        disabled={lsSubsegmento.length != 0 ? false : true}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idTipoSoporte"
-                                        label="Tipo de Soporte"
-                                        defaultValue=""
-                                        options={lsTipoSoporte}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
+                                <SelectOnChange
+                                    name="idTipoSoporte"
+                                    label="Tipo de Soporte"
+                                    options={lsTipoSoporte}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    value={tipoSoporte}
+                                    onChange={handleChangeTipoSoporte}
+                                />
                             </Grid>
+
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -558,6 +557,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <SelectOnChange
                                     name="departamentoIPS"
@@ -568,6 +568,7 @@ const WorkAbsenteeism = () => {
                                     onChange={handleChangeDepartamentoMedico}
                                 />
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -580,6 +581,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputText
@@ -592,6 +594,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputText
@@ -604,6 +607,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputText
@@ -616,6 +620,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -628,6 +633,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -640,6 +646,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -652,6 +659,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
@@ -687,6 +695,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputText
@@ -699,6 +708,7 @@ const WorkAbsenteeism = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
                             <Grid item xs={4}>
                                 <InputDatePick
                                     label="Fecha de Modificicación"
@@ -728,7 +738,7 @@ const WorkAbsenteeism = () => {
                             </Grid>
                         </Grid>
 
-                        <Grid container spacing={2} sx={{ pb: 2, pt: 3, pl: 4 }}>
+                        <Grid container spacing={2} sx={{ pb: 2, pt: 3, pl: 4, textAlign: 'center' }}>
                             <Grid item xs={6}>
                                 <UserCountCard
                                     primary="TOTAL DÍAS ACUMULADO EN INCAPACIDAD"
@@ -740,6 +750,13 @@ const WorkAbsenteeism = () => {
                         </Grid>
 
                         <Grid item xs={12} sx={{ pt: 4 }}>
+                            <Accordion title={<><HistoryIcon />
+                                <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">HISTORI</Typography></>}>
+
+                            </Accordion>
+                        </Grid>
+
+                        <Grid item xs={12} sx={{ pt: 4 }}>
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
@@ -748,6 +765,7 @@ const WorkAbsenteeism = () => {
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
+
                                 <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/work-absenteeism/list")}>

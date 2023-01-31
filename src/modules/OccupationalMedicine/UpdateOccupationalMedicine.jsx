@@ -108,7 +108,7 @@ const OccupationalMedicine = () => {
             } catch (error) { }
         }
 
-        getData();  
+        getData();
     }, [id]);
 
     async function getAll() {
@@ -370,6 +370,28 @@ const OccupationalMedicine = () => {
                                     </Grid>
 
                                     <Grid item xs={3}>
+                                        <InputOnChange
+                                            label="Código de Diagnóstico"
+                                            onKeyDown={handleDiagnostico}
+                                            onChange={(e) => setTextDiagnostico(e?.target.value)}
+                                            value={textDiagnistico}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={9}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.codDx}
+                                                name="codDx"
+                                                label="Diagnóstico"
+                                                options={lsDiagnistico}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
                                         <SelectOnChange
                                             name="segmentoAgrupado"
                                             label="Segmento Agrupado"
@@ -389,40 +411,6 @@ const OccupationalMedicine = () => {
                                             options={lsSegmentoAfectado}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsOccupationalMedicine.subsegmento}
-                                                name="subsegmento"
-                                                label="Subsegmento"
-                                                options={lsSubsegmento}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <InputOnChange
-                                            label="Código de Diagnóstico"
-                                            onKeyDown={handleDiagnostico}
-                                            onChange={(e) => setTextDiagnostico(e?.target.value)}
-                                            value={textDiagnistico}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsOccupationalMedicine.codDx}
-                                                name="codDx"
-                                                label="Diagnóstico"
-                                                options={lsDiagnistico}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
                                     </Grid>
 
                                     <Grid item xs={3}>

@@ -57,11 +57,19 @@ const Supplier = () => {
     /* Modificamos la toma de datos de los combos */
     async function GetAll() {
         try {
-            const lsServerSupplier = await GetAllByTipoCatalogo(CodCatalogo.TIPO_PROVEEDOR);
-            setLsSupplier(lsServerSupplier.data);
+            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPO_PROVEEDOR);
+            var resultProveedor = lsServerSupplier.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsSupplier(resultProveedor);
 
-            const lsServerPais = await GetAllByTipoCatalogo(CodCatalogo.CIUDADES);
-            setLsCiudad(lsServerPais.data);
+            const lsServerCiudad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CIUDADES);
+            var resultCiudad = lsServerCiudad.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCiudad(resultCiudad);
         } catch (error) { }
     }
 
@@ -79,20 +87,18 @@ const Supplier = () => {
 
             if (Object.keys(datos.length !== 0)) {
                 await InsertSupplier(DataToInsert).then(result => {
-                    if (result.data.message === Message.Guardar) {
-                        setResultMessage(result.data.message);
+                    if (result.status === 200) {
                         setOpenSuccess(true);
                         reset();
                     } else {
                         setOpenError(true);
-                        setErrorMessage(result.data.message);
+                        setErrorMessage(Message.RegistroNoGuardado);
                     }
-
                 });
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(Message.ErrorServicio);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 

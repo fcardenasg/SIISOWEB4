@@ -72,7 +72,7 @@ const headCells = [
         id: 'codiProv',
         numeric: false,
         label: 'Código',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'nombProv',
@@ -219,10 +219,10 @@ const ListSupplier = () => {
     //Primer metodo a actualizar
     async function GetAll() {
         try {
-            const lsServer = await GetAllSupplier();
+            const lsServer = await GetAllSupplier(0, 0);
             if (lsServer.status === 200) {
-                setSupplier(lsServer.data);
-                setRows(lsServer.data);
+                setSupplier(lsServer.data.entities);
+                setRows(lsServer.data.entities);
             }
         } catch (error) {
         }
@@ -442,7 +442,7 @@ const ListSupplier = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.codiProv)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
+                                            align="left"
                                         >
                                             <Typography
                                                 variant="subtitle1"

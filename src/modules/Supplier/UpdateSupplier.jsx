@@ -55,20 +55,22 @@ const UpdateSupplier = () => {
         try {
             /* Modificamos el metodo de Obtener los datos por ID */
             await GetByIdSupplier(id).then(result => {
-                if (result.data.message === Message.NoExiste) {
-                    setOpenError(true);
-                    setErrorMessage(result.data.message);
-                } else {
-                    setSupplier(result.data);
-                }
+                setSupplier(result.data);
             });
 
-            /* Ajustamos nuevamente los combos como en el agregar */
-            const lsServerSupplier = await GetAllByTipoCatalogo(CodCatalogo.TIPO_PROVEEDOR);
-            setLsSupplier(lsServerSupplier.data);
+            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPO_PROVEEDOR);
+            var resultProveedor = lsServerSupplier.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsSupplier(resultProveedor);
 
-            const lsServerPais = await GetAllByTipoCatalogo(CodCatalogo.CIUDADES);
-            setLsCiudad(lsServerPais.data);
+            const lsServerCiudad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CIUDADES);
+            var resultCiudad = lsServerCiudad.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCiudad(resultCiudad);
         } catch (error) {
         }
     }
@@ -93,26 +95,24 @@ const UpdateSupplier = () => {
             /* Modificamos el consumo del servicio de actualziar */
             if (Object.keys(datos.length !== 0)) {
                 await UpdateSuppliers(DataToUpdate).then(result => {
-                    if (result.data.message === Message.Actualizar) {
+                    if (result.status === 200) {
                         setOpenUpdate(true);
-                        setResultMessage(result.data.message);
                     } else {
                         setOpenError(true);
-                        setErrorMessage(result.data.message);
+                        setErrorMessage(Message.RegistroNoGuardado);
                     }
                 });
             }
         } catch (error) {
-            /* Validamos errores de servicio */
             setOpenError(true);
-            setErrorMessage(Message.ErrorServicio);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
     return (
         <MainCard title="Actualizar Proveedor">
             {/* Indicamos el mensaje que nos da como resultado aquí */}
-            <MessageUpdate message={resultMessage} open={openUpdate} onClose={() => setOpenUpdate(false)} />
+            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             {supplier.length != 0 ? (

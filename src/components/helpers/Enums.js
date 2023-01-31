@@ -142,10 +142,10 @@ export const CodCatalogo = {
     Opciones_SINO: 88,
     AHC_CONCEP_ACTITUD: 43,
 
-    AUSLAB_INC: 8,
-    AUSLAB_TIPOINCA: 8,
-    AUSLAB_CONT: 8,
-    AUSLAB_ESTCAS: 8,
+    AUSLAB_INC: 198,
+    AUSLAB_TIPOINCA: 103,
+    AUSLAB_CONT: 104,
+    AUSLAB_ESTCAS: 200,
     MEDLAB_RECASO: 38,
     MEDLAB_REGION: 81,
     MEDLAB_LATERA: 82,
@@ -154,10 +154,10 @@ export const CodCatalogo = {
     MEDLAB_ORIGEN_EPS: 87,
     MEDLAB_ORI_CA_ARL: 87,
     MEDLAB_INS_ORIGEN: 197,
-    AUSLAB_TISOPOR: 8,
+    AUSLAB_TISOPOR: 27,
     AUSLAB_CATEGORIA: 8,
-    AUSLAB_TIPOATEN: 8,
-    AUSLAB_REDEXP: 8,
+    AUSLAB_TIPOATEN: 199,
+    AUSLAB_REDEXP: 108,
 
     LISTA_CHEKEO_REINTEGRO: 159,
 
@@ -314,6 +314,7 @@ export const Message = {
 
     NoEliminar: 'No se pudo eliminar el registro',
     RegistroNoGuardado: 'No se pudo guardar el registro',
+    RegistroNoEliminado: 'No se pudo eliminar el registro',
 
     ErrorDocumento: 'Por favor, ingrese un número de documento',
     ErrorDeDatos: 'Hubo un error al buscar los datos, vuelva a intentarlo',

@@ -35,7 +35,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
+import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado, GetAllBySegmentoAfectado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { GetByIdAccidentRate, UpdateAccidentRates } from 'api/clients/AccidentRateClient';
 import { PutAccidentRate } from 'formatdata/AccidentRateForm';
@@ -65,7 +65,7 @@ const UpdateAccidentRate = () => {
     const [segmentoAgrupado, setSegmentoAgrupado] = useState(undefined);
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
     const [segmentoAfectado, setSegmentoAfectado] = useState(undefined);
-    const [subsegmento, setSubsegmento] = useState([]);
+    /* const [subsegmento, setSubsegmento] = useState([]); */
 
     const [openReport, setOpenReport] = useState(false);
     const [urlFile, setUrlFile] = useState(null);
@@ -110,20 +110,6 @@ const UpdateAccidentRate = () => {
                     setSegmentoAfectado(lsServerAtencion.data.idSegmentoAfectado);
                     setUrlFile(lsServerAtencion.data.url);
 
-                    const lsServerSegAfectado = await GetAllBySegAgrupado(lsServerAtencion.data.idSegmentoAgrupado, 0, 0);
-                    var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                        value: item.id,
-                        label: item.nombre
-                    }));
-                    setLsSegmentoAfectado(resultSegAfectado);
-
-                    const lsServerSubsegmento = await GetAllBySegAfectado(lsServerAtencion.data.idSegmentoAfectado, 0, 0);
-                    var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                        value: item.id,
-                        label: item.nombre
-                    }));
-                    setSubsegmento(resultSubsegmento);
-
                     if (lsServerAtencion.data.diagnosticoInicial !== "") {
                         var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.diagnosticoInicial);
 
@@ -158,7 +144,6 @@ const UpdateAccidentRate = () => {
         getData();
     }, [id]);
 
-
     async function getAll() {
         try {
             const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
@@ -167,6 +152,13 @@ const UpdateAccidentRate = () => {
                 label: item.nombre
             }));
             setLsSegmentoAgrupado(resultSegAgrupado);
+
+            const lsServerSegAfectado = await GetAllBySegmentoAfectado(0, 0);
+            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setLsSegmentoAfectado(resultSegAfectado);
 
             const lsServerClase = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CLASE_AT);
             var resultClase = lsServerClase.data.entities.map((item) => ({
@@ -212,7 +204,7 @@ const UpdateAccidentRate = () => {
         } catch (error) { }
     }
 
-    const handleChangeSegAgrupado = async (event) => {
+    /* const handleChangeSegAgrupado = async (event) => {
         try {
             setSubsegmento([]);
             setSegmentoAgrupado(event.target.value);
@@ -227,9 +219,9 @@ const UpdateAccidentRate = () => {
         } catch (error) {
             setLsSegmentoAfectado([]);
         }
-    }
+    } */
 
-    const handleChangeSegAfectado = async (event) => {
+    /* const handleChangeSegAfectado = async (event) => {
         try {
             setSegmentoAfectado(event.target.value);
 
@@ -243,7 +235,7 @@ const UpdateAccidentRate = () => {
         } catch (error) {
             setSubsegmento([]);
         }
-    }
+    } */
 
     const allowedFiles = ['application/pdf'];
     const handleFile = async (event) => {
@@ -347,14 +339,9 @@ const UpdateAccidentRate = () => {
 
             if (Object.keys(datos.length !== 0)) {
                 if (lsEmployee.length !== 0) {
-                    if (textDx1 !== '' || textDx2 !== '') {
-                        const result = await UpdateAccidentRates(DataToInsert);
-                        if (result.status === 200) {
-                            setOpenSuccess(true);
-                        }
-                    } else {
-                        setOpenError(true);
-                        setErrorMessage('Ingrese por lo menos un diagnóstico');
+                    const result = await UpdateAccidentRates(DataToInsert);
+                    if (result.status === 200) {
+                        setOpenSuccess(true);
                     }
                 } else {
                     setOpenError(true);
@@ -390,15 +377,6 @@ const UpdateAccidentRate = () => {
             </FullScreenDialog>
 
             <ControlModal
-                title="VISTA DE REPORTE"
-                open={openReport}
-                onClose={() => setOpenReport(false)}
-                maxWidth="xl"
-            >
-
-            </ControlModal>
-
-            <ControlModal
                 title="VISUALIZAR ARCHIVO"
                 open={openViewArchivo}
                 onClose={() => setOpenViewArchivo(false)}
@@ -411,7 +389,7 @@ const UpdateAccidentRate = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="HISTORIA CLÍNICA"
+                            title="ACTUALIZAR ACCIDENTE DE TRABAJO"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -467,7 +445,7 @@ const UpdateAccidentRate = () => {
                                         options={lsSegmentoAgrupado}
                                         size={matchesXS ? 'small' : 'medium'}
                                         value={segmentoAgrupado}
-                                        onChange={handleChangeSegAgrupado}
+                                        onChange={(e) => setSegmentoAgrupado(e.target.value)}
                                     />
                                 </Grid>
 
@@ -478,11 +456,11 @@ const UpdateAccidentRate = () => {
                                         options={lsSegmentoAfectado}
                                         size={matchesXS ? 'small' : 'medium'}
                                         value={segmentoAfectado}
-                                        onChange={handleChangeSegAfectado}
+                                        onChange={(e) => setSegmentoAfectado(e.target.value)}
                                     />
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                {/* <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idSubsegmento"
@@ -493,7 +471,7 @@ const UpdateAccidentRate = () => {
                                             defaultValue={lsAccidentRate.idSubsegmento}
                                         />
                                     </FormProvider>
-                                </Grid>
+                                </Grid> */}
 
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
@@ -692,14 +670,6 @@ const UpdateAccidentRate = () => {
                                     <AnimateButton>
                                         <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Actualizar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
-                                            {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>

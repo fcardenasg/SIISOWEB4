@@ -28,10 +28,10 @@ import { visuallyHidden } from '@mui/utils';
 
 import swal from 'sweetalert';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton } from 'components/helpers/Enums';
+import { MessageDelete, MessageError, ParamDelete } from 'components/alert/AlertAll';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { DeleteEvolutionNote, GetAllEvolutionNote } from 'api/clients/EvolutionNoteClient';
+import { DeleteEvolutionNote } from 'api/clients/EvolutionNoteClient';
 import { ViewFormat } from 'components/helpers/Format';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -40,6 +40,7 @@ import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import { DeleteRefund, GetAllRefund } from 'api/clients/RefundClient';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -69,30 +70,36 @@ const headCells = [
         id: 'documento',
         numeric: false,
         label: 'Documento',
-        align: 'center'
-    },
-    {
-        id: 'idContingencia',
-        numeric: false,
-        label: 'Contingencia',
         align: 'left'
     },
     {
-        id: 'idAtencion',
+        id: 'nameEmpleado',
         numeric: false,
-        label: 'Atencion',
+        label: 'Nombre',
         align: 'left'
     },
     {
-        id: 'fecha',
+        id: 'nameConceptoReintegro',
         numeric: false,
-        label: 'Fecha',
+        label: 'Reubicado',
         align: 'left'
     },
     {
-        id: 'usuarioRegistro',
+        id: 'fechaInicio',
         numeric: false,
-        label: 'Usuario Que Atiende',
+        label: 'Fecha de Inicio de Restricción',
+        align: 'left'
+    },
+    {
+        id: 'fechaFin',
+        numeric: false,
+        label: 'Fecha de Fin de Restricción',
+        align: 'left'
+    },
+    {
+        id: 'nameEstadoCaso',
+        numeric: false,
+        label: 'Estado',
         align: 'left'
     }
 ];
@@ -207,11 +214,13 @@ const ListRefund = () => {
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
     const [openDelete, setOpenDelete] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [messageError, setMessageError] = useState('');
     const [evolutionNote, setEvolutionNote] = useState([]);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -220,11 +229,11 @@ const ListRefund = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllEvolutionNote(0, 0);
+            const lsServer = await GetAllRefund(0, 0);
             setEvolutionNote(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            
+
         }
     }
 
@@ -306,19 +315,25 @@ const ListRefund = () => {
 
     const handleDelete = async () => {
         try {
-            swal(ParamDelete).then(async (willDelete) => {
-                if (willDelete) {
-                    const result = await DeleteEvolutionNote(idCheck);
-                    if (result.status === 200) {
-                        setOpenDelete(true);
-                    }
-                    setSelected([]);
-                    GetAll();
-                } else
-                    setSelected([]);
-            });
+            if (idCheck !== '') {
+                swal(ParamDelete).then(async (willDelete) => {
+                    if (willDelete) {
+                        const result = await DeleteRefund(idCheck);
+                        if (result.status === 200) {
+                            setOpenDelete(true);
+                        }
+                        setSelected([]);
+                        GetAll();
+                    } else
+                        setSelected([]);
+                });
+            } else {
+                setOpenError(true);
+                setMessageError(Message.RegistroNoEliminado);
+            }
         } catch (error) {
-            
+            setOpenError(true);
+            setMessageError(Message.RegistroNoEliminado);
         }
     }
 
@@ -326,8 +341,10 @@ const ListRefund = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - evolutionNote.length) : 0;
 
     return (
-        <MainCard title="Lista de Reintegro" content={false}>
+        <MainCard title="LISTA DE REINTEGRO" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+            <MessageError error={messageError} onClose={() => setOpenError(true)} open={openError} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -445,7 +462,7 @@ const ListRefund = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idContingencia}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -460,7 +477,7 @@ const ListRefund = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idAtencion}
+                                                {row.nameConceptoReintegro}
                                             </Typography>
                                         </TableCell>
 
@@ -475,7 +492,7 @@ const ListRefund = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {ViewFormat(row.fecha)}
+                                                {ViewFormat(row.fechaInicio)}
                                             </Typography>
                                         </TableCell>
 
@@ -490,7 +507,22 @@ const ListRefund = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.usuarioRegistro}
+                                                {ViewFormat(row.fechaFin)}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameEstadoCaso}
                                             </Typography>
                                         </TableCell>
 

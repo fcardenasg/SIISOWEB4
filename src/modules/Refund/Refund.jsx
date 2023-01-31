@@ -90,7 +90,7 @@ const Refund = () => {
     const [textDx2, setTextDx2] = useState('');
 
     const methods = useForm(
-        { resolver: yupResolver(validationSchema) }
+        /* { resolver: yupResolver(validationSchema) } */
     );
 
     const { handleSubmit, formState: { errors }, reset } = methods;

@@ -1,31 +1,34 @@
 import PropTypes from 'prop-types';
-import { useState, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    CardContent,
+    Grid,
+    IconButton,
+    InputAdornment,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
+    TablePagination,
     TableRow,
     TableSortLabel,
-    Typography,
+    TextField,
     Tooltip,
-    IconButton,
-    Grid,
+    Typography,
 } from '@mui/material';
-import { ViewFormat } from 'components/helpers/Format';
 
 import { visuallyHidden } from '@mui/utils';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import ControlModal from 'components/controllers/ControlModal';
-import ViewPDF from 'components/components/ViewPDF';
-import { DeleteListaReintegroArchivo } from 'api/clients/ListRefundClient';
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import swal from 'sweetalert';
+import { SNACKBAR_OPEN } from 'store/actions';
+import { GetAllTemplate } from 'api/clients/TemplateClient';
+
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import SearchIcon from '@mui/icons-material/Search';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -44,7 +47,7 @@ function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
         const order = comparator(a[0], b[0]);
-        if (order != 0) return order;
+        if (order !== 0) return order;
         return a[1] - b[1];
     });
     return stabilizedThis.map((el) => el[0]);
@@ -54,19 +57,13 @@ const headCells = [
     {
         id: 'id',
         numeric: false,
-        label: 'Usuario Registro',
-        align: 'left'
+        label: 'ID',
+        align: 'center'
     },
     {
-        id: 'usuarioRegistro',
+        id: 'nameCIE11',
         numeric: false,
-        label: 'Fecha Registro',
-        align: 'left'
-    },
-    {
-        id: 'fechaRegistro',
-        numeric: false,
-        label: 'Usuario Modifico',
+        label: 'CIE11',
         align: 'left'
     }
 ];
@@ -121,14 +118,59 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const ListaArchivosPDF = ({ lsArchivosCheckReintegro, getAll }) => {
+const HistoryWorkAbsenteeism = () => {
+    const dispatch = useDispatch();
+    const [lsTemplate, setLsTemplate] = useState([]);
+
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('id');
-    const [openViewArchivo, setOpenViewArchivo] = useState(false);
-    const [filePdf, setFilePdf] = useState(null);
-    const [openDelete, setOpenDelete] = useState(false);
+    const [orderBy, setOrderBy] = useState('calories');
     const [selected, setSelected] = useState([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [search, setSearch] = useState('');
+    const [rows, setRows] = useState([]);
+
+    useEffect(() => {
+        async function GetAll() {
+            try {
+                const lsServer = await GetAllTemplate(0, 0);
+                setLsTemplate(lsServer.data.entities);
+                setRows(lsServer.data.entities);
+            } catch (error) {
+            }
+        }
+
+        GetAll();
+    }, [])
+
+    const handleSearch = (event) => {
+        const newString = event?.target.value;
+        setSearch(newString || '');
+
+        if (newString) {
+            const newRows = rows.filter((row) => {
+                let matches = true;
+
+                const properties = ['id', 'nameCIE11', 'idCIE11'];
+                let containsQuery = false;
+
+                properties.forEach((property) => {
+                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                        containsQuery = true;
+                    }
+                });
+
+                if (!containsQuery) {
+                    matches = false;
+                }
+                return matches;
+            });
+            setLsTemplate(newRows);
+        } else {
+            setLsTemplate(rows);
+        }
+    };
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -136,34 +178,38 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro, getAll }) => {
         setOrderBy(property);
     };
 
-    const handleDelete = async (idCheck) => {
-        try {
-            swal(ParamDelete).then(async (willDelete) => {
-                if (willDelete) {
-                    const result = await DeleteListaReintegroArchivo(idCheck);
-                    if (result.status === 200) {
-                        setOpenDelete(true);
-                    }
-                    getAll();
-                }
-            });
-        } catch (error) {
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
 
-        }
-    }
+    const handleChangeRowsPerPage = (event) => {
+        if (event?.target.value) setRowsPerPage(parseInt(event?.target.value, 10));
+        setPage(0);
+    };
+
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
 
     return (
         <Fragment>
-            <MessageDelete onClose={() => setOpenDelete(true)} open={openDelete} />
-
-            <ControlModal
-                title="VISUALIZAR ARCHIVO"
-                open={openViewArchivo}
-                onClose={() => setOpenViewArchivo(false)}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={filePdf} />
-            </ControlModal>
+            <CardContent>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon fontSize="small" />
+                                    </InputAdornment>
+                                )
+                            }}
+                            onChange={handleSearch}
+                            placeholder="Buscar"
+                            value={search}
+                            size="small"
+                        />
+                    </Grid>
+                </Grid>
+            </CardContent>
 
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
@@ -172,12 +218,13 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro, getAll }) => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsArchivosCheckReintegro.length}
+                        rowCount={lsTemplate.length}
                         theme={theme}
                         selected={selected}
                     />
                     <TableBody>
-                        {stableSort(lsArchivosCheckReintegro, getComparator(order, orderBy))
+                        {stableSort(lsTemplate, getComparator(order, orderBy))
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
 
@@ -194,12 +241,13 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro, getAll }) => {
                                             id={labelId}
                                             scope="row"
                                             sx={{ cursor: 'pointer' }}
+                                            align="center"
                                         >
                                             <Typography
-                                                variant="subtitle2"
+                                                variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.id}
+                                                #{row.id}
                                             </Typography>
                                         </TableCell>
 
@@ -210,58 +258,63 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro, getAll }) => {
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
-                                                variant="subtitle2"
+                                                variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.usuarioRegistro}
+                                                {row.nameCIE11}
                                             </Typography>
                                         </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle2"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                        <TableCell align="center" sx={{ pr: 3 }}>
+                                            <CopyToClipboard
+                                                text={row.descripcion}
+                                                onCopy={() =>
+                                                    dispatch({
+                                                        type: SNACKBAR_OPEN,
+                                                        anchorOrigin: { vertical: 'button', horizontal: 'right' },
+                                                        transition: 'SlideLeft',
+                                                        open: true,
+                                                        message: 'Texto Copiado',
+                                                        variant: 'alert',
+                                                        alertSeverity: 'success',
+                                                        close: false
+                                                    })
+                                                }
                                             >
-                                                {ViewFormat(row.fechaRegistro)}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell align="center">
-                                            <Grid container spacing={2}>
-                                                <Grid item xs={4}>
-                                                    <Tooltip title="Ver Archivo" onClick={() => { setFilePdf(row.url); setOpenViewArchivo(true); }}>
-                                                        <IconButton size="large" color='info'>
-                                                            <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </Grid>
-
-                                                <Grid item xs={4}>
-                                                    <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
-                                                        <IconButton size="large" color='error'>
-                                                            <HighlightOffIcon sx={{ fontSize: '1.3rem' }} />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </Grid>
-                                            </Grid>
+                                                <Tooltip title="Copiar">
+                                                    <IconButton size="large">
+                                                        <ContentCopyIcon sx={{ fontSize: '1.3rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </CopyToClipboard>
                                         </TableCell>
                                     </TableRow>
                                 );
                             })}
+                        {emptyRows > 0 && (
+                            <TableRow
+                                style={{
+                                    height: 53 * emptyRows
+                                }}
+                            >
+                                <TableCell colSpan={6} />
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={lsTemplate.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
         </Fragment>
     );
 };
 
-export default ListaArchivosPDF;
-
-ListaArchivosPDF.propTypes = {
-    lsArchivosCheckReintegro: PropTypes.any,
-};
+export default HistoryWorkAbsenteeism;
