@@ -354,7 +354,7 @@ const OccupationalMedicine = () => {
 
                             <Grid item xs={3}>
                                 <InputOnChange
-                                    label="Código de Diagnóstico"
+                                    label="DX"
                                     onKeyDown={handleDiagnostico}
                                     onChange={(e) => setTextDiagnostico(e?.target.value)}
                                     value={textDiagnistico}
@@ -411,8 +411,8 @@ const OccupationalMedicine = () => {
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                        name="Subsegmento"
-                                        label="subsegmento"
+                                        name="subsegmento"
+                                        label="Subsegmento"
                                         options={lsSubsegmento}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />

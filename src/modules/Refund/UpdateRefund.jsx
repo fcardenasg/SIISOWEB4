@@ -278,7 +278,7 @@ const Refund = () => {
                 FormatDate(fechaFin), numeroDia, datos.idOrdenadoPor, datos.idMedico, datos.porcentajePCL, datos.recomendaciones,
                 datos.idConceptoReintegro, FormatDate(datos.inicioReubicacion), FormatDate(datos.finReubicacion), datos.descripcion,
                 datos.idTipoHorario, datos.idOrdenadoPorHorario, FormatDate(datos.fechaInicioHorario), FormatDate(datos.fechaFinHorario),
-                datos.idEstadoCaso, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                datos.idEstadoCaso, user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {

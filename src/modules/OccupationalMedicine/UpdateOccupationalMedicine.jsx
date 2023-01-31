@@ -10,7 +10,7 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { GetAllBySegAfectado, GetAllBySegAgrupado, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
+import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { FormatDate } from 'components/helpers/Format';
 import ViewEmployee from 'components/views/ViewEmployee';
@@ -81,21 +81,23 @@ const OccupationalMedicine = () => {
                     setLsOccupationalMedicine(lsServerAtencion.data);
                     setFilePdf(lsServerAtencion.data.urlDocumento);
                     setSegmentoAgrupado(lsServerAtencion.data.segmentoAgrupado);
-
-                    const lsServerSegAfectado = await GetAllBySegAgrupado(lsServerAtencion.data.segmentoAgrupado, 0, 0);
-                    var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                        value: item.id,
-                        label: item.nombre
-                    }));
-                    setLsSegmentoAfectado(resultSegAfectado);
                     setSegmentoAfectado(lsServerAtencion.data.segmentoAfectado);
+                    setLsSubsegmento(lsServerAtencion.data.subsegmento);
 
-                    const lsServerSubsegmento = await GetAllBySegAfectado(lsServerAtencion.data.segmentoAfectado, 0, 0);
-                    var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                        value: item.id,
-                        label: item.nombre
-                    }));
-                    setLsSubsegmento(resultSubsegmento);
+                    // const lsServerSegAfectado = await GetAllSegmentoAgrupado(lsServerAtencion.data.segmentoAgrupado, 0, 0);
+                    // var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
+                    //     value: item.id,
+                    //     label: item.nombre
+                    // }));
+                    // setLsSegmentoAfectado(resultSegAfectado);
+                    // setSegmentoAfectado(lsServerAtencion.data.segmentoAfectado);
+
+                    // const lsServerSubsegmento = await GetAllBySegmentoAfectado(lsServerAtencion.data.segmentoAfectado, 0, 0);
+                    // var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
+                    //     value: item.id,
+                    //     label: item.nombre
+                    // }));
+                    // setLsSubsegmento(resultSubsegmento);
 
                     var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.codDx);
                     var resultCie11 = lsServerCie11.data.entities.map((item) => ({
@@ -113,12 +115,27 @@ const OccupationalMedicine = () => {
 
     async function getAll() {
         try {
+         
             const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
             var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
                 value: item.id,
                 label: item.nombre
             }));
             setLsSegmentoAgrupado(resultSegAgrupado);
+
+            const lsServerSegAfectado = await GetAllBySegmentoAfectado(0, 0);
+            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setLsSegmentoAfectado(resultSegAfectado);
+
+            const lsServerSubsegmento = await GetAllBySubsegment(0, 0);
+            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setLsSubsegmento(resultSubsegmento);
 
             const lsServerRegion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_REGION);
             var resultRegion = lsServerRegion.data.entities.map((item) => ({
@@ -204,38 +221,38 @@ const OccupationalMedicine = () => {
         }
     }
 
-    const handleChangeSegAgrupado = async (event) => {
-        try {
-            setLsSegmentoAfectado([]); setLsSubsegmento([]); setSegmentoAfectado(''); setSegmentoAgrupado('');
+    // const handleChangeSegAgrupado = async (event) => {
+    //     try {
+    //         setLsSegmentoAfectado([]); setLsSubsegmento([]); setSegmentoAfectado(''); setSegmentoAgrupado('');
 
-            setSegmentoAgrupado(event.target.value);
+    //         setSegmentoAgrupado(event.target.value);
 
-            const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
-            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setLsSegmentoAfectado(resultSegAfectado);
-        } catch (error) {
-            setLsSegmentoAfectado([]);
-        }
-    }
+    //         const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
+    //         var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
+    //             value: item.id,
+    //             label: item.nombre
+    //         }));
+    //         setLsSegmentoAfectado(resultSegAfectado);
+    //     } catch (error) {
+    //         setLsSegmentoAfectado([]);
+    //     }
+    // }
 
-    const handleChangeSegAfectado = async (event) => {
-        try {
-            setLsSubsegmento([]);
-            setSegmentoAfectado(event.target.value);
+    // const handleChangeSegAfectado = async (event) => {
+    //     try {
+    //         setLsSubsegmento([]);
+    //         setSegmentoAfectado(event.target.value);
 
-            const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
-            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setLsSubsegmento(resultSubsegmento);
-        } catch (error) {
-            setLsSubsegmento([]);
-        }
-    }
+    //         const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
+    //         var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
+    //             value: item.id,
+    //             label: item.nombre
+    //         }));
+    //         setLsSubsegmento(resultSubsegmento);
+    //     } catch (error) {
+    //         setLsSubsegmento([]);
+    //     }
+    // }
 
     const handleDiagnostico = async (event) => {
         try {
@@ -289,7 +306,7 @@ const OccupationalMedicine = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutOccupationalMedicine(id, documento, datos.resumenCaso, FormatDate(datos.fechaRetiro), segmentoAgrupado, segmentoAfectado, datos.subsegmento,
+            const DataToUpdate = PutOccupationalMedicine(id, documento, datos.resumenCaso, FormatDate(datos.fechaRetiro), datos.segmentoAgrupado, datos.segmentoAfectado, datos.subsegmento,
                 datos.codDx, datos.nroFurel, datos.regionInfoLaboral, datos.lateralidad, datos.entidadQueMotivaEnvio, datos.entidadDondeEnvia, FormatDate(datos.fechaEntrega),
                 FormatDate(datos.fechaEnvio), datos.investigado, datos.observaciones, FormatDate(datos.fechaCalificacionEps), datos.origenEps, datos.noSolicitudARL,
                 FormatDate(datos.fechaCalifiOrigenARL), datos.origenARL, FormatDate(datos.fechaCalificacionPclARL), datos.pclARL, FormatDate(datos.fechaEstructuraARL),
@@ -347,7 +364,7 @@ const OccupationalMedicine = () => {
                         <Grid item xs={12}>
                             <SubCard title={<Typography variant="h4">INFORMACIÓN LABORAL</Typography>}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 defaultValue={lsOccupationalMedicine.resumenCaso}
@@ -359,7 +376,7 @@ const OccupationalMedicine = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6}>
                                         <FormProvider {...methods}>
                                             <InputDatePicker
                                                 label="Fecha Retiro"
@@ -392,29 +409,7 @@ const OccupationalMedicine = () => {
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <SelectOnChange
-                                            name="segmentoAgrupado"
-                                            label="Segmento Agrupado"
-                                            onChange={handleChangeSegAgrupado}
-                                            value={segmentoAgrupado}
-                                            options={lsSegmentoAgrupado}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <SelectOnChange
-                                            name="segmentoAfectado"
-                                            label="Segmento Afectado"
-                                            onChange={handleChangeSegAfectado}
-                                            value={segmentoAfectado}
-                                            options={lsSegmentoAfectado}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
+                                        <FormProvider {...methods}> 
                                             <InputText
                                                 defaultValue={lsOccupationalMedicine.nroFurel}
                                                 fullWidth
@@ -424,6 +419,47 @@ const OccupationalMedicine = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.segmentoAgrupado}
+                                                name="segmentoAgrupado"
+                                                label="Segmento Agrupado"
+                                                options={lsSegmentoAgrupado}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.segmentoAfectado}
+                                                name="segmentoAfectado"
+                                                label="Segmento Afectado"
+                                                options={lsSegmentoAfectado}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.subsegmento}
+                                                name="subsegmento"
+                                                label="Subsegmento"
+                                                options={lsSubsegmento}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+
+                              
+                              
+
 
                                     <Grid item xs={3}>
                                         <FormProvider {...methods}>

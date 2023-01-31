@@ -54,19 +54,19 @@ const headCells = [
     {
         id: 'id',
         numeric: false,
-        label: 'Usuario Registro',
+        label: 'Id',
         align: 'left'
     },
     {
         id: 'usuarioRegistro',
         numeric: false,
-        label: 'Fecha Registro',
+        label: 'Usuario Registro',
         align: 'left'
     },
     {
         id: 'fechaRegistro',
         numeric: false,
-        label: 'Usuario Modifico',
+        label: 'Fecha Registro',
         align: 'left'
     }
 ];
@@ -227,7 +227,7 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro, getAll }) => {
                                                 variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {ViewFormat(row.fechaRegistro)}
+                                                 {ViewFormat(row.fechaRegistro)}
                                             </Typography>
                                         </TableCell>
 

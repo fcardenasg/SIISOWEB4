@@ -459,9 +459,10 @@ const AccidentRate = () => {
                     </SubCard>
                 </Grid>
 
+       
                 <Grid item xs={12}>
-                    <SubCard>
-                        <Grid container spacing={2}>
+                    <SubCard darkTitle title={<Typography variant="h4">DIAGNÓSTICO INICIAL</Typography>}>
+                                     <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <InputOnChange
                                     label="Dx 1"
@@ -475,14 +476,22 @@ const AccidentRate = () => {
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="diagnosticoInicial"
-                                        label="Dx1"
+                                        label="Diagnostico 1"
                                         options={lsDx1}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoInicial}
                                     />
                                 </FormProvider>
                             </Grid>
+                            </Grid>
 
+                                </SubCard>
+                                </Grid>
+
+
+                                <Grid item xs={12}>
+                                <SubCard darkTitle title={<Typography variant="h4">DIAGNÓSTICO FINAL</Typography>}>
+                                <Grid container spacing={2}> 
                             <Grid item xs={2}>
                                 <InputOnChange
                                     label="Dx 2"
@@ -496,7 +505,7 @@ const AccidentRate = () => {
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="diagnosticoFinal"
-                                        label="Dx2"
+                                        label="Diagnostico 2"
                                         options={lsDx2}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoFinal}
@@ -662,8 +671,8 @@ const AccidentRate = () => {
                         </Grid>
                     </SubCard>
                 </Grid>
-            </Grid>
-        </Fragment>
+            </Grid >
+        </Fragment >
     );
 };
 
