@@ -490,7 +490,7 @@ const UpdateAccidentRate = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard>
+                    <SubCard darkTitle title={<Typography variant="h4">DIAGNÓSTICO INICIAL</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <InputOnChange
@@ -505,7 +505,7 @@ const UpdateAccidentRate = () => {
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="diagnosticoInicial"
-                                            label="Dx1"
+                                            label="Diagnostico 1"
                                             options={lsDx1}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.diagnosticoInicial}
@@ -514,6 +514,13 @@ const UpdateAccidentRate = () => {
                                     </FormProvider>
                                 </Grid>
 
+                                </Grid>
+                                </SubCard>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                <SubCard darkTitle title={<Typography variant="h4">DIAGNÓSTICO FINAL</Typography>}>
+                            <Grid container spacing={2}>  
                                 <Grid item xs={2}>
                                     <InputOnChange
                                         label="Dx 2"
@@ -527,7 +534,7 @@ const UpdateAccidentRate = () => {
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="diagnosticoFinal"
-                                            label="Dx2"
+                                            label="Diagnostico 2"
                                             options={lsDx2}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.diagnosticoFinal}
