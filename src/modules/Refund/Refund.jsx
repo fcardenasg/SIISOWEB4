@@ -65,10 +65,10 @@ const Refund = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [fechaFin, setFechaFin] = useState(null);
-    const [fechaInicio, setFechaInicio] = useState(null);
+    const [fechaFin, setFechaFin] = useState(undefined);
+    const [fechaInicio, setFechaInicio] = useState(undefined);
 
-    const [numeroDia, setNumeroDia] = useState('');
+    const [numeroDia, setNumeroDia] = useState(0);
     const [documento, setDocumento] = useState('');
     const [resultData, setResultData] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
@@ -258,10 +258,6 @@ const Refund = () => {
                         setOpenSuccess(true);
                         setDocumento('');
                         setLsEmployee([]);
-                        setFechaInicio(null);
-                        setFechaFin(null);
-                        setNumeroDia('');
-                        reset();
 
                         setTimeout(() => {
                             if (result.status === 200) {
@@ -331,6 +327,7 @@ const Refund = () => {
                                     <InputSelect
                                         name="dx1"
                                         label="Diagnóstico 1"
+                                        defaultValue={undefined}
                                         options={lsDx1}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.dx1}
@@ -343,7 +340,7 @@ const Refund = () => {
                                     <InputSelect
                                         name="idOrigenDx1"
                                         label="Origen"
-                                        defaultValue=""
+                                        defaultValue={undefined}
                                         options={lsOrigenReintegro}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idOrigenDx1}
@@ -365,6 +362,7 @@ const Refund = () => {
                                     <InputSelect
                                         name="dx2"
                                         label="Diagnóstico 2"
+                                        defaultValue={undefined}
                                         options={lsDx2}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.dx2}
@@ -377,7 +375,7 @@ const Refund = () => {
                                     <InputSelect
                                         name="idOrigenDx2"
                                         label="Origen"
-                                        defaultValue=""
+                                        defaultValue={undefined}
                                         options={lsOrigenReintegro}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idOrigenDx2}
@@ -405,7 +403,7 @@ const Refund = () => {
                                     <InputSelect
                                         name="idEstadoEmpleado"
                                         label="Estado del Empleado"
-                                        defaultValue=""
+                                        defaultValue={undefined}
                                         options={lsEstadoEmpleado}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idEstadoEmpleado}
@@ -418,7 +416,7 @@ const Refund = () => {
                                     <InputSelect
                                         name="idEstadoRestriccion"
                                         label="Estado de Restricción"
-                                        defaultValue=""
+                                        defaultValue={undefined}
                                         options={lsEstadoRestriccion}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idEstadoRestriccion}
@@ -431,7 +429,7 @@ const Refund = () => {
                                     <InputSelect
                                         name="idTipoRestriccion"
                                         label="Tipo de Restricción"
-                                        defaultValue=""
+                                        defaultValue={undefined}
                                         options={lsTipoRestriccion}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idTipoRestriccion}
@@ -483,7 +481,7 @@ const Refund = () => {
                                     <InputSelect
                                         name="idOrdenadoPor"
                                         label="Ordenado Por"
-                                        defaultValue=""
+                                        defaultValue={undefined}
                                         options={lsOrdenadoPor}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idOrdenadoPor}
@@ -496,7 +494,7 @@ const Refund = () => {
                                     <InputSelect
                                         name="idMedico"
                                         label="Médico"
-                                        defaultValue=""
+                                        defaultValue={undefined}
                                         options={lsUsuarios}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idMedico}
@@ -508,7 +506,7 @@ const Refund = () => {
                                 <FormProvider {...methods}>
                                     <InputText
                                         type="number"
-                                        defaultValue=""
+                                        defaultValue={undefined}
                                         fullWidth
                                         name="porcentajePCL"
                                         label="% PCL"
@@ -545,7 +543,7 @@ const Refund = () => {
                                     <InputSelect
                                         name="idConceptoReintegro"
                                         label="Concepto de Aptitud"
-                                        defaultValue=""
+                                        defaultValue={undefined}
                                         options={lsConceptoAptitud}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idConceptoReintegro}
@@ -616,7 +614,7 @@ const Refund = () => {
                                                 <InputSelect
                                                     name="idTipoHorario"
                                                     label="Tipo"
-                                                    defaultValue=""
+                                                    defaultValue={undefined}
                                                     options={lsTipoRestriccion}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.idTipoHorario}
@@ -629,7 +627,7 @@ const Refund = () => {
                                                 <InputSelect
                                                     name="idOrdenadoPorHorario"
                                                     label="Ordenada Por"
-                                                    defaultValue=""
+                                                    defaultValue={undefined}
                                                     options={lsOrdenarPorHorario}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.idOrdenadoPorHorario}
@@ -666,7 +664,7 @@ const Refund = () => {
                                     <InputSelect
                                         name="idEstadoCaso"
                                         label="Estado del Caso"
-                                        defaultValue=""
+                                        defaultValue={undefined}
                                         options={lsEstadoCaso}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idEstadoCaso}

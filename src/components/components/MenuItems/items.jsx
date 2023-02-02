@@ -127,6 +127,14 @@ export const itemsOccupationalHealth = [
     url: '/work-absenteeism/list',
     color: ColorDrummondltd.RedDrummond
   },
+  {
+    title: "Exportar",
+    subtitle: "",
+    icon: IconClipboardHeart,
+    selected: true,
+    url: '/occupational-health/export',
+    color: ColorDrummondltd.GrayDrummond
+  },
 ];
 
 export const itemsConsultancies = [

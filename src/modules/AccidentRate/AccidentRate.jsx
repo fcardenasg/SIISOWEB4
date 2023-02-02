@@ -459,10 +459,10 @@ const AccidentRate = () => {
                     </SubCard>
                 </Grid>
 
-       
+
                 <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">DIAGNÓSTICO INICIAL</Typography>}>
-                                     <Grid container spacing={2}>
+                        <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <InputOnChange
                                     label="Dx 1"
@@ -483,15 +483,15 @@ const AccidentRate = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            </Grid>
+                        </Grid>
 
-                                </SubCard>
-                                </Grid>
+                    </SubCard>
+                </Grid>
 
 
-                                <Grid item xs={12}>
-                                <SubCard darkTitle title={<Typography variant="h4">DIAGNÓSTICO FINAL</Typography>}>
-                                <Grid container spacing={2}> 
+                <Grid item xs={12}>
+                    <SubCard darkTitle title={<Typography variant="h4">DIAGNÓSTICO FINAL</Typography>}>
+                        <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <InputOnChange
                                     label="Dx 2"

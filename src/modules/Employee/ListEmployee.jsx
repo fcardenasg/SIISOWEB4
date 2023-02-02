@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { GetAllEmployee, DeleteEmployee, GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -51,6 +51,7 @@ import { GetByMail } from 'api/clients/UserClient';
 import { generateReportEmployee } from './ReportEmployee';
 import useAuth from 'hooks/useAuth';
 import ControlModal from 'components/controllers/ControlModal';
+import Cargando from 'components/loading/Cargando';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -276,8 +277,8 @@ const ListEmployee = () => {
     async function GetAll() {
         try {
             const lsServer = await GetAllEmployee(0, 0);
-            setEmployee(lsServer.data);
-            setRows(lsServer.data);
+            setEmployee(lsServer.data.entities);
+            setRows(lsServer.data.entities);
         } catch (error) {
 
         }
@@ -421,7 +422,7 @@ const ListEmployee = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employee.length) : 0;
 
     return (
-        <MainCard title="Lista de Empleados" content={false}>
+        <MainCard title="LISTA DE EMPLEADOS" content={false}>
 
             <ControlModal
                 title="VISTA DE REPORTE"
@@ -538,178 +539,183 @@ const ListEmployee = () => {
 
             {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
-                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-                    <EnhancedTableHead
-                        numSelected={selected.length}
-                        order={order}
-                        orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
-                        onRequestSort={handleRequestSort}
-                        rowCount={employee.length}
-                        theme={theme}
-                        selected={selected}
-                        onClick={handleDelete}
-                    />
-                    <TableBody>
-                        {stableSort(employee, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
-                                if (typeof row === 'string') return null;
+                {/* AQUÍ SE HACE PRELOAD */}
+                {employee.length === 0 ? <Cargando size={220} myy={6} /> :
+                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                        <EnhancedTableHead
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={employee.length}
+                            theme={theme}
+                            selected={selected}
+                            onClick={handleDelete}
+                        />
+                        <TableBody>
+                            <Fragment>
+                                {stableSort(employee, getComparator(order, orderBy))
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((row, index) => {
+                                        /** Make sure no display bugs if row isn't an OrderData object */
+                                        if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.documento);
-                                const labelId = `enhanced-table-checkbox-${index}`;
+                                        const isItemSelected = isSelected(row.documento);
+                                        const labelId = `enhanced-table-checkbox-${index}`;
 
-                                return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={index}
-                                        selected={isItemSelected}
-                                    >
-                                        {/* Desde aquí colocamos la llegada de los datos
+                                        return (
+                                            <TableRow
+                                                hover
+                                                role="checkbox"
+                                                aria-checked={isItemSelected}
+                                                tabIndex={-1}
+                                                key={index}
+                                                selected={isItemSelected}
+                                            >
+                                                {/* Desde aquí colocamos la llegada de los datos
                                         en cada columna, recordar solo cambiar el nombre y ya */}
 
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.documento)}>
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
-                                                }}
-                                            />
-                                        </TableCell>
+                                                <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.documento)}>
+                                                    <Checkbox
+                                                        color="primary"
+                                                        checked={isItemSelected}
+                                                        inputProps={{
+                                                            'aria-labelledby': labelId
+                                                        }}
+                                                    />
+                                                </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.documento)}
-                                            sx={{ cursor: 'pointer' }}
-                                            align="center"
-                                        >
-                                            <Avatar alt="Foto Empleado" src={row.imagenUrl === '' ? userEmpleado : row.imagenUrl} />
-                                        </TableCell>
+                                                <TableCell
+                                                    component="th"
+                                                    id={labelId}
+                                                    scope="row"
+                                                    onClick={(event) => handleClick(event, row.documento)}
+                                                    sx={{ cursor: 'pointer' }}
+                                                    align="center"
+                                                >
+                                                    <Avatar alt="Foto Empleado" src={row.imagenUrl === '' ? userEmpleado : row.imagenUrl} />
+                                                </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.documento)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.documento}
-                                            </Typography>
-                                        </TableCell>
+                                                <TableCell
+                                                    component="th"
+                                                    id={labelId}
+                                                    scope="row"
+                                                    onClick={(event) => handleClick(event, row.documento)}
+                                                    sx={{ cursor: 'pointer' }}
+                                                >
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.documento}
+                                                    </Typography>
+                                                </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.documento)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.nombres}
-                                            </Typography>
-                                        </TableCell>
+                                                <TableCell
+                                                    component="th"
+                                                    id={labelId}
+                                                    scope="row"
+                                                    onClick={(event) => handleClick(event, row.documento)}
+                                                    sx={{ cursor: 'pointer' }}
+                                                >
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.nombres}
+                                                    </Typography>
+                                                </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.documento)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.celular}
-                                            </Typography>
-                                        </TableCell>
+                                                <TableCell
+                                                    component="th"
+                                                    id={labelId}
+                                                    scope="row"
+                                                    onClick={(event) => handleClick(event, row.documento)}
+                                                    sx={{ cursor: 'pointer' }}
+                                                >
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.celular}
+                                                    </Typography>
+                                                </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.documento)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.email}
-                                            </Typography>
-                                        </TableCell>
+                                                <TableCell
+                                                    component="th"
+                                                    id={labelId}
+                                                    scope="row"
+                                                    onClick={(event) => handleClick(event, row.documento)}
+                                                    sx={{ cursor: 'pointer' }}
+                                                >
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.email}
+                                                    </Typography>
+                                                </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.documento)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.nameCompany}
-                                            </Typography>
-                                        </TableCell>
+                                                <TableCell
+                                                    component="th"
+                                                    id={labelId}
+                                                    scope="row"
+                                                    onClick={(event) => handleClick(event, row.documento)}
+                                                    sx={{ cursor: 'pointer' }}
+                                                >
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.nameCompany}
+                                                    </Typography>
+                                                </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.documento)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.nameSede}
-                                            </Typography>
-                                        </TableCell>
+                                                <TableCell
+                                                    component="th"
+                                                    id={labelId}
+                                                    scope="row"
+                                                    onClick={(event) => handleClick(event, row.documento)}
+                                                    sx={{ cursor: 'pointer' }}
+                                                >
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.nameSede}
+                                                    </Typography>
+                                                </TableCell>
 
-                                        <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Detalles" onClick={handleOpen}>
-                                                <IconButton disabled={idCheck == '' ? true : false} color="primary" size="large">
-                                                    <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
+                                                <TableCell align="center" sx={{ pr: 3 }}>
+                                                    <Tooltip title="Detalles" onClick={handleOpen}>
+                                                        <IconButton disabled={idCheck == '' ? true : false} color="primary" size="large">
+                                                            <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
 
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/employee/update/${row.documento}`)}>
-                                                <IconButton size="large">
-                                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/employee/update/${row.documento}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                {emptyRows > 0 && (
+                                    <TableRow
+                                        style={{
+                                            height: 53 * emptyRows
+                                        }}
+                                    >
+                                        <TableCell colSpan={6} />
                                     </TableRow>
-                                );
-                            })}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: 53 * emptyRows
-                                }}
-                            >
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                                )}
+                            </Fragment>
+                        </TableBody>
+                    </Table>
+                }
             </TableContainer>
 
             <TablePagination

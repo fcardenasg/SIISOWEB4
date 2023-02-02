@@ -207,6 +207,8 @@ const MenuConsultancies = Loadable(lazy(() => import('modules/Menu/MenuConsultan
 const MenuParaclinics = Loadable(lazy(() => import('modules/Menu/MenuParaclinics')));
 const MenuParameterization = Loadable(lazy(() => import('modules/Menu/MenuParameterization')));
 
+const ExportOccupationalHealth = Loadable(lazy(() => import('modules/ExportOccupationalHealth/ExportOccupationalHealth')));
+
 const MainRoutes = {
     path: '/',
     element: (
@@ -873,6 +875,12 @@ const MainRoutes = {
         {
             path: '/framingham/update/:id',
             element: <UpdateFramingham />
+        },
+
+        /* Exportar de Salud Ocupacional */
+        {
+            path: '/occupational-health/export',
+            element: <ExportOccupationalHealth />
         },
     ]
 };
