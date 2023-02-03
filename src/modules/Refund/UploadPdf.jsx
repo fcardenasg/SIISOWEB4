@@ -18,6 +18,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
 import { PostListaArchivoRefund } from 'formatdata/RefundForm';
+import Cargando from 'components/loading/Cargando';
 import { FormatDate } from 'components/helpers/Format';
 
 const UploadPdf = ({ idListaReintegro }) => {
@@ -47,6 +48,8 @@ const UploadPdf = ({ idListaReintegro }) => {
 
     const allowedFiles = ['application/pdf'];
     const handleFile = async (event) => {
+
+        
         let selectedFile = event.target.files[0];
 
         if (selectedFile) {
@@ -62,6 +65,11 @@ const UploadPdf = ({ idListaReintegro }) => {
                 setErrorMessage('Este forma no es un PDF');
             }
         }
+
+
+
+
+
     }
 
     const handleSave = async () => {

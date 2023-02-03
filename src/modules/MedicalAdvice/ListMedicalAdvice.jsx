@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import Cargando from 'components/loading/Cargando';
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
@@ -402,6 +402,8 @@ const ListMedicalAdvice = () => {
             </CardContent>
 
             <TableContainer>
+        {/* AQUÍ SE HACE PRELOAD */}
+        {medicalAdvice.length === 0 ? <Cargando size={220} myy={6} /> :
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
                         numSelected={selected.length}
@@ -535,6 +537,7 @@ const ListMedicalAdvice = () => {
                         )}
                     </TableBody>
                 </Table>
+                }
             </TableContainer>
 
             <TablePagination

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, Fragment } from 'react';
-
+import Cargando from 'components/loading/Cargando';
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
@@ -166,6 +166,8 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro, getAll }) => {
             </ControlModal>
 
             <TableContainer>
+        {/* AQUÍ SE HACE PRELOAD */}
+        {lsArchivosCheckReintegro.length === 0 ? <Cargando size={220} myy={6} /> :
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
                         numSelected={selected.length}
@@ -255,6 +257,7 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro, getAll }) => {
                             })}
                     </TableBody>
                 </Table>
+                }
             </TableContainer>
         </Fragment>
     );

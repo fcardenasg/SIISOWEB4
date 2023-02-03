@@ -52,13 +52,13 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text('DATOS DEL REGISTRO', 7, 37);
     doc.text('INFORMACIÓN DE ASESORÍA:', 7, 85);
     doc.text('DESCRIPCIÓN DE LA ASESORÍA:', 7, 105);
-    doc.text('PLAN DE MANEJO:', 7, 155);
-    doc.setFontSize(10);
+    doc.text('PLAN DE MANEJO:', 7, 205);
+    doc.setFontSize(8);
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);
 
     /* CUADRO DATOS */
-    doc.line(5, 32, 5, 200); /* IZQUIERDA */
+    doc.line(5, 32, 5, 230); /* IZQUIERDA */
     doc.line(5, 32, marXR, 32); /* HORI ONE */
     doc.line(5, 39, marXR, 39); /* HORI TWO  */
 
@@ -68,12 +68,12 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.line(5, 100, marXR, 100); /* HORI FIVE */
     doc.line(5, 108, marXR, 108); /* HORI SIX */
 
-    doc.line(5, 150, marXR, 150); /* HORI SEVEN */
-    doc.line(5, 158, marXR, 158); /* HORI OCHO */
+    doc.line(5, 200, marXR, 200); /* HORI SEVEN */
+    doc.line(5, 230, marXR, 230); /* HORI OCHO */
 
-    doc.line(5, 200, marXR, 200); /* HORI ULTIMA */
+    doc.line(5, 208, marXR, 208); /* HORI ULTIMA */
     doc.line(40, 39, 40, 80); /* LINEA VERTI ONE */
-    doc.line(marXR, 32, marXR, 200); /* DERECHA */
+    doc.line(marXR, 32, marXR, 230); /* DERECHA */
 
     /* TITULOS DE CONTENIDO */
     doc.setFontSize(8);
@@ -132,11 +132,12 @@ doc.text('TIPO DE ASESORIA:', 120, 85);
     doc.text(`MOTIVO: ${lsDataReport.nameMotivo}`, marXR - 3, 95, { align: 'right' });
 
     /* DESCRIPCIONES DE TEXTO */
-    doc.setFontSize(9);
+    doc.setFontSize(7);
     doc.text(`${lsDataReport.motivo}`, 7, 112, { maxWidth: 200, lineHeightFactor: 1.5 });
-    doc.text(`${lsDataReport.recomendaciones}`, 7, 162, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.setFontSize(7);
+    doc.text(`${lsDataReport.recomendaciones}`, 7, 212, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-    getFirma(doc, lsDataUser)
+    getFirma(doc, lsDataUser,24)
 }
 
 export function generateReport(lsDataReport = [], lsDataUser) {
