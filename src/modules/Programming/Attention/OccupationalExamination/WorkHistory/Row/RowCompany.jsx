@@ -11,6 +11,7 @@ import {
     Tooltip,
 } from '@mui/material';
 
+import EditIcon from '@mui/icons-material/Edit';
 import Cargando from 'components/loading/Cargando';
 import SubRowChargeHistory from './SubRowChargeHistory';
 import swal from 'sweetalert';
@@ -30,12 +31,12 @@ import { SubRow } from './SubRow';
 import { MenuItem } from '../Menu/MenuItem';
 import ModalEditarRiesgo from '../ModalEditarRiesgo';
 
-export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, documento }) {
+export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, documento, getAllWorkHistory }) {
     const diferen = "COMPANY";
     const { user } = useAuth();
     const [numId, setNumId] = useState(1);
     const [numIdRiesgo, setNumIdRiesgo] = useState('');
-    const [openEditarRiesgo, setOpenEditarRiesgo] = useState('');
+    const [openEditarRiesgo, setOpenEditarRiesgo] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
 
@@ -286,7 +287,8 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
     }
 
     const handleUpdate = async (idRiesgo) => {
-
+        setNumIdRiesgo(idRiesgo);
+        setOpenEditarRiesgo(true);
     }
 
     return (
@@ -298,8 +300,9 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
                 title="ACTUALIZAR HISTORIA LABORAL"
                 idRisk={numIdRiesgo}
                 open={openEditarRiesgo}
-                onClose={() => setNumIdRiesgo(true)}
+                onClose={() => setOpenEditarRiesgo(false)}
                 diferen={diferen}
+                getAllWorkHistory={getAllWorkHistory}
             />
 
             <FullScreenDialog
@@ -333,13 +336,13 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
                 <TableCell>{row.meses}</TableCell>
                 <TableCell>
                     <Grid container spacing={2}>
-                        {/* <Grid item xs={6}>
+                        <Grid item xs={6}>
                             <Tooltip title="Editar" onClick={() => handleUpdate(row.id)}>
-                                <IconButton color="error" size="small">
-                                    <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+                                <IconButton color="primary" size="small">
+                                    <EditIcon sx={{ fontSize: '2rem' }} />
                                 </IconButton>
                             </Tooltip>
-                        </Grid> */}
+                        </Grid>
 
                         <Grid item xs={6}>
                             <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>

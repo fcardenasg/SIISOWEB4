@@ -23,15 +23,19 @@ import Cargando from 'components/loading/Cargando';
 import InputSelect from 'components/input/InputSelect';
 import { useTheme } from '@mui/material/styles';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdWorkHistoryOtherCompany, UpdateWorkHistoryOtherCompanys } from 'api/clients/WorkHistoryOtherCompany';
+import { PutWorkHistoryDLTD, PutWorkHistoryEmpresa } from 'formatdata/WorkHistoryForm';
+import { GetByIdWorkHistory, UpdateWorkHistorys } from 'api/clients/WorkHistoryClient';
+import { FormatDate } from 'components/helpers/Format';
 
-const ModalEditarRiesgo = ({ open = false, diferen, onClose, idRisk, title }) => {
+const ModalEditarRiesgo = ({ open = false, diferen, onClose, idRisk, title, getAllWorkHistory }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const { user } = useAuth();
     const methods = useForm();
     const { handleSubmit } = methods;
 
-    const [lsRiesgos, setLsRiesgos] = useState([]);
+    const [lsWorkHistory, setLsWorkHistory] = useState([]);
     const [lsCargo, setLsCargo] = useState([]);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
@@ -48,7 +52,13 @@ const ModalEditarRiesgo = ({ open = false, diferen, onClose, idRisk, title }) =>
 
 
                 if (diferen === "COMPANY") {
+                    const lsServerWorkHistoryOC = await GetByIdWorkHistoryOtherCompany(idRisk);
+                    setLsWorkHistory(lsServerWorkHistoryOC.data);
+                }
 
+                if (diferen === "DLTD") {
+                    const lsServerWorkHistoryDrumm = await GetByIdWorkHistory(idRisk);
+                    setLsWorkHistory(lsServerWorkHistoryDrumm.data);
                 }
 
             } catch (error) { }
@@ -59,14 +69,38 @@ const ModalEditarRiesgo = ({ open = false, diferen, onClose, idRisk, title }) =>
 
     const handleClick = async (datos) => {
         try {
+            const DataToInsertCOMPANY = PutWorkHistoryEmpresa(idRisk, lsWorkHistory.fecha, lsWorkHistory.idAtencion, lsWorkHistory.documento,
+                datos.empresa, datos.cargo, datos.anio, datos.meses, lsWorkHistory.usuarioRegistro, lsWorkHistory.fechaRegistro,
+                user.nameuser, FormatDate(new Date()));
+
+            const DataToInsertDLTD = PutWorkHistoryDLTD(idRisk, lsWorkHistory.fecha, lsWorkHistory.idAtencion, lsWorkHistory.documento,
+                lsWorkHistory.idEmpresa, datos.idCargo, datos.anio, datos.meses,
+                lsWorkHistory.usuarioRegistro, lsWorkHistory.fechaRegistro, user.nameuser, FormatDate(new Date()));
+
+            if (diferen === "DLTD") {
+                const result1 = await UpdateWorkHistorys(DataToInsertDLTD);
+                if (result1.status === 200) {
+                    getAllWorkHistory();
+                    setOpenUpdate(true);
+                }
+            }
+
+            if (diferen === "COMPANY") {
+                const result2 = await UpdateWorkHistoryOtherCompanys(DataToInsertCOMPANY);
+                if (result2.status === 200) {
+                    getAllWorkHistory();
+                    setOpenUpdate(true);
+                }
+            }
+
 
         } catch (error) { }
     }
 
     setTimeout(() => {
-        if (lsRiesgos.length !== 0)
+        if (lsWorkHistory.length !== 0)
             setTimeWait(true);
-    }, 2000);
+    }, 1500);
 
     return (
         <Fragment>
@@ -87,25 +121,55 @@ const ModalEditarRiesgo = ({ open = false, diferen, onClose, idRisk, title }) =>
                     <Grid container spacing={2} sx={{ my: 0 }}>
                         <Grid item xs={12}>
                             {timeWait ?
-                                <SubCard>
+                                <SubCard title={lsWorkHistory.empresa !== undefined ? lsWorkHistory.empresa : 'Drummond'}>
                                     <Grid sx={{ pt: 2 }} container spacing={2}>
-                                        <Grid item xs={3.5}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idCargo"
-                                                    label="Cargo"
-                                                    defaultValue=""
-                                                    options={lsCargo}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
+                                        {diferen === 'DLTD' ?
+                                            <Grid item xs={12}>
+                                                <FormProvider {...methods}>
+                                                    <InputSelect
+                                                        name="idCargo"
+                                                        label="Cargo"
+                                                        defaultValue={lsWorkHistory.idCargo}
+                                                        options={lsCargo}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </FormProvider>
+                                            </Grid> : null
+                                        }
 
-                                        <Grid item xs={2}>
+                                        {diferen === 'COMPANY' ?
+                                            <Fragment>
+                                                <Grid item xs={12}>
+                                                    <FormProvider {...methods}>
+                                                        <InputText
+                                                            defaultValue={lsWorkHistory.empresa}
+                                                            fullWidth
+                                                            name="empresa"
+                                                            label="Empresa"
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </FormProvider>
+                                                </Grid>
+
+                                                <Grid item xs={12}>
+                                                    <FormProvider {...methods}>
+                                                        <InputText
+                                                            defaultValue={lsWorkHistory.cargo}
+                                                            fullWidth
+                                                            name="cargo"
+                                                            label="Cargo"
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </FormProvider>
+                                                </Grid>
+                                            </Fragment> : null
+                                        }
+
+                                        <Grid item xs={6}>
                                             <FormProvider {...methods}>
                                                 <InputText
                                                     type="number"
-                                                    defaultValue=""
+                                                    defaultValue={lsWorkHistory.anio}
                                                     fullWidth
                                                     name="anio"
                                                     label="Año"
@@ -114,11 +178,11 @@ const ModalEditarRiesgo = ({ open = false, diferen, onClose, idRisk, title }) =>
                                             </FormProvider>
                                         </Grid>
 
-                                        <Grid item xs={2}>
+                                        <Grid item xs={6}>
                                             <FormProvider {...methods}>
                                                 <InputText
                                                     type="number"
-                                                    defaultValue=""
+                                                    defaultValue={lsWorkHistory.meses}
                                                     fullWidth
                                                     name="meses"
                                                     label="Meses"

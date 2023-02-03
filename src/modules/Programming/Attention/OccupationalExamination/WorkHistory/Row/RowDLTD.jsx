@@ -4,12 +4,14 @@ import PropTypes from 'prop-types';
 import {
     Box,
     Collapse,
+    Grid,
     IconButton,
     TableCell,
     TableRow,
     Tooltip,
 } from '@mui/material';
 
+import EditIcon from '@mui/icons-material/Edit';
 import Cargando from 'components/loading/Cargando';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import swal from 'sweetalert';
@@ -28,14 +30,18 @@ import { SubRow } from './SubRow';
 import { MenuItem } from '../Menu/MenuItem';
 import SubRowHistoricalDLTD from './SubRowHistoricalDLTD';
 import SubRowChargeHistory from './SubRowChargeHistory';
+import ModalEditarRiesgo from '../ModalEditarRiesgo';
 
-export default function RowDLTD({ row = [], getSumaRiesgo, handleDelete, documento }) {
+export default function RowDLTD({ row = [], getSumaRiesgo, handleDelete, documento, getAllWorkHistory }) {
     const diferen = "DLTD";
     const { user } = useAuth();
     const [numId, setNumId] = useState(1);
 
     const [openDelete, setOpenDelete] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
+
+    const [numIdRiesgo, setNumIdRiesgo] = useState('');
+    const [openEditarRiesgo, setOpenEditarRiesgo] = useState(false);
 
     const [open, setOpen] = useState(false);
     const [openHistorico, setOpenHistorico] = useState(false);
@@ -287,10 +293,24 @@ export default function RowDLTD({ row = [], getSumaRiesgo, handleDelete, documen
         }
     }
 
+    const handleUpdate = async (idRiesgo) => {
+        setNumIdRiesgo(idRiesgo);
+        setOpenEditarRiesgo(true);
+    }
+
     return (
         <Fragment>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
+            <ModalEditarRiesgo
+                title="ACTUALIZAR HISTORIA LABORAL"
+                idRisk={numIdRiesgo}
+                open={openEditarRiesgo}
+                onClose={() => setOpenEditarRiesgo(false)}
+                diferen={diferen}
+                getAllWorkHistory={getAllWorkHistory}
+            />
 
             <FullScreenDialog
                 open={openCargoHistorico}
@@ -319,11 +339,23 @@ export default function RowDLTD({ row = [], getSumaRiesgo, handleDelete, documen
                 <TableCell>{row.anio}</TableCell>
                 <TableCell>{row.meses}</TableCell>
                 <TableCell>
-                    <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
-                        <IconButton color="error" size="small">
-                            <HighlightOffIcon sx={{ fontSize: '2rem' }} />
-                        </IconButton>
-                    </Tooltip>
+                    <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                            <Tooltip title="Editar" onClick={() => handleUpdate(row.id)}>
+                                <IconButton color="primary" size="small">
+                                    <EditIcon sx={{ fontSize: '2rem' }} />
+                                </IconButton>
+                            </Tooltip>
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
+                                <IconButton color="error" size="small">
+                                    <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+                                </IconButton>
+                            </Tooltip>
+                        </Grid>
+                    </Grid>
                 </TableCell>
             </TableRow>
 
