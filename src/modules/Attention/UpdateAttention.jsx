@@ -338,7 +338,7 @@ const UpdateAttention = () => {
             const DataToInsert = PutAttention(id, documento, FormatDate(datos.fecha), datos.sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                lsDataAtencion.usuarioRegistro, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
 
             if (documento !== '' && lsEmployee.length !== 0) {
                 if (Object.keys(datos.length !== 0)) {

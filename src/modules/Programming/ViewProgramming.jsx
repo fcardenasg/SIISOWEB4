@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import swal from 'sweetalert';
@@ -7,7 +7,6 @@ import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import { useTheme } from '@mui/material/styles';
 import { Button, Card, CardContent, CardMedia, Chip, Grid, Typography } from '@mui/material';
-import user from 'assets/img/user.png'
 
 import { DeleteAttention } from 'api/clients/AttentionClient';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
@@ -27,6 +26,7 @@ const ViewProgramming = ({ programming, getAll }) => {
     const theme = useTheme();
 
     const [openSuccess, setOpenSuccess] = useState(false);
+    const [disabledButon, setDisabledButon] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [anchorEl, setAnchorEl] = useState(null);
@@ -55,7 +55,7 @@ const ViewProgramming = ({ programming, getAll }) => {
             const DataToUpdate = PutAttention(programming.id, programming.documento, programming.fecha, programming.sede, programming.tipo,
                 programming.atencion, programming.estadoCaso, programming.observaciones, programming.numeroHistoria, 'ESTÁ SIENDO ATENDIDO',
                 programming.contingencia, programming.turno, programming.diaTurno, programming.motivo, programming.medico,
-                programming.docSolicitante, programming.talla, programming.peso, programming.iMC, user.email,
+                programming.docSolicitante, programming.talla, programming.peso, programming.iMC, user.nameuser,
                 programming.fechaDigitacion, programming.fechaCierreAtencion, programming.duracion,
                 programming.usuarioRegistro, programming.fechaRegistro, programming.usuarioModifico, programming.fechaModifico);
 
@@ -134,12 +134,24 @@ const ViewProgramming = ({ programming, getAll }) => {
         speechSynthesis.speak(mensaje);
     }
 
-    const disabledButon = programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' &&
-        programming.usuarioCierreAtencion === `${user.email}` ? false :
+    useEffect(() => {
+        const handleDisabledButon = () => {
+            try {
+                if (programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' && programming.usuarioCierreAtencion === user.nameuser) {
+                    console.log("user.nameuser => ", user.nameuser, " programming.usuarioCierreAtencion => ", programming.usuarioCierreAtencion);
+                    setDisabledButon(false);
+                } else if (programming.estadoPac === 'PENDIENTE POR ATENCIÓN') {
+                    setDisabledButon(false);
+                } else if (programming.estadoPac === 'ESTÁ SIENDO ATENDIDO') {
+                    setDisabledButon(true);
+                } else if (programming.estadoPac === 'ATENDIDO') {
+                    setDisabledButon(true);
+                }
+            } catch (error) { }
+        }
 
-        programming.estadoPac === 'PENDIENTE POR ATENCIÓN' ? false :
-            programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' ? true :
-                programming.estadoPac === 'ATENDIDO' ? true : false;
+        handleDisabledButon();
+    }, []);
 
     const ColorCard = programming.nameAtencion === 'TRIAGE I' ? ColorDrummondltd.RedDrummond :
         programming.nameAtencion === 'TRIAGE II' ? ColorDrummondltd.RedDrummond :
@@ -177,8 +189,8 @@ const ViewProgramming = ({ programming, getAll }) => {
                     <Grid item xs={12} md={6} lg={4}>
                         <Grid container spacing={gridSpacing}>
                             <Grid item xs={12}>
-                                <Avatar alt={programming.nameEmpleado} src={programming.empleadoFoto === undefined ? user :
-                                    programming.empleadoFoto === '' ? user : programming.empleadoFoto} sx={{ width: 60, height: 60, m: '-50px auto 0' }} />
+                                <Avatar alt={programming.nameEmpleado} src={programming.empleadoFoto === undefined ? null :
+                                    programming.empleadoFoto === '' ? null : programming.empleadoFoto} sx={{ width: 60, height: 60, m: '-50px auto 0' }} />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -186,9 +198,9 @@ const ViewProgramming = ({ programming, getAll }) => {
                     <Grid item xs={12} alignItems="center">
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
-                                <Grid container spacing={1}>
+                                <Grid container spacing={2}>
                                     <Grid item xs={9}>
-                                        <Typography variant="h6"><b>{programming.nameEmpleado.toUpperCase()}</b></Typography>
+                                        <Typography fontSize={12}><b>{programming.nameEmpleado.toUpperCase()} - {programming.documento}</b></Typography>
                                     </Grid>
 
                                     <Grid item xs={3}>
@@ -224,6 +236,10 @@ const ViewProgramming = ({ programming, getAll }) => {
                                         color: 'white'
                                     }}
                                 />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Typography fontSize={10}>{programming.usuarioCierreAtencion === '' ? "" : `${programming.usuarioCierreAtencion.toUpperCase()}`}</Typography>
                             </Grid>
                         </Grid>
                     </Grid>

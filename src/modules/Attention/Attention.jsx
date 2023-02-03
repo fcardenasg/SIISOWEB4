@@ -337,7 +337,7 @@ const Attention = () => {
             const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, "", 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), "durancion",
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (documento === '' && lsEmployee.length === 0) { setOpenError(true); setErrorMessage(`${Message.ErrorDocumento}`); } else
                 if (sede === '') { setOpenError(true); setErrorMessage('Por favor, seleccione una Sede'); } else

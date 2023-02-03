@@ -6,8 +6,12 @@ export function PostWorkHistoryDLTD(fecha, idAtencion, documento, idEmpresa, idC
     };
 }
 
-export function PutWorkHistoryDLTD(id, fecha, idAtencion, documento, idEmpresa, idCargo, anio, meses) {
-    return { id, fecha, idAtencion, documento, idEmpresa, idCargo, anio, meses };
+export function PutWorkHistoryDLTD(id, fecha, idAtencion, documento, idEmpresa, idCargo, anio, meses,
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
+    return {
+        id, fecha, idAtencion, documento, idEmpresa, idCargo, anio, meses,
+        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+    };
 }
 
 export function PostWorkHistoryEmpresa(fecha, idAtencion, documento, empresa, cargo, anio, meses,

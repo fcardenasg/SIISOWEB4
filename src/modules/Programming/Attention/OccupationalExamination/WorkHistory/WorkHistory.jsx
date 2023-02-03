@@ -172,7 +172,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
         } catch { }
     }
 
-    async function getAll() {
+    async function getAllWorkHistory() {
         try {
             const lsServerWorkHistory = await GetAllByDocumentWorkHistory(0, 0, documento);
             if (lsServerWorkHistory.status === 200)
@@ -197,7 +197,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     }, [documento]);
 
     useEffect(() => {
-        getAll();
+        getAllWorkHistory();
     }, [documento]);
 
     const handleDeleteEmpresa = async (idWorkHistory) => {
@@ -209,7 +209,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                         if (result.status === 200) {
                             setOpenDelete(true);
                             setAddItemClickedEmpresa(false);
-                            getAll();
+                            getAllWorkHistory();
                         }
                     }
                 });
@@ -227,7 +227,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                         if (result.status === 200) {
                             setOpenDelete(true);
                             setAddItemClickedDLTD(false);
-                            getAll();
+                            getAllWorkHistory();
                         }
                     }
                 });
@@ -247,7 +247,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                         reset();
                         getSumaRiesgo();
                         setAddItemClickedEmpresa(false);
-                        getAll();
+                        getAllWorkHistory();
                         setOpenSuccess(true);
                     }
                 }
@@ -271,7 +271,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                         getSumaRiesgo();
                         reset();
                         setAddItemClickedDLTD(false);
-                        getAll();
+                        getAllWorkHistory();
                         setOpenSuccess(true);
                     }
                 }
@@ -304,7 +304,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             </TableHead>
                             <TableBody>
                                 {lsWorkHistoryOtherCompany.map((row) => (
-                                    <RowCompany key={row.id} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteEmpresa} />
+                                    <RowCompany key={row.id} getAllWorkHistory={getAllWorkHistory} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteEmpresa} />
                                 ))}
                             </TableBody>
                         </Table>
@@ -407,7 +407,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             </TableHead>
                             <TableBody>
                                 {lsWorkHistory.map((row) => (
-                                    <RowDLTD key={row.id} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteDLTD} />
+                                    <RowDLTD key={row.id} getAllWorkHistory={getAllWorkHistory} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteDLTD} />
                                 ))}
                             </TableBody>
                         </Table>
