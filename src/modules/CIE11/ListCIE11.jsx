@@ -3,7 +3,7 @@ import { GetAllCIE11, DeleteCIE11 } from 'api/clients/CIE11Client';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactExport from "react-export-excel";
-
+import Cargando from 'components/loading/Cargando';
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
@@ -364,6 +364,8 @@ const ListCIE11 = () => {
             </CardContent>
 
             <TableContainer>
+                   {/* AQUÍ SE HACE PRELOAD */}
+        {cie11.length === 0 ? <Cargando size={220} myy={6} /> :
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
                         numSelected={selected.length}
@@ -457,6 +459,7 @@ const ListCIE11 = () => {
                         )}
                     </TableBody>
                 </Table>
+                }
             </TableContainer>
 
             <TablePagination

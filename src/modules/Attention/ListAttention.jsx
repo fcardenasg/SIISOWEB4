@@ -42,7 +42,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
-
+import Cargando from 'components/loading/Cargando';
 import { generateReport } from './ReportAtten';
 import { GetByIdAttention } from "api/clients/AttentionClient";
 import { GetByMail } from 'api/clients/UserClient';
@@ -461,6 +461,8 @@ const ListAttention = () => {
             </CardContent>
 
             <TableContainer>
+                     {/* AQUÍ SE HACE PRELOAD */}
+                     {lsAttention.length === 0 ? <Cargando size={220} myy={6} /> :
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                     <EnhancedTableHead
                         numSelected={selected.length}
@@ -597,7 +599,8 @@ const ListAttention = () => {
                         )}
                     </TableBody>
                 </Table>
-            </TableContainer>
+         }
+         </TableContainer>
 
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
