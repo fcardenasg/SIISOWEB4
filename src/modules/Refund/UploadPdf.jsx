@@ -147,6 +147,7 @@ const UploadPdf = ({ idListaReintegro }) => {
                             <Grid item xs={12}>
                                 {lsArchivosReintegro.length !== 0 ? <ListaArchivosPDF lsArchivosCheckReintegro={lsArchivosReintegro} getAll={getAll} />
                                     : <Typography variant='h4'>NO HAY ARCHIVO</Typography>}
+
                             </Grid>
                         </Grid>
                     </SubCard>
