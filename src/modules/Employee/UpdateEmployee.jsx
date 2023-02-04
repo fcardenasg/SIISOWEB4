@@ -377,7 +377,7 @@ const UpdateEmployee = () => {
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date()),
-                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.email, FormatDate(new Date()), imgSrc, datos.oficio);
+                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.nameuser, FormatDate(new Date()), imgSrc, datos.oficio);
 
             if (imgSrc != null) {
                 if (Object.keys(datos.length !== 0)) {

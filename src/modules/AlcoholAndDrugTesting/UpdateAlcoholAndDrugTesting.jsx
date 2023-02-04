@@ -208,7 +208,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                 datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5, datos.idResultado5,
                 datos.sustancia6, datos.idMuestra6, datos.idResultado6, datos.idRemitido, documentSolicitante, 0, datos.idConcepto,
                 realizada, datos.idMotivoAsis, datos.observaciones, lsAlcoholAndDrugTesting.idMedico, lsAlcoholAndDrugTesting.usuarioRegistro,
-                lsAlcoholAndDrugTesting.fechaRegistro, user.email, FormatDate(new Date()));
+                lsAlcoholAndDrugTesting.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateAlcoholAndDrugTestings(DataToInsert);

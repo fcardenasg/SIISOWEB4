@@ -175,7 +175,7 @@ const TableAlcoholAndDrugTesting = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAlcoholAndDrugTesting(id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportAlcoholtesting(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);

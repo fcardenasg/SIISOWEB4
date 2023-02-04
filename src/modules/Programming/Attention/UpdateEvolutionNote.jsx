@@ -249,7 +249,7 @@ const UpdateEvolutionNote = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdEvolutionNote(resultData.id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportEvolutionNote(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
@@ -332,7 +332,7 @@ const UpdateEvolutionNote = () => {
         try {
             const DataToUpdate = PostEvolutionNote(documento, FormatDate(datos.fecha), id, datos.idAtencion, contingencia,
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.nota, datos.dx1, datos.dx2, datos.dx3,
-                datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.email,
+                datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.nameuser,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (textDx1 === '') {

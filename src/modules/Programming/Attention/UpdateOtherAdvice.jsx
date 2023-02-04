@@ -199,7 +199,7 @@ const UpdateOtherAdvice = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAdvice(resultData.id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
@@ -212,7 +212,7 @@ const UpdateOtherAdvice = () => {
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.observaciones, datos.recomendaciones, '', DefaultValue.SINREGISTRO_GLOBAL,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertAdvice(DataToUpdate);

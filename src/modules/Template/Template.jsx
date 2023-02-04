@@ -3,7 +3,8 @@ import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery
+    useMediaQuery,
+    TableContainer
 } from '@mui/material';
 
 import useAuth from 'hooks/useAuth';
@@ -11,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import Cargando from 'components/loading/Cargando';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
@@ -63,6 +64,7 @@ const Template = () => {
 
             if (event.key === 'Enter') {
                 if (event.target.value !== "") {
+                    
                     var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
 
                     if (lsServerCie11.status === 200) {
@@ -88,6 +90,8 @@ const Template = () => {
             const DataToInsert = PostTemplate("A1", 1, 1,
                 datos.dx1, user.nameuser, 1, 1, 1, datos.descripcion,
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+
+                // {lsAttention.length === 0 ? <Cargando size={220} myy={6} /> :
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertTemplate(DataToInsert);
@@ -119,6 +123,8 @@ const Template = () => {
             </ControlModal>
 
             <Grid container spacing={2}>
+       
+
                 <Grid item xs={2}>
                     <InputOnChange
                         label="Dx 1"
@@ -128,6 +134,7 @@ const Template = () => {
                         size={matchesXS ? 'small' : 'medium'}
                     />
                 </Grid>
+
 
                 <Grid item xs={10}>
                     <FormProvider {...methods}>
@@ -141,6 +148,7 @@ const Template = () => {
                         />
                     </FormProvider>
                 </Grid>
+            
 
                 <Grid item xs={12}>
                     <FormProvider {...methods}>
@@ -163,6 +171,8 @@ const Template = () => {
                         icons={DetailIcons[0].icons}
                     />
                 </Grid>
+
+
             </Grid>
 
             <Grid item sx={{ pt: 4 }} xs={12}>

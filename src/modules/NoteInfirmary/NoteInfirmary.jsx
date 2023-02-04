@@ -166,7 +166,7 @@ const NoteInfirmary = () => {
         try {
 
             const DataToInsert = PostNoteInfirmary(documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
-                JSON.stringify(diagnosticoArray), datos.notaEnfermedad, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                JSON.stringify(diagnosticoArray), datos.notaEnfermedad, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             
 

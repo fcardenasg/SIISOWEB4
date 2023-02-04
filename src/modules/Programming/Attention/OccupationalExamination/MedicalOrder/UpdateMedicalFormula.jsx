@@ -127,7 +127,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, contingencia, setUpdateMed
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdMedicalFormula(numberId);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
@@ -143,7 +143,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, contingencia, setUpdateMed
 
             const DataToInsert = PutMedicalFormula(numberId, FormatDate(new Date()), documento, contingencia,
                 lsAtencion.id, saveTipoOrden, datos.diagnostico, datos.descripcion,
-                user.email, lsMedicalFormula.usuarioRegistro, lsMedicalFormula.fechaRegistro, user.email, FormatDate(new Date()));
+                user.nameuser, lsMedicalFormula.usuarioRegistro, lsMedicalFormula.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateMedicalFormulas(DataToInsert);

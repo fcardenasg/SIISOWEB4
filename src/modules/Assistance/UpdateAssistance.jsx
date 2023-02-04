@@ -184,7 +184,7 @@ const UpdateAssistance = () => {
             const DataToUpdate = PutAssistance(id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL,
                 datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico, datos.examenParaclinico,
-                JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.email, FormatDate(new Date()), '',
+                JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.nameuser, FormatDate(new Date()), '',
                 FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {

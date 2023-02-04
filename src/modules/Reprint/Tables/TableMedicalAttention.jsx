@@ -176,7 +176,7 @@ const TableMedicalAttention = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdMedicalHistory(id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);

@@ -180,7 +180,7 @@ const UpdateOtherAdvice = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAdvice(id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);

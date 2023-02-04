@@ -42,7 +42,7 @@ const PersonalNotes = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostPersonalNotes(datos.descripcion, user.email, FormatDate(new Date()),
+            const DataToInsert = PostPersonalNotes(datos.descripcion, user.nameuser, FormatDate(new Date()),
                 '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {

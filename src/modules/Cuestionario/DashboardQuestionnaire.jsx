@@ -155,7 +155,7 @@ const DashboardQuestionnaire = () => {
             const company = datos.empresa != "" ? datos.empresa : empresa;
 
             const InsertToData = PostQuestionnaire(documento, name, phone, mail, company, noSymptoms, vacunado, JSON.stringify(vacunas),
-                refuerzo, observacionVacuna, user.email, FormatDate(new Date()), user.email, FormatDate(new Date())
+                refuerzo, observacionVacuna, user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date())
             );
 
             if (lsQuestionnaire.length !== 0) {

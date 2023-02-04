@@ -109,7 +109,7 @@ const CabRegistration = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdCabRegistration(result.idRegistroTaxi);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
             const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
 
             setDataPDF(dataPDFTwo);

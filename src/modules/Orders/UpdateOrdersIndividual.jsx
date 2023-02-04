@@ -603,7 +603,7 @@ const UpdateOrdersIndividual = () => {
                 paraclinicos.paraclinicos10, proveedor.proveedor10,
 
                 datos.idTipoExamenLaboratorio, datos.idTipoExamenRNM, datos.fechaExamenFisico, datos.asistio, datos.consentimientoInformado, datos.observaciones,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertOrders(DataToInsert);

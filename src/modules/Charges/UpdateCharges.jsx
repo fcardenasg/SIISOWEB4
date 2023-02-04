@@ -100,7 +100,7 @@ const UpdateCharges = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PutCargo(id, datos.sede, datos.rosterPosition, datos.area, datos.subArea,
-                datos.descripcionCargo, datos.idGES, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                datos.descripcionCargo, datos.idGES, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateChargess(DataToUpdate);

@@ -171,7 +171,7 @@ const UpdatePsychological = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAdvice(resultData.id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportPsycho(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
@@ -183,7 +183,7 @@ const UpdatePsychological = () => {
             const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.idEstadoCaso, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 datos.idTipoAsesoria, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, datos.idCausa, datos.motivoConsulta, datos.concepto, datos.pautasSeguir,
-                datos.idEstadoAsesoria, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                datos.idEstadoAsesoria, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertAdvice(DataToInsert);

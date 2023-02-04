@@ -99,11 +99,11 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
         try {
             const DataToInsertCOMPANY = PutWorkHistoryRiskDLTD(idRisk, row.idHistoriaLaboral, row.fecha, row.documento, row.idRiesgo,
                 row.idCargo, row.idClase, row.idExposicion, row.gradoSinEPP, row.gradoConEPP, row.medidasControl, datos.anio, datos.mes,
-                row.usuarioRegistro, row.fechaRegistro, user.email, FormatDate(new Date()));
+                row.usuarioRegistro, row.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
             const DataToInsertDLTD = PutWorkHistoryRiskDLTD(idRisk, row.idHistoriaLaboral, row.fecha, row.documento, row.idRiesgo,
                 row.idCargo, row.idClase, row.idExposicion, gradoSinEPP, gradoConEPP, JSON.stringify(medicaControl), datos.anio, datos.mes,
-                row.usuarioRegistro, row.fechaRegistro, user.email, FormatDate(new Date()));
+                row.usuarioRegistro, row.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
             if (diferen === "DLTD") {
                 const result1 = await UpdateWorkHistoryRisks(DataToInsertDLTD);

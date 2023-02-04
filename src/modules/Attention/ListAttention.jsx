@@ -283,7 +283,7 @@ const ListAttention = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAttention(idCheck);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }

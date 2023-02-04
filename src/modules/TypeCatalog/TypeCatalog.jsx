@@ -42,7 +42,7 @@ const TypeCatalog = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostTypeCatalog(datos.nombre, user.email, FormatDate(new Date()),
+            const DataToInsert = PostTypeCatalog(datos.nombre, user.nameuser, FormatDate(new Date()),
                 '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {

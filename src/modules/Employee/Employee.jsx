@@ -321,7 +321,7 @@ const Employee = () => {
                 datos.municipioResidenciaTrabaja, dptoResidencia === null ? 1 : dptoNacido, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date()),
-                DefaultValue.BANDERA_DRUMMOND, datos.ges, user.email, FormatDate(new Date()), '', FormatDate(new Date()), imgSrc, datos.oficio);
+                DefaultValue.BANDERA_DRUMMOND, datos.ges, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()), imgSrc, datos.oficio);
 
 
 

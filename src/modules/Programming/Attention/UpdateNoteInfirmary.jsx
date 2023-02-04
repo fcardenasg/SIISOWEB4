@@ -146,7 +146,7 @@ const UpdateNoteInfirmary = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdNoteInfirmary(resultData.id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data);
 
@@ -344,7 +344,7 @@ const UpdateNoteInfirmary = () => {
         try {
             const UpdateToInsert = PostNoteInfirmary(id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia,
                 datos.dx1, datos.dx2, datos.dx3, JSON.stringify(procedimiento), datos.notaEnfermedad,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (lsAtencion.sede === DefaultValue.SEDE_PUERTO && lsAtencion.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA) {
                 if (textDx1 === '') {

@@ -55,13 +55,13 @@ const ReportNoteInfirmary = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetByMail(user.email);
+                const lsServer = await GetByMail(user.nameuser);
                 if (lsServer.status === 200) setLsDataUser(lsServer.data);
             } catch (error) { }
         }
 
         GetAll();
-    }, [user.email]);
+    }, [user.nameuser]);
 
     return (
         <MainCard>
@@ -213,7 +213,7 @@ const ReportNoteInfirmary = () => {
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <Typography variant="h6">Usuario Activo: {user.email}</Typography>
+                                            <Typography variant="h6">Usuario Activo: {user.nameuser}</Typography>
                                         </Grid>
                                     </Grid>
                                 </SubCard>

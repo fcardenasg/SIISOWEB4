@@ -76,7 +76,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, idRisk, title }) =>
         try {
             const DataToInsert = PutWorkHistoryRiskDLTD(idRisk, row.idHistoriaLaboral, row.fecha, row.documento, row.idRiesgo,
                 row.idCargo, row.idClase, row.idExposicion, row.gradoSinEPP, row.gradoConEPP, row.medidasControl, datos.anio, datos.mes,
-                row.usuarioRegistro, row.fechaRegistro, user.email, FormatDate(new Date()));
+                row.usuarioRegistro, row.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
             if (DataToInsert) {
                 if (diferen === "DLTD") {

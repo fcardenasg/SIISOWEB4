@@ -68,7 +68,7 @@ const UpdateMedicines = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PutMedicamentos(id, datos.codigo, datos.descripcion, datos.idUnidad, datos.cantidad,
-                existencia, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                existencia, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateMediciness(DataToUpdate);

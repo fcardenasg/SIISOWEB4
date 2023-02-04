@@ -45,7 +45,7 @@ export const FirebaseProvider = ({ children }) => {
                             isLoggedIn: true,
                             user: {
                                 id: user.uid,
-                                email: user.email,
+                                email: user.nameuser,
                                 name: user.displayName || 'Pacho'
                             }
                         }
