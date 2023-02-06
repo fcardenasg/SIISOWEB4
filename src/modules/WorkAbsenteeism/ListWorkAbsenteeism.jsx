@@ -29,7 +29,7 @@ import { IconFileExport } from '@tabler/icons';
 
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import swal from 'sweetalert';
-import { GetAllWorkAbsenteeism, DeleteWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
+import { GetAllWorkAbsenteeism, DeleteWorkAbsenteeism, GetAllWorkAbsenteeismNumeroDia } from 'api/clients/WorkAbsenteeismClient';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -41,6 +41,7 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { ViewFormat } from 'components/helpers/Format';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { ColorDrummondltd } from 'themes/colors';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -71,15 +72,15 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'id_Inc',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
         id: 'cedula',
         numeric: false,
-        label: 'Cédula',
+        label: 'Documento',
+        align: 'left'
+    },
+    {
+        id: 'nameEmpleado',
+        numeric: false,
+        label: 'Nombre',
         align: 'left'
     },
     {
@@ -234,6 +235,7 @@ const ListWorkAbsenteeism = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
+    const [numeroDias, setNumeroDias] = useState(0);
 
     async function GetAll() {
         try {
@@ -340,13 +342,13 @@ const ListWorkAbsenteeism = () => {
         }
     }
 
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsWorkAbsenteeism.length) : 0;
 
     return (
         <MainCard title="LISTA DE AUSENTISMO LABORAL" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -411,176 +413,176 @@ const ListWorkAbsenteeism = () => {
             </CardContent>
 
             <TableContainer>
-        {/* AQUÍ SE HACE PRELOAD */}
-        {lsWorkAbsenteeism.length === 0 ? <Cargando size={220} myy={6} /> :
-                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-                    <EnhancedTableHead
-                        numSelected={selected.length}
-                        order={order}
-                        orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
-                        onRequestSort={handleRequestSort}
-                        rowCount={lsWorkAbsenteeism.length}
-                        theme={theme}
-                        selected={selected}
-                        onClick={handleDelete}
-                    />
-                    <TableBody>
-                        {stableSort(lsWorkAbsenteeism, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
+                {/* AQUÍ SE HACE PRELOAD */}
+                {lsWorkAbsenteeism.length === 0 ? <Cargando size={220} myy={6} /> :
+                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                        <EnhancedTableHead
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={lsWorkAbsenteeism.length}
+                            theme={theme}
+                            selected={selected}
+                            onClick={handleDelete}
+                        />
+                        <TableBody>
+                            {stableSort(lsWorkAbsenteeism, getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
 
-                                if (typeof row === 'string') return null;
+                                    if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.id_Inc);
-                                const labelId = `enhanced-table-checkbox-${index}`;
+                                    const isItemSelected = isSelected(row.id_Inc);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                                return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={index}
-                                        selected={isItemSelected}
-                                    >
-
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id_Inc)}>
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
-                                                }}
-                                            />
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id_Inc)}
-                                            sx={{ cursor: 'pointer' }}
+                                    return (
+                                        <TableRow
+                                            hover
+                                            role="checkbox"
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                            key={index}
+                                            selected={isItemSelected}
                                         >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.id_Inc}
-                                            </Typography>
-                                        </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id_Inc)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.cedula}
-                                            </Typography>
-                                        </TableCell>
+                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id_Inc)}>
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemSelected}
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId
+                                                    }}
+                                                />
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id_Inc)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id_Inc)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {row.diasSinLaborar}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.cedula}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id_Inc)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id_Inc)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {ViewFormat(row.fechaInicio)}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.nameEmpleado}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id_Inc)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id_Inc)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {ViewFormat(row.fechaFin)}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.diasSinLaborar}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id_Inc)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id_Inc)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {ViewFormat(row.fechaRegistro)}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {ViewFormat(row.fechaInicio)}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id_Inc)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id_Inc)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {row.usuarioRegistro}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {ViewFormat(row.fechaFin)}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/work-absenteeism/update/${row.id_Inc}`)}>
-                                                <IconButton size="large">
-                                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: 53 * emptyRows
-                                }}
-                            >
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id_Inc)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {ViewFormat(row.fechaRegistro)}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id_Inc)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.usuarioRegistro}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell align="center" sx={{ pr: 3 }}>
+                                                <Tooltip title="Actualizar" onClick={() => navigate(`/work-absenteeism/update/${row.id_Inc}`)}>
+                                                    <IconButton size="large">
+                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            {emptyRows > 0 && (
+                                <TableRow
+                                    style={{
+                                        height: 53 * emptyRows
+                                    }}
+                                >
+                                    <TableCell colSpan={6} />
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
                 }
             </TableContainer>
 

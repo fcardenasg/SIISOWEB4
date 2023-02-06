@@ -166,97 +166,97 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro, getAll }) => {
             </ControlModal>
 
             <TableContainer>
-        {/* AQUÍ SE HACE PRELOAD */}
-        {lsArchivosCheckReintegro.length === 0 ? <Cargando size={220} myy={6} /> :
-                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-                    <EnhancedTableHead
-                        numSelected={selected.length}
-                        order={order}
-                        orderBy={orderBy}
-                        onRequestSort={handleRequestSort}
-                        rowCount={lsArchivosCheckReintegro.length}
-                        theme={theme}
-                        selected={selected}
-                    />
-                    <TableBody>
-                        {stableSort(lsArchivosCheckReintegro, getComparator(order, orderBy))
-                            .map((row, index) => {
-                                if (typeof row === 'string') return null;
+                {/* AQUÍ SE HACE PRELOAD */}
+                {lsArchivosCheckReintegro.length === 0 ? <Cargando size={220} myy={6} /> :
+                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                        <EnhancedTableHead
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onRequestSort={handleRequestSort}
+                            rowCount={lsArchivosCheckReintegro.length}
+                            theme={theme}
+                            selected={selected}
+                        />
+                        <TableBody>
+                            {stableSort(lsArchivosCheckReintegro, getComparator(order, orderBy))
+                                .map((row, index) => {
+                                    if (typeof row === 'string') return null;
 
-                                const labelId = `enhanced-table-checkbox-${index}`;
+                                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                                return (
-                                    <TableRow
-                                        hover
-                                        tabIndex={-1}
-                                        key={index}
-                                    >
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            sx={{ cursor: 'pointer' }}
+                                    return (
+                                        <TableRow
+                                            hover
+                                            tabIndex={-1}
+                                            key={index}
                                         >
-                                            <Typography
-                                                variant="subtitle2"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {row.id}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle2"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.id}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle2"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {row.usuarioRegistro}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle2"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.usuarioRegistro}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle2"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                 {ViewFormat(row.fechaRegistro)}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle2"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {ViewFormat(row.fechaRegistro)}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell align="center">
-                                            <Grid container spacing={2}>
-                                                <Grid item xs={4}>
-                                                    <Tooltip title="Ver Archivo" onClick={() => { setFilePdf(row.url); setOpenViewArchivo(true); }}>
-                                                        <IconButton size="large" color='info'>
-                                                            <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
-                                                        </IconButton>
-                                                    </Tooltip>
+                                            <TableCell align="center">
+                                                <Grid container spacing={2}>
+                                                    <Grid item xs={4}>
+                                                        <Tooltip title="Ver Archivo" onClick={() => { setFilePdf(row.url); setOpenViewArchivo(true); }}>
+                                                            <IconButton size="large" color='info'>
+                                                                <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Grid>
+
+                                                    <Grid item xs={4}>
+                                                        <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
+                                                            <IconButton size="large" color='error'>
+                                                                <HighlightOffIcon sx={{ fontSize: '1.3rem' }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Grid>
                                                 </Grid>
-
-                                                <Grid item xs={4}>
-                                                    <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
-                                                        <IconButton size="large" color='error'>
-                                                            <HighlightOffIcon sx={{ fontSize: '1.3rem' }} />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </Grid>
-                                            </Grid>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                    </TableBody>
-                </Table>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                        </TableBody>
+                    </Table>
                 }
             </TableContainer>
         </Fragment>

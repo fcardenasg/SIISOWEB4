@@ -20,10 +20,11 @@ import { ViewFormat } from 'components/helpers/Format';
 
 import UploadIcon from '@mui/icons-material/Upload';
 import { visuallyHidden } from '@mui/utils';
-import { GetAllReintegro } from 'api/clients/ListRefundClient';
+import { GetAllByIdListaReintegroArchivo, GetAllReintegro } from 'api/clients/ListRefundClient';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import UploadPdf from './UploadPdf';
+import Chip from 'ui-component/extended/Chip';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -147,12 +148,13 @@ const CheckListRefund = ({ idReintegro }) => {
             try {
                 var lsCheckedReintegro = await GetAllReintegro(0, 0, idReintegro);
                 setListRefund(lsCheckedReintegro.data.entities);
+
+
             } catch (error) { }
         }
 
         GetAll();
     }, [idReintegro]);
-
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -241,7 +243,10 @@ const CheckListRefund = ({ idReintegro }) => {
                                                 variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.estado}
+                                                {row.countArchivos === 0 ?
+                                                    <Chip label={row.countArchivos + " Archivos"} size="small" chipcolor="error" /> :
+                                                    <Chip label={row.countArchivos + " Archivos"} size="small" chipcolor="success" />
+                                                }
                                             </Typography>
                                         </TableCell>
 
@@ -255,7 +260,7 @@ const CheckListRefund = ({ idReintegro }) => {
                                                 variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.usuarioModifico}
+                                                {row.usuarioRegistro}
                                             </Typography>
                                         </TableCell>
 

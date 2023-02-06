@@ -65,11 +65,6 @@ const UploadPdf = ({ idListaReintegro }) => {
                 setErrorMessage('Este forma no es un PDF');
             }
         }
-
-
-
-
-
     }
 
     const handleSave = async () => {
