@@ -5,6 +5,10 @@ import {
     Grid,
     useMediaQuery,
     Typography,
+    CircularProgress,
+    CircularProgressProps,
+    Box,
+    
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
@@ -63,6 +67,9 @@ const OccupationalMedicine = () => {
     const [documento, setDocumento] = useState('');
     const [textDiagnistico, setTextDiagnostico] = useState('');
     const [lsDiagnistico, setLsDiagnistico] = useState([]);
+
+    
+    const [progress, setProgress] = useState([]);
 
     const methods = useForm();
     const { handleSubmit, reset } = methods;
@@ -218,26 +225,39 @@ const OccupationalMedicine = () => {
         }
     } */
 
+    
     const handleDiagnostico = async (event) => {
         try {
             setTextDiagnostico(event.target.value);
+          
+           
 
             if (event.key === 'Enter') {
                 if (event.target.value !== "") {
+
+
                     var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+    
 
                     if (lsServerCie11.status === 200) {
+                
+                        
                         var resultCie11 = lsServerCie11.data.entities.map((item) => ({
                             value: item.id,
                             label: item.dx
                         }));
                         setLsDiagnistico(resultCie11);
+                  
                     }
+
+
                 } else {
                     setOpenError(true);
                     setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
                 }
             }
+       
+
         } catch (error) {
             setOpenError(true);
             setErrorMessage('Hubo un problema al buscar el Diagnóstico');
@@ -263,6 +283,8 @@ const OccupationalMedicine = () => {
             }
         }
     }
+
+
 
     useEffect(() => {
         getAll();
@@ -310,11 +332,14 @@ const OccupationalMedicine = () => {
             setErrorMessage(Message.RegistroNoGuardado);
         }
     };
-
+  
     return (
         <Fragment>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
+    
+
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -361,6 +386,8 @@ const OccupationalMedicine = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
+
+                           
 
                             <Grid item xs={9}>
                                 <FormProvider {...methods}>
@@ -1212,6 +1239,8 @@ const OccupationalMedicine = () => {
             </Grid>
         </Fragment>
     );
+
+
 };
 
 export default OccupationalMedicine;
