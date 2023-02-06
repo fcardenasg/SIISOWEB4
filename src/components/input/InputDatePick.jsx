@@ -4,7 +4,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { LocalizationProvider, MobileDatePicker } from "@mui/lab";
 import { Fragment } from 'react';
 
-const InputDatePick = ({ value, label, onChange, required, ...others }) => {
+const InputDatePick = ({ value, label, onChange, required, size, ...others }) => {
 
     return (
         <Fragment>
@@ -14,7 +14,7 @@ const InputDatePick = ({ value, label, onChange, required, ...others }) => {
                     inputFormat="dd/MM/yyyy"
                     value={value}
                     onChange={onChange}
-                    renderInput={(params) => <TextField {...params} fullWidth />}
+                    renderInput={(params) => <TextField size={size} {...params} fullWidth />}
                     KeyboardButtonProps={{
                         "aria-label": "change date"
                     }}

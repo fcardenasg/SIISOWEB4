@@ -1,64 +1,42 @@
 import { useState } from 'react';
 import ReactExport from 'react-export-excel';
 import { Grid, Button } from '@mui/material';
-import { GetAllAdvice } from 'api/clients/AdviceClient';
-import { ViewFormat, GetEdad } from 'components/helpers/Format';
+import { ViewFormat } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import { ParametrosExcel } from 'formatdata/ParametrosForm';
+import { GetExcelAccidentRate } from 'api/clients/AccidentRateClient';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const AccidenteTrabajo = ({ sede, atencion, fechaInicio, fechaFin }) => {
+const AccidenteTrabajo = ({ sede, fechaInicio, fechaFin }) => {
     const [lsData, setLsData] = useState([]);
     const [statusData, setStatusData] = useState(false);
 
     async function getDataForExport() {
         try {
-            const lsDataExport = await GetAllAdvice(0, 0);
-            if (lsDataExport.status === 200) {
-                var result = [];
+            var validarSede = 0;
+            if (sede === '') validarSede = 0;
+            else validarSede = sede;
 
-                if (sede === '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin)).map(datos => datos);
+            const parametros = ParametrosExcel(validarSede, fechaInicio, fechaFin);
+            const lsServerExcel = await GetExcelAccidentRate(parametros);
 
-                    setLsData(result);
-                }
-
-                if (sede !== '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede).map(datos => datos);
-
-                    setLsData(result);
-                }
-
-                if (sede === '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idTipoAtencion === atencion).map(datos => datos);
-
-                    setLsData(result);
-                }
-
-                if (sede !== '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede &&
-                        asesoria.idTipoAtencion === atencion).map(datos => datos);
-
-                    setLsData(result);
-                }
-
+            if (lsServerExcel.status === 200) {
+                setLsData(lsServerExcel.data);
                 setStatusData(true);
             }
+
         } catch (error) { }
     }
 
     return (
         <Grid item xs={12} sx={{ textAlign: 'center' }}>
             <Grid container spacing={3}>
-                <Grid item xs={3.5} />
+                <Grid item xs={0} md={3.5} />
 
-                <Grid item xs={5} sx={{ textAlign: 'center' }}>
+                <Grid item xs={12} md={5} sx={{ textAlign: 'center' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
                             <AnimateButton>
@@ -78,30 +56,39 @@ const AccidenteTrabajo = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                             DESCARGAR EXCEL
                                         </Button>
                                     </AnimateButton>
-                                } filename="ASESORÍAS">
-                                    <ExcelSheet data={lsData} name="Listado de Asesorías">
-                                        <ExcelColumn label="Nro Atencion" value="id" />
+                                } filename="ACCIDENTE DE TRABAJO">
+                                    <ExcelSheet data={lsData} name="Lista de AT">
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
+                                        <ExcelColumn label="Empresa" value="empresa" />
+                                        <ExcelColumn label="Tipo Contrato" value="tipoContrato" />
                                         <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Genero" value="nameGenero" />
-                                        <ExcelColumn label="Motivo" value="nameMotivo" />
-                                        <ExcelColumn label="Tipo Asesoría" value="nameTipoAsesoria" />
-                                        <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNacimi)} />
-                                        <ExcelColumn label="EPS" value="nameEps" />
-                                        <ExcelColumn label="Sede Atención" value="nameSede" />
-                                        <ExcelColumn label="Tipo Atención" value="nameTiAtencion" />
-                                        <ExcelColumn label="Empresa" value="nameEmpresa" />
-                                        <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
-                                        <ExcelColumn label="Departamento" value="nameDepartamento" />
-                                        <ExcelColumn label="Area" value="nameArea" />
-                                        <ExcelColumn label="Roster Position" value="nameCargo" />
-                                        <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                        <ExcelColumn label="Grupo" value="nameGrupo" />
-                                        <ExcelColumn label="Descripción" value="motivo" />
-                                        <ExcelColumn label="Recomendaciones" value="recomendaciones" />
-                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
+                                        <ExcelColumn label="Nombre" value="nombre" />
+                                        <ExcelColumn label="Departamento" value="departamento" />
+                                        <ExcelColumn label="Area" value="area" />
+                                        <ExcelColumn label="Posicion" value="posicion" />
+                                        <ExcelColumn label="Grupo" value="grupo" />
+                                        <ExcelColumn label="Fecha Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
+                                        <ExcelColumn label="Eps" value="eps" />
+                                        <ExcelColumn label="Ges" value="ges" />
+                                        <ExcelColumn label="Sede" value="sede" />
+                                        <ExcelColumn label="PayStatus" value="payStatus" />
+                                        <ExcelColumn label="Segmento Agrupado" value="segmentoAgrupado" />
+                                        <ExcelColumn label="Segmento" value="segmento" />
+                                        <ExcelColumn label="SubTipo Consecutivo" value="subTipoConsecutivo" />
+                                        <ExcelColumn label="Cod Dx Inicial" value="codDxInicial" />
+                                        <ExcelColumn label="Dx Inicial" value="dxInicial" />
+                                        <ExcelColumn label="Cod Dx Final" value="codDxFinal" />
+                                        <ExcelColumn label="Dx Final" value="dxFinal" />
+                                        <ExcelColumn label="Px" value="px" />
+                                        <ExcelColumn label="Conducta Inicial" value="conductaInicial" />
+                                        <ExcelColumn label="Conducta Fin" value="conductaFin" />
+                                        <ExcelColumn label="Dias TW" value="diasTW" />
+                                        <ExcelColumn label="Días Incapacidad" value="diasIncapacidad" />
+                                        <ExcelColumn label="Clase" value="clase" />
+                                        <ExcelColumn label="Causa" value="causa" />
+                                        <ExcelColumn label="Seguimiento" value="seguimiento" />
+                                        <ExcelColumn label="Remitido" value="remitido" />
+                                        <ExcelColumn label="Usuario" value="usuario" />
                                     </ExcelSheet>
                                 </ExcelFile> : ''
                             }
@@ -109,7 +96,7 @@ const AccidenteTrabajo = ({ sede, atencion, fechaInicio, fechaFin }) => {
                     </Grid>
                 </Grid>
 
-                <Grid item xs={3.5} />
+                <Grid item xs={0} md={3.5} />
             </Grid>
         </Grid>
     );

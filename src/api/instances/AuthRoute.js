@@ -115,6 +115,7 @@ export const Url = {
     ApuntesPersonalesId: 'api/ApuntesPersonales/id',
 
     Accidentalidad: 'api/Accidentalidad',
+    AccidentalidadExcel: 'api/Accidentalidad/GenerateExcel',
     AccidentalidadId: 'api/Accidentalidad/id',
 
     HistoriaLaboral: 'api/HistoriaLaboral',

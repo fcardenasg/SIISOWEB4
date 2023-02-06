@@ -116,7 +116,7 @@ const ExportOccupationalHealth = () => {
                                 statusReprint === 'SER02' ? Title.ausentismoLaboral : ''}</Typography>}
                     >
                         <Grid container spacing={2}>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={3}>
                                 <SelectOnChange
                                     name="sede"
                                     label="Sede de Atención"
@@ -127,19 +127,21 @@ const ExportOccupationalHealth = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={3}>
                                 <InputDatePick
                                     label="Fecha Inicio"
                                     onChange={(e) => setFechaInicio(e)}
                                     value={fechaInicio}
+                                    size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
 
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={3}>
                                 <InputDatePick
                                     label="Fecha Fin"
                                     onChange={(e) => setFechaFin(e)}
                                     value={fechaFin}
+                                    size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
 
