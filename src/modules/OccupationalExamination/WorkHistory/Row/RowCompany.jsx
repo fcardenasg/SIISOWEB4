@@ -79,7 +79,7 @@ export default function RowCompany({ row = [], handleDelete, documento }) {
 
                     const DataToInsert = PostWorkHistoryRiskCompany(row.id, row.fecha, row.documento, numRiesgo,
                         row.cargo, riesgo.clase, riesgo.exposicion, riesgo.gradosinEPP, riesgo.gradoconEPP,
-                        riesgo.medidascontrol, 0, 0, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                        riesgo.medidascontrol, 0, 0, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
                     if (DataToInsert) {
                         const result = await InsertWorkHistoryRiskCompany(DataToInsert);

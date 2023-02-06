@@ -128,7 +128,7 @@ const UpdateCIE11 = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PutCIE11(datos.id, datos.dx, segmentoAgrupado, segmentoAfectado, datos.idSubsegmento,
-                cie11.usuarioRegistro, cie11.fechaRegistro, user.email, FormatDate(new Date()));
+                cie11.usuarioRegistro, cie11.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateCIE11s(DataToUpdate);

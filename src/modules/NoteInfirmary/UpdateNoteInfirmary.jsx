@@ -164,7 +164,7 @@ const UpdateNoteInfirmary = () => {
         try {
             const UpdateToInsert = PutNoteInfirmary(id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
                 JSON.stringify(diagnosticoArray), datos.notaEnfermedad, lsNoteInfirmary.usuarioRegistro, lsNoteInfirmary.fechaRegistro,
-                user.email, FormatDate(new Date()));
+                user.nameuser, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateNoteInfirmarys(UpdateToInsert);

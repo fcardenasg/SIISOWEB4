@@ -284,7 +284,7 @@ const ListCabRegistration = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdCabRegistration(idCheck);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
             const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }

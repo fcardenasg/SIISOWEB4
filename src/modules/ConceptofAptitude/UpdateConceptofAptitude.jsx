@@ -150,7 +150,7 @@ const UpdateOrderEPP = () => {
             setOpenReport(true);
             const lsDataReport = await GetByIdConceptofAptitude(id);
         //    console.log(lsDataReport)
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
             const dataPDFTwo = generateReportConceptofAptitude(lsDataReport.data, lsDataUser.data);
 
             setDataPDF(dataPDFTwo);

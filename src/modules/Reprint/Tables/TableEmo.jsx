@@ -257,7 +257,7 @@ const TableEmo = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdDataReport(id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
             const resultExpoDLTD = await getDataExploracion(documento);
 
             const dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD);

@@ -90,7 +90,7 @@ const MedicalFormula = ({ setListMedicalFormula, setNewMedicalFormula, setUpdate
 
             const DataToInsert = PostMedicalFormula(FormatDate(new Date()), documento, DefaultValue.SINREGISTRO_GLOBAL,
                 lsAtencion.id, saveTipoOrden, JSON.stringify(diagnostico), datos.descripcion,
-                user.email, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             
 

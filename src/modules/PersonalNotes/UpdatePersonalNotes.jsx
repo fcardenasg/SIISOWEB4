@@ -65,7 +65,7 @@ const UpdatePersonalNotes = () => {
     const onSubmit = async (datos) => {
         try {
             const DataToUpdate = PutPersonalNotes(id, datos.descripcion, lsPersonalNotes.usuarioCreacion,
-                lsPersonalNotes.fechaCreacion, user.email, FormatDate(new Date()));
+                lsPersonalNotes.fechaCreacion, user.nameuser, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdatePersonalNotess(DataToUpdate);

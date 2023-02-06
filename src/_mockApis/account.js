@@ -34,7 +34,7 @@ services.onPost('/api/account/login').reply(async (request) => {
             users = JSON.parse(localUsers);
         }
 
-        const user = users.find((_user) => _user.email === email);
+        const user = users.find((_user) => _user.nameuser === email);
 
         if (!user) {
             return [400, { message: 'Verify Your Email & Password' }];
@@ -52,7 +52,7 @@ services.onPost('/api/account/login').reply(async (request) => {
                 serviceToken,
                 user: {
                     id: user.id,
-                    email: user.email,
+                    email: user.nameuser,
                     name: user.name
                 }
             }
@@ -121,7 +121,7 @@ services.onGet('/api/account/me').reply((request) => {
             {
                 user: {
                     id: user.id,
-                    email: user.email
+                    email: user.nameuser
                 }
             }
         ];

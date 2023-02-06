@@ -62,7 +62,7 @@ const SGSST = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostSGSST(datos.codigo, datos.nombre, filePdf,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 if (filePdf) {

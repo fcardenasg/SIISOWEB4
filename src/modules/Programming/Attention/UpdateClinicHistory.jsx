@@ -310,7 +310,7 @@ const UpdateClinicHistory = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdMedicalHistory(resultData.id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
@@ -322,7 +322,7 @@ const UpdateClinicHistory = () => {
             const DataToUpdate = PostAssistance(documento, FormatDate(datos.fecha), id, datos.idAtencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico,
                 datos.examenParaclinico, datos.dx1, datos.dx2, datos.dx3, datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (textDx1 === '') {
                 setOpenError(true);

@@ -109,7 +109,7 @@ const Requests = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdRequests(result.idSolicitudes);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
             const dataPDFTwo = generateReportRequests(lsDataReport.data, lsDataUser.data);
 
             setDataPDF(dataPDFTwo);

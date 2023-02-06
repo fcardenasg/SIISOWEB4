@@ -178,7 +178,7 @@ const TableMedicalAttentionControl = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdEvolutionNote(id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportEvolutionNote(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);

@@ -140,7 +140,7 @@ const PsychologicalCounseling = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAdvice(resultData.id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportPsycho(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);

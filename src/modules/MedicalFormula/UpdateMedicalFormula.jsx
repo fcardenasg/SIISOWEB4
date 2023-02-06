@@ -91,7 +91,7 @@ const UpdateMedicalFormula = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdMedicalFormula(id);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);

@@ -85,7 +85,7 @@ const UpdateTemplate = () => {
         try {
             const DataToUpdate = PutTemplate(id, 0, 0, 0,
                 datos.idCIE11, lsTemplate.usuario, 0, 0, 0, datos.descripcion,
-                lsTemplate.usuarioRegistro, lsTemplate.fechaRegistro, user.email, FormatDate(new Date()));
+                lsTemplate.usuarioRegistro, lsTemplate.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateTemplates(DataToUpdate);

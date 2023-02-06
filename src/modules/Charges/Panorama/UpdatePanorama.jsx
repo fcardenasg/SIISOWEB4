@@ -157,7 +157,7 @@ const Panorama = () => {
             const DataClase = clase == '' ? datos.clase : clase;
 
             const DataToInsert = PutPanorama(id, lsPanorama.idCargo, riesgo, DataClase, datos.exposicion, datos.gradoconEPP, datos.gradosinEPP,
-                JSON.stringify(medicaControl), datos.descripcionCargo, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                JSON.stringify(medicaControl), datos.descripcionCargo, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdatePanoramas(DataToInsert);

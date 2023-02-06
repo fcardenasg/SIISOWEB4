@@ -285,7 +285,7 @@ const ListOrderEPP = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdOrderEPP(idCheck);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
             const dataPDFTwo = generateReportOrderEPP(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }

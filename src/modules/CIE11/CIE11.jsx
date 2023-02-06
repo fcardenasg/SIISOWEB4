@@ -104,7 +104,7 @@ const CIE11 = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostCIE11(datos.id, datos.dx, segmentoAgrupado, segmentoAfectado, datos.idSubsegmento,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertCIE11(DataToInsert);

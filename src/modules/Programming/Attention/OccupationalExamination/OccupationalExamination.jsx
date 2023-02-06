@@ -336,7 +336,7 @@ const OccupationalExamination = () => {
             setOpenReport(true);
 
             var lsDataReport = await GetByIdDataReport(resultData);
-            var lsDataUser = await GetByMail(user.email);
+            var lsDataUser = await GetByMail(user.nameuser);
             var resultExpoDLTD = await getDataExploracion(documento);
             //reporte riesgos
             var lsServerWorkHistory = await GetAllByDocumentWorkHistory(0, 0, documento);
@@ -631,7 +631,7 @@ const OccupationalExamination = () => {
 
                 frLdl, relacion, frEdad, frColesterol, frHdl, frGlicemia,
                 frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()),
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()),
 
                 datos.tosAUsualSin, datos.tosEnLaSemanaSintR, datos.tosMananaSintR, datos.tosConsecutivaSintR, datos.anosConTosSintR, datos.esputoASintR,
                 datos.esputoBSintR, datos.esputoCSintR, datos.esputoDSintR, datos.esputoESintR, datos.episoTosEspuASintR, datos.episoTosEsputoBSintR,
@@ -744,7 +744,7 @@ const OccupationalExamination = () => {
 
                 frLdl, relacion, frEdad, frColesterol, frHdl, frGlicemia,
                 frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
-                user.email, FormatDate(new Date()), '', FormatDate(new Date()),
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()),
 
                 datos.tosAUsualSin, datos.tosEnLaSemanaSintR, datos.tosMananaSintR, datos.tosConsecutivaSintR, datos.anosConTosSintR, datos.esputoASintR,
                 datos.esputoBSintR, datos.esputoCSintR, datos.esputoDSintR, datos.esputoESintR, datos.episoTosEspuASintR, datos.episoTosEsputoBSintR,

@@ -232,7 +232,7 @@ const Audiometry = () => {
                 datos.observacionAOP, datos.idEmpresaAO, datos.idCargoAO, datos.tiempoExpoAO, datos.idProteccionAuditivaAO,
                 datos.idSuministradaPorAO, datos.idUsoA, datos.idOdcaeAUDIO, datos.idOdmtAUDIO, datos.idOicaeAUDIO, datos.idOimtAUDIO,
                 datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
-                filePdf, user.email, FormatDate(new Date()), '', FormatDate(new Date()));
+                filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             
 

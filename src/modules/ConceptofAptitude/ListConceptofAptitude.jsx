@@ -291,7 +291,7 @@ const ListConceptofAptitude = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdConceptofAptitude(idCheck);
-            const lsDataUser = await GetByMail(user.email);
+            const lsDataUser = await GetByMail(user.nameuser);
             const dataPDFTwo = generateReportConceptofAptitude(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }

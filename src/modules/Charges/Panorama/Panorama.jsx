@@ -141,7 +141,7 @@ const Panorama = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostPanorama(cargo.rosterPosition, riesgo, datos.clase, datos.exposicion, datos.gradoconEPP, datos.gradosinEPP,
-                JSON.stringify(medicaControl), datos.descripcionCargo, user.email,
+                JSON.stringify(medicaControl), datos.descripcionCargo, user.nameuser,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
