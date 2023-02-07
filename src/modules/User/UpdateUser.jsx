@@ -56,6 +56,7 @@ const UpdateUser = () => {
 
     const [lsEspecialidad, setLsEspecialidad] = useState([]);
     const [lsRolUser, setLsRolUser] = useState([]);
+    const [lsSedeUser, setLsSedeUser] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -86,6 +87,17 @@ const UpdateUser = () => {
                 label: item.nombre
             }));
             setLsEspecialidad(resultEspecialidad);
+
+
+            const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
+            var resultSede = lsServerSede.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsSedeUser(resultSede);
+
+
+
         } catch (error) {
         }
     }
@@ -121,7 +133,7 @@ const UpdateUser = () => {
 
             const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
                 datos.idRol, JSON.stringify(especialidad), datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-                fileImg, checkEstadoUsuario);
+                fileImg, checkEstadoUsuario,datos.idSede);
 
             if (Object.keys(datos.length !== 0)) {
                 if (fileImg !== null) {
@@ -275,6 +287,21 @@ const UpdateUser = () => {
                                 />
                             </FormProvider>
                         </Grid>
+
+                      
+
+                        <Grid item xs={12} md={6} lg={4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="idSede"
+                            label="Sede de atención"
+                            defaultValue={lsUsuario.idSede}
+                            options={lsSedeUser}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors.idSede}
+                        />
+                    </FormProvider>
+                </Grid>
 
                         <Grid item xs={12} md={6} lg={4}>
                             <InputCheck
