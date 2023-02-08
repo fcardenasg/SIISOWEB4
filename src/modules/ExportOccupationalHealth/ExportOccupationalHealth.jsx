@@ -9,11 +9,7 @@ import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/Catal
 import { CodCatalogo } from 'components/helpers/Enums';
 import SubCard from 'ui-component/cards/SubCard';
 import AccidenteTrabajo from './Export/AccidenteTrabajo';
-
-/* import ExportConsulting from './Export/ExportConsulting';
-import ExportMedicalAttention from './Export/ExportMedicalAttention';
-import ExportEmo from './Export/ExportEmo';
-import ExportInfirmary from './Export/ExportInfirmary'; */
+import MedicionaLaboralExport from './Export/MedicionaLaboralExport';
 
 const Title = {
     medicinaLaboral: 'MEDICINA LABORAL',
@@ -25,12 +21,9 @@ const Title = {
 const ExportOccupationalHealth = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [statusReprint, setStatusReprint] = useState('SER03');
 
     const [lsSede, setLsSede] = useState([]);
-    const [lsAtencion, setLsAtencion] = useState([]);
-
-    const [atencion, setAtencion] = useState('');
+    const [tipoReporte, setTipoReporte] = useState('EXCEL1');
     const [sede, setSede] = useState('');
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
@@ -43,38 +36,12 @@ const ExportOccupationalHealth = () => {
                 label: item.nombre
             }));
             setLsSede(resultSede);
-
-            var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, 'SER03', 5);
-            if (lsGetTipo.status === 200) {
-                var resultMapsTipo = lsGetTipo.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-
-                setLsAtencion(resultMapsTipo);
-            }
-        } catch (error) { }
-    }
-
-    async function getAllAgain(codigo = '') {
-        try {
-            setAtencion(''); setSede(''); setFechaInicio(null); setFechaFin(null);
-            setStatusReprint(codigo);
-            var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, codigo, 5);
-            if (lsGetTipo.status === 200) {
-                var resultMapsTipo = lsGetTipo.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-
-                setLsAtencion(resultMapsTipo);
-            }
         } catch (error) { }
     }
 
     useEffect(() => {
         GetAll();
-    }, [])
+    }, []);
 
     return (
         <Fragment>
@@ -83,25 +50,25 @@ const ExportOccupationalHealth = () => {
                     <SubCard title={<Typography variant="h4">EXPORTACIÓN</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => getAllAgain('SER03')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => setTipoReporte('EXCEL1')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.medicinaLaboral}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => getAllAgain('SER01')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => setTipoReporte('EXCEL2')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.reintegro}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => getAllAgain('SER04')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => setTipoReporte('EXCEL3')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.accidentalidadTrabajo}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => getAllAgain('SER02')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => setTipoReporte('EXCEL4')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.ausentismoLaboral}
                                 </Button>
                             </Grid>
@@ -110,10 +77,10 @@ const ExportOccupationalHealth = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard title={<Typography variant="h4">EXPORTAR {statusReprint === 'SER03' ? Title.medicinaLaboral :
-                        statusReprint === 'SER01' ? Title.reintegro :
-                            statusReprint === 'SER04' ? Title.accidentalidadTrabajo :
-                                statusReprint === 'SER02' ? Title.ausentismoLaboral : ''}</Typography>}
+                    <SubCard title={<Typography variant="h4">EXPORTAR {tipoReporte === 'EXCEL1' ? Title.medicinaLaboral :
+                        tipoReporte === 'EXCEL2' ? Title.reintegro :
+                            tipoReporte === 'EXCEL3' ? Title.accidentalidadTrabajo :
+                                tipoReporte === 'EXCEL4' ? Title.ausentismoLaboral : ''}</Typography>}
                     >
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={3}>
@@ -145,11 +112,25 @@ const ExportOccupationalHealth = () => {
                                 />
                             </Grid>
 
-                            <AccidenteTrabajo
-                                fechaFin={fechaFin}
-                                fechaInicio={fechaInicio}
-                                sede={sede}
-                            />
+
+                            {tipoReporte === 'EXCEL1' ?
+                                <MedicionaLaboralExport
+                                    fechaFin={fechaFin}
+                                    fechaInicio={fechaInicio}
+                                    sede={sede}
+                                /> :
+                                tipoReporte === 'EXCEL2' ?
+                                    <AccidenteTrabajo
+                                        fechaFin={fechaFin}
+                                        fechaInicio={fechaInicio}
+                                        sede={sede}
+                                    /> : tipoReporte === 'EXCEL3' ?
+                                        <AccidenteTrabajo
+                                            fechaFin={fechaFin}
+                                            fechaInicio={fechaInicio}
+                                            sede={sede}
+                                        /> : null
+                            }
 
                             {/* {statusReprint === 'SER03' ?
                                 <ExportConsulting
