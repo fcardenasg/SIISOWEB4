@@ -35,7 +35,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado, GetAllBySegmentoAfectado } from 'api/clients/OthersClients';
+import { GetAllSegmentoAgrupado, GetAllBySegmentoAfectado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { InsertAccidentRate } from 'api/clients/AccidentRateClient';
 import { PostAccidentRate } from 'formatdata/AccidentRateForm';

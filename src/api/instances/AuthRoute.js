@@ -156,6 +156,7 @@ export const Url = {
     NotaEnfermeriaId: 'api/NotaEnfermeria/id',
 
     MedicinaLaboral: 'api/MedicinaLaboralX',
+    MedicinaLaboralExcel: 'api/MedicinaLaboralX/GenerateExcel',
     MedicinaLaboralId: 'api/MedicinaLaboralX/id',
 
     AusentismoLaboral: 'api/AusentismoLaboral',
