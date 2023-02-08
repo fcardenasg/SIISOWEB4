@@ -81,8 +81,6 @@ const User = () => {
                 label: item.nombre
             }));
             setLsSedeUser(resultSede);
-
-
         } catch (error) { }
     }
 
@@ -117,7 +115,7 @@ const User = () => {
 
             const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
                 datos.idRol, JSON.stringify(especialidad), datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-                fileImg, checkEstadoUsuario,datos.idSede);
+                fileImg, checkEstadoUsuario, datos.idSede);
 
             if (Object.keys(datos.length !== 0)) {
                 if (fileImg === null) {

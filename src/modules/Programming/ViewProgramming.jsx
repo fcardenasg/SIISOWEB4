@@ -138,7 +138,6 @@ const ViewProgramming = ({ programming, getAll }) => {
         const handleDisabledButon = () => {
             try {
                 if (programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' && programming.usuarioCierreAtencion === user.nameuser) {
-                    console.log("user.nameuser => ", user.nameuser, " programming.usuarioCierreAtencion => ", programming.usuarioCierreAtencion);
                     setDisabledButon(false);
                 } else if (programming.estadoPac === 'PENDIENTE POR ATENCIÓN') {
                     setDisabledButon(false);

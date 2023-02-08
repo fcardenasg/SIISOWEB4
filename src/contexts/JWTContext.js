@@ -85,7 +85,9 @@ export const JWTProvider = ({ children }) => {
                                 id: dataUser.id,
                                 email: dataUser.correo,
                                 nameuser: dataUser.nombreUsuario,
-                                namerol: dataUser.nombreRol
+                                namerol: dataUser.nombreRol,
+                                namesede: dataUser.nombreSede,
+                                idsede: dataUser.idSede
                             }
                         }
                     });
@@ -129,7 +131,9 @@ export const JWTProvider = ({ children }) => {
                         id: dataUser.id,
                         email: dataUser.correo,
                         nameuser: dataUser.nombreUsuario,
-                        namerol: dataUser.nombreRol
+                        namerol: dataUser.nombreRol,
+                        namesede: dataUser.nombreSede,
+                        idsede: dataUser.idSede
                     }
                 }
             });

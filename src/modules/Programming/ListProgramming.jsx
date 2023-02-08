@@ -12,6 +12,7 @@ import { GetAllAtencion } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
 import { DefaultValue, TitleButton } from 'components/helpers/Enums';
 import { useNavigate } from 'react-router-dom';
+import useAuth from 'hooks/useAuth';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -38,6 +39,8 @@ function stableSort(array, comparator) {
 
 const ListProgramming = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+
     const [lsProgramming, setLsProgramming] = useState([]);
     const [rows, setRows] = useState([]);
     const [search, setSearch] = useState('');
@@ -84,7 +87,7 @@ const ListProgramming = () => {
             setMessageAtencion('');
             setLsProgramming([]);
 
-            await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO).then(response => {
+            await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO, user.idsede).then(response => {
                 if (response.data === 'No hay Atenciones') {
 
                     setMessageAtencion(response.data);

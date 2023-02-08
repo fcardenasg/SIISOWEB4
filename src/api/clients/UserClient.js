@@ -6,4 +6,5 @@ export const GetByIdUser = async (id) => await getData(Url.UsuariosId, { id });
 export const GetByMail = async (email) => await getData(Url.UsuariosEmail, { email });
 export const InsertUser = async (usuarios) => await postData(Url.Usuarios, usuarios);
 export const UpdateUsers = async (usuarios) => await putData(Url.Usuarios, usuarios);
+export const UpdateSedeUser = async (updateSedeDTO) => await putData(Url.UsuariosUpdateSede, updateSedeDTO);
 export const DeleteUser = async (idUsuarios) => await deleteData(Url.Usuarios, { idUsuarios });

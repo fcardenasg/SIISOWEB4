@@ -87,6 +87,12 @@ const headCells = [
         align: 'left'
     },
     {
+        id: 'sedeUsuario',
+        numeric: false,
+        label: 'Sede',
+        align: 'left'
+    },
+    {
         id: 'rolUsuario',
         numeric: false,
         label: 'RolUsuario',
@@ -324,7 +330,7 @@ const ListUser = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsUser.length) : 0;
 
     return (
-        <MainCard title="Lista de Información" content={false}>
+        <MainCard title="LISTA DE USUARIOS" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -474,6 +480,21 @@ const ListUser = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {row.correo}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.sedeUsuario}
                                             </Typography>
                                         </TableCell>
 

@@ -30,6 +30,8 @@ import User1 from 'assets/images/users/user-round.svg';
 
 // assets
 import { IconLogout, IconSettings, IconHome } from '@tabler/icons';
+import ControlModal from 'components/controllers/ControlModal';
+import ChangeSede from './ChangeSede';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -41,6 +43,7 @@ const ProfileSection = () => {
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const { logout, user } = useAuth();
     const [open, setOpen] = useState(false);
+    const [openModalSede, setOpenModalSede] = useState(false);
 
 
     const anchorRef = useRef(null);
@@ -64,13 +67,9 @@ const ProfileSection = () => {
         setOpen(false);
     };
 
-    const handleListItemClick = (event, index, route = '') => {
-        setSelectedIndex(index);
-        handleClose(event);
-
-        if (route && route !== '') {
-            navigate(route);
-        }
+    const handleOpenModal = () => {
+        setOpenModalSede(true);
+        setOpen(false);
     };
 
     const handleToggle = () => {
@@ -88,6 +87,15 @@ const ProfileSection = () => {
 
     return (
         <Fragment>
+            <ControlModal
+                title="CAMBIAR DE SEDE DE ATENCIÓN"
+                open={openModalSede}
+                onClose={() => setOpenModalSede(false)}
+                maxWidth="xs"
+            >
+                <ChangeSede />
+            </ControlModal>
+
             <Chip
                 sx={{
                     height: '48px',
@@ -156,12 +164,12 @@ const ProfileSection = () => {
                                     <Box sx={{ p: 2 }}>
                                         <Stack>
                                             <Stack direction="row" spacing={0.5} alignItems="center">
-                                                <Typography variant="h4">Buenos Días</Typography>
+                                                <Typography variant="h4">Bienvenido</Typography>
                                                 <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
                                                     {user?.nameuser}
                                                 </Typography>
                                             </Stack>
-                                            <Typography variant="subtitle2">{user?.namerol}</Typography>
+                                            <Typography variant="subtitle2">Rol: {user?.namerol} - Sede: {user?.namesede}</Typography>
                                         </Stack>
                                     </Box>
 
@@ -185,12 +193,12 @@ const ProfileSection = () => {
                                         <ListItemButton
                                             sx={{ borderRadius: `${customization.borderRadius}px` }}
                                             selected={selectedIndex === 0}
-                                            onClick={(event) => handleListItemClick(event, 0, '/user/account-profile/profile1')}
+                                            onClick={handleOpenModal}
                                         >
                                             <ListItemIcon>
                                                 <IconSettings stroke={1.5} size="1.3rem" />
                                             </ListItemIcon>
-                                            <ListItemText primary={<Typography variant="body2">Configuración de Usuario</Typography>} />
+                                            <ListItemText primary={<Typography variant="body2">Cambiar de Sede</Typography>} />
                                         </ListItemButton>
 
                                         <ListItemButton
