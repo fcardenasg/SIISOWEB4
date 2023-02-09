@@ -71,6 +71,13 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
+
+    {
+        id: 'id_Inc',
+        numeric: false,
+        label: 'Nro. Incapacidad',
+        align: 'left'
+    },
     {
         id: 'cedula',
         numeric: false,
@@ -81,6 +88,12 @@ const headCells = [
         id: 'nameEmpleado',
         numeric: false,
         label: 'Nombre',
+        align: 'left'
+    },
+    {
+        id: 'dx',
+        numeric: false,
+        label: 'Dx Inicial',
         align: 'left'
     },
     {
@@ -259,7 +272,7 @@ const ListWorkAbsenteeism = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id_Inc', 'cedula', 'diasSinLaborar', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'usuarioRegistro'];
+                const properties = ['id_Inc', 'cedula','nameEmpleado', 'dx','diasSinLaborar','fechaInicio', 'fechaFin', 'fechaRegistro', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -368,7 +381,7 @@ const ListWorkAbsenteeism = () => {
                     </Grid>
                     <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={2}>
+                            {/* <Grid item xs={2}>
                                 <ExcelFile element={
                                     <Tooltip title="Exportar">
                                         <IconButton size="large">
@@ -392,16 +405,16 @@ const ListWorkAbsenteeism = () => {
                                         <PrintIcon />
                                     </IconButton>
                                 </Tooltip>
-                            </Grid>
+                            </Grid> */}
 
-                            <Grid item xs={4}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/work-absenteeism/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/occupational-health/menu")}>
                                     {TitleButton.Cancelar}
@@ -457,6 +470,22 @@ const ListWorkAbsenteeism = () => {
                                                 />
                                             </TableCell>
 
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id_Inc)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.id_Inc}
+                                                </Typography>
+                                            </TableCell>
+
                                             <TableCell
                                                 component="th"
                                                 id={labelId}
@@ -486,6 +515,22 @@ const ListWorkAbsenteeism = () => {
                                                     {row.nameEmpleado}
                                                 </Typography>
                                             </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id_Inc)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.dx}
+                                                </Typography>
+                                            </TableCell>
+
 
                                             <TableCell
                                                 component="th"
