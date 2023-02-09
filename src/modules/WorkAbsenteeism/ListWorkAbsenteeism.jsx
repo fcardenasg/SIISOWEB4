@@ -71,13 +71,6 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-
-    {
-        id: 'id_Inc',
-        numeric: false,
-        label: 'Nro. Incapacidad',
-        align: 'left'
-    },
     {
         id: 'cedula',
         numeric: false,
@@ -272,7 +265,7 @@ const ListWorkAbsenteeism = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id_Inc', 'cedula','nameEmpleado', 'dx','diasSinLaborar','fechaInicio', 'fechaFin', 'fechaRegistro', 'usuarioRegistro'];
+                const properties = ['id_Inc', 'cedula', 'nameEmpleado', 'dx', 'diasSinLaborar', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -379,34 +372,8 @@ const ListWorkAbsenteeism = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
-                            {/* <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="Empresas">
-                                    <ExcelSheet data={lsWorkAbsenteeism} name="Empresas">
-                                        <ExcelColumn label="Código" value="id" />
-                                        <ExcelColumn label="Nombre" value="nombProv" />
-                                        <ExcelColumn label="Teléfono" value="teleProv" />
-                                        <ExcelColumn label="Correo Electronico" value="emaiProv" />
-                                        <ExcelColumn label="Tipo de Proveedor" value="nameTypeSupplier" />
-                                    </ExcelSheet>
-                                </ExcelFile>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Tooltip title="Impresión" onClick={() => navigate('/work-absenteeism/report')}>
-                                    <IconButton size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid> */}
-
                             <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/work-absenteeism/add")}>
@@ -468,22 +435,6 @@ const ListWorkAbsenteeism = () => {
                                                         'aria-labelledby': labelId
                                                     }}
                                                 />
-                                            </TableCell>
-
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.id_Inc)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.id_Inc}
-                                                </Typography>
                                             </TableCell>
 
                                             <TableCell
