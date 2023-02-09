@@ -16,10 +16,10 @@ import AusentismoExport from './Export/AusentismoExport';
 import { useNavigate } from 'react-router-dom';
 
 const Title = {
-    medicinaLaboral: 'MEDICINA LABORAL',
-    reintegro: 'REINTEGRO',
+    medicinaLaboral: 'Medicinal Laboral',
+    reintegro: 'Reintegro',
     accidentalidadTrabajo: 'AT',
-    ausentismoLaboral: 'AUSENTISMO LABORAL',
+    ausentismoLaboral: 'Ausentismo Laboral',
 }
 
 const ExportOccupationalHealth = () => {

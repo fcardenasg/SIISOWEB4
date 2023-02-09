@@ -66,7 +66,7 @@ const headCells = [
     {
         id: 'nameEmpleado',
         numeric: false,
-        label: 'CIE11',
+        label: 'Nombres',
         align: 'left'
     },
     {

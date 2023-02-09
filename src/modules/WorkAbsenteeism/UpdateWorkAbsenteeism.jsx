@@ -884,7 +884,7 @@ const UpdateWorkAbsenteeism = () => {
                 </Accordion>
                 <Divider />
 
-                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DE LA EMPRESA QUE EXPIDE</Typography>
+                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">Datos de la empresa que expide</Typography>
 
                 <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={4}>
@@ -954,7 +954,7 @@ const UpdateWorkAbsenteeism = () => {
                     </Grid>
                 </Grid>
 
-                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DE INCAPACIDAD O LICENCIA</Typography>
+                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">Datos de incapacidad o licencia</Typography>
 
                 <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2.4}>
@@ -1102,7 +1102,7 @@ const UpdateWorkAbsenteeism = () => {
                     </Grid>
                 </Grid>
 
-                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">DATOS DEL MÉDICO O IPS PRESTADORA DEL SERVICIO</Typography>
+                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">Datos del médico o IPS prestadora del servicio</Typography>
 
                 <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={4.8}>

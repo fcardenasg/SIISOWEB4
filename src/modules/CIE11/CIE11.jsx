@@ -124,7 +124,7 @@ const CIE11 = () => {
     };
 
     return (
-        <MainCard title="Registrar CIE11">
+        <MainCard title="Registrar CIE10">
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -132,7 +132,7 @@ const CIE11 = () => {
                 <Grid item xs={12}>
                     <SelectOnChange
                         name="segmentoAgrupado"
-                        label="Capitulo CIE11"
+                        label="Capitulo CIE10"
                         options={lsSegmentoAgrupado}
                         size={matchesXS ? 'small' : 'medium'}
                         value={segmentoAgrupado}

@@ -143,7 +143,7 @@ const UpdateCIE11 = () => {
     };
 
     return (
-        <MainCard title="Actualizar CIE11">
+        <MainCard title="Actualizar CIE10">
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

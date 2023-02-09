@@ -56,8 +56,8 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin }) => {
                                             DESCARGAR EXCEL
                                         </Button>
                                     </AnimateButton>
-                                } filename="AUSENTISMO LABORAL">
-                                    <ExcelSheet data={lsData} name="Lista de Ausentismo">
+                                } filename="Ausentismo Laboral">
+                                    <ExcelSheet data={lsData} name="Lista de Ausentismo Laboral">
                                         <ExcelColumn label="ID" value="id" />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombre" value="nombre" />

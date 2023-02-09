@@ -198,7 +198,7 @@ export const itemsParameterization = [
     color: ColorDrummondltd.RedDrummond
   },
   {
-    title: "CIE11",
+    title: "CIE10",
     subtitle: "",
     icon: IconTool,
     selected: true,

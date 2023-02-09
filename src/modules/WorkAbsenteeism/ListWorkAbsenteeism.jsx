@@ -352,7 +352,7 @@ const ListWorkAbsenteeism = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsWorkAbsenteeism.length) : 0;
 
     return (
-        <MainCard title="LISTA DE AUSENTISMO LABORAL" content={false}>
+        <MainCard title="Lista de Ausentismo Laboral" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>

@@ -63,7 +63,7 @@ const headCells = [
     {
         id: 'nameCIE11',
         numeric: false,
-        label: 'CIE11',
+        label: 'CIE10',
         align: 'left'
     }
 ];
