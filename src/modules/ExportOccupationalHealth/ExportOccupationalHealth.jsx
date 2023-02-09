@@ -10,6 +10,8 @@ import { CodCatalogo } from 'components/helpers/Enums';
 import SubCard from 'ui-component/cards/SubCard';
 import AccidenteTrabajo from './Export/AccidenteTrabajo';
 import MedicionaLaboralExport from './Export/MedicionaLaboralExport';
+import ReintegroExport from './Export/ReintegroExport';
+import AusentismoExport from './Export/AusentismoExport';
 
 const Title = {
     medicinaLaboral: 'MEDICINA LABORAL',
@@ -43,6 +45,15 @@ const ExportOccupationalHealth = () => {
         GetAll();
     }, []);
 
+
+    function getAllAgain(codigo = '') {
+        try {
+            setFechaInicio(null);
+            setFechaFin(null);
+            setTipoReporte(codigo);
+        } catch (error) { }
+    }
+
     return (
         <Fragment>
             <Grid container spacing={2}>
@@ -50,25 +61,25 @@ const ExportOccupationalHealth = () => {
                     <SubCard title={<Typography variant="h4">EXPORTACIÓN</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => setTipoReporte('EXCEL1')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => getAllAgain('EXCEL1')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.medicinaLaboral}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => setTipoReporte('EXCEL2')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => getAllAgain('EXCEL2')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.reintegro}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => setTipoReporte('EXCEL3')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => getAllAgain('EXCEL3')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.accidentalidadTrabajo}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => setTipoReporte('EXCEL4')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => getAllAgain('EXCEL4')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.ausentismoLaboral}
                                 </Button>
                             </Grid>
@@ -120,7 +131,7 @@ const ExportOccupationalHealth = () => {
                                     sede={sede}
                                 /> :
                                 tipoReporte === 'EXCEL2' ?
-                                    <AccidenteTrabajo
+                                    <ReintegroExport
                                         fechaFin={fechaFin}
                                         fechaInicio={fechaInicio}
                                         sede={sede}
@@ -129,7 +140,12 @@ const ExportOccupationalHealth = () => {
                                             fechaFin={fechaFin}
                                             fechaInicio={fechaInicio}
                                             sede={sede}
-                                        /> : null
+                                        /> : tipoReporte === 'EXCEL4' ?
+                                            <AusentismoExport
+                                                fechaFin={fechaFin}
+                                                fechaInicio={fechaInicio}
+                                                sede={sede}
+                                            /> : null
                             }
 
                             {/* {statusReprint === 'SER03' ?

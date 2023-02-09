@@ -75,9 +75,9 @@ const AccidenteTrabajo = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Segmento Agrupado" value="segmentoAgrupado" />
                                         <ExcelColumn label="Segmento" value="segmento" />
                                         <ExcelColumn label="SubTipo Consecutivo" value="subTipoConsecutivo" />
-                                        <ExcelColumn label="Cod Dx Inicial" value="codDxInicial" />
+                                        <ExcelColumn label="Código Dx Inicial" value="codDxInicial" />
                                         <ExcelColumn label="Dx Inicial" value="dxInicial" />
-                                        <ExcelColumn label="Cod Dx Final" value="codDxFinal" />
+                                        <ExcelColumn label="Código Dx Final" value="codDxFinal" />
                                         <ExcelColumn label="Dx Final" value="dxFinal" />
                                         <ExcelColumn label="Px" value="px" />
                                         <ExcelColumn label="Conducta Inicial" value="conductaInicial" />
@@ -90,7 +90,7 @@ const AccidenteTrabajo = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Remitido" value="remitido" />
                                         <ExcelColumn label="Usuario" value="usuario" />
                                     </ExcelSheet>
-                                </ExcelFile> : ''
+                                </ExcelFile> : null
                             }
                         </Grid>
                     </Grid>
