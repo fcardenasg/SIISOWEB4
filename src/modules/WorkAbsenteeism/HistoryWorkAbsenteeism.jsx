@@ -153,8 +153,7 @@ const HistoryWorkAbsenteeism = ({ documento }) => {
             try {
                 const lsServer = await GetAllWorkAbsenteeismDocumento(0, 0, documento);
                 setLsHistorialAusentismo(lsServer.data.entities);
-            } catch (error) {
-            }
+            } catch (error) { }
         }
 
         getAll();

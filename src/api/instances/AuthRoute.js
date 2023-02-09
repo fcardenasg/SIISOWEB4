@@ -24,6 +24,7 @@ export const Url = {
     EmpleadoId: 'api/Empleado/id',
 
     Reintegro: 'api/Reintegro',
+    ReintegroExcel: 'api/Reintegro/GenerateExcel',
     ReintegroId: 'api/Reintegro/id',
 
     Framingham: 'api/Framingham',
@@ -160,6 +161,7 @@ export const Url = {
     MedicinaLaboralId: 'api/MedicinaLaboralX/id',
 
     AusentismoLaboral: 'api/AusentismoLaboral',
+    AusentismoLaboralExcel: 'api/AusentismoLaboral/GenerateExcel',
     AusentismoLaboral_Documento: 'api/AusentismoLaboral/GetAllByDocumento',
     AusentismoLaboral_NumDia: 'api/AusentismoLaboral/GetAllNumeroDia',
     AusentismoLaboralId: 'api/AusentismoLaboral/id',
