@@ -41,6 +41,9 @@ import { InsertAccidentRate } from 'api/clients/AccidentRateClient';
 import { PostAccidentRate } from 'formatdata/AccidentRateForm';
 import InputOnChange from 'components/input/InputOnChange';
 import ViewPDF from 'components/components/ViewPDF';
+import Cargando from 'components/loading/Cargando';
+import MainCard from 'ui-component/cards/MainCard';
+import UploadIcon from '@mui/icons-material/Upload';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -352,14 +355,14 @@ const AccidentRate = () => {
 
             </ControlModal>
 
-            <ControlModal
+            {/* <ControlModal
                 title="VISUALIZAR ARCHIVO"
                 open={openViewArchivo}
                 onClose={() => setOpenViewArchivo(false)}
                 maxWidth="xl"
             >
                 <ViewPDF dataPDF={urlFile} />
-            </ControlModal>
+            </ControlModal> */}
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -635,6 +638,34 @@ const AccidentRate = () => {
 
                         </Grid>
 
+
+                        <Grid item xs={12} sx={{ pt: 2 }}>
+                                <MainCard title="Registro Fotográfico">
+
+                                    <Grid container spacing={12}>
+                                        <Grid textAlign="center" item xs={12}>
+                                            <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                                SUBIR REGISTRO EN PDF
+                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={12} sx={{ pt: 4 }}>
+                                        {urlFile && (
+                                            <object type="application/pdf"
+                                                data={urlFile}
+                                                width="1180"
+                                                height="500"
+                                                onLoad={<Cargando />}
+                                            />
+                                        )}
+                                    </Grid>
+
+                                </MainCard>
+                            </Grid>
+
+
                         <Grid container spacing={2} sx={{ pt: 4 }}>
                             <Grid item xs={2}>
                                 <AnimateButton>
@@ -644,7 +675,7 @@ const AccidentRate = () => {
                                 </AnimateButton>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            {/* <Grid item xs={2}>
                                 <AnimateButton>
                                     <Button fullWidth variant="outlined" component="label">
                                         <input hidden accept="application/pdf" type="file" onChange={handleFile} />
@@ -659,7 +690,7 @@ const AccidentRate = () => {
                                         {TitleButton.VerArchivo}
                                     </Button>
                                 </AnimateButton>
-                            </Grid>
+                            </Grid> */}
 
                             <Grid item xs={2}>
                                 <AnimateButton>

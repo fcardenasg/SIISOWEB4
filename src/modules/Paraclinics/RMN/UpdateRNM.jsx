@@ -330,7 +330,6 @@ const UpdateRNM = () => {
 
                         <Grid item xs={12} sx={{ pt: 2 }}>
                             <MainCard title="Resultados">
-
                                 <Grid container spacing={12}>
                                     <Grid textAlign="center" item xs={12}>
                                         <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
