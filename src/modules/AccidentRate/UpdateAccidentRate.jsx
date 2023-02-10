@@ -400,7 +400,7 @@ const UpdateAccidentRate = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="ACTUALIZAR ACCIDENTE DE TRABAJO"
+                            title="Actualizar Accidente de Trabajo"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -501,7 +501,7 @@ const UpdateAccidentRate = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">DIAGNÓSTICO INICIAL</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Inicial</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <InputOnChange
@@ -530,7 +530,7 @@ const UpdateAccidentRate = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                <SubCard darkTitle title={<Typography variant="h4">DIAGNÓSTICO FINAL</Typography>}>
+                                <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Final</Typography>}>
                             <Grid container spacing={2}>  
                                 <Grid item xs={2}>
                                     <InputOnChange
@@ -558,7 +558,7 @@ const UpdateAccidentRate = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">DATOS COMPLEMENTARIOS</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Datos Complementarios</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={3}>
                                     <FormProvider {...methods}>
@@ -689,7 +689,7 @@ const UpdateAccidentRate = () => {
                                 <Grid container spacing={12}>
                                     <Grid textAlign="center" item xs={12}>
                                         <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                            ACTUALIZAR REGISTRO EN PDF
+                                            Actualizar Registro en PDF
                                             <input hidden accept="application/pdf" type="file" onChange={handleFile} />
                                         </Button>
                                     </Grid>

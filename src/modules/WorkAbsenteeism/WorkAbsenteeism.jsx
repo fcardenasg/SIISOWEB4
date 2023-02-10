@@ -319,7 +319,7 @@ const WorkAbsenteeism = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Datos de la empresa que expide</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos de la Empresa que Expide</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -384,7 +384,7 @@ const WorkAbsenteeism = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Datos de incapacidad o licencia</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos de Incapacidad o Licencia</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
@@ -543,7 +543,7 @@ const WorkAbsenteeism = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">DATOS DEL MÉDICO O IPS PRESTADORA DEL SERVICIO</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos del Médico O IPS Prestadora del Servicio</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={4.8}>
                                 <FormProvider {...methods}>
@@ -679,7 +679,7 @@ const WorkAbsenteeism = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">OBSERVACIÓN/DESCRIPCIÓN DE LA NOVEDAD</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Observación/Descripción de la Novedad</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>

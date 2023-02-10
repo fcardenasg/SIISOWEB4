@@ -351,7 +351,7 @@ const OccupationalMedicine = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <ViewEmployee
-                                title="REGISTRAR MEDICINA LABORAL"
+                                title="Registrar Medicina Laboral"
                                 disabled={true}
                                 key={lsEmployee.documento}
                                 documento={documento}
@@ -362,7 +362,7 @@ const OccupationalMedicine = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <SubCard title={<Typography variant="h4">INFORMACIÓN LABORAL</Typography>}>
+                            <SubCard title={<Typography variant="h4">Información Laboral</Typography>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={6}>
                                         <FormProvider {...methods}>
@@ -558,7 +558,7 @@ const OccupationalMedicine = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <SubCard darkTitle title={<Typography variant="h4">CALIFICACIÓN EPS</Typography>}>
+                            <SubCard darkTitle title={<Typography variant="h4">Calificación EPS</Typography>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={6}>
                                         <FormProvider {...methods}>
@@ -1003,7 +1003,7 @@ const OccupationalMedicine = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <SubCard darkTitle title={<Typography variant="h4">INSTANCIA FINAL</Typography>}>
+                            <SubCard darkTitle title={<Typography variant="h4">Instancia Final</Typography>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={4}>
                                         <FormProvider {...methods}>
@@ -1145,7 +1145,7 @@ const OccupationalMedicine = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <SubCard darkTitle title={<Typography variant="h4">ESTADO ARL</Typography>}>
+                            <SubCard darkTitle title={<Typography variant="h4">Estado ARL</Typography>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
                                         <FormProvider {...methods}>
@@ -1235,7 +1235,7 @@ const OccupationalMedicine = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <SubCard title={<Typography variant="h4">RESULTADO INVESTIGACIÓN LABORAL</Typography>}>
+                            <SubCard title={<Typography variant="h4">Resultado Investigación Laboral</Typography>}>
                                 <Grid container spacing={12}>
                                     <Grid textAlign="center" item xs={12}>
                                         <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>

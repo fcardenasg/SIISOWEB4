@@ -367,7 +367,7 @@ const AccidentRate = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="REGISTRAR ACCIDENTE DE TRABAJO"
+                        title="Registrar Accidente de Trabajo"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -464,7 +464,7 @@ const AccidentRate = () => {
 
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">DIAGNÓSTICO INICIAL</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <InputOnChange
@@ -493,7 +493,7 @@ const AccidentRate = () => {
 
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">DIAGNÓSTICO FINAL</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Final</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <InputOnChange
@@ -520,7 +520,7 @@ const AccidentRate = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">DATOS COMPLEMENTARIOS</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos complementarios</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -640,7 +640,7 @@ const AccidentRate = () => {
 
 
                         <Grid item xs={12} sx={{ pt: 2 }}>
-                                <MainCard title="Registro Fotográfico">
+                                <MainCard title="Registro fotográfico">
 
                                     <Grid container spacing={12}>
                                         <Grid textAlign="center" item xs={12}>

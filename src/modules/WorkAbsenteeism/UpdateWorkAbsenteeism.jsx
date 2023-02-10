@@ -508,7 +508,7 @@ const UpdateWorkAbsenteeism = () => {
     return (
         <MainCard>
             {lsWorkAbsenteeism.length != 0 ? <>
-                <SubCard darkTitle title={<><Typography variant="h4">DATOS DEL PACIENTE</Typography></>}>
+                <SubCard darkTitle title={<><Typography variant="h4">Actualizar Ausentismo Labora</Typography></>}>
                     <Grid container xs={12} spacing={2} sx={{ pb: 3, pt: 3 }}>
                         <Grid item xs={3}>
                             <PhotoModel
@@ -884,7 +884,7 @@ const UpdateWorkAbsenteeism = () => {
                 </Accordion>
                 <Divider />
 
-                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">Datos de la empresa que expide</Typography>
+                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">Datos de la Empresa que Expide</Typography>
 
                 <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={4}>
@@ -954,7 +954,7 @@ const UpdateWorkAbsenteeism = () => {
                     </Grid>
                 </Grid>
 
-                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">Datos de incapacidad o licencia</Typography>
+                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">Datos de Incapacidad o Licencia</Typography>
 
                 <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={2.4}>
@@ -1102,7 +1102,7 @@ const UpdateWorkAbsenteeism = () => {
                     </Grid>
                 </Grid>
 
-                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">Datos del médico o IPS prestadora del servicio</Typography>
+                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">Datos del Médico O IPS Prestadora del Servicio</Typography>
 
                 <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={4.8}>
@@ -1239,7 +1239,7 @@ const UpdateWorkAbsenteeism = () => {
                     </Grid>
                 </Grid>
 
-                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">OBSERVACIÓN/DESCRIPCIÓN DE LA NOVEDAD</Typography>
+                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">Observación/Descripción De La Novedad</Typography>
 
                 <Grid container spacing={2} sx={{ pb: 2 }}>
                     <Grid item xs={12}>
@@ -1278,7 +1278,7 @@ const UpdateWorkAbsenteeism = () => {
                     </Grid>
                 </Grid>
 
-                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">MONITOR DE EVENTOS</Typography>
+                <Typography sx={{ pb: 2, pt: 3 }} variant="h4">Monitor de Eventos </Typography>
 
                 <Grid container spacing={2} sx={{ pb: 2, pl: 4 }}>
                     <Grid item xs={2}>

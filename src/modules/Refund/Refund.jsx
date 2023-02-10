@@ -301,7 +301,7 @@ const Refund = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="REGISTRAR REINTEGRO"
+                        title="Registar Reintegro"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -311,7 +311,7 @@ const Refund = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN PATOLÓGICA</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Descripción Patológica</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <InputOnChange
@@ -536,7 +536,7 @@ const Refund = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">CONCEPTO DE REINTEGRO OCUPACIONAL</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Concepto de Reintegro Ocupacional</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={8}>
                                 <FormProvider {...methods}>
@@ -555,7 +555,7 @@ const Refund = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">DATOS DE REUBICACIÓN</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos de Reubicación</Typography>}>
                         <Grid container spacing={3}>
                             <Grid item xs={6}>
                                 <FormProvider {...methods}>
@@ -607,7 +607,7 @@ const Refund = () => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <SubCard darkTitle title={<Typography variant="h4">SIN HORARIO EXTENDIDO</Typography>}>
+                                <SubCard darkTitle title={<Typography variant="h4">Sin Horario Extendido</Typography>}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={3}>
                                             <FormProvider {...methods}>
@@ -676,7 +676,7 @@ const Refund = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">LISTA DE CHEQUEO</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Lista de Chequeo</Typography>}>
 
                         <Transitions type="collapse" in={viewListRefund} position="top-left" direction="up">
                             <CheckListRefund idReintegro={resultData.id} />

@@ -53,10 +53,10 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                 <ExcelFile element={
                                     <AnimateButton>
                                         <Button onClick={() => setStatusData(false)} size="large" variant="outlined" fullWidth>
-                                            DESCARGAR EXCEL
+                                            Descarga en excel
                                         </Button>
                                     </AnimateButton>
-                                } filename="MEDICINA LABORAL">
+                                } filename="Medicina Laboral">
                                     <ExcelSheet data={lsData} name="Lista de Medicina Laboral">
                                         <ExcelColumn label="ID" value="id" />
                                         <ExcelColumn label="Documento" value="documento" />
