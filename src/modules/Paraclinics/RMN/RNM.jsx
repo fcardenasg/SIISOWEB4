@@ -324,6 +324,7 @@ const RNM = () => {
                                 </Grid>
 
                             </Grid>
+                            
                             <Grid item xs={12} sx={{ pt: 2 }}>
                                 <MainCard title="Resultados">
 

@@ -3022,6 +3022,7 @@ const Emo = ({
                                             label="Rx de Torax(Criterios OIT)"
                                             name="fechaRxToraxEPA"
                                             defaultValue={() => validateLastData(lsLastRecord.fechaRxToraxEPA, "date")}
+                                          
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3080,7 +3081,8 @@ const Emo = ({
                                         <InputDatePicker
                                             label="Espirometria"
                                             name="fechaEspirometriaEPA"
-                                            defaultValue={() => validateLastData(lsLastRecord.fechaEspirometriaEPA, "date")}
+                                           defaultValue={() => validateLastData(lsLastRecord.fechaEspirometriaEPA, "date")}
+                                         
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3139,7 +3141,8 @@ const Emo = ({
                                         <InputDatePicker
                                             label="Audiometria"
                                             name="fechaAudiometriaEPA"
-                                            defaultValue={() => validateLastData(lsLastRecord.fechaAudiometriaEPA, "date")}
+                                             defaultValue={() => validateLastData(lsLastRecord.fechaAudiometriaEPA, "date")}
+                                        
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3199,6 +3202,7 @@ const Emo = ({
                                             label="Visiometria"
                                             name="fechaVisiometriaEPA"
                                             defaultValue={() => validateLastData(lsLastRecord.fechaVisiometriaEPA, "date")}
+                                        
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3257,7 +3261,8 @@ const Emo = ({
                                         <InputDatePicker
                                             label="Laboratorio Clinico"
                                             name="fechaLaboratorioClinicoEPA"
-                                            defaultValue={() => validateLastData(lsLastRecord.fechaLaboratorioClinicoEPA, "date")}
+                                             defaultValue={() => validateLastData(lsLastRecord.fechaLaboratorioClinicoEPA, "date")}
+                                          
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3316,7 +3321,8 @@ const Emo = ({
                                         <InputDatePicker
                                             label="Cuestionario de Sintomas Respiratorios"
                                             name="fechaCuestionarioSintomaEPA"
-                                            defaultValue={() => validateLastData(lsLastRecord.fechaCuestionarioSintomaEPA, "date")}
+                                           defaultValue={() => validateLastData(lsLastRecord.fechaCuestionarioSintomaEPA, "date")}
+                                          
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3375,7 +3381,8 @@ const Emo = ({
                                         <InputDatePicker
                                             label="EKG"
                                             name="fechaEkgEPA"
-                                            defaultValue={() => validateLastData(lsLastRecord.fechaEkgEPA, "date")}
+                                           defaultValue={() => validateLastData(lsLastRecord.fechaEkgEPA, "date")}
+                                          
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3434,7 +3441,8 @@ const Emo = ({
                                         <InputDatePicker
                                             label="RNM-Columna Lumbosacra"
                                             name="fechaRnmLumbosacraEPA"
-                                            defaultValue={() => validateLastData(lsLastRecord.fechaRnmLumbosacraEPA, "date")}
+                                          defaultValue={() => validateLastData(lsLastRecord.fechaRnmLumbosacraEPA, "date")}
+                                             
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -3493,6 +3501,7 @@ const Emo = ({
                                             label="RNM-Columna Cervical"
                                             name="fechaRnmCervicalEPA"
                                             defaultValue={() => validateLastData(lsLastRecord.fechaRnmCervicalEPA, "date")}
+                                          
                                         />
                                     </FormProvider>
                                 </Grid>

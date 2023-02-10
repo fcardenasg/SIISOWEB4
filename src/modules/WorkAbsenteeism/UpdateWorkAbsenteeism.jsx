@@ -317,15 +317,12 @@ const WorkAbsenteeism = () => {
     }, 1500);
 
     return (
-        <Fragment>
-            <MessageSuccess onClose={() => setOpenSuccess(false)} open={openSuccess} />
-            <MessageError onClose={() => setOpenError(false)} open={openError} error={errorMessage} />
-
+        <MainCard>
             {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="NOTA DE EVOLUCIÓN"
+                            title="Actualizar Ausentimo Laboral"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -555,9 +552,9 @@ const WorkAbsenteeism = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
+                            </Grid >
+                        </SubCard >
+                    </Grid >
 
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">DATOS DEL MÉDICO O IPS PRESTADORA DEL SERVICIO</Typography>}>
@@ -734,9 +731,9 @@ const WorkAbsenteeism = () => {
                                         onChange={(e) => setFechaModifica(e)}
                                     />
                                 </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
+                            </Grid >
+                        </SubCard >
+                    </Grid >
 
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">MONITOR DE EVENTOS</Typography>}>
@@ -795,9 +792,9 @@ const WorkAbsenteeism = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
-                </Grid> : <Cargando />
+                </Grid > : <Cargando />
             }
-        </Fragment>
+        </MainCard>
     );
 };
 

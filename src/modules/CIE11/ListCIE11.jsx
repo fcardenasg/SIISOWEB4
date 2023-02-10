@@ -309,7 +309,7 @@ const ListCIE11 = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - cie11.length) : 0;
 
     return (
-        <MainCard title="Lista de CIE11" content={false}>
+        <MainCard title="Lista de CIE10" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -337,8 +337,8 @@ const ListCIE11 = () => {
                                             <IconFileExport />
                                         </IconButton>
                                     </Tooltip>
-                                } filename="CIE11">
-                                    <ExcelSheet data={cie11} name="CIE11">
+                                } filename="CIE10">
+                                    <ExcelSheet data={cie11} name="CIE10">
                                         <ExcelColumn label="Id" value="id" />
                                         <ExcelColumn label="Nombre" value="dx" />
                                     </ExcelSheet>
