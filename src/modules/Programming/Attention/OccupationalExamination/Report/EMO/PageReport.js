@@ -211,7 +211,7 @@ function generateParentesco(doc = new jsPDF(), lsDataReport) {
   } else {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(15);
-    doc.text("NO REFIERE", 12, 200);
+    // doc.text("NO REFIERE", 12, 200);
   }
 }
 
