@@ -36,6 +36,7 @@ import useAuth from 'hooks/useAuth';
 import Accordion from 'components/accordion/Accordion';
 import HistoryWorkAbsenteeism from './HistoryWorkAbsenteeism';
 import Cargando from 'components/loading/Cargando';
+import MainCard from 'ui-component/cards/MainCard';
 
 const WorkAbsenteeism = () => {
     const theme = useTheme();
