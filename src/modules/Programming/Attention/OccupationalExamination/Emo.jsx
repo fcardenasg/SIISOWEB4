@@ -75,7 +75,7 @@ const validateLastData = (data, tipoCampo = "bool") => {
         }
 
     } else if (tipoCampo === "date") {
-        if (data === undefined)
+        if (data === null)
             return null;
         else return data;
 
