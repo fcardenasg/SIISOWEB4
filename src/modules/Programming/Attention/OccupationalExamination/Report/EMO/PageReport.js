@@ -305,7 +305,7 @@ function generatePhysicalExam(doc = new jsPDF(), lsDataReport) {
   doc.text("FR", 84, 121);
   doc.text("T. °C", 98, 121);
 
-  doc.text("PESO (K)", 112, 121);
+  doc.text("PESO (KG)", 112, 121);
   doc.text("TALLA (M)", 130, 121);
   doc.text("IMC", 149, 121);
   doc.text("CLASIFICACIÓN", 160, 121);
@@ -698,6 +698,22 @@ export function generateReportDiagnosis(
       { maxWidth: 200, lineHeightFactor: 1.5 }
     );
 
+  if (lsDataReport.dx2 !== "")
+    doc.text(
+      `Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`,
+      7,
+      90,
+      { maxWidth: 200, lineHeightFactor: 1.5 }
+    );
+
+  if (lsDataReport.dx3 !== "")
+    doc.text(
+      `Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`,
+      7,
+      98,
+      { maxWidth: 200, lineHeightFactor: 1.5 }
+    );
+
   doc.text(`${lsDataReport.observacionID}`, 7, 103, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
@@ -822,7 +838,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
     margin: { left: 7, right: 7 },
     body: lsRiesgoHLDO,
     columns: [
-      { header: 'Empresa', dataKey: 'empresa' },
+      /* { header: 'Empresa', dataKey: 'empresa' }, */
       { header: 'Riesgo', dataKey: 'riesgo' },
       { header: 'Clase', dataKey: 'clase' },
       // { header: 'Exposición', dataKey: 'exposicion' },
@@ -900,7 +916,7 @@ export function generateClinicHistoryDLTD(
     ],
   }))
   /* doc.setFont("helvetica", "normal"); */
-  doc.text("3.1.1. EXPOSICIÓN OCUPACIONAL EN DRUMMOND LTD.", 7, 52 + (8 * longitud));
+  doc.text("3.2.1. EXPOSICIÓN OCUPACIONAL EN DRUMMOND LTD.", 7, 52 + (8 * longitud));
   doc.setFontSize(10);
 
   //TABLA DE RENDERIZADO DE RIESGOS
@@ -911,7 +927,7 @@ export function generateClinicHistoryDLTD(
     margin: { left: 7, right: 7 },
     body: lsRiesgoHLD,
     columns: [
-      { header: 'Cargo', dataKey: 'cargo' },
+      /* { header: 'Cargo', dataKey: 'cargo' }, */
       { header: 'Riesgo', dataKey: 'riesgo' },
       { header: 'Clase', dataKey: 'clase' },
       /* { header: 'Exposición', dataKey: 'exposicion' }, */

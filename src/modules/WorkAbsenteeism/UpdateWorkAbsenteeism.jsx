@@ -187,18 +187,18 @@ const WorkAbsenteeism = () => {
             if (lsServerData.status === 200) {
                 setLsWorkAbsenteeism(lsServerData.data);
 
-                const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(lsServerData.data.documento);
+                const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(lsServerData.data.cedula);
                 setNumeroDias(numeroDias1.data);
 
-                setDocumento(lsServerData.data.documento);
-                handleLoadingDocument(lsServerData.data.documento);
+                setDocumento(lsServerData.data.cedula);
+                handleLoadingDocument(lsServerData.data.cedula);
 
                 setFechaInicio(lsServerData.data.fechaInicio);
                 setFechaFin(lsServerData.data.fechaFin);
-                setFechaExpedicion(lsServerData.data.documento);
-                setDiasSinLaborar(lsServerData.data.documento);
-                setDepartaMedico(lsServerData.data.documento);
-                setDeparta(lsServerData.data.documento);
+                setFechaExpedicion(lsServerData.data.fechaExpedicion);
+                setDiasSinLaborar(lsServerData.data.diasSinLaborar);
+                setDepartaMedico(lsServerData.data.departamentoIPS);
+                setDeparta(lsServerData.data.departamento);
             }
         } catch (error) { }
     }
@@ -318,7 +318,10 @@ const WorkAbsenteeism = () => {
     }, 1500);
 
     return (
-        <MainCard>
+        <Fragment>
+            <MessageSuccess onClose={() => setOpenSuccess(false)} open={openSuccess} />
+            <MessageError onClose={() => setOpenError(false)} open={openError} error={errorMessage} />
+
             {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -795,7 +798,7 @@ const WorkAbsenteeism = () => {
                     </Grid>
                 </Grid > : <Cargando />
             }
-        </MainCard>
+        </Fragment>
     );
 };
 

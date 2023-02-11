@@ -355,6 +355,7 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
                 </TableCell>
             </TableRow>
 
+
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
                     <Collapse in={open} timeout="auto" unmountOnExit>

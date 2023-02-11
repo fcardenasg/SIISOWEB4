@@ -61,6 +61,7 @@ import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import HistoryIcon from '@mui/icons-material/History';
 
 const validationSchema = yup.object().shape({
     dx1: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -73,6 +74,7 @@ const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
     { title: 'Ver Examenes Físicos', icons: <DirectionsRunIcon fontSize="small" /> },
     { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
+    { title: 'Histórico de Antecedente', icons: <HistoryIcon fontSize="small" /> },
 ]
 
 const dataMedicalOrders = [
@@ -140,6 +142,7 @@ const UpdateClinicHistory = () => {
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openExamenParaclinico, setOpenExamenParaclinico] = useState(false);
     const [openExamenFisico, setOpenExamenFisico] = useState(false);
+    const [openHistoryAntecedente, setOpenHistoryAntecedente] = useState(false);
     const [lsAssistance, setLsAssistance] = useState([]);
 
     const [documento, setDocumento] = useState('');
@@ -386,6 +389,14 @@ const UpdateClinicHistory = () => {
             </FullScreenDialog>
 
             <FullScreenDialog
+                open={openHistoryAntecedente}
+                title="VISTA DE HISTÓRICO DE ANTECEDENTE"
+                handleClose={() => setOpenHistoryAntecedente(false)}
+            >
+                <ListExamenesFisico documento={documento} />
+            </FullScreenDialog>
+
+            <FullScreenDialog
                 open={openExamenParaclinico}
                 title="VISTA DE EXAMEN PARACLÍNICO"
                 handleClose={() => setOpenExamenParaclinico(false)}
@@ -531,7 +542,7 @@ const UpdateClinicHistory = () => {
                                             label="Motivo de Consulta"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
-                                            rows={6}
+                                            rows={2}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -564,7 +575,7 @@ const UpdateClinicHistory = () => {
                                             label="Enfermedad Actual"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
-                                            rows={6}
+                                            rows={8}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -597,7 +608,7 @@ const UpdateClinicHistory = () => {
                                             label="Antecedentes"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
-                                            rows={6}
+                                            rows={8}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -618,6 +629,12 @@ const UpdateClinicHistory = () => {
                                         title={DetailIcons[2].title}
                                         onClick={() => setOpen(true)}
                                         icons={DetailIcons[2].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[5].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[5].icons}
                                     />
                                 </Grid>
 

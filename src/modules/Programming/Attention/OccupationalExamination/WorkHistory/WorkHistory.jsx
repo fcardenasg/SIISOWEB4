@@ -39,6 +39,8 @@ import RowCompany from './Row/RowCompany';
 
 import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
 import DataExposition from './DataExposition';
+import Accordion from 'components/accordion/Accordion';
+import { IconAffiliate } from '@tabler/icons';
 
 const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const theme = useTheme();
@@ -290,101 +292,115 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
             <Grid item xs={12}>
                 <SubCard title={<Typography variant='h4'>Historia Laboral Otras Empresas</Typography>}>
-                    <TableContainer>
-                        <Table aria-label="collapsible table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell sx={{ pl: 3 }} />
-                                    <TableCell>Empresa</TableCell>
-                                    <TableCell>Cargo</TableCell>
-                                    <TableCell>Años</TableCell>
-                                    <TableCell>Meses</TableCell>
-                                    <TableCell>Acciones</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {lsWorkHistoryOtherCompany.map((row) => (
-                                    <RowCompany key={row.id} getAllWorkHistory={getAllWorkHistory} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteEmpresa} />
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-
-                    <Transitions type="collapse" in={addItemClickedEmpresa} position="top-left" direction="up">
-                        <Grid container sx={{ pt: 5 }} spacing={2}>
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="empresa"
-                                        label="Empresa"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="cargoEmpresa"
-                                        label="Cargo"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        type="number"
-                                        defaultValue=""
-                                        fullWidth
-                                        name="anioEmpresa"
-                                        label="Año"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        type="number"
-                                        defaultValue=""
-                                        fullWidth
-                                        name="mesesEmpresa"
-                                        label="Meses"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <TableContainer>
+                                <Table aria-label="collapsible table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{ pl: 3 }} />
+                                            <TableCell>Empresa</TableCell>
+                                            <TableCell>Cargo</TableCell>
+                                            <TableCell>Años</TableCell>
+                                            <TableCell>Meses</TableCell>
+                                            <TableCell>Acciones</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {lsWorkHistoryOtherCompany.map((row) => (
+                                            <RowCompany key={row.id} getAllWorkHistory={getAllWorkHistory} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteEmpresa} />
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                         </Grid>
 
-                        <Grid container sx={{ pr: 0.5, pt: 3 }} justifyContent="flex-end">
-                            <Stack direction="row" spacing={1} alignItems="center">
-                                <Button color="error" onClick={() => setAddItemClickedEmpresa(false)}>
-                                    Cancelar
-                                </Button>
-                                <Button variant="contained" size="small" onClick={handleSubmit(handleClickEmpresa)}>
-                                    Adicionar
-                                </Button>
-                            </Stack>
-                        </Grid>
-                    </Transitions>
+                        <Grid item xs={12}>
+                            <Accordion title={<><IconAffiliate />
+                                <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Exposición Ocupacional Otras Empresas</Typography></>}>
 
-                    {!addItemClickedEmpresa ?
-                        <Grid item sx={{ pl: 2, pt: 3 }}>
-                            <Button disabled={lsEmpleado.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedEmpresa(true)}>
-                                + Agregar Empresa
-                            </Button>
-                        </Grid> : null}
+                            </Accordion>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Transitions type="collapse" in={addItemClickedEmpresa} position="top-left" direction="up">
+                                <Grid container sx={{ pt: 5 }} spacing={2}>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue=""
+                                                fullWidth
+                                                name="empresa"
+                                                label="Empresa"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue=""
+                                                fullWidth
+                                                name="cargoEmpresa"
+                                                label="Cargo"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                type="number"
+                                                defaultValue=""
+                                                fullWidth
+                                                name="anioEmpresa"
+                                                label="Año"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                type="number"
+                                                defaultValue=""
+                                                fullWidth
+                                                name="mesesEmpresa"
+                                                label="Meses"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container sx={{ pr: 0.5, pt: 3 }} justifyContent="flex-end">
+                                    <Stack direction="row" spacing={1} alignItems="center">
+                                        <Button color="error" onClick={() => setAddItemClickedEmpresa(false)}>
+                                            Cancelar
+                                        </Button>
+                                        <Button variant="contained" size="small" onClick={handleSubmit(handleClickEmpresa)}>
+                                            Adicionar
+                                        </Button>
+                                    </Stack>
+                                </Grid>
+                            </Transitions>
+
+                            {!addItemClickedEmpresa ?
+                                <Grid item sx={{ pl: 2, pt: 3 }}>
+                                    <Button disabled={lsEmpleado.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedEmpresa(true)}>
+                                        + Agregar Empresa
+                                    </Button>
+                                </Grid> : null}
+                        </Grid>
+
+                    </Grid>
                 </SubCard>
             </Grid>
 
