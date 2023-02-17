@@ -112,27 +112,23 @@ const User = () => {
     const handleClick = async (datos) => {
         try {
             const password = checkUsuario ? datos.nombreUsuario : "12345678";
+            const firmaMedico = fileImg === null ? '' : fileImg;
 
             const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
                 datos.idRol, JSON.stringify(especialidad), datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-                fileImg, checkEstadoUsuario, datos.idSede);
+                firmaMedico, checkEstadoUsuario, datos.idSede);
 
-            if (Object.keys(datos.length !== 0)) {
-                if (fileImg === null) {
-                    setOpenError(true);
-                    setErrorMessage('Debe selecionar una Firma');
-                } else if (especialidad.length === 0) {
-                    setOpenError(true);
-                    setErrorMessage('Debe seleccionar por lo menos una Especialidad');
-                }
-                else {
-                    const result = await InsertUser(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                        reset();
-                        setEspecialidad([]);
-                        setFileImg(null);
-                    }
+            if (especialidad.length === 0) {
+                setOpenError(true);
+                setErrorMessage('Debe seleccionar por lo menos una Especialidad');
+            }
+            else {
+                const result = await InsertUser(DataToInsert);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                    reset();
+                    setEspecialidad([]);
+                    setFileImg(null);
                 }
             }
         } catch (error) {

@@ -7,7 +7,7 @@ import { useTheme } from '@mui/material/styles';
 import { useMediaQuery, useScrollTrigger } from '@mui/material';
 
 // ==============================|| elevation scroll ||============================== //
-function ElevationScroll({ children, window }) {
+function ElevationScroll({ children, window, threshold = 450 }) {
     const theme = useTheme();
     const leftDrawerOpened = useSelector((state) => state.customization.opened);
     const matchDown = useMediaQuery(theme.breakpoints.down('lg'));
@@ -20,7 +20,7 @@ function ElevationScroll({ children, window }) {
 
     const trigger = useScrollTrigger({
         disableHysteresis: true,
-        threshold: 450,
+        threshold: threshold,
         target: window || undefined
     });
 

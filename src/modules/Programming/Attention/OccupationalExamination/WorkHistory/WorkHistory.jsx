@@ -41,6 +41,7 @@ import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHis
 import DataExposition from './DataExposition';
 import Accordion from 'components/accordion/Accordion';
 import { IconAffiliate } from '@tabler/icons';
+import WorkHistoryRiesgoEmpresa from './WorkHistoryRiesgoEmpresa';
 
 const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const theme = useTheme();
@@ -298,7 +299,6 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                 <Table aria-label="collapsible table">
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell sx={{ pl: 3 }} />
                                             <TableCell>Empresa</TableCell>
                                             <TableCell>Cargo</TableCell>
                                             <TableCell>Años</TableCell>
@@ -307,17 +307,20 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
+
                                         {lsWorkHistoryOtherCompany.map((row) => (
                                             <RowCompany key={row.id} getAllWorkHistory={getAllWorkHistory} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteEmpresa} />
                                         ))}
+
                                     </TableBody>
                                 </Table>
                             </TableContainer>
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Accordion title={<><IconAffiliate />
-                                <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Exposición Ocupacional Otras Empresas</Typography></>}>
+                            <Accordion title={<><IconAffiliate /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Exposición Ocupacional Otras Empresas</Typography></>}>
+
+                                <WorkHistoryRiesgoEmpresa getAllWorkHistory={getAllWorkHistory} getSumaRiesgo={getSumaRiesgo} documento={documento} row={lsWorkHistoryOtherCompany} handleDelete={handleDeleteEmpresa} />
 
                             </Accordion>
                         </Grid>

@@ -70,7 +70,7 @@ import { GetByMail } from 'api/clients/UserClient';
 
 import { generateReportIndex } from './Report/EMO';
 import { GetAllByHistorico, GetAllByHistoricoCompany, GetAllRHL, GetAllRHLOE } from 'api/clients/WorkHistoryRiskClient';
-import StickyActionBar from './StickyActionBar/StickyActionBar';
+import StickyActionBar from '../../../../components/StickyActionBar/StickyActionBar';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllByDocumentWorkHistory } from 'api/clients/WorkHistoryClient';
 import { GetAllByDocumentWorkHistoryOtherCompany } from 'api/clients/WorkHistoryOtherCompany';
@@ -1037,6 +1037,7 @@ const OccupationalExamination = () => {
                             disabledUpdate={!resultIdRegistroAtencion}
                             disabledReport={!resultIdRegistroAtencion}
                             disabledSave={resultIdRegistroAtencion}
+                            showButton={true}
                         >
                             <Emo
                                 atencion={atencion}

@@ -15,7 +15,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ColorDrummondltd } from 'themes/colors';
 
 function StickyActionBar({ children, onClickSave, onClickReport, onClickOrderMedical, onClickUpdate,
-    disabledSave, disabledReport, disabledUpdate, ...others }) {
+    showButton = false, disabledSave, disabledReport, disabledUpdate, ...others }) {
 
     return (
         <Grid container spacing={3}>
@@ -56,29 +56,31 @@ function StickyActionBar({ children, onClickSave, onClickReport, onClickOrderMed
                         {children}
                     </CardContent>
 
-                    <CardActions>
-                        <Grid container spacing={2} alignItems="center">
-                            <Grid item xs={12}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button disabled={disabledReport} variant="outlined" fullWidth onClick={onClickReport}>
-                                                {TitleButton.Imprimir}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                    {showButton ?
+                        <CardActions>
+                            <Grid container spacing={2} alignItems="center">
+                                <Grid item xs={12}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button disabled={disabledReport} variant="outlined" fullWidth onClick={onClickReport}>
+                                                    {TitleButton.Imprimir}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
 
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={onClickOrderMedical}>
-                                                {TitleButton.OrdenesMedicas}
-                                            </Button>
-                                        </AnimateButton>
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" fullWidth onClick={onClickOrderMedical}>
+                                                    {TitleButton.OrdenesMedicas}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </CardActions>
+                        </CardActions> : null
+                    }
                 </MainCard>
             </Grid>
         </Grid>

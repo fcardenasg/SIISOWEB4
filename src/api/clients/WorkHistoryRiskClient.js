@@ -11,13 +11,15 @@ export const UpdateWorkHistoryRisks = async (riesgoHistoriaLaboral) => await put
 export const DeleteWorkHistoryRisk = async (idRiesgoHistoriaLaboral) => await deleteData(Url.RiesgoHistoriaLaboral, { idRiesgoHistoriaLaboral });
 
 export const GetAllWorkHistoryRiskCompany = async (page, pageSize) => await getData(Url.RiesgoHistoriaLaboralEmpresa, { page, pageSize });
-export const GetAllByChargeHistoricoCompany = async (page, pageSize, cargo, riesgo, documento) => await getData(Url.RHLByChargeHistoricoEmpresa, { page, pageSize, cargo, riesgo, documento });
 export const GetAllByHistoricoCompany = async (page, pageSize, documento) => await getData(Url.RHLByHistoricoEmpresa, { page, pageSize, documento });
-export const GetAllByChargeWHRAdvanceCompany = async (page, pageSize, cargo, riesgo, idHistoriaLaboral) => await getData(Url.RHLByChargeAdvanceEmpresa, { page, pageSize, cargo, riesgo, idHistoriaLaboral });
 export const GetByIdWorkHistoryRiskCompany = async (id) => await getData(Url.RiesgoHistoriaLaboralIdEmpresa, { id });
 export const InsertWorkHistoryRiskCompany = async (riesgoHistoriaLaboralOtrasEmpresas) => await postData(Url.RiesgoHistoriaLaboralEmpresa, riesgoHistoriaLaboralOtrasEmpresas);
 export const UpdateWorkHistoryRisksCompany = async (riesgoHistoriaLaboralOtrasEmpresas) => await putData(Url.RiesgoHistoriaLaboralEmpresa, riesgoHistoriaLaboralOtrasEmpresas);
 export const DeleteWorkHistoryRiskCompany = async (idRiesgoHistoriaLaboralOtrasEmpresas) => await deleteData(Url.RiesgoHistoriaLaboralEmpresa, { idRiesgoHistoriaLaboralOtrasEmpresas });
+export const GetAllByChargeHistoricoCompany = async (page, pageSize, riesgo, documento) => await getData(Url.RHLByChargeHistoricoEmpresa, { page, pageSize, riesgo, documento });
+
+/* Riesgos Unidos */
+export const GetAllByChargeWHRAdvanceCompany = async (page, pageSize, documento, riesgo) => await getData(Url.RHLByChargeAdvanceEmpresa, { page, pageSize, documento, riesgo });
 
 export const GetAllRHL = async (documento) => await getData(Url.ReportRHL, { documento });
 export const GetAllRHLOE = async (documento) => await getData(Url.ReportRHLOE, { documento });

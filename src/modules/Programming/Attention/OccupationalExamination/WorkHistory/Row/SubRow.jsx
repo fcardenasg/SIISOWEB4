@@ -25,7 +25,6 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
     const handleClick = (id) => {
         setIdRisk(id);
         setOpen(true);
-        console.log("Id => ", id);
     };
 
     const FormatArray = (medidasControl = '') => {

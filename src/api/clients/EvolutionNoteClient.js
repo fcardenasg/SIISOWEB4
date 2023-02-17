@@ -6,3 +6,6 @@ export const GetByIdEvolutionNote = async (id) => await getData(Url.NotaEvolucio
 export const InsertEvolutionNote = async (notaEvolucion) => await postData(Url.NotaEvolucion, notaEvolucion);
 export const UpdateEvolutionNotes = async (notaEvolucion) => await putData(Url.NotaEvolucion, notaEvolucion);
 export const DeleteEvolutionNote = async (idNotaEvolucion) => await deleteData(Url.NotaEvolucion, { idNotaEvolucion });
+
+export const ValidateIdRegistroAtencionEvolutionNote = async (idRegistroAtencion) => await getData(Url.NotaEvolucion_ValidateIdRegistroAtencion, { idRegistroAtencion });
+export const GetIdRegistroAtencionEvolutionNote = async (idRegistroAtencion) => await getData(Url.NotaEvolucion_GetIdRegistroAtencion, { idRegistroAtencion });

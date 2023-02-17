@@ -228,12 +228,8 @@ const CabRegistration = () => {
                 datos.motivoTraslado, datos.idContingencia, datos.idRuta, datos.idDestino, datos.nroTaxi, datos.idCargadoa, datos.idCupo, datos.idMedico,
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
-                console.log(DataToInsert);
-
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertCabRegistration(DataToInsert);
-                
-                console.log(datos);
 
                 if (result.status === 200) {
                     setOpenSuccess(true);

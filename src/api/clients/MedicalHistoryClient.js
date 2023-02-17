@@ -6,3 +6,6 @@ export const GetByIdMedicalHistory = async (id) => await getData(Url.HistoriaCli
 export const InsertMedicalHistory = async (historiaClinica) => await postData(Url.HistoriaClinica, historiaClinica);
 export const UpdateMedicalHistorys = async (historiaClinica) => await putData(Url.HistoriaClinica, historiaClinica);
 export const DeleteMedicalHistory = async (idHistoriaClinica) => await deleteData(Url.HistoriaClinica, { idHistoriaClinica });
+
+export const ValidateIdRegistroAtencionMedicalHistory = async (idRegistroAtencion) => await getData(Url.HistoriaClinica_ValidateIdRegistroAtencion, { idRegistroAtencion });
+export const GetIdRegistroAtencionMedicalHistory = async (idRegistroAtencion) => await getData(Url.HistoriaClinica_GetIdRegistroAtencion, { idRegistroAtencion });

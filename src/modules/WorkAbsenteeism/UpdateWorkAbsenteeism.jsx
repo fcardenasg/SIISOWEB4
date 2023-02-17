@@ -31,7 +31,7 @@ import UserCountCard from 'ui-component/cards/UserCountCard';
 import AccountCircleTwoTone from '@mui/icons-material/AccountCircleTwoTone';
 import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
+import { MessageError, MessageSuccess, MessageUpdate } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import Accordion from 'components/accordion/Accordion';
 import HistoryWorkAbsenteeism from './HistoryWorkAbsenteeism';
@@ -65,6 +65,9 @@ const WorkAbsenteeism = () => {
     const [departa, setDeparta] = useState('');
     const [lsDeparta, setLsDeparta] = useState([]);
     const [departamentoIPS, setDepartaMedico] = useState('');
+    const [catalogoIncapacidad, setCatalogoIncapacidad] = useState('');
+    const [municipioControl, setMunicipioControl] = useState('');
+    const [municipioDatosMedico, setMunicipioDatosMedico] = useState('');
     const [lsMunicipio, setMunicipioE] = useState([]);
     const [lsMunicipioMedico, setMunicipioMedico] = useState([]);
     const [lsCodigoFilterDpto, setCodigoFilterDpto] = useState([]);
@@ -78,6 +81,8 @@ const WorkAbsenteeism = () => {
     const [lsCategoria, setLsCategoria] = useState([]);
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [lsRedExpide, setLsRedExpide] = useState([]);
+    const [lsMunicipioArreglo, setLsMunicipioArreglo] = useState([]);
+    const [lsCatalogoDatosInca, setLsCatalogoDatosInca] = useState([]);
     const [lsCumplimientoRequisito, setLsCumplimientoRequisito] = useState([]);
 
     const [fechaExpedicion, setFechaExpedicion] = useState(new Date());
@@ -117,6 +122,20 @@ const WorkAbsenteeism = () => {
                 label: item.nombre
             }));
             setLsSubsegmento(resultSubsegmento);
+
+            const lsServerMunicipio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Municipio);
+            var resultMunicipio = lsServerMunicipio.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsMunicipioArreglo(resultMunicipio);
+
+            const lsServerCatalogoDatos = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CatalogoAusentismo);
+            var resultCatalogoDatos = lsServerCatalogoDatos.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCatalogoDatosInca(resultCatalogoDatos);
 
             const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
             var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
@@ -199,12 +218,28 @@ const WorkAbsenteeism = () => {
                 setDiasSinLaborar(lsServerData.data.diasSinLaborar);
                 setDepartaMedico(lsServerData.data.departamentoIPS);
                 setDeparta(lsServerData.data.departamento);
+                setTipoSoporte(lsServerData.data.idTipoSoporte);
+
+                if (lsServerData.data.dx !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerData.data.dx);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsCIE11(resultCie11);
+                    }
+
+                    setTextoDx(lsServerData.data.dx);
+                }
             }
         } catch (error) { }
     }
 
     const handleChangeDepartamentoIncapa = async (event) => {
         try {
+            setMunicipioControl('');
             setDeparta(event.target.value);
 
             var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
@@ -239,6 +274,7 @@ const WorkAbsenteeism = () => {
 
     const handleChangeDepartamentoMedico = async (event) => {
         try {
+            setMunicipioDatosMedico('');
             setDepartaMedico(event.target.value);
 
             var lsResulCode = String(lsCodigoFilterDpto.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
@@ -286,14 +322,18 @@ const WorkAbsenteeism = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PutWorkAbsenteeism(id, documento, datos.incapacidad, datos.nroIncapacidad, FormatDate(fechaExpedicion), departa,
-                datos.ciudadExpedicion, datos.tipoIncapacidad, datos.contingencia, FormatDate(fechaInicio), FormatDate(fechaFin), diasSinLaborar,
-                datos.dxFinal, datos.dxFinal, datos.estadoCaso, datos.segmentoAgrupado, DefaultValue.SINREGISTRO_GLOBAL, datos.segmento, tipoSoporte, datos.idCategoria,
+            const municipio_DATAEmpresa = municipioControl == '' ? datos.ciudadExpedicion : municipioControl;
+            const categoria_DATA = catalogoIncapacidad == '' ? datos.idCategoria : catalogoIncapacidad;
+            const municipio_DATAMedico = municipioDatosMedico == '' ? datos.ciudadIPS : municipioDatosMedico;
 
-                datos.proveedor, departamentoIPS, datos.ciudadIPS, datos.nombreProfesional, datos.especialidad, datos.registroProfesional, datos.tipoAtencion,
+            const DataToInsert = PutWorkAbsenteeism(id, documento, datos.incapacidad, datos.nroIncapacidad, FormatDate(fechaExpedicion), departa,
+                municipio_DATAEmpresa, datos.tipoIncapacidad, datos.contingencia, FormatDate(fechaInicio), FormatDate(fechaFin), diasSinLaborar,
+                datos.dxFinal, datos.dxFinal, datos.estadoCaso, datos.segmentoAgrupado, DefaultValue.SINREGISTRO_GLOBAL, datos.segmento, tipoSoporte, categoria_DATA,
+
+                datos.proveedor, departamentoIPS, municipio_DATAMedico, datos.nombreProfesional, datos.especialidad, datos.registroProfesional, datos.tipoAtencion,
                 datos.cumplimientoRequisito, datos.expideInCapacidad, datos.observacionCumplimiento,
 
-                datos.observacion, '', FormatDate(fechaModifica), user.nameuser, FormatDate(new Date()), lsEmployee.tipoContrato, lsEmployee.type,
+                datos.observacion, user.nameuser, FormatDate(fechaModifica), user.nameuser, FormatDate(new Date()), lsEmployee.tipoContrato, lsEmployee.type,
                 FormatDate(new Date()), user.nameuser);
 
             if (Object.keys(datos.length !== 0)) {
@@ -319,7 +359,7 @@ const WorkAbsenteeism = () => {
 
     return (
         <Fragment>
-            <MessageSuccess onClose={() => setOpenSuccess(false)} open={openSuccess} />
+            <MessageUpdate onClose={() => setOpenSuccess(false)} open={openSuccess} />
             <MessageError onClose={() => setOpenError(false)} open={openError} error={errorMessage} />
 
             {timeWait ?
@@ -385,17 +425,28 @@ const WorkAbsenteeism = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
+                                <Grid item xs={12} md={6} lg={4}>
+                                    {lsMunicipio.length !== 0 ? (
+                                        <SelectOnChange
                                             name="ciudadExpedicion"
                                             label="Ciudad de Expedición"
-                                            defaultValue={lsWorkAbsenteeism.ciudadExpedicion}
+                                            value={municipioControl}
                                             options={lsMunicipio}
+                                            onChange={(e) => setMunicipioControl(e.target.value)}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
-                                    </FormProvider>
+                                    ) : (
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="ciudadExpedicion"
+                                                label="Ciudad de Expedición"
+                                                defaultValue={lsWorkAbsenteeism.ciudadExpedicion}
+                                                disabled
+                                                options={lsMunicipioArreglo}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    )}
                                 </Grid>
                             </Grid>
                         </SubCard>
@@ -525,7 +576,7 @@ const WorkAbsenteeism = () => {
                                         <InputSelect
                                             name="segmento"
                                             label="Segmento"
-                                            defaultValue={lsWorkAbsenteeism.segmento}
+                                            defaultValue={lsWorkAbsenteeism.subsegmento}
                                             options={lsSubsegmento}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -544,17 +595,28 @@ const WorkAbsenteeism = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
+                                <Grid item xs={12} md={6} lg={4}>
+                                    {lsCategoria.length !== 0 ? (
+                                        <SelectOnChange
                                             name="idCategoria"
                                             label="Categoria"
-                                            defaultValue={lsWorkAbsenteeism.idCategoria}
+                                            value={catalogoIncapacidad}
                                             options={lsCategoria}
+                                            onChange={(e) => setCatalogoIncapacidad(e.target.value)}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
-                                    </FormProvider>
+                                    ) : (
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idCategoria"
+                                                label="Categoria"
+                                                defaultValue={lsWorkAbsenteeism.idCategoria}
+                                                disabled
+                                                options={lsCatalogoDatosInca}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    )}
                                 </Grid>
                             </Grid >
                         </SubCard >
@@ -587,17 +649,28 @@ const WorkAbsenteeism = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
+                                <Grid item xs={12} md={6} lg={2.4}>
+                                    {lsMunicipioMedico.length !== 0 ? (
+                                        <SelectOnChange
                                             name="ciudadIPS"
                                             label="Ciudad"
-                                            defaultValue={lsWorkAbsenteeism.ciudadIPS}
+                                            value={municipioDatosMedico}
                                             options={lsMunicipioMedico}
+                                            onChange={(e) => setMunicipioDatosMedico(e.target.value)}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
-                                    </FormProvider>
+                                    ) : (
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="ciudadIPS"
+                                                label="Ciudad"
+                                                defaultValue={lsWorkAbsenteeism.ciudadIPS}
+                                                disabled
+                                                options={lsMunicipioArreglo}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    )}
                                 </Grid>
 
                                 <Grid item xs={2.4}>
@@ -719,6 +792,7 @@ const WorkAbsenteeism = () => {
                                         <InputText
                                             defaultValue={lsWorkAbsenteeism.usuarioModificacion}
                                             fullWidth
+                                            disabled
                                             name="usuarioModificacion"
                                             label="Usuario Modifica"
                                             size={matchesXS ? 'small' : 'medium'}
@@ -780,7 +854,7 @@ const WorkAbsenteeism = () => {
                                     <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                                {TitleButton.Guardar}
+                                                {TitleButton.Actualizar}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>

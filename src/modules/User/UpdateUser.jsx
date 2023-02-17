@@ -130,21 +130,16 @@ const UpdateUser = () => {
     const handleClick = async (datos) => {
         try {
             const password = checkResetearPass ? datos.nombreUsuario : lsUsuario.password;
+            const firmaMedico = fileImg === null ? '' : fileImg;
 
             const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
                 datos.idRol, JSON.stringify(especialidad), datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-                fileImg, checkEstadoUsuario,datos.idSede);
+                firmaMedico, checkEstadoUsuario, datos.idSede);
 
             if (Object.keys(datos.length !== 0)) {
-                if (fileImg !== null) {
-                    const result = await UpdateUsers(DataToUpdate);
-                    if (result.status === 200) {
-                        setOpenUpdate(true);
-                    }
-                }
-                else {
-                    setOpenError(true);
-                    setErrorMessage('Debe selecionar una Firma');
+                const result = await UpdateUsers(DataToUpdate);
+                if (result.status === 200) {
+                    setOpenUpdate(true);
                 }
             }
         } catch (error) {
@@ -288,20 +283,20 @@ const UpdateUser = () => {
                             </FormProvider>
                         </Grid>
 
-                      
+
 
                         <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="idSede"
-                            label="Sede de atención"
-                            defaultValue={lsUsuario.idSede}
-                            options={lsSedeUser}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.idSede}
-                        />
-                    </FormProvider>
-                </Grid>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="idSede"
+                                    label="Sede de atención"
+                                    defaultValue={lsUsuario.idSede}
+                                    options={lsSedeUser}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.idSede}
+                                />
+                            </FormProvider>
+                        </Grid>
 
                         <Grid item xs={12} md={6} lg={4}>
                             <InputCheck

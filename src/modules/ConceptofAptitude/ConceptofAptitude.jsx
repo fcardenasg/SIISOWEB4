@@ -106,7 +106,6 @@ const ConceptofAptitude = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdConceptofAptitude(result.idTrabajoenAltura);
-            console.log(lsDataReport)
             const lsDataUser = await GetByMail(user.nameuser);
             const dataPDFTwo = generateReportConceptofAptitude(lsDataReport.data, lsDataUser.data);
 
@@ -174,12 +173,10 @@ const ConceptofAptitude = () => {
             const DataToInsert = PostConceptofAptitude(idConcepto, documento, FormatDate(datos.fecha), datos.idConceptoActitud,
                 datos.observacionesNEMTA, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            console.log(DataToInsert)
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertConceptofAptitude(DataToInsert);
                 if (result.status === 200) {
-                    console.log('datos insert', result)
                     setOpenSuccess(true);
                     setDocumento('');
                     setLsEmployee([]);

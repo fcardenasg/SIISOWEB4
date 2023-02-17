@@ -314,6 +314,8 @@ const Employee = () => {
 
     const handleClick = async (datos) => {
         try {
+            const fotoEmpleado = imgSrc === null ? '' : imgSrc;
+
             const DataToInsert = PostEmployee(datos.documento, datos.nombres, FormatDate(datos.fechaNaci), datos.type, datos.departamento,
                 datos.area, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido === null ? 1 : dptoNacido, FormatDate(datos.fechaContrato),
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
@@ -321,25 +323,19 @@ const Employee = () => {
                 datos.municipioResidenciaTrabaja, dptoResidencia === null ? 1 : dptoNacido, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date()),
-                DefaultValue.BANDERA_DRUMMOND, datos.ges, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()), imgSrc, datos.oficio);
+                DefaultValue.BANDERA_DRUMMOND, datos.ges, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()), fotoEmpleado, datos.oficio);
 
 
-
-            if (imgSrc != null) {
-                if (Object.keys(datos.length !== 0)) {
-                    const result = await InsertEmployee(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenUpdate(true);
-                        CleanCombo();
-                        reset();
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Hubo un problemas al guardo los datos');
+            if (Object.keys(datos.length !== 0)) {
+                const result = await InsertEmployee(DataToInsert);
+                if (result.status === 200) {
+                    setOpenUpdate(true);
+                    CleanCombo();
+                    reset();
                 }
             } else {
                 setOpenError(true);
-                setErrorMessage('Exiten campos vacios aún');
+                setErrorMessage('Hubo un problemas al guardo los datos');
             }
         } catch (error) {
             setOpenError(true);

@@ -13,12 +13,12 @@ import {
 
 import EditIcon from '@mui/icons-material/Edit';
 import Cargando from 'components/loading/Cargando';
-import SubRowChargeHistory from './SubRowChargeHistory';
+import SubRowChargeHistory from './Row/SubRowChargeHistory';
 import swal from 'sweetalert';
 import { FormatDate } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import { PostWorkHistoryRiskCompany } from 'formatdata/WorkHistoryRiskForm';
-import SubRowHistoricalCompany from './SubRowHistoricalCompany';
+import SubRowHistoricalCompany from './Row/SubRowHistoricalCompany';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import { MessageSuccess, MessageDelete, ParamDelete, ParamLoadingData } from 'components/alert/AlertAll';
 import { InsertWorkHistoryRiskCompany, DeleteWorkHistoryRiskCompany, GetAllByChargeHistoricoCompany, GetAllByChargeWHRAdvanceCompany, UpdateWorkHistoryRisksCompany } from 'api/clients/WorkHistoryRiskClient';
@@ -27,14 +27,16 @@ import { DefaultValue } from 'components/helpers/Enums';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { SubRow } from './SubRow';
-import { MenuItem } from '../Menu/MenuItem';
-import ModalEditarRiesgo from '../ModalEditarRiesgo';
+import { SubRow } from './Row/SubRow';
+import { MenuItem } from './Menu/MenuItem';
+import ModalEditarRiesgo from './ModalEditarRiesgo';
 
-export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, documento, getAllWorkHistory }) {
+const WorkHistoryRiesgoEmpresa = ({ getSumaRiesgo, handleDelete, documento, getAllWorkHistory }) => {
     const diferen = "COMPANY";
     const { user } = useAuth();
     const [numId, setNumId] = useState(1);
+    const [open, setOpen] = useState(false);
+
     const [numIdRiesgo, setNumIdRiesgo] = useState('');
     const [openEditarRiesgo, setOpenEditarRiesgo] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
@@ -81,8 +83,8 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
                 for (let index = 0; index < arrayInsert.length; index++) {
                     const riesgo = arrayInsert[index];
 
-                    const DataToInsert = PostWorkHistoryRiskCompany(row.id, row.fecha, row.documento, numRiesgo,
-                        row.cargo, riesgo.clase, riesgo.exposicion, riesgo.gradosinEPP, riesgo.gradoconEPP,
+                    const DataToInsert = PostWorkHistoryRiskCompany(0, FormatDate(new Date()), documento, numRiesgo,
+                        '', riesgo.clase, riesgo.exposicion, riesgo.gradosinEPP, riesgo.gradoconEPP,
                         riesgo.medidascontrol, 0, 0, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
                     if (DataToInsert) {
@@ -96,7 +98,7 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
                 }
             }
 
-            const lsServerRiesgoHL = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, numRiesgo, row.id);
+            const lsServerRiesgoHL = await GetAllByChargeWHRAdvanceCompany(0, 0, documento, numRiesgo);
             if (lsServerRiesgoHL.status === 200) {
                 return lsServerRiesgoHL.data.entities;
             }
@@ -109,31 +111,31 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
 
     async function getAllHistoricoForCharge() {
         try {
-            const lsServerRiesgoQuimico = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoQuimico, documento);
+            const lsServerRiesgoQuimico = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoQuimico, documento);
             if (lsServerRiesgoQuimico.status === 200)
                 setLsHisQuimico(lsServerRiesgoQuimico.data.entities);
 
-            const lsServerRiesgoFisico = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoFisico, documento);
+            const lsServerRiesgoFisico = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoFisico, documento);
             if (lsServerRiesgoFisico.status === 200)
                 setLsHisFisico(lsServerRiesgoFisico.data.entities);
 
-            const lsServerRiesgoPsicosocial = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoPsicosocial, documento);
+            const lsServerRiesgoPsicosocial = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoPsicosocial, documento);
             if (lsServerRiesgoPsicosocial.status === 200)
                 setLsHisPsicosocial(lsServerRiesgoPsicosocial.data.entities);
 
-            const lsServerRiesgoBiologico = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoBiologico, documento);
+            const lsServerRiesgoBiologico = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoBiologico, documento);
             if (lsServerRiesgoBiologico.status === 200)
                 setLsHisBiologico(lsServerRiesgoBiologico.data.entities);
 
-            const lsServerRiesgoECFPostura = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Postura, documento);
+            const lsServerRiesgoECFPostura = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoErgonomicoCargaFisica_Postura, documento);
             if (lsServerRiesgoECFPostura.status === 200)
                 setLsHisECFPostura(lsServerRiesgoECFPostura.data.entities);
 
-            const lsServerRiesgoECFFuerza = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, documento);
+            const lsServerRiesgoECFFuerza = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, documento);
             if (lsServerRiesgoECFFuerza.status === 200)
                 setLsHisECFFuerza(lsServerRiesgoECFFuerza.data.entities);
 
-            const lsServerRiesgoECFMovimiento = await GetAllByChargeHistoricoCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, documento);
+            const lsServerRiesgoECFMovimiento = await GetAllByChargeHistoricoCompany(0, 0, DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, documento);
             if (lsServerRiesgoECFMovimiento.status === 200)
                 setLsHisECFMovimiento(lsServerRiesgoECFMovimiento.data.entities);
         } catch (error) { }
@@ -145,31 +147,31 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
 
     async function getAll() {
         try {
-            const lsServerRiesgoQuimico = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoQuimico, row.id);
+            const lsServerRiesgoQuimico = await GetAllByChargeWHRAdvanceCompany(0, 0, documento, DefaultValue.RiesgoQuimico);
             if (lsServerRiesgoQuimico.status === 200)
                 setLsQuimico(lsServerRiesgoQuimico.data.entities);
 
-            const lsServerRiesgoFisico = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoFisico, row.id);
+            const lsServerRiesgoFisico = await GetAllByChargeWHRAdvanceCompany(0, 0, documento, DefaultValue.RiesgoFisico);
             if (lsServerRiesgoFisico.status === 200)
                 setLsFisico(lsServerRiesgoFisico.data.entities);
 
-            const lsServerRiesgoPsicosocial = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoPsicosocial, row.id);
+            const lsServerRiesgoPsicosocial = await GetAllByChargeWHRAdvanceCompany(0, 0, documento, DefaultValue.RiesgoPsicosocial);
             if (lsServerRiesgoPsicosocial.status === 200)
                 setLsPsicosocial(lsServerRiesgoPsicosocial.data.entities);
 
-            const lsServerRiesgoBiologico = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoBiologico, row.id);
+            const lsServerRiesgoBiologico = await GetAllByChargeWHRAdvanceCompany(0, 0, documento, DefaultValue.RiesgoBiologico);
             if (lsServerRiesgoBiologico.status === 200)
                 setLsBiologico(lsServerRiesgoBiologico.data.entities);
 
-            const lsServerRiesgoECFFuerza = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, row.id);
+            const lsServerRiesgoECFFuerza = await GetAllByChargeWHRAdvanceCompany(0, 0, documento, DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza);
             if (lsServerRiesgoECFFuerza.status === 200)
                 setLsECFFuerza(lsServerRiesgoECFFuerza.data.entities);
 
-            const lsServerRiesgoECFMovimiento = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, row.id);
+            const lsServerRiesgoECFMovimiento = await GetAllByChargeWHRAdvanceCompany(0, 0, documento, DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento);
             if (lsServerRiesgoECFMovimiento.status === 200)
                 setLsECFMovimiento(lsServerRiesgoECFMovimiento.data.entities);
 
-            const lsServerRiesgoECFPostura = await GetAllByChargeWHRAdvanceCompany(0, 0, row.cargo, DefaultValue.RiesgoErgonomicoCargaFisica_Postura, row.id);
+            const lsServerRiesgoECFPostura = await GetAllByChargeWHRAdvanceCompany(0, 0, documento, DefaultValue.RiesgoErgonomicoCargaFisica_Postura);
             if (lsServerRiesgoECFPostura.status === 200)
                 setLsECFPostura(lsServerRiesgoECFPostura.data.entities);
         } catch (error) {
@@ -179,7 +181,7 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
 
     useEffect(() => {
         getAll();
-    }, [row.id]);
+    }, []);
 
     const handleClickButton = async (id) => {
         try {
@@ -285,77 +287,59 @@ export default function RowCompany({ row = [], getSumaRiesgo, handleDelete, docu
         } catch (error) { }
     }
 
-    const handleUpdate = async (idRiesgo) => {
-        setNumIdRiesgo(idRiesgo);
-        setOpenEditarRiesgo(true);
-    }
-
     return (
         <Fragment>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
-
-            <ModalEditarRiesgo
-                title="ACTUALIZAR HISTORIA LABORAL"
-                idRisk={numIdRiesgo}
-                open={openEditarRiesgo}
-                onClose={() => setOpenEditarRiesgo(false)}
-                diferen={diferen}
-                getAllWorkHistory={getAllWorkHistory}
-            />
-
-            <FullScreenDialog
-                open={openCargoHistorico}
-                title={"REGISTRO HISTÓRICO DE " + titleCargoHistorico}
-                handleClose={() => setOpenCargoHistorico(false)}
-            >
-                {cargoHistorico.length != 0 ? <SubRowChargeHistory key={row.id} row={cargoHistorico} title={titleCargoHistorico} /> : <Cargando />}
-            </FullScreenDialog>
-
             <FullScreenDialog
                 open={openHistorico}
                 title="REGISTRO HISTÓRICO DE EXPOSICIÓN OCUPACIONAL"
                 handleClose={() => setOpenHistorico(false)}
             >
-                <SubRowHistoricalCompany key={row.id} documento={documento} />
+                <SubRowHistoricalCompany documento={documento} />
             </FullScreenDialog>
 
-            <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
-                <TableCell component="th" scope="row">
-                    {row.empresa}
-                </TableCell>
-                <TableCell>{row.cargo}</TableCell>
-                <TableCell>{row.anio}</TableCell>
-                <TableCell>{row.meses}</TableCell>
-                <TableCell>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <Tooltip title="Editar" onClick={() => handleUpdate(row.id)}>
-                                <IconButton color="primary" size="small">
-                                    <EditIcon sx={{ fontSize: '2rem' }} />
-                                </IconButton>
-                            </Tooltip>
-                        </Grid>
+            <TableRow>
+                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
+                    <Box sx={{ margin: 0, pt: 5, pb: 5 }}>
 
-                        <Grid item xs={6}>
-                            <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
-                                <IconButton color="error" size="small">
-                                    <HighlightOffIcon sx={{ fontSize: '2rem' }} />
-                                </IconButton>
-                            </Tooltip>
-                        </Grid>
-                    </Grid>
+                        <MenuItem
+                            numId={numId}
+                            onClickButton={handleClickButton}
+                            onClickNuevo={handleClickNuevo}
+                            onClickHistorico={handleClickHistorico}
+                        />
+
+                        {lsQuimico.length != 0 && numId == 1 ?
+                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsQuimico} title="Riesgo Químico" />
+                            : null}
+
+                        {lsFisico.length != 0 && numId == 2 ?
+                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsFisico} title="Riesgo Físico" />
+                            : null}
+
+                        {lsPsicosocial.length != 0 && numId == 3 ?
+                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsPsicosocial} title="Riesgo Psicosocial" />
+                            : null}
+
+                        {lsBiologico.length != 0 && numId == 4 ?
+                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsBiologico} title="Riesgo Biológico" />
+                            : null}
+
+                        {lsECFPostura.length != 0 && numId == 5 ?
+                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFPostura} title="Riesgo ECF - Postura" />
+                            : null}
+
+                        {lsECFFuerza.length != 0 && numId == 6 ?
+                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFFuerza} title="Riesgo ECF - Fuerza" />
+                            : null}
+
+                        {lsECFMovimiento.length != 0 && numId == 7 ?
+                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFMovimiento} title="Riesgo ECF - Movimiento" />
+                            : null}
+                    </Box>
                 </TableCell>
             </TableRow>
-
-            {/* Aquí iba */}
-        </Fragment >
+        </Fragment>
     );
 }
 
-RowCompany.propTypes = {
-    row: PropTypes.object,
-    handleDelete: PropTypes.func,
-    getSumaRiesgo: PropTypes.func,
-    documento: PropTypes.string,
-};
+export default WorkHistoryRiesgoEmpresa;

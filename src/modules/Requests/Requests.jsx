@@ -230,12 +230,8 @@ const Requests = () => {
                 datos.medioUtilizado,datos.numeroGuia,datos.observaciones,datos.direccion,datos.correo,datos.telefono,
                 FormatDate(datos.fechaEntrega),FormatDate(datos.fechaReciboDLTD),datos.usuarioReciboDLTD,datos.estado,user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
-                console.log(DataToInsert);
-
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertRequests(DataToInsert);
-                
-                console.log(datos);
 
                 if (result.status === 200) {
                     setOpenSuccess(true);

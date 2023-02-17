@@ -1,5 +1,7 @@
 export const CodCatalogo = {
     Departamento: 4,
+    Municipio: 5,
+    CatalogoAusentismo: 26,
     Sede: 6,
     Escolaridad: 2,
     Genero: 1,

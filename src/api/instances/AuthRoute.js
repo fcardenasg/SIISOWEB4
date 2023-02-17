@@ -149,9 +149,13 @@ export const Url = {
 
     HistoriaClinica: 'api/HistoriaClinica',
     HistoriaClinicaId: 'api/HistoriaClinica/id',
+    HistoriaClinica_GetIdRegistroAtencion: 'api/HistoriaClinica/GetIdRegistroAtencion',
+    HistoriaClinica_ValidateIdRegistroAtencion: 'api/HistoriaClinica/ValidateIdRegistroAtencion',
 
     NotaEvolucion: 'api/NotaEvolucion',
     NotaEvolucionId: 'api/NotaEvolucion/id',
+    NotaEvolucion_GetIdRegistroAtencion: 'api/NotaEvolucion/GetIdRegistroAtencion',
+    NotaEvolucion_ValidateIdRegistroAtencion: 'api/NotaEvolucion/ValidateIdRegistroAtencion',
 
     NotaEnfermeria: 'api/NotaEnfermeria',
     NotaEnfermeriaId: 'api/NotaEnfermeria/id',
