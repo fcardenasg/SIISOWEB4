@@ -8,7 +8,7 @@ import { itemsMenu } from './items';
 import HoverSocialCard from 'components/components/HoverSocialCard';
 import { IconPlus, IconHistory } from '@tabler/icons';
 
-export const MenuItem = ({ onClickNuevo, onClickButton, numId, onClickHistorico }) => {
+export const MenuItem = ({ onClickNuevo, onClickButton, numId }) => {
 
     const [itemsMenuButton, setItemsMenuButton] = useState([
         ...itemsMenu,
@@ -44,23 +44,16 @@ export const MenuItem = ({ onClickNuevo, onClickButton, numId, onClickHistorico 
                         </AnimateButton>
 
 
-                        {item.func == numId && numId != 8 ?
+                        {item.func == numId ?
                             <Grid container spacing={2} sx={{ pt: 2 }}>
-                                <Grid item xs={6}>
+                                <Grid item xs={12}>
                                     <AnimateButton>
                                         <Button variant="contained" fullWidth onClick={() => onClickNuevo(`${numId}`)} startIcon={<IconPlus />}>
-                                            Nuevo
+                                            Cargar Riesgo
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-                                <Grid item xs={6}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => onClickHistorico(`${numId}`)} startIcon={<IconHistory />}>
-                                            Histórico
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid> : <></>
+                            </Grid> : null
                         }
                     </Grid>
                 ))}
@@ -73,6 +66,4 @@ MenuItem.propTypes = {
     numId: PropTypes.number,
     onClickButton: PropTypes.any,
     onClickNuevo: PropTypes.any,
-    onClickHistorico: PropTypes.any,
-    children: PropTypes.any,
 };

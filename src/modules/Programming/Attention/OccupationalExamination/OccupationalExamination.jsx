@@ -1031,13 +1031,10 @@ const OccupationalExamination = () => {
                     <TabPanel value={value} index={2}>
                         <StickyActionBar
                             onClickSave={handleSubmit(handleClick)}
-                            onClickOrderMedical={() => setOpenFormula(true)}
-                            onClickReport={handleClickReport}
                             onClickUpdate={handleSubmit(handleClickUpdate)}
                             disabledUpdate={!resultIdRegistroAtencion}
-                            disabledReport={!resultIdRegistroAtencion}
                             disabledSave={resultIdRegistroAtencion}
-                            showButton={true}
+                            showButton={false}
                         >
                             <Emo
                                 atencion={atencion}
@@ -1098,6 +1095,22 @@ const OccupationalExamination = () => {
                     </TabPanel>
 
                     <Grid container spacing={2} sx={{ pt: 4 }}>
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={handleClickReport}>
+                                    {TitleButton.Imprimir}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
+                                    {TitleButton.OrdenesMedicas}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
                         <Grid item xs={2}>
                             <AnimateButton>
                                 <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>

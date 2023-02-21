@@ -65,12 +65,14 @@ export const Url = {
     RHLByHistorico: 'api/RiesgoHistoriaLaboral/GetAllByHistorico',
     RHLByChargeAdvance: 'api/RiesgoHistoriaLaboral/GetAllByChargeAdvance',
     ReportRHL: 'api/RiesgoHistoriaLaboral/GetAllRHL',
+    RHLDeleteAndInsertRisk: 'api/RiesgoHistoriaLaboral/DeleteAndInsertRisk',
 
     RiesgoHistoriaLaboralEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas',
     RiesgoHistoriaLaboralIdEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/id',
     RHLByChargeHistoricoEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllByChargeHistorico',
     RHLByHistoricoEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllByHistorico',
     RHLByChargeAdvanceEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllByChargeAdvance',
+    RHLOEDeleteAndInsertRisk: 'api/RiesgoHistoriaLaboralOtrasEmpresas/DeleteAndInsertRisk',
     ReportRHLOE: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllRHL',
 
     Proveedor: 'api/Proveedor',

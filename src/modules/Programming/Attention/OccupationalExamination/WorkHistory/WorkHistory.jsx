@@ -42,6 +42,7 @@ import DataExposition from './DataExposition';
 import Accordion from 'components/accordion/Accordion';
 import { IconAffiliate } from '@tabler/icons';
 import WorkHistoryRiesgoEmpresa from './WorkHistoryRiesgoEmpresa';
+import WorkHistoryRiesgoDLTD from './WorkHistoryRiesgoDLTD';
 
 const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const theme = useTheme();
@@ -319,9 +320,13 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
                         <Grid item xs={12}>
                             <Accordion title={<><IconAffiliate /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Exposición Ocupacional Otras Empresas</Typography></>}>
-
-                                <WorkHistoryRiesgoEmpresa getAllWorkHistory={getAllWorkHistory} getSumaRiesgo={getSumaRiesgo} documento={documento} row={lsWorkHistoryOtherCompany} handleDelete={handleDeleteEmpresa} />
-
+                                <WorkHistoryRiesgoEmpresa
+                                    documento={documento}
+                                    getAllWorkHistory={getAllWorkHistory}
+                                    getSumaRiesgo={getSumaRiesgo}
+                                    row={lsWorkHistoryOtherCompany}
+                                    handleDelete={handleDeleteEmpresa}
+                                />
                             </Accordion>
                         </Grid>
 
@@ -402,98 +407,114 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                     </Button>
                                 </Grid> : null}
                         </Grid>
-
                     </Grid>
                 </SubCard>
             </Grid>
 
             <Grid item xs={12}>
                 <SubCard title={<Typography variant='h4'>Historia Laboral DLTD</Typography>}>
-                    <TableContainer>
-                        <Table aria-label="collapsible table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell sx={{ pl: 3 }} />
-                                    <TableCell>Cargo</TableCell>
-                                    <TableCell>Años</TableCell>
-                                    <TableCell>
-                                        Meses
-                                    </TableCell>
-                                    <TableCell>
-                                        Acciones
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {lsWorkHistory.map((row) => (
-                                    <RowDLTD key={row.id} getAllWorkHistory={getAllWorkHistory} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteDLTD} />
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-
-                    <Transitions type="collapse" in={addItemClickedDLTD} position="top-left" direction="up">
-                        <Grid container sx={{ pt: 5 }} spacing={2}>
-                            <Grid item xs={3.5}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idCargo"
-                                        label="Cargo"
-                                        defaultValue=""
-                                        options={lsCargo}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        type="number"
-                                        defaultValue=""
-                                        fullWidth
-                                        name="anio"
-                                        label="Año"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        type="number"
-                                        defaultValue=""
-                                        fullWidth
-                                        name="meses"
-                                        label="Meses"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
-                                    />
-                                </FormProvider>
-                            </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <TableContainer>
+                                <Table aria-label="collapsible table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Cargo</TableCell>
+                                            <TableCell>Años</TableCell>
+                                            <TableCell>
+                                                Meses
+                                            </TableCell>
+                                            <TableCell>
+                                                Acciones
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {lsWorkHistory.map((row) => (
+                                            <RowDLTD key={row.id} getAllWorkHistory={getAllWorkHistory} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteDLTD} />
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                         </Grid>
 
-                        <Grid container sx={{ pr: 0.5, pt: 3 }} justifyContent="flex-end">
-                            <Stack direction="row" spacing={1} alignItems="center">
-                                <Button color="error" onClick={() => setAddItemClickedDLTD(false)}>
-                                    Cancelar
-                                </Button>
-                                <Button variant="contained" size="small" onClick={handleSubmit(handleClickDLTD)}>
-                                    Adicionar
-                                </Button>
-                            </Stack>
+                        <Grid item xs={12}>
+                            <Accordion title={<><IconAffiliate /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Exposición Ocupacional Drummond LTD</Typography></>}>
+                                <WorkHistoryRiesgoDLTD
+                                    documento={documento}
+                                    getAllWorkHistory={getAllWorkHistory}
+                                    getSumaRiesgo={getSumaRiesgo}
+                                    row={lsWorkHistoryOtherCompany}
+                                    handleDelete={handleDeleteEmpresa}
+                                />
+                            </Accordion>
                         </Grid>
-                    </Transitions>
 
-                    {!addItemClickedDLTD ?
-                        <Grid item sx={{ pl: 2, pt: 3 }}>
-                            <Button disabled={lsEmpleado.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedDLTD(true)}>
-                                + Agregar Cargo
-                            </Button>
-                        </Grid> : null}
+                        <Grid item xs={12}>
+                            <Transitions type="collapse" in={addItemClickedDLTD} position="top-left" direction="up">
+                                <Grid container sx={{ pt: 5 }} spacing={2}>
+                                    <Grid item xs={3.5}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idCargo"
+                                                label="Cargo"
+                                                defaultValue=""
+                                                options={lsCargo}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                type="number"
+                                                defaultValue=""
+                                                fullWidth
+                                                name="anio"
+                                                label="Año"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                type="number"
+                                                defaultValue=""
+                                                fullWidth
+                                                name="meses"
+                                                label="Meses"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container sx={{ pr: 0.5, pt: 3 }} justifyContent="flex-end">
+                                    <Stack direction="row" spacing={1} alignItems="center">
+                                        <Button color="error" onClick={() => setAddItemClickedDLTD(false)}>
+                                            Cancelar
+                                        </Button>
+                                        <Button variant="contained" size="small" onClick={handleSubmit(handleClickDLTD)}>
+                                            Adicionar
+                                        </Button>
+                                    </Stack>
+                                </Grid>
+                            </Transitions>
+
+                            {!addItemClickedDLTD ?
+                                <Grid item sx={{ pl: 2, pt: 3 }}>
+                                    <Button disabled={lsEmpleado.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedDLTD(true)}>
+                                        + Agregar Cargo
+                                    </Button>
+                                </Grid> : null}
+                        </Grid>
+                    </Grid>
                 </SubCard>
             </Grid>
 

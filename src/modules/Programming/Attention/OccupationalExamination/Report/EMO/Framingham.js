@@ -159,7 +159,11 @@ export function pageFramingham(
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 138, 48);
   doc.text(`${lsDataReport.documento}`, 71, 53);
   doc.text(`${lsDataReport.nameEmpleado}`, 138, 53);
+
+  doc.setTextColor(255, 0, 0);
   doc.text(`${lsDataReport.nameRiesgoCardiovascularNEMTA}`, 95, 70);
+
+  doc.setTextColor(0, 0, 0);
   doc.text(`${lsDataReport.nameClasificacionNEMTA}`, 148, 70);
   doc.text(`${lsDataReport.namePosicion}`, 138, 58);
 
@@ -194,11 +198,12 @@ export function pageFramingham(
   doc.text(`${lsDataReport.riesgoRelativoFRA}%`, 116, 176);
 
   doc.setFont("helvetica", "bold");
+  doc.setTextColor(255, 0, 0);
   doc.text(`${lsDataReport.interpretacionFRA}`, 6, 188, {
     maxWidth: 190,
     lineHeightFactor: 1.0,
   });
-
+  doc.setTextColor(0, 0, 0);
   doc.setFont("helvetica", "normal");
   doc.text(`${lsDataReport.observacionFRA}`, 6, 200, {
     maxWidth: 190,

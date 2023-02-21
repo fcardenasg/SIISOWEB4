@@ -591,14 +591,14 @@ export function generateReportConceptAptitude(
   doc.setDrawColor(128, 128, 128);
 
   /* CUADRO DATOS */
-  doc.line(5, 25, 5, 180); /* IZQUIERDA */
+  doc.line(5, 25, 5, 120); /* IZQUIERDA */
   doc.line(5, 32, marXR, 32); /* HORI ONE */
   doc.line(5, 39, marXR, 39); /* HORI TWO  */
   doc.line(5, 78, marXR, 78); /* HORI THREE */
   doc.line(5, 85, marXR, 85); /* HORI FOUR */
-  doc.line(5, 180, marXR, 180); /* HORI FIVE */
+  doc.line(5, 120, marXR, 120); /* HORI FIVE */
   doc.line(40, 39, 40, 78); /* LINEA VERTI ONE */
-  doc.line(marXR, 25, marXR, 180); /* DERECHA */
+  doc.line(marXR, 25, marXR, 120); /* DERECHA */
 
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 45, 45);
@@ -659,8 +659,8 @@ export function generateReportDiagnosis(
   doc.line(5, 39, marXR, 39); /* HORI TWO  */
   doc.line(5, 68, marXR, 68); /* HORI THREE */
   doc.line(5, 76, marXR, 76); /* HORI FOUR */
-  doc.line(5, 90, marXR, 90); /* HORI FIVE */
-  doc.line(5, 98, marXR, 98); /* HORI SIX */
+  doc.line(5, 95, marXR, 95); /* HORI FIVE */
+  doc.line(5, 104, marXR, 104); /* HORI SIX */
   doc.line(5, 150, marXR, 150); /* HORI SEVEN */
   doc.line(5, 158, marXR, 158); /* HORI EIGHT */
   doc.line(5, 210, marXR, 210); /* HORI ULTIMA */
@@ -674,7 +674,8 @@ export function generateReportDiagnosis(
   doc.text("AREA:", 7, 60);
   doc.text("DEPARTAMENTO:", 7, 65);
   doc.text("CONCEPTO DE DIAGNÓSTICOS:", 7, 73);
-  doc.text("RECOMENDACIONES DE DIAGNÓSTICOS:", 7, 95);
+
+  doc.text("RECOMENDACIONES DE DIAGNÓSTICOS:", 7, 101);
   doc.text(
     `RECOMENDACIONES PARA APTITUD DE ${lsDataReport.nameAtencion}`,
     7,
@@ -690,31 +691,34 @@ export function generateReportDiagnosis(
   doc.text(`${lsDataReport.nameArea}`, 55, 60);
   doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 55, 65);
 
-  if (lsDataReport.dx1 !== "")
+  if (lsDataReport.dx1 !== "") {
     doc.text(
       `Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`,
       7,
-      82,
+      80,
       { maxWidth: 200, lineHeightFactor: 1.5 }
     );
+  }
 
-  if (lsDataReport.dx2 !== "")
+  if (lsDataReport.dx2 !== "") {
     doc.text(
       `Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`,
+      7,
+      85,
+      { maxWidth: 200, lineHeightFactor: 1.5 }
+    );
+  }
+
+  if (lsDataReport.dx3 !== "") {
+    doc.text(
+      `Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`,
       7,
       90,
       { maxWidth: 200, lineHeightFactor: 1.5 }
     );
+  }
 
-  if (lsDataReport.dx3 !== "")
-    doc.text(
-      `Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`,
-      7,
-      98,
-      { maxWidth: 200, lineHeightFactor: 1.5 }
-    );
-
-  doc.text(`${lsDataReport.observacionID}`, 7, 103, {
+  doc.text(`${lsDataReport.observacionID}`, 7, 110, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
@@ -1400,13 +1404,14 @@ export function generateDefinitiveDiagnosis(
   doc.line(5, 102, marXR, 102); /* HORI TWO  */
 
   doc.line(5, 116, marXR, 116); /* HORI TWO  */
-  doc.text("RECOMENDACIONES", 7, 120);
-  doc.line(5, 122, marXR, 122); /* HORI TWO  */
+  doc.text("RECOMENDACIONES", 7, 122);
+  doc.line(5, 125, marXR, 125); /* HORI TWO  */
 
-  doc.line(5, 145, marXR, 145); /* HORI TWO  */
 
-  doc.text("CONSENTIMIENTO INFORMADO DEL TRABAJADOR", 7, 150);
-  doc.line(5, 152, marXR, 152); /* HORI TWO  */
+  doc.line(5, 165, marXR, 165); /* HORI TWO  */
+  doc.text("CONSENTIMIENTO INFORMADO DEL TRABAJADOR", 7, 172);
+  doc.line(5, 175, marXR, 175); /* HORI TWO  */
+  doc.line(5, 205, marXR, 205); /* HORI TWO  */
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
 
@@ -1414,7 +1419,7 @@ export function generateDefinitiveDiagnosis(
     doc.text(
       `Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`,
       7,
-      47,
+      45,
       { maxWidth: 200, lineHeightFactor: 1.5 }
     );
 
@@ -1422,7 +1427,7 @@ export function generateDefinitiveDiagnosis(
     doc.text(
       `Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`,
       7,
-      55,
+      50,
       { maxWidth: 200, lineHeightFactor: 1.5 }
     );
 
@@ -1430,7 +1435,7 @@ export function generateDefinitiveDiagnosis(
     doc.text(
       `Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`,
       7,
-      63,
+      55,
       { maxWidth: 200, lineHeightFactor: 1.5 }
     );
 
@@ -1439,14 +1444,14 @@ export function generateDefinitiveDiagnosis(
     lineHeightFactor: 1.5,
   });
 
-  doc.text(`${lsDataReport.nameConceptoActitudID}`, 7, 106);
-  doc.text(`${lsDataReport.recomendacionesID}`, 7, 126, {
+  doc.text(`${lsDataReport.nameConceptoActitudID}`, 7, 107);
+  doc.text(`${lsDataReport.recomendacionesID}`, 7, 130, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
 
   doc.setFontSize(9);
-  doc.text(consentimientoInfo, 7, 157, {
+  doc.text(consentimientoInfo, 7, 182, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });

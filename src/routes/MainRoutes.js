@@ -82,8 +82,6 @@ const Attention = Loadable(lazy(() => import('modules/Attention/Attention')));
 const UpdateAttention = Loadable(lazy(() => import('modules/Attention/UpdateAttention')));
 const ListAttention = Loadable(lazy(() => import('modules/Attention/ListAttention')));
 
-const ListOccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/ListOccupationalExamination')));
-const OccupationalExamination = Loadable(lazy(() => import('modules/OccupationalExamination/OccupationalExamination')));
 
 const ListOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/ListOtherAdvice')));
 const OtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/OtherAdvice')));
@@ -460,15 +458,6 @@ const MainRoutes = {
         {
             path: '/turner/list',
             element: <ListTurner />
-        },
-        /* Render de HCO */
-        {
-            path: '/occupational-examination/list',
-            element: <ListOccupationalExamination />
-        },
-        {
-            path: '/occupational-examination/add',
-            element: <OccupationalExamination />
         },
         /* Render de Otras Asesorias */
         {

@@ -1,9 +1,16 @@
 import { DefaultValue } from "./Enums";
 
-const FormatDate = (date = new Date()) => {
+const FormatDate = (date) => {
     try {
-        const fechaFormat = new Date(date).toISOString().split('T')[0];
-        return fechaFormat;
+
+        if (date === null) {
+            const fechaFormat = new Date().toISOString().split('T')[0];
+            return fechaFormat;
+        } else {
+            const fechaFormat = new Date(date).toISOString().split('T')[0];
+            return fechaFormat;
+        }
+
     } catch (error) {
     }
 }
@@ -14,7 +21,7 @@ const ViewFormat = (fecha = new Date()) => {
         let month = `${(new Date(fecha).getMonth() + 1)}`.padStart(2, '0');
         let year = new Date(fecha).getFullYear();
 
-        return `${day}-${month}-${year}`;
+        return `${day}/${month}/${year}`;
     } catch (error) { }
 }
 

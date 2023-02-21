@@ -38,8 +38,8 @@ const Avatar = ({ color, outline, size, sx, ...others }) => {
             break;
         case 'lg':
             sizeSX = {
-                width: theme.spacing(9),
-                height: theme.spacing(9)
+                width: theme.spacing(7),
+                height: theme.spacing(7)
             };
             break;
         case 'xl':

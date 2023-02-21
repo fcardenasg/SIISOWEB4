@@ -61,12 +61,5 @@ export const itemsMenu = [
     selected: true,
     func: 7,
     color: ColorDrummondltd.BlueSeDrummond
-  },
-  {
-    title: "Histórico",
-    icon: IconDatabase,
-    selected: true,
-    func: 8,
-    color: ColorDrummondltd.BlueSeDrummond
-  },
+  }
 ];

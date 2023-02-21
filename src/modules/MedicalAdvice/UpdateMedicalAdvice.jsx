@@ -50,8 +50,8 @@ import VideoCallIcon from '@mui/icons-material/VideoCall';
 import SelectOnChange from 'components/input/SelectOnChange';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import UpdateAttMedicalAdvice from 'modules/Programming/Attention/AttentionMedicalAdvice/UpdateAttMedicalAdvice';
-import HoverSocialCard from 'modules/OccupationalExamination/Framingham/HoverSocialCard';
 import Cargando from 'components/loading/Cargando';
+import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },

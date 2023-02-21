@@ -71,7 +71,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                     }));
                     setLsGradoConSinEPP(lresultGradoConSinEPP);
 
-                    if (diferen == "DLTD") {
+                    if (diferen === "DLTD") {
                         const lsServerRisk1 = await GetByIdWorkHistoryRisk(idRisk);
                         if (lsServerRisk1.status === 200) {
                             setRow(lsServerRisk1.data);
@@ -82,7 +82,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                         }
                     }
 
-                    if (diferen == "COMPANY") {
+                    if (diferen === "COMPANY") {
                         const lsServerRisk2 = await GetByIdWorkHistoryRiskCompany(idRisk);
                         if (lsServerRisk2.status === 200) {
                             setRow(lsServerRisk2.data);
@@ -154,11 +154,8 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                                 <SubCard
                                     title={
                                         <Grid container spacing={1} alignItems="center">
-                                            <Grid item xs={12}>
-                                                <Chip chipcolor="success" label={row.nameAtencion} size="small" />
-                                            </Grid>
                                             <Grid item>
-                                                <Avatar size="sm" alt="Foto Empleado" src={row.empleadoFoto != null ? row.empleadoFoto : userImg} />
+                                                <Avatar size="lg" alt="Foto Empleado" src={row.empleadoFoto != null ? row.empleadoFoto : userImg} />
                                             </Grid>
                                             <Grid item xs zeroMinWidth>
                                                 <Typography align="left" variant="h4">
@@ -172,21 +169,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                                         </Grid>
                                     }
                                 >
-                                    <List component="div">
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                <AccountBoxIcon sx={{ fontSize: '1.3rem' }} />
-                                            </ListItemIcon>
-                                            <ListItemText primary={<Typography variant="subtitle1">Cargo</Typography>} />
-                                            <ListItemSecondaryAction>
-                                                <Typography variant="subtitle2" align="right">
-                                                    {diferen === "COMPANY" ? row.idCargo : row.nameCargo}
-                                                </Typography>
-                                            </ListItemSecondaryAction>
-                                        </ListItemButton>
-                                    </List>
-
-                                    <Grid sx={{ pt: 2 }} container spacing={2}>
+                                    <Grid sx={{ pt: 3 }} container spacing={2}>
                                         {diferen === "COMPANY" ? null :
                                             <Fragment>
                                                 <Grid item xs={6}>
