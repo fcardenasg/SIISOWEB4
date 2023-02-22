@@ -3,59 +3,59 @@ import jsPDF from "jspdf";
 import LogoReport from 'assets/img/LogoReport.png';
 
 function getHeader(doc = new jsPDF()) {
-    var marXR = doc.internal.pageSize.width - 5;
-    /* ENCABEZADO REPORTE */
-    doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
-    doc.setFontSize(10);
+  var marXR = doc.internal.pageSize.width - 5;
+  /* ENCABEZADO REPORTE */
+  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.setFontSize(10);
 
-    doc.text("DIVISIÓN MÉDICA", 110, 10, { align: 'center' });
-    doc.text("DEPARTAMENTO DE SALUD OCUPACIONAL", 110, 14, { align: 'center' });
+  doc.text("DIVISIÓN MÉDICA", 110, 10, { align: 'center' });
+  doc.text("DEPARTAMENTO DE SALUD OCUPACIONAL", 110, 14, { align: 'center' });
 
-    /* LINEA DE DIVISIÓN */
-    doc.setLineWidth(1);
-    doc.setDrawColor(255, 0, 0);
-    doc.line(5, 25, marXR, 25);
+  /* LINEA DE DIVISIÓN */
+  doc.setLineWidth(1);
+  doc.setDrawColor(255, 0, 0);
+  doc.line(5, 25, marXR, 25);
 }
 
 function getPiePage(doc, lsDataUser, page, pageSize) {
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setLineWidth(1);
-    doc.setDrawColor(255, 0, 0);
-    doc.line(5, doc.internal.pageSize.height - 10, 210, doc.internal.pageSize.height - 10);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.setLineWidth(1);
+  doc.setDrawColor(255, 0, 0);
+  doc.line(5, doc.internal.pageSize.height - 10, 210, doc.internal.pageSize.height - 10);
 
-    doc.text(`FECHA DE SISTEMA:  ${new Date().toLocaleString()}`, 10, doc.internal.pageSize.height - 4);
-    doc.text(`USUARIO ACTIVO:  ${lsDataUser.nombre}`, 90, doc.internal.pageSize.height - 4);
-    doc.text(`Pag. ${page} of ${pageSize}`, 190, doc.internal.pageSize.height - 4);
+  doc.text(`FECHA DE SISTEMA:  ${new Date().toLocaleString()}`, 10, doc.internal.pageSize.height - 4);
+  doc.text(`USUARIO ACTIVO:  ${lsDataUser.nombre}`, 90, doc.internal.pageSize.height - 4);
+  doc.text(`Pag. ${page} of ${pageSize}`, 190, doc.internal.pageSize.height - 4);
 }
 
 function getFirmaEmployee(doc, lsDataReport, my = 0) {
-    doc.setLineWidth(0.5);
-    doc.setDrawColor(128, 128, 128);
-    doc.line(
-      130,
-      doc.internal.pageSize.height - (48 - my),
-      195,
-      doc.internal.pageSize.height - (48 - my)
-    );
-    doc.setFontSize(8);
-    doc.text(
-      `${lsDataReport.nameEmpleado}`,
-      130,
-      doc.internal.pageSize.height - (44 - my)
-    );
-    doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
-  }
+  doc.setLineWidth(0.5);
+  doc.setDrawColor(128, 128, 128);
+  doc.line(
+    130,
+    doc.internal.pageSize.height - (48 - my),
+    195,
+    doc.internal.pageSize.height - (48 - my)
+  );
+  doc.setFontSize(8);
+  doc.text(
+    `${lsDataReport.nameEmpleado}`,
+    130,
+    doc.internal.pageSize.height - (44 - my)
+  );
+  doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
+}
 
 function getFirma(doc, lsDataUser, my = 0) {
-    doc.addImage(`${lsDataUser.firma}`, "PNG", 7, doc.internal.pageSize.height - (70 - my), 50, 20);
-    doc.setLineWidth(0.5);
-    doc.setDrawColor(128, 128, 128);
-    doc.line(7, doc.internal.pageSize.height - (48 - my), 60, doc.internal.pageSize.height - (48 - my));
-    doc.setFontSize(8);
-    doc.text(`${lsDataUser.nombre}`, 7, doc.internal.pageSize.height - (44 - my));
-    doc.text('MEDICINA GENERAL', 7, doc.internal.pageSize.height - (40 - my));
-    doc.text(`${lsDataUser.licencia} - ${lsDataUser.registroMedico}`, 7, doc.internal.pageSize.height - (36 - my));
+  doc.addImage(`${lsDataUser.firma}`, "PNG", 7, doc.internal.pageSize.height - (70 - my), 50, 20);
+  doc.setLineWidth(0.5);
+  doc.setDrawColor(128, 128, 128);
+  doc.line(7, doc.internal.pageSize.height - (48 - my), 60, doc.internal.pageSize.height - (48 - my));
+  doc.setFontSize(8);
+  doc.text(`${lsDataUser.nombre}`, 7, doc.internal.pageSize.height - (44 - my));
+  doc.text(`${lsDataUser.nameEspecialidad}`, 7, doc.internal.pageSize.height - (40 - my));
+  doc.text(`${lsDataUser.licencia} - ${lsDataUser.registroMedico}`, 7, doc.internal.pageSize.height - (36 - my));
 }
 
 
@@ -63,7 +63,7 @@ function getFirma(doc, lsDataUser, my = 0) {
 
 //////////////////////////////////
 
- function generateReportConceptAptitude(
+function generateReportConceptAptitude(
   doc = new jsPDF(),
   lsDataReport = [],
   lsDataUser
@@ -105,14 +105,14 @@ function getFirma(doc, lsDataUser, my = 0) {
   doc.text("RECOMENDACIONES:", 7, 79);
 
   doc.setFont("helvetica", "normal");
-  
+
   doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 41, 30, 30);
   doc.text(`${lsDataReport.documento}`, 95, 45);
   doc.text(`${lsDataReport.nameEmpleado}`, 142, 45);
-   doc.text(`${lsDataReport.nameCargo}`, 95, 50);
-   doc.text(`${lsDataReport.nameOficio}`, 95, 55);
-   doc.text(`${lsDataReport.nameArea}`, 95, 60);
-   doc.text(`${lsDataReport.nameDepartamento}`, 95, 65);
+  doc.text(`${lsDataReport.nameCargo}`, 95, 50);
+  doc.text(`${lsDataReport.nameOficio}`, 95, 55);
+  doc.text(`${lsDataReport.nameArea}`, 95, 60);
+  doc.text(`${lsDataReport.nameDepartamento}`, 95, 65);
   doc.text(`${lsDataReport.nameConceptoActitudID}`, 95, 70);
   doc.setFontSize(9);
   doc.text(`${lsDataReport.recomendacionesID}`, 7, 87, {
@@ -124,14 +124,14 @@ function getFirma(doc, lsDataUser, my = 0) {
 }
 
 export function generateReportConceptofAptitude(lsDataReport = [], lsDataUser = []) {
-    const doc = new jsPDF('p', 'mm', 'letter');
+  const doc = new jsPDF('p', 'mm', 'letter');
 
-    doc.setFont("helvetica", "bold");
-    getHeader(doc);
-    generateReportConceptAptitude(doc, lsDataReport, lsDataUser);
-    getPiePage(doc, lsDataUser, 1, 1);
+  doc.setFont("helvetica", "bold");
+  getHeader(doc);
+  generateReportConceptAptitude(doc, lsDataReport, lsDataUser);
+  getPiePage(doc, lsDataUser, 1, 1);
 
 
-    var dataPDF = doc.output("bloburl");
-    return dataPDF;
+  var dataPDF = doc.output("bloburl");
+  return dataPDF;
 }

@@ -12,7 +12,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
@@ -67,7 +66,6 @@ const User = () => {
             }));
             setLsRolUser(resultRol);
 
-
             const lsServerEspecialidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESPECIALIDAD_MEDICO);
             var resultEspecialidad = lsServerEspecialidad.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -115,7 +113,7 @@ const User = () => {
             const firmaMedico = fileImg === null ? '' : fileImg;
 
             const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
-                datos.idRol, JSON.stringify(especialidad), datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
+                datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
                 firmaMedico, checkEstadoUsuario, datos.idSede);
 
             if (especialidad.length === 0) {
@@ -220,13 +218,16 @@ const User = () => {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={4}>
-                    <InputMultiSelects
-                        fullWidth
-                        onChange={(event, value) => setEspecialidad(value)}
-                        value={especialidad}
-                        label="Especialidad"
-                        options={lsEspecialidad}
-                    />
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="especialidad"
+                            label="Especialidad"
+                            defaultValue=""
+                            options={lsEspecialidad}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors.especialidad}
+                        />
+                    </FormProvider>
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={4}>

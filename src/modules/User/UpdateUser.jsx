@@ -3,8 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
-    CardMedia
+    useMediaQuery
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -13,8 +12,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import InputMultiSelects from 'components/input/InputMultiSelects';
-import useAuth from 'hooks/useAuth';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
@@ -88,18 +85,13 @@ const UpdateUser = () => {
             }));
             setLsEspecialidad(resultEspecialidad);
 
-
             const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
             var resultSede = lsServerSede.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsSedeUser(resultSede);
-
-
-
-        } catch (error) {
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -133,7 +125,7 @@ const UpdateUser = () => {
             const firmaMedico = fileImg === null ? '' : fileImg;
 
             const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
-                datos.idRol, JSON.stringify(especialidad), datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
+                datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
                 firmaMedico, checkEstadoUsuario, datos.idSede);
 
             if (Object.keys(datos.length !== 0)) {
@@ -237,13 +229,16 @@ const UpdateUser = () => {
                         </Grid>
 
                         <Grid item xs={12} md={6} lg={4}>
-                            <InputMultiSelects
-                                fullWidth
-                                onChange={(event, value) => setEspecialidad(value)}
-                                value={especialidad}
-                                label="Especialidad"
-                                options={lsEspecialidad}
-                            />
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="especialidad"
+                                    label="Especialidad"
+                                    defaultValue={lsUsuario.especialidad}
+                                    options={lsEspecialidad}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.especialidad}
+                                />
+                            </FormProvider>
                         </Grid>
 
                         <Grid item xs={12} md={6} lg={4}>

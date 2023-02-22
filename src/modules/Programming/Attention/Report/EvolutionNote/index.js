@@ -41,7 +41,7 @@ function getFirma(doc, lsDataUser, my = 0) {
     doc.line(7, doc.internal.pageSize.height - (48 - my), 60, doc.internal.pageSize.height - (48 - my));
     doc.setFontSize(8);
     doc.text(`${lsDataUser.nombre}`, 7, doc.internal.pageSize.height - (44 - my));
-    doc.text('MEDICINA GENERAL', 7, doc.internal.pageSize.height - (40 - my));
+    doc.text(`${lsDataUser.nameEspecialidad}`, 7, doc.internal.pageSize.height - (40 - my));
     doc.text(`${lsDataUser.licencia} - ${lsDataUser.registroMedico}`, 7, doc.internal.pageSize.height - (36 - my));
 }
 
@@ -87,7 +87,10 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.setFontSize(8);
     doc.text('DOCUMENTO:', 42, 45);
     doc.text('EDAD:', 42, 50);
-    doc.text('ANTIGUEDAD:', 42, 55);
+
+    doc.text(`ANTIGUEDAD:  ${GetEdad(lsDataReport.fechaContrato)}`, 80, 50);
+    doc.text('TIPO CONTRATO:', 42, 55);
+
     doc.text('CARGO:', 42, 60);
     doc.text('SEDE:', 42, 65);
     doc.text('CELULAR:', 42, 70);
@@ -104,7 +107,9 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 42, 30, 30);
     doc.text(`${lsDataReport.documento}`, 70, 45);
     doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 70, 50);
-    doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 70, 55);
+
+    doc.text(`${lsDataReport.nameTipoContrato}`, 70, 55);
+
     doc.text(`${lsDataReport.nameCargo}`, 70, 60);
     doc.text(`${lsDataReport.nameSede}`, 70, 65);
     doc.text(`${lsDataReport.nameTelefono}`, 70, 70);

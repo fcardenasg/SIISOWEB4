@@ -23,7 +23,7 @@ function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
   );
   doc.setFontSize(8);
   doc.text(`${lsDataUser.nombre}`, 5, doc.internal.pageSize.height - (44 - my));
-  doc.text("MEDICINA GENERAL", 5, doc.internal.pageSize.height - (40 - my));
+  doc.text(`${lsDataUser.nameEspecialidad}`, 5, doc.internal.pageSize.height - (40 - my));
   doc.text(
     `${lsDataUser.licencia} - ${lsDataUser.registroMedico}`,
     5,
@@ -141,9 +141,12 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
   doc.text("DOCUMENTO:", 45, 52);
   doc.text("NOMBRES:", 120, 52);
   doc.text("GENERO:", 45, 58);
+
   doc.text("EDAD:", 120, 58);
+  doc.text(`ANTIGUEDAD:  ${GetEdad(lsDataReport.fechaContrato)}`, 170, 58);
+  doc.text("TIPO CONTRATO:", 45, 64);
+
   doc.text("AÑOS", 153, 58);
-  doc.text("ANTIGUEDAD:", 45, 64);
   doc.text("CARGO:", 120, 64);
   doc.text("AREA:", 45, 70);
   doc.text("DEPARTAMENTO:", 120, 70);
@@ -165,11 +168,12 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
 
   doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 147, 58);
   doc.text(`${lsDataReport.nameGenero}`, 75, 58);
-  doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 75, 64);
+
+  doc.text(`${lsDataReport.nameTipoContrato}`, 75, 64);
+
   doc.text(`${lsDataReport.nameArea}`, 75, 70);
   doc.text(`${lsDataReport.nameDepartamento}`, 152, 70);
   doc.text(`${lsDataReport.nameCargo}`, 147, 64);
-
 
   doc.text(`${lsDataReport.nameContingencia}`, 40, 88);
 

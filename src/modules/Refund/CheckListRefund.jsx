@@ -154,7 +154,7 @@ const CheckListRefund = ({ idReintegro }) => {
         }
 
         GetAll();
-    }, [idReintegro]);
+    }, [idReintegro, openListPDF]);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';

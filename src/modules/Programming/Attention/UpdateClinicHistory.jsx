@@ -641,7 +641,7 @@ const UpdateClinicHistory = () => {
                                                         label="Enfermedad Actual"
                                                         size={matchesXS ? 'small' : 'medium'}
                                                         multiline
-                                                        rows={8}
+                                                        rows={10}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -674,7 +674,7 @@ const UpdateClinicHistory = () => {
                                                         label="Antecedentes"
                                                         size={matchesXS ? 'small' : 'medium'}
                                                         multiline
-                                                        rows={8}
+                                                        rows={10}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -713,7 +713,7 @@ const UpdateClinicHistory = () => {
                                                         label="Revisión Por Sistemas"
                                                         size={matchesXS ? 'small' : 'medium'}
                                                         multiline
-                                                        rows={6}
+                                                        rows={2}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -746,7 +746,7 @@ const UpdateClinicHistory = () => {
                                                         label="Examen Fisico"
                                                         size={matchesXS ? 'small' : 'medium'}
                                                         multiline
-                                                        rows={6}
+                                                        rows={10}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -895,7 +895,7 @@ const UpdateClinicHistory = () => {
                                                         label="Plan de Manejo"
                                                         size={matchesXS ? 'small' : 'medium'}
                                                         multiline
-                                                        rows={6}
+                                                        rows={10}
                                                     />
                                                 </FormProvider>
                                             </Grid>

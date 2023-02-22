@@ -21,7 +21,7 @@ function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
   );
   doc.setFontSize(8);
   doc.text(`${lsDataUser.nombre}`, 5, doc.internal.pageSize.height - (44 - my));
-  doc.text("MEDICINA GENERAL", 5, doc.internal.pageSize.height - (40 - my));
+  doc.text(`${lsDataUser.nameEspecialidad}`, 5, doc.internal.pageSize.height - (40 - my));
   doc.text(
     `${lsDataUser.licencia} - ${lsDataUser.registroMedico}`,
     5,
@@ -503,11 +503,11 @@ export function pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport = []
   doc.text("10. HISTORIA OCUPACIONAL", 7, 171);
   doc.text("A. Ha trabajado tiempo completo (8 horas a la semana o más) por 6 meses o más?", 7, 176);
   doc.text("B. Ha trabajado al menos durante 6 meses en un empleo donde tuvo exposición a polvos?", 7, 181);
-  doc.text("C. Especifique empleo o Industria", 7, 186);
+  doc.text(`C. Especifique empleo o industria: ${lsDataReport.historiaOcupB1SintR}`, 7, 186);
   doc.text("D. Total años trabajados?", 7, 191);
   doc.text("E. La exposición fue?", 7, 196);
   doc.text("F. Cuál ha sido su ocupación o trabajo usual en el que ha laborado por más tiempo ", 7, 201);
-  doc.text("G. Empleo y Ocupación?", 7, 206);
+  doc.text(`G. Empleo y Ocupación? ${lsDataReport.historiaOcupC1SintR}`, 7, 206);
   doc.text("H. Negocio, campo o industria?", 7, 211);
 
   doc.text("11. TABAQUISMO ", 7, 216);
@@ -568,13 +568,12 @@ export function pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport = []
   doc.text(`${lsDataReport.historiaOcupASintR}`, 202, 176);
   doc.text(`${lsDataReport.historiaOcupBSintR}`, 202, 181);
 
-
-  doc.text(`${lsDataReport.historiaOcupB1SintR}`, 198, 186);
   doc.text(`${lsDataReport.historiaOcupB2SintR}`, 202, 191);
   doc.setFontSize(7);
-  doc.text(`${lsDataReport.nameHistoriaOcupB3SintR}`, 198, 196);
+  if (lsDataReport.nameHistoriaOcupB3SintR !== 'SIN REGISTRO') {
+    doc.text(`${lsDataReport.nameHistoriaOcupB3SintR}`, 198, 196);
+  }
   doc.text(`${lsDataReport.historiaOcupCSintR}`, 202, 201);
-  doc.text(`${lsDataReport.historiaOcupC1SintR}`, 200, 206);
   doc.text(`${lsDataReport.historiaOcupC2SintR}`, 202, 211);
   doc.text(`${lsDataReport.tabaquismoASintR}`, 202, 221);
   doc.text(`${lsDataReport.tabaquismoBSintR}`, 202, 226);

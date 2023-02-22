@@ -119,7 +119,7 @@ function generateReportSuministroepp(doc = new jsPDF(), lsDataReport = [], lsDat
 
     doc.text('IMPRESIÓN DIAGNOSTICA:', 7, 37);
     if (lsDataReport.dx1 !== "")
-    doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 47, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 47, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     getFirma(doc, lsDataUser);
 

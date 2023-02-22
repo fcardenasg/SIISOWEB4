@@ -21,7 +21,7 @@ function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
   );
   doc.setFontSize(8);
   doc.text(`${lsDataUser.nombre}`, 5, doc.internal.pageSize.height - (44 - my));
-  doc.text("MEDICINA GENERAL", 5, doc.internal.pageSize.height - (40 - my));
+  doc.text(`${lsDataUser.nameEspecialidad}`, 5, doc.internal.pageSize.height - (40 - my));
   doc.text(
     `${lsDataUser.licencia} - ${lsDataUser.registroMedico}`,
     5,

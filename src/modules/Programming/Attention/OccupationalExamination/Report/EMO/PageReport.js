@@ -4,11 +4,11 @@ import ImgWhite from "assets/img/ImgWhite.png";
 import { DefaultValue } from "components/helpers/Enums";
 import autoTable from 'jspdf-autotable';
 
-function getFirma(doc, lsDataUser, my = 0) {
+function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
   doc.addImage(
     `${lsDataUser.firma}`,
     "PNG",
-    7,
+    5,
     doc.internal.pageSize.height - (70 - my),
     50,
     20
@@ -16,23 +16,17 @@ function getFirma(doc, lsDataUser, my = 0) {
   doc.setLineWidth(0.5);
   doc.setDrawColor(128, 128, 128);
   doc.line(
-    7,
+    5,
     doc.internal.pageSize.height - (48 - my),
     60,
     doc.internal.pageSize.height - (48 - my)
   );
   doc.setFontSize(8);
-  doc.text(`${lsDataUser.nombre}`, 7, doc.internal.pageSize.height - (44 - my));
-
-  if (lsDataUser.especialidad !== undefined && lsDataUser !== []) {
-    doc.text(JSON.parse(lsDataUser.especialidad).map((name, index) => {
-      return String(`${name.label.toUpperCase()}`)
-    }), 7, doc.internal.pageSize.height - (40 - my));
-  }
-
+  doc.text(`${lsDataUser.nombre}`, 5, doc.internal.pageSize.height - (44 - my));
+  doc.text(`${lsDataUser.nameEspecialidad}`, 5, doc.internal.pageSize.height - (40 - my));
   doc.text(
     `${lsDataUser.licencia} - ${lsDataUser.registroMedico}`,
-    7,
+    5,
     doc.internal.pageSize.height - (36 - my)
   );
 }
@@ -463,8 +457,8 @@ function generateExamenParaclinico(doc = new jsPDF(), lsDataReport) {
   doc.setFont("helvetica", "bold");
   doc.text("FECHA", 7, 132);
   doc.text("ESTUDIO", 30, 132);
-  doc.text("RESULTADO", 80, 132);
-  doc.text("OBSERVACIÓN", 110, 132);
+  doc.text("RESULTADO", 68, 132);
+  doc.text("OBSERVACIÓN", 90, 132);
 
   const examenes = [
     {
@@ -527,6 +521,7 @@ function generateExamenParaclinico(doc = new jsPDF(), lsDataReport) {
   doc.text("OBSERVACIONES", 7, 137 + 6 * longitud.length);
 
   doc.setFont("helvetica", "normal");
+  doc.setFontSize(6);
   doc.text(`${lsDataReport.observacionEPA}`, 7, 142 + 6 * longitud.length);
   doc.text(
     examenes
@@ -554,20 +549,23 @@ function generateExamenParaclinico(doc = new jsPDF(), lsDataReport) {
       .map((exam, index) => {
         return String(`${exam.resultado}`);
       }),
-    80,
+    68,
     137,
     { maxWidth: 200, lineHeightFactor: 2 }
   );
+
   doc.text(
     examenes
       .filter((exam) => exam.resultado !== "SIN RESULTADO")
       .map((exam, index) => {
         return String(`${exam.observacion}`);
       }),
-    110,
+    90,
     137,
     { maxWidth: 200, lineHeightFactor: 2 }
   );
+
+  doc.setFontSize(11);
 }
 
 export function generateReportConceptAptitude(
@@ -1325,7 +1323,9 @@ export function generateFunctionalExploration(doc = new jsPDF(), lsDataReport) {
   doc.text(`${lsDataReport.movilidadEFU}`, 108, 45, { align: "right" });
   doc.text(`${lsDataReport.marchaEFU}`, 108, 50, { align: "right" });
   doc.text(`${lsDataReport.movilidadCodoEFU}`, 108, 55, { align: "right" });
-  doc.text(`${lsDataReport.signoTinelEFU}`, 108, 60, { align: "right" });
+
+  doc.text(`${lsDataReport.signoTinelEFU}`, 108, 60, { align: "right" }); /* 1 */
+
   doc.text(`${lsDataReport.movilidadManosEFU}`, 108, 65, { align: "right" });
   doc.text(`${lsDataReport.movilidadRodillaEFU}`, 108, 70, { align: "right" });
   doc.text(`${lsDataReport.movilidadCuelloEFU}`, 108, 75, { align: "right" });
@@ -1336,7 +1336,8 @@ export function generateFunctionalExploration(doc = new jsPDF(), lsDataReport) {
   doc.text(`${lsDataReport.sensibilidadCaraLateralEFU}`, 108, 90, {
     align: "right",
   });
-  doc.text(`${lsDataReport.signoLasegueEFU}`, 108, 95, { align: "right" });
+  
+  doc.text(`${lsDataReport.signoLasegueEFU}`, 108, 95, { align: "right" }); /* 2 */
 
   /* SEGUNDA COLUMNA DE ENCABEZADO REVISIÓN POR SISTEMAS - PATOLOGÍAS */
   doc.text(`${lsDataReport.equilibrioEFU}`, marXR - 2, 45, { align: "right" });
@@ -1346,7 +1347,9 @@ export function generateFunctionalExploration(doc = new jsPDF(), lsDataReport) {
   doc.text(`${lsDataReport.movilidadMuniecaEFU}`, marXR - 2, 55, {
     align: "right",
   });
-  doc.text(`${lsDataReport.signoPhalenEFU}`, marXR - 2, 60, { align: "right" });
+
+  doc.text(`${lsDataReport.signoPhalenEFU}`, marXR - 2, 60, { align: "right" }); /* 3 */
+
   doc.text(`${lsDataReport.movilidadCaderaEFU}`, marXR - 2, 65, {
     align: "right",
   });
