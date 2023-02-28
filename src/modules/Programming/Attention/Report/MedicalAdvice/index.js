@@ -94,7 +94,7 @@ doc.text('ÁREA:', 120, 65);
 doc.text('EMAIL:', 120, 70);
 doc.text('MUNICIPIO DE RESIDENCIA:', 120, 75);
 
-doc.text('TIPO DE ASESORIA:', 120, 85);
+doc.text('TIPO DE ASESORIA:', 42, 85);
 ///////////////////////////////////////////////////////////
 
 
@@ -124,12 +124,20 @@ doc.text('TIPO DE ASESORIA:', 120, 85);
     doc.text(`${lsDataReport.nameArea}`, 150, 65);
     doc.text(`${lsDataReport.nameCorreo}`, 150, 70);
     doc.text(`${lsDataReport.nameCiudadResidencia}`, 160, 75);
-    doc.text(`${lsDataReport.nameTipoAsesoria}`, 150, 85);
+    doc.text(`${lsDataReport.nameTipoAsesoria}`, 70, 85);
 
     /* INFORMACIÓN DE ASESORÍA */
+    doc.setFontSize(8);
     doc.text(`CONSECUTIVO NRO: ${lsDataReport.id}`, 7, 95);
     doc.text(`FECHA: ${ViewFormat(lsDataReport.fecha)}`, 50, 95);
-    doc.text(`MOTIVO: ${lsDataReport.nameMotivo}`, marXR - 3, 95, { align: 'right' });
+
+    doc.setFontSize(8);
+    doc.text('MOTIVO:', 120, 85);
+    doc.text(`${lsDataReport.nameMotivo}`, 160, 85);
+    doc.setFontSize(8);
+    doc.text('SUBMOTIVO:', 120, 95);
+    doc.text(`${lsDataReport.nameSubmotivo}`, 160, 95);
+
 
     /* DESCRIPCIONES DE TEXTO */
     doc.setFontSize(7);

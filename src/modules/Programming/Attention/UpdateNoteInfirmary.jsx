@@ -494,7 +494,7 @@ const UpdateNoteInfirmary = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA ATENCIÓN</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Registrar la atención</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>

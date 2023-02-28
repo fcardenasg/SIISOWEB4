@@ -387,7 +387,7 @@ const UpdateMedicalAdvice = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                                    <SubCard darkTitle title={<Typography variant="h4">Registrar La  atención</Typography>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={6}>
                                                 <FormProvider {...methods}>
@@ -445,12 +445,12 @@ const UpdateMedicalAdvice = () => {
                                             }
 
                                             <Grid item xs={12}>
-                                                <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
+                                                <SubCard darkTitle title={<Typography variant="h4">Descripción De La consulta</Typography>}>
                                                     <Grid item xs={12}>
                                                         <FormProvider {...methods}>
                                                             <InputText
                                                                 multiline
-                                                                rows={4}
+                                                                rows={20}
                                                                 defaultValue=""
                                                                 fullWidth
                                                                 name="observaciones"

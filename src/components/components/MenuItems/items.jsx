@@ -96,14 +96,14 @@ export const itemsMenuOrders = [
 
 export const itemsOccupationalHealth = [
   {
-    title: "Medicina Laboral",
+    title: "Accidente de Trabajo",
     subtitle: "",
     icon: IconClipboardHeart,
     selected: true,
-    url: '/occupationalmedicine/list',
+    url: '/accident-rate/list',
     color: ColorDrummondltd.RedDrummond
   },
-  {
+   {
     title: "Reintegro",
     subtitle: "",
     icon: IconClipboardHeart,
@@ -112,11 +112,11 @@ export const itemsOccupationalHealth = [
     color: ColorDrummondltd.RedDrummond
   },
   {
-    title: "Accidente de Trabajo",
+    title: "Medicina Laboral",
     subtitle: "",
     icon: IconClipboardHeart,
     selected: true,
-    url: '/accident-rate/list',
+    url: '/occupationalmedicine/list',
     color: ColorDrummondltd.RedDrummond
   },
   {

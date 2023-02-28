@@ -215,7 +215,7 @@ const PsychologicalCounseling = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="REGISTRAR ASESORÍA PSICOLÓGICA"
+                        title="Registrar asesoría psicológica"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -225,7 +225,7 @@ const PsychologicalCounseling = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Registrar Asesoría</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -285,7 +285,7 @@ const PsychologicalCounseling = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">NOTA</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
