@@ -589,14 +589,15 @@ export function generateReportConceptAptitude(
   doc.setDrawColor(128, 128, 128);
 
   /* CUADRO DATOS */
-  doc.line(5, 25, 5, 120); /* IZQUIERDA */
+  doc.line(5, 25, 5, 140); /* IZQUIERDA */
   doc.line(5, 32, marXR, 32); /* HORI ONE */
   doc.line(5, 39, marXR, 39); /* HORI TWO  */
-  doc.line(5, 78, marXR, 78); /* HORI THREE */
-  doc.line(5, 85, marXR, 85); /* HORI FOUR */
-  doc.line(5, 120, marXR, 120); /* HORI FIVE */
-  doc.line(40, 39, 40, 78); /* LINEA VERTI ONE */
-  doc.line(marXR, 25, marXR, 120); /* DERECHA */
+  doc.line(5, 90, marXR, 90); /* HORI THREE */
+  doc.line(5, 98, marXR, 98); /* HORI FOUR */
+
+  doc.line(5, 140, marXR, 140); /* HORI FIVE */
+  doc.line(40, 39, 40, 90); /* LINEA VERTI ONE */
+  doc.line(marXR, 25, marXR, 140); /* DERECHA */
 
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 45, 45);
@@ -606,8 +607,12 @@ export function generateReportConceptAptitude(
   doc.text("AREA:", 45, 60);
   doc.text("DEPARTAMENTO:", 45, 65);
   doc.text("CONCEPTO DE APTITUD:", 45, 70);
+  doc.text(`${lsDataReport.nameConceptoActitudID}`, 95, 70, {
+    maxWidth: 110,
+    lineHeightFactor: 1.5,
+  });
 
-  doc.text("RECOMENDACIONES:", 7, 82);
+  doc.text("RECOMENDACIONES:", 7, 95);
 
   doc.setFont("helvetica", "normal");
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 41, 30, 30);
@@ -617,13 +622,9 @@ export function generateReportConceptAptitude(
   doc.text(`${lsDataReport.nameOficio}`, 95, 55);
   doc.text(`${lsDataReport.nameArea}`, 95, 60);
   doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 95, 65);
-  doc.text(`${lsDataReport.nameConceptoActitudID}`, 95, 70, {
-    maxWidth: 110,
-    lineHeightFactor: 1.5,
-  });
 
   doc.setFontSize(9);
-  doc.text(`${lsDataReport.recomendacionesID}`, 7, 90, {
+  doc.text(`${lsDataReport.recomendacionesID}`, 7, 105, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
@@ -1031,11 +1032,16 @@ export function generatePathologicalAntecedents(
   doc.text("ESPECIFICACIONES", 7, 98);
 
   /* ENFERMEDAD PROFESIONAL/ACCIDENTE DE TRABAJO */
-  doc.text("AÑO:", 7, 133);
-  doc.text("OBSERVACIÓN", 7, 138);
+  if (lsDataReport.anio1AT !== '') {
+    doc.text("AÑO:", 7, 133);
+  }
 
-  doc.text("AÑO:", 7, 163);
-  doc.text("OBSERVACIÓN", 7, 168);
+  /* doc.text("OBSERVACIÓN", 7, 138); */
+  if (lsDataReport.anioAT !== '') {
+    doc.text("AÑO:", 7, 163);
+  }
+
+  /* doc.text("OBSERVACIÓN", 7, 168); */
 
   /* RENDERIZADO DE DATOS DE ANTECEDENTES PATOLÓGICOS */
   doc.setFont("helvetica", "normal");
@@ -1336,7 +1342,7 @@ export function generateFunctionalExploration(doc = new jsPDF(), lsDataReport) {
   doc.text(`${lsDataReport.sensibilidadCaraLateralEFU}`, 108, 90, {
     align: "right",
   });
-  
+
   doc.text(`${lsDataReport.signoLasegueEFU}`, 108, 95, { align: "right" }); /* 2 */
 
   /* SEGUNDA COLUMNA DE ENCABEZADO REVISIÓN POR SISTEMAS - PATOLOGÍAS */
@@ -1447,7 +1453,11 @@ export function generateDefinitiveDiagnosis(
     lineHeightFactor: 1.5,
   });
 
-  doc.text(`${lsDataReport.nameConceptoActitudID}`, 7, 107);
+  doc.text(`${lsDataReport.nameConceptoActitudID}`, 7, 107, {
+    maxWidth: 200,
+    lineHeightFactor: 1.5,
+  });
+
   doc.text(`${lsDataReport.recomendacionesID}`, 7, 130, {
     maxWidth: 200,
     lineHeightFactor: 1.5,

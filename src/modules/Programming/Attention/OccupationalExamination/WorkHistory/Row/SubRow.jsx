@@ -69,6 +69,7 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
                                 <TableCell>Consecutivo</TableCell>
                                 <TableCell>Clase</TableCell>
                                 {diferen === 'COMPANY' ? null : <TableCell>Grado sin EPP</TableCell>}
+
                                 {diferen === 'COMPANY' ? null : <TableCell>Grado con EPP</TableCell>}
                                 {diferen === 'COMPANY' ? null : <TableCell>Medidas de Control</TableCell>}
                                 <TableCell>Año</TableCell>

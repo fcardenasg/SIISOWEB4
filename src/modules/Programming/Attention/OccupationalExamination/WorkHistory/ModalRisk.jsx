@@ -52,6 +52,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
     const [lsGradoConSinEPP, setLsGradoConSinEPP] = useState([]);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
+    const [controlDisabled, setControlDisabled] = useState(false);
 
     useEffect(() => {
         async function getAllRisk() {
@@ -77,8 +78,15 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                             setRow(lsServerRisk1.data);
                             setMedicaControl(JSON.parse(lsServerRisk1.data.medidasControl));
 
-                            setGradoConEPP(lsServerRisk1.data.gradoConEPP);
-                            setGradoSinEPP(lsServerRisk1.data.gradoSinEPP);
+                            if (title === 'Editar Riesgo Químico' || title === 'Editar Riesgo Físico') {
+                                setGradoConEPP(lsServerRisk1.data.gradoConEPP);
+                                setGradoSinEPP(lsServerRisk1.data.gradoSinEPP);
+                                setControlDisabled(false);
+                            } else {
+                                setGradoConEPP(7409);
+                                setGradoSinEPP(7409);
+                                setControlDisabled(true);
+                            }
                         }
                     }
 
@@ -181,6 +189,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                                                             value={gradoSinEPP}
                                                             options={lsGradoConSinEPP}
                                                             size="small"
+                                                            disabled={controlDisabled}
                                                         />
                                                     </FormProvider>
                                                 </Grid>
@@ -194,6 +203,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
                                                             value={gradoConEPP}
                                                             options={lsGradoConSinEPP}
                                                             size="small"
+                                                            disabled={controlDisabled}
                                                         />
                                                     </FormProvider>
                                                 </Grid>

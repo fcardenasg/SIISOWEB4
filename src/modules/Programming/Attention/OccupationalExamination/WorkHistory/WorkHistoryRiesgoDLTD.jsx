@@ -159,32 +159,74 @@ const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento }) => {
                         />
 
                         {lsQuimico.length != 0 && numId == 1 ?
-                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsQuimico} title="Riesgo Químico" />
-                            : null}
+                            <SubRow
+                                getSumaRiesgo={getSumaRiesgo}
+                                getAll={getAll}
+                                diferen={diferen}
+                                onClickDelete={handleDeleteHistoryRisk}
+                                row={lsQuimico}
+                                title="Riesgo Químico"
+                            /> : null}
 
                         {lsFisico.length != 0 && numId == 2 ?
-                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsFisico} title="Riesgo Físico" />
-                            : null}
+                            <SubRow
+                                getSumaRiesgo={getSumaRiesgo}
+                                getAll={getAll}
+                                diferen={diferen}
+                                onClickDelete={handleDeleteHistoryRisk}
+                                row={lsFisico}
+                                title="Riesgo Físico"
+                            /> : null}
 
                         {lsPsicosocial.length != 0 && numId == 3 ?
-                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsPsicosocial} title="Riesgo Psicosocial" />
-                            : null}
+                            <SubRow
+                                getSumaRiesgo={getSumaRiesgo}
+                                getAll={getAll}
+                                diferen={diferen}
+                                onClickDelete={handleDeleteHistoryRisk}
+                                row={lsPsicosocial}
+                                title="Riesgo Psicosocial"
+                            /> : null}
 
                         {lsBiologico.length != 0 && numId == 4 ?
-                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsBiologico} title="Riesgo Biológico" />
-                            : null}
+                            <SubRow
+                                getSumaRiesgo={getSumaRiesgo}
+                                getAll={getAll}
+                                diferen={diferen}
+                                onClickDelete={handleDeleteHistoryRisk}
+                                row={lsBiologico}
+                                title="Riesgo Biológico"
+                            /> : null}
 
                         {lsECFPostura.length != 0 && numId == 5 ?
-                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFPostura} title="Riesgo ECF - Postura" />
-                            : null}
+                            <SubRow
+                                getSumaRiesgo={getSumaRiesgo}
+                                getAll={getAll}
+                                diferen={diferen}
+                                onClickDelete={handleDeleteHistoryRisk}
+                                row={lsECFPostura}
+                                title="Riesgo ECF - Postura"
+                            /> : null}
 
                         {lsECFFuerza.length != 0 && numId == 6 ?
-                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFFuerza} title="Riesgo ECF - Fuerza" />
-                            : null}
+                            <SubRow
+                                getSumaRiesgo={getSumaRiesgo}
+                                getAll={getAll}
+                                diferen={diferen}
+                                onClickDelete={handleDeleteHistoryRisk}
+                                row={lsECFFuerza}
+                                title="Riesgo ECF - Fuerza"
+                            /> : null}
 
                         {lsECFMovimiento.length != 0 && numId == 7 ?
-                            <SubRow getSumaRiesgo={getSumaRiesgo} getAll={getAll} diferen={diferen} onClickDelete={handleDeleteHistoryRisk} row={lsECFMovimiento} title="Riesgo ECF - Movimiento" />
-                            : null}
+                            <SubRow
+                                getSumaRiesgo={getSumaRiesgo}
+                                getAll={getAll}
+                                diferen={diferen}
+                                onClickDelete={handleDeleteHistoryRisk}
+                                row={lsECFMovimiento}
+                                title="Riesgo ECF - Movimiento"
+                            /> : null}
                     </Box>
                 </TableCell>
             </TableRow>
