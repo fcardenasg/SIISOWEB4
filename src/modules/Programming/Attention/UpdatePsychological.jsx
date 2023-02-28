@@ -246,7 +246,7 @@ const UpdatePsychological = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="ASESORÍA PSICOLÓGICA"
+                            title="Asesoría psicológica"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -257,7 +257,7 @@ const UpdatePsychological = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Actualizar Asesoría</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
@@ -321,7 +321,7 @@ const UpdatePsychological = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">NOTA</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>

@@ -216,7 +216,7 @@ const UpdatePsychologicalCounseling = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="ACTUALIZAR ASESORÍA PSICOLÓGICA"
+                            title="Actualizar asesoría psicológica"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

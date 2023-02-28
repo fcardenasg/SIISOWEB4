@@ -337,7 +337,7 @@ const UpdateOtherAdvice = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="OTRAS ASESORÍAS"
+                            title="Otras asesorías"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -348,7 +348,7 @@ const UpdateOtherAdvice = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Registrar La  atención</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
@@ -384,12 +384,12 @@ const UpdateOtherAdvice = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <SubCard darkTitle title={<Typography variant="h4">DESCRIPCIÓN DE LA CONSULTA</Typography>}>
+                                    <SubCard darkTitle title={<Typography variant="h4">Descripción De La consulta</Typography>}>
                                         <Grid item xs={12}>
                                             <FormProvider {...methods}>
                                                 <InputText
                                                     multiline
-                                                    rows={4}
+                                                    rows={20}
                                                     defaultValue=""
                                                     fullWidth
                                                     name="observaciones"
