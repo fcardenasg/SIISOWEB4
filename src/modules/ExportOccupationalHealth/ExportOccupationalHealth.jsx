@@ -14,6 +14,7 @@ import MedicionaLaboralExport from './Export/MedicionaLaboralExport';
 import ReintegroExport from './Export/ReintegroExport';
 import AusentismoExport from './Export/AusentismoExport';
 import { useNavigate } from 'react-router-dom';
+import { ArrayTodaSede } from 'components/Arrays';
 
 const Title = {
     medicinaLaboral: 'Medicinal Laboral',
@@ -29,25 +30,27 @@ const ExportOccupationalHealth = () => {
 
     const [lsSede, setLsSede] = useState([]);
     const [tipoReporte, setTipoReporte] = useState('EXCEL1');
-    const [sede, setSede] = useState('');
+    const [sede, setSede] = useState(0);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
             var resultSede = lsServerSede.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsSede(resultSede);
+
+            const arraySede = resultSede.concat(ArrayTodaSede);
+
+            setLsSede(arraySede);
         } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, []);
-
 
     function getAllAgain(codigo = '') {
         try {
@@ -160,37 +163,6 @@ const ExportOccupationalHealth = () => {
                                                 sede={sede}
                                             /> : null
                             }
-
-                            {/* {statusReprint === 'SER03' ?
-                                <ExportConsulting
-                                    atencion={atencion}
-                                    fechaFin={fechaFin}
-                                    fechaInicio={fechaInicio}
-                                    sede={sede}
-                                /> :
-                                statusReprint === 'SER01' ?
-                                    <ExportMedicalAttention
-                                        atencion={atencion}
-                                        fechaFin={fechaFin}
-                                        fechaInicio={fechaInicio}
-                                        sede={sede}
-                                    /> :
-                                    statusReprint === 'SER04' ?
-                                        <ExportEmo
-                                            atencion={atencion}
-                                            fechaFin={fechaFin}
-                                            fechaInicio={fechaInicio}
-                                            sede={sede}
-                                        /> :
-                                        statusReprint === 'SER02' ?
-                                            <ExportInfirmary
-                                                atencion={atencion}
-                                                fechaFin={fechaFin}
-                                                fechaInicio={fechaInicio}
-                                                sede={sede}
-                                            /> : ''
-                            } */}
-
                         </Grid>
                     </SubCard>
                 </Grid>

@@ -65,7 +65,7 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                 <Button disabled={
                                     fechaInicio === null ? true : fechaFin === null ? true : false
                                 } onClick={getDataForExport} size="large" variant="contained" fullWidth>
-                                    GENERAR EXPORTACIÓN
+                                    Generar Exportación
                                 </Button>
                             </AnimateButton>
                         </Grid>
@@ -75,7 +75,7 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                 <ExcelFile element={
                                     <AnimateButton>
                                         <Button onClick={() => setStatusData(false)} size="large" variant="outlined" fullWidth>
-                                            DESCARGAR EXCEL
+                                        Descargar Excel
                                         </Button>
                                     </AnimateButton>
                                 } filename="EMO">
@@ -108,7 +108,7 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
                                         <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                     </ExcelSheet>
-                                </ExcelFile> : ''
+                                </ExcelFile> : null
                             }
                         </Grid>
                     </Grid>

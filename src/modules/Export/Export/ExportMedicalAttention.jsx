@@ -19,7 +19,7 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
         try {
             const lsDataExportHistory = await GetAllMedicalHistory(0, 0);
             const lsDataExporNote = await GetAllEvolutionNote(0, 0);
-            
+
 
             if (lsDataExportHistory.status === 200 && lsDataExporNote.status === 200) {
                 var resultHistory = [];
@@ -104,7 +104,7 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                 <Button disabled={
                                     fechaInicio === null ? true : fechaFin === null ? true : false
                                 } onClick={getDataForExport} size="large" variant="contained" fullWidth>
-                                    GENERAR EXPORTACIÓN
+                                    Generar Exportación
                                 </Button>
                             </AnimateButton>
                         </Grid>
@@ -114,7 +114,7 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                 <ExcelFile element={
                                     <AnimateButton>
                                         <Button onClick={() => setStatusData(false)} size="large" variant="outlined" fullWidth>
-                                            DESCARGAR EXCEL
+                                            Descargar Excel
                                         </Button>
                                     </AnimateButton>
                                 } filename="LISTADO DE HISTORIA CLÍNICA">
@@ -123,7 +123,7 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                         <ExcelColumn label="Atención" value="nameAtencion" />
                                         <ExcelColumn label="Tipo Atención" value="nameTiAtencion" />
-                                        <ExcelColumn label="Contingencia" value="nameContingencia" />  
+                                        <ExcelColumn label="Contingencia" value="nameContingencia" />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
                                         <ExcelColumn label="Genero" value="nameGenero" />
@@ -131,15 +131,15 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNacimi)} />
                                         <ExcelColumn label="EPS" value="nameEps" />
                                         <ExcelColumn label="Sede Atención" value="nameSede" />
-                                        <ExcelColumn label="Empresa" value="nameEmpresa" />   
+                                        <ExcelColumn label="Empresa" value="nameEmpresa" />
                                         <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
                                         <ExcelColumn label="Departamento" value="nameDepartamento" />
                                         <ExcelColumn label="Area" value="nameArea" />
                                         <ExcelColumn label="Roster Position" value="nameCargo" />
                                         <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                        <ExcelColumn label="Grupo" value="nameGrupo" />                                                  
-                                        <ExcelColumn label="Nombre Dx1" value="nameDx1" />                          
-                                        <ExcelColumn label="Nombre Dx2" value="nameDx2" />               
+                                        <ExcelColumn label="Grupo" value="nameGrupo" />
+                                        <ExcelColumn label="Nombre Dx1" value="nameDx1" />
+                                        <ExcelColumn label="Nombre Dx2" value="nameDx2" />
                                         <ExcelColumn label="Nombre Dx3" value="nameDx3" />
                                         <ExcelColumn label="Concepto" value="nameConceptoActitud" />
                                         <ExcelColumn label="Enfermedad Actual" value="enfermedadActual" />
@@ -148,7 +148,7 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                     </ExcelSheet>
 
                                     <ExcelSheet data={lsDataNote} name="Nota de Evolución">
-                                    <ExcelColumn label="Nro Atencion" value="id" />
+                                        <ExcelColumn label="Nro Atencion" value="id" />
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                         <ExcelColumn label="Atención" value="nameAtencion" />
                                         <ExcelColumn label="Documento" value="documento" />
@@ -159,16 +159,16 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="EPS" value="nameEps" />
                                         <ExcelColumn label="Sede Atención" value="nameSede" />
                                         <ExcelColumn label="Tipo Atención" value="nameTiAtencion" />
-                                        <ExcelColumn label="Empresa" value="nameEmpresa" />   
+                                        <ExcelColumn label="Empresa" value="nameEmpresa" />
                                         <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
                                         <ExcelColumn label="Departamento" value="nameDepartamento" />
                                         <ExcelColumn label="Area" value="nameArea" />
                                         <ExcelColumn label="Roster Position" value="nameCargo" />
                                         <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                        <ExcelColumn label="Grupo" value="nameGrupo" />               
-                                        <ExcelColumn label="Contingencia" value="nameContingencia" />                                     
-                                        <ExcelColumn label="Nombre Dx1" value="nameDx1" />                          
-                                        <ExcelColumn label="Nombre Dx2" value="nameDx2" />               
+                                        <ExcelColumn label="Grupo" value="nameGrupo" />
+                                        <ExcelColumn label="Contingencia" value="nameContingencia" />
+                                        <ExcelColumn label="Nombre Dx1" value="nameDx1" />
+                                        <ExcelColumn label="Nombre Dx2" value="nameDx2" />
                                         <ExcelColumn label="Nombre Dx3" value="nameDx3" />
                                         <ExcelColumn label="Concepto" value="nameConceptoActitud" />
                                         <ExcelColumn label="Enfermedad Actual" value="enfermedadActual" />
@@ -176,7 +176,7 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
 
                                     </ExcelSheet>
-                                </ExcelFile> : ''
+                                </ExcelFile> : null
                             }
                         </Grid>
                     </Grid>

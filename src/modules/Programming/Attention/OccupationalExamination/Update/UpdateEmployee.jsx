@@ -118,8 +118,6 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
             }));
             setLsCatalogo(resultCatalogo);
 
-            
-
             const lsServerDepartEmpresa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DepartEmpresa);
             var resultDepartEmpresa = lsServerDepartEmpresa.data.entities.map((item) => ({
                 value: item.idCatalogo,

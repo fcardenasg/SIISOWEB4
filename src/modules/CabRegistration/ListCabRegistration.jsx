@@ -33,7 +33,7 @@ import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCabRegistration, DeleteCabRegistration }  from 'api/clients/CabRegistrationClient';
+import { GetAllCabRegistration, DeleteCabRegistration } from 'api/clients/CabRegistrationClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -48,6 +48,7 @@ import { GetByIdCabRegistration } from "api/clients/CabRegistrationClient";
 import { GetByMail } from 'api/clients/UserClient';
 import useAuth from 'hooks/useAuth';
 import ViewPDF from 'components/components/ViewPDF';
+import GenerateExcel from './GenerateExcel';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -196,9 +197,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
                 {numSelected} {TitleButton.Seleccionadas}
             </Typography>
         ) : (
-            <Typography variant="h6" id="tableTitle">
-                Nutrición
-            </Typography>
+            null
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
@@ -219,6 +218,8 @@ EnhancedTableToolbar.propTypes = {
 const ListCabRegistration = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [openModal, setOpenModal] = useState(false);
+
     const [idCheck, setIdCheck] = useState(0);
     const [lsCabRegistration, setLsCabRegistration] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
@@ -254,7 +255,7 @@ const ListCabRegistration = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idRegistroTaxi','documento', 'nameEmpleado', 'nameSede','fecha'];
+                const properties = ['idRegistroTaxi', 'documento', 'nameEmpleado', 'nameSede', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -356,8 +357,9 @@ const ListCabRegistration = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsCabRegistration.length) : 0;
 
     return (
-        <MainCard title="LISTA DE REGISTROS DE TAXI" content={false}>
+        <MainCard title="LISTA DE REGISTRO DE TAXI" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+            <GenerateExcel setOpenModal={setOpenModal} openModal={openModal} />
 
             <ControlModal
                 title="VISTA DE REPORTE"
@@ -388,40 +390,12 @@ const ListCabRegistration = () => {
                     <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="LISTA DE REGISTRO DE TAXIS">
-                                    <ExcelSheet data={lsCabRegistration} name="CabRegistration">
-                                        <ExcelColumn label="Id" value="idRegistroTaxi" />
-                                        <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                        <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Sede" value="nameSede" />  
-                                        <ExcelColumn label="Cargo" value="nameCargo" />  
-                                        <ExcelColumn label="Nro. Celular" value="nameTelefono" />  
-                                        <ExcelColumn label="EPS" value="nameEps" />  
-                                        <ExcelColumn label="Contingencia" value="nameContingencia" />   
-                                        <ExcelColumn label="Ruta" value="nameRuta" />   
-                                        <ExcelColumn label="Destino" value="nameDestino" />   
-                                        <ExcelColumn label="Cargado a" value="nameCargadoa" />   
-                                        <ExcelColumn label="Nro. Taxi" value="nameNrotaxi" />   
-                                        <ExcelColumn label="Cupo" value="nameCupo" />  
-                                        <ExcelColumn label="Asigna" value="nameMedico" />  
-                                        <ExcelColumn label="Diagnostico" value="diagnostico" />  
-                                        <ExcelColumn label="Motivo" value="motivoTraslado" />  
-                                        <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha de registro" value="fechaRegistro" />
-                                        <ExcelColumn label="Usuario que modifica" value="usuarioModifico" />
-                                        <ExcelColumn label="Fecha que modifica" value="fechaModifico" />
-                                    </ExcelSheet>
-                                </ExcelFile>
+                                <Tooltip title="Exportar" onClick={() => setOpenModal(true)}>
+                                    <IconButton size="large">
+                                        <IconFileExport />
+                                    </IconButton>
+                                </Tooltip>
                             </Grid>
-
-
 
                             <Grid item xs={2}>
                                 <Tooltip title="Impresión" onClick={handleClickReport}>
@@ -558,7 +532,7 @@ const ListCabRegistration = () => {
                                             onClick={(event) => handleClick(event, row.idRegistroTaxi)}
                                             sx={{ cursor: 'pointer' }}
                                         >
-                                            <Typography
+                                            <Typography 
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
@@ -572,7 +546,7 @@ const ListCabRegistration = () => {
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                        </TableCell>    
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}

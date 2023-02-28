@@ -24,6 +24,7 @@ export const CodCatalogo = {
     Oficio: 173,
 
     TipoconceptoApAl: 192,
+    EP_EMO_SintomasRespiratorios: 201,
 
     AtencionEMO: 138,
 

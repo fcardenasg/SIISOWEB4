@@ -4,13 +4,13 @@ import {
     Button,
     Grid,
     useMediaQuery,
-    Typography,
     Divider,
 } from '@mui/material';
-
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import UserCountCard from 'components/components/UserCountCard';
 import ViewEmployee from 'components/views/ViewEmployee';
 import useAuth from 'hooks/useAuth';
 import InputOnChange from 'components/input/InputOnChange';
@@ -28,16 +28,18 @@ import InputSelect from 'components/input/InputSelect';
 import { CodCatalogo, Message, TitleButton, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton'
 import SubCard from 'ui-component/cards/SubCard';
-import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+
+import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { UpdateAlcoholAndDrugTestings } from 'api/clients/AlcoholAndDrugTestingClient';
-import { PutAlcoholAndDrugTesting } from 'formatdata/AlcoholAndDrugTestingForm';
+import { GetByIdAlcoholAndDrugTesting, InsertAlcoholAndDrugTesting, UpdateAlcoholAndDrugTestings } from 'api/clients/AlcoholAndDrugTestingClient';
+import { PostAlcoholAndDrugTesting, PutAlcoholAndDrugTesting } from 'formatdata/AlcoholAndDrugTestingForm';
 import { FormatDate } from 'components/helpers/Format';
-
-import { GetByIdAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
+import ViewPDF from 'components/components/ViewPDF';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReportAlcoholtesting } from '../Programming/Attention/Report/Alcoholtesting';
 import Cargando from 'components/loading/Cargando';
 
 const DetailIcons = [
@@ -47,73 +49,77 @@ const DetailIcons = [
 ]
 
 const UpdateAlcoholAndDrugTesting = () => {
-    const { id } = useParams();
     const { user } = useAuth();
+    const { id } = useParams();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [timeWait, setTimeWait] = useState(false);
+    const [openReport, setOpenReport] = useState(false);
+    const [lsAlcoholAndDrugTesting, setLsAlcoholAndDrugTesting] = useState(false);
     const [openError, setOpenError] = useState(false);
-    const [openUpdate, setOpenUpdate] = useState(false);
+    const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [open, setOpen] = useState(false);
-    const [timeWait, setTimeWait] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [openViewPdf, setOpenViewPdf] = useState(false);
 
+    const [motivo, setMotivo] = useState('');
+    const [documentoSolicita, setDocumentoSolicita] = useState('');
+    const [nombreSolicitante, setNombreSolicitante] = useState('');
     const [documento, setDocumento] = useState('');
-    const [nombresEmpleado, setNombreEmpleado] = useState('');
-    const [documentSolicitante, setDocumentoSolicitante] = useState('');
-    const [realizada, setRealizada] = useState(DefaultValue.Opcion_NO);
+    const [realizada, setRealizada] = useState(DefaultValue.Opcion_SI);
+
+    const [cocaina, setCocaina] = useState('4095');
+    const [marihuana, setMarihuana] = useState('4095');
+    const [alcohol, setAlcohol] = useState('4095');
+    const [conceptoAptitud, setConceptoAptitud] = useState('');
 
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [lsAlcoholAndDrugTesting, setLsAlcoholAndDrugTesting] = useState([]);
     const [lsOpciones, setLsOpciones] = useState([]);
     const [lsTipoMotivo, setLsTipoMotivo] = useState([]);
     const [lsMotivoNoAsistencia, setLsMotivoNoAsistencia] = useState([]);
     const [lsMuestraAD, setLsMuestraAD] = useState([]);
     const [lsMuestraA, setLsMuestraA] = useState([]);
     const [lsResultado, setLsResultado] = useState([]);
-    const [lsConceptoA, setLsConceptoA] = useState([]);
-
-    const methods = useForm();
-    const { handleSubmit, errors } = methods;
+    const [dataPDF, setDataPDF] = useState(null);
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
 
-            if (lsServerEmployee.status === 200) {
+            if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);
-            }
         } catch (error) {
             setLsEmployee([]);
             setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
-    const handleLoadingDocumentoSolicitante = async (idEmployee) => {
-        try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+    const methods = useForm();
+    const { handleSubmit, reset } = methods;
 
-            if (lsServerEmployee.status === 200) {
-                setNombreEmpleado(lsServerEmployee.data.nombres);
-            }
-        } catch (error) {
-            setLsEmployee([]);
-            setErrorMessage(Message.ErrorDeDatos);
-        }
-    }
-
-    const handleDocumentoSolicitante = async (event) => {
+    const handleClickReport = async () => {
         try {
-            setDocumento(event?.target.value);
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAlcoholAndDrugTesting(id);
+            const lsDataUser = await GetByMail(user.nameuser);
+
+            const dataPDFTwo = generateReportAlcoholtesting(lsDataReport.data, lsDataUser.data);
+
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
+    const handleDocumentoSolicita = async (event) => {
+        try {
+            setDocumentoSolicita(event?.target.value);
             if (event.key === 'Enter') {
                 if (event?.target.value != "") {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
                     if (lsServerEmployee.status === 200) {
-                        setNombreEmpleado(lsServerEmployee.data.nombres);
+                        setNombreSolicitante(lsServerEmployee.data.nombres);
                     }
                 } else {
                     setOpenError(true);
@@ -121,22 +127,32 @@ const UpdateAlcoholAndDrugTesting = () => {
                 }
             }
         } catch (error) {
-            setLsEmployee([]);
             setOpenError(true);
             setErrorMessage(`${Message.ErrorDeDatos}`);
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerData = await GetByIdAlcoholAndDrugTesting(id);
             if (lsServerData.status === 200) {
-                setDocumento(lsServerData.data.documento);
-                handleLoadingDocument(lsServerData.data.documento);
-                handleLoadingDocumentoSolicitante(lsServerData.data.idDocumentoSolicitante);
-                setDocumentoSolicitante(lsServerData.data.idDocumentoSolicitante);
                 setLsAlcoholAndDrugTesting(lsServerData.data);
-                setRealizada(lsServerData.data.idRealizada)
+                handleLoadingDocument(lsServerData.data.documento);
+                setDocumento(lsServerData.data.documento);
+                setMotivo(lsServerData.data.idMotivoPrueba);
+                setRealizada(lsServerData.data.idRealizada);
+
+                setCocaina(lsServerData.data.idResultado1);
+                setMarihuana(lsServerData.data.idResultado2);
+                setAlcohol(lsServerData.data.idResultado6);
+                setNombreSolicitante(lsServerData.data.idRealizada);
+
+                if (lsServerData.data.idResultado1 === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                    lsServerData.data.idResultado2 === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                    lsServerData.data.idResultado6 === DefaultValue.RESULTADO_PAD_POSITIVO)
+                    setConceptoAptitud(DefaultValue.CONCEPTO_PAD_NOAPTO);
+                else
+                    setConceptoAptitud(DefaultValue.CONCEPTO_PAD_APTO);
             }
 
             const lsServerOpciones = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
@@ -180,487 +196,501 @@ const UpdateAlcoholAndDrugTesting = () => {
                 label: item.nombre
             }));
             setLsResultado(resultResultado);
-
-            const lsServerConceptoA = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PAD_CONCEPTOA);
-            var resultConceptoA = lsServerConceptoA.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConceptoA(resultConceptoA);
-        } catch (error) {
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
-
-    setTimeout(() => {
-        if (lsAlcoholAndDrugTesting.length != 0) {
-            setTimeWait(true);
-        }
-    }, 1500);
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PutAlcoholAndDrugTesting(id, documento, FormatDate(datos.fecha), datos.idMotivoPrueba, datos.sustancia1,
-                datos.idMuestra1, datos.idResultado1, datos.sustancia2, datos.idMuestra2, datos.idResultado2, datos.sustancia3, datos.idMuestra3,
-                datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5, datos.idResultado5,
-                datos.sustancia6, datos.idMuestra6, datos.idResultado6, datos.idRemitido, documentSolicitante, 0, datos.idConcepto,
-                realizada, datos.idMotivoAsis, datos.observaciones, lsAlcoholAndDrugTesting.idMedico, lsAlcoholAndDrugTesting.usuarioRegistro,
+            const MotivoAsistencia = realizada === DefaultValue.Opcion_SI ? 1 : datos.idMotivoAsis;
+            const Observacion = realizada === DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
+            const concepto = realizada === DefaultValue.Opcion_NO ? 1 : conceptoAptitud;
+
+            const DataToUpdate = PutAlcoholAndDrugTesting(id, documento, FormatDate(datos.fecha), 0, motivo, datos.sustancia1,
+                datos.idMuestra1, cocaina, datos.sustancia2, datos.idMuestra2, marihuana, datos.sustancia3, datos.idMuestra3,
+                datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5,
+                datos.idResultado5, datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, "", concepto,
+                realizada, MotivoAsistencia, Observacion, lsAlcoholAndDrugTesting.idMedico, lsAlcoholAndDrugTesting.usuarioRegistro,
                 lsAlcoholAndDrugTesting.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateAlcoholAndDrugTestings(DataToInsert);
-                if (result.status === 200) {
-                    setOpenUpdate(true);
+            if (realizada === DefaultValue.Opcion_SI && conceptoAptitud === '') {
+                setOpenError(true);
+                setErrorMessage('Por favor, registrar los resultado');
+            } else {
+                if (Object.keys(datos.length !== 0)) {
+                    const result = await UpdateAlcoholAndDrugTestings(DataToUpdate);
+                    if (result.status === 200) {
+                        setOpenSuccess(true);
+                    }
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
+    setTimeout(() => {
+        if (lsAlcoholAndDrugTesting.length !== 0)
+            setTimeWait(true);
+    }, 2000);
+
     return (
         <Fragment>
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
+            <ControlModal
+                maxWidth="md"
+                open={open}
+                onClose={() => setOpen(false)}
+                title="DICTADO POR VOZ"
+            >
+                <ControllerListen />
+            </ControlModal>
+
+            <FullScreenDialog
+                open={openTemplate}
+                title="LISTADO DE PLANTILLA"
+                handleClose={() => setOpenTemplate(false)}
+            >
+                <ListPlantillaAll />
+            </FullScreenDialog>
+
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
             {timeWait ?
-                <Fragment>
-                    <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-                    <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                    <ControlModal
-                        maxWidth="md"
-                        open={open}
-                        onClose={() => setOpen(false)}
-                        title="DICTADO POR VOZ"
-                    >
-                        <ControllerListen />
-                    </ControlModal>
-
-                    <FullScreenDialog
-                        open={openTemplate}
-                        title="LISTADO DE PLANTILLA"
-                        handleClose={() => setOpenTemplate(false)}
-                    >
-                        <ListPlantillaAll />
-                    </FullScreenDialog>
-
-                    <FullScreenDialog
-                        open={openViewPdf}
-                        title="VISTA DE PDF"
-                        handleClose={() => setOpenViewPdf(false)}
-                    >
-
-                    </FullScreenDialog>
-
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <ViewEmployee
-                                disabled={true}
-                                key={lsEmployee.documento}
-                                documento={documento}
-                                onChange={(e) => setDocumento(e.target.value)}
-                                lsEmployee={lsEmployee}
-                                handleDocumento={handleLoadingDocument}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <SubCard darkTitle title={<Typography variant="h4">PRUEBA DE ALCOHOL Y DROGAS</Typography>}>
-                                <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
-                                            <InputDatePicker
-                                                label="Fecha"
-                                                name="fecha"
-                                                defaultValue={lsAlcoholAndDrugTesting.fecha}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idMotivoPrueba"
-                                                label="Motivo"
-                                                defaultValue={lsAlcoholAndDrugTesting.idMotivoPrueba}
-                                                options={lsTipoMotivo}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
-                                            <SelectOnChange
-                                                name="idRealizada"
-                                                label="Realizada"
-                                                value={realizada}
-                                                onChange={(e) => setRealizada(e.target.value)}
-                                                options={lsOpciones}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    {realizada == DefaultValue.Opcion_NO ?
-                                        <Fragment>
-                                            <Grid item xs={12} md={6} lg={4}>
-                                                <FormProvider {...methods}>
-                                                    <InputSelect
-                                                        name="idMotivoAsis"
-                                                        label="Motivo de No Asistencia"
-                                                        defaultValue={lsAlcoholAndDrugTesting.idMotivoAsis}
-                                                        options={lsMotivoNoAsistencia}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
-                                                    />
-                                                </FormProvider>
-                                            </Grid>
-
-                                            <Grid item xs={8}>
-                                                <FormProvider {...methods}>
-                                                    <InputText
-                                                        defaultValue={lsAlcoholAndDrugTesting.observaciones}
-                                                        fullWidth
-                                                        name="observaciones"
-                                                        label="Observaciones del  No Asistencia"
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                        bug={errors}
-                                                    />
-                                                </FormProvider>
-                                            </Grid>
-                                        </Fragment>
-                                        :
-                                        <Fragment>
-                                            <Grid item xs={12}>
-                                                <SubCard>
-                                                    <Grid container spacing={2}>
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    label="Cocaína"
-                                                                    name="sustancia1"
-                                                                    size={30}
-                                                                    defaultValue={lsAlcoholAndDrugTesting.sustancia1}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idMuestra1"
-                                                                    label="Muestra"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idMuestra1}
-                                                                    options={lsMuestraAD}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idResultado1"
-                                                                    label="Resultados"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idResultado1}
-                                                                    options={lsResultado}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    label="Marihuana"
-                                                                    name="sustancia2"
-                                                                    size={30}
-                                                                    defaultValue={lsAlcoholAndDrugTesting.sustancia2}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idMuestra2"
-                                                                    label="Muestra"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idMuestra2}
-                                                                    options={lsMuestraAD}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idResultado2"
-                                                                    label="Resultados"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idResultado2}
-                                                                    options={lsResultado}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    label="Morfina"
-                                                                    name="sustancia3"
-                                                                    size={30}
-                                                                    defaultValue={lsAlcoholAndDrugTesting.sustancia3}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idMuestra3"
-                                                                    label="Muestra"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idMuestra3}
-                                                                    options={lsMuestraAD}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idResultado3"
-                                                                    label="Resultados"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idResultado3}
-                                                                    options={lsResultado}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    label="Benzodiazepina"
-                                                                    name="sustancia4"
-                                                                    size={30}
-                                                                    defaultValue={lsAlcoholAndDrugTesting.sustancia4}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idMuestra4"
-                                                                    label="Muestra"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idMuestra4}
-                                                                    options={lsMuestraAD}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idResultado4"
-                                                                    label="Resultados"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idResultado4}
-                                                                    options={lsResultado}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    label="Anfetaminas"
-                                                                    name="sustancia5"
-                                                                    size={30}
-                                                                    defaultValue={lsAlcoholAndDrugTesting.sustancia5}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idMuestra5"
-                                                                    label="Muestra"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idMuestra5}
-                                                                    options={lsMuestraAD}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idResultado5"
-                                                                    label="Resultados"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idResultado5}
-                                                                    options={lsResultado}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputCheckBox
-                                                                    label="Alcohol"
-                                                                    name="sustancia6"
-                                                                    size={30}
-                                                                    defaultValue={lsAlcoholAndDrugTesting.sustancia6}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idMuestra6"
-                                                                    label="Muestra"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idMuestra6}
-                                                                    options={lsMuestraA}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idResultado6"
-                                                                    label="Resultados"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idResultado6}
-                                                                    options={lsResultado}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Divider />
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <InputOnChange
-                                                                label="N° Documento"
-                                                                onKeyDown={handleDocumentoSolicitante}
-                                                                onChange={(e) => setDocumentoSolicitante(e?.target.value)}
-                                                                value={documentSolicitante}
-                                                                size={matchesXS ? 'small' : 'medium'}
-                                                            />
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <InputOnChange
-                                                                label="Nombres"
-                                                                value={nombresEmpleado}
-                                                                onChange={(e) => setNombreEmpleado(e?.target.value)}
-                                                                disabled
-                                                                size={matchesXS ? 'small' : 'medium'}
-                                                            />
-                                                        </Grid>
-
-                                                        <Grid item xs={12} md={6} lg={4}>
-                                                            <FormProvider {...methods}>
-                                                                <InputSelect
-                                                                    name="idConcepto"
-                                                                    label="Concepto Aptitud"
-                                                                    defaultValue={lsAlcoholAndDrugTesting.idConcepto}
-                                                                    options={lsConceptoA}
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid item xs={12}>
-                                                            <FormProvider {...methods}>
-                                                                <InputText
-                                                                    multiline
-                                                                    rows={4}
-                                                                    defaultValue={lsAlcoholAndDrugTesting.observaciones}
-                                                                    fullWidth
-                                                                    name="observaciones"
-                                                                    label="Observaciones y/o Medicamentos Actuales"
-                                                                    size={matchesXS ? 'small' : 'medium'}
-                                                                    bug={errors}
-                                                                />
-                                                            </FormProvider>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                                            <DetailedIcon
-                                                                title={DetailIcons[0].title}
-                                                                onClick={() => setOpenTemplate(true)}
-                                                                icons={DetailIcons[0].icons}
-                                                            />
-
-                                                            <DetailedIcon
-                                                                title={DetailIcons[1].title}
-                                                                onClick={() => setOpen(true)}
-                                                                icons={DetailIcons[1].icons}
-                                                            />
-
-                                                            <DetailedIcon
-                                                                title={DetailIcons[2].title}
-                                                                onClick={() => setOpenViewPdf(true)}
-                                                                icons={DetailIcons[2].icons}
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                                </SubCard>
-                                            </Grid>
-                                        </Fragment>
-                                    }
-                                </Grid>
-
-                                <Grid item xs={12} sx={{ pt: 4 }}>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={6}>
-                                            <AnimateButton>
-                                                <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                                    {TitleButton.Guardar}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <AnimateButton>
-                                                <Button variant="outlined" fullWidth onClick={() => navigate("/alcoholanddrugtesting/list")}>
-                                                    {TitleButton.Cancelar}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </SubCard>
-                        </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <ViewEmployee
+                            title="Actualizar Prueba de Alcohol y Drogas"
+                            disabled={true}
+                            key={lsEmployee.documento}
+                            documento={documento}
+                            onChange={(e) => setDocumento(e.target.value)}
+                            lsEmployee={lsEmployee}
+                            handleDocumento={handleLoadingDocument}
+                        />
                     </Grid>
-                </Fragment> : <Cargando />
+
+                    <Grid item xs={12}>
+                        <SubCard>
+                            <Grid container justifyContent="center" alignItems="center" spacing={2}>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <FormProvider {...methods}>
+                                        <InputDatePicker
+                                            label="Fecha"
+                                            name="fecha"
+                                            defaultValue={lsAlcoholAndDrugTesting.fecha}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <SelectOnChange
+                                        name="idMotivoPrueba"
+                                        label="Motivo"
+                                        value={motivo}
+                                        options={lsTipoMotivo}
+                                        onChange={(e) => setMotivo(e.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <SelectOnChange
+                                        name="idRealizada"
+                                        label="Realizada"
+                                        value={realizada}
+                                        onChange={(e) => setRealizada(e.target.value)}
+                                        options={lsOpciones}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                {realizada == DefaultValue.Opcion_NO ?
+                                    <Fragment>
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <FormProvider {...methods}>
+                                                <InputSelect
+                                                    name="idMotivoAsis"
+                                                    label="Motivo de No Asistencia"
+                                                    defaultValue={lsAlcoholAndDrugTesting.idMotivoAsis}
+                                                    options={lsMotivoNoAsistencia}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={8}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    defaultValue={lsAlcoholAndDrugTesting.observacionesNoAsistio}
+                                                    fullWidth
+                                                    name="observacionesNoAsistio"
+                                                    label="Observaciones del  No Asistencia"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+                                    </Fragment>
+                                    :
+                                    <Fragment>
+                                        <Grid item xs={12}>
+                                            <SubCard>
+                                                <Grid container spacing={2}>
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputCheckBox
+                                                                label="Cocaína"
+                                                                name="sustancia1"
+                                                                size={30}
+                                                                defaultValue={lsAlcoholAndDrugTesting.sustancia1}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idMuestra1"
+                                                                label="Muestra"
+                                                                defaultValue={lsAlcoholAndDrugTesting.idMuestra1}
+                                                                options={lsMuestraAD}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <SelectOnChange
+                                                            name="idResultado1"
+                                                            label="Resultados"
+                                                            value={cocaina}
+                                                            onChange={(e) => {
+                                                                setCocaina(e.target.value);
+                                                                if (e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                    marihuana === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                    alcohol === DefaultValue.RESULTADO_PAD_POSITIVO)
+                                                                    setConceptoAptitud(DefaultValue.CONCEPTO_PAD_NOAPTO);
+                                                                else
+                                                                    setConceptoAptitud(DefaultValue.CONCEPTO_PAD_APTO);
+                                                            }}
+                                                            options={lsResultado}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputCheckBox
+                                                                label="Marihuana"
+                                                                name="sustancia2"
+                                                                size={30}
+                                                                defaultValue={lsAlcoholAndDrugTesting.sustancia2}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idMuestra2"
+                                                                label="Muestra"
+                                                                defaultValue={lsAlcoholAndDrugTesting.idMuestra2}
+                                                                options={lsMuestraAD}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <SelectOnChange
+                                                            name="idResultado2"
+                                                            label="Resultados"
+                                                            value={marihuana}
+                                                            onChange={(e) => {
+                                                                setMarihuana(e.target.value);
+
+                                                                if (cocaina === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                    e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                    alcohol === DefaultValue.RESULTADO_PAD_POSITIVO)
+                                                                    setConceptoAptitud(DefaultValue.CONCEPTO_PAD_NOAPTO);
+                                                                else
+                                                                    setConceptoAptitud(DefaultValue.CONCEPTO_PAD_APTO);
+                                                            }}
+                                                            options={lsResultado}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputCheckBox
+                                                                label="Morfina"
+                                                                name="sustancia3"
+                                                                size={30}
+                                                                defaultValue={lsAlcoholAndDrugTesting.sustancia3}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idMuestra3"
+                                                                label="Muestra"
+                                                                defaultValue={lsAlcoholAndDrugTesting.idMuestra3}
+                                                                options={lsMuestraAD}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idResultado3"
+                                                                label="Resultados"
+                                                                defaultValue={lsAlcoholAndDrugTesting.idResultado3}
+                                                                options={lsResultado}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputCheckBox
+                                                                label="Benzodiazepina"
+                                                                name="sustancia4"
+                                                                size={30}
+                                                                defaultValue={lsAlcoholAndDrugTesting.sustancia4}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idMuestra4"
+                                                                label="Muestra"
+                                                                defaultValue={lsAlcoholAndDrugTesting.idMuestra4}
+                                                                options={lsMuestraAD}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idResultado4"
+                                                                label="Resultados"
+                                                                defaultValue={lsAlcoholAndDrugTesting.idResultado4}
+                                                                options={lsResultado}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputCheckBox
+                                                                label="Anfetaminas"
+                                                                name="sustancia5"
+                                                                size={30}
+                                                                defaultValue={lsAlcoholAndDrugTesting.sustancia5}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idMuestra5"
+                                                                label="Muestra"
+                                                                defaultValue={lsAlcoholAndDrugTesting.idMuestra5}
+                                                                options={lsMuestraAD}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idResultado5"
+                                                                label="Resultados"
+                                                                defaultValue={lsAlcoholAndDrugTesting.idResultado5}
+                                                                options={lsResultado}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputCheckBox
+                                                                label="Alcohol"
+                                                                name="sustancia6"
+                                                                size={30}
+                                                                defaultValue={lsAlcoholAndDrugTesting.sustancia6}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="idMuestra6"
+                                                                label="Muestra"
+                                                                defaultValue={lsAlcoholAndDrugTesting.idMuestra6}
+                                                                options={lsMuestraA}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+                                                        <SelectOnChange
+                                                            name="idResultado6"
+                                                            label="Resultados"
+                                                            value={alcohol}
+                                                            onChange={(e) => {
+                                                                setAlcohol(e.target.value);
+                                                                if (cocaina === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                    marihuana === DefaultValue.RESULTADO_PAD_POSITIVO ||
+                                                                    e.target.value === DefaultValue.RESULTADO_PAD_POSITIVO)
+                                                                    setConceptoAptitud(DefaultValue.CONCEPTO_PAD_NOAPTO);
+                                                                else
+                                                                    setConceptoAptitud(DefaultValue.CONCEPTO_PAD_APTO);
+                                                            }}
+                                                            options={lsResultado}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </Grid>
+
+                                                    <Grid item xs={12}>
+                                                        <Divider />
+                                                    </Grid>
+
+                                                    {motivo === DefaultValue.PAD_MOTIVO_SOSPECHA ?
+                                                        <Fragment>
+                                                            <Grid item xs={12} md={6} lg={4}>
+                                                                <InputOnChange
+                                                                    label="N° Documento"
+                                                                    onKeyDown={handleDocumentoSolicita}
+                                                                    onChange={(e) => setDocumentoSolicita(e?.target.value)}
+                                                                    value={documentoSolicita}
+                                                                    size={matchesXS ? 'small' : 'medium'}
+                                                                />
+                                                            </Grid>
+
+                                                            <Grid item xs={12} md={12} lg={8}>
+                                                                <InputOnChange
+                                                                    label="Nombres"
+                                                                    value={nombreSolicitante}
+                                                                    onChange={(e) => setNombreSolicitante(e?.target.value)}
+                                                                    disabled
+                                                                    size={matchesXS ? 'small' : 'medium'}
+                                                                />
+                                                            </Grid>
+                                                        </Fragment> : <Grid />
+                                                    }
+
+                                                    <Grid item xs={12}>
+                                                        <UserCountCard
+                                                            primary="CONCEPTO APTITUD"
+                                                            secondary={
+                                                                conceptoAptitud === DefaultValue.CONCEPTO_PAD_NOAPTO ? "NO APTO" :
+                                                                    conceptoAptitud === DefaultValue.CONCEPTO_PAD_APTO ? 'APTO' : ''
+                                                            }
+                                                            iconPrimary={AssignmentIndIcon}
+                                                            color={conceptoAptitud === DefaultValue.CONCEPTO_PAD_APTO ? theme.palette.success.dark :
+                                                                conceptoAptitud === DefaultValue.CONCEPTO_PAD_NOAPTO ? theme.palette.error.dark :
+                                                                    theme.palette.grey[500]
+                                                            }
+                                                        />
+                                                    </Grid>
+
+                                                    <Grid item xs={12}>
+                                                        <FormProvider {...methods}>
+                                                            <InputText
+                                                                multiline
+                                                                rows={4}
+                                                                defaultValue={lsAlcoholAndDrugTesting.observacionesSi}
+                                                                fullWidth
+                                                                name="observacionesSi"
+                                                                label="Observaciones y/o Medicamentos Actuales"
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                                        <DetailedIcon
+                                                            title={DetailIcons[0].title}
+                                                            onClick={() => setOpenTemplate(true)}
+                                                            icons={DetailIcons[0].icons}
+                                                        />
+
+                                                        <DetailedIcon
+                                                            title={DetailIcons[1].title}
+                                                            onClick={() => setOpen(true)}
+                                                            icons={DetailIcons[1].icons}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                            </SubCard>
+                                        </Grid>
+                                    </Fragment>
+                                }
+                            </Grid>
+
+                            <Grid container spacing={2} sx={{ pt: 4 }}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/alcoholanddrugtesting/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+                </Grid> : <Cargando />
+
             }
-        </Fragment>
+        </Fragment >
     );
 };
 

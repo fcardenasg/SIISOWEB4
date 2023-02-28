@@ -67,6 +67,8 @@ export const Url = {
     ReportRHL: 'api/RiesgoHistoriaLaboral/GetAllRHL',
     RHLDeleteAndInsertRisk: 'api/RiesgoHistoriaLaboral/DeleteAndInsertRisk',
 
+    RiesgoHistoriaLaboralEmpresa_GetDataExploracion: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetDataExploracion',
+
     RiesgoHistoriaLaboralEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas',
     RiesgoHistoriaLaboralIdEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/id',
     RHLByChargeHistoricoEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllByChargeHistorico',
@@ -110,6 +112,7 @@ export const Url = {
     ConceptosINDId: 'api/ConceptosIND/id',
 
     RegistroTaxi: 'api/RegistroTaxi',
+    RegistroTaxiExcel: 'api/RegistroTaxi/GenerateExcel',
     RegistroTaxiId: 'api/RegistroTaxi/id',
 
     Solicitudes: 'api/Solicitudes',

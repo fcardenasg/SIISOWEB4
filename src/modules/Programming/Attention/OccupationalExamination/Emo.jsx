@@ -137,6 +137,7 @@ const Emo = ({
     const [lsOpcion, setLsOpcion] = useState([]);
     const [lsNeADonde, setLsNeADonde] = useState([]);
     const [lsRiesClasifi, setLsRiesClasifi] = useState([]);
+    const [lsEPSintomas, setLsEPSintomas] = useState([]);
 
     const [lsIngreso, setLsIngreso] = useState([]);
     const [lsControlPeriodico, setLsControlPeriodico] = useState([]);
@@ -164,6 +165,13 @@ const Emo = ({
                 label: item.nombre
             }));
             setLsRiesClasifi(resultRiesClasifi);
+
+            const lsServerSintomasRespiratorio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EP_EMO_SintomasRespiratorios);
+            var resultSintomasRespiratorios = lsServerSintomasRespiratorio.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsRiesClasifi(resultSintomasRespiratorios);
 
             const lsServerLateralidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.LATERALIDAD);
             var resultLateralidad = lsServerLateralidad.data.entities.map((item) => ({
@@ -1823,7 +1831,9 @@ const Emo = ({
 
                 <Grid item xs={12}>
                     <Accordion title={<><IconDeviceDesktopAnalytics />
-                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">REVISIÓN POR SISTEMAS</Typography></>}>
+                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">
+                            REVISIÓN POR SISTEMAS (Seleccione el ítem que encuentre Anormal o No Explorado y descríbalo en la casilla observación)</Typography>
+                    </>}>
                         <SubCard>
                             <Grid container spacing={2} sx={{ pb: 2 }}>
                                 <Grid item xs={4}>
@@ -2199,7 +2209,7 @@ const Emo = ({
                             </SubCard>
                             <Grid sx={{ pb: 2 }} />
 
-                            <SubCard title="Exploración Morfológica - Aspecto">
+                            <SubCard title="Exploración Morfológica - Aspecto (Seleccione el ítem que encuentre Anormal o No Explorado y descríbalo en la casilla observación)">
                                 <Grid container spacing={1} sx={{ pb: 2 }}>
                                     <Grid item xs={3}>
                                         <FormProvider {...methods}>
@@ -2380,7 +2390,7 @@ const Emo = ({
                                     <Grid item xs={3}>
                                         <FormProvider {...methods}>
                                             <InputCheckBox
-                                                label="17. Encias"
+                                                label="17. Encías"
                                                 name="enciasEF"
                                                 size={30}
                                                 defaultValue={() => validateLastData(lsLastRecord.enciasEF)}
@@ -2671,7 +2681,7 @@ const Emo = ({
                                         defaultValue={() => validateLastData(lsLastRecord.especifiqueEMEFU, "string")}
                                         fullWidth
                                         name="especifiqueEMEFU"
-                                        label="Especifique"
+                                        label="Observación"
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
@@ -2709,7 +2719,9 @@ const Emo = ({
 
                 <Grid item xs={12}>
                     <Accordion title={<><IconYoga />
-                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">EXPLORACIÓN FUNCIONAL</Typography></>}>
+                        <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">
+                            EXPLORACIÓN FUNCIONAL (Seleccione el ítem que encuentre Anormal o No Explorado y descríbalo en la casilla observación)
+                        </Typography></>}>
                         <SubCard>
                             <Grid container spacing={1} sx={{ pb: 2 }}>
                                 <Grid item xs={3}>
@@ -3333,7 +3345,7 @@ const Emo = ({
                                             defaultValue={() => validateLastData(lsLastRecord.resultadoCuestionarioSintomaEPA, "number")}
                                             name="resultadoCuestionarioSintomaEPA"
                                             label="Resultado"
-                                            options={lsResultado}
+                                            options={lsEPSintomas}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>

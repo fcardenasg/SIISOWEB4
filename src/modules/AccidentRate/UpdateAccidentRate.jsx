@@ -239,8 +239,8 @@ const UpdateAccidentRate = () => {
         }
     } */
 
- 
-    
+
+
     const allowedFiles = ['application/pdf'];
     const handleFile = async (event) => {
         let selectedFile = event.target.files[0];
@@ -260,12 +260,6 @@ const UpdateAccidentRate = () => {
             }
         }
     }
-
-
-
-
-
-
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -387,15 +381,6 @@ const UpdateAccidentRate = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
-            {/* <ControlModal
-                title="VISUALIZAR ARCHIVO"
-                open={openViewArchivo}
-                onClose={() => setOpenViewArchivo(false)}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={urlFile} />
-            </ControlModal> */}
-
             {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -501,7 +486,7 @@ const UpdateAccidentRate = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Inicial</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Inicial</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <InputOnChange
@@ -525,13 +510,13 @@ const UpdateAccidentRate = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                </Grid>
-                                </SubCard>
-                                </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
 
-                                <Grid item xs={12}>
-                                <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Final</Typography>}>
-                            <Grid container spacing={2}>  
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Final</Typography>}>
+                            <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <InputOnChange
                                         label="Dx 2"
@@ -685,29 +670,29 @@ const UpdateAccidentRate = () => {
 
 
                             <Grid item xs={12} sx={{ pt: 2 }}>
-                            <MainCard title="Registro Fotográfico">
-                                <Grid container spacing={12}>
-                                    <Grid textAlign="center" item xs={12}>
-                                        <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                            Actualizar Registro en PDF
-                                            <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                        </Button>
+                                <MainCard title="Registro Fotográfico">
+                                    <Grid container spacing={12}>
+                                        <Grid textAlign="center" item xs={12}>
+                                            <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                                Actualizar Registro en PDF
+                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                            </Button>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
 
-                                <Grid item xs={12} sx={{ pt: 4 }}>
-                                    {urlFile && (
-                                        <object type="application/pdf"
-                                            data={urlFile}
-                                            width="1180"
-                                            height="500"
-                                            onLoad={<Cargando />}
-                                        />
-                                    )}
-                                </Grid>
+                                    <Grid item xs={12} sx={{ pt: 4 }}>
+                                        {urlFile && (
+                                            <object type="application/pdf"
+                                                data={urlFile}
+                                                width="1180"
+                                                height="500"
+                                                onLoad={<Cargando />}
+                                            />
+                                        )}
+                                    </Grid>
 
-                            </MainCard>
-                        </Grid>
+                                </MainCard>
+                            </Grid>
 
 
 

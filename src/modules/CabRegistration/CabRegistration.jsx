@@ -20,16 +20,12 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdCabRegistration, InsertCabRegistration } from 'api/clients/CabRegistrationClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
-import { GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostCabRegistration } from 'formatdata/CabRegistrationForm';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { GetAllUser, GetByMail } from 'api/clients/UserClient';
 import { generateReporteReportCabRegistration } from './ReportCabRegistration';
@@ -40,12 +36,6 @@ import InputOnChange from 'components/input/InputOnChange';
 const validationSchema = yup.object().shape({
     idContingencia: yup.string().required(`${ValidationMessage.Requerido}`),
 });
-
-
-const DetailIcons = [
-    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-]
 
 const CabRegistration = () => {
     const { user } = useAuth();
@@ -62,14 +52,12 @@ const CabRegistration = () => {
     const [lsCargadoa, setLsCargadoa] = useState([]);
     const [lsCupo, setLsCupo] = useState([]);
     const [lsMedico, setLsMedico] = useState([]);
-    const [openTemplate, setOpenTemplate] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [textDx1, setTextDx1] = useState('');
     const [lsDx1, setLsDx1] = useState([]);
     const [documento, setDocumento] = useState('');
-    const [open, setOpen] = useState(false);
     const [lsEmployee, setLsEmployee] = useState([]);
 
     const [result, setResult] = useState([]);
@@ -101,9 +89,6 @@ const CabRegistration = () => {
             setErrorMessage(`${Message.ErrorDeDatos}`);
         }
     }
-
-
-
 
     const handleClickReport = async () => {
         try {
@@ -142,22 +127,14 @@ const CabRegistration = () => {
         }
     }
 
-
-
-
-
     async function GetAll() {
         try {
-
-      
-
             const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
             var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsContingencia(resultContingencia);
-
 
             const lsServerRuta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ORIGEN_RUTA);
             var resultRuta = lsServerRuta.data.entities.map((item) => ({
@@ -173,7 +150,6 @@ const CabRegistration = () => {
             }));
             setLsDestino(resultDestino);
 
-
             const lsServernroTaxi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.NRO_TAXI);
             var resultnroTaxi = lsServernroTaxi.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -188,7 +164,6 @@ const CabRegistration = () => {
             }));
             setLsCargadoa(resultCargadoa);
 
-
             const lsServerCupo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CUPOS);
             var resultCupo = lsServerCupo.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -196,31 +171,19 @@ const CabRegistration = () => {
             }));
             setLsCupo(resultCupo);
 
-
-      
-        
             const lsServerMedicos = await GetAllUser(0, 0);
-
             var resultMedico = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_MEDICO)
-            .map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
+                .map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
             setLsMedico(resultMedico);
-
-
-
-
-
         } catch (error) { }
     }
 
     useEffect(() => {
         GetAll();
     }, [])
-
-
-
 
     const handleClick = async (datos) => {
         try {
@@ -241,17 +204,14 @@ const CabRegistration = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
-
 
     return (
         <Fragment>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
-
 
             <ControlModal
                 title="VISTA DE REPORTE"
@@ -286,8 +246,6 @@ const CabRegistration = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-
-
 
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -379,51 +337,50 @@ const CabRegistration = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                          
-                        </Grid>
-                        </SubCard>
 
-                        <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
+                        </Grid>
+                    </SubCard>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
                         <Grid container spacing={2}>
-                                <Grid item xs={2}>
-                                    <InputOnChange
-                                        label="Dx"
-                                        onKeyDown={handleDx1}
-                                        onChange={(e) => setTextDx1(e?.target.value)}
-                                        value={textDx1}
+                            <Grid item xs={2}>
+                                <InputOnChange
+                                    label="Dx"
+                                    onKeyDown={handleDx1}
+                                    onChange={(e) => setTextDx1(e?.target.value)}
+                                    value={textDx1}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+                            <Grid item xs={10}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="diagnostico"
+                                        label="Diagnóstico"
+                                        defaultValue=""
+                                        options={lsDx1}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </Grid>
-                                <Grid item xs={10}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="diagnostico"
-                                            label="Diagnóstico"
-                                            defaultValue=""
-                                            options={lsDx1}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            multiline
-                                            rows={5}
-                                            name="motivoTraslado"
-                                            label="Motivo de Traslado"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.motivoTraslado}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
+                                </FormProvider>
                             </Grid>
 
-
+                            <Grid item xs={12}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue=""
+                                        fullWidth
+                                        multiline
+                                        rows={5}
+                                        name="motivoTraslado"
+                                        label="Motivo de Traslado"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.motivoTraslado}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                        </Grid>
 
                         <Grid item xs={12} sx={{ pt: 6 }}>
                             <Grid container spacing={2}>
@@ -435,14 +392,13 @@ const CabRegistration = () => {
                                     </AnimateButton>
                                 </Grid>
 
-                                {result.length !== 0 ?
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="contained" onClick={handleClickReport} fullWidth>
-                                                {TitleButton.Imprimir}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid> : null}
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button disabled={result.length !== 0 ? false : true} variant="contained" onClick={handleClickReport} fullWidth>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
@@ -455,8 +411,8 @@ const CabRegistration = () => {
                         </Grid>
                     </SubCard>
                 </Grid>
-            </Grid >
-        </Fragment >
+            </Grid>
+        </Fragment>
     );
 };
 

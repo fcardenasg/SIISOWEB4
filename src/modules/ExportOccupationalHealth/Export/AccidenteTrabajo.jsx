@@ -16,11 +16,7 @@ const AccidenteTrabajo = ({ sede, fechaInicio, fechaFin }) => {
 
     async function getDataForExport() {
         try {
-            var validarSede = 0;
-            if (sede === '') validarSede = 0;
-            else validarSede = sede;
-
-            const parametros = ParametrosExcel(validarSede, fechaInicio, fechaFin);
+            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
             const lsServerExcel = await GetExcelAccidentRate(parametros);
 
             if (lsServerExcel.status === 200) {
@@ -43,7 +39,7 @@ const AccidenteTrabajo = ({ sede, fechaInicio, fechaFin }) => {
                                 <Button disabled={
                                     fechaInicio === null ? true : fechaFin === null ? true : false
                                 } onClick={getDataForExport} size="large" variant="contained" fullWidth>
-                                    GENERAR EXPORTACIÓN
+                                    Generar Exportación
                                 </Button>
                             </AnimateButton>
                         </Grid>
@@ -53,7 +49,7 @@ const AccidenteTrabajo = ({ sede, fechaInicio, fechaFin }) => {
                                 <ExcelFile element={
                                     <AnimateButton>
                                         <Button onClick={() => setStatusData(false)} size="large" variant="outlined" fullWidth>
-                                            DESCARGAR EXCEL
+                                            Descargar Excel
                                         </Button>
                                     </AnimateButton>
                                 } filename="ACCIDENTE DE TRABAJO">

@@ -335,9 +335,9 @@ function generateExploracionMorfologica(doc = new jsPDF(), lsDataReport) {
   doc.text("8. REFLEJO FOTOMOTOR", 7, 180);
   doc.text("9. REFLEJO CORNEAL", 7, 185);
   doc.text("10. FONDO OJOS", 7, 190);
-  doc.text("11. INS. EXTERNA OÍDOS", 7, 195);
+  doc.text("11. INSPECCIÓN EXTERNA OÍDOS", 7, 195);
   doc.text("12. OTOSCOPIA", 7, 200);
-  doc.text("13. INS. EXTERNA NARIZ N", 7, 205);
+  doc.text("13. INSPECCIÓN EXTERNA NARIZ", 7, 205);
   doc.text("14. RINOSCOPIA", 7, 210);
   /* SEGUNDA COLUMNA */
   doc.text("15. LABIOS", 72, 145);
@@ -349,9 +349,9 @@ function generateExploracionMorfologica(doc = new jsPDF(), lsDataReport) {
   doc.text("21. FARINGE", 72, 175);
   doc.text("22. AMÍGDALAS", 72, 180);
   doc.text("23. CUELLO - TIROIDES ", 72, 185);
-  doc.text("24. INS. DE TORAXMAMAS ", 72, 190);
-  doc.text("25. AUSCUL. CARDIACA", 72, 195);
-  doc.text("26. AUSCUL. RESPIRATORIA", 72, 200);
+  doc.text("24. INSPECCIÓN DE TORAX-MAMAS ", 72, 190);
+  doc.text("25. AUSCULTACIÓN CARDIACA", 72, 195);
+  doc.text("26. AUSCULTACIÓN RESPIRATORIA", 72, 200);
   doc.text("27. INSPECCIÓN ABDOMEN", 72, 205);
   doc.text("28. PALPACIÓN ABDOMEN", 72, 210);
   /* TERCERA COLUMNA */
@@ -364,8 +364,8 @@ function generateExploracionMorfologica(doc = new jsPDF(), lsDataReport) {
   doc.text("35. REGIÓN ANAL", 142, 175);
   doc.text("36. TACTO RECTAL", 142, 180);
   doc.text("37. TACTO VAGINAL", 142, 185);
-  doc.text("38. EXTRE SUPERIORES", 142, 190);
-  doc.text("39. EXTRE INFERIORES", 142, 195);
+  doc.text("38. EXTREMIDADES SUPERIORES", 142, 190);
+  doc.text("39. EXTREMIDADES INFERIORES", 142, 195);
   doc.text("40. PULSOS", 142, 200);
   doc.text("41. COLUMNA VERTEBRAL", 142, 205);
   doc.text("42. ARTICULACIONES", 142, 210);
@@ -460,6 +460,8 @@ function generateExamenParaclinico(doc = new jsPDF(), lsDataReport) {
   doc.text("RESULTADO", 68, 132);
   doc.text("OBSERVACIÓN", 90, 132);
 
+  var marXR = doc.internal.pageSize.width - 5;
+
   const examenes = [
     {
       fecha: lsDataReport.fechaRxToraxEPA,
@@ -518,7 +520,8 @@ function generateExamenParaclinico(doc = new jsPDF(), lsDataReport) {
   ];
 
   const longitud = examenes.filter((log) => log.resultado !== "SIN RESULTADO");
-  doc.text("OBSERVACIONES", 7, 137 + 6 * longitud.length);
+  doc.text("OBSERVACIONES:", 7, 137 + 6 * longitud.length);
+  doc.line(5, 132 + 6 * longitud.length, marXR, 132 + 6 * longitud.length);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6);
@@ -1019,11 +1022,14 @@ export function generatePathologicalAntecedents(
   doc.text("19. TRAUMÁTICOS:", 72, 85);
   doc.text("20. TRANSFUSIONES:", 72, 90);
 
-  doc.text("21. ETS:", 142, 45);
+  doc.setFontSize(6);
+  doc.text("21. ENFERMEDAD DE TRASMISIÓN SEXUAL", 142, 45);
+
+  doc.setFontSize(8);
   doc.text("22. DEFORMIDADES:", 142, 50);
   doc.text("23. PSIQUIÁTRICO:", 142, 55);
   doc.text("24. FARMACODEPENCIA:", 142, 60);
-  doc.text("25. E.M.:", 142, 65);
+  doc.text("25. ENFERMEDAD METABOLICA:", 142, 65);
   doc.text("26. RENAL:", 142, 70);
   doc.text("27. ASMA:", 142, 75);
   doc.text("28. O.R.L.:", 142, 80);
@@ -1067,15 +1073,15 @@ export function generatePathologicalAntecedents(
   doc.text(`${lsDataReport.traumaticosAP}`, 115, 85);
   doc.text(`${lsDataReport.tranfuccionesAP}`, 115, 90);
 
-  doc.text(`${lsDataReport.etsAP}`, 185, 45);
-  doc.text(`${lsDataReport.deformidadesAP}`, 185, 50);
-  doc.text(`${lsDataReport.psiquiatricosAP}`, 185, 55);
-  doc.text(`${lsDataReport.farmacoDependenciaAP}`, 185, 60);
-  doc.text(`${lsDataReport.emAP}`, 185, 65);
-  doc.text(`${lsDataReport.renalAP}`, 185, 70);
-  doc.text(`${lsDataReport.asmaAP}`, 185, 75);
-  doc.text(`${lsDataReport.orlAP}`, 185, 80);
-  doc.text(`${lsDataReport.cancerAP}`, 185, 85);
+  doc.text(`${lsDataReport.etsAP}`, 190, 45);
+  doc.text(`${lsDataReport.deformidadesAP}`, 190, 50);
+  doc.text(`${lsDataReport.psiquiatricosAP}`, 190, 55);
+  doc.text(`${lsDataReport.farmacoDependenciaAP}`, 190, 60);
+  doc.text(`${lsDataReport.emAP}`, 190, 65);
+  doc.text(`${lsDataReport.renalAP}`, 190, 70);
+  doc.text(`${lsDataReport.asmaAP}`, 190, 75);
+  doc.text(`${lsDataReport.orlAP}`, 190, 80);
+  doc.text(`${lsDataReport.cancerAP}`, 190, 85);
 
   doc.text(`${lsDataReport.especifiqueAP}`, 7, 104, {
     maxWidth: 200,

@@ -10,6 +10,9 @@ export const InsertWorkHistoryRisk = async (riesgoHistoriaLaboral) => await post
 export const UpdateWorkHistoryRisks = async (riesgoHistoriaLaboral) => await putData(Url.RiesgoHistoriaLaboral, riesgoHistoriaLaboral);
 export const DeleteWorkHistoryRisk = async (idRiesgoHistoriaLaboral) => await deleteData(Url.RiesgoHistoriaLaboral, { idRiesgoHistoriaLaboral });
 
+/* SERVICIO DE AÑOS Y MESES DE OTRAS EMPRESAS Y DRUMMOND */
+export const GetDataExploracion = async (documento) => await getData(Url.RiesgoHistoriaLaboralEmpresa_GetDataExploracion, { documento });
+
 export const GetAllWorkHistoryRiskCompany = async (page, pageSize) => await getData(Url.RiesgoHistoriaLaboralEmpresa, { page, pageSize });
 export const GetAllByHistoricoCompany = async (page, pageSize, documento) => await getData(Url.RHLByHistoricoEmpresa, { page, pageSize, documento });
 export const GetByIdWorkHistoryRiskCompany = async (id) => await getData(Url.RiesgoHistoriaLaboralIdEmpresa, { id });

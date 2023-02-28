@@ -1,7 +1,9 @@
 import { DefaultValue } from 'components/helpers/Enums';
 
 export function PostAlcoholAndDrugTesting(documento, fecha, idRegistroAtencion = DefaultValue.SINREGISTRO_GLOBAL,
+
     idMotivoPrueba = DefaultValue.SINREGISTRO_GLOBAL, sustancia1 = false,
+    
     idMuestra1 = DefaultValue.SINREGISTRO_GLOBAL, idResultado1 = DefaultValue.SINREGISTRO_GLOBAL, sustancia2 = false,
     idMuestra2 = DefaultValue.SINREGISTRO_GLOBAL,
     idResultado2 = DefaultValue.SINREGISTRO_GLOBAL, sustancia3 = false, idMuestra3 = DefaultValue.SINREGISTRO_GLOBAL,

@@ -177,7 +177,9 @@ function pageAlcoholtesting(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 147, 58);
   doc.text(`${lsDataReport.nameGenero}`, 75, 58);
   doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 75, 64);
-  doc.text(`${lsDataReport.nameArea}`, 75, 70);
+  doc.setFontSize(9);
+  doc.text(`${lsDataReport.nameArea}`, 57, 70);
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameEmpresa}`, 147, 70);
   doc.text(`${lsDataReport.nameCargo}`, 147, 64);
 
@@ -187,9 +189,6 @@ function pageAlcoholtesting(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${lsDataReport.nameMotivo}`, 53, 124);
   doc.text(`${lsDataReport.nameConcepto}`, 53, 134);
   doc.text(`${lsDataUser.nombre}`, 53, 144);
-
-
-
 
 
   /* FIRMA */
@@ -213,19 +212,14 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 40, 210, 40);
   doc.line(5, 25, 5, 210);
   doc.line(40, 40, 40, 74); /* LINEA ONE */
-
   doc.line(115, 40, 115, 74); /* LINEA TWO */
-
   doc.line(115, 82, 115, 108); /* LINEA TRES */
-
   doc.line(115, 108, 115, 158); /* LINEA CUATRO */
-
   doc.line(50, 188, 50, 210); /* LINEA CINCO */
-
   doc.line(115, 188, 115, 210); /* LINEA SEIS */
 
-    //LINEA FINAL
-    doc.line(50, 82, 50, 178);
+  //LINEA FINAL
+  doc.line(50, 82, 50, 178);
 
 
   doc.line(210, 25, 210, 210);
@@ -241,9 +235,6 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 138, 210, 138);
   doc.line(5, 148, 210, 148);
   doc.line(5, 158, 210, 158);
-
-
-
   doc.line(5, 178, 210, 178);
 
   doc.line(5, 188, 210, 188);
@@ -294,7 +285,9 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 147, 58);
   doc.text(`${lsDataReport.nameGenero}`, 75, 58);
   doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 75, 64);
-  doc.text(`${lsDataReport.nameArea}`, 75, 70);
+  doc.setFontSize(9);
+  doc.text(`${lsDataReport.nameArea}`, 57, 70);
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameEmpresa}`, 147, 70);
   doc.text(`${lsDataReport.nameCargo}`, 147, 64);
 
@@ -322,7 +315,7 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${lsDataReport.nameResultado6}`, 120, 154);
 
   doc.setFontSize(9);
-    doc.text(`${lsDataReport.observaciones}`, 55, 164, { maxWidth: 200, lineHeightFactor: 1.5 });
+  doc.text(`${lsDataReport.observaciones}`, 55, 164, { maxWidth: 200, lineHeightFactor: 1.5 });
 
   doc.text(`${lsDataReport.idDocumentoSolicitante}`, 10, 204);
   doc.text(`${lsDataReport.nameEmpleadoSolicita === null ? '' : lsDataReport.nameEmpleadoSolicita}`, 55, 204);
