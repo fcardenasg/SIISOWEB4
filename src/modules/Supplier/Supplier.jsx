@@ -113,7 +113,7 @@ const Supplier = () => {
                             name="codiProv"
                             label="Código"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.codiProv}
+                            bug={errors}
                         />
                     </FormProvider>
                 </Grid>
@@ -124,7 +124,7 @@ const Supplier = () => {
                             name="nombProv"
                             label="Nombre"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.nombProv}
+                            bug={errors}
                         />
                     </FormProvider>
                 </Grid>
