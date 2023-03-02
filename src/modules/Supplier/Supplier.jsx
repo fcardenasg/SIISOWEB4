@@ -27,9 +27,7 @@ import { PostSupplier } from 'formatdata/SupplierForm';
 const validationSchema = yup.object().shape({
     codiProv: yup.string().required(`${ValidationMessage.Requerido}`),
     nombProv: yup.string().required(`${ValidationMessage.Requerido}`),
-    teleProv: yup.string().required(`${ValidationMessage.Requerido}`),
-    emaiProv: yup.string().required(`${ValidationMessage.Requerido}`),
-    idTipoProveedor: yup.string().required(`${ValidationMessage.Requerido}`),
+   
 });
 
 const Supplier = () => {
@@ -52,7 +50,7 @@ const Supplier = () => {
     });
 
     /* Modificamos aquí para validar los campos también */
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, errors, reset } = methods;
 
     /* Modificamos la toma de datos de los combos */
     async function GetAll() {
@@ -77,30 +75,29 @@ const Supplier = () => {
         GetAll();
     }, [])
 
-    /* Hacemos ajustes en el metodo de guardar */
+
     const handleClick = async (datos) => {
         try {
-            /* Recordar aquí modificar el correo por el nombre de usuario */
-            const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
-                datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+           /* Recordar aquí modificar el correo por el nombre de usuario */
+           const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
+            datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
+            user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
-                await InsertSupplier(DataToInsert).then(result => {
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                        reset();
-                    } else {
-                        setOpenError(true);
-                        setErrorMessage(Message.RegistroNoGuardado);
-                    }
-                });
+                const result = await InsertSupplier(DataToInsert);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                    reset();
+                }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
+            setErrorMessage('No se pudo guardar correctamente el registro');
         }
     };
+
+
+
 
     return (
         <MainCard title="Registrar Proveedor">
@@ -138,7 +135,7 @@ const Supplier = () => {
                             name="teleProv"
                             label="Teléfono"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.teleProv}
+                            bug={errors}
                         />
                     </FormProvider>
                 </Grid>
@@ -150,7 +147,7 @@ const Supplier = () => {
                             name="emaiProv"
                             label="Email"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.emaiProv}
+                            bug={errors}
                         />
                     </FormProvider>
                 </Grid>
@@ -162,7 +159,7 @@ const Supplier = () => {
                             name="contaProv"
                             label="Contacto"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.contaProv}
+                            bug={errors}
                         />
                     </FormProvider>
                 </Grid>
@@ -174,7 +171,7 @@ const Supplier = () => {
                             defaultValue=""
                             options={lsCiudad}
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.ciudProv}
+                            bug={errors}
                         />
                     </FormProvider>
                 </Grid>
@@ -186,7 +183,7 @@ const Supplier = () => {
                             defaultValue=""
                             options={lsSupplier}
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.idTipoProveedor}
+                            bug={errors}
                         />
                     </FormProvider>
                 </Grid>
@@ -197,7 +194,7 @@ const Supplier = () => {
                             name="direProv"
                             label="Dirrección"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.direProv}
+                            bug={errors}
                         />
                     </FormProvider>
                 </Grid>

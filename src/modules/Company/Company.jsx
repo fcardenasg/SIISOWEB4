@@ -22,11 +22,9 @@ import { PostCompany } from 'formatdata/CompanyForm';
 import { FormatDate } from 'components/helpers/Format';
 
 const validationSchema = yup.object().shape({
-    Codigo: yup.string().required(`${ValidationMessage.Requerido}`),
-    DescripcionSpa: yup.string().required(`${ValidationMessage.Requerido}`),
-    Email: yup.string().required(`${ValidationMessage.Requerido}`),
-    Celular: yup.string().required(`${ValidationMessage.Requerido}`),
-    Gerente: yup.string().required(`${ValidationMessage.Requerido}`)
+    codigo: yup.string().required(`${ValidationMessage.Requerido}`),
+    descripcionSpa: yup.string().required(`${ValidationMessage.Requerido}`),
+
 });
 
 const Company = () => {
@@ -42,7 +40,10 @@ const Company = () => {
     const methods = useForm({
         resolver: yupResolver(validationSchema)
     });
-    const { handleSubmit, errors, reset } = methods;
+
+
+    const { handleSubmit, reset, formState: { errors } } = methods;
+
 
     const handleClick = async (datos) => {
         try {
@@ -58,7 +59,7 @@ const Company = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage('No se pudo guardar correctamente el registro');
         }
     };
 
@@ -73,10 +74,10 @@ const Company = () => {
                         <InputText
                             defaultValue=""
                             fullWidth
-                            name="Codigo"
+                            name="codigo"
                             label="Código"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.codigo}
                         />
                     </FormProvider>
                 </Grid>
@@ -85,10 +86,10 @@ const Company = () => {
                         <InputText
                             defaultValue=""
                             fullWidth
-                            name="DescripcionSpa"
+                            name="descripcionSpa"
                             label="Nombre"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.descripcionSpa}
                         />
                     </FormProvider>
                 </Grid>
@@ -97,10 +98,10 @@ const Company = () => {
                         <InputText
                             defaultValue=""
                             fullWidth
-                            name="Email"
+                            name="email"
                             label="Email"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.email}
                         />
                     </FormProvider>
                 </Grid>
@@ -109,10 +110,10 @@ const Company = () => {
                         <InputText
                             defaultValue=""
                             fullWidth
-                            name="Celular"
+                            name="celular"
                             label="Celular"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.celular}
                         />
                     </FormProvider>
                 </Grid>
@@ -121,10 +122,10 @@ const Company = () => {
                         <InputText
                             defaultValue=""
                             fullWidth
-                            name="Gerente"
+                            name="gerente"
                             label="Gerente"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.gerente}
                         />
                     </FormProvider>
                 </Grid>

@@ -107,6 +107,36 @@ const User = () => {
         }
     }
 
+    // const handleClick = async (datos) => {
+    //     try {
+    //         const password = checkUsuario ? datos.nombreUsuario : "12345678";
+    //         const firmaMedico = fileImg === null ? '' : fileImg;
+
+    //         const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
+    //             datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
+    //             firmaMedico, checkEstadoUsuario, datos.idSede);
+
+    //         if (especialidad.length === 0) {
+    //             setOpenError(true);
+    //             setErrorMessage('Debe seleccionar por lo menos una Especialidad');
+    //         }
+    //         else {
+    //             const result = await InsertUser(DataToInsert);
+    //             if (result.status === 200) {
+    //                 setOpenSuccess(true);
+    //                 reset();
+    //                 setEspecialidad([]);
+    //                 setFileImg(null);
+    //             }
+    //         }
+    //     } catch (error) {
+    //         setOpenError(true);
+    //         setErrorMessage(Message.RegistroNoGuardado);
+    //     }
+    // };
+
+
+
     const handleClick = async (datos) => {
         try {
             const password = checkUsuario ? datos.nombreUsuario : "12345678";
@@ -116,24 +146,34 @@ const User = () => {
                 datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
                 firmaMedico, checkEstadoUsuario, datos.idSede);
 
-            if (especialidad.length === 0) {
-                setOpenError(true);
-                setErrorMessage('Debe seleccionar por lo menos una Especialidad');
-            }
-            else {
+            if (Object.keys(datos.length !== 0)) {
                 const result = await InsertUser(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
                     reset();
-                    setEspecialidad([]);
                     setFileImg(null);
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
+            setErrorMessage('Este código ya existe');
         }
     };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     return (
         <MainCard title="Registrar Información del Usuario">
