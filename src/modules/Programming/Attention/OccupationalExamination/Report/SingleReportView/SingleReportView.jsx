@@ -86,7 +86,7 @@ const SingleReportView = ({ documento, resultData }) => {
                 <Grid item xs={12}>
                     <AnimateButton>
                         <Button variant="outlined" fullWidth onClick={() => handleClickReportAll(2)}>
-                            Imprimir Historia Clinica Ocupacional
+                            Imprimir Historia Clínica Ocupacional
                         </Button>
                     </AnimateButton>
                 </Grid>
@@ -102,7 +102,7 @@ const SingleReportView = ({ documento, resultData }) => {
                 <Grid item xs={12}>
                     <AnimateButton>
                         <Button variant="outlined" fullWidth onClick={() => handleClickReportAll(4)}>
-                            Imprimir Especio Confinado
+                            Imprimir Espacio Confinado
                         </Button>
                     </AnimateButton>
                 </Grid>
@@ -110,7 +110,7 @@ const SingleReportView = ({ documento, resultData }) => {
                 <Grid item xs={12}>
                     <AnimateButton>
                         <Button variant="outlined" fullWidth onClick={() => handleClickReportAll(5)}>
-                            Imprimir Cuestionario de Sintomas Respiratorio
+                            Imprimir Cuestionario de Síntomas Respiratorio
                         </Button>
                     </AnimateButton>
                 </Grid>
@@ -126,7 +126,7 @@ const SingleReportView = ({ documento, resultData }) => {
                 <Grid item xs={12}>
                     <AnimateButton>
                         <Button variant="outlined" fullWidth onClick={() => handleClickReportAll(7)}>
-                            Imprimir Toda la Historia Clinica
+                            Imprimir Toda la Historia Clínica
                         </Button>
                     </AnimateButton>
                 </Grid>
