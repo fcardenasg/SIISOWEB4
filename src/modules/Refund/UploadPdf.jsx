@@ -49,7 +49,7 @@ const UploadPdf = ({ idListaReintegro }) => {
     const allowedFiles = ['application/pdf'];
     const handleFile = async (event) => {
 
-        
+
         let selectedFile = event.target.files[0];
 
         if (selectedFile) {

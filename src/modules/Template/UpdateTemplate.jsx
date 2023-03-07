@@ -22,11 +22,15 @@ import { PutTemplate } from 'formatdata/TemplateForm';
 import { GetByIdTemplate, UpdateTemplates } from 'api/clients/TemplateClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
+import ControlModal from 'components/controllers/ControlModal';
+import ViewPDF from 'components/components/ViewPDF';
+import InputOnChange from 'components/input/InputOnChange';
+import ControllerListen from 'components/controllers/ControllerListen';
 
 const validationSchema = yup.object().shape({
     idCIE11: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -44,14 +48,19 @@ const UpdateTemplate = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [archivoPdf, setArchivoPdf] = useState(null);
+    const [openViewArchivo, setOpenViewArchivo] = useState(false);
+    const [timeWait, setTimeWait] = useState(false);
     const [open, setOpen] = useState(false);
+
+    const [textDx1, setTextDx1] = useState('');
+    const [lsDx1, setLsDx1] = useState([]);
 
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
 
     const [lsTemplate, setLsTemplate] = useState([]);
-    const [lsCie11, setLsCie11] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -64,28 +73,64 @@ const UpdateTemplate = () => {
             const lsServerTemplate = await GetByIdTemplate(id);
             if (lsServerTemplate.status === 200) {
                 setLsTemplate(lsServerTemplate.data);
+                setTextDx1(lsServerTemplate.data.idCIE11);
+
+                if (lsServerTemplate.data.archivo !== "") {
+                    setArchivoPdf(lsServerTemplate.data.archivo);
+                }
+
+                if (lsServerTemplate.data.idCIE11 !== '') {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerTemplate.data.idCIE11);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                }
             }
-
-
-
-            const lsServerCIE11 = await GetAllCIE11(0, 0);
-            var resultCIE11 = lsServerCIE11.data.entities.map((item) => ({
-                value: item.id,
-                label: item.dx
-            }));
-            setLsCie11(resultCIE11);
         } catch (error) { }
     }
 
     useEffect(() => {
         getAll();
-    }, [])
+    }, []);
+
+    const handleDx1 = async (event) => {
+        try {
+            setTextDx1(event.target.value);
+
+            if (event.key === 'Enter') {
+                if (event.target.value !== "") {
+
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        }
+    }
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutTemplate(id, 0, 0, 0,
-                datos.idCIE11, lsTemplate.usuario, 0, 0, 0, datos.descripcion,
-                lsTemplate.usuarioRegistro, lsTemplate.fechaRegistro, user.nameuser, FormatDate(new Date()));
+            var savePdf = archivoPdf === null ? "" : archivoPdf;
+
+            const DataToUpdate = PutTemplate(id, datos.idCIE11, user.nameuser, datos.descripcion,
+                lsTemplate.usuarioRegistro, lsTemplate.fechaRegistro, user.nameuser, FormatDate(new Date()), savePdf);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateTemplates(DataToUpdate);
@@ -95,27 +140,81 @@ const UpdateTemplate = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
+
+    const allowedFiles = ['application/pdf'];
+    const handleFile = async (event) => {
+
+
+        let selectedFile = event.target.files[0];
+
+        if (selectedFile) {
+            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
+                let reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onloadend = async (e) => {
+                    setArchivoPdf(e.target.result);
+                }
+            }
+            else {
+                setOpenError(true);
+                setErrorMessage('Este forma no es un PDF');
+            }
+        }
+    }
+
+    setTimeout(() => {
+        if (lsTemplate.length !== 0)
+            setTimeWait(true);
+    }, 2000);
 
     return (
         <MainCard title="Actualizar Plantilla">
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            {lsTemplate.length != 0 ?
+            <ControlModal
+                title="VISUALIZAR ARCHIVO"
+                open={openViewArchivo}
+                onClose={() => setOpenViewArchivo(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={archivoPdf} />
+            </ControlModal>
+
+            <ControlModal
+                maxWidth="md"
+                open={open}
+                onClose={() => setOpen(false)}
+                title="DICTADO POR VOZ"
+            >
+                <ControllerListen />
+            </ControlModal>
+
+            {timeWait ?
                 <Fragment>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid item xs={2}>
+                            <InputOnChange
+                                label="Dx 1"
+                                onKeyDown={handleDx1}
+                                onChange={(e) => setTextDx1(e?.target.value)}
+                                value={textDx1}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
+                        </Grid>
+
+                        <Grid item xs={10}>
                             <FormProvider {...methods}>
                                 <InputSelect
-                                    name="idCIE11"
-                                    label="CIE11"
+                                    name="dx1"
+                                    label="Dx1"
                                     defaultValue={lsTemplate.idCIE11}
-                                    options={lsCie11}
+                                    options={lsDx1}
+                                    bug={errors.dx1}
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.idCIE11}
                                 />
                             </FormProvider>
                         </Grid>
@@ -148,6 +247,23 @@ const UpdateTemplate = () => {
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Actualizar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button fullWidth variant="contained" component="label">
+                                        <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                        {TitleButton.SubirArchivo}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button disabled={archivoPdf === null ? true : false} fullWidth variant="contained" component="label" onClick={() => setOpenViewArchivo(true)}>
+                                        {TitleButton.VerArchivo}
                                     </Button>
                                 </AnimateButton>
                             </Grid>

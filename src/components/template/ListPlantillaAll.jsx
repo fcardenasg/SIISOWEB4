@@ -29,6 +29,11 @@ import { GetAllTemplate } from 'api/clients/TemplateClient';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import SearchIcon from '@mui/icons-material/Search';
+import useAuth from 'hooks/useAuth';
+import { TitleButton } from 'components/helpers/Enums';
+import ControlModal from 'components/controllers/ControlModal';
+import ViewPDF from 'components/components/ViewPDF';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -119,10 +124,14 @@ EnhancedTableHead.propTypes = {
 };
 
 const ListPlantillaAll = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const [lsTemplate, setLsTemplate] = useState([]);
 
     const theme = useTheme();
+    const [openViewArchivo, setOpenViewArchivo] = useState(false);
+    const [archivoPdf, setArchivoPdf] = useState(null);
+
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
     const [selected, setSelected] = useState([]);
@@ -134,11 +143,10 @@ const ListPlantillaAll = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllTemplate(0, 0);
+                const lsServer = await GetAllTemplate(0, 0, user.nameuser);
                 setLsTemplate(lsServer.data.entities);
                 setRows(lsServer.data.entities);
-            } catch (error) {
-            }
+            } catch (error) { }
         }
 
         GetAll();
@@ -189,8 +197,22 @@ const ListPlantillaAll = () => {
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsTemplate.length) : 0;
 
+    const handleVerPdf = (pdf) => {
+        setOpenViewArchivo(true);
+        setArchivoPdf(pdf);
+    };
+
     return (
         <Fragment>
+            <ControlModal
+                title="VISUALIZAR ARCHIVO"
+                open={openViewArchivo}
+                onClose={() => setOpenViewArchivo(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={archivoPdf} />
+            </ControlModal>
+
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -287,6 +309,12 @@ const ListPlantillaAll = () => {
                                                     </IconButton>
                                                 </Tooltip>
                                             </CopyToClipboard>
+
+                                            <Tooltip disabled={row.archivo === "" ? true : false} title={TitleButton.VerArchivo} onClick={() => handleVerPdf(row.archivo)}>
+                                                <IconButton size="large">
+                                                    <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                                                </IconButton>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -313,7 +341,7 @@ const ListPlantillaAll = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </Fragment>
+        </Fragment >
     );
 };
 

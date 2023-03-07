@@ -176,7 +176,7 @@ const TableInfirmary = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdNoteInfirmary(id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
             const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data);
 

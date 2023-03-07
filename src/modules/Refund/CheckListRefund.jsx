@@ -148,8 +148,6 @@ const CheckListRefund = ({ idReintegro }) => {
             try {
                 var lsCheckedReintegro = await GetAllReintegro(0, 0, idReintegro);
                 setListRefund(lsCheckedReintegro.data.entities);
-
-
             } catch (error) { }
         }
 

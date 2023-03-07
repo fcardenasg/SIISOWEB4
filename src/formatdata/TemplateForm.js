@@ -1,19 +1,15 @@
-export function PostTemplate(idSegmentoAgrupado, idSegmentoAfectado, idSubsegmento,
-    idCIE11, usuario, idTipoAtencion, idAtencion, IdItems, descripcion, usuarioRegistro,
-    fechaRegistro, usuarioModifico, fechaModifico) {
+export function PostTemplate(idCIE11, usuario, descripcion, usuarioRegistro,
+    fechaRegistro, usuarioModifico, fechaModifico, archivo) {
     return {
-        idSegmentoAgrupado, idSegmentoAfectado, idSubsegmento,
-        idCIE11, usuario, idTipoAtencion, idAtencion, IdItems, descripcion,
-        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+        idCIE11, usuario, descripcion, usuarioRegistro,
+        fechaRegistro, usuarioModifico, fechaModifico, archivo
     };
 }
 
-export function PutTemplate(id, idSegmentoAgrupado, idSegmentoAfectado, idSubsegmento,
-    idCIE11, usuario, idTipoAtencion, idAtencion, IdItems, descripcion, usuarioRegistro,
-    fechaRegistro, usuarioModifico, fechaModifico) {
+export function PutTemplate(id, idCIE11, usuario, descripcion, usuarioRegistro,
+    fechaRegistro, usuarioModifico, fechaModifico, archivo) {
     return {
-        id, idSegmentoAgrupado, idSegmentoAfectado, idSubsegmento,
-        idCIE11, usuario, idTipoAtencion, idAtencion, IdItems, descripcion,
-        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+        id, idCIE11, usuario, descripcion, usuarioRegistro,
+        fechaRegistro, usuarioModifico, fechaModifico, archivo
     };
 }

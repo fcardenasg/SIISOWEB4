@@ -1,5 +1,5 @@
 export const Url = {
-    Base: 'https://siisonew.drummondltd.com:44347/',
+    Base: 'https://localhost:44347/',
 
     /* https://siisonew.drummondltd.com:44347/ */
     /* https://localhost:44347/ */
@@ -86,6 +86,7 @@ export const Url = {
     UsuariosEmail: 'api/Usuarios/email',
 
     RegistroAtencion: 'api/RegistroAtencion',
+    UpdateEstadoRegistroAtencion: 'api/RegistroAtencion/UpdateEstadoRegistroAtencion',
     RegistroAtencio_GetAllAtencion: 'api/RegistroAtencion/GetAllAtencion',
     RegistroAtencionId: 'api/RegistroAtencion/id',
 

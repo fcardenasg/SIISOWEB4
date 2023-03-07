@@ -8,16 +8,15 @@ import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import { useTheme } from '@mui/material/styles';
 import { Button, Card, CardContent, CardMedia, Chip, Grid, Typography } from '@mui/material';
 
-import { DeleteAttention } from 'api/clients/AttentionClient';
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
+import { DeleteAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
+import { MessageSuccess } from 'components/alert/AlertAll';
 import { ColorDrummondltd } from 'themes/colors';
 import Avatar from 'ui-component/extended/Avatar';
 import { gridSpacing } from 'store/constant';
 import { IconEye, IconCircleMinus } from '@tabler/icons';
 import { DefaultValue } from 'components/helpers/Enums';
 import MenuOptions from './MenuOptions';
-import { UpdateAttentions } from 'api/clients/AttentionClient';
-import { PutAttention } from 'formatdata/AttentionForm';
+import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 import useAuth from 'hooks/useAuth';
 
 const ViewProgramming = ({ programming, getAll }) => {
@@ -27,39 +26,26 @@ const ViewProgramming = ({ programming, getAll }) => {
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [disabledButon, setDisabledButon] = useState(false);
-    const [openError, setOpenError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+
     const [anchorEl, setAnchorEl] = useState(null);
     const [openDelete, setOpenDelete] = useState(false);
 
     const handleUpdateAttention = async () => {
         try {
-            const DataToUpdate = PutAttention(programming.id, programming.documento, programming.fecha, programming.sede,
-                programming.tipo, programming.atencion, programming.estadoCaso, programming.observaciones, programming.numeroHistoria,
-                'PENDIENTE POR ATENCIÓN', programming.contingencia, programming.turno, programming.diaTurno, programming.motivo,
-                programming.medico, programming.docSolicitante, programming.talla, programming.peso, programming.iMC,
-                programming.usuarioCierreAtencion, programming.fechaDigitacion, programming.fechaCierreAtencion, programming.duracion,
-                programming.usuarioRegistro, programming.fechaRegistro, programming.usuarioModifico, programming.fechaModifico);
-
-            const result = await UpdateAttentions(DataToUpdate);
+            const DataToUpdate = PutEstadoAtencion(programming.id, 'PENDIENTE POR ATENCIÓN', '');
+            const result = await UpdateEstadoRegistroAtencion(DataToUpdate);
             if (result.status === 200) {
                 setOpenSuccess(true);
                 setAnchorEl(null);
                 getAll();
             }
-        } catch (error) { setErrorMessage(`${error}`) }
+        } catch (error) { }
     }
 
     const handleUpdateAttentionOpen = async () => {
         try {
-            const DataToUpdate = PutAttention(programming.id, programming.documento, programming.fecha, programming.sede, programming.tipo,
-                programming.atencion, programming.estadoCaso, programming.observaciones, programming.numeroHistoria, 'ESTÁ SIENDO ATENDIDO',
-                programming.contingencia, programming.turno, programming.diaTurno, programming.motivo, programming.medico,
-                programming.docSolicitante, programming.talla, programming.peso, programming.iMC, user.nameuser,
-                programming.fechaDigitacion, programming.fechaCierreAtencion, programming.duracion,
-                programming.usuarioRegistro, programming.fechaRegistro, programming.usuarioModifico, programming.fechaModifico);
-
-            await UpdateAttentions(DataToUpdate);
+            const DataToUpdate = PutEstadoAtencion(programming.id, 'ESTÁ SIENDO ATENDIDO', user.nameuser);
+            await UpdateEstadoRegistroAtencion(DataToUpdate);
         } catch (error) { }
     }
 
@@ -174,7 +160,6 @@ const ViewProgramming = ({ programming, getAll }) => {
         >
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <CardMedia component="div" title="Atención" sx={{ height: '90px', bgcolor: ColorCard }}>
                 <Typography variant="h6" sx={{

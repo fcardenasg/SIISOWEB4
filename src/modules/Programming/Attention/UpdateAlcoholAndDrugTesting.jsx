@@ -7,8 +7,8 @@ import {
     Divider,
 } from '@mui/material';
 
-import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient';
-import { PutAttention } from 'formatdata/AttentionForm';
+import { GetByIdAttention, UpdateAttentions, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
+import { PutAttention, PutEstadoAtencion } from 'formatdata/AttentionForm';
 import swal from 'sweetalert';
 import { ParamCloseCase } from 'components/alert/AlertAll';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -105,23 +105,17 @@ const UpdateAlcoholAndDrugTesting = () => {
 
     const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
         try {
-            const usuarioCierre = estadoPac === "PENDIENTE POR ATENCIÓN" ? '' : lsDataUpdate.usuarioCierreAtencion;
+            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : lsAtencion.usuarioCierreAtencion;
 
-            const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
-                lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
-                lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
-                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, usuarioCierre,
-                lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
-                lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
+            const DataToUpdate = PutEstadoAtencion(id, estadoPac, usuarioCierre);
+            await UpdateEstadoRegistroAtencion(DataToUpdate);
 
-            await UpdateAttentions(DataToUpdate);
-
-            if (estadoPac === "ATENDIDO") {
+            if (estadoPac === DefaultValue.ATENCION_ATENDIDO) {
                 swal(ParamCloseCase).then(async (willDelete) => {
                     if (willDelete)
                         navigate("/programming/list");
                 });
-            } else if (estadoPac === "PENDIENTE POR ATENCIÓN")
+            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO)
                 navigate("/programming/list");
 
         } catch (error) { }
@@ -725,7 +719,7 @@ const UpdateAlcoholAndDrugTesting = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
                                             {TitleButton.Cancelar}
                                         </Button>
                                     </AnimateButton>
@@ -733,7 +727,7 @@ const UpdateAlcoholAndDrugTesting = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
                                             {TitleButton.CerrarCaso}
                                         </Button>
                                     </AnimateButton>

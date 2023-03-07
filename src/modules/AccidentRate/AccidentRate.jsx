@@ -640,30 +640,30 @@ const AccidentRate = () => {
 
 
                         <Grid item xs={12} sx={{ pt: 2 }}>
-                                <MainCard title="Registro fotográfico">
+                            <MainCard title="Registro fotográfico">
 
-                                    <Grid container spacing={12}>
-                                        <Grid textAlign="center" item xs={12}>
-                                            <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                                SUBIR REGISTRO EN PDF
-                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                            </Button>
-                                        </Grid>
+                                <Grid container spacing={12}>
+                                    <Grid textAlign="center" item xs={12}>
+                                        <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                            SUBIR REGISTRO EN PDF
+                                            <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                        </Button>
                                     </Grid>
+                                </Grid>
 
-                                    <Grid item xs={12} sx={{ pt: 4 }}>
-                                        {urlFile && (
-                                            <object type="application/pdf"
-                                                data={urlFile}
-                                                width="1180"
-                                                height="500"
-                                                onLoad={<Cargando />}
-                                            />
-                                        )}
-                                    </Grid>
+                                <Grid item xs={12} sx={{ pt: 4 }}>
+                                    {urlFile && (
+                                        <object type="application/pdf"
+                                            data={urlFile}
+                                            width="1180"
+                                            height="500"
+                                            onLoad={<Cargando />}
+                                        />
+                                    )}
+                                </Grid>
 
-                                </MainCard>
-                            </Grid>
+                            </MainCard>
+                        </Grid>
 
 
                         <Grid container spacing={2} sx={{ pt: 4 }}>
@@ -675,22 +675,6 @@ const AccidentRate = () => {
                                 </AnimateButton>
                             </Grid>
 
-                            {/* <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button fullWidth variant="outlined" component="label">
-                                        <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                        {TitleButton.SubirArchivo}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button disabled={urlFile === null ? true : false} variant="outlined" fullWidth onClick={() => setOpenViewArchivo(true)}>
-                                        {TitleButton.VerArchivo}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid> */}
 
                             <Grid item xs={2}>
                                 <AnimateButton>

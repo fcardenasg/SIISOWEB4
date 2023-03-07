@@ -28,6 +28,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
 import InputOnChange from 'components/input/InputOnChange';
+import ViewPDF from 'components/components/ViewPDF';
 
 const validationSchema = yup.object().shape({
     dx1: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -44,6 +45,8 @@ const Template = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [archivoPdf, setArchivoPdf] = useState(null);
+    const [openViewArchivo, setOpenViewArchivo] = useState(false);
     const [open, setOpen] = useState(false);
 
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -64,7 +67,7 @@ const Template = () => {
 
             if (event.key === 'Enter') {
                 if (event.target.value !== "") {
-                    
+
                     var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
 
                     if (lsServerCie11.status === 200) {
@@ -87,11 +90,11 @@ const Template = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostTemplate("A1", 1, 1,
-                datos.dx1, user.nameuser, 1, 1, 1, datos.descripcion,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
-                // {lsAttention.length === 0 ? <Cargando size={220} myy={6} /> :
+            var savePdf = archivoPdf === null ? "" : archivoPdf;
+
+            const DataToInsert = PostTemplate(datos.dx1, user.nameuser, datos.descripcion,
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()), savePdf);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertTemplate(DataToInsert);
@@ -108,10 +111,40 @@ const Template = () => {
         }
     };
 
+    const allowedFiles = ['application/pdf'];
+    const handleFile = async (event) => {
+
+
+        let selectedFile = event.target.files[0];
+
+        if (selectedFile) {
+            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
+                let reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onloadend = async (e) => {
+                    setArchivoPdf(e.target.result);
+                }
+            }
+            else {
+                setOpenError(true);
+                setErrorMessage('Este forma no es un PDF');
+            }
+        }
+    }
+
     return (
         <MainCard title="Registrar Plantilla">
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
+            <ControlModal
+                title="VISUALIZAR ARCHIVO"
+                open={openViewArchivo}
+                onClose={() => setOpenViewArchivo(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={archivoPdf} />
+            </ControlModal>
 
             <ControlModal
                 maxWidth="md"
@@ -123,8 +156,6 @@ const Template = () => {
             </ControlModal>
 
             <Grid container spacing={2}>
-       
-
                 <Grid item xs={2}>
                     <InputOnChange
                         label="Dx 1"
@@ -134,7 +165,6 @@ const Template = () => {
                         size={matchesXS ? 'small' : 'medium'}
                     />
                 </Grid>
-
 
                 <Grid item xs={10}>
                     <FormProvider {...methods}>
@@ -148,7 +178,6 @@ const Template = () => {
                         />
                     </FormProvider>
                 </Grid>
-            
 
                 <Grid item xs={12}>
                     <FormProvider {...methods}>
@@ -171,8 +200,6 @@ const Template = () => {
                         icons={DetailIcons[0].icons}
                     />
                 </Grid>
-
-
             </Grid>
 
             <Grid item sx={{ pt: 4 }} xs={12}>
@@ -181,6 +208,23 @@ const Template = () => {
                         <AnimateButton>
                             <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                 {TitleButton.Guardar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+
+                    <Grid item xs={2}>
+                        <AnimateButton>
+                            <Button fullWidth variant="contained" component="label">
+                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                {TitleButton.SubirArchivo}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+
+                    <Grid item xs={2}>
+                        <AnimateButton>
+                            <Button disabled={archivoPdf === null ? true : false} fullWidth variant="contained" component="label" onClick={() => setOpenViewArchivo(true)}>
+                                {TitleButton.VerArchivo}
                             </Button>
                         </AnimateButton>
                     </Grid>
