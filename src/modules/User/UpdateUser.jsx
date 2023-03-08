@@ -15,7 +15,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo, ValidationMessage, Message } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
@@ -44,7 +44,6 @@ const UpdateUser = () => {
     const [checkEstadoUsuario, setCheckEstadoUsuario] = useState(true);
 
     const [lsUsuario, setLsUsuario] = useState([]);
-    const [especialidad, setEspecialidad] = useState([]);
     const [fileImg, setFileImg] = useState(null);
     const [timeWait, setTimeWait] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
@@ -65,7 +64,6 @@ const UpdateUser = () => {
         try {
             const lsServerUpdate = await GetByIdUser(id);
             if (lsServerUpdate.status === 200) {
-                setEspecialidad(JSON.parse(lsServerUpdate.data.especialidad));
                 setLsUsuario(lsServerUpdate.data);
                 setFileImg(lsServerUpdate.data.firma);
                 setCheckEstadoUsuario(lsServerUpdate.data.estado);
@@ -136,7 +134,7 @@ const UpdateUser = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('No se pudo guardar el registro');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 

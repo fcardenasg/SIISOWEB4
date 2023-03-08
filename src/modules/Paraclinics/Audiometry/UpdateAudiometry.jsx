@@ -7,25 +7,16 @@ import {
     Typography
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import ViewEmployee from 'components/views/ViewEmployee';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { useNavigate, useParams } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { FormProvider, useForm } from 'react-hook-form';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import DetailedIcon from 'components/controllers/DetailedIcon';
+
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import { FormatDate } from 'components/helpers/Format'
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -41,77 +32,40 @@ import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import InputOnChange from 'components/input/InputOnChange';
-import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
-
-
-const DetailIcons = [
-
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-
-
-]
+import { GetAllByCodeOrName, } from 'api/clients/CIE11Client';
 
 const UpdateAudiometry = () => {
-    const { user } = useAuth();
-    const navigate = useNavigate();
-    const theme = useTheme();
     const { id } = useParams();
+    const navigate = useNavigate();
+    const { user } = useAuth();
+    const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [timeWait, setTimeWait] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
-    const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
-    const [openTemplate, setOpenTemplate] = useState(false);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsAudiometrics, setLsAudiometrics] = useState([]);
 
-
     const [documento, setDocumento] = useState('');
-
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
-    const [lsConclusion, setLsConclusion] = useState([]);
-
-    const [lsInterpretacion, setLsInterpretacion] = useState([]);
-
     const [lsCargo, setLsCargo] = useState([]);
- 
     const [lsSuministradopor, setLsSuministradopor] = useState([]);
-
     const [lsConducta, setLsConducta] = useState([]);
 
-
-
-    const [lsLectura, setLsLectura] = useState([]);
-    const [lsControl, setLsControl] = useState([]);
-
-
-    const [lsOjoDerecho, setLsOjoDerecho] = useState([]);
-    const [lsOjoIzquierdo, setLsOjoIzquierdo] = useState([]);
-    const [lsEmpresa1, setLsEmpresa1] = useState([]);
-    const [lsTiempo, setLsTiempo] = useState([]);
-
-    
+    const [lsEmpresaParacli, setLsEmpresaParacli] = useState([]);
     const [lsProteccionAuditiva1, setLsProteccionAuditiva] = useState([]);
-    
-
     const [lsUso1, setLsUso] = useState([]);
     const [lsAudiograma, setLsAudiograma] = useState([]);
-
     const [textDx1, setTextDx1] = useState('');
     const [lsDx1, setLsDx1] = useState([]);
 
-
-
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-
-    const { handleSubmit, errors } = methods;
-
+    const { handleSubmit } = methods;
 
     const handleDx1 = async (event) => {
         try {
@@ -139,7 +93,6 @@ const UpdateAudiometry = () => {
         }
     }
 
-
     const allowedFiles = ['application/pdf'];
     const handleFile = (event) => {
         let selectedFile = event.target.files[0];
@@ -160,12 +113,9 @@ const UpdateAudiometry = () => {
         }
     }
 
-
-
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
-
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
             }
@@ -175,51 +125,21 @@ const UpdateAudiometry = () => {
         }
     }
 
-
-
-    const handleGetCie11 = async (dx) => {
-        try {
-            var lsServerCie11 = await GetAllByCodeOrName(0, 0, dx);
-            if (lsServerCie11.status === 200) {
-                var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.dx
-                }));
-                return resultCie11;
-            }
-        } catch (err) { }
-    }
-
-
     async function getAll() {
         try {
+            const lsServerEmpresas = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Empresas_Paraclinicos);
+            var resultEmpresas = lsServerEmpresas.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsEmpresaParacli(resultEmpresas);
 
-            const serverData = await GetByIdParaclinics(id);
-            if (serverData.status === 200) {
-
-                var lsdxAUDIO = await handleGetCie11(serverData.data.dxAUDIO);
-                setTextDx1(serverData.data.dxAUDIO);
-                setLsDx1(lsdxAUDIO);
-
-                setDocumento(serverData.data.documento);
-                setLsAudiometrics(serverData.data);
-                handleLoadingDocument(serverData.data.documento);
-                setFilePdf(serverData.data.url);
-            }
-
-           const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
+            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsMotivo(resultMotivo);
-
-            const lsServerInterpretacion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_Interpretacion);
-            var resultInterpretacion = lsServerInterpretacion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsInterpretacion(resultInterpretacion);
 
             const lsServerCargo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RosterPosition);
             var resultCargo = lsServerCargo.data.entities.map((item) => ({
@@ -270,9 +190,28 @@ const UpdateAudiometry = () => {
             }));
             setLsProveedor(resultProveedor);
 
+            const serverData = await GetByIdParaclinics(id);
+            if (serverData.status === 200) {
+                setLsAudiometrics(serverData.data);
+                setTextDx1(serverData.data.dxAUDIO);
+                setDocumento(serverData.data.documento);
+                handleLoadingDocument(serverData.data.documento);
 
+                if (serverData.data.dxAUDIO !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, serverData.data.dxAUDIO);
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                }
 
-
+                if (serverData.data.url !== "") {
+                    setFilePdf(serverData.data.url);
+                }
+            }
         } catch (error) { }
     }
 
@@ -283,7 +222,9 @@ const UpdateAudiometry = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutParaclinics(id,DefaultValue.PARACLINICO_AUDIOMETRIA,documento,
+            var savePdf = filePdf === null ? "" : filePdf;
+
+            const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_AUDIOMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 datos.idProveedor, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '',
@@ -296,26 +237,27 @@ const UpdateAudiometry = () => {
                 datos.htaaop, datos.tipoAcusiaAOP, datos.diabetesAOP, datos.expoRuidoAOP, datos.anteceTraumaticosAOP,
                 datos.observacionAOP, datos.idEmpresaAO, datos.idCargoAO, datos.tiempoExpoAO, datos.idProteccionAuditivaAO,
                 datos.idSuministradaPorAO, datos.idUsoAO, datos.idOdcaeAUDIO, datos.idOdmtAUDIO, datos.idOicaeAUDIO, datos.idOimtAUDIO,
-                datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO,datos.idCambioEPP, datos.observacionAUDIO,
-                filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
-
-                
+                datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
+                savePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
 
                 const result = await UpdateParaclinicss(DataToUpdate);
                 if (result.status === 200) {
                     setOpenUpdate(true);
-
-                    setButtonReport(true);
                 }
             }
 
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
+
+    setTimeout(() => {
+        if (lsAudiometrics.length !== 0)
+            setTimeWait(true);
+    }, 2500);
 
     return (
         <MainCard title="Actualizar Audiometría">
@@ -332,9 +274,7 @@ const UpdateAudiometry = () => {
                     <ControllerListen />
                 </ControlModal>
 
-
-
-                {lsAudiometrics.length != 0 ?
+                {timeWait ?
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <ViewEmployee
@@ -368,7 +308,6 @@ const UpdateAudiometry = () => {
                                                 defaultValue={lsAudiometrics.idMotivo}
                                                 options={lsMotivo}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -381,7 +320,6 @@ const UpdateAudiometry = () => {
                                                 defaultValue={lsAudiometrics.idProveedor}
                                                 options={lsProveedor}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -389,460 +327,394 @@ const UpdateAudiometry = () => {
                             </SubCard>
                         </Grid>
 
+                        <Grid item xs={12}>
+                            <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OTOLÓGICOS Y PERSONALES</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Otalgia"
+                                                name="otalgiaAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.otalgiaAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Otorrea"
+                                                name="otorreaAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.otorreaAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
-              <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OTOLÓGICOS Y PERSONALES</Typography>}>
-                            <Grid container spacing={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Otitis"
+                                                name="otitisAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.otitisAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Acufenos"
+                                                name="acufenosAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.acufenosAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Cirugía de Oídos"
+                                                name="cirugiaAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.cirugiaAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Otalgia"
-                                            name="otalgiaAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.otalgiaAOP}
-                                        />
-                                    </FormProvider>
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Vértigo"
+                                                name="vertigoAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.vertigoAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Farmacológicos"
+                                                name="farmacologicosAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.farmacologicosAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Prurito"
+                                                name="luritoAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.luritoAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Familiares"
+                                                name="familiaresAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.familiaresAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Parálisis Facial"
+                                                name="paralisisAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.paralisisAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="H.T.A."
+                                                name="htaaop"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.htaaop}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Hipoacusia"
+                                                name="tipoAcusiaAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.tipoAcusiaAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Diabetes"
+                                                name="diabetesAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.diabetesAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Exp. A Ruido No Ind."
+                                                name="expoRuidoAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.expoRuidoAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={6}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Antecedentes Traumáticos"
+                                                name="anteceTraumaticosAOP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.anteceTraumaticosAOP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsAudiometrics.observacionAOP}
+                                                fullWidth
+                                                name="observacionAOP"
+                                                label="Observaciones"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                multiline
+                                                rows={6}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
                                 </Grid>
+                            </SubCard>
+                        </Grid>
 
+                        <Grid item xs={12}>
+                            <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OCUPACIONALES</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsAudiometrics.idEmpresaAO}
+                                                name="idEmpresaAO"
+                                                label="Empresa"
+                                                options={lsEmpresaParacli}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idCargoAO"
+                                                label="Cargo"
+                                                defaultValue={lsAudiometrics.idCargoAO}
+                                                options={lsCargo}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Otorrea"
-                                            name="otorreaAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.otorreaAOP}
-                                        />
-                                    </FormProvider>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsAudiometrics.tiempoExpoAO}
+                                                fullWidth
+                                                name="tiempoExpoAO"
+                                                label="Tiempo Exp."
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsAudiometrics.idProteccionAuditivaAO}
+                                                name="idProteccionAuditivaAO"
+                                                label="Protección Auditiva"
+                                                options={lsProteccionAuditiva1}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idSuministradaPorAO"
+                                                label="Suministrada Por"
+                                                defaultValue={lsAudiometrics.idSuministradaPorAO}
+                                                options={lsSuministradopor}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idUsoAO"
+                                                label="Uso"
+                                                defaultValue={lsAudiometrics.idUsoAO}
+                                                options={lsUso1}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
                                 </Grid>
+                            </SubCard>
+                        </Grid>
 
+                        <Grid item xs={12}>
+                            <SubCard darkTitle title={<Typography variant="h4">AUDIOGRAMA</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idOdcaeAUDIO"
+                                                label="OD CAE"
+                                                defaultValue={lsAudiometrics.idOdcaeAUDIO}
+                                                options={lsAudiograma}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Otitis"
-                                            name="otitisAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.otitisAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idOdmtAUDIO"
+                                                label="OD MT"
+                                                defaultValue={lsAudiometrics.idOdmtAUDIO}
+                                                options={lsAudiograma}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idOicaeAUDIO"
+                                                label="OI CAE"
+                                                defaultValue={lsAudiometrics.idOicaeAUDIO}
+                                                options={lsAudiograma}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Acufenos"
-                                            name="acufenosAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.acufenosAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idOimtAUDIO"
+                                                label="OI MT"
+                                                defaultValue={lsAudiometrics.idOimtAUDIO}
+                                                options={lsAudiograma}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Cirugía de Oídos"
-                                            name="cirugiaAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.cirugiaAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
+                                    <Grid item xs={12} md={6} lg={8}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Reposo Auditivo"
+                                                name="idReposoAUDIO"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.idReposoAUDIO}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Vértigo"
-                                            name="vertigoAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.vertigoAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Farmacológicos"
-                                            name="farmacologicosAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.farmacologicosAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Prurito"
-                                            name="luritoAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.luritoAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Familiares"
-                                            name="familiaresAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.familiaresAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Parálisis Facial"
-                                            name="paralisisAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.paralisisAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="H.T.A."
-                                            name="htaaop"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.htaaop}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Hipoacusia"
-                                            name="tipoAcusiaAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.tipoAcusiaAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Diabetes"
-                                            name="diabetesAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.diabetesAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Exp. A Ruido No Ind."
-                                            name="expoRuidoAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.expoRuidoAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={6}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Antecedentes Traumáticos"
-                                            name="anteceTraumaticosAOP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.anteceTraumaticosAOP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-
-
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                             defaultValue={lsAudiometrics.observacionAOP}
-                                            fullWidth
-                                            name="observacionAOP"
-                                            label="Observaciones"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            multiline
-                                            rows={6}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-
-                                </Grid>
-
-
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OCUPACIONALES</Typography>}>
-                            <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue={lsAudiometrics.idEmpresaAO}
-                                            fullWidth
-                                            name="idEmpresaAO"
-                                            label="Empresa"
-                                            options={lsEmpresa1}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-
-                                <Grid item xs={12} md={1} lg={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idCargoAO"
-                                            label="Cargo"
-                                            defaultValue={lsAudiometrics.idCargoAO}
-                                            options={lsCargo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                          defaultValue={lsAudiometrics.tiempoExpoAO}
-                                            fullWidth
-                                            name="tiempoExpoAO"
-                                            label="Tiempo Exp."
-                                            options={lsTiempo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-                                <Grid item xs={12} md={1} lg={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            defaultValue={lsAudiometrics.idProteccionAuditivaAO}
-                                            name="idProteccionAuditivaAO"
-                                            label="Protección Auditiva"
-                                            options={lsProteccionAuditiva1}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idSuministradaPorAO"
-                                            label="Suministrada Por"
-                                            defaultValue={lsAudiometrics.idSuministradaPorAO}
-                                            options={lsSuministradopor}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idUsoAO"
-                                            label="Uso"
-                                            defaultValue={lsAudiometrics.idUsoAO}
-                                            options={lsUso1}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-
-
-
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">AUDIOGRAMA</Typography>}>
-                            <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idOdcaeAUDIO"
-                                            label="OD CAE"
-                                            defaultValue={lsAudiometrics.idOdcaeAUDIO}
-                                            options={lsAudiograma}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-
-                                <Grid item xs={12} md={1} lg={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idOdmtAUDIO"
-                                            label="OD MT"
-                                            defaultValue={lsAudiometrics.idOdmtAUDIO}
-                                            options={lsAudiograma}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idOicaeAUDIO"
-                                            label="OI CAE"
-                                            defaultValue={lsAudiometrics.idOicaeAUDIO}
-                                            options={lsAudiograma}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idOimtAUDIO"
-                                            label="OI MT"
-                                            defaultValue={lsAudiometrics.idOimtAUDIO}
-                                            options={lsAudiograma}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={8}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Reposo Auditivo"
-                                            name="idReposoAUDIO"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.idReposoAUDIO}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <InputOnChange
-                                        label="Dx "
-                                        onKeyDown={handleDx1}
-                                        onChange={(e) => setTextDx1(e?.target.value)}
-                                        value={textDx1}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={1} lg={6}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                         defaultValue={lsAudiometrics.dxAUDIO}
-                                            name="dxAUDIO"
-                                            label="Dx"
-                                            options={lsDx1}
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <InputOnChange
+                                            label="Dx "
+                                            onKeyDown={handleDx1}
+                                            onChange={(e) => setTextDx1(e?.target.value)}
+                                            value={textDx1}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
-                                    </FormProvider>
+                                    </Grid>
+                                    <Grid item xs={12} md={6} lg={6}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsAudiometrics.dxAUDIO}
+                                                name="dxAUDIO"
+                                                label="Dx"
+                                                options={lsDx1}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsAudiometrics.idConductaAUDIO}
+                                                name="idConductaAUDIO"
+                                                label="Conducta"
+                                                options={lsConducta}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={2}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="Cambio EPP"
+                                                name="idCambioEPP"
+                                                size={25}
+                                                defaultValue={lsAudiometrics.idCambioEPP}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={lsAudiometrics.observacionAUDIO}
+                                                fullWidth
+                                                name="observacionAUDIO"
+                                                label="Observaciones"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                multiline
+                                                rows={6}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
                                 </Grid>
-
-
-
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                          defaultValue={lsAudiometrics.idConductaAUDIO}
-                                            name="idConductaAUDIO"
-                                            label="Conducta"      
-                                            options={lsConducta}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12} md={1} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputCheckBox
-                                            label="Cambio EPP"
-                                            name="idCambioEPP"
-                                            size={25}
-                                            defaultValue={lsAudiometrics.idCambioEPP}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                         defaultValue={lsAudiometrics.observacionAUDIO}
-                                            fullWidth
-                                            name="observacionAUDIO"
-                                            label="Observaciones"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            multiline
-                                            rows={6}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
+                            </SubCard>
+                        </Grid>
 
                         <Grid item xs={12} sx={{ pt: 2 }}>
                             <MainCard title="Resultados">
-
                                 <Grid container spacing={12}>
                                     <Grid textAlign="center" item xs={12}>
                                         <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
@@ -862,22 +734,19 @@ const UpdateAudiometry = () => {
                                         />
                                     )}
                                 </Grid>
-
                             </MainCard>
                         </Grid>
 
-
-
                         <Grid item xs={12} sx={{ pt: 4 }}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Actualizar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/audiometry/list")}>
                                             {TitleButton.Cancelar}
@@ -886,10 +755,8 @@ const UpdateAudiometry = () => {
                                 </Grid>
                             </Grid>
                         </Grid>
-
                     </Grid> : <Cargando />
                 }
-
             </Fragment >
         </MainCard>
 

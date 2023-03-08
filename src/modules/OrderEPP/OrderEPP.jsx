@@ -90,7 +90,7 @@ const OrderEPP = () => {
         }
     }
 
-   
+
 
 
     const handleClickReport = async () => {
@@ -104,11 +104,11 @@ const OrderEPP = () => {
         } catch (err) { }
     };
 
-   // result.idOrdenesEpp
+    // result.idOrdenesEpp
 
     async function GetAll() {
         try {
-     
+
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
                 value: item.codiProv,
@@ -124,11 +124,11 @@ const OrderEPP = () => {
 
 
 
- 
+
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostOrderEPP(documento, FormatDate(datos.fecha), datos.idProvedor,
-            user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertOrderEPP(DataToInsert);
@@ -142,10 +142,9 @@ const OrderEPP = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
-
 
     return (
         <Fragment>
@@ -188,25 +187,25 @@ const OrderEPP = () => {
                                 </FormProvider>
                             </Grid>
 
-        
+
 
                             <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idProvedor"
-                                            label="Proveedor"
-                                            defaultValue=""
-                                            options={lsProveedor}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idProvedor}
-                                        />
-                                    </FormProvider>
-                                </Grid>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idProvedor"
+                                        label="Proveedor"
+                                        defaultValue=""
+                                        options={lsProveedor}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idProvedor}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
 
 
-                       
-                       \
+
+                            \
 
                         </Grid>
 

@@ -41,7 +41,6 @@ const User = () => {
     const [checkUsuario, setCheckUsuario] = useState(true);
     const [checkEstadoUsuario, setCheckEstadoUsuario] = useState(true);
 
-    const [especialidad, setEspecialidad] = useState([]);
     const [fileImg, setFileImg] = useState(null);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -107,36 +106,6 @@ const User = () => {
         }
     }
 
-    // const handleClick = async (datos) => {
-    //     try {
-    //         const password = checkUsuario ? datos.nombreUsuario : "12345678";
-    //         const firmaMedico = fileImg === null ? '' : fileImg;
-
-    //         const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
-    //             datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-    //             firmaMedico, checkEstadoUsuario, datos.idSede);
-
-    //         if (especialidad.length === 0) {
-    //             setOpenError(true);
-    //             setErrorMessage('Debe seleccionar por lo menos una Especialidad');
-    //         }
-    //         else {
-    //             const result = await InsertUser(DataToInsert);
-    //             if (result.status === 200) {
-    //                 setOpenSuccess(true);
-    //                 reset();
-    //                 setEspecialidad([]);
-    //                 setFileImg(null);
-    //             }
-    //         }
-    //     } catch (error) {
-    //         setOpenError(true);
-    //         setErrorMessage(Message.RegistroNoGuardado);
-    //     }
-    // };
-
-
-
     const handleClick = async (datos) => {
         try {
             const password = checkUsuario ? datos.nombreUsuario : "12345678";
@@ -156,24 +125,9 @@ const User = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     return (
         <MainCard title="Registrar Información del Usuario">

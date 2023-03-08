@@ -19,7 +19,7 @@ import { GetAllTypeCatalog } from 'api/clients/TypeCatalogClient';
 import { PostCatalog } from 'formatdata/CatalogForm';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
@@ -78,7 +78,7 @@ const Catalog = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 

@@ -3,28 +3,20 @@ import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
-    Typography
+    useMediaQuery
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import ViewEmployee from 'components/views/ViewEmployee';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { useNavigate, useParams } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import { FormProvider, useForm } from 'react-hook-form';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import { FormatDate } from 'components/helpers/Format'
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -32,7 +24,6 @@ import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/help
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { PutParaclinics } from 'formatdata/ParaclinicsForm';
 import { UpdateParaclinicss, GetByIdParaclinics } from 'api/clients/ParaclinicsClient';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
@@ -40,14 +31,6 @@ import Cargando from 'components/loading/Cargando';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
-
-
-const DetailIcons = [
-
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-
-
-]
 
 const UpdateElectro = () => {
     const { user } = useAuth();
@@ -156,8 +139,7 @@ const UpdateElectro = () => {
 
 
 
-        } catch (error) {
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -176,7 +158,7 @@ const UpdateElectro = () => {
                 '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
                 false, false, false, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,'',
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
                 DefaultValue.SINREGISTRO_GLOBAL, false, '', filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -191,7 +173,7 @@ const UpdateElectro = () => {
 
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -209,8 +191,6 @@ const UpdateElectro = () => {
                 >
                     <ControllerListen />
                 </ControlModal>
-
-
 
                 {lsElectro.length != 0 ?
                     <Grid container spacing={2}>
@@ -310,27 +290,12 @@ const UpdateElectro = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
-                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                        <DetailedIcon
-                                            title={DetailIcons[0].title}
-                                            onClick={() => setOpenTemplate(true)}
-                                            icons={DetailIcons[0].icons}
-                                        />
-
-
-                                    </Grid>
-
-
-
-
                                 </Grid>
                             </SubCard>
                         </Grid>
 
-
                         <Grid item xs={12} sx={{ pt: 2 }}>
                             <MainCard title="Resultados">
-
                                 <Grid container spacing={12}>
                                     <Grid textAlign="center" item xs={12}>
                                         <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
@@ -350,22 +315,19 @@ const UpdateElectro = () => {
                                         />
                                     )}
                                 </Grid>
-
                             </MainCard>
                         </Grid>
 
-
-
                         <Grid item xs={12} sx={{ pt: 4 }}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Actualizar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/electro/list")}>
                                             {TitleButton.Cancelar}
@@ -374,13 +336,10 @@ const UpdateElectro = () => {
                                 </Grid>
                             </Grid>
                         </Grid>
-
                     </Grid> : <Cargando />
                 }
-
             </Fragment >
         </MainCard>
-
     );
 };
 

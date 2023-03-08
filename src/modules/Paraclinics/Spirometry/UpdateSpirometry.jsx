@@ -7,25 +7,15 @@ import {
     Typography
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import ViewEmployee from 'components/views/ViewEmployee';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { useNavigate, useParams } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
-import InputCheckBox from 'components/input/InputCheckBox';
 import { FormProvider, useForm } from 'react-hook-form';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import DetailedIcon from 'components/controllers/DetailedIcon';
+
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import { FormatDate } from 'components/helpers/Format'
-import InputMultiSelects from 'components/input/InputMultiSelects';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -33,7 +23,6 @@ import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/help
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
 import { PutParaclinics } from 'formatdata/ParaclinicsForm';
 import { UpdateParaclinicss, GetByIdParaclinics } from 'api/clients/ParaclinicsClient';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
@@ -42,30 +31,20 @@ import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 
-
-const DetailIcons = [
-
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-
-
-]
-
 const UpdateSpirometry = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
     const { id } = useParams();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
     const [filePdf, setFilePdf] = useState(null);
-    const [openSuccess, setOpenSuccess] = useState(false);
+    const [timeWait, setTimeWait] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
-    const [openTemplate, setOpenTemplate] = useState(false);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsSpirometry, setLsSpirometry] = useState([]);
 
     const [documento, setDocumento] = useState('');
@@ -75,12 +54,7 @@ const UpdateSpirometry = () => {
     const [lsTipoEPP, setLsTipoEPP] = useState([]);
     const [lsResultado, setLsResultado] = useState([]);
 
-
-
-
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-
     const { handleSubmit, errors } = methods;
 
     const allowedFiles = ['application/pdf'];
@@ -103,12 +77,10 @@ const UpdateSpirometry = () => {
         }
     }
 
-
-
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
-            
+
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -121,11 +93,8 @@ const UpdateSpirometry = () => {
 
     async function GetAll() {
         try {
-
-
-
             const serverData = await GetByIdParaclinics(id);
-            
+
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
                 setLsSpirometry(serverData.data);
@@ -140,17 +109,12 @@ const UpdateSpirometry = () => {
             }));
             setLsMotivo(resultMotivo);
 
-    
-
-
             const lsServerTipoEPP = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_TIPOEPP);
             var resultTipoEPP = lsServerTipoEPP.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsTipoEPP(resultTipoEPP);
-
-       
 
             const lsServerResultado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_RESULTADO);
             var resultResultado = lsServerResultado.data.entities.map((item) => ({
@@ -159,21 +123,13 @@ const UpdateSpirometry = () => {
             }));
             setLsResultado(resultResultado);
 
-
-     
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
-
-
-
-
-        } catch (error) {
-            
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -182,34 +138,39 @@ const UpdateSpirometry = () => {
 
     const handleClick = async (datos) => {
         try {
+            var savePdf = filePdf === null ? "" : filePdf;
+
             const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_ESPIROMETRIA, documento,
                 FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
-                false, '', datos.idTipoEPP, datos.fvc,datos.feV1,datos.fevfvc, datos.feV2575,datos.pef, datos.resultado, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
+                false, '', datos.idTipoEPP, datos.fvc, datos.feV1, datos.fevfvc, datos.feV2575, datos.pef, datos.resultado, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
                 false, false, false, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,'',
-                DefaultValue.SINREGISTRO_GLOBAL, false, '', filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
+                DefaultValue.SINREGISTRO_GLOBAL, false, '', savePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
 
                 const result = await UpdateParaclinicss(DataToUpdate);
                 if (result.status === 200) {
                     setOpenUpdate(true);
-
-                    setButtonReport(true);
                 }
             }
 
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('Este código ya existe');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
+
+    setTimeout(() => {
+        if (lsSpirometry.length !== 0)
+            setTimeWait(true);
+    }, 2500);
 
     return (
         <MainCard title="Actualizar Espirometría">
@@ -226,9 +187,7 @@ const UpdateSpirometry = () => {
                     <ControllerListen />
                 </ControlModal>
 
-
-
-                {lsSpirometry.length != 0 ?
+                {timeWait ?
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <ViewEmployee
@@ -280,7 +239,6 @@ const UpdateSpirometry = () => {
                                         </FormProvider>
                                     </Grid>
 
-
                                     <Grid item xs={3.0}>
                                         <FormProvider {...methods}>
                                             <InputSelect
@@ -293,18 +251,13 @@ const UpdateSpirometry = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
-
-
                                 </Grid>
                             </SubCard>
                         </Grid>
 
-
                         <Grid item xs={12}>
                             <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
                                 <Grid container spacing={2}>
-
-
                                     <Grid item xs={12} md={1} lg={2}>
                                         <FormProvider {...methods}>
                                             <InputText
@@ -317,8 +270,6 @@ const UpdateSpirometry = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
-
-
 
                                     <Grid item xs={12} md={1} lg={2}>
                                         <FormProvider {...methods}>
@@ -373,12 +324,10 @@ const UpdateSpirometry = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                 
-
                                     <Grid item xs={12} md={1} lg={2}>
                                         <FormProvider {...methods}>
                                             <InputSelect
-                                                 name="resultado"
+                                                name="resultado"
                                                 label="Resultado"
                                                 defaultValue={lsSpirometry.resultado}
                                                 options={lsResultado}
@@ -387,15 +336,9 @@ const UpdateSpirometry = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
-
-
-
-
                                 </Grid>
                             </SubCard>
                         </Grid>
-
-
 
                         <Grid item xs={12}>
                             <SubCard darkTitle>
@@ -414,27 +357,12 @@ const UpdateSpirometry = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
-                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                        <DetailedIcon
-                                            title={DetailIcons[0].title}
-                                            onClick={() => setOpenTemplate(true)}
-                                            icons={DetailIcons[0].icons}
-                                        />
-
-
-                                    </Grid>
-
-
-
-
                                 </Grid>
                             </SubCard>
                         </Grid>
 
-
                         <Grid item xs={12} sx={{ pt: 2 }}>
                             <MainCard title="Resultados">
-
                                 <Grid container spacing={12}>
                                     <Grid textAlign="center" item xs={12}>
                                         <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
@@ -454,22 +382,20 @@ const UpdateSpirometry = () => {
                                         />
                                     )}
                                 </Grid>
-
                             </MainCard>
                         </Grid>
 
-
-
                         <Grid item xs={12} sx={{ pt: 4 }}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Actualizar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-                                <Grid item xs={6}>
+
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/spirometry/list")}>
                                             {TitleButton.Cancelar}
@@ -478,13 +404,10 @@ const UpdateSpirometry = () => {
                                 </Grid>
                             </Grid>
                         </Grid>
-
                     </Grid> : <Cargando />
                 }
-
             </Fragment >
         </MainCard>
-
     );
 };
 

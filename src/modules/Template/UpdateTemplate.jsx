@@ -26,14 +26,14 @@ import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enum
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
-import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
 import InputOnChange from 'components/input/InputOnChange';
 import ControllerListen from 'components/controllers/ControllerListen';
 
 const validationSchema = yup.object().shape({
-    idCIE11: yup.string().required(`${ValidationMessage.Requerido}`),
+    dx1: yup.string().required(`${ValidationMessage.Requerido}`),
     descripcion: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
@@ -129,7 +129,7 @@ const UpdateTemplate = () => {
         try {
             var savePdf = archivoPdf === null ? "" : archivoPdf;
 
-            const DataToUpdate = PutTemplate(id, datos.idCIE11, user.nameuser, datos.descripcion,
+            const DataToUpdate = PutTemplate(id, datos.dx1, user.nameuser, datos.descripcion,
                 lsTemplate.usuarioRegistro, lsTemplate.fechaRegistro, user.nameuser, FormatDate(new Date()), savePdf);
 
             if (Object.keys(datos.length !== 0)) {
