@@ -37,13 +37,17 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllSegmentoAgrupado, GetAllBySegmentoAfectado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { InsertAccidentRate } from 'api/clients/AccidentRateClient';
+import { GetByIdAccidentRate, InsertAccidentRate } from 'api/clients/AccidentRateClient';
 import { PostAccidentRate } from 'formatdata/AccidentRateForm';
 import InputOnChange from 'components/input/InputOnChange';
 import ViewPDF from 'components/components/ViewPDF';
 import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
+import { GetByIdAdvice, InsertAdvice } from 'api/clients/AdviceClient';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReport } from '../AccidentRate/ReporteAccidentRate';
+
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -61,7 +65,7 @@ const AccidentRate = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-
+    const [dataPDF, setDataPDF] = useState(null);
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState(undefined);
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
@@ -76,7 +80,7 @@ const AccidentRate = () => {
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openViewArchivo, setOpenViewArchivo] = useState(false);
-
+    const [resultData, setResultData] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [documento, setDocumento] = useState('');
     const [lsClase, setLsClase] = useState([]);
@@ -289,6 +293,22 @@ const AccidentRate = () => {
         getAll();
     }, [])
 
+
+
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAccidentRate(resultData.id);
+            const lsDataUser = await GetByMail(user.nameuser);
+
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
+
+
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostAccidentRate(FormatDate(datos.fecha), documento, datos.idClaseAT, datos.idCausaAT, segmentoAgrupado,
@@ -301,10 +321,13 @@ const AccidentRate = () => {
                 if (lsEmployee.length !== 0) {
                     const result = await InsertAccidentRate(DataToInsert);
                     if (result.status === 200) {
-                        reset();
+                   
                         setOpenSuccess(true);
+                        setResultData(result.data);
+                        reset();
                         setDocumento('');
                         setLsEmployee([]);
+                  
 
                         setLsSegmentoAfectado([]);
                         setSegmentoAfectado('');
@@ -346,23 +369,16 @@ const AccidentRate = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
+
             <ControlModal
                 title="VISTA DE REPORTE"
                 open={openReport}
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-
+                <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
-            {/* <ControlModal
-                title="VISUALIZAR ARCHIVO"
-                open={openViewArchivo}
-                onClose={() => setOpenViewArchivo(false)}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={urlFile} />
-            </ControlModal> */}
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -640,30 +656,30 @@ const AccidentRate = () => {
 
 
                         <Grid item xs={12} sx={{ pt: 2 }}>
-                            <MainCard title="Registro fotográfico">
+                                <MainCard title="Registro fotográfico">
 
-                                <Grid container spacing={12}>
-                                    <Grid textAlign="center" item xs={12}>
-                                        <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                            SUBIR REGISTRO EN PDF
-                                            <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                        </Button>
+                                    <Grid container spacing={12}>
+                                        <Grid textAlign="center" item xs={12}>
+                                            <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                                SUBIR REGISTRO EN PDF
+                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                            </Button>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
 
-                                <Grid item xs={12} sx={{ pt: 4 }}>
-                                    {urlFile && (
-                                        <object type="application/pdf"
-                                            data={urlFile}
-                                            width="1180"
-                                            height="500"
-                                            onLoad={<Cargando />}
-                                        />
-                                    )}
-                                </Grid>
+                                    <Grid item xs={12} sx={{ pt: 4 }}>
+                                        {urlFile && (
+                                            <object type="application/pdf"
+                                                data={urlFile}
+                                                width="1180"
+                                                height="500"
+                                                onLoad={<Cargando />}
+                                            />
+                                        )}
+                                    </Grid>
 
-                            </MainCard>
-                        </Grid>
+                                </MainCard>
+                            </Grid>
 
 
                         <Grid container spacing={2} sx={{ pt: 4 }}>
@@ -675,8 +691,16 @@ const AccidentRate = () => {
                                 </AnimateButton>
                             </Grid>
 
+                            <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button  disabled={resultData.length === 0 ? true : false}  variant="outlined" fullWidth onClick={handleClickReport}>
+                                                    {TitleButton.Imprimir}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
 
                             <Grid item xs={2}>
+
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/accident-rate/list")}>
                                         {TitleButton.Cancelar}

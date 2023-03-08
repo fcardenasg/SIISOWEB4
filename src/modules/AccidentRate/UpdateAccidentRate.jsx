@@ -40,10 +40,12 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import { GetByIdAccidentRate, UpdateAccidentRates } from 'api/clients/AccidentRateClient';
 import { PutAccidentRate } from 'formatdata/AccidentRateForm';
 import InputOnChange from 'components/input/InputOnChange';
-import ViewPDF from 'components/components/ViewPDF';
 import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReport } from '../AccidentRate/ReporteAccidentRate';
+import ViewPDF from 'components/components/ViewPDF';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -62,7 +64,8 @@ const UpdateAccidentRate = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-
+    const [resultData, setResultData] = useState([]);
+    const [dataPDF, setDataPDF] = useState(null);
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState(undefined);
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
@@ -329,6 +332,23 @@ const UpdateAccidentRate = () => {
         getAll();
     }, []);
 
+
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdAccidentRate(resultData.id);
+            const lsDataUser = await GetByMail(user.nameuser);
+
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
+
+
+
+
     setTimeout(() => {
         if (lsAccidentRate.length !== 0)
             setTimeWait(true);
@@ -347,6 +367,7 @@ const UpdateAccidentRate = () => {
                     const result = await UpdateAccidentRates(DataToInsert);
                     if (result.status === 200) {
                         setOpenSuccess(true);
+                        setResultData(result.data);
                     }
                 } else {
                     setOpenError(true);
@@ -380,6 +401,17 @@ const UpdateAccidentRate = () => {
             >
                 <ListPlantillaAll />
             </FullScreenDialog>
+
+
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
 
             {timeWait ?
                 <Grid container spacing={2}>
@@ -722,6 +754,16 @@ const UpdateAccidentRate = () => {
                                         </Button>
                                     </AnimateButton>
                                 </Grid> */}
+
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
