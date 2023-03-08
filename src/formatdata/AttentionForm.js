@@ -26,3 +26,9 @@ export function PutAttention(id, documento, fecha, sede = DefaultValue.SINREGIST
         fechaDigitacion, fechaCierreAtencion, duracion, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }
+
+export function PutEstadoAtencion(id, estadoPac, usuario) {
+    return {
+        id, estadoPac, usuario
+    }
+}

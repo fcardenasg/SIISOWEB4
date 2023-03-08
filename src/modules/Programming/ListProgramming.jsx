@@ -9,7 +9,6 @@ import { gridSpacing } from 'store/constant';
 
 import { IconSearch } from '@tabler/icons';
 import { GetAllAtencion } from 'api/clients/AttentionClient';
-import Cargando from 'components/loading/Cargando';
 import { DefaultValue, TitleButton } from 'components/helpers/Enums';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
@@ -96,9 +95,7 @@ const ListProgramming = () => {
 
                     setLsProgramming(response.data.entities);
                     setRows(response.data.entities);
-                } else {
-
-                }
+                } else { }
             });
         } catch (error) { }
     };
@@ -106,7 +103,6 @@ const ListProgramming = () => {
     useEffect(() => {
         getAll();
     }, []);
-
 
     let usersResult = <></>;
 

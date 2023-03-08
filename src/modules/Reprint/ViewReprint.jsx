@@ -62,25 +62,25 @@ const ViewReprint = () => {
                     <SubCard title={<Typography variant="h4">REIMPRESIÓN</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => setStatusReprint(1)} size="large" variant="outlined" color="success" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => setStatusReprint(1)} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.asesoria}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => setStatusReprint(2)} size="large" variant="outlined" color="success" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => setStatusReprint(2)} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.atencion}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => setStatusReprint(3)} size="large" variant="outlined" color="success" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => setStatusReprint(3)} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.emo}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => setStatusReprint(4)} size="large" variant="outlined" color="success" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => setStatusReprint(4)} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.enfermeria}
                                 </Button>
                             </Grid>
@@ -89,13 +89,18 @@ const ViewReprint = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard title={<Typography variant="h4">REIMPRIMIR {statusReprint === 1 ? Title.asesoria :
-                        statusReprint === 2 ? Title.atencion :
-                            statusReprint === 3 ? Title.emo :
-                                statusReprint === 4 ? Title.enfermeria : ''}</Typography>}>
+                    <SubCard title={
+                        <Typography variant="h4">
+                            REIMPRIMIR {statusReprint === 1 ? Title.asesoria :
+                                statusReprint === 2 ? Title.atencion :
+                                    statusReprint === 3 ? Title.emo :
+                                        statusReprint === 4 ? Title.enfermeria : ''}
+                        </Typography>}>
+
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                {statusReprint === 1 ? <TableConsulting /> :
+                                {statusReprint === 1 ?
+                                    <TableConsulting /> :
                                     statusReprint === 2 ?
                                         <Fragment>
                                             <Grid container spacing={2}>
@@ -143,12 +148,8 @@ const ViewReprint = () => {
                                                             </Grid>
                                                         }
                                                     </Grid>
-                                                </Fragment>
-
-
-
-
-                                                : <div />}
+                                                </Fragment> : null
+                                }
                             </Grid>
                         </Grid>
                     </SubCard>

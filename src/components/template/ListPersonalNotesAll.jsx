@@ -30,6 +30,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import SearchIcon from '@mui/icons-material/Search';
 import { GetAllPersonalNotes } from 'api/clients/PersonalNotesClient';
+import useAuth from 'hooks/useAuth';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -120,6 +121,7 @@ EnhancedTableHead.propTypes = {
 };
 
 const ListPersonalNotesAll = () => {
+    const { user } = useAuth();
     const dispatch = useDispatch();
     const [lsPersonalNotes, setLsPersonalNotes] = useState([]);
 
@@ -135,11 +137,10 @@ const ListPersonalNotesAll = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllPersonalNotes(0, 0);
+                const lsServer = await GetAllPersonalNotes(0, 0, user.nameuser);
                 setLsPersonalNotes(lsServer.data.entities);
                 setRows(lsServer.data.entities);
-            } catch (error) {
-            }
+            } catch (error) { }
         }
 
         GetAll();

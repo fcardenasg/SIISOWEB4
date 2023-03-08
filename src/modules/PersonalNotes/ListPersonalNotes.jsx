@@ -37,6 +37,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { DeletePersonalNotes, GetAllPersonalNotes } from 'api/clients/PersonalNotesClient';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import useAuth from 'hooks/useAuth';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -183,7 +184,9 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListPersonalNotes = () => {
+    const { user } = useAuth();
     const navigate = useNavigate();
+
     const [typeCatalog, setTypeCatalog] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [idCheck, setIdCheck] = useState('');
@@ -199,7 +202,7 @@ const ListPersonalNotes = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllPersonalNotes(0, 0);
+            const lsServer = await GetAllPersonalNotes(0, 0, user.nameuser);
             setTypeCatalog(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) { }

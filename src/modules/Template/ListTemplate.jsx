@@ -40,6 +40,7 @@ import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import { ViewFormat } from 'components/helpers/Format';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import useAuth from 'hooks/useAuth';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -202,7 +203,9 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListTemplate = () => {
+    const { user } = useAuth();
     const navigate = useNavigate();
+
     const [lsTemplate, setLsTemplate] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [idCheck, setIdCheck] = useState('');
@@ -218,7 +221,7 @@ const ListTemplate = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllTemplate(0, 0);
+            const lsServer = await GetAllTemplate(0, 0, user.nameuser);
             if (lsServer.status === 200) {
                 setLsTemplate(lsServer.data.entities);
                 setRows(lsServer.data.entities);

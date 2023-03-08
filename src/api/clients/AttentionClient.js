@@ -5,5 +5,7 @@ export const GetAllAttention = async (page, pageSize) => await getData(Url.Regis
 export const GetAllAtencion = async (page, pageSize, atencion, idSede) => await getData(Url.RegistroAtencio_GetAllAtencion, { page, pageSize, atencion, idSede });
 export const GetByIdAttention = async (id) => await getData(Url.RegistroAtencionId, { id });
 export const InsertAttention = async (registroAtencion) => await postData(Url.RegistroAtencion, registroAtencion);
-export const UpdateAttentions = async (registroAtencion) => await putData(Url.RegistroAtencion, registroAtencion);
 export const DeleteAttention = async (idRegistroAtencion) => await deleteData(Url.RegistroAtencion, { idRegistroAtencion });
+export const UpdateAttentions = async (registroAtencion) => await putData(Url.RegistroAtencion, registroAtencion);
+
+export const UpdateEstadoRegistroAtencion = async (registroAtencionDTO) => await putData(Url.UpdateEstadoRegistroAtencion, registroAtencionDTO);

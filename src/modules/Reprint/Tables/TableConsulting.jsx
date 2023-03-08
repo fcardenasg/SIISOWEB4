@@ -145,7 +145,6 @@ EnhancedTableHead.propTypes = {
 };
 
 const TableConsulting = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const [lsConsulting, setLsConsulting] = useState([]);
 
@@ -168,7 +167,7 @@ const TableConsulting = () => {
                 setLsConsulting(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
-                
+
             }
         }
 
@@ -178,24 +177,27 @@ const TableConsulting = () => {
     const handleClickReport = async (id) => {
         try {
             setOpenReport(true);
+            var lsDataUser = [];
             const lsDataReport = await GetByIdAdvice(id);
-            const lsDataUser = await GetByMail(user.nameuser);
-
-            
 
             if (lsDataReport.status === 200) {
-                if (lsDataReport.data.idTipoAtencion === DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA) {
-                    const asesoriaMedica = generateReport(lsDataReport.data, lsDataUser.data);
-                    setDataPDF(asesoriaMedica);
-                }
-                if (lsDataReport.data.idTipoAtencion === DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO) {
-                    const asesoriaPsicologica = generateReportPsycho(lsDataReport.data, lsDataUser.data);
-                    setDataPDF(asesoriaPsicologica);
-                }
-                if (lsDataReport.data.idTipoAtencion !== DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA &&
-                    lsDataReport.data.idTipoAtencion !== DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO) {
-                    const asesoriaOtras = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data);
-                    setDataPDF(asesoriaOtras);
+
+                lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+
+                if (lsDataUser.status === 200) {
+                    if (lsDataReport.data.idTipoAtencion === DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA) {
+                        const asesoriaMedica = generateReport(lsDataReport.data, lsDataUser.data);
+                        setDataPDF(asesoriaMedica);
+                    }
+                    if (lsDataReport.data.idTipoAtencion === DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO) {
+                        const asesoriaPsicologica = generateReportPsycho(lsDataReport.data, lsDataUser.data);
+                        setDataPDF(asesoriaPsicologica);
+                    }
+                    if (lsDataReport.data.idTipoAtencion !== DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA &&
+                        lsDataReport.data.idTipoAtencion !== DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO) {
+                        const asesoriaOtras = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data);
+                        setDataPDF(asesoriaOtras);
+                    }
                 }
             }
         } catch (err) { }

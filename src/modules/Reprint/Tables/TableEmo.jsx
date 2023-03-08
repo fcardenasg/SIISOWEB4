@@ -29,7 +29,7 @@ import { visuallyHidden } from '@mui/utils';
 import { GetAllTemplate } from 'api/clients/TemplateClient';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { GetAllByHistorico, GetAllByHistoricoCompany } from 'api/clients/WorkHistoryRiskClient';
+import { GetAllByHistorico, GetAllByHistoricoCompany, GetAllRHL, GetAllRHLOE, GetDataExploracion } from 'api/clients/WorkHistoryRiskClient';
 import { GetAllOccupationalExamination, GetByIdDataReport } from 'api/clients/OccupationalExaminationClient';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReportIndex } from 'modules/Programming/Attention/OccupationalExamination/Report/EMO';
@@ -37,6 +37,8 @@ import useAuth from 'hooks/useAuth';
 import ViewPDF from 'components/components/ViewPDF';
 import ControlModal from 'components/controllers/ControlModal';
 import { ViewFormat } from 'components/helpers/Format';
+import { GetAllByDocumentWorkHistory } from 'api/clients/WorkHistoryClient';
+import { GetAllByDocumentWorkHistoryOtherCompany } from 'api/clients/WorkHistoryOtherCompany';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -167,100 +169,31 @@ const TableEmo = () => {
                 setLsOccupationalExamination(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
-                
+
             }
         }
 
         GetAll();
     }, []);
 
-    async function getDataExploracion(documento) {
-        try {
-            var aniosMpiDLTD = 0, mesMpiDLTD = 0, aniosRuidoDLTD = 0, mesRuidoDLTD = 0;
-            var aniosMpiCompany = 0, mesMpiCompany = 0, aniosRuidoCompany = 0, mesRuidoCompany = 0;
-
-            const lsServerDTLD = await GetAllByHistorico(0, 0, documento);
-            if (lsServerDTLD.status === 200) {
-                var arrayMPI = lsServerDTLD.data.entities;
-                var arrayRUIDO = lsServerDTLD.data.entities;
-
-                if (arrayMPI.length !== 0 || arrayRUIDO.length !== 0) {
-                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico &&
-                        code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
-                        .map((riesgo) => ({
-                            anio: riesgo.anio,
-                            mes: riesgo.mes
-                        }));
-
-                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico &&
-                        code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
-                        .map((riesgo) => ({
-                            anio: riesgo.anio,
-                            mes: riesgo.mes
-                        }));
-
-                    for (let index = 0; index < arrayReadyRUIDO.length; index++) {
-                        const datos = arrayReadyRUIDO[index];
-                        aniosRuidoDLTD = aniosRuidoDLTD + datos.anio;
-                        mesRuidoDLTD = mesRuidoDLTD + datos.mes;
-                    }
-
-                    for (let index = 0; index < arrayReadyMPI.length; index++) {
-                        const datos = arrayReadyMPI[index];
-                        aniosMpiDLTD = aniosMpiDLTD + datos.anio;
-                        mesMpiDLTD = mesMpiDLTD + datos.mes;
-                    }
-                }
-            }
-
-            const lsServerOtrasEmpresas = await GetAllByHistoricoCompany(0, 0, documento);
-            if (lsServerOtrasEmpresas.status === 200) {
-                var arrayMPI = lsServerOtrasEmpresas.data.entities;
-                var arrayRUIDO = lsServerOtrasEmpresas.data.entities;
-
-                if (arrayMPI.length !== 0 || arrayRUIDO.length !== 0) {
-                    var arrayReadyMPI = arrayMPI.filter(code => code.idRiesgo === DefaultValue.RiesgoQuimico && code.idClase === DefaultValue.RiesgoQuimico_MPI_DLTD)
-                        .map((riesgo) => ({
-                            anio: riesgo.anio,
-                            mes: riesgo.mes
-                        }));
-
-                    var arrayReadyRUIDO = arrayRUIDO.filter(code => code.idRiesgo === DefaultValue.RiesgoFisico && code.idClase === DefaultValue.RiesgoQuimico_RUIDO_DLTD)
-                        .map((riesgo) => ({
-                            anio: riesgo.anio,
-                            mes: riesgo.mes
-                        }));
-
-                    for (let index = 0; index < arrayReadyRUIDO.length; index++) {
-                        const datos = arrayReadyRUIDO[index];
-                        aniosRuidoCompany = aniosRuidoCompany + datos.anio;
-                        mesRuidoCompany = mesRuidoCompany + datos.mes;
-                    }
-
-                    for (let index = 0; index < arrayReadyMPI.length; index++) {
-                        const datos = arrayReadyMPI[index];
-                        aniosMpiCompany = aniosMpiCompany + datos.anio;
-                        mesMpiCompany = mesMpiCompany + datos.mes;
-                    }
-                }
-            }
-
-            return {
-                aniosMpiDLTD, mesMpiDLTD, aniosRuidoDLTD, mesRuidoDLTD,
-                aniosMpiCompany, mesMpiCompany, aniosRuidoCompany, mesRuidoCompany,
-            }
-        } catch (error) { }
-    }
-
     /* Metodo de Reporte */
     const handleClickReport = async (id, documento) => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdDataReport(id);
-            const lsDataUser = await GetByMail(user.nameuser);
-            const resultExpoDLTD = await getDataExploracion(documento);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+            var resultExpoDLTD = await GetDataExploracion(documento);
 
-            const dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD);
+            var lsRiesgoHLD = await GetAllRHL(documento);
+            var lsRiesgoHLDO = await GetAllRHLOE(documento);
+
+            var lsServerWorkHistory = await GetAllByDocumentWorkHistory(0, 0, documento);
+            var lsServerWorkHistoryOtherCompany = await GetAllByDocumentWorkHistoryOtherCompany(0, 0, documento);
+
+            const dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD.data,
+                lsRiesgoHLD.data, lsRiesgoHLDO.data, lsServerWorkHistory.data.entities,
+                lsServerWorkHistoryOtherCompany.data.entities);
+
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
