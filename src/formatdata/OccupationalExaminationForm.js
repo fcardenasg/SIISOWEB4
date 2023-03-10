@@ -1,5 +1,4 @@
 import { DefaultValue } from 'components/helpers/Enums';
-import { FormatDate } from 'components/helpers/Format';
 
 export function PostOccupationalExamination(
     idRegistroAtencion, documento, fecha, idAtencion,
@@ -27,7 +26,7 @@ export function PostOccupationalExamination(
 
     menarquiaGO = 0, idCiclosGO = DefaultValue.SINREGISTRO_GLOBAL, duracionGO = 0, amenoreaGO = false, disminureaGO = false,
     leucoreaGO = false, vidaMaritalGO = 0, vidaObstetricaGO = 0, ggo = 0, pgo = 0, ago = 0, csgo = 0, vgo = 0,
-    fupgo = FormatDate(new Date()), furgo = FormatDate(new Date()), etsgo = false, cualgo = "",
+    fupgo = null, furgo = null, etsgo = false, cualgo = "",
     quisteOvariosBiomasGO = false, endometriosisGO = false, epigo = false, planificaGO = false,
     idMetodoGO = DefaultValue.SINREGISTRO_GLOBAL, ultimoAnioCitologiaGO = 0, idResultadoGO = DefaultValue.SINREGISTRO_GLOBAL,
 
@@ -59,14 +58,14 @@ export function PostOccupationalExamination(
     fechaAudiometriaEPA, resultadoAudiometriaEPA = 4017, observacionesAudiometriaEPA = "",
     fechaVisiometriaEPA, resultadoVisiometriaEPA = 4017, observacionesVisiometriaEPA = "",
     fechaLaboratorioClinicoEPA, resultadoLaboratorioClinicoEPA = 4017, observacionesLaboratorioClinicoEPA = "",
-    fechaCuestionarioSintomaEPA, resultadoCuestionarioSintomaEPA = 4017, observacionesCuestionarioSintomaEPA = "",
+    fechaCuestionarioSintomaEPA, resultadoCuestionarioSintomaEPA = 9514, observacionesCuestionarioSintomaEPA = "",
     fechaEkgEPA, resultadoEkgEPA = 4017, observacionesEkgEPA = "",
     fechaRnmLumbosacraEPA, resultadoRnmLumbosacraEPA = 4017, observacionesRnmLumbosacraEPA = "",
     fechaRnmCervicalEPA, resultadoRnmCervicalEPA = 4017, observacionesRnmCervicalEPA = "", observacionEPA = "",
 
     dx1 = "", dx2 = "", dx3 = "", observacionID = "", recomendacionesID = "", idConceptoActitudID = DefaultValue.SINREGISTRO_GLOBAL,
 
-    fechaConceptoNETA = FormatDate(new Date()), conceptoAplazadoNETA = DefaultValue.SINREGISTRO_GLOBAL,
+    fechaConceptoNETA = null, conceptoAplazadoNETA = DefaultValue.SINREGISTRO_GLOBAL,
     conceptoActitudNETA = DefaultValue.SINREGISTRO_GLOBAL, idConceptoEspacioConfinado = DefaultValue.SINREGISTRO_GLOBAL,
     motivoAplazoNETA = "", descripcionResultadoNETA = "", recomendacionesNETA = "",
     remitidoNETA = DefaultValue.SINREGISTRO_GLOBAL, remididoDondeNETA = DefaultValue.SINREGISTRO_GLOBAL,
@@ -81,9 +80,9 @@ export function PostOccupationalExamination(
     idLimitacionesNEMTA = false, idObesidadMorbidaNEMTA = false, idDeformaTemporalNEMTA = false, idOtrasAlteracionesNEMTA = false,
     observacionesNEMTA = "", conceptoActitudMedicoNEMTA = DefaultValue.SINREGISTRO_GLOBAL,
 
-    fechaFRA = FormatDate(new Date()), tencionFRA = "", idTencionArterialFRA = DefaultValue.SINREGISTRO_GLOBAL,
+    fechaFRA = null, tencionFRA = "", idTencionArterialFRA = DefaultValue.SINREGISTRO_GLOBAL,
     idAntecedenteCardiovascularFRA = "", idDeporteFRA = DefaultValue.SINREGISTRO_GLOBAL, idBebidaFRA = DefaultValue.SINREGISTRO_GLOBAL,
-    fechaLaboratorioFRA = FormatDate(new Date()), colesterolTotalFRA = 0, hdlfra = 0, triglicericosFRA = 0, idMetabolicoFRA = "",
+    fechaLaboratorioFRA = null, colesterolTotalFRA = 0, hdlfra = 0, triglicericosFRA = 0, idMetabolicoFRA = "",
     glisemiaFRA = 0, fumaFRA = DefaultValue.SINREGISTRO_GLOBAL, observacionFRA = "",
 
     ldlfra = 0, relacionFRA = "",
@@ -237,7 +236,7 @@ export function PutOccupationalExamination(id,
 
     menarquiaGO = 0, idCiclosGO = DefaultValue.SINREGISTRO_GLOBAL, duracionGO = 0, amenoreaGO = false, disminureaGO = false,
     leucoreaGO = false, vidaMaritalGO = 0, vidaObstetricaGO = 0, ggo = 0, pgo = 0, ago = 0, csgo = 0, vgo = 0,
-    fupgo = FormatDate(new Date()), furgo = FormatDate(new Date()), etsgo = false, cualgo = "",
+    fupgo = null, furgo = null, etsgo = false, cualgo = "",
     quisteOvariosBiomasGO = false, endometriosisGO = false, epigo = false, planificaGO = false,
     idMetodoGO = DefaultValue.SINREGISTRO_GLOBAL, ultimoAnioCitologiaGO = 0, idResultadoGO = DefaultValue.SINREGISTRO_GLOBAL,
 
@@ -269,14 +268,14 @@ export function PutOccupationalExamination(id,
     fechaAudiometriaEPA, resultadoAudiometriaEPA = 4017, observacionesAudiometriaEPA = "",
     fechaVisiometriaEPA, resultadoVisiometriaEPA = 4017, observacionesVisiometriaEPA = "",
     fechaLaboratorioClinicoEPA, resultadoLaboratorioClinicoEPA = 4017, observacionesLaboratorioClinicoEPA = "",
-    fechaCuestionarioSintomaEPA, resultadoCuestionarioSintomaEPA = 4017, observacionesCuestionarioSintomaEPA = "",
+    fechaCuestionarioSintomaEPA, resultadoCuestionarioSintomaEPA = 9514, observacionesCuestionarioSintomaEPA = "",
     fechaEkgEPA, resultadoEkgEPA = 4017, observacionesEkgEPA = "",
     fechaRnmLumbosacraEPA, resultadoRnmLumbosacraEPA = 4017, observacionesRnmLumbosacraEPA = "",
     fechaRnmCervicalEPA, resultadoRnmCervicalEPA = 4017, observacionesRnmCervicalEPA = "", observacionEPA = "",
 
     dx1 = "", dx2 = "", dx3 = "", observacionID = "", recomendacionesID = "", idConceptoActitudID = DefaultValue.SINREGISTRO_GLOBAL,
 
-    fechaConceptoNETA = FormatDate(new Date()), conceptoAplazadoNETA = DefaultValue.SINREGISTRO_GLOBAL,
+    fechaConceptoNETA = null, conceptoAplazadoNETA = DefaultValue.SINREGISTRO_GLOBAL,
     conceptoActitudNETA = DefaultValue.SINREGISTRO_GLOBAL, idConceptoEspacioConfinado = DefaultValue.SINREGISTRO_GLOBAL,
     motivoAplazoNETA = "", descripcionResultadoNETA = "", recomendacionesNETA = "",
     remitidoNETA = DefaultValue.SINREGISTRO_GLOBAL, remididoDondeNETA = DefaultValue.SINREGISTRO_GLOBAL,
@@ -291,9 +290,9 @@ export function PutOccupationalExamination(id,
     idLimitacionesNEMTA = false, idObesidadMorbidaNEMTA = false, idDeformaTemporalNEMTA = false, idOtrasAlteracionesNEMTA = false,
     observacionesNEMTA = "", conceptoActitudMedicoNEMTA = DefaultValue.SINREGISTRO_GLOBAL,
 
-    fechaFRA = FormatDate(new Date()), tencionFRA = "", idTencionArterialFRA = DefaultValue.SINREGISTRO_GLOBAL,
+    fechaFRA = null, tencionFRA = "", idTencionArterialFRA = DefaultValue.SINREGISTRO_GLOBAL,
     idAntecedenteCardiovascularFRA = "", idDeporteFRA = DefaultValue.SINREGISTRO_GLOBAL, idBebidaFRA = DefaultValue.SINREGISTRO_GLOBAL,
-    fechaLaboratorioFRA = FormatDate(new Date()), colesterolTotalFRA = 0, hdlfra = 0, triglicericosFRA = 0, idMetabolicoFRA = "",
+    fechaLaboratorioFRA = null, colesterolTotalFRA = 0, hdlfra = 0, triglicericosFRA = 0, idMetabolicoFRA = "",
     glisemiaFRA = 0, fumaFRA = DefaultValue.SINREGISTRO_GLOBAL, observacionFRA = "",
 
     ldlfra = 0, relacionFRA = "",

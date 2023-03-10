@@ -4,8 +4,7 @@ const FormatDate = (date) => {
     try {
 
         if (date === null) {
-            const fechaFormat = new Date().toISOString().split('T')[0];
-            return fechaFormat;
+            return null;
         } else {
             const fechaFormat = new Date(date).toISOString().split('T')[0];
             return fechaFormat;
@@ -1381,13 +1380,15 @@ function FrLdl_FrRelacion(hdl = 0, colesterol = 0, triglicerios = 0) {
 
 function NumeroDias(fechaInicio, fechaFin) {
     try {
-        let fechaIni = new Date(fechaInicio);
-        let fechaFinn = new Date(fechaFin);
+        if (fechaInicio !== undefined && fechaFin !== undefined) {
+            let fechaIni = new Date(fechaInicio);
+            let fechaFinn = new Date(fechaFin);
 
-        let milisegundosDia = 24 * 60 * 60 * 1000;
-        let milisegundosTranscurridos = Math.abs(fechaIni.getTime() - fechaFinn.getTime());
-        let diasTranscurridos = Math.round(milisegundosTranscurridos / milisegundosDia);
-        return diasTranscurridos;
+            let milisegundosDia = 24 * 60 * 60 * 1000;
+            let milisegundosTranscurridos = Math.abs(fechaIni.getTime() - fechaFinn.getTime());
+            let diasTranscurridos = Math.round(milisegundosTranscurridos / milisegundosDia);
+            return diasTranscurridos;
+        } else return 0
     } catch (error) { }
 }
 

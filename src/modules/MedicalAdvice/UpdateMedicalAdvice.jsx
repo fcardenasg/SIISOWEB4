@@ -374,14 +374,14 @@ const UpdateMedicalAdvice = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <SubCard darkTitle title={<Typography variant="h4">Registrar La  atención</Typography>}>
+                                    <SubCard darkTitle title={<Typography variant="h4">Registrar La Atención</Typography>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={6}>
                                                 <FormProvider {...methods}>
                                                     <InputDatePicker
                                                         label="Fecha"
                                                         name="fecha"
-                                                        defaultValue={lsMedicalAdvice.fecha}
+                                                        defaultValue={FormatDate(lsMedicalAdvice.fecha)}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -433,7 +433,7 @@ const UpdateMedicalAdvice = () => {
                                             }
 
                                             <Grid item xs={12}>
-                                                <SubCard darkTitle title={<Typography variant="h4">Descripción De La consulta</Typography>}>
+                                                <SubCard darkTitle title={<Typography variant="h4">Descripción De La Consulta</Typography>}>
                                                     <Grid item xs={12}>
                                                         <FormProvider {...methods}>
                                                             <InputText

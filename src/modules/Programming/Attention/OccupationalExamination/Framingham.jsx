@@ -28,6 +28,7 @@ import { CodCatalogo } from 'components/helpers/Enums';
 import ViewFramingham from './Framingham/ViewFramingham';
 import Accordion from 'components/accordion/Accordion';
 import { IconHeartbeat } from '@tabler/icons';
+import { FormatDate } from 'components/helpers/Format';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -128,7 +129,8 @@ const Framingham = ({
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fechaFRA"
-                                            defaultValue={new Date()}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            defaultValue={FormatDate(new Date())}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -159,7 +161,8 @@ const Framingham = ({
                                         <InputDatePicker
                                             label="Fecha Laboratorio"
                                             name="fechaLaboratorioFRA"
-                                            defaultValue={new Date()}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            defaultValue={FormatDate(new Date())}
                                         />
                                     </FormProvider>
                                 </Grid>

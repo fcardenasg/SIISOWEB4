@@ -52,6 +52,7 @@ import TableExamenesPara from './TableEmo/TableExamenesPara';
 import { MessageError } from 'components/alert/AlertAll';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import { FormatDate } from 'components/helpers/Format';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -77,7 +78,7 @@ const validateLastData = (data, tipoCampo = "bool") => {
     } else if (tipoCampo === "date") {
         if (data === null)
             return null;
-        else return data;
+        else return FormatDate(data);
 
     } else if (tipoCampo === "number") {
         if (data === undefined) {
@@ -159,6 +160,7 @@ const Emo = ({
 
     async function getAll() {
         try {
+
             const lsServerRiesClasifi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RIESGO_CLASIFICACION);
             var resultRiesClasifi = lsServerRiesClasifi.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -171,7 +173,7 @@ const Emo = ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsRiesClasifi(resultSintomasRespiratorios);
+            setLsEPSintomas(resultSintomasRespiratorios);
 
             const lsServerLateralidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.LATERALIDAD);
             var resultLateralidad = lsServerLateralidad.data.entities.map((item) => ({
@@ -3800,7 +3802,7 @@ const Emo = ({
                                         <InputDatePicker
                                             label="Fecha Del Concepto"
                                             name="fechaConceptoNETA"
-                                            defaultValue={new Date()}
+                                            defaultValue={FormatDate(new Date())}
                                         />
                                     </FormProvider>
                                 </Grid>

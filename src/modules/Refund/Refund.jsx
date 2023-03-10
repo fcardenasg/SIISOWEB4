@@ -14,8 +14,6 @@ import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-
 import Transitions from 'ui-component/extended/Transitions';
 import InputOnChange from 'components/input/InputOnChange';
 import InputDatePick from 'components/input/InputDatePick';
@@ -48,10 +46,6 @@ const DetailIcons = [
     { title: 'Ver Examenes', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const validationSchema = yup.object().shape({
-    resumen: yup.string().required(`${ValidationMessage.Requerido}`),
-});
-
 const Refund = () => {
     const { user } = useAuth();
     const theme = useTheme();
@@ -65,6 +59,7 @@ const Refund = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
+
     const [fechaFin, setFechaFin] = useState(undefined);
     const [fechaInicio, setFechaInicio] = useState(undefined);
 
@@ -89,10 +84,7 @@ const Refund = () => {
     const [lsDx2, setLsDx2] = useState([]);
     const [textDx2, setTextDx2] = useState('');
 
-    const methods = useForm(
-        /* { resolver: yupResolver(validationSchema) } */
-    );
-
+    const methods = useForm();
     const { handleSubmit, formState: { errors }, reset } = methods;
 
     const handleDocumento = async (event) => {
@@ -442,9 +434,9 @@ const Refund = () => {
                                     label="Inicio de Restricción"
                                     value={fechaInicio}
                                     onChange={(e) => {
-                                        setFechaInicio(e);
+                                        setFechaInicio(e.target.value);
                                         if (fechaFin) {
-                                            var result = NumeroDias(e, fechaFin);
+                                            var result = NumeroDias(e.target.value, fechaFin);
                                             setNumeroDia(result);
                                         }
                                     }}
@@ -456,9 +448,9 @@ const Refund = () => {
                                     label="Fin de Restricción"
                                     value={fechaFin}
                                     onChange={(e) => {
-                                        setFechaFin(e);
+                                        setFechaFin(e.target.value);
                                         if (fechaInicio) {
-                                            var result = NumeroDias(fechaInicio, e);
+                                            var result = NumeroDias(fechaInicio, e.target.value);
                                             setNumeroDia(result);
                                         }
                                     }}
@@ -562,7 +554,8 @@ const Refund = () => {
                                     <InputDatePicker
                                         label="Inicio de Restricción"
                                         name="inicioReubicacion"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
+                                        size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -572,7 +565,8 @@ const Refund = () => {
                                     <InputDatePicker
                                         label="Fin de Restricción"
                                         name="finReubicacion"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
+                                        size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
                             </Grid>

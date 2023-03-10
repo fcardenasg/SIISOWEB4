@@ -414,7 +414,8 @@ const Attention = () => {
                                     <InputDatePicker
                                         label="Fecha"
                                         name="fecha"
-                                        defaultValue={new Date()}
+                                        defaultValue={FormatDate(new Date())}
+                                        size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
                             </Grid>

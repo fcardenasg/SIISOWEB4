@@ -190,16 +190,12 @@ function pageAlcoholtesting(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${lsDataReport.nameConcepto}`, 53, 134);
   doc.text(`${lsDataUser.nombre}`, 53, 144);
 
-
   /* FIRMA */
   getFirma(doc, lsDataUser);
-  getFirmaEmployee(doc, lsDataReport);
 }
 
 /* Pag. 2 */
 function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
-  /* CUADRO DATOS */
-
   /* LISTA DE DATOS PACIENTE */
   doc.setFontSize(10);
   doc.setLineWidth(0.2);

@@ -328,7 +328,7 @@ const ListMedicalAdvice = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medicalAdvice.length) : 0;
 
     return (
-        <MainCard title={<Typography variant="h4">Lista de asesorías médicas especializadas</Typography>} content={false}>
+        <MainCard title={<Typography variant="h4">Lista De Asesorías Médicas Especializadas</Typography>} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -402,141 +402,141 @@ const ListMedicalAdvice = () => {
             </CardContent>
 
             <TableContainer>
-        {/* AQUÍ SE HACE PRELOAD */}
-        {medicalAdvice.length === 0 ? <Cargando size={220} myy={6} /> :
-                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-                    <EnhancedTableHead
-                        numSelected={selected.length}
-                        order={order}
-                        orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
-                        onRequestSort={handleRequestSort}
-                        rowCount={medicalAdvice.length}
-                        theme={theme}
-                        selected={selected}
-                        onClick={handleDelete}
-                    />
-                    <TableBody>
-                        {stableSort(medicalAdvice, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
+                {/* AQUÍ SE HACE PRELOAD */}
+                {medicalAdvice.length === 0 ? <Cargando size={220} myy={6} /> :
+                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                        <EnhancedTableHead
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={medicalAdvice.length}
+                            theme={theme}
+                            selected={selected}
+                            onClick={handleDelete}
+                        />
+                        <TableBody>
+                            {stableSort(medicalAdvice, getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
 
-                                if (typeof row === 'string') return null;
+                                    if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.id);
-                                const labelId = `enhanced-table-checkbox-${index}`;
+                                    const isItemSelected = isSelected(row.id);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                                return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={index}
-                                        selected={isItemSelected}
-                                    >
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
-                                                }}
-                                            />
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                            align="center"
+                                    return (
+                                        <TableRow
+                                            hover
+                                            role="checkbox"
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                            key={index}
+                                            selected={isItemSelected}
                                         >
-                                            {row.id}
-                                        </TableCell>
+                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemSelected}
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId
+                                                    }}
+                                                />
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                                align="center"
                                             >
-                                                {row.documento}
-                                            </Typography>
-                                        </TableCell>
+                                                {row.id}
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {row.nameEmpleado}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.documento}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {row.nameMotivo}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.nameEmpleado}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {ViewFormat(row.fecha)}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.nameMotivo}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/medicaladvice/update/${row.id}`)}>
-                                                <IconButton size="large">
-                                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: 53 * emptyRows
-                                }}
-                            >
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {ViewFormat(row.fecha)}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell align="center" sx={{ pr: 3 }}>
+                                                <Tooltip title="Actualizar" onClick={() => navigate(`/medicaladvice/update/${row.id}`)}>
+                                                    <IconButton size="large">
+                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            {emptyRows > 0 && (
+                                <TableRow
+                                    style={{
+                                        height: 53 * emptyRows
+                                    }}
+                                >
+                                    <TableCell colSpan={6} />
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
                 }
             </TableContainer>
 
