@@ -81,7 +81,7 @@ const UpdateAccidentRate = () => {
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openViewArchivo, setOpenViewArchivo] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
-
+    const [lsRegion, setLsRegion] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [documento, setDocumento] = useState('');
     const [lsClase, setLsClase] = useState([]);
@@ -158,12 +158,12 @@ const UpdateAccidentRate = () => {
             }));
             setLsSegmentoAgrupado(resultSegAgrupado);
 
-            const lsServerSegAfectado = await GetAllBySegmentoAfectado(0, 0);
-            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                value: item.id,
+            const lsServerRegion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_REGION);
+            var resultRegion = lsServerRegion.data.entities.map((item) => ({
+                value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsSegmentoAfectado(resultSegAfectado);
+            setLsRegion(resultRegion);
 
             const lsServerClase = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CLASE_AT);
             var resultClase = lsServerClase.data.entities.map((item) => ({
@@ -357,7 +357,7 @@ const UpdateAccidentRate = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PutAccidentRate(id, FormatDate(datos.fecha), documento, datos.idClaseAT, datos.idCausaAT, segmentoAgrupado,
-                segmentoAfectado, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
+                1, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
                 datos.diagnosticoFinal, datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
                 datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
@@ -477,7 +477,7 @@ const UpdateAccidentRate = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={4}>
+                               {/*  <Grid item xs={4}>
                                     <SelectOnChange
                                         name="segmentoAfectado"
                                         label="Segmento Afectado"
@@ -486,7 +486,25 @@ const UpdateAccidentRate = () => {
                                         value={segmentoAfectado}
                                         onChange={(e) => setSegmentoAfectado(e.target.value)}
                                     />
-                                </Grid>
+                                </Grid> */}
+
+
+
+                                <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsAccidentRate.idSubsegmento}
+                                                name="idSubsegmento"
+                                                label="Región"
+                                                options={lsRegion}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+
+
+
 
                                 {/* <Grid item xs={4}>
                                     <FormProvider {...methods}>
