@@ -7,17 +7,12 @@ import {
     Typography
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import ViewEmployee from 'components/views/ViewEmployee';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { useNavigate, useParams } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { FormProvider, useForm } from 'react-hook-form';
-
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
 
@@ -38,15 +33,6 @@ import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import InputOnChange from 'components/input/InputOnChange';
-import InputMultiSelects from 'components/input/InputMultiSelects';
-
-
-const DetailIcons = [
-
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-
-
-]
 
 const UpdateVisiometrics = () => {
     const { user } = useAuth();
@@ -54,47 +40,30 @@ const UpdateVisiometrics = () => {
     const theme = useTheme();
     const { id } = useParams();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [timeWait, setTimeWait] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
-    const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
-    const [openTemplate, setOpenTemplate] = useState(false);
-    const [lsCie11, setLsCie11] = useState([]);
     const [lsVisiometrics, setLsVisiometrics] = useState([]);
 
-
     const [documento, setDocumento] = useState('');
-
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
-
-
     const [lsLectura, setLsLectura] = useState([]);
     const [lsControl, setLsControl] = useState([]);
 
-
-    const [lsOjoDerecho, setLsOjoDerecho] = useState([]);
-    const [lsOjoIzquierdo, setLsOjoIzquierdo] = useState([]);
-    const [lsAdd1, setLsAdd1] = useState([]);
-
     const [textDx1, setTextDx1] = useState('');
     const [lsDx1, setLsDx1] = useState([]);
-
     const [textDx2, setTextDx2] = useState('');
     const [lsDx2, setLsDx2] = useState([]);
-
     const [textDx3, setTextDx3] = useState('');
     const [lsDx3, setLsDx3] = useState([]);
 
-
-
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-
     const { handleSubmit, errors } = methods;
 
     const handleDx1 = async (event) => {
@@ -149,7 +118,6 @@ const UpdateVisiometrics = () => {
         }
     }
 
-
     const handleDx3 = async (event) => {
         try {
             setTextDx3(event.target.value);
@@ -176,7 +144,6 @@ const UpdateVisiometrics = () => {
         }
     }
 
-
     const allowedFiles = ['application/pdf'];
     const handleFile = (event) => {
         let selectedFile = event.target.files[0];
@@ -197,8 +164,6 @@ const UpdateVisiometrics = () => {
         }
     }
 
-
-
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
@@ -212,54 +177,14 @@ const UpdateVisiometrics = () => {
         }
     }
 
-    const handleGetCie11 = async (dx) => {
+    async function getAll() {
         try {
-            var lsServerCie11 = await GetAllByCodeOrName(0, 0, dx);
-            if (lsServerCie11.status === 200) {
-                var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.dx
-                }));
-                return resultCie11;
-            }
-        } catch (err) { }
-    }
-
-    async function GetAll() {
-        try {
-            const serverData = await GetByIdParaclinics(id);
-            if (serverData.status === 200) {
-                var lsDxDerecho = await handleGetCie11(serverData.data.dxDerecho);
-                setTextDx1(serverData.data.dxDerecho);
-                setLsDx1(lsDxDerecho);
-
-                var lsdxIzquierdo = await handleGetCie11(serverData.data.dxIzquierdo);
-                setTextDx2(serverData.data.dxIzquierdo);
-                setLsDx2(lsdxIzquierdo);
-
-                var lsdxDiagnostico = await handleGetCie11(serverData.data.dxDiagnostico);
-                setTextDx3(serverData.data.dxDiagnostico);
-                setLsDx3(lsdxDiagnostico);
-
-
-
-
-                setDocumento(serverData.data.documento);
-                setLsVisiometrics(serverData.data);
-                handleLoadingDocument(serverData.data.documento);
-                setFilePdf(serverData.data.url);
-            }
-
-
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsMotivo(resultMotivo);
-
-
-
 
             const lsServerLectura = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_LECTURAADD);
             var resultLectura = lsServerLectura.data.entities.map((item) => ({
@@ -268,17 +193,12 @@ const UpdateVisiometrics = () => {
             }));
             setLsLectura(resultLectura);
 
-
-
             const lsServerControl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_CONTROLV);
             var resultControl = lsServerControl.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsControl(resultControl);
-
-
-
 
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
@@ -287,12 +207,58 @@ const UpdateVisiometrics = () => {
             }));
             setLsProveedor(resultProveedor);
 
-        } catch (error) {
-        }
+
+            const serverData = await GetByIdParaclinics(id);
+            if (serverData.status === 200) {
+                if (serverData.data.dxDerecho !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, serverData.data.dxDerecho);
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx1(resultCie11);
+                    }
+                    setTextDx1(serverData.data.dxDerecho);
+                }
+
+                if (serverData.data.dxIzquierdo !== "") {
+                    var lsServerCie112 = await GetAllByCodeOrName(0, 0, serverData.data.dxIzquierdo);
+                    if (lsServerCie112.status === 200) {
+                        var resultCie112 = lsServerCie112.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx2(resultCie112);
+                    }
+                    setTextDx2(serverData.data.dxIzquierdo);
+                }
+
+                if (serverData.data.dxDiagnostico !== "") {
+                    var lsServerCie113 = await GetAllByCodeOrName(0, 0, serverData.data.dxDiagnostico);
+                    if (lsServerCie113.status === 200) {
+                        var resultCie113 = lsServerCie113.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsDx3(resultCie113);
+                    }
+                    setTextDx3(serverData.data.dxDiagnostico);
+                }
+
+                setDocumento(serverData.data.documento);
+                handleLoadingDocument(serverData.data.documento);
+                setLsVisiometrics(serverData.data);
+
+                if (serverData.data.url !== "") {
+                    setFilePdf(serverData.data.url);
+                }
+            }
+        } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
@@ -318,8 +284,6 @@ const UpdateVisiometrics = () => {
                 const result = await UpdateParaclinicss(DataToUpdate);
                 if (result.status === 200) {
                     setOpenUpdate(true);
-
-                    setButtonReport(true);
                 }
             }
 
@@ -328,6 +292,11 @@ const UpdateVisiometrics = () => {
             setErrorMessage(Message.RegistroNoGuardado);
         }
     };
+
+    setTimeout(() => {
+        if (lsVisiometrics.length !== 0)
+            setTimeWait(true);
+    }, 2500);
 
     return (
         <MainCard title="Actualizar Visiometria">
@@ -344,9 +313,7 @@ const UpdateVisiometrics = () => {
                     <ControllerListen />
                 </ControlModal>
 
-
-
-                {lsVisiometrics.length != 0 ?
+                {timeWait ?
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <ViewEmployee
@@ -401,26 +368,23 @@ const UpdateVisiometrics = () => {
                             </SubCard>
                         </Grid>
 
-
                         <Grid item xs={12}>
                             <SubCard darkTitle title={<Typography variant="h4">ESTADO REFRACTIVO</Typography>}>
                                 <Grid container spacing={2}>
-
-                                    <Grid item xs={12} md={1} lg={3}>
+                                    <Grid item xs={12} md={6} lg={3}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
                                                 name="ojoDerecho"
                                                 label="Ojo Derecho"
                                                 defaultValue={lsVisiometrics.ojoDerecho}
-                                                options={lsOjoDerecho}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={1} lg={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
                                         <InputOnChange
                                             label="Dx Derecho"
                                             onKeyDown={handleDx1}
@@ -429,7 +393,8 @@ const UpdateVisiometrics = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} md={1} lg={6}>
+
+                                    <Grid item xs={12} md={6} lg={6}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="DxDerecho"
@@ -441,22 +406,20 @@ const UpdateVisiometrics = () => {
                                         </FormProvider>
                                     </Grid>
 
-
-                                    <Grid item xs={12} md={1} lg={3}>
+                                    <Grid item xs={12} md={6} lg={3}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
                                                 name="ojoIzquierdo"
                                                 label="Ojo Izquierdo"
                                                 defaultValue={lsVisiometrics.ojoIzquierdo}
-                                                options={lsOjoIzquierdo}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={1} lg={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
                                         <InputOnChange
                                             label="Dx Izquierdo"
                                             onKeyDown={handleDx2}
@@ -465,7 +428,8 @@ const UpdateVisiometrics = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} md={1} lg={6}>
+
+                                    <Grid item xs={12} md={6} lg={6}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="DxIzquierdo"
@@ -476,32 +440,27 @@ const UpdateVisiometrics = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
-
-
                                 </Grid>
                             </SubCard>
                         </Grid>
 
-
                         <Grid item xs={12}>
                             <SubCard darkTitle title={<Typography variant="h4">LECTURA ADD</Typography>}>
                                 <Grid container spacing={2}>
-
-                                    <Grid item xs={12} md={1} lg={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
                                                 name="add1"
                                                 label="ADD"
                                                 defaultValue={lsVisiometrics.add1}
-                                                options={lsAdd1}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={1} lg={3}>
+                                    <Grid item xs={12} md={6} lg={3}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="idLecturaAdd"
@@ -514,7 +473,7 @@ const UpdateVisiometrics = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={1} lg={3}>
+                                    <Grid item xs={12} md={6} lg={3}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="idControl"
@@ -527,7 +486,7 @@ const UpdateVisiometrics = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={1} lg={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
                                         <FormProvider {...methods}>
                                             <InputCheckBox
                                                 label="Remitodo a Oftalmologia"
@@ -539,9 +498,7 @@ const UpdateVisiometrics = () => {
                                         </FormProvider>
                                     </Grid>
 
-
-
-                                    <Grid item xs={12} md={1} lg={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
                                         <FormProvider {...methods}>
                                             <InputCheckBox
                                                 label="Requiere Lentes"
@@ -552,18 +509,14 @@ const UpdateVisiometrics = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
-
-
                                 </Grid>
                             </SubCard>
                         </Grid>
 
-
                         <Grid item xs={12}>
                             <SubCard darkTitle title={<Typography variant="h4">IMPRESIÓN DIAGNÓSTICA</Typography>}>
                                 <Grid container spacing={2}>
-
-                                    <Grid item xs={12} md={1} lg={4}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                         <InputOnChange
                                             label="Dx"
                                             onKeyDown={handleDx3}
@@ -572,7 +525,8 @@ const UpdateVisiometrics = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} md={1} lg={8}>
+
+                                    <Grid item xs={12} md={6} lg={8}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="DxDiagnostico"
@@ -584,7 +538,6 @@ const UpdateVisiometrics = () => {
                                         </FormProvider>
                                     </Grid>
                                 </Grid>
-
                             </SubCard>
                         </Grid>
 
@@ -605,24 +558,12 @@ const UpdateVisiometrics = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
-                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                        <DetailedIcon
-                                            title={DetailIcons[0].title}
-                                            onClick={() => setOpenTemplate(true)}
-                                            icons={DetailIcons[0].icons}
-                                        />
-
-
-                                    </Grid>
-
                                 </Grid>
                             </SubCard>
                         </Grid>
 
-
                         <Grid item xs={12} sx={{ pt: 2 }}>
                             <MainCard title="Resultados">
-
                                 <Grid container spacing={12}>
                                     <Grid textAlign="center" item xs={12}>
                                         <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
@@ -642,22 +583,20 @@ const UpdateVisiometrics = () => {
                                         />
                                     )}
                                 </Grid>
-
                             </MainCard>
                         </Grid>
 
-
-
                         <Grid item xs={12} sx={{ pt: 4 }}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Actualizar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-                                <Grid item xs={6}>
+
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/visiometrics/list")}>
                                             {TitleButton.Cancelar}
@@ -666,13 +605,10 @@ const UpdateVisiometrics = () => {
                                 </Grid>
                             </Grid>
                         </Grid>
-
                     </Grid> : <Cargando />
                 }
-
             </Fragment >
         </MainCard>
-
     );
 };
 

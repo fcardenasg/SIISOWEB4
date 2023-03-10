@@ -183,7 +183,7 @@ const Visiometrics = () => {
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
@@ -216,7 +216,7 @@ const Visiometrics = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
@@ -239,19 +239,14 @@ const Visiometrics = () => {
 
 
             if (Object.keys(datos.length !== 0)) {
-                if (filePdf) {
-                    const result = await InsertParaclinics(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                        setDocumento('');
-                        setLsEmployee([]);
-                        reset();
-                        setFilePdf(null);
-                    }
 
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Por favor ingresar el Nro. de Documento');
+                const result = await InsertParaclinics(DataToInsert);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                    setDocumento('');
+                    setLsEmployee([]);
+                    reset();
+                    setFilePdf(null);
                 }
             }
         } catch (error) {
@@ -274,7 +269,6 @@ const Visiometrics = () => {
                 >
                     <ControllerListen />
                 </ControlModal>
-
 
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -305,7 +299,6 @@ const Visiometrics = () => {
                                         <InputSelect
                                             name="idMotivo"
                                             label="Motivo"
-                                            defaultValue=""
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -318,29 +311,22 @@ const Visiometrics = () => {
                                         <InputSelect
                                             name="idProveedor"
                                             label="Proveedor"
-                                            defaultValue=""
                                             options={lsProveedor}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
-
-
-
                             </Grid>
                         </SubCard>
                     </Grid>
 
-
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">ESTADO REFRACTIVO</Typography>}>
                             <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={3}>
+                                <Grid item xs={12} md={6} lg={3}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="ojoDerecho"
                                             label="Ojo Derecho"
@@ -350,7 +336,7 @@ const Visiometrics = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <InputOnChange
                                         label="Dx Derecho"
                                         onKeyDown={handleDx1}
@@ -359,23 +345,21 @@ const Visiometrics = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={1} lg={6}>
+
+                                <Grid item xs={12} md={6} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="DxDerecho"
                                             label="Dx Derecho"
-                                            defaultValue=""
                                             options={lsDx1}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
                                 </Grid>
 
-
-                                <Grid item xs={12} md={1} lg={3}>
+                                <Grid item xs={12} md={6} lg={3}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="ojoIzquierdo"
                                             label="Ojo Izquierdo"
@@ -385,7 +369,7 @@ const Visiometrics = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <InputOnChange
                                         label="Dx Izquierdo"
                                         onKeyDown={handleDx2}
@@ -394,35 +378,27 @@ const Visiometrics = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={1} lg={6}>
+
+                                <Grid item xs={12} md={6} lg={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="DxIzquierdo"
                                             label="Dx Izquierdo"
-                                            defaultValue=""
                                             options={lsDx2}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
                                 </Grid>
-
-
-
-
                             </Grid>
                         </SubCard>
                     </Grid>
 
-
-
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">LECTURA ADD</Typography>}>
                             <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="add1"
                                             label="ADD"
@@ -432,12 +408,11 @@ const Visiometrics = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={3}>
+                                <Grid item xs={12} md={6} lg={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idLecturaAdd"
                                             label="Lectura ADD"
-                                            defaultValue=""
                                             options={lsLectura}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -445,12 +420,11 @@ const Visiometrics = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={3}>
+                                <Grid item xs={12} md={6} lg={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idControl"
                                             label="Control"
-                                            defaultValue=""
                                             options={lsControl}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -458,7 +432,7 @@ const Visiometrics = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Remitodo a Oftalmologia"
@@ -469,9 +443,7 @@ const Visiometrics = () => {
                                     </FormProvider>
                                 </Grid>
 
-
-
-                                <Grid item xs={12} md={1} lg={2}>
+                                <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
                                             label="Requiere Lentes"
@@ -481,8 +453,6 @@ const Visiometrics = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-
                             </Grid>
                         </SubCard>
                     </Grid>
@@ -490,8 +460,7 @@ const Visiometrics = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">IMPRESIÓN DIAGNÓSTICA</Typography>}>
                             <Grid container spacing={2}>
-
-                                <Grid item xs={12} md={1} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputOnChange
                                         label="Dx"
                                         onKeyDown={handleDx3}
@@ -500,22 +469,20 @@ const Visiometrics = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={1} lg={8}>
+
+                                <Grid item xs={12} md={6} lg={8}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="DxDiagnostico"
                                             label="Dx"
-                                            defaultValue=""
                                             options={lsDx3}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
                                 </Grid>
                             </Grid>
-
                         </SubCard>
                     </Grid>
-
 
                     <Grid item xs={12}>
                         <SubCard darkTitle>
@@ -523,7 +490,6 @@ const Visiometrics = () => {
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacion"
                                             label="Observaciones"
@@ -535,9 +501,9 @@ const Visiometrics = () => {
                                     </FormProvider>
                                 </Grid>
                             </Grid>
+
                             <Grid item xs={12} sx={{ pt: 2 }}>
                                 <MainCard title="Resultados">
-
                                     <Grid container spacing={12}>
                                         <Grid textAlign="center" item xs={12}>
                                             <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
@@ -557,13 +523,12 @@ const Visiometrics = () => {
                                             />
                                         )}
                                     </Grid>
-
                                 </MainCard>
                             </Grid>
 
                             <Grid item xs={12} sx={{ pt: 4 }}>
                                 <Grid container spacing={2} >
-                                    <Grid item xs={6}>
+                                    <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                                 {TitleButton.Guardar}
@@ -571,9 +536,7 @@ const Visiometrics = () => {
                                         </AnimateButton>
                                     </Grid>
 
-
-
-                                    <Grid item xs={6}>
+                                    <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/visiometrics/list")}>
                                                 {TitleButton.Cancelar}
@@ -584,11 +547,6 @@ const Visiometrics = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
-
-
-
-
-
                 </Grid>
             </Fragment>
         </MainCard>

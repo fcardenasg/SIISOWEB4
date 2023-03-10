@@ -49,15 +49,15 @@ const Attention = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const [documento, setDocumento] = useState('');
-    const [sede, setSede] = useState('');
-    const [tipoAtencion, setTipoAtencion] = useState('');
-    const [atencion, setAtencion] = useState('');
-    const [motivo, setMotivo] = useState('');
-    const [documentoSolicita, setDocumentoSolicita] = useState('');
-    const [nombreSolicitante, setNombreSolicitante] = useState('');
-    const [peso, setPeso] = useState('');
-    const [talla, setTalla] = useState('');
-    const [imc, setIMC] = useState('');
+    const [sede, setSede] = useState(undefined);
+    const [tipoAtencion, setTipoAtencion] = useState(undefined);
+    const [atencion, setAtencion] = useState(undefined);
+    const [motivo, setMotivo] = useState(undefined);
+    const [documentoSolicita, setDocumentoSolicita] = useState(undefined);
+    const [nombreSolicitante, setNombreSolicitante] = useState(undefined);
+    const [peso, setPeso] = useState(undefined);
+    const [talla, setTalla] = useState(undefined);
+    const [imc, setIMC] = useState(undefined);
     const [clasificacion, setClasificacion] = useState('CLASIFICACIÓN');
     const [clasificacionColor, setClasificacionColor] = useState('info');
 
@@ -449,7 +449,7 @@ const Attention = () => {
                                     options={lsAtencion}
                                     onChange={(e) => {
                                         setAtencion(e.target.value);
-                                        setMotivo('');
+                                        setMotivo(undefined);
                                     }}
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
@@ -460,6 +460,7 @@ const Attention = () => {
                                     <Grid item xs={3}>
                                         <FormProvider {...methods}>
                                             <InputSelect
+                                                defaultValue={DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_NUEVO}
                                                 name="estadoCaso"
                                                 label="Estado Caso"
                                                 options={lsEstadoCaso}
@@ -472,6 +473,7 @@ const Attention = () => {
                                         <Grid item xs={3}>
                                             <FormProvider {...methods}>
                                                 <InputSelect
+                                                    defaultValue={DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_NUEVO}
                                                     name="estadoCaso"
                                                     label="Estado Caso"
                                                     options={lsEstadoCaso}
@@ -517,7 +519,7 @@ const Attention = () => {
                                                             disabled
                                                         />
                                                     </Grid>
-                                                </Fragment> : <></>}
+                                                </Fragment> : null}
 
                                         </Fragment> : tipoAtencion === DefaultValue.TIP_AT_EMO ?
                                             <Fragment>
@@ -565,6 +567,7 @@ const Attention = () => {
                                                     <Grid item xs={3}>
                                                         <FormProvider {...methods}>
                                                             <InputSelect
+                                                                defaultValue={DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_NUEVO}
                                                                 name="estadoCaso"
                                                                 label="Estado Caso"
                                                                 options={lsEstadoCaso}
@@ -578,7 +581,6 @@ const Attention = () => {
                                                             <InputSelect
                                                                 name="motivo"
                                                                 label="Motivo"
-                                                                defaultValue=""
                                                                 options={lsMotivoPsico}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -590,7 +592,6 @@ const Attention = () => {
                                                             <InputSelect
                                                                 name="medico"
                                                                 label="Psicología"
-                                                                defaultValue=""
                                                                 options={lsPsicologia}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -603,7 +604,6 @@ const Attention = () => {
                                                                 <InputSelect
                                                                     name="motivo"
                                                                     label="Motivo"
-                                                                    defaultValue=""
                                                                     options={lsMotivoMedica}
                                                                     size={matchesXS ? 'small' : 'medium'}
                                                                 />
@@ -615,7 +615,6 @@ const Attention = () => {
                                                                 <InputSelect
                                                                     name="medico"
                                                                     label="Médico"
-                                                                    defaultValue=""
                                                                     options={lsMedicos}
                                                                     size={matchesXS ? 'small' : 'medium'}
                                                                 />
@@ -626,6 +625,7 @@ const Attention = () => {
                                                             <Grid item xs={3}>
                                                                 <FormProvider {...methods}>
                                                                     <InputSelect
+                                                                        defaultValue={DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_NUEVO}
                                                                         name="estadoCaso"
                                                                         label="Estado Caso"
                                                                         options={lsEstadoCaso}
@@ -633,7 +633,7 @@ const Attention = () => {
                                                                     />
                                                                 </FormProvider>
                                                             </Grid>
-                                                        </Fragment> : <></>
+                                                        </Fragment> : null
                             }
                         </Grid>
 
@@ -655,14 +655,13 @@ const Attention = () => {
                                     </AnimateButton>
                                 </Grid>
 
-                                {result.length !== 0 ?
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="contained" onClick={handleClickReport} fullWidth>
-                                                {TitleButton.Imprimir}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid> : null}
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button disabled={result.length === 0 ? true : false} variant="contained" onClick={handleClickReport} fullWidth>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
                                 <Grid item xs={2}>
                                     <AnimateButton>

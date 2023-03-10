@@ -88,7 +88,7 @@ const ViewProgramming = ({ programming, getAll }) => {
                 navigate(`/programming/other/${programming.id}`);
 
             if (tipoAtencion === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA &&
-                estadoCaso == DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_NUEVO)
+                estadoCaso === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_NUEVO)
                 navigate(`/programming/attention-new/${programming.id}`);
 
             if (tipoAtencion === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA &&

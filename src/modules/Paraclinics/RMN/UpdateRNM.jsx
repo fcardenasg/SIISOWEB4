@@ -3,28 +3,18 @@ import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
-    Typography
+    useMediaQuery
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import ViewEmployee from 'components/views/ViewEmployee';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { useNavigate, useParams } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import { FormProvider, useForm } from 'react-hook-form';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import { FormatDate } from 'components/helpers/Format'
-import InputMultiSelects from 'components/input/InputMultiSelects';
+
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -32,7 +22,7 @@ import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/help
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllCIE11 } from 'api/clients/CIE11Client';
+
 import { PutParaclinics } from 'formatdata/ParaclinicsForm';
 import { UpdateParaclinicss, GetByIdParaclinics } from 'api/clients/ParaclinicsClient';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
@@ -41,44 +31,29 @@ import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 
-
-const DetailIcons = [
-
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-
-
-]
-
 const UpdateRNM = () => {
+    const { id } = useParams();
     const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
-    const { id } = useParams();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [timeWait, setTimeWait] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
-    const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [buttonReport, setButtonReport] = useState(false);
     const [open, setOpen] = useState(false);
-    const [openTemplate, setOpenTemplate] = useState(false);
 
     const [lsRnm, setLsRnm] = useState([]);
-
-
     const [documento, setDocumento] = useState('');
-
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
     const [lsConclusion, setLsConclusion] = useState([]);
     const [lsConducta, setLsConducta] = useState([]);
 
-
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-
     const { handleSubmit, errors } = methods;
 
     const allowedFiles = ['application/pdf'];
@@ -101,8 +76,6 @@ const UpdateRNM = () => {
         }
     }
 
-
-
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee);
@@ -116,14 +89,17 @@ const UpdateRNM = () => {
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const serverData = await GetByIdParaclinics(id);
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
-                setLsRnm(serverData.data);
                 handleLoadingDocument(serverData.data.documento);
-                setFilePdf(serverData.data.url);
+                setLsRnm(serverData.data);
+
+                if (serverData.data.url !== "") {
+                    setFilePdf(serverData.data.url);
+                }
             }
 
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
@@ -153,20 +129,18 @@ const UpdateRNM = () => {
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
-
-
-
-        } catch (error) {
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_RNM,  documento,
+            var savePdf = filePdf === null ? "" : filePdf;
+
+            const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_RNM, documento,
                 FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
                 false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
@@ -174,18 +148,16 @@ const UpdateRNM = () => {
                 '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
-                false, false, false, '','', DefaultValue.SINREGISTRO_GLOBAL,
+                false, false, false, '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,'',
-                DefaultValue.SINREGISTRO_GLOBAL,false, '', filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
+                DefaultValue.SINREGISTRO_GLOBAL, false, '', savePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
 
                 const result = await UpdateParaclinicss(DataToUpdate);
                 if (result.status === 200) {
                     setOpenUpdate(true);
-
-                    setButtonReport(true);
                 }
             }
 
@@ -194,6 +166,11 @@ const UpdateRNM = () => {
             setErrorMessage(Message.RegistroNoGuardado);
         }
     };
+
+    setTimeout(() => {
+        if (lsRnm.length !== 0)
+            setTimeWait(true);
+    }, 2500);
 
     return (
         <MainCard title="Actualizar RNM">
@@ -210,9 +187,7 @@ const UpdateRNM = () => {
                     <ControllerListen />
                 </ControlModal>
 
-
-
-                {lsRnm.length != 0 ?
+                {timeWait ?
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <ViewEmployee
@@ -310,23 +285,9 @@ const UpdateRNM = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
-                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                        <DetailedIcon
-                                            title={DetailIcons[0].title}
-                                            onClick={() => setOpenTemplate(true)}
-                                            icons={DetailIcons[0].icons}
-                                        />
-
-
-                                    </Grid>
-
-
-
-
                                 </Grid>
                             </SubCard>
                         </Grid>
-
 
                         <Grid item xs={12} sx={{ pt: 2 }}>
                             <MainCard title="Resultados">
@@ -349,22 +310,20 @@ const UpdateRNM = () => {
                                         />
                                     )}
                                 </Grid>
-
                             </MainCard>
                         </Grid>
 
-
-
                         <Grid item xs={12} sx={{ pt: 4 }}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Actualizar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-                                <Grid item xs={6}>
+
+                                <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/rnm/list")}>
                                             {TitleButton.Cancelar}
@@ -373,13 +332,10 @@ const UpdateRNM = () => {
                                 </Grid>
                             </Grid>
                         </Grid>
-
                     </Grid> : <Cargando />
                 }
-
-            </Fragment >
+            </Fragment>
         </MainCard>
-
     );
 };
 

@@ -51,7 +51,7 @@ const Cytologia = () => {
     const [lsConducta, setLsConducta] = useState([]);
 
     const methods = useForm();
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit,  reset } = methods;
 
     const allowedFiles = ['application/pdf'];
     const handleFile = (event) => {
@@ -95,7 +95,7 @@ const Cytologia = () => {
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
@@ -128,7 +128,7 @@ const Cytologia = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
@@ -210,7 +210,6 @@ const Cytologia = () => {
                                             label="Motivo"
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -222,7 +221,6 @@ const Cytologia = () => {
                                             label="Conducta"
                                             options={lsConducta}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -234,7 +232,6 @@ const Cytologia = () => {
                                             label="Conclusión"
                                             options={lsConclusion}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -246,7 +243,6 @@ const Cytologia = () => {
                                             label="Proveedor"
                                             options={lsProveedor}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -266,7 +262,6 @@ const Cytologia = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
                                             rows={6}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>

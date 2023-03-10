@@ -215,7 +215,6 @@ const UpdateAudiometry = () => {
         } catch (error) { }
     }
 
-
     useEffect(() => {
         getAll();
     }, [])

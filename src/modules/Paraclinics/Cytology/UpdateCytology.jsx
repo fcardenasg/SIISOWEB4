@@ -121,7 +121,10 @@ const UpdateCytologia = () => {
                 setDocumento(serverData.data.documento);
                 setLsCytologia(serverData.data);
                 handleLoadingDocument(serverData.data.documento);
-                setFilePdf(serverData.data.url);
+
+                if (serverData.data.url !== "") {
+                    setFilePdf(serverData.data.url);
+                }
             }
         } catch (error) { }
     }
@@ -204,7 +207,6 @@ const UpdateCytologia = () => {
                                                 defaultValue={lsCytologia.idMotivo}
                                                 options={lsMotivo}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -217,7 +219,6 @@ const UpdateCytologia = () => {
                                                 defaultValue={lsCytologia.idConductaClasificacion}
                                                 options={lsConducta}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -230,7 +231,6 @@ const UpdateCytologia = () => {
                                                 defaultValue={lsCytologia.idConclusion}
                                                 options={lsConclusion}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -243,7 +243,6 @@ const UpdateCytologia = () => {
                                                 defaultValue={lsCytologia.idProveedor}
                                                 options={lsProveedor}
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -264,7 +263,6 @@ const UpdateCytologia = () => {
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 multiline
                                                 rows={6}
-                                                bug={errors}
                                             />
                                         </FormProvider>
                                     </Grid>

@@ -10,7 +10,6 @@ import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 
 import InputDatePicker from 'components/input/InputDatePicker';
 import ControlModal from 'components/controllers/ControlModal';
@@ -95,7 +94,7 @@ const Electro = () => {
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
@@ -128,7 +127,7 @@ const Electro = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
@@ -210,10 +209,8 @@ const Electro = () => {
                                         <InputSelect
                                             name="idMotivo"
                                             label="Motivo"
-                                            defaultValue=""
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -223,10 +220,8 @@ const Electro = () => {
                                         <InputSelect
                                             name="idConductaClasificacion"
                                             label="Conducta"
-                                            defaultValue=""
                                             options={lsConducta}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -236,10 +231,8 @@ const Electro = () => {
                                         <InputSelect
                                             name="idConclusion"
                                             label="Conclusión"
-                                            defaultValue=""
                                             options={lsConclusion}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -249,10 +242,8 @@ const Electro = () => {
                                         <InputSelect
                                             name="idProveedor"
                                             label="Proveedor"
-                                            defaultValue=""
                                             options={lsProveedor}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -266,14 +257,12 @@ const Electro = () => {
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacion"
                                             label="Observaciones"
                                             size={matchesXS ? 'small' : 'medium'}
                                             multiline
                                             rows={6}
-                                            bug={errors}
                                         />
                                     </FormProvider>
                                 </Grid>

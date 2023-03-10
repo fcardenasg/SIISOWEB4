@@ -91,7 +91,7 @@ const UpdateSpirometry = () => {
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const serverData = await GetByIdParaclinics(id);
 
@@ -99,7 +99,10 @@ const UpdateSpirometry = () => {
                 setDocumento(serverData.data.documento);
                 setLsSpirometry(serverData.data);
                 handleLoadingDocument(serverData.data.documento);
-                setFilePdf(serverData.data.url);
+
+                if (serverData.data.url !== "") {
+                    setFilePdf(serverData.data.url);
+                }
             }
 
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
@@ -133,7 +136,7 @@ const UpdateSpirometry = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
@@ -258,7 +261,7 @@ const UpdateSpirometry = () => {
                         <Grid item xs={12}>
                             <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} md={1} lg={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
@@ -271,7 +274,7 @@ const UpdateSpirometry = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={1} lg={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
@@ -284,7 +287,7 @@ const UpdateSpirometry = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={1} lg={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
                                         <FormProvider {...methods}>
                                             <InputText
 
@@ -298,7 +301,7 @@ const UpdateSpirometry = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={1} lg={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
@@ -311,7 +314,7 @@ const UpdateSpirometry = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={1} lg={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 fullWidth
@@ -324,7 +327,7 @@ const UpdateSpirometry = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={1} lg={2}>
+                                    <Grid item xs={12} md={6} lg={2}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="resultado"

@@ -3,8 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
-    Typography,
+    useMediaQuery
 } from '@mui/material';
 
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
@@ -94,7 +93,7 @@ const Spirometry = () => {
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
@@ -127,8 +126,8 @@ const Spirometry = () => {
     }
 
     useEffect(() => {
-        GetAll();
-    }, [])
+        getAll();
+    }, []);
 
     const handleClick = async (datos) => {
         try {
@@ -209,7 +208,6 @@ const Spirometry = () => {
                                         <InputSelect
                                             name="idMotivo"
                                             label="Motivo"
-                                            defaultValue=""
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -222,7 +220,6 @@ const Spirometry = () => {
                                         <InputSelect
                                             name="idProveedor"
                                             label="Proveedor"
-                                            defaultValue=""
                                             options={lsProveedor}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -235,7 +232,6 @@ const Spirometry = () => {
                                         <InputSelect
                                             name="idTipoEPP"
                                             label="Tipo EPP"
-                                            defaultValue=""
                                             options={lsTipoEPP}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -247,12 +243,11 @@ const Spirometry = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
+                        <SubCard darkTitle>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="fvc"
                                             label="FVC"
@@ -265,7 +260,6 @@ const Spirometry = () => {
                                 <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="feV1"
                                             label="FEV1"
@@ -278,7 +272,6 @@ const Spirometry = () => {
                                 <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="fevfvc"
                                             label="FEV1/FVC"
@@ -291,7 +284,6 @@ const Spirometry = () => {
                                 <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="feV2575"
                                             label="FEV25/75"
@@ -304,7 +296,6 @@ const Spirometry = () => {
                                 <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="pef"
                                             label="PEF"
@@ -319,7 +310,6 @@ const Spirometry = () => {
                                         <InputSelect
                                             name="resultado"
                                             label="Resultado"
-                                            defaultValue=""
                                             options={lsResultado}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -336,7 +326,6 @@ const Spirometry = () => {
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue=""
                                             fullWidth
                                             name="observacion"
                                             label="Observaciones"
