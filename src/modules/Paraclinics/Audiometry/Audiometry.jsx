@@ -27,12 +27,15 @@ import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { PostParaclinics } from 'formatdata/ParaclinicsForm';
-import { InsertParaclinics } from 'api/clients/ParaclinicsClient';
+import { InsertParaclinics, GetByIdParaclinics } from 'api/clients/ParaclinicsClient';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
 import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import InputOnChange from 'components/input/InputOnChange';
+import { generateReport } from './ReporteAudiometry';
+import { GetByMail } from 'api/clients/UserClient';
+import ViewPDF from 'components/components/ViewPDF';
 
 const Audiometry = () => {
     const { user } = useAuth();
@@ -50,15 +53,15 @@ const Audiometry = () => {
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
     const [lsEmpresaParacli, setLsEmpresaParacli] = useState([]);
-
+    const [dataPDF, setDataPDF] = useState(null);
     const [lsCargo, setLsCargo] = useState([]);
     const [lsProteccionAuditiva, setLsProteccionAuditiva] = useState([]);
     const [lsSuministradopor, setLsSuministradopor] = useState([]);
     const [lsUso, setLsUso] = useState([]);
     const [lsAudiograma, setLsAudiograma] = useState([]);
-
+    const [openReport, setOpenReport] = useState(false);
     const [lsConducta, setLsConducta] = useState([]);
-
+    const [resultData, setResultData] = useState([]);
     const [textDx1, setTextDx1] = useState('');
     const [lsDx1, setLsDx1] = useState([]);
 
@@ -204,6 +207,23 @@ const Audiometry = () => {
         getAll();
     }, [])
 
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdParaclinics(resultData.id);
+            const lsDataUser = await GetByMail(user.nameuser);
+
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
+
+
+
+
+
     const handleClick = async (datos) => {
         try {
             var savePdf = filePdf === null ? "" : filePdf;
@@ -229,6 +249,7 @@ const Audiometry = () => {
                 const result = await InsertParaclinics(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
+                    setResultData(result.data);
                     setDocumento('');
                     setLsEmployee([]);
                     reset();
@@ -255,6 +276,15 @@ const Audiometry = () => {
                 >
                     <ControllerListen />
                 </ControlModal>
+
+                <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
 
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -716,6 +746,16 @@ const Audiometry = () => {
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
+
+                                    <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button  disabled={resultData.length === 0 ? true : false}  variant="outlined" fullWidth onClick={handleClickReport}>
+                                                    {TitleButton.Imprimir}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                 
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
