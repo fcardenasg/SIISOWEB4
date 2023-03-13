@@ -13,8 +13,6 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import * as yup from 'yup';
-
 import Transitions from 'ui-component/extended/Transitions';
 import InputOnChange from 'components/input/InputOnChange';
 import InputDatePick from 'components/input/InputDatePick';
@@ -30,14 +28,14 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { CodCatalogo } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import CheckListRefund from './CheckListRefund';
-import { PostRefund, PutRefund } from 'formatdata/RefundForm';
+import { PutRefund } from 'formatdata/RefundForm';
 import { GetByIdRefund, UpdateRefunds } from 'api/clients/RefundClient';
 import { GetAllUser } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
@@ -48,10 +46,6 @@ const DetailIcons = [
     { title: 'Ver Examenes', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-/* const validationSchema = yup.object().shape({
-    resumen: yup.string().required(`${ValidationMessage.Requerido}`),
-}); */
-
 const Refund = () => {
     const { user } = useAuth();
     const { id } = useParams();
@@ -60,7 +54,6 @@ const Refund = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [viewListRefund, setViewListRefund] = useState(false);
-
     const [timeWait, setTimeWait] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -91,9 +84,7 @@ const Refund = () => {
     const [lsDx2, setLsDx2] = useState([]);
     const [textDx2, setTextDx2] = useState('');
 
-    const methods = useForm(
-        /* { resolver: yupResolver(validationSchema) } */
-    );
+    const methods = useForm();
 
     const { handleSubmit, formState: { errors }, reset } = methods;
 
@@ -241,7 +232,7 @@ const Refund = () => {
                     handleLoadingDocument(lsServerAtencion.data.documento);
                     setLsRefund(lsServerAtencion.data);
                     setFechaInicio(lsServerAtencion.data.fechaInicio);
-                    setFechaFin(lsServerAtencion.data.fechaInicio);
+                    setFechaFin(lsServerAtencion.data.fechaFin);
                     setNumeroDia(lsServerAtencion.data.numeroDia);
                     setViewListRefund(true);
 
@@ -470,9 +461,9 @@ const Refund = () => {
                                         label="Inicio de Restricción"
                                         value={fechaInicio}
                                         onChange={(e) => {
-                                            setFechaInicio(e);
+                                            setFechaInicio(e.target.value);
                                             if (fechaFin) {
-                                                var result = NumeroDias(e, fechaFin);
+                                                var result = NumeroDias(e.target.value, fechaFin);
                                                 setNumeroDia(result);
                                             }
                                         }}
@@ -484,9 +475,9 @@ const Refund = () => {
                                         label="Fin de Restricción"
                                         value={fechaFin}
                                         onChange={(e) => {
-                                            setFechaFin(e);
+                                            setFechaFin(e.target.value);
                                             if (fechaInicio) {
-                                                var result = NumeroDias(fechaInicio, e);
+                                                var result = NumeroDias(fechaInicio, e.target.value);
                                                 setNumeroDia(result);
                                             }
                                         }}

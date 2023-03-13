@@ -251,7 +251,7 @@ const UpdateMedicalAdvice = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -388,7 +388,7 @@ const UpdateMedicalAdvice = () => {
                                                     <InputDatePicker
                                                         label="Fecha"
                                                         name="fecha"
-                                                        defaultValue={lsAtencion.fecha}
+                                                        defaultValue={FormatDate(lsAtencion.fecha)}
                                                     />
                                                 </FormProvider>
                                             </Grid>

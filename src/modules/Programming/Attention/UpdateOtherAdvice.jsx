@@ -17,8 +17,8 @@ import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
-import { GetByIdAttention, UpdateAttentions, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
-import { PutAttention, PutEstadoAtencion } from 'formatdata/AttentionForm';
+import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
+import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
@@ -40,7 +40,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAdvice, InsertAdvice } from 'api/clients/AdviceClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -217,7 +217,7 @@ const UpdateOtherAdvice = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -349,7 +349,7 @@ const UpdateOtherAdvice = () => {
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={lsAtencion.fecha}
+                                            defaultValue={FormatDate(lsAtencion.fecha)}
                                         />
                                     </FormProvider>
                                 </Grid>

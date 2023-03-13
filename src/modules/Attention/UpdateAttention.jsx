@@ -9,7 +9,6 @@ import {
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
 
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
@@ -24,7 +23,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, DefaultValue, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutAttention } from 'formatdata/AttentionForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -81,7 +80,6 @@ const UpdateAttention = () => {
     const [lsSede, setLsSede] = useState([]);
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [lsMotivoPAD, setLsMotivoPAD] = useState([]);
-    const [lsTurno, setLsTurno] = useState([]);
     const [lsEstadoCaso, setLsEstadoCaso] = useState([]);
     const [lsMotivoMedica, setLsMotivoMedica] = useState([]);
     const [lsMotivoPsico, setLsMotivoPsico] = useState([]);
@@ -163,13 +161,6 @@ const UpdateAttention = () => {
                 label: item.nombre
             }));
             setLsSede(resultSede);
-
-            const lsServerTurno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Turno);
-            var resultTurno = lsServerTurno.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTurno(resultTurno);
 
             const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCaso);
             var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
@@ -333,7 +324,7 @@ const UpdateAttention = () => {
 
     const handleClick = async (datos) => {
         try {
-            const motivoFinal = motivo === '' ? datos.motivo : motivo;
+            const motivoFinal = motivo === undefined ? datos.motivo : motivo;
 
             const DataToInsert = PutAttention(id, documento, FormatDate(datos.fecha), datos.sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
@@ -415,7 +406,7 @@ const UpdateAttention = () => {
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={lsDataAtencion.fecha}
+                                            defaultValue={FormatDate(lsDataAtencion.fecha)}
                                         />
                                     </FormProvider>
                                 </Grid>

@@ -54,12 +54,12 @@ const WorkAbsenteeism = () => {
     const [textoDx, setTextoDx] = useState('');
     const [lsCIE11, setLsCIE11] = useState([]);
 
-    const [tipoSoporte, setTipoSoporte] = useState('');
-    const [diasSinLaborar, setDiasSinLaborar] = useState('');
+    const [tipoSoporte, setTipoSoporte] = useState(undefined);
+    const [diasSinLaborar, setDiasSinLaborar] = useState(0);
     const [numeroDias, setNumeroDias] = useState(0);
-    const [departa, setDeparta] = useState('');
+    const [departa, setDeparta] = useState(undefined);
     const [lsDeparta, setLsDeparta] = useState([]);
-    const [departamentoIPS, setDepartaMedico] = useState('');
+    const [departamentoIPS, setDepartaMedico] = useState(undefined);
     const [lsMunicipio, setMunicipioE] = useState([]);
     const [lsMunicipioMedico, setMunicipioMedico] = useState([]);
     const [lsCodigoFilterDpto, setCodigoFilterDpto] = useState([]);
@@ -75,7 +75,7 @@ const WorkAbsenteeism = () => {
     const [lsRedExpide, setLsRedExpide] = useState([]);
     const [lsCumplimientoRequisito, setLsCumplimientoRequisito] = useState([]);
 
-    const [fechaExpedicion, setFechaExpedicion] = useState(new Date());
+    const [fechaExpedicion, setFechaExpedicion] = useState(null);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
     const [fechaModifica, setFechaModifica] = useState(new Date());
@@ -319,14 +319,13 @@ const WorkAbsenteeism = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Datos de la Empresa que Expide</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos De La Empresa Que Expide</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="incapacidad"
                                         label="Incapacidad"
-                                        defaultValue=""
                                         options={lsIncapacidad}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -337,7 +336,6 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         type="number"
                                         fullWidth
                                         name="nroIncapacidad"
@@ -352,7 +350,7 @@ const WorkAbsenteeism = () => {
                                 <InputDatePick
                                     label="Fecha de Expedición"
                                     value={fechaExpedicion}
-                                    onChange={(e) => setFechaExpedicion(e)}
+                                    onChange={(e) => setFechaExpedicion(e.target.value)}
                                 />
                             </Grid>
 
@@ -372,7 +370,6 @@ const WorkAbsenteeism = () => {
                                     <InputSelect
                                         name="ciudadExpedicion"
                                         label="Ciudad de Expedición"
-                                        defaultValue=""
                                         options={lsMunicipio}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -384,14 +381,13 @@ const WorkAbsenteeism = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Datos de Incapacidad o Licencia</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos De Incapacidad O Licencia</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="tipoIncapacidad"
                                         label="Tipo de Incapacidad"
-                                        defaultValue=""
                                         options={lsTipoInca}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -404,7 +400,6 @@ const WorkAbsenteeism = () => {
                                     <InputSelect
                                         name="contingencia"
                                         label="Contingencia"
-                                        defaultValue=""
                                         options={lsContingencia}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -417,9 +412,9 @@ const WorkAbsenteeism = () => {
                                     label="Fecha de Inicio"
                                     value={fechaInicio}
                                     onChange={(e) => {
-                                        setFechaInicio(e);
+                                        setFechaInicio(e.target.value);
                                         if (fechaFin) {
-                                            var result = NumeroDias(e, fechaFin);
+                                            var result = NumeroDias(e.target.value, fechaFin);
                                             setDiasSinLaborar(result);
                                         }
                                     }}
@@ -433,7 +428,7 @@ const WorkAbsenteeism = () => {
                                     onChange={(e) => {
                                         setFechaFin(e);
                                         if (fechaInicio) {
-                                            var result = NumeroDias(fechaInicio, e);
+                                            var result = NumeroDias(fechaInicio, e.target.value);
                                             setDiasSinLaborar(result);
                                         }
                                     }}
@@ -442,7 +437,6 @@ const WorkAbsenteeism = () => {
 
                             <Grid item xs={2.4}>
                                 <InputOnChange
-                                    defaultValue=""
                                     fullWidth
                                     disabled
                                     name="diasSinLaborar"
@@ -468,7 +462,6 @@ const WorkAbsenteeism = () => {
                                     <InputSelect
                                         name="dxFinal"
                                         label="Diagnóstico"
-                                        defaultValue=""
                                         options={lsCIE11}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -481,7 +474,6 @@ const WorkAbsenteeism = () => {
                                     <InputSelect
                                         name="estadoCaso"
                                         label="Estado de Caso"
-                                        defaultValue=""
                                         options={lsEstadoCaso}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -494,7 +486,6 @@ const WorkAbsenteeism = () => {
                                     <InputSelect
                                         name="segmentoAgrupado"
                                         label="Segmento Agrupado"
-                                        defaultValue=""
                                         options={lsSegmentoAgrupado}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -507,7 +498,6 @@ const WorkAbsenteeism = () => {
                                     <InputSelect
                                         name="segmento"
                                         label="Segmento"
-                                        defaultValue=""
                                         options={lsSubsegmento}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -531,7 +521,6 @@ const WorkAbsenteeism = () => {
                                     <InputSelect
                                         name="idCategoria"
                                         label="Categoria"
-                                        defaultValue=""
                                         options={lsCategoria}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -543,12 +532,11 @@ const WorkAbsenteeism = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Datos del Médico O IPS Prestadora del Servicio</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos Del Médico O IPS Prestadora Del Servicio</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={4.8}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="proveedor"
                                         label="Proveedor"
@@ -574,7 +562,6 @@ const WorkAbsenteeism = () => {
                                     <InputSelect
                                         name="ciudadIPS"
                                         label="Ciudad"
-                                        defaultValue=""
                                         options={lsMunicipioMedico}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -585,7 +572,6 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="nombreProfesional"
                                         label="Nombre de Profesional"
@@ -598,7 +584,6 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="especialidad"
                                         label="Profesión/Especialidad"
@@ -611,7 +596,6 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="registroProfesional"
                                         label="Reg. Profesional"
@@ -626,7 +610,6 @@ const WorkAbsenteeism = () => {
                                     <InputSelect
                                         name="tipoAtencion"
                                         label="Tipo de Atención"
-                                        defaultValue=""
                                         options={lsTipoAtencion}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -639,7 +622,6 @@ const WorkAbsenteeism = () => {
                                     <InputSelect
                                         name="cumplimientoRequisito"
                                         label="Cumplimiento Requisito"
-                                        defaultValue=""
                                         options={lsCumplimientoRequisito}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -652,7 +634,6 @@ const WorkAbsenteeism = () => {
                                     <InputSelect
                                         name="expideInCapacidad"
                                         label="Red que expide"
-                                        defaultValue=""
                                         options={lsRedExpide}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
@@ -663,7 +644,6 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="observacionCumplimiento"
                                         label="Observacion Cumplimiento"
@@ -679,12 +659,11 @@ const WorkAbsenteeism = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Observación/Descripción de la Novedad</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Observación/Descripción De La Novedad</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="observacion"
                                         label="Observación/Descripción"
@@ -699,8 +678,8 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
+                                        disabled
                                         name="usuarioModificacion"
                                         label="Usuario Modifica"
                                         size={matchesXS ? 'small' : 'medium'}
@@ -722,7 +701,7 @@ const WorkAbsenteeism = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Monitor de Eventos</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Monitor De Eventos</Typography>}>
                         <Grid container spacing={2} sx={{ pb: 2, pl: 4 }}>
                             <Grid item xs={2}>
                                 <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.warning.main }} />

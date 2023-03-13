@@ -331,9 +331,6 @@ const OccupationalMedicine = () => {
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-
-
-
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
@@ -365,7 +362,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Retiro"
                                         name="fechaRetiro"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -379,8 +376,6 @@ const OccupationalMedicine = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
-
-
 
                             <Grid item xs={9}>
                                 <FormProvider {...methods}>
@@ -488,7 +483,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha de Entrega"
                                         name="fechaEntrega"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -497,7 +492,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha de Envío"
                                         name="fechaEnvio"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -538,7 +533,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha de Calificación"
                                         name="fechaCalificacionEps"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -577,7 +572,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Calificación Origen"
                                         name="fechaCalifiOrigenARL"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -598,7 +593,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Calificación PCL"
                                         name="fechaCalificacionPclARL"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -620,7 +615,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Estructura"
                                         name="fechaEstructuraARL"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -630,7 +625,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha ReCalificación PCL"
                                         name="fechaRecalificacionPclARL"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -652,7 +647,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Estructura"
                                         name="fechaEstructuraRecalificadaARL"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -668,7 +663,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Calificación Origen"
                                         name="fechaCalificaOrigenJRC"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -736,7 +731,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Calificación PCL"
                                         name="fechaCalificacionPclJRC"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -770,7 +765,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Estructura"
                                         name="fechaEstructuraPclJRC"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -792,7 +787,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha ReCalificación PCL"
                                         name="fechaRecalificacionPclJRC"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -838,7 +833,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Recalificación Est."
                                         name="fechaRecalificacionEstJRC"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -854,7 +849,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Calificación Origen"
                                         name="fechaCalificaOrigenJNC"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -886,7 +881,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Calificación Origen"
                                         name="fechaCalificacionPclJNC"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -920,7 +915,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Estructura"
                                         name="fechaEstructuraJNC"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -930,7 +925,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Calificación Origen"
                                         name="fechaRecalificacionPclJNC"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -981,7 +976,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Estructuración Origen"
                                         name="fechaEstructuracionOrigenInstaFinal"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -1026,7 +1021,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Calificación PCL"
                                         name="fechaCalificacionPclInstFinal"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -1036,7 +1031,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Estructuracion PCL"
                                         name="fechaEstructuracionPclInstFinal"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -1057,7 +1052,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Pago"
                                         name="fechaPagoInstaFinal"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -1089,7 +1084,7 @@ const OccupationalMedicine = () => {
                                     <InputDatePicker
                                         label="Fecha Pago"
                                         name="fechaPagoRecalificadoInstaFinal"
-                                        defaultValue={new Date()}
+                                        defaultValue={null}
                                     />
                                 </FormProvider>
                             </Grid>

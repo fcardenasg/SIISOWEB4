@@ -97,7 +97,7 @@ const UpdateAlcoholAndDrugTesting = () => {
     }
 
     const methods = useForm();
-    const { handleSubmit, reset } = methods;
+    const { handleSubmit } = methods;
 
     const handleClickReport = async () => {
         try {

@@ -322,13 +322,13 @@ const AccidentRate = () => {
                 if (lsEmployee.length !== 0) {
                     const result = await InsertAccidentRate(DataToInsert);
                     if (result.status === 200) {
-                   
+
                         setOpenSuccess(true);
                         setResultData(result.data);
                         reset();
                         setDocumento('');
                         setLsEmployee([]);
-                  
+
 
                         setLsRegion([]);
                         setSubsegmento('');
@@ -370,7 +370,6 @@ const AccidentRate = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
-
             <ControlModal
                 title="VISTA DE REPORTE"
                 open={openReport}
@@ -380,11 +379,10 @@ const AccidentRate = () => {
                 <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
-
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="Registrar Accidente de Trabajo"
+                        title="Registrar Accidente De Trabajo"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -441,8 +439,6 @@ const AccidentRate = () => {
                                 />
                             </Grid>
 
-                           
-
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -450,12 +446,10 @@ const AccidentRate = () => {
                                         label="Región"
                                         options={lsRegion}
                                         size={matchesXS ? 'small' : 'medium'}
-                                  
+
                                     />
                                 </FormProvider>
                             </Grid>
-
-
 
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
@@ -474,7 +468,7 @@ const AccidentRate = () => {
 
 
                 <Grid item xs={12}>
-                <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Inicial</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Inicial</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <InputOnChange
@@ -497,7 +491,6 @@ const AccidentRate = () => {
                                 </FormProvider>
                             </Grid>
                         </Grid>
-
                     </SubCard>
                 </Grid>
 
@@ -530,7 +523,7 @@ const AccidentRate = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Datos complementarios</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos Complementarios</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
@@ -645,36 +638,31 @@ const AccidentRate = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-
                         </Grid>
 
-
                         <Grid item xs={12} sx={{ pt: 2 }}>
-                                <MainCard title="Registro fotográfico">
-
-                                    <Grid container spacing={12}>
-                                        <Grid textAlign="center" item xs={12}>
-                                            <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                                SUBIR REGISTRO EN PDF
-                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                            </Button>
-                                        </Grid>
+                            <MainCard title="Registro Fotográfico">
+                                <Grid container spacing={12}>
+                                    <Grid textAlign="center" item xs={12}>
+                                        <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                            SUBIR REGISTRO EN PDF
+                                            <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                        </Button>
                                     </Grid>
+                                </Grid>
 
-                                    <Grid item xs={12} sx={{ pt: 4 }}>
-                                        {urlFile && (
-                                            <object type="application/pdf"
-                                                data={urlFile}
-                                                width="1180"
-                                                height="500"
-                                                onLoad={<Cargando />}
-                                            />
-                                        )}
-                                    </Grid>
-
-                                </MainCard>
-                            </Grid>
-
+                                <Grid item xs={12} sx={{ pt: 4 }}>
+                                    {urlFile && (
+                                        <object type="application/pdf"
+                                            data={urlFile}
+                                            width="1180"
+                                            height="500"
+                                            onLoad={<Cargando />}
+                                        />
+                                    )}
+                                </Grid>
+                            </MainCard>
+                        </Grid>
 
                         <Grid container spacing={2} sx={{ pt: 4 }}>
                             <Grid item xs={2}>
@@ -686,12 +674,12 @@ const AccidentRate = () => {
                             </Grid>
 
                             <Grid item xs={2}>
-                                            <AnimateButton>
-                                                <Button  disabled={resultData.length === 0 ? true : false}  variant="outlined" fullWidth onClick={handleClickReport}>
-                                                    {TitleButton.Imprimir}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
+                                <AnimateButton>
+                                    <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                        {TitleButton.Imprimir}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
 
                             <Grid item xs={2}>
 

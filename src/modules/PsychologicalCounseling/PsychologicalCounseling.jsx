@@ -215,7 +215,7 @@ const PsychologicalCounseling = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="Registrar asesoría psicológica"
+                        title="Registrar Asesoría Psicológica"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -285,7 +285,7 @@ const PsychologicalCounseling = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
+                    <SubCard darkTitle>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>

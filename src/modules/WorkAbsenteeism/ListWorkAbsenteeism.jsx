@@ -241,16 +241,13 @@ const ListWorkAbsenteeism = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
-    const [numeroDias, setNumeroDias] = useState(0);
 
     async function GetAll() {
         try {
             const lsServer = await GetAllWorkAbsenteeism(0, 0);
             setLsWorkAbsenteeism(lsServer.data.entities);
             setRows(lsServer.data.entities);
-        } catch (error) {
-
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -343,16 +340,14 @@ const ListWorkAbsenteeism = () => {
                 } else
                     setSelected([]);
             });
-        } catch (error) {
-
-        }
+        } catch (error) { }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsWorkAbsenteeism.length) : 0;
 
     return (
-        <MainCard title="Lista de Ausentismo Laboral" content={false}>
+        <MainCard title={<Typography variant='h4'>Lista De Ausentismo Laboral</Typography>} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>

@@ -457,6 +457,7 @@ const Employee = () => {
                                         <InputDatePicker
                                             label="Fecha de Nacimiento"
                                             name="fechaNaci"
+                                            bug={errors.fechaNaci}
                                         />
                                     </FormProvider>
                                 </Grid>

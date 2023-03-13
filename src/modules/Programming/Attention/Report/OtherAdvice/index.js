@@ -95,13 +95,13 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     /* DATOS DEL REGISTRO */
     doc.setFont("helvetica", "normal");
     doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 45, 30, 30);
-    doc.text(`${lsDataReport.documento}`, 75, 45);
-    doc.text(`${lsDataReport.nameCargo}`, 75, 50);
-    doc.text(`${lsDataReport.nameAfp}`, 75, 55);
-    doc.text(`${lsDataReport.nameSubarea}`, 75, 60);
-    doc.text(`${lsDataReport.nameSede}`, 75, 65);
-    doc.text(`${lsDataReport.nameTurno}`, 75, 70);
-    doc.text(`${lsDataReport.nameTelefono}`, 75, 75);
+    doc.text(`${lsDataReport.documento}`, 70, 45);
+    doc.text(`${lsDataReport.nameCargo}`, 70, 50);
+    doc.text(`${lsDataReport.nameAfp}`, 70, 55);
+    doc.text(`${lsDataReport.nameSubarea}`, 70, 60);
+    doc.text(`${lsDataReport.nameSede}`, 70, 65);
+    doc.text(`${lsDataReport.nameTurno}`, 70, 70);
+    doc.text(`${lsDataReport.nameTelefono}`, 70, 75);
 
     doc.text(`${lsDataReport.nameEmpleado}`, 155, 45);
     doc.text(`${ViewFormat(lsDataReport.fechaContrato)}`, 155, 50);

@@ -1,26 +1,25 @@
 import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { LocalizationProvider, MobileDatePicker } from "@mui/lab";
 import { Fragment } from 'react';
+import { FormatDate } from 'components/helpers/Format';
 
-const InputDatePick = ({ value, label, onChange, required, size, ...others }) => {
+const InputDatePick = ({ value, label, onChange, size, ...others }) => {
 
     return (
         <Fragment>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <MobileDatePicker
-                    label={label}
-                    inputFormat="dd/MM/yyyy"
-                    value={value}
-                    onChange={onChange}
-                    renderInput={(params) => <TextField size={size} {...params} fullWidth />}
-                    KeyboardButtonProps={{
-                        "aria-label": "change date"
-                    }}
-                    {...others}
-                />
-            </LocalizationProvider>
+            <TextField
+                id="fecha"
+                label={label}
+                value={FormatDate(value)}
+                onChange={onChange}
+                type="date"
+                size={size}
+                InputLabelProps={{
+                    shrink: true
+                }}
+                fullWidth
+                {...others}
+            />
         </Fragment>
     );
 };

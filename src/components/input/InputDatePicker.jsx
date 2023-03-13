@@ -1,37 +1,44 @@
 import PropTypes from 'prop-types';
 import { Controller } from 'react-hook-form';
 import {
+    FormHelperText,
+    Grid,
     TextField,
 } from '@mui/material';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { Fragment } from 'react';
+import { FormatDate } from 'components/helpers/Format';
 
-const InputDatePicker = ({ label, name, defaultValue, size, ...others }) => {
+const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) => {
 
     return (
-        <>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Controller
-                    name={name}
-                    defaultValue={defaultValue}
-                    render={({ field }) => (
-                        <MobileDatePicker
-                            mask="__/__/____"
-                            onChange={(newValue) => field.onChange(newValue)}
-                            value={field.value}
-                            label={label}
-                            inputFormat="dd/MM/yyyy"
-                            renderInput={(params) => <TextField {...params} fullWidth />}
-                            KeyboardButtonProps={{
-                                "aria-label": "change date"
-                            }}
-                            {...others}
-                        />
-                    )}
-                />
-            </LocalizationProvider>
-        </>
+        <Fragment>
+            <Controller
+                name={name}
+                defaultValue={FormatDate(defaultValue)}
+                render={({ field }) => (
+                    <TextField
+                        {...field}
+                        id="fecha"
+                        label={label}
+                        type="date"
+                        size={size}
+                        InputLabelProps={{
+                            shrink: true,
+                            className: bug ? 'required-label' : '',
+                            required: bug || false
+                        }}
+                        error={bug ? true : false}
+                        fullWidth
+                        {...others}
+                    />
+                )}
+            />
+            {bug && (
+                <Grid item xs={12}>
+                    <FormHelperText error>{bug.message}</FormHelperText>
+                </Grid>
+            )}
+        </Fragment>
     );
 };
 

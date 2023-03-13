@@ -850,7 +850,7 @@ const OccupationalExamination = () => {
                                     <InputDatePicker
                                         label="Fecha"
                                         name="fecha"
-                                        defaultValue={new Date()}
+                                        defaultValue={FormatDate(new Date())}
                                     />
                                 </FormProvider>
                             </Grid>

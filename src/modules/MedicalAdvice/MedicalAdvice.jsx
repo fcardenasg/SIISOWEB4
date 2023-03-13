@@ -341,7 +341,6 @@ const MedicalAdvice = () => {
             </DialogFormula>
 
             <Fragment>
-
                 <UpdateAttMedicalAdvice setUserEdit={setUserEdit} userEdit={userEdit}>
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
@@ -356,7 +355,7 @@ const MedicalAdvice = () => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <SubCard darkTitle title={<Typography variant="h4">Registrar La  atención</Typography>}>
+                                <SubCard darkTitle title={<Typography variant="h4">Registrar La Atención</Typography>}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6}>
                                             <FormProvider {...methods}>
@@ -414,7 +413,7 @@ const MedicalAdvice = () => {
                                         }
 
                                         <Grid item xs={12}>
-                                            <SubCard darkTitle title={<Typography variant="h4">Descripción De La consulta</Typography>}>
+                                            <SubCard darkTitle title={<Typography variant="h4">Descripción De La Consulta</Typography>}>
                                                 <Grid item xs={12}>
                                                     <FormProvider {...methods}>
                                                         <InputText

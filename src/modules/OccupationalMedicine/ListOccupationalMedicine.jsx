@@ -188,7 +188,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -227,9 +227,7 @@ const ListOccupationalMedicine = () => {
             const lsServer = await GetAllOccupationalMedicine(0, 0);
             setOccupationalMedicine(lsServer.data.entities);
             setRows(lsServer.data.entities);
-        } catch (error) {
-
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -330,8 +328,9 @@ const ListOccupationalMedicine = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - occupationalMedicine.length) : 0;
 
     return (
-        <MainCard title="Lista de Medicina Laboral" content={false}>
+        <MainCard title={<Typography variant='h4'>Lista De Medicina Laboral</Typography>} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -370,7 +369,6 @@ const ListOccupationalMedicine = () => {
             </CardContent>
 
             <TableContainer>
-                {/* AQUÍ SE HACE PRELOAD */}
                 {occupationalMedicine.length === 0 ? <Cargando size={220} myy={6} /> :
 
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
