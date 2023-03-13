@@ -12,11 +12,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import ViewEmployee from 'components/views/ViewEmployee';
-import { PostWorkAbsenteeism, PutWorkAbsenteeism } from 'formatdata/WorkAbsenteeismForm';
+import { PutWorkAbsenteeism } from 'formatdata/WorkAbsenteeismForm';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate, NumeroDias } from 'components/helpers/Format';
-import { GetAllWorkAbsenteeismNumeroDia, GetByIdWorkAbsenteeism, InsertWorkAbsenteeism, UpdateWorkAbsenteeisms } from 'api/clients/WorkAbsenteeismClient';
+import { GetAllWorkAbsenteeismNumeroDia, GetByIdWorkAbsenteeism, UpdateWorkAbsenteeisms } from 'api/clients/WorkAbsenteeismClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
@@ -31,12 +31,11 @@ import UserCountCard from 'ui-component/cards/UserCountCard';
 import AccountCircleTwoTone from '@mui/icons-material/AccountCircleTwoTone';
 import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { MessageError, MessageSuccess, MessageUpdate } from 'components/alert/AlertAll';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import Accordion from 'components/accordion/Accordion';
 import HistoryWorkAbsenteeism from './HistoryWorkAbsenteeism';
 import Cargando from 'components/loading/Cargando';
-import MainCard from 'ui-component/cards/MainCard';
 
 const WorkAbsenteeism = () => {
     const theme = useTheme();
@@ -59,12 +58,12 @@ const WorkAbsenteeism = () => {
     const [textoDx, setTextoDx] = useState('');
     const [lsCIE11, setLsCIE11] = useState([]);
 
-    const [tipoSoporte, setTipoSoporte] = useState('');
-    const [diasSinLaborar, setDiasSinLaborar] = useState('');
+    const [tipoSoporte, setTipoSoporte] = useState(undefined);
+    const [diasSinLaborar, setDiasSinLaborar] = useState(0);
     const [numeroDias, setNumeroDias] = useState(0);
-    const [departa, setDeparta] = useState('');
+    const [departa, setDeparta] = useState(undefined);
     const [lsDeparta, setLsDeparta] = useState([]);
-    const [departamentoIPS, setDepartaMedico] = useState('');
+    const [departamentoIPS, setDepartaMedico] = useState(undefined);
     const [catalogoIncapacidad, setCatalogoIncapacidad] = useState('');
     const [municipioControl, setMunicipioControl] = useState('');
     const [municipioDatosMedico, setMunicipioDatosMedico] = useState('');
@@ -85,15 +84,13 @@ const WorkAbsenteeism = () => {
     const [lsCatalogoDatosInca, setLsCatalogoDatosInca] = useState([]);
     const [lsCumplimientoRequisito, setLsCumplimientoRequisito] = useState([]);
 
-    const [fechaExpedicion, setFechaExpedicion] = useState(new Date());
+    const [fechaExpedicion, setFechaExpedicion] = useState(null);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
     const [fechaModifica, setFechaModifica] = useState(new Date());
 
     const methods = useForm();
     const { handleSubmit, errors, reset } = methods;
-    /* { resolver: yupResolver(validationSchema) } */
-
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -340,7 +337,9 @@ const WorkAbsenteeism = () => {
                 const result = await UpdateWorkAbsenteeisms(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
-                    reset();
+
+                    const numeroDias = await GetAllWorkAbsenteeismNumeroDia(documento);
+                    setNumeroDias(numeroDias.data);
                 } else {
                     setErrorMessage(Message.RegistroNoGuardado);
                     setOpenError(true);
@@ -410,7 +409,7 @@ const WorkAbsenteeism = () => {
                                     <InputDatePick
                                         label="Fecha de Expedición"
                                         value={fechaExpedicion}
-                                        onChange={(e) => setFechaExpedicion(e)}
+                                        onChange={(e) => setFechaExpedicion(e.target.value)}
                                     />
                                 </Grid>
 
@@ -486,9 +485,9 @@ const WorkAbsenteeism = () => {
                                         label="Fecha de Inicio"
                                         value={fechaInicio}
                                         onChange={(e) => {
-                                            setFechaInicio(e);
+                                            setFechaInicio(e.target.value);
                                             if (fechaFin) {
-                                                var result = NumeroDias(e, fechaFin);
+                                                var result = NumeroDias(e.target.value, fechaFin);
                                                 setDiasSinLaborar(result);
                                             }
                                         }}
@@ -500,9 +499,9 @@ const WorkAbsenteeism = () => {
                                         label="Fecha Fin"
                                         value={fechaFin}
                                         onChange={(e) => {
-                                            setFechaFin(e);
+                                            setFechaFin(e.target.value);
                                             if (fechaInicio) {
-                                                var result = NumeroDias(fechaInicio, e);
+                                                var result = NumeroDias(fechaInicio, e.target.value);
                                                 setDiasSinLaborar(result);
                                             }
                                         }}
@@ -806,7 +805,7 @@ const WorkAbsenteeism = () => {
                                         label="Fecha de Modificicación"
                                         value={fechaModifica}
                                         disabled
-                                        onChange={(e) => setFechaModifica(e)}
+                                        onChange={(e) => setFechaModifica(e.target.value)}
                                     />
                                 </Grid>
                             </Grid >

@@ -138,7 +138,6 @@ EnhancedTableHead.propTypes = {
 };
 
 const HistoryWorkAbsenteeism = ({ documento }) => {
-    const dispatch = useDispatch();
     const [lsTemplate, setLsHistorialAusentismo] = useState([]);
 
     const theme = useTheme();

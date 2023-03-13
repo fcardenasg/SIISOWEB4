@@ -6,6 +6,7 @@ import {
     TextField,
 } from '@mui/material';
 import { Fragment } from 'react';
+import { FormatDate } from 'components/helpers/Format';
 
 const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) => {
 
@@ -13,7 +14,7 @@ const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) =>
         <Fragment>
             <Controller
                 name={name}
-                defaultValue={defaultValue}
+                defaultValue={FormatDate(defaultValue)}
                 render={({ field }) => (
                     <TextField
                         {...field}

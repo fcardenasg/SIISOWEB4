@@ -10,7 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import useAuth from 'hooks/useAuth';
-import { MessageError, MessageSuccess, MessageUpdate } from 'components/alert/AlertAll';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import InputText from 'components/input/InputText';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
@@ -216,7 +216,7 @@ const UpdatePsychologicalCounseling = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Actualizar asesoría psicológica"
+                            title="Actualizar Asesoría Psicológica"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -227,7 +227,7 @@ const UpdatePsychologicalCounseling = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Registrar La Atención</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
@@ -291,7 +291,7 @@ const UpdatePsychologicalCounseling = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">NOTA</Typography>}>
+                        <SubCard darkTitle>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>

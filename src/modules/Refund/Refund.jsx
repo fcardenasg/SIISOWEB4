@@ -13,7 +13,6 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import * as yup from 'yup';
 import Transitions from 'ui-component/extended/Transitions';
 import InputOnChange from 'components/input/InputOnChange';
 import InputDatePick from 'components/input/InputDatePick';
@@ -29,7 +28,7 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { CodCatalogo } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
@@ -60,8 +59,8 @@ const Refund = () => {
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
 
-    const [fechaFin, setFechaFin] = useState(undefined);
-    const [fechaInicio, setFechaInicio] = useState(undefined);
+    const [fechaFin, setFechaFin] = useState(null);
+    const [fechaInicio, setFechaInicio] = useState(null);
 
     const [numeroDia, setNumeroDia] = useState(0);
     const [documento, setDocumento] = useState('');
@@ -85,7 +84,7 @@ const Refund = () => {
     const [textDx2, setTextDx2] = useState('');
 
     const methods = useForm();
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
     const handleDocumento = async (event) => {
         try {
@@ -528,7 +527,7 @@ const Refund = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Concepto de Reintegro Ocupacional</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Concepto De Reintegro Ocupacional</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={8}>
                                 <FormProvider {...methods}>
@@ -547,7 +546,7 @@ const Refund = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Datos de Reubicación</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos De Reubicación</Typography>}>
                         <Grid container spacing={3}>
                             <Grid item xs={6}>
                                 <FormProvider {...methods}>
@@ -634,7 +633,7 @@ const Refund = () => {
                                                 <InputDatePicker
                                                     label="Fecha Inicio"
                                                     name="fechaInicioHorario"
-                                                    defaultValue={new Date()}
+                                                    defaultValue={null}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -644,7 +643,7 @@ const Refund = () => {
                                                 <InputDatePicker
                                                     label="Fecha Fin"
                                                     name="fechaFinHorario"
-                                                    defaultValue={new Date()}
+                                                    defaultValue={null}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -670,7 +669,7 @@ const Refund = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Lista de Chequeo</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Lista De Chequeo</Typography>}>
 
                         <Transitions type="collapse" in={viewListRefund} position="top-left" direction="up">
                             <CheckListRefund idReintegro={resultData.id} />

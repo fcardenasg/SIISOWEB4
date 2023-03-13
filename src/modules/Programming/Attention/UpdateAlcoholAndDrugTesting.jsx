@@ -7,8 +7,9 @@ import {
     Divider,
 } from '@mui/material';
 
-import { GetByIdAttention, UpdateAttentions, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
-import { PutAttention, PutEstadoAtencion } from 'formatdata/AttentionForm';
+import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
+import { PutEstadoAtencion } from 'formatdata/AttentionForm';
+
 import swal from 'sweetalert';
 import { ParamCloseCase } from 'components/alert/AlertAll';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -252,7 +253,7 @@ const UpdateAlcoholAndDrugTesting = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -317,7 +318,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={new Date()}
+                                            defaultValue={FormatDate(new Date())}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>

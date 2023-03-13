@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
 import { Fragment } from 'react';
+import { FormatDate } from 'components/helpers/Format';
 
 const InputDatePick = ({ value, label, onChange, size, ...others }) => {
 
@@ -9,8 +10,8 @@ const InputDatePick = ({ value, label, onChange, size, ...others }) => {
             <TextField
                 id="fecha"
                 label={label}
-                value={value}
-                onChange={onChange} 
+                value={FormatDate(value)}
+                onChange={onChange}
                 type="date"
                 size={size}
                 InputLabelProps={{
@@ -18,7 +19,7 @@ const InputDatePick = ({ value, label, onChange, size, ...others }) => {
                 }}
                 fullWidth
                 {...others}
-            />  
+            />
         </Fragment>
     );
 };

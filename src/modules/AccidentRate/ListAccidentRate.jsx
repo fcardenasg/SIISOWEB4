@@ -323,8 +323,9 @@ const ListAccidentRate = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsAccidentRate.length) : 0;
 
     return (
-        <MainCard title="Lista de Accidentes de Trabajo" content={false}>
+        <MainCard title={<Typography variant="h4">Lista De Accidentes De Trabajo</Typography>} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>

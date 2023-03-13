@@ -78,27 +78,24 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     /* TITULOS DE CONTENIDO */
     doc.setFontSize(8);
 
-doc.text('DOCUMENTO:', 42, 45);
-doc.text('ROSTER POSITION:', 42, 50);
-doc.text('GENERO:', 42, 55);
-doc.text('EPS:', 42, 60);
-doc.text('SEDE:', 42, 65);
-doc.text('CELULAR:', 42, 70);
-doc.text('DEPARTAMENTO DE RESIDENCIA:', 42, 75);
+    doc.text('DOCUMENTO:', 42, 45);
+    doc.text('ROSTER POSITION:', 42, 50);
+    doc.text('GENERO:', 42, 55);
+    doc.text('EPS:', 42, 60);
+    doc.text('SEDE:', 42, 65);
+    doc.text('CELULAR:', 42, 70);
+    doc.text('DEPARTAMENTO DE RESIDENCIA:', 42, 75);
 
-doc.text('NOMBRES:', 120, 45);
-doc.text('DEPARTAMENTO:', 120, 50);
-doc.text('EDAD:', 120, 55);
-doc.text('AFP:', 120, 60);
-doc.text('ÁREA:', 120, 65);
-doc.text('EMAIL:', 120, 70);
-doc.text('MUNICIPIO DE RESIDENCIA:', 120, 75);
+    doc.text('NOMBRES:', 120, 45);
+    doc.text('DEPARTAMENTO:', 120, 50);
+    doc.text('EDAD:', 120, 55);
+    doc.text('AFP:', 120, 60);
+    doc.text('ÁREA:', 120, 65);
+    doc.text('EMAIL:', 120, 70);
+    doc.text('MUNICIPIO DE RESIDENCIA:', 120, 75);
 
-doc.text('TIPO DE ASESORIA:', 42, 85);
-///////////////////////////////////////////////////////////
-
-
-
+    doc.text('TIPO DE ASESORIA:', 70, 85);
+    ///////////////////////////////////////////////////////////
 
 
     /* DATOS DEL REGISTRO */
@@ -113,30 +110,29 @@ doc.text('TIPO DE ASESORIA:', 42, 85);
     doc.text(`${lsDataReport.nameDptoResidencia}`, 91, 75);
 
 
-
     doc.text(`${lsDataReport.nameEmpleado}`, 150, 45);
     doc.text(`${lsDataReport.nameDepartamento}`, 150, 50);
-    
+
     doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 150, 55);
-    doc.text(" AÑO", 154, 55);
+    doc.text("AÑO", 154, 55);
 
     doc.text(`${lsDataReport.nameAfp}`, 150, 60);
     doc.text(`${lsDataReport.nameArea}`, 150, 65);
     doc.text(`${lsDataReport.nameCorreo}`, 150, 70);
     doc.text(`${lsDataReport.nameCiudadResidencia}`, 160, 75);
-    doc.text(`${lsDataReport.nameTipoAsesoria}`, 70, 85);
+    doc.text(`${lsDataReport.nameTipoAsesoria}`, 100, 85);
 
     /* INFORMACIÓN DE ASESORÍA */
     doc.setFontSize(8);
     doc.text(`CONSECUTIVO NRO: ${lsDataReport.id}`, 7, 95);
-    doc.text(`FECHA: ${ViewFormat(lsDataReport.fecha)}`, 50, 95);
+    doc.text(`FECHA: ${ViewFormat(lsDataReport.fecha)}`, 75, 95);
 
     doc.setFontSize(8);
-    doc.text('MOTIVO:', 120, 85);
+    doc.text('MOTIVO:', 145, 85);
     doc.text(`${lsDataReport.nameMotivo}`, 160, 85);
     doc.setFontSize(8);
-    doc.text('SUBMOTIVO:', 120, 95);
-    doc.text(`${lsDataReport.nameSubmotivo}`, 160, 95);
+    doc.text('SUBMOTIVO:', 145, 95);
+    doc.text(`${lsDataReport.nameSubmotivo}`, 165, 95);
 
 
     /* DESCRIPCIONES DE TEXTO */
@@ -145,7 +141,7 @@ doc.text('TIPO DE ASESORIA:', 42, 85);
     doc.setFontSize(7);
     doc.text(`${lsDataReport.recomendaciones}`, 7, 212, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-    getFirma(doc, lsDataUser,24)
+    getFirma(doc, lsDataUser, 24)
 }
 
 export function generateReport(lsDataReport = [], lsDataUser) {

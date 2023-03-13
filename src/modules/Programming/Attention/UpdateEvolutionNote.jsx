@@ -19,8 +19,8 @@ import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
-import { GetByIdAttention, UpdateAttentions, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
-import { PutAttention, PutEstadoAtencion } from 'formatdata/AttentionForm';
+import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
+import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
@@ -82,7 +82,7 @@ const validateLastData = (data, tipoCampo = "bool") => {
     } else if (tipoCampo === "date") {
         if (data === null)
             return null;
-        else return data;
+        else return FormatDate(data);
 
     } else if (tipoCampo === "number") {
         if (data === undefined) {

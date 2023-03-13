@@ -14,13 +14,17 @@ const FormatDate = (date) => {
     }
 }
 
-const ViewFormat = (fecha = new Date()) => {
+const ViewFormat = (fecha) => {
     try {
-        let day = `${(new Date(fecha).getDate())}`.padStart(2, '0');
-        let month = `${(new Date(fecha).getMonth() + 1)}`.padStart(2, '0');
-        let year = new Date(fecha).getFullYear();
+        if (fecha === null) {
+            return "";
+        } else {
+            let day = `${(new Date(fecha).getDate())}`.padStart(2, '0');
+            let month = `${(new Date(fecha).getMonth() + 1)}`.padStart(2, '0');
+            let year = new Date(fecha).getFullYear();
 
-        return `${day}/${month}/${year}`;
+            return `${day}/${month}/${year}`;
+        }
     } catch (error) { }
 }
 
@@ -1380,7 +1384,7 @@ function FrLdl_FrRelacion(hdl = 0, colesterol = 0, triglicerios = 0) {
 
 function NumeroDias(fechaInicio, fechaFin) {
     try {
-        if (fechaInicio !== undefined && fechaFin !== undefined) {
+        if (fechaInicio !== null && fechaFin !== null) {
             let fechaIni = new Date(fechaInicio);
             let fechaFinn = new Date(fechaFin);
 

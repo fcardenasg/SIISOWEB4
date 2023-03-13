@@ -188,7 +188,7 @@ const UpdatePsychological = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -258,7 +258,7 @@ const UpdatePsychological = () => {
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={lsAtencion.fecha}
+                                            defaultValue={FormatDate(lsAtencion.fecha)}
                                         />
                                     </FormProvider>
                                 </Grid>

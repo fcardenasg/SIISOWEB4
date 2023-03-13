@@ -332,7 +332,7 @@ const Attention = () => {
 
     const handleClick = async (datos) => {
         try {
-            const motivoFinal = motivo == '' ? datos.motivo : motivo;
+            const motivoFinal = motivo === undefined ? datos.motivo : motivo;
 
             const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, "", 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,

@@ -218,8 +218,6 @@ const MedicalAdvice = () => {
                 datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL, user.nameuser, FormatDate(new Date()),
                 '', FormatDate(new Date()));
 
-            console.log("Datos => ", DataToUpdate);
-
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
                     const result = await InsertAdvice(DataToUpdate);

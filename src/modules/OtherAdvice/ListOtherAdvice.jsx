@@ -229,7 +229,7 @@ const ListOtherAdvice = () => {
             setMedicalAdvice(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            
+
         }
     }
 
@@ -326,7 +326,7 @@ const ListOtherAdvice = () => {
             setSelected([]);
             getAll();
         } catch (error) {
-            
+
         }
     }
 
@@ -334,7 +334,7 @@ const ListOtherAdvice = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medicalAdvice.length) : 0;
 
     return (
-        <MainCard title={<Typography variant="h4">LISTA DE OTRAS ASESORÍAS</Typography>} content={false}>
+        <MainCard title={<Typography variant="h4">Lista De Otras Asesorías</Typography>} content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>

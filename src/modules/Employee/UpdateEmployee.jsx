@@ -526,7 +526,7 @@ const UpdateEmployee = () => {
                                             <InputDatePicker
                                                 label="Fecha de Nacimiento"
                                                 name="fechaNaci"
-                                                defaultValue={employee.fechaNaci}
+                                                defaultValue={FormatDate(employee.fechaNaci)}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -591,7 +591,7 @@ const UpdateEmployee = () => {
                                     <InputDatePicker
                                         label="Fecha de Contrato"
                                         name="fechaContrato"
-                                        defaultValue={employee.fechaContrato}
+                                        defaultValue={FormatDate(employee.fechaContrato)}
                                     />
                                 </FormProvider>
                             </Grid>
