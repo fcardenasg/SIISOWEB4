@@ -2616,6 +2616,7 @@ const Emo = ({
                                                 name="tactoVaginalEF"
                                                 size={30}
                                                 defaultValue={() => validateLastData(lsLastRecord.tactoVaginalEF)}
+                                                disabled={lsEmployee.genero === DefaultValue.GeneroWomen ? false : true}
                                             />
                                         </FormProvider>
                                     </Grid>

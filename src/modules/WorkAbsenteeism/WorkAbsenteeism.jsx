@@ -289,7 +289,6 @@ const WorkAbsenteeism = () => {
                 const result = await InsertWorkAbsenteeism(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
-                    reset();
                 } else {
                     setErrorMessage(Message.RegistroNoGuardado);
                     setOpenError(true);
@@ -426,7 +425,7 @@ const WorkAbsenteeism = () => {
                                     label="Fecha Fin"
                                     value={fechaFin}
                                     onChange={(e) => {
-                                        setFechaFin(e);
+                                        setFechaFin(e.target.value);
                                         if (fechaInicio) {
                                             var result = NumeroDias(fechaInicio, e.target.value);
                                             setDiasSinLaborar(result);
@@ -693,7 +692,7 @@ const WorkAbsenteeism = () => {
                                     label="Fecha de Modificicación"
                                     value={fechaModifica}
                                     disabled
-                                    onChange={(e) => setFechaModifica(e)}
+                                    onChange={(e) => setFechaModifica(e.target.value)}
                                 />
                             </Grid>
                         </Grid>

@@ -579,7 +579,7 @@ const Refund = () => {
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
-                                            label="Inicio de Restricción"
+                                            label="Inicio de Reubicación"
                                             name="inicioReubicacion"
                                             defaultValue={lsRefund.inicioReubicacion}
                                         />
@@ -589,7 +589,7 @@ const Refund = () => {
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
-                                            label="Fin de Restricción"
+                                            label="Fin de Reubicación"
                                             name="finReubicacion"
                                             defaultValue={lsRefund.finReubicacion}
                                         />

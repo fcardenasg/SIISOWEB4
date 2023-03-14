@@ -125,7 +125,7 @@ const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdersIndivi
 const UpdateOrdersIndividual = Loadable(lazy(() => import('modules/Orders/UpdateOrdersIndividual')));
 
 const OccupationalExaminationProgra = Loadable(lazy(() => import('modules/Programming/Attention/OccupationalExamination/OccupationalExamination')));
-const UpdateClinicHistory = Loadable(lazy(() => import('modules/Programming/Attention/UpdateClinicHistory')));
+const UpdateClinicHistory = Loadable(lazy(() => import('modules/Programming/Attention/ClinicHistory/UpdateClinicHistory')));
 const UpdateEvolutionNoteProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateEvolutionNote')));
 const UpdatePsychological = Loadable(lazy(() => import('modules/Programming/Attention/UpdatePsychological')));
 const UpdateOthersAdvice = Loadable(lazy(() => import('modules/Programming/Attention/UpdateOtherAdvice')));

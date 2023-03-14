@@ -327,6 +327,8 @@ export const Message = {
     ErrorNoHayDatos: 'No hay datos buscados, vuelva a intentarlo',
 
     CampoRequerido: 'Este campo es requerido',
+
+    
 }
 
 export const optionsDate = {

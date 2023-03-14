@@ -478,6 +478,7 @@ const UpdateNoteInfirmary = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
+                            title="Nota De Enfermería"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -488,7 +489,7 @@ const UpdateNoteInfirmary = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Registrar la atención</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Registrar La Atención</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
@@ -528,7 +529,7 @@ const UpdateNoteInfirmary = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">PROCEDIMIENTO</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Procedimiento</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <InputMultiSelects

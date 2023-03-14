@@ -300,7 +300,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title='PRUEBAS DE ALCOHOL Y DROGAS'
+                            title="Pruebas De Alcohol Y Drogas"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

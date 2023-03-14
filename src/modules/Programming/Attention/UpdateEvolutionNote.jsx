@@ -105,7 +105,7 @@ const DetailIcons = [
     { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
 
     { title: 'Historial De Historia Clínica', icons: <MedicalInformationIcon fontSize="small" /> },
-    { title: 'Historial De Notas De Evolición', icons: <MedicalServicesIcon fontSize="small" /> },
+    { title: 'Historial De Nota De Evolución', icons: <MedicalServicesIcon fontSize="small" /> },
 ]
 
 const dataMedicalOrders = [
@@ -548,7 +548,7 @@ const UpdateEvolutionNote = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="NOTA DE EVOLUCIÓN"
+                            title="Nota De Evolución"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

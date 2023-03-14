@@ -8,19 +8,19 @@ import {
 import swal from 'sweetalert';
 import { ParamCloseCase } from 'components/alert/AlertAll';
 
-import HoverSocialCard from './OccupationalExamination/Framingham/HoverSocialCard';
+import HoverSocialCard from '../OccupationalExamination/Framingham/HoverSocialCard';
 import ControlModal from 'components/controllers/ControlModal';
 import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
-import { GetByIdAttention, UpdateAttentions, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
-import { PutAttention, PutEstadoAtencion } from 'formatdata/AttentionForm';
+import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
+import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 
-import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
-import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
-import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
-import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
+import ListMedicalFormula from '../OccupationalExamination/MedicalOrder/ListMedicalFormula';
+import MedicalFormula from '../OccupationalExamination/MedicalOrder/MedicalFormula';
+import UpdateMedicalFormula from '../OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
+import DialogFormula from '../OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 
 import ViewEmployee from 'components/views/ViewEmployee';
@@ -40,7 +40,7 @@ import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -50,7 +50,7 @@ import { GetByIdMedicalHistory, GetIdRegistroAtencionMedicalHistory, InsertMedic
 import Cargando from 'components/loading/Cargando';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReportClinicHistory } from './Report/ClinicHistory';
+import { generateReportClinicHistory } from '../Report/ClinicHistory';
 import ViewPDF from 'components/components/ViewPDF';
 import InputOnChange from 'components/input/InputOnChange';
 import ListExamenesPara from 'components/template/ListExamenesPara';
@@ -61,6 +61,7 @@ import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import HistoryIcon from '@mui/icons-material/History';
 import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
+import AccidentRate from './AccidentRate';
 
 const validateLastData = (data, tipoCampo = "bool") => {
     if (tipoCampo === "bool") {
@@ -138,6 +139,7 @@ const UpdateClinicHistory = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [openRegistrarAT, setOpenRegistrarAT] = useState(false);
     const [resultIdRegistroAtencion, setResultIdRegistroAtencion] = useState(false);
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
@@ -311,36 +313,85 @@ const UpdateClinicHistory = () => {
                 label: item.nombre
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
-
-
-            const lsServerAtencion = await GetByIdAttention(id);
-            if (lsServerAtencion.status === 200) {
-                setDocumento(lsServerAtencion.data.documento);
-                handleLoadingDocument(lsServerAtencion.data.documento);
-                setLsAtencion(lsServerAtencion.data);
-
-                const lsServerValidate = await ValidateIdRegistroAtencionMedicalHistory(id);
-                if (lsServerValidate.status === 200) {
-                    setResultIdRegistroAtencion(lsServerValidate.data);
-                }
-
-                if (lsServerValidate.data) {
-                    const lsServerDataUpdate = await GetIdRegistroAtencionMedicalHistory(id);
-                    setLsAtencion(lsServerDataUpdate.data);
-                    setResultData(lsServerDataUpdate.data.id);
-
-                    if (lsServerDataUpdate.data.idContingencia !== DefaultValue.SINREGISTRO_GLOBAL) {
-                        setContingencia(lsServerDataUpdate.data.idContingencia);
-                    }
-                } else {
-                    setLsAtencion(lsServerAtencion.data);
-                }
-            }
         } catch (error) { }
     }
 
     useEffect(() => {
         getAll();
+    }, []);
+
+    useEffect(() => {
+        async function getAllData() {
+            try {
+                const lsServerAtencion = await GetByIdAttention(id);
+                if (lsServerAtencion.status === 200) {
+                    setDocumento(lsServerAtencion.data.documento);
+                    handleLoadingDocument(lsServerAtencion.data.documento);
+                    setLsAtencion(lsServerAtencion.data);
+
+                    const lsServerValidate = await ValidateIdRegistroAtencionMedicalHistory(id);
+                    if (lsServerValidate.status === 200) {
+                        setResultIdRegistroAtencion(lsServerValidate.data);
+                    }
+
+                    if (lsServerValidate.data) {
+                        const lsServerDataUpdate = await GetIdRegistroAtencionMedicalHistory(id);
+                        setLsAtencion(lsServerDataUpdate.data);
+                        setResultData(lsServerDataUpdate.data.id);
+
+                        if (lsServerDataUpdate.data.dx1 !== "") {
+                            var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerDataUpdate.data.dx1);
+
+                            if (lsServerCie11.status === 200) {
+                                var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                                    value: item.id,
+                                    label: item.dx
+                                }));
+                                setLsDx1(resultCie11);
+                            }
+
+                            setTextDx1(lsServerDataUpdate.data.dx1);
+                        }
+
+                        if (lsServerDataUpdate.data.dx2 !== "") {
+                            var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerDataUpdate.data.dx2);
+
+                            if (lsServerCie11.status === 200) {
+                                var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                                    value: item.id,
+                                    label: item.dx
+                                }));
+                                setLsDx2(resultCie11);
+                            }
+
+                            setTextDx2(lsServerDataUpdate.data.dx2);
+                        }
+
+                        if (lsServerDataUpdate.data.dx3 !== "") {
+                            var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerDataUpdate.data.dx3);
+
+                            if (lsServerCie11.status === 200) {
+                                var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                                    value: item.id,
+                                    label: item.dx
+                                }));
+                                setLsDx3(resultCie11);
+                            }
+
+                            setTextDx3(lsServerDataUpdate.data.dx3);
+                        }
+
+                        if (lsServerDataUpdate.data.idContingencia !== DefaultValue.SINREGISTRO_GLOBAL) {
+                            setContingencia(lsServerDataUpdate.data.idContingencia);
+                        }
+                    } else {
+                        setLsAtencion(lsServerAtencion.data);
+                    }
+                }
+            } catch (error) { }
+        }
+
+        getAllData();
     }, [id]);
 
     const handleClickReport = async () => {
@@ -420,6 +471,14 @@ const UpdateClinicHistory = () => {
                 handleClose={() => setOpenTemplate(false)}
             >
                 <ListPlantillaAll />
+            </FullScreenDialog>
+
+            <FullScreenDialog
+                open={openRegistrarAT}
+                title=""
+                handleClose={() => setOpenRegistrarAT(false)}
+            >
+                <AccidentRate documentoAT={documento} />
             </FullScreenDialog>
 
             <FullScreenDialog
@@ -531,7 +590,7 @@ const UpdateClinicHistory = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="HISTORIA CLÍNICA"
+                            title="Historia Clínica"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -559,7 +618,7 @@ const UpdateClinicHistory = () => {
                                                     <InputDatePicker
                                                         label="Fecha"
                                                         name="fecha"
-                                                        defaultValue={() => validateLastData(lsAtencion.fecha, "date")}
+                                                        defaultValue={new Date()}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -830,7 +889,7 @@ const UpdateClinicHistory = () => {
                                                         <InputSelect
                                                             name="dx1"
                                                             label="Dx1"
-                                                            defaultValue=""
+                                                            defaultValue={() => validateLastData(lsAtencion.dx1, "number")}
                                                             options={lsDx1}
                                                             size={matchesXS ? 'small' : 'medium'}
                                                         />
@@ -851,7 +910,7 @@ const UpdateClinicHistory = () => {
                                                         <InputSelect
                                                             name="dx2"
                                                             label="Dx2"
-                                                            defaultValue=""
+                                                            defaultValue={() => validateLastData(lsAtencion.dx2, "number")}
                                                             options={lsDx2}
                                                             size={matchesXS ? 'small' : 'medium'}
                                                         />
@@ -872,7 +931,7 @@ const UpdateClinicHistory = () => {
                                                         <InputSelect
                                                             name="dx3"
                                                             label="Dx3"
-                                                            defaultValue=""
+                                                            defaultValue={() => validateLastData(lsAtencion.dx3, "number")}
                                                             options={lsDx3}
                                                             size={matchesXS ? 'small' : 'medium'}
                                                         />
@@ -951,6 +1010,14 @@ const UpdateClinicHistory = () => {
 
                                             <Grid item xs={2}>
                                                 <AnimateButton>
+                                                    <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => setOpenRegistrarAT(true)}>
+                                                        Registrar AT
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+
+                                            <Grid item xs={2}>
+                                                <AnimateButton>
                                                     <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
                                                         {TitleButton.Cancelar}
                                                     </Button>
@@ -972,7 +1039,6 @@ const UpdateClinicHistory = () => {
                     </Grid>
                 </Grid> : <Cargando />
             }
-
         </Fragment >
     );
 };

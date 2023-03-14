@@ -24,7 +24,7 @@ import Transitions from 'ui-component/extended/Transitions';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo } from 'components/helpers/Enums';
 import { FormProvider, useForm } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetAllByDocumentWorkHistory, DeleteWorkHistory, InsertWorkHistory } from 'api/clients/WorkHistoryClient';
@@ -37,7 +37,7 @@ import { FormatDate } from 'components/helpers/Format';
 import RowDLTD from './Row/RowDLTD';
 import RowCompany from './Row/RowCompany';
 
-import { GetAllByHistorico, GetAllByHistoricoCompany, GetDataExploracion } from 'api/clients/WorkHistoryRiskClient';
+import { GetDataExploracion } from 'api/clients/WorkHistoryRiskClient';
 import DataExposition from './DataExposition';
 import Accordion from 'components/accordion/Accordion';
 import { IconAffiliate } from '@tabler/icons';
@@ -373,7 +373,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                             <InputSelect
                                                 name="idCargo"
                                                 label="Cargo"
-                                                defaultValue=""
+                                                defaultValue={lsEmpleado.rosterPosition}
                                                 options={lsCargo}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}

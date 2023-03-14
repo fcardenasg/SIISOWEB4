@@ -7,8 +7,6 @@ import {
     Typography,
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +27,7 @@ import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
@@ -45,7 +43,7 @@ import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReport } from '../AccidentRate/ReporteAccidentRate';
+import { generateReport } from 'modules/AccidentRate/ReporteAccidentRate';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -54,7 +52,7 @@ const DetailIcons = [
     { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const AccidentRate = () => {
+const AccidentRate = ({ documentoAT }) => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
@@ -83,7 +81,6 @@ const AccidentRate = () => {
 
     const [lsDx1, setLsDx1] = useState([]);
     const [textDx1, setTextDx1] = useState('');
-
     const [lsDx2, setLsDx2] = useState([]);
     const [textDx2, setTextDx2] = useState('');
 
@@ -109,25 +106,17 @@ const AccidentRate = () => {
         }
     }
 
-    const handleDocumento = async (event) => {
+    const handleLoadingDocument = async (idEmployee) => {
         try {
-            setDocumento(event?.target.value);
-            if (event.key === 'Enter') {
-                if (event?.target.value != "") {
-                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee);
 
-                    if (lsServerEmployee.status === 200) {
-                        setLsEmployee(lsServerEmployee.data);
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
-                }
+            if (lsServerEmployee.status === 200) {
+                setLsEmployee(lsServerEmployee.data);
+                setDocumento(idEmployee);
             }
         } catch (error) {
             setLsEmployee([]);
-            setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -185,6 +174,8 @@ const AccidentRate = () => {
 
     async function getAll() {
         try {
+            await handleLoadingDocument(documentoAT);
+
             const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
             var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
                 value: item.id,
@@ -198,7 +189,6 @@ const AccidentRate = () => {
                 label: item.nombre
             }));
             setLsRegion(resultRegion);
-
 
             const lsServerClase = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CLASE_AT);
             var resultClase = lsServerClase.data.entities.map((item) => ({
@@ -321,11 +311,12 @@ const AccidentRate = () => {
                 <Grid item xs={12}>
                     <ViewEmployee
                         title="Registrar Accidente De Trabajo"
+                        disabled={true}
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
                         lsEmployee={lsEmployee}
-                        handleDocumento={handleDocumento}
+                        handleDocumento={handleLoadingDocument}
                     />
                 </Grid>
 

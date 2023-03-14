@@ -429,7 +429,7 @@ function generateExploracionMorfologica(doc = new jsPDF(), lsDataReport) {
   });
   doc.text(`${lsDataReport.regionAnalEF}`, marXR - 2, 175, { align: "right" });
   doc.text(`${lsDataReport.tactoRectalEF}`, marXR - 2, 180, { align: "right" });
-  doc.text(`${lsDataReport.tactoVaginalEF}`, marXR - 2, 185, {
+  doc.text(`${lsDataReport.nameGenero === 'FEMENINO' ? lsDataReport.tactoVaginalEF : 'NO APLICA'}`, marXR - 2, 185, {
     align: "right",
   });
   doc.text(`${lsDataReport.extremidadesSuperioresEF}`, marXR - 2, 190, {

@@ -331,7 +331,7 @@ const UpdateOtherAdvice = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Otras asesorías"
+                            title="Otras Asesorías"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

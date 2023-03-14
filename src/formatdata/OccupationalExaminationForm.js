@@ -133,10 +133,10 @@ export function PostOccupationalExamination(
 
     recoSintR = "",
 
-    parentesco1ANFA = DefaultValue.SINREGISTRO_GLOBAL, parentesco1ObserANFA = "",
-    parentesco2ANFA = DefaultValue.SINREGISTRO_GLOBAL, parentesco2ObserANFA = "",
-    parentesco3ANFA = DefaultValue.SINREGISTRO_GLOBAL, parentesco3ObserANFA = "",
-    parentesco4ANFA = DefaultValue.SINREGISTRO_GLOBAL, parentesco4ObserANFA = "",
+    parentesco1ANFA = 9537, parentesco1ObserANFA = "",
+    parentesco2ANFA = 9537, parentesco2ObserANFA = "",
+    parentesco3ANFA = 9537, parentesco3ObserANFA = "",
+    parentesco4ANFA = 9537, parentesco4ObserANFA = "",
     lateralidadExamenesFisico = DefaultValue.SINREGISTRO_GLOBAL
 ) {
     return {
@@ -343,10 +343,10 @@ export function PutOccupationalExamination(id,
 
     recoSintR = "",
 
-    parentesco1ANFA = DefaultValue.SINREGISTRO_GLOBAL, parentesco1ObserANFA = "",
-    parentesco2ANFA = DefaultValue.SINREGISTRO_GLOBAL, parentesco2ObserANFA = "",
-    parentesco3ANFA = DefaultValue.SINREGISTRO_GLOBAL, parentesco3ObserANFA = "",
-    parentesco4ANFA = DefaultValue.SINREGISTRO_GLOBAL, parentesco4ObserANFA = "",
+    parentesco1ANFA = 9537, parentesco1ObserANFA = "",
+    parentesco2ANFA = 9537, parentesco2ObserANFA = "",
+    parentesco3ANFA = 9537, parentesco3ObserANFA = "",
+    parentesco4ANFA = 9537, parentesco4ObserANFA = "",
     lateralidadExamenesFisico = DefaultValue.SINREGISTRO_GLOBAL
 ) {
     return {
