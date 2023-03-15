@@ -124,7 +124,7 @@ const ExportOccupationalHealth = () => {
                             <Grid item xs={12} md={6} lg={3}>
                                 <InputDatePick
                                     label="Fecha Inicio"
-                                    onChange={(e) => setFechaInicio(e)}
+                                    onChange={(e) => setFechaInicio(e.target.value)}
                                     value={fechaInicio}
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
@@ -133,12 +133,11 @@ const ExportOccupationalHealth = () => {
                             <Grid item xs={12} md={6} lg={3}>
                                 <InputDatePick
                                     label="Fecha Fin"
-                                    onChange={(e) => setFechaFin(e)}
+                                    onChange={(e) => setFechaFin(e.target.value)}
                                     value={fechaFin}
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
-
 
                             {tipoReporte === 'EXCEL1' ?
                                 <MedicionaLaboralExport

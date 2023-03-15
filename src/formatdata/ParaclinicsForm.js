@@ -17,9 +17,13 @@ export function PostParaclinics(idTipoParaclinico = "", documento = "", fecha = 
     observacionBilirrubinaDirecta = "", otalgiaAOP = false, otorreaAOP = false, otitisAOP = false, acufenosAOP = false, cirugiaAOP = false, vertigoAOP = false,
     farmacologicosAOP = false, luritoAOP = false, familiaresAOP = false, paralisisAOP = false, htaaop = false, tipoAcusiaAOP = false, diabetesAOP = false,
     expoRuidoAOP = false, anteceTraumaticosAOP = false, observacionAOP = "",
-    idEmpresaAO = DefaultValue.SINREGISTRO_GLOBAL, idCargoAO = DefaultValue.SINREGISTRO_GLOBAL, tiempoExpoAO = "", idProteccionAuditivaAO = DefaultValue.SINREGISTRO_GLOBAL,
+
+    idEmpresaAO = DefaultValue.SINREGISTRO_GLOBAL, 
+    
+    idCargoAO = DefaultValue.SINREGISTRO_GLOBAL, tiempoExpoAO = "", idProteccionAuditivaAO = DefaultValue.SINREGISTRO_GLOBAL,
     idSuministradaPorAO = DefaultValue.SINREGISTRO_GLOBAL, idUsoAO = DefaultValue.SINREGISTRO_GLOBAL, idOdcaeAUDIO = DefaultValue.SINREGISTRO_GLOBAL,
     idOdmtAUDIO = DefaultValue.SINREGISTRO_GLOBAL, idOicaeAUDIO = DefaultValue.SINREGISTRO_GLOBAL, idOimtAUDIO = DefaultValue.SINREGISTRO_GLOBAL,
+    
     idReposoAUDIO = false, dxAUDIO = "", idConductaAUDIO = DefaultValue.SINREGISTRO_GLOBAL, idCambioEPP = false, observacionAUDIO = "", url = "",
     usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {

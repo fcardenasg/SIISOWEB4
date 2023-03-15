@@ -82,25 +82,25 @@ const ViewExport = () => {
                     <SubCard title={<Typography variant="h4">EXPORTACIÓN</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => getAllAgain('SER03')} size="large" variant="outlined" color="success" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => getAllAgain('SER03')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.asesoria}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => getAllAgain('SER01')} size="large" variant="outlined" color="success" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => getAllAgain('SER01')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.atencion}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => getAllAgain('SER04')} size="large" variant="outlined" color="success" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => getAllAgain('SER04')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.emo}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={3}>
-                                <Button onClick={() => getAllAgain('SER02')} size="large" variant="outlined" color="success" fullWidth startIcon={<PrintIcon />}>
+                                <Button onClick={() => getAllAgain('SER02')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
                                     {Title.enfermeria}
                                 </Button>
                             </Grid>
@@ -140,7 +140,7 @@ const ViewExport = () => {
                             <Grid item xs={3}>
                                 <InputDatePick
                                     label="Fecha Inicio"
-                                    onChange={(e) => setFechaInicio(e)}
+                                    onChange={(e) => setFechaInicio(e.target.value)}
                                     value={fechaInicio}
                                 />
                             </Grid>
@@ -148,7 +148,7 @@ const ViewExport = () => {
                             <Grid item xs={3}>
                                 <InputDatePick
                                     label="Fecha Fin"
-                                    onChange={(e) => setFechaFin(e)}
+                                    onChange={(e) => setFechaFin(e.target.value)}
                                     value={fechaFin}
                                 />
                             </Grid>

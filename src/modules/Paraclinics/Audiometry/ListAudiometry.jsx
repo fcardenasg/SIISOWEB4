@@ -238,7 +238,7 @@ const ListAudiometry = () => {
             setLaboratory(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-        
+
         }
     }
 
@@ -332,7 +332,7 @@ const ListAudiometry = () => {
                     setSelected([]);
             });
         } catch (error) {
-        
+
         }
     }
 
@@ -340,7 +340,7 @@ const ListAudiometry = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - laboratory.length) : 0;
 
     return (
-        <MainCard title="LISTA DE AUDIOMETRÍAS" content={false}>
+        <MainCard title="Lista De Audiometría" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>

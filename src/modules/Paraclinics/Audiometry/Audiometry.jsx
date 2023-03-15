@@ -211,17 +211,13 @@ const Audiometry = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdParaclinics(resultData.id);
+            const lsDataReport = await GetByIdParaclinics(/* resultData.id */17);
             const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
-
-
-
-
 
 
     const handleClick = async (datos) => {
@@ -278,13 +274,13 @@ const Audiometry = () => {
                 </ControlModal>
 
                 <ControlModal
-                title="VISTA DE REPORTE"
-                open={openReport}
-                onClose={() => setOpenReport(false)}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={dataPDF} />
-            </ControlModal>
+                    title="VISTA DE REPORTE"
+                    open={openReport}
+                    onClose={() => setOpenReport(false)}
+                    maxWidth="xl"
+                >
+                    <ViewPDF dataPDF={dataPDF} />
+                </ControlModal>
 
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -337,7 +333,7 @@ const Audiometry = () => {
 
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OTOLÓGICOS Y PERSONALES</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Antecedentes Otológicos y Personales</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
@@ -522,7 +518,7 @@ const Audiometry = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OCUPACIONALES</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Antecedentes Ocupacionales</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
@@ -594,11 +590,12 @@ const Audiometry = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">AUDIOGRAMA</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Audiograma</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue="7314"
                                             name="idOdcaeAUDIO"
                                             label="OD CAE"
                                             options={lsAudiograma}
@@ -610,6 +607,7 @@ const Audiometry = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue="7314"
                                             name="idOdmtAUDIO"
                                             label="OD MT"
                                             options={lsAudiograma}
@@ -621,6 +619,7 @@ const Audiometry = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue="7314"
                                             name="idOicaeAUDIO"
                                             label="OI CAE"
                                             options={lsAudiograma}
@@ -632,6 +631,7 @@ const Audiometry = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue="7314"
                                             name="idOimtAUDIO"
                                             label="OI MT"
                                             options={lsAudiograma}
@@ -748,14 +748,14 @@ const Audiometry = () => {
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                            <AnimateButton>
-                                                <Button  disabled={resultData.length === 0 ? true : false}  variant="outlined" fullWidth onClick={handleClickReport}>
-                                                    {TitleButton.Imprimir}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
+                                        <AnimateButton>
+                                            <Button /* disabled={resultData.length === 0 ? true : false} */ variant="outlined" fullWidth onClick={handleClickReport}>
+                                                {TitleButton.Imprimir}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
 
-                 
+
 
                                     <Grid item xs={2}>
                                         <AnimateButton>

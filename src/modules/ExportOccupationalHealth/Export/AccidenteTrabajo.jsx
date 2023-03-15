@@ -10,7 +10,7 @@ const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const AccidenteTrabajo = ({ sede, fechaInicio, fechaFin }) => {
+const AccidenteTrabajo = ({ sede, fechaInicio = null, fechaFin = null }) => {
     const [lsData, setLsData] = useState([]);
     const [statusData, setStatusData] = useState(false);
 

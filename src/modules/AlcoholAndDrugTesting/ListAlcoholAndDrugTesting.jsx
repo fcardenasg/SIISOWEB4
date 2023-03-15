@@ -280,7 +280,7 @@ const ListAlcoholAndDrugTesting = () => {
     };
 
     const handleClick = (event, id) => {
-        if (idCheck === '') setIdCheck(id); else setIdCheck('');
+        setIdCheck(id);
 
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
@@ -313,6 +313,7 @@ const ListAlcoholAndDrugTesting = () => {
                 if (willDelete) {
                     const result = await DeleteAlcoholAndDrugTesting(idCheck);
                     if (result.status === 200) {
+                        setIdCheck('');
                         setOpenDelete(true);
                         setSelected([]);
                         GetAll();

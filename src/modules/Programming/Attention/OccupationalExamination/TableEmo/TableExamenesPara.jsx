@@ -70,12 +70,12 @@ const headCells = [
         label: 'Motivo',
         align: 'left'
     },
-    {
+    /* {
         id: 'nameResultado',
         numeric: false,
         label: 'Resultado',
         align: 'left'
-    }
+    } */
 ];
 
 function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
@@ -146,11 +146,11 @@ const TableExamenesPara = ({ idTipoParaclinico = '', documento = '' }) => {
         async function GetAll() {
             try {
                 const lsServer = await GetAllByDocumentoParacli(0, 0, idTipoParaclinico, documento);
-                
+
                 setLsExamenesPara(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
-                
+
             }
         }
 
@@ -310,7 +310,7 @@ const TableExamenesPara = ({ idTipoParaclinico = '', documento = '' }) => {
                                             </Typography>
                                         </TableCell>
 
-                                        <TableCell
+                                        {/* <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
@@ -322,10 +322,10 @@ const TableExamenesPara = ({ idTipoParaclinico = '', documento = '' }) => {
                                             >
                                                 {row.nameConclusion}
                                             </Typography>
-                                        </TableCell>
+                                        </TableCell> */}
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Ver PDF" onClick={() => { setOpenViewPdf(true); setDataPdf(row.url) }}>
+                                            <Tooltip disabled={row.url === "" ? true : false} title="Ver PDF" onClick={() => { setOpenViewPdf(true); setDataPdf(row.url) }}>
                                                 <IconButton size="large">
                                                     <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
