@@ -211,7 +211,7 @@ const Audiometry = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdParaclinics(/* resultData.id */17);
+            const lsDataReport = await GetByIdParaclinics(resultData.id);
             const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
@@ -245,9 +245,9 @@ const Audiometry = () => {
                 const result = await InsertParaclinics(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
-                    setResultData(result.data);
-                    setDocumento('');
+          /*           setDocumento(''); */
                     setLsEmployee([]);
+                    setResultData(result.data);
                     reset();
                     setFilePdf(null);
                 }
