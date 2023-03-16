@@ -211,7 +211,7 @@ const Audiometry = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdParaclinics(/* resultData.id */17);
+            const lsDataReport = await GetByIdParaclinics(/* resultData.id */15);
             const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);

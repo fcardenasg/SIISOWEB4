@@ -171,8 +171,8 @@ const UpdateAssistance = () => {
                 label: item.nombre
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
-        } catch (error) {
-        }
+
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -195,7 +195,7 @@ const UpdateAssistance = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -243,7 +243,7 @@ const UpdateAssistance = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                
+
             </ControlModal>
 
             <ControlModal
@@ -643,10 +643,9 @@ const UpdateAssistance = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
-                </Grid > : <Cargando />
+                </Grid> : <Cargando />
             }
-
-        </Fragment >
+        </Fragment>
     );
 };
 

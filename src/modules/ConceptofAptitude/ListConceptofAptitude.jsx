@@ -33,7 +33,7 @@ import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllConceptofAptitude, DeleteConceptofAptitude }  from 'api/clients/ConceptofAptitudeClient';
+import { GetAllConceptofAptitude, DeleteConceptofAptitude } from 'api/clients/ConceptofAptitudeClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -83,8 +83,6 @@ const headCells = [
         label: 'ID',
         align: 'left'
     },
-
-
     {
         id: 'documento',
         numeric: false,
@@ -166,7 +164,7 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
                 {numSelected <= 0 && (
                     <TableCell sortDirection={false} align="center" sx={{ pr: 3 }}>
                         <Typography variant="subtitle1" sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}>
-                            Acción
+
                         </Typography>
                     </TableCell>
                 )}
@@ -261,7 +259,7 @@ const ListConceptofAptitude = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idTrabajoenAltura','documento', 'nameEmpleado', 'nameConcepto','nameConceptoActitud','fecha'];
+                const properties = ['idTrabajoenAltura', 'documento', 'nameEmpleado', 'nameConcepto', 'nameConceptoActitud', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -408,7 +406,7 @@ const ListConceptofAptitude = () => {
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
                                         <ExcelColumn label="Tipo Concepto" value="nameConcepto" />
-                                        <ExcelColumn label="Concepto Aptitud" value="nameConceptoActitud" />         
+                                        <ExcelColumn label="Concepto Aptitud" value="nameConceptoActitud" />
                                         <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
                                         <ExcelColumn label="Fecha de registro" value="fechaRegistro" />
                                         <ExcelColumn label="Usuario que modifica" value="usuarioModifico" />
@@ -416,8 +414,6 @@ const ListConceptofAptitude = () => {
                                     </ExcelSheet>
                                 </ExcelFile>
                             </Grid>
-
-                 
 
                             <Grid item xs={2}>
                                 <Tooltip title="Impresión" onClick={handleClickReport}>
@@ -585,7 +581,7 @@ const ListConceptofAptitude = () => {
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                        </TableCell>    
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}

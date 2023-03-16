@@ -18,19 +18,15 @@ import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import { GetByIdConceptofAptitude, InsertConceptofAptitude } from 'api/clients/ConceptofAptitudeClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import { GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostConceptofAptitude } from 'formatdata/ConceptofAptitudeForm';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import InputText from 'components/input/InputText';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import { GetAllSupplier } from 'api/clients/SupplierClient';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { GetByMail } from 'api/clients/UserClient';
 import { generateReportConceptofAptitude } from './ReportConceptofAptitude';
 import ViewPDF from 'components/components/ViewPDF';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -38,12 +34,6 @@ import SelectOnChange from 'components/input/SelectOnChange';
 const validationSchema = yup.object().shape({
     idConceptoActitud: yup.string().required(`${ValidationMessage.Requerido}`),
 });
-
-
-const DetailIcons = [
-    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-]
 
 const ConceptofAptitude = () => {
     const { user } = useAuth();
@@ -53,7 +43,6 @@ const ConceptofAptitude = () => {
 
     const [openReport, setOpenReport] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
-    const [lsProveedor, setLsProveedor] = useState([]);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -61,14 +50,11 @@ const ConceptofAptitude = () => {
 
     const [lsConcepto, setConcepto] = useState([]);
     const [idConcepto, setIdConcepto] = useState([]);
-
     const [lsConceptoActitud, setConceptoActitud] = useState([]);
     const [lsCodigoFilterConceptoActitud, setCodigoConceptoActitud] = useState([]);
 
     const [documento, setDocumento] = useState('');
-
     const [lsEmployee, setLsEmployee] = useState([]);
-
     const [result, setResult] = useState([]);
 
     const methods = useForm({
@@ -99,9 +85,6 @@ const ConceptofAptitude = () => {
         }
     }
 
-
-
-
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
@@ -112,8 +95,6 @@ const ConceptofAptitude = () => {
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
-
-    // result.idOrdenesEpp
 
     const handleChangeConcepto = async (event) => {
         setIdConcepto(event.target.value);
@@ -142,37 +123,26 @@ const ConceptofAptitude = () => {
         }
     }
 
-
     async function GetAll() {
         try {
-
-
-
             const lsServerConceptoActitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoconceptoApAl);
             var resultConceptoActitud = lsServerConceptoActitud.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setConcepto(resultConceptoActitud);
-
             setCodigoConceptoActitud(lsServerConceptoActitud.data.entities);
-
-
         } catch (error) { }
     }
 
     useEffect(() => {
         GetAll();
-    }, [])
-
-
-
+    }, []);
 
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostConceptofAptitude(idConcepto, documento, FormatDate(datos.fecha), datos.idConceptoActitud,
-                datos.observacionesNEMTA, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
-
+                datos.observacionesNEMTA, user.nameuser, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertConceptofAptitude(DataToInsert);
@@ -190,13 +160,10 @@ const ConceptofAptitude = () => {
         }
     };
 
-
     return (
         <Fragment>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
-
 
             <ControlModal
                 title="VISTA DE REPORTE"
@@ -242,6 +209,7 @@ const ConceptofAptitude = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
+
                             <Grid item xs={6} md={6} lg={6}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -268,10 +236,6 @@ const ConceptofAptitude = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-
-
-                            \
-
                         </Grid>
 
                         <Grid item xs={12} sx={{ pt: 6 }}>
@@ -284,14 +248,13 @@ const ConceptofAptitude = () => {
                                     </AnimateButton>
                                 </Grid>
 
-                                {result.length !== 0 ?
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="contained" onClick={handleClickReport} fullWidth>
-                                                {TitleButton.Imprimir}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid> : null}
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button disabled={result.length !== 0 ? false : true} variant="contained" onClick={handleClickReport} fullWidth>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
@@ -304,8 +267,8 @@ const ConceptofAptitude = () => {
                         </Grid>
                     </SubCard>
                 </Grid>
-            </Grid >
-        </Fragment >
+            </Grid>
+        </Fragment>
     );
 };
 
