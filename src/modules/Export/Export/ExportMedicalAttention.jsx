@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ReactExport from 'react-export-excel';
 import { Grid, Button } from '@mui/material';
-import { GetEdad, ViewFormat } from 'components/helpers/Format';
+import { GetEdad, ViewFormat, FormatDate } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllMedicalHistory } from 'api/clients/MedicalHistoryClient';
 import { GetAllEvolutionNote } from 'api/clients/EvolutionNoteClient';
@@ -27,13 +27,13 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
 
                 if (sede === '' && atencion === '') {
                     resultHistory = lsDataExportHistory.data.entities.filter(
-                        atenMedica => ViewFormat(atenMedica.fecha) >= ViewFormat(fechaInicio)
-                            && ViewFormat(atenMedica.fecha) <= ViewFormat(fechaFin))
+                        atenMedica => FormatDate(atenMedica.fecha) >= FormatDate(fechaInicio)
+                            && FormatDate(atenMedica.fecha) <= FormatDate(fechaFin))
                         .map(datos => datos);
 
                     resultNote = lsDataExporNote.data.entities.filter(
-                        atenMedica => ViewFormat(atenMedica.fecha) >= ViewFormat(fechaInicio)
-                            && ViewFormat(atenMedica.fecha) <= ViewFormat(fechaFin))
+                        atenMedica => FormatDate(atenMedica.fecha) >= FormatDate(fechaInicio)
+                            && FormatDate(atenMedica.fecha) <= FormatDate(fechaFin))
                         .map(datos => datos);
 
                     setLsDataNote(resultNote);
@@ -42,13 +42,13 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
 
                 if (sede !== '' && atencion === '') {
                     resultHistory = lsDataExportHistory.data.entities.filter(
-                        atenMedica => ViewFormat(atenMedica.fecha) >= ViewFormat(fechaInicio)
-                            && ViewFormat(atenMedica.fecha) <= ViewFormat(fechaFin) && atenMedica.idSede === sede)
+                        atenMedica => FormatDate(atenMedica.fecha) >= FormatDate(fechaInicio)
+                            && FormatDate(atenMedica.fecha) <= FormatDate(fechaFin) && atenMedica.idSede === sede)
                         .map(datos => datos);
 
                     resultNote = lsDataExporNote.data.entities.filter(
-                        atenMedica => ViewFormat(atenMedica.fecha) >= ViewFormat(fechaInicio)
-                            && ViewFormat(atenMedica.fecha) <= ViewFormat(fechaFin) && atenMedica.idSede === sede)
+                        atenMedica => FormatDate(atenMedica.fecha) >= FormatDate(fechaInicio)
+                            && FormatDate(atenMedica.fecha) <= FormatDate(fechaFin) && atenMedica.idSede === sede)
                         .map(datos => datos);
 
                     setLsDataNote(resultNote);
@@ -57,13 +57,13 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
 
                 if (sede === '' && atencion !== '') {
                     resultHistory = lsDataExportHistory.data.entities.filter(
-                        atenMedica => ViewFormat(atenMedica.fecha) >= ViewFormat(fechaInicio)
-                            && ViewFormat(atenMedica.fecha) <= ViewFormat(fechaFin) && atenMedica.idAtencion === atencion)
+                        atenMedica => FormatDate(atenMedica.fecha) >= FormatDate(fechaInicio)
+                            && FormatDate(atenMedica.fecha) <= FormatDate(fechaFin) && atenMedica.idAtencion === atencion)
                         .map(datos => datos);
 
                     resultNote = lsDataExporNote.data.entities.filter(
-                        atenMedica => ViewFormat(atenMedica.fecha) >= ViewFormat(fechaInicio)
-                            && ViewFormat(atenMedica.fecha) <= ViewFormat(fechaFin) && atenMedica.idAtencion === atencion)
+                        atenMedica => FormatDate(atenMedica.fecha) >= FormatDate(fechaInicio)
+                            && FormatDate(atenMedica.fecha) <= FormatDate(fechaFin) && atenMedica.idAtencion === atencion)
                         .map(datos => datos);
 
                     setLsDataNote(resultNote);
@@ -72,14 +72,14 @@ const ExportMedicalAttention = ({ sede, atencion, fechaInicio, fechaFin }) => {
 
                 if (sede !== '' && atencion !== '') {
                     resultHistory = lsDataExportHistory.data.entities.filter
-                        (atenMedica => ViewFormat(atenMedica.fecha) >= ViewFormat(fechaInicio)
-                            && ViewFormat(atenMedica.fecha) <= ViewFormat(fechaFin) && atenMedica.idSede === sede &&
+                        (atenMedica => FormatDate(atenMedica.fecha) >= FormatDate(fechaInicio)
+                            && FormatDate(atenMedica.fecha) <= FormatDate(fechaFin) && atenMedica.idSede === sede &&
                             atenMedica.idAtencion === atencion)
                         .map(datos => datos);
 
                     resultNote = lsDataExporNote.data.entities.filter
-                        (atenMedica => ViewFormat(atenMedica.fecha) >= ViewFormat(fechaInicio)
-                            && ViewFormat(atenMedica.fecha) <= ViewFormat(fechaFin) && atenMedica.idSede === sede &&
+                        (atenMedica => FormatDate(atenMedica.fecha) >= FormatDate(fechaInicio)
+                            && FormatDate(atenMedica.fecha) <= FormatDate(fechaFin) && atenMedica.idSede === sede &&
                             atenMedica.idAtencion === atencion)
                         .map(datos => datos);
 

@@ -100,34 +100,27 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     doc.text('Correo Electrónico:', 120, 70);
     doc.text('Empresa:', 120, 75);
 
-    ///////////////////////////////////////////////////////////
-
-
-    // "nameCausa": "string",
-    // "nameClase": "string",
-
-
     /* DATOS DEL REGISTRO */
-    // doc.setFont("helvetica", "normal");
-     doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 45, 30, 30);
-     doc.text(`${lsDataReport.documento}`, 70, 45);
-    // doc.text(`${lsDataReport.nameCargo}`, 70, 50);
-    // doc.text(`${lsDataReport.nameGenero}`, 70, 55);
-    // doc.text(`${lsDataReport.nameEps}`, 70, 60);
-    // doc.text(`${lsDataReport.nameSede}`, 70, 65);
-    // doc.text(`${lsDataReport.nameTelefono}`, 70, 70);
-    // doc.text(`${lsDataReport.nameTipoContrato}`, 70, 75);
+    doc.setFont("helvetica", "normal");
+    doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 45, 30, 30);
+    doc.text(`${lsDataReport.documento}`, 70, 45);
+    doc.text(`${lsDataReport.nameCargo}`, 70, 50);
+    doc.text(`${lsDataReport.nameGenero}`, 70, 55);
+    doc.text(`${lsDataReport.nameEps}`, 70, 60);
+    doc.text(`${lsDataReport.nameSede}`, 70, 65);
+    doc.text(`${lsDataReport.nameTelefono}`, 70, 70);
+    doc.text(`${lsDataReport.nameTipoContrato}`, 70, 75);
 
-     doc.text(`${lsDataReport.nameEmpleado}`, 150, 45);
-    // doc.text(`${lsDataReport.nameDepartamento}`, 150, 50);
+    doc.text(`${lsDataReport.nameEmpleado}`, 150, 45);
+    doc.text(`${lsDataReport.nameDepartamento}`, 150, 50);
 
-    // doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 150, 55);
-    // doc.text(" AÑO", 154, 55);
+    doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 150, 55);
+    doc.text(" AÑO", 154, 55);
 
-    // doc.text(`${lsDataReport.nameAfp}`, 150, 60);
-    // doc.text(`${lsDataReport.nameArea}`, 150, 65);
-    // doc.text(`${lsDataReport.nameCorreo}`, 150, 70);
-    // doc.text(`${lsDataReport.nameEmpresa}`, 150, 75);
+    doc.text(`${lsDataReport.nameAfp}`, 150, 60);
+    doc.text(`${lsDataReport.nameArea}`, 150, 65);
+    doc.text(`${lsDataReport.nameCorreo}`, 150, 70);
+    doc.text(`${lsDataReport.nameEmpresa}`, 150, 75);
 
     // /*   doc.text(`Fecha:`, 7, 95);
     //   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 35, 95); */
@@ -164,8 +157,8 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     // /* DESCRIPCIONES DE TEXTO */
 
     // doc.setFontSize(8);
-     doc.text('Otitis.:', 120, 120);
-     doc.text(`${lsDataReport.otitisAOP}`, 130, 120);
+    doc.text('Otitis.:', 120, 120);
+    doc.text(`${lsDataReport.otitisAOP}`, 130, 120);
     // doc.text('Cirugía de Oídos', 120, 95);
     // doc.text(`${lsDataReport.cirugiaAOP}`, 35, 167);
     // doc.text('H.T.A.:', 120, 85);

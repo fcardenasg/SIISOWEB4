@@ -6,13 +6,15 @@ import { useState, useEffect, Fragment } from 'react';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo } from 'components/helpers/Enums';
+import { CodCatalogo, TitleButton } from 'components/helpers/Enums';
 import SubCard from 'ui-component/cards/SubCard';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import ExportConsulting from './Export/ExportConsulting';
 import ExportMedicalAttention from './Export/ExportMedicalAttention';
 import ExportEmo from './Export/ExportEmo';
 import ExportInfirmary from './Export/ExportInfirmary';
+import { useNavigate } from 'react-router-dom';
 
 const Title = {
     asesoria: 'ASESORÍAS',
@@ -23,6 +25,8 @@ const Title = {
 
 const ViewExport = () => {
     const theme = useTheme();
+    const navigate = useNavigate();
+
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [statusReprint, setStatusReprint] = useState('SER03');
 
@@ -113,6 +117,13 @@ const ViewExport = () => {
                         statusReprint === 'SER01' ? Title.atencion :
                             statusReprint === 'SER04' ? Title.emo :
                                 statusReprint === 'SER02' ? Title.enfermeria : ''}</Typography>}
+
+                        secondary={
+                            <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                onClick={() => navigate("/dashboard/ltd")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        }
                     >
                         <Grid container spacing={2}>
                             <Grid item xs={3}>

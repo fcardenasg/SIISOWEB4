@@ -2,7 +2,7 @@ import { useState } from 'react';
 import ReactExport from 'react-export-excel';
 import { Grid, Button } from '@mui/material';
 import { GetAllAdvice } from 'api/clients/AdviceClient';
-import { ViewFormat, GetEdad } from 'components/helpers/Format';
+import { FormatDate, GetEdad } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const ExcelFile = ReactExport.ExcelFile;
@@ -20,29 +20,29 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                 var result = [];
 
                 if (sede === '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin)).map(datos => datos);
+                    result = lsDataExport.data.entities.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
+                        && FormatDate(asesoria.fecha) <= FormatDate(fechaFin)).map(datos => datos);
 
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede).map(datos => datos);
+                    result = lsDataExport.data.entities.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
+                        && FormatDate(asesoria.fecha) <= FormatDate(fechaFin) && asesoria.idSede === sede).map(datos => datos);
 
                     setLsData(result);
                 }
 
                 if (sede === '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idTipoAtencion === atencion).map(datos => datos);
+                    result = lsDataExport.data.entities.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
+                        && FormatDate(asesoria.fecha) <= FormatDate(fechaFin) && asesoria.idTipoAtencion === atencion).map(datos => datos);
 
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(asesoria => ViewFormat(asesoria.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(asesoria.fecha) <= ViewFormat(fechaFin) && asesoria.idSede === sede &&
+                    result = lsDataExport.data.entities.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
+                        && FormatDate(asesoria.fecha) <= FormatDate(fechaFin) && asesoria.idSede === sede &&
                         asesoria.idTipoAtencion === atencion).map(datos => datos);
 
                     setLsData(result);
@@ -75,23 +75,23 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                 <ExcelFile element={
                                     <AnimateButton>
                                         <Button onClick={() => setStatusData(false)} size="large" variant="outlined" fullWidth>
-                                        Descargar Excel
+                                            Descargar Excel
                                         </Button>
                                     </AnimateButton>
                                 } filename="ASESORÍAS">
                                     <ExcelSheet data={lsData} name="Listado de Asesorías">
                                         <ExcelColumn label="Nro Atencion" value="id" />
-                                        <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
+                                        <ExcelColumn label="Fecha" value={(fe) => FormatDate(fe.fecha)} />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
                                         <ExcelColumn label="Genero" value="nameGenero" />
                                         <ExcelColumn label="Motivo" value="nameMotivo" />
-                                        <ExcelColumn label="Tipo Asesoría" value="nameTipoAsesoria" />  
+                                        <ExcelColumn label="Tipo Asesoría" value="nameTipoAsesoria" />
                                         <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNacimi)} />
                                         <ExcelColumn label="EPS" value="nameEps" />
                                         <ExcelColumn label="Sede Atención" value="nameSede" />
                                         <ExcelColumn label="Tipo Atención" value="nameTiAtencion" />
-                                        <ExcelColumn label="Empresa" value="nameEmpresa" />   
+                                        <ExcelColumn label="Empresa" value="nameEmpresa" />
                                         <ExcelColumn label="Tipo Contrato" value="nameTipoContrato" />
                                         <ExcelColumn label="Departamento" value="nameDepartamento" />
                                         <ExcelColumn label="Area" value="nameArea" />
@@ -101,7 +101,7 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Descripción" value="motivo" />
                                         <ExcelColumn label="Recomendaciones" value="recomendaciones" />
                                         <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
+                                        <ExcelColumn label="Fecha Registro" value={(fe) => FormatDate(fe.fechaRegistro)} />
                                     </ExcelSheet>
                                 </ExcelFile> : null
                             }

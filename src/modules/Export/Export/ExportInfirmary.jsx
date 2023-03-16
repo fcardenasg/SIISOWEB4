@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ReactExport from 'react-export-excel';
 import { Grid, Button } from '@mui/material';
-import { GetEdad, ViewFormat } from 'components/helpers/Format';
+import { GetEdad, FormatDate } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
 
@@ -20,30 +20,30 @@ const ExportInfirmary = ({ sede, atencion, fechaInicio, fechaFin }) => {
                 var result = [];
 
                 if (sede === '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(notaEnfer => ViewFormat(notaEnfer.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(notaEnfer.fecha) <= ViewFormat(fechaFin)).map(datos => datos);
+                    result = lsDataExport.data.entities.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
+                        && FormatDate(notaEnfer.fecha) <= FormatDate(fechaFin)).map(datos => datos);
 
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(notaEnfer => ViewFormat(notaEnfer.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(notaEnfer.fecha) <= ViewFormat(fechaFin) && notaEnfer.idSede === sede).map(datos => datos);
+                    result = lsDataExport.data.entities.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
+                        && FormatDate(notaEnfer.fecha) <= FormatDate(fechaFin) && notaEnfer.idSede === sede).map(datos => datos);
 
                     setLsData(result);
                 }
 
                 if (sede === '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(notaEnfer => ViewFormat(notaEnfer.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(notaEnfer.fecha) <= ViewFormat(fechaFin) && notaEnfer.idTipoAtencion === atencion)
+                    result = lsDataExport.data.entities.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
+                        && FormatDate(notaEnfer.fecha) <= FormatDate(fechaFin) && notaEnfer.idTipoAtencion === atencion)
                         .map(datos => datos);
 
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(notaEnfer => ViewFormat(notaEnfer.fecha) >= ViewFormat(fechaInicio)
-                        && ViewFormat(notaEnfer.fecha) <= ViewFormat(fechaFin) && notaEnfer.idSede === sede &&
+                    result = lsDataExport.data.entities.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
+                        && FormatDate(notaEnfer.fecha) <= FormatDate(fechaFin) && notaEnfer.idSede === sede &&
                         notaEnfer.idTipoAtencion === atencion).map(datos => datos);
 
                     setLsData(result);
@@ -82,7 +82,7 @@ const ExportInfirmary = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                 } filename="NOTA ENFERMERÍA">
                                     <ExcelSheet data={lsData} name="Listado de Nota de Enfermería">
                                         <ExcelColumn label="Nro Atencion" value="id" />
-                                        <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
+                                        <ExcelColumn label="Fecha" value={(fe) => FormatDate(fe.fecha)} />
                                         <ExcelColumn label="Tipo Atención" value="nameTiAtencion" />
                                         <ExcelColumn label="Atención" value="nameAtencion" />
                                         <ExcelColumn label="Contingencia" value="nameContingencia" />
@@ -106,7 +106,7 @@ const ExportInfirmary = ({ sede, atencion, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Procedimientos" value="procedimientos" />
                                         <ExcelColumn label="Nota Enfermedad" value="notaEnfermedad" />
                                         <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
+                                        <ExcelColumn label="Fecha Registro" value={(fe) => FormatDate(fe.fechaRegistro)} />
                                     </ExcelSheet>
                                 </ExcelFile> : null
                             }
