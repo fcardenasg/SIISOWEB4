@@ -3813,7 +3813,7 @@ const Emo = ({
                                         <InputSelect
                                             defaultValue={() => validateLastData(lsLastRecord.conceptoActitudNETA, "number")}
                                             name="conceptoActitudNETA"
-                                            label="Concepto De Aptitud"
+                                            label="Concepto De Trabajo En Altura"
                                             options={lsNeConceptoActi}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
@@ -3826,7 +3826,7 @@ const Emo = ({
                                         <InputSelect
                                             defaultValue={() => validateLastData(lsLastRecord.idConceptoEspacioConfinado, "number")}
                                             name="idConceptoEspacioConfinado"
-                                            label="Concepto De Espacio Confinado"
+                                            label="Concepto De Trabajo En Espacio Confinado"
                                             options={lsEspacioConfinado}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />

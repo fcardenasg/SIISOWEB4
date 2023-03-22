@@ -448,7 +448,6 @@ function generateExploracionMorfologica(doc = new jsPDF(), lsDataReport) {
 
   doc.text(`${lsDataReport.especifiqueEMEFU}`, 7, 222, {
     maxWidth: 200,
-    align: "justify",
     lineHeightFactor: 1.5,
   });
 }
