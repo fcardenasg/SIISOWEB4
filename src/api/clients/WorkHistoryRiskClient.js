@@ -23,12 +23,12 @@ export const GetAllByChargeHistoricoCompany = async (page, pageSize, riesgo, doc
 
 /* Servicio elimina e inserta nuevamente los riesgos */
 export const RiskCompanyDeleteAndInsertRisk = async (riesgo, documento) => await getData(Url.RHLOEDeleteAndInsertRisk, { riesgo, documento });
-export const RiskDLTDDeleteAndInsertRisk = async (riesgo, documento) => await getData(Url.RHLDeleteAndInsertRisk, { riesgo, documento });
+export const RiskDLTDDeleteAndInsertRisk = async (riesgo, documento, atencion) => await getData(Url.RHLDeleteAndInsertRisk, { riesgo, documento, atencion });
 
 /* Consulta los riesgos por riesgo y documento */
 export const GetAllByChargeWHRAdvanceCompany = async (page, pageSize, documento, riesgo) => await getData(Url.RHLByChargeAdvanceEmpresa, { page, pageSize, documento, riesgo });
 export const GetAllByChargeWHRAdvanceDLTD = async (page, pageSize, documento, riesgo) => await getData(Url.RHLByChargeAdvance, { page, pageSize, documento, riesgo });
 
 
-export const GetAllRHL = async (documento) => await getData(Url.ReportRHL, { documento });
+export const GetAllRHL = async (documento, atencion) => await getData(Url.ReportRHL, { documento, atencion });
 export const GetAllRHLOE = async (documento) => await getData(Url.ReportRHLOE, { documento });

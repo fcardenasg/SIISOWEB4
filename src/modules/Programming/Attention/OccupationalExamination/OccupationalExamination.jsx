@@ -745,7 +745,7 @@ const OccupationalExamination = () => {
                         onClose={() => setOpenModalReport(false)}
                         maxWidth="xs"
                     >
-                        <SingleReportView documento={documento} resultData={resultData} />
+                        <SingleReportView documento={documento} resultData={resultData} atencion={atencion} />
                     </ControlModal>
 
                     <DialogFormula

@@ -61,7 +61,7 @@ const UpdateAttention = () => {
     const [documento, setDocumento] = useState('');
     const [tipoAtencion, setTipoAtencion] = useState('');
     const [atencion, setAtencion] = useState('');
-    const [motivo, setMotivo] = useState('');
+    const [motivo, setMotivo] = useState(undefined);
     const [documentoSolicita, setDocumentoSolicita] = useState('');
     const [nombreSolicitante, setNombreSolicitante] = useState('');
     const [peso, setPeso] = useState('');
@@ -110,6 +110,8 @@ const UpdateAttention = () => {
                 setTipoAtencion(lsServerUpdate.data.tipo);
                 setAtencion(lsServerUpdate.data.atencion);
                 setMotivo(lsServerUpdate.data.motivo);
+
+                console.log("Data de useEffect => ", lsServerUpdate);
 
                 setTalla(lsServerUpdate.data.talla);
                 setIMC(lsServerUpdate.data.imc);
@@ -328,8 +330,10 @@ const UpdateAttention = () => {
 
             const DataToInsert = PutAttention(id, documento, FormatDate(datos.fecha), datos.sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), 0,
+                motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), "",
                 lsDataAtencion.usuarioRegistro, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
+
+            console.log("Datos => ", DataToInsert);
 
             if (documento !== '' && lsEmployee.length !== 0) {
                 if (Object.keys(datos.length !== 0)) {
@@ -389,6 +393,7 @@ const UpdateAttention = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
+                            title="Actualizar Registro De Atención"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -443,7 +448,7 @@ const UpdateAttention = () => {
                                         options={lsAtencion}
                                         onChange={(e) => {
                                             setAtencion(e.target.value);
-                                            setMotivo('');
+                                            setMotivo(undefined);
                                         }}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
@@ -515,7 +520,7 @@ const UpdateAttention = () => {
                                                                 disabled
                                                             />
                                                         </Grid>
-                                                    </Fragment> : <></>}
+                                                    </Fragment> : null}
 
                                             </Fragment> : tipoAtencion == DefaultValue.TIP_AT_EMO ?
                                                 <Fragment>
@@ -639,39 +644,8 @@ const UpdateAttention = () => {
                                                                         />
                                                                     </FormProvider>
                                                                 </Grid>
-                                                            </Fragment> : <></>
+                                                            </Fragment> : null
                                 }
-
-                                <Grid item xs={12}>
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsDataAtencion.observaciones}
-                                                fullWidth
-                                                name="observaciones"
-                                                label="Nota"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors.observaciones}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                        <DetailedIcon
-                                            title={DetailIcons[0].title}
-                                            onClick={() => setOpenTemplate(true)}
-                                            icons={DetailIcons[0].icons}
-                                        />
-
-                                        <DetailedIcon
-                                            title={DetailIcons[1].title}
-                                            onClick={() => setOpen(true)}
-                                            icons={DetailIcons[1].icons}
-                                        />
-                                    </Grid>
-                                </Grid>
                             </Grid>
 
                             <Grid item xs={12} sx={{ pt: 4 }}>

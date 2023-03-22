@@ -36,8 +36,10 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import CheckListRefund from './CheckListRefund';
 import { PostRefund } from 'formatdata/RefundForm';
-import { InsertRefund } from 'api/clients/RefundClient';
-import { GetAllUser } from 'api/clients/UserClient';
+import { GetByIdRefund, InsertRefund } from 'api/clients/RefundClient';
+import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { generateReportRefund } from './ReportRefund';
+import ViewPDF from 'components/components/ViewPDF';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -51,6 +53,7 @@ const Refund = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [openReport, setOpenReport] = useState(false);
     const [viewListRefund, setViewListRefund] = useState(false);
 
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -83,8 +86,21 @@ const Refund = () => {
     const [lsDx2, setLsDx2] = useState([]);
     const [textDx2, setTextDx2] = useState('');
 
+    const [dataPDF, setDataPDF] = useState(null);
+
     const methods = useForm();
     const { handleSubmit, formState: { errors } } = methods;
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdRefund(10);
+            const lsDataUser = await GetByMail(user.nameuser);
+
+            const dataPDFTwo = generateReportRefund(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleDocumento = async (event) => {
         try {
@@ -271,6 +287,15 @@ const Refund = () => {
         <Fragment>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
+            <ControlModal
+                title="VISTA DE REPORTE"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
 
             <ControlModal
                 maxWidth="md"
@@ -680,6 +705,14 @@ const Refund = () => {
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                        {TitleButton.Imprimir}
                                     </Button>
                                 </AnimateButton>
                             </Grid>

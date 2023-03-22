@@ -123,8 +123,9 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
 
     /* DESCRIPCIONES DE TEXTO */
     doc.text(`${lsDataReport.nameConceptoActitud}`, 7, 220, { maxWidth: 200, lineHeightFactor: 1.5 });
-    doc.setFontSize(8);
-    doc.text(`${lsDataReport.nota}`, 7, 87, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.setFontSize(6.5);
+    doc.text(`${lsDataReport.nota}`, 7, 87, { maxWidth: 193, lineHeightFactor: 1.5 });
+    doc.text(`${lsDataReport.planManejo}`, 7, 163, { maxWidth: 193, lineHeightFactor: 1.5 });
 
     doc.setFontSize(10);
 
@@ -137,7 +138,6 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     if (lsDataReport.dx3 !== "")
         doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 145, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-    doc.text(`${lsDataReport.planManejo}`, 7, 163, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     getFirma(doc, lsDataUser, 20);
 }

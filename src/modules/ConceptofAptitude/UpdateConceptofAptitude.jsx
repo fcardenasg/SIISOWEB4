@@ -21,7 +21,7 @@ import { GetByIdConceptofAptitude, UpdateConceptofAptitudes } from 'api/clients/
 import { GetAllCatalog } from 'api/clients/CatalogClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutConceptofAptitude } from 'formatdata/ConceptofAptitudeForm';
 import SubCard from 'ui-component/cards/SubCard';

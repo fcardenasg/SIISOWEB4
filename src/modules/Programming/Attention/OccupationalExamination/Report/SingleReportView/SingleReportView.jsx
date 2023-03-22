@@ -14,7 +14,7 @@ import ViewPDF from "components/components/ViewPDF";
 import { generateConceptoExamenOcupacional, generateCuestionarioSintomasRespiratorio, generateEspacioConfinado, generateFramingham, generateHistoriaClinicaOcupacional, generateTrabajoAltura } from "./Report";
 
 
-const SingleReportView = ({ documento, resultData }) => {
+const SingleReportView = ({ documento, resultData, atencion }) => {
     const { user } = useAuth();
 
     const [dataPDF, setDataPDF] = useState(null);
@@ -35,7 +35,7 @@ const SingleReportView = ({ documento, resultData }) => {
             var lsServerWorkHistory = await GetAllByDocumentWorkHistory(0, 0, documento);
             var lsServerWorkHistoryOtherCompany = await GetAllByDocumentWorkHistoryOtherCompany(0, 0, documento);
 
-            var lsRiesgoHLD = await GetAllRHL(documento);
+            var lsRiesgoHLD = await GetAllRHL(documento, atencion);
             var lsRiesgoHLDO = await GetAllRHLOE(documento);
 
             if (idNumber === 1) { dataPDFTwo = generateConceptoExamenOcupacional(lsDataReport.data, lsDataUser.data); }

@@ -184,7 +184,7 @@ const ViewProgramming = ({ programming, getAll }) => {
                             <Grid item xs={12}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={9}>
-                                        <Typography fontSize={12}><b>{programming.nameEmpleado.toUpperCase()} - {programming.documento}</b></Typography>
+                                        <Typography fontSize={12}><b>{programming.nameEmpleado} - {programming.documento}</b></Typography>
                                     </Grid>
 
                                     <Grid item xs={3}>
@@ -223,7 +223,7 @@ const ViewProgramming = ({ programming, getAll }) => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography fontSize={10}>{programming.usuarioCierreAtencion === '' ? "" : `${programming.usuarioCierreAtencion.toUpperCase()}`}</Typography>
+                                <Typography fontSize={10}>{programming.usuarioCierreAtencion === '' ? "" : `${programming.usuarioCierreAtencion}`}</Typography>
                             </Grid>
                         </Grid>
                     </Grid>

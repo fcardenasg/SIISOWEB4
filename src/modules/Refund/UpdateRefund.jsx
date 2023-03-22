@@ -53,6 +53,8 @@ const Refund = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [openReport, setOpenReport] = useState(false);
+
     const [viewListRefund, setViewListRefund] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -706,6 +708,14 @@ const Refund = () => {
                                     <AnimateButton>
                                         <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                            {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>

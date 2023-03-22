@@ -64,12 +64,15 @@ function generateReportConceptAptitude(
 
   /* CUADRO DATOS */
   doc.line(5, 25, 5, 140); /* IZQUIERDA */
+
   doc.line(5, 32, marXR, 32); /* HORI ONE */
   doc.line(5, 39, marXR, 39); /* HORI TWO  */
-  doc.line(5, 74, marXR, 74); /* HORI THREE */
-  doc.line(5, 82, marXR, 82); /* HORI FOUR */
+
+  doc.line(5, 90, marXR, 90); /* HORI THREE */
+  doc.line(5, 98, marXR, 98); /* HORI FOUR */
+
   doc.line(5, 140, marXR, 140); /* HORI FIVE */
-  doc.line(40, 39, 40, 74); /* LINEA VERTI ONE */
+  doc.line(40, 39, 40, 90); /* LINEA VERTI ONE */
   doc.line(marXR, 25, marXR, 140); /* DERECHA */
 
   /* TITULOS DE CONTENIDO */
@@ -81,23 +84,22 @@ function generateReportConceptAptitude(
   doc.text("DEPARTAMENTO:", 45, 65);
   doc.text("CONCEPTO DE APTITUD:", 45, 70);
 
-  doc.text("RECOMENDACIONES:", 7, 79);
+  doc.text("RECOMENDACIONES:", 7, 95);
 
   doc.setFont("helvetica", "normal");
 
-  doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 41, 30, 30);
+  doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 45, 30, 30);
   doc.text(`${lsDataReport.documento}`, 95, 45);
   doc.text(`${lsDataReport.nameEmpleado}`, 142, 45);
   doc.text(`${lsDataReport.nameCargo}`, 95, 50);
   doc.text(`${lsDataReport.nameOficio}`, 95, 55);
   doc.text(`${lsDataReport.nameArea}`, 95, 60);
   doc.text(`${lsDataReport.nameDepartamento}`, 95, 65);
-  doc.text(`${lsDataReport.nameConceptoActitud}`, 95, 70);
+
+  doc.text(`${lsDataReport.nameConceptoActitud}`, 95, 70, { maxWidth: 110, lineHeightFactor: 1.5, });
+
   doc.setFontSize(9);
-  doc.text(`${lsDataReport.observacionesNEMTA}`, 7, 87, {
-    maxWidth: 200,
-    lineHeightFactor: 1.5,
-  });
+  doc.text(`${lsDataReport.observacionesNEMTA}`, 7, 105, { maxWidth: 200, lineHeightFactor: 1.5, });
 
   getFirma(doc, lsDataUser);
 }

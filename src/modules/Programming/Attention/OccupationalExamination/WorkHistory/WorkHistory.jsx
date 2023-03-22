@@ -357,6 +357,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                             <Accordion title={<><IconAffiliate /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Exposición Ocupacional Drummond LTD</Typography></>}>
                                 <WorkHistoryRiesgoDLTD
                                     documento={documento}
+                                    atencion={atencion}
                                     getAllWorkHistory={getAllWorkHistory}
                                     getSumaRiesgo={getSumaRiesgo}
                                     row={lsWorkHistoryOtherCompany}

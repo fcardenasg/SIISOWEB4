@@ -107,9 +107,6 @@ export function pageFramingham(
 
   doc.line(5, 220, 210, 220);
 
-
-
-
   /* TITULOS DE CONTENIDO */
   doc.text("SEDE:", 45, 48);
   doc.text("FECHA:", 117, 48);
@@ -160,10 +157,6 @@ export function pageFramingham(
   doc.text(`${lsDataReport.documento}`, 71, 53);
   doc.text(`${lsDataReport.nameEmpleado}`, 138, 53);
 
-  doc.setTextColor(255, 0, 0);
-  doc.text(`${lsDataReport.nameRiesgoCardiovascularNEMTA}`, 95, 70);
-
-  doc.setTextColor(0, 0, 0);
   doc.text(`${lsDataReport.nameClasificacionNEMTA}`, 148, 70);
   doc.text(`${lsDataReport.namePosicion}`, 138, 58);
 
@@ -198,11 +191,35 @@ export function pageFramingham(
   doc.text(`${lsDataReport.riesgoRelativoFRA}%`, 116, 176);
 
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(255, 0, 0);
-  doc.text(`${lsDataReport.interpretacionFRA}`, 6, 188, {
+
+  if (lsDataReport.interpretacionFRA === "POR DEBAJO DEL RIESGO PROMEDIO") {
+    doc.setTextColor(20, 249, 79);
+  } else if (lsDataReport.interpretacionFRA === "RIESGO PROMEDIO") {
+    doc.setTextColor(178, 42, 255);
+  } else if (lsDataReport.interpretacionFRA === "RIESGO MODERADO") {
+    doc.setTextColor(255, 250, 73);
+  } else if (lsDataReport.interpretacionFRA === "RIESGO ALTO") {
+    doc.setTextColor(255, 0, 0);
+  }
+
+  doc.text(`${lsDataReport.nameRiesgoCardiovascularNEMTA}`, 96, 70);
+
+  doc.text(`${lsDataReport.interpretacionFRA}`, 7, 188, {
     maxWidth: 190,
     lineHeightFactor: 1.0,
   });
+
+  /* {
+    interpretacion === 'POR DEBAJO DEL RIESGO PROMEDIO' ?
+      <FavoriteIcon sx={{ color: theme.palette.success.dark, width: 50, height: 50 }} fontSize="large" /> :
+      interpretacion === 'RIESGO PROMEDIO' ?
+        <FavoriteIcon sx={{ color: theme.palette.secondary.dark, width: 50, height: 50 }} fontSize="large" /> :
+        interpretacion === 'RIESGO MODERADO' ?
+          <HeartBrokenIcon sx={{ color: theme.palette.warning.dark, width: 50, height: 50 }} fontSize="large" /> :
+          interpretacion === 'RIESGO ALTO' ?
+            <HeartBrokenIcon sx={{ color: theme.palette.error.dark, width: 50, height: 50 }} fontSize="large" /> : ''
+  } */
+
   doc.setTextColor(0, 0, 0);
   doc.setFont("helvetica", "normal");
   doc.text(`${lsDataReport.observacionFRA}`, 6, 200, {

@@ -22,14 +22,13 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
-import { DefaultValue, TitleButton } from 'components/helpers/Enums';
+import { TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 import { visuallyHidden } from '@mui/utils';
-import { GetAllTemplate } from 'api/clients/TemplateClient';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { GetAllByHistorico, GetAllByHistoricoCompany, GetAllRHL, GetAllRHLOE, GetDataExploracion } from 'api/clients/WorkHistoryRiskClient';
+import { GetAllRHL, GetAllRHLOE, GetDataExploracion } from 'api/clients/WorkHistoryRiskClient';
 import { GetAllOccupationalExamination, GetByIdDataReport } from 'api/clients/OccupationalExaminationClient';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReportIndex } from 'modules/Programming/Attention/OccupationalExamination/Report/EMO';
@@ -184,7 +183,10 @@ const TableEmo = () => {
             const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
             var resultExpoDLTD = await GetDataExploracion(documento);
 
-            var lsRiesgoHLD = await GetAllRHL(documento);
+            if (lsDataReport.status === 200) {
+                var lsRiesgoHLD = await GetAllRHL(documento, lsDataReport.data.idAtencion);
+            }
+
             var lsRiesgoHLDO = await GetAllRHLOE(documento);
 
             var lsServerWorkHistory = await GetAllByDocumentWorkHistory(0, 0, documento);

@@ -13,7 +13,7 @@ import { MenuItem } from './Menu/MenuItem';
 import { MessageSuccess, MessageDelete, ParamDelete, ParamLoadingData } from 'components/alert/AlertAll';
 import { DeleteWorkHistoryRisk, GetAllByChargeWHRAdvanceDLTD, RiskDLTDDeleteAndInsertRisk } from 'api/clients/WorkHistoryRiskClient';
 
-const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento }) => {
+const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento, atencion }) => {
     const diferen = "DLTD";
     const [numId, setNumId] = useState(1);
     const [openDelete, setOpenDelete] = useState(false);
@@ -56,9 +56,7 @@ const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento }) => {
             const lsServerRiesgoECFPostura = await GetAllByChargeWHRAdvanceDLTD(0, 0, documento, DefaultValue.RiesgoErgonomicoCargaFisica_Postura);
             if (lsServerRiesgoECFPostura.status === 200)
                 setLsECFPostura(lsServerRiesgoECFPostura.data.entities);
-        } catch (error) {
-
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -70,7 +68,7 @@ const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento }) => {
             swal(ParamLoadingData).then(async (willDelete) => {
                 if (willDelete) {
                     if (id == 1) {
-                        const lsRiesgoQuimico = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoQuimico, documento);
+                        const lsRiesgoQuimico = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoQuimico, documento, atencion);
                         if (lsRiesgoQuimico.status === 200) {
                             setLsQuimico(lsRiesgoQuimico.data);
                             setOpenSuccess(true);
@@ -78,7 +76,7 @@ const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento }) => {
                     }
 
                     if (id == 2) {
-                        const lsRiesgoFisico = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoFisico, documento);
+                        const lsRiesgoFisico = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoFisico, documento, atencion);
                         if (lsRiesgoFisico.status === 200) {
                             setLsFisico(lsRiesgoFisico.data);
                             setOpenSuccess(true);
@@ -86,7 +84,7 @@ const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento }) => {
                     }
 
                     if (id == 3) {
-                        const lsRiesgoPsicosocial = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoPsicosocial, documento);
+                        const lsRiesgoPsicosocial = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoPsicosocial, documento, atencion);
                         if (lsRiesgoPsicosocial.status === 200) {
                             setLsPsicosocial(lsRiesgoPsicosocial.data);
                             setOpenSuccess(true);
@@ -94,7 +92,7 @@ const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento }) => {
                     }
 
                     if (id == 4) {
-                        const lsRiesgoBiologico = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoBiologico, documento);
+                        const lsRiesgoBiologico = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoBiologico, documento, atencion);
                         if (lsRiesgoBiologico.status === 200) {
                             setLsBiologico(lsRiesgoBiologico.data);
                             setOpenSuccess(true);
@@ -102,7 +100,7 @@ const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento }) => {
                     }
 
                     if (id == 5) {
-                        const lsRiesgoECFPostura = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoErgonomicoCargaFisica_Postura, documento);
+                        const lsRiesgoECFPostura = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoErgonomicoCargaFisica_Postura, documento, atencion);
                         if (lsRiesgoECFPostura.status === 200) {
                             setLsECFPostura(lsRiesgoECFPostura.data);
                             setOpenSuccess(true);
@@ -110,7 +108,7 @@ const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento }) => {
                     }
 
                     if (id == 6) {
-                        const lsRiesgoFuerza = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, documento);
+                        const lsRiesgoFuerza = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoErgonomicoCargaFisica_Fuerza, documento, atencion);
                         if (lsRiesgoFuerza.status === 200) {
                             setLsECFFuerza(lsRiesgoFuerza.data);
                             setOpenSuccess(true);
@@ -118,7 +116,7 @@ const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento }) => {
                     }
 
                     if (id == 7) {
-                        const lsRiesgoMovimiento = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, documento);
+                        const lsRiesgoMovimiento = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoErgonomicoCargaFisica_Movimiento, documento, atencion);
                         if (lsRiesgoMovimiento.status === 200) {
                             setLsECFMovimiento(lsRiesgoMovimiento.data);
                             setOpenSuccess(true);

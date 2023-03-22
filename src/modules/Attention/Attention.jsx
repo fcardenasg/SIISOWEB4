@@ -57,7 +57,7 @@ const Attention = () => {
     const [nombreSolicitante, setNombreSolicitante] = useState(undefined);
     const [peso, setPeso] = useState(undefined);
     const [talla, setTalla] = useState(undefined);
-    const [imc, setIMC] = useState(undefined);
+    const [imc, setIMC] = useState("");
     const [clasificacion, setClasificacion] = useState('CLASIFICACIÓN');
     const [clasificacionColor, setClasificacionColor] = useState('info');
 
@@ -144,10 +144,7 @@ const Attention = () => {
                 }));
                 setLsMotivoPAD(resultMotivoPAD);
 
-            } catch (error) {
-                setOpenError(true);
-                setErrorMessage(Message.RegistroNoGuardado);
-            }
+            } catch (error) { }
         }
 
         getAll();
@@ -336,11 +333,17 @@ const Attention = () => {
 
             const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, "", 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), "durancion",
+                motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), "",
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (documento === '' && lsEmployee.length === 0) { setOpenError(true); setErrorMessage(`${Message.ErrorDocumento}`); } else
-                if (sede === '') { setOpenError(true); setErrorMessage('Por favor, seleccione una Sede'); } else
+            if (lsEmployee.length === 0) {
+                setOpenError(true);
+                setErrorMessage(`${Message.NoExisteDocumento}`);
+            } else
+                if (sede === '') {
+                    setOpenError(true);
+                    setErrorMessage('Por favor, seleccione una Sede');
+                } else
                     if (tipoAtencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione el Tipo Atención'); } else
                         if (atencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione la Atención'); } else {
                             if (Object.keys(datos.length !== 0)) {

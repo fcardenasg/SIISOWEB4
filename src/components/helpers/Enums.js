@@ -322,6 +322,7 @@ export const Message = {
     RegistroNoGuardado: 'No se pudo guardar el registro',
     RegistroNoEliminado: 'No se pudo eliminar el registro',
 
+    NoExisteDocumento: 'El numero de documento no existe.',
     ErrorDocumento: 'Por favor, ingrese un número de documento',
     ErrorDeDatos: 'Hubo un error al buscar los datos, vuelva a intentarlo',
     ErrorNoHayDatos: 'No hay datos buscados, vuelva a intentarlo',
