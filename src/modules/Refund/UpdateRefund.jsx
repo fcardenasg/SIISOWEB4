@@ -28,7 +28,7 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo } from 'components/helpers/Enums';
+import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
@@ -39,6 +39,7 @@ import { PutRefund } from 'formatdata/RefundForm';
 import { GetByIdRefund, UpdateRefunds } from 'api/clients/RefundClient';
 import { GetAllUser } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
+import SelectOnChange from 'components/input/SelectOnChange';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -85,6 +86,7 @@ const Refund = () => {
 
     const [lsDx2, setLsDx2] = useState([]);
     const [textDx2, setTextDx2] = useState('');
+    const [ordenadoPor, setOrdenadoPor] = useState('');
 
     const methods = useForm();
 
@@ -236,6 +238,7 @@ const Refund = () => {
                     setFechaInicio(lsServerAtencion.data.fechaInicio);
                     setFechaFin(lsServerAtencion.data.fechaFin);
                     setNumeroDia(lsServerAtencion.data.numeroDia);
+                    setOrdenadoPor(lsServerAtencion.data.idOrdenadoPor);
                     setViewListRefund(true);
 
                     if (lsServerAtencion.data.dx1 !== undefined || lsServerAtencion.data.dx1 !== '') {
@@ -268,7 +271,7 @@ const Refund = () => {
         try {
             const DataToInsert = PutRefund(id, documento, datos.dx1, datos.dx2, datos.idOrigenDx1, datos.idOrigenDx2, datos.resumen,
                 datos.idEstadoEmpleado, datos.idEstadoRestriccion, datos.idTipoRestriccion, FormatDate(fechaInicio),
-                FormatDate(fechaFin), numeroDia, datos.idOrdenadoPor, datos.idMedico, datos.porcentajePCL, datos.recomendaciones,
+                FormatDate(fechaFin), numeroDia, ordenadoPor, datos.idMedico, datos.porcentajePCL, datos.recomendaciones,
                 datos.idConceptoReintegro, FormatDate(datos.inicioReubicacion), FormatDate(datos.finReubicacion), datos.descripcion,
                 datos.idTipoHorario, datos.idOrdenadoPorHorario, FormatDate(datos.fechaInicioHorario), FormatDate(datos.fechaFinHorario),
                 datos.idEstadoCaso, user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
@@ -499,10 +502,12 @@ const Refund = () => {
 
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
-                                        <InputSelect
+                                        <SelectOnChange
                                             name="idOrdenadoPor"
                                             label="Ordenado Por"
-                                            defaultValue={lsRefund.idOrdenadoPor}
+                                            onChange={(e) => setOrdenadoPor(e.target.value)}
+                                            value={ordenadoPor}
+                                            defaultValue={undefined}
                                             options={lsOrdenadoPor}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idOrdenadoPor}
@@ -515,7 +520,8 @@ const Refund = () => {
                                         <InputSelect
                                             name="idMedico"
                                             label="Médico"
-                                            defaultValue={lsRefund.idMedico}
+                                            disabled={ordenadoPor === DefaultValue.OrdenadoPor_Reintegro_MedicoDLTD && ordenadoPor !== '' ? false : true}
+                                            defaultValue={undefined}
                                             options={lsUsuarios}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idMedico}

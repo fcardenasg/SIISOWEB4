@@ -28,7 +28,7 @@ export function PostOccupationalExamination(
     leucoreaGO = false, vidaMaritalGO = 0, vidaObstetricaGO = 0, ggo = 0, pgo = 0, ago = 0, csgo = 0, vgo = 0,
     fupgo = null, furgo = null, etsgo = false, cualgo = "",
     quisteOvariosBiomasGO = false, endometriosisGO = false, epigo = false, planificaGO = false,
-    idMetodoGO = DefaultValue.SINREGISTRO_GLOBAL, ultimoAnioCitologiaGO = 0, idResultadoGO = DefaultValue.SINREGISTRO_GLOBAL,
+    idMetodoGO = DefaultValue.SINREGISTRO_GLOBAL, ultimoAnioCitologiaGO = 0, idResultadoGO = DefaultValue.SINREGISTRO_GLOBAL, observacionesGO = "",
 
     cabezaRS = false, ojosRS = false, oidosRS = false, narizRS = false, bocaRS = false, gargantaRS = false, cuellosRS = false,
     cardioRS = false, gastrointestinalRS = false, genitoUrinarioRS = false, osteoRS = false, neuroRS = false, pielRS = false,
@@ -153,7 +153,7 @@ export function PostOccupationalExamination(
 
         menarquiaGO, idCiclosGO, duracionGO, amenoreaGO, disminureaGO, leucoreaGO, vidaMaritalGO, vidaObstetricaGO,
         ggo, pgo, ago, csgo, vgo, fupgo, furgo, etsgo, cualgo, quisteOvariosBiomasGO, endometriosisGO, epigo,
-        planificaGO, idMetodoGO, ultimoAnioCitologiaGO, idResultadoGO,
+        planificaGO, idMetodoGO, ultimoAnioCitologiaGO, idResultadoGO, observacionesGO,
 
         cabezaRS, ojosRS, oidosRS, narizRS, bocaRS, gargantaRS, cuellosRS, cardioRS, gastrointestinalRS,
         genitoUrinarioRS, osteoRS, neuroRS, pielRS, psiquiatricoRS, observacionRS, taSentadoEF, taAcostadoEF, pulsoEF,
@@ -238,7 +238,7 @@ export function PutOccupationalExamination(id,
     leucoreaGO = false, vidaMaritalGO = 0, vidaObstetricaGO = 0, ggo = 0, pgo = 0, ago = 0, csgo = 0, vgo = 0,
     fupgo = null, furgo = null, etsgo = false, cualgo = "",
     quisteOvariosBiomasGO = false, endometriosisGO = false, epigo = false, planificaGO = false,
-    idMetodoGO = DefaultValue.SINREGISTRO_GLOBAL, ultimoAnioCitologiaGO = 0, idResultadoGO = DefaultValue.SINREGISTRO_GLOBAL,
+    idMetodoGO = DefaultValue.SINREGISTRO_GLOBAL, ultimoAnioCitologiaGO = 0, idResultadoGO = DefaultValue.SINREGISTRO_GLOBAL, observacionesGO = "",
 
     cabezaRS = false, ojosRS = false, oidosRS = false, narizRS = false, bocaRS = false, gargantaRS = false, cuellosRS = false,
     cardioRS = false, gastrointestinalRS = false, genitoUrinarioRS = false, osteoRS = false, neuroRS = false, pielRS = false,
@@ -363,7 +363,7 @@ export function PutOccupationalExamination(id,
 
         menarquiaGO, idCiclosGO, duracionGO, amenoreaGO, disminureaGO, leucoreaGO, vidaMaritalGO, vidaObstetricaGO,
         ggo, pgo, ago, csgo, vgo, fupgo, furgo, etsgo, cualgo, quisteOvariosBiomasGO, endometriosisGO, epigo,
-        planificaGO, idMetodoGO, ultimoAnioCitologiaGO, idResultadoGO,
+        planificaGO, idMetodoGO, ultimoAnioCitologiaGO, idResultadoGO, observacionesGO,
 
         cabezaRS, ojosRS, oidosRS, narizRS, bocaRS, gargantaRS, cuellosRS, cardioRS, gastrointestinalRS,
         genitoUrinarioRS, osteoRS, neuroRS, pielRS, psiquiatricoRS, observacionRS, taSentadoEF, taAcostadoEF, pulsoEF,

@@ -211,6 +211,7 @@ function generateParentesco(doc = new jsPDF(), lsDataReport) {
 
 function generateGineco(doc = new jsPDF(), lsDataReport) {
   if (lsDataReport.idGenero === DefaultValue.GeneroWomen) {
+    var marXR = doc.internal.pageSize.width - 5;
     doc.setFont("helvetica", "bold");
     /* GINECO OBSTÉTRICOS */
     doc.text("1. MENARQUÍA:", 7, 164);
@@ -219,6 +220,7 @@ function generateGineco(doc = new jsPDF(), lsDataReport) {
     doc.text("AMENOREA:", 40, 174);
     doc.text("4. VIDA MARITAL:", 7, 179);
     doc.text("5. G:", 7, 184);
+    doc.text("P:", 40, 184);
     doc.text("6. FUP:", 7, 189);
     /* SEGUNDA COLUMNA DE GINECO OBSTÉTRICOS */
     doc.text("DURACIÓN:", 76, 169);
@@ -227,6 +229,7 @@ function generateGineco(doc = new jsPDF(), lsDataReport) {
     doc.text("VIDA OBSTÉTRICA:", 76, 179);
     doc.text("A:", 76, 184);
     doc.text("C:", 112, 184);
+    doc.text("V:", 138, 184);
     doc.text("FUR:", 76, 189);
     /* TERCERA COLUMNA DE GINECO OBSTÉTRICOS */
     doc.text("7. ETS:", 150, 164);
@@ -237,21 +240,28 @@ function generateGineco(doc = new jsPDF(), lsDataReport) {
     doc.text("11. ULTIMA CITOLOGÍA - AÑO:", 150, 189);
     doc.text("RESULTADO:", 7, 197);
 
+    doc.line(5, 205, marXR, 205); /* HORI TWO */
+    doc.line(5, 213, marXR, 213); /* HORI TWO */
+
+    doc.text("OBSERVACIONES:", 7, 210);
+
     doc.setFont("helvetica", "normal");
     /* RENDERIZADO DE GINECO */
     doc.text(`${lsDataReport.menarquiaGO}`, 40, 164);
     doc.text(`${lsDataReport.nameCiclosGO}`, 40, 169);
     doc.text(`${lsDataReport.amenoreaGO}`, 64, 174);
     doc.text(`${lsDataReport.vidaMaritalGO}`, 40, 179);
-    doc.text(`${lsDataReport.ggo}`, 40, 184);
+    doc.text(`${lsDataReport.ggo}`, 13, 184);
+    doc.text(`${lsDataReport.pgo}`, 45, 184);
     doc.text(`${ViewFormat(lsDataReport.fupgo)}`, 40, 189);
     /* SEGUNDA COLUMNA GINECO OBSTÉTRICOS */
     doc.text(`${lsDataReport.duracionGO}`, 112, 169);
     doc.text(`${lsDataReport.disminureaGO}`, 102, 174);
     doc.text(`${lsDataReport.leucoreaGO}`, 138, 174);
     doc.text(`${lsDataReport.vidaObstetricaGO}`, 112, 179);
-    doc.text(`${lsDataReport.ago}`, 102, 184);
-    doc.text(`${lsDataReport.csgo}`, 138, 184);
+    doc.text(`${lsDataReport.ago}`, 81, 184);
+    doc.text(`${lsDataReport.csgo}`, 117, 184);
+    doc.text(`${lsDataReport.vgo}`, 143, 184);
     doc.text(`${ViewFormat(lsDataReport.furgo)}`, 112, 189);
     /* TERCERA COLUMNA GINECO OBSTÉTRICOS */
     doc.text(`${lsDataReport.etsgo}`, 185, 164);
@@ -262,6 +272,8 @@ function generateGineco(doc = new jsPDF(), lsDataReport) {
     doc.text(`${lsDataReport.ultimoAnioCitologiaGO}`, 195, 189);
 
     doc.text(`${lsDataReport.nameResultadoGO}`, 30, 197);
+
+    doc.text(`${lsDataReport.observacionesGO}`, 7, 218, { maxWidth: 200, lineHeightFactor: 1.5, });
   } else {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(15);
@@ -1124,12 +1136,7 @@ export function generateHabitsGineco(doc = new jsPDF(), lsDataReport) {
   doc.line(5, 118, marXR, 118); /* HORI SIX */
   doc.line(5, 150, marXR, 150); /* HORI SEVEN */
   doc.line(5, 158, marXR, 158); /* HORI EIGHT */ /* VERTI TWO */ /* VERTI TWO */
-  /* doc.line(74, 158, 74, 190); */ /* doc.line(148, 158, 148, 190); */ doc.line(
-    5,
-    250,
-    marXR,
-    250
-  ); /* HORI ULTIMA */
+  doc.line(5, 250, marXR, 250); /* HORI ULTIMA */
   doc.line(marXR, 31, marXR, 250); /* DERECHA */
 
   /* HÁBITOS */

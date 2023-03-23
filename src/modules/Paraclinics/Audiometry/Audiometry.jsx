@@ -145,7 +145,7 @@ const Audiometry = () => {
             }));
             setLsEmpresaParacli(resultEmpresas);
 
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
+            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Atencion_Audiometria);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre

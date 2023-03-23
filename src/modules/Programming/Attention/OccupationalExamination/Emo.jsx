@@ -1744,7 +1744,7 @@ const Emo = ({
                                     </Grid>
                                 </Grid>
 
-                                <Grid container spacing={2}>
+                                <Grid container spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2}>
                                         <FormProvider {...methods}>
                                             <InputCheckBox
@@ -1824,6 +1824,42 @@ const Emo = ({
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                multiline
+                                                rows={4}
+                                                defaultValue={() => validateLastData(lsLastRecord.observacionesGO, "string")}
+                                                fullWidth
+                                                name="observacionesGO"
+                                                label="Observaciones"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                        <DetailedIcon
+                                            title={DetailIcons[0].title}
+                                            onClick={() => setOpenTemplate(true)}
+                                            icons={DetailIcons[0].icons}
+                                        />
+
+                                        <DetailedIcon
+                                            title={DetailIcons[1].title}
+                                            onClick={() => setOpenApuntesPersonales(true)}
+                                            icons={DetailIcons[1].icons}
+                                        />
+
+                                        <DetailedIcon
+                                            title={DetailIcons[2].title}
+                                            onClick={() => setOpen(true)}
+                                            icons={DetailIcons[2].icons}
+                                        />
                                     </Grid>
                                 </Grid>
                             </SubCard>

@@ -27,6 +27,7 @@ export const CodCatalogo = {
     EP_EMO_SintomasRespiratorios: 201,
 
     AtencionEMO: 138,
+    Atencion_Audiometria: 206,
     Empresas_Paraclinicos: 202,
 
     CONCEPTO_ESPACIOCONFINADO: 179,
@@ -44,7 +45,9 @@ export const CodCatalogo = {
     PANO_RIESGO: 128,
     PANO_GRADO_CONSINEPP: 131,
 
-    PARACLINICO_Interpretacion: 169,
+    PARACLINICO_IINTER_COLESTEROL: 205,
+    PARACLINICO_INTER_TRIGLICE: 204,
+    PARACLINICO_INTER_GLICEMIA: 203,
 
     PARACLINICO_PROTECCIÓNAUDITIVA: 174,
     PARACLINICO_SUMINISTRADOPOR: 175,
@@ -181,6 +184,7 @@ export const DefaultValue = {
     BANDERA_DRUMMOND: 7116,
     SINREGISTRO_TEXTO: 'REGISTRO NO APLICA',
     GeneroWomen: 2,
+    OrdenadoPor_Reintegro_MedicoDLTD: 5180,
 
     ATENCION_ATENDIDO: 'ATENDIDO',
     ATENCION_PENDIENTE_ATENDIDO: 'PENDIENTE POR ATENCIÓN',
@@ -329,7 +333,7 @@ export const Message = {
 
     CampoRequerido: 'Este campo es requerido',
 
-    
+
 }
 
 export const optionsDate = {

@@ -411,9 +411,6 @@ export function pageQuestionnaireRespiratorySymptomsTwo(doc, lsDataReport = [], 
       lineHeightFactor: 1.0,
     }
   );
-
-
-
 }
 /* Pag. 3 */
 export function pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport = [], lsDataUser = []) {
@@ -429,14 +426,14 @@ export function pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport = []
 
   /* CUADRO DATOS */
   doc.line(5, 40, 210, 40);
-  doc.line(5, 25, 5, 247);
+  doc.line(5, 25, 5, 262);
   doc.line(40, 40, 40, 74); /* LINEA ONE */
   doc.line(115, 40, 115, 74); /* LINEA TWO */
-  doc.line(210, 25, 210, 247);
+  doc.line(210, 25, 210, 262);
   doc.line(5, 74, 210, 74);
 
   /* LINEA DEL SI/NO */
-  doc.line(197, 75, 197, 247);
+  doc.line(197, 75, 197, 262);
 
   /* CUESTIONARIO */
   doc.line(5, 80, 210, 80);
@@ -474,6 +471,10 @@ export function pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport = []
   doc.line(5, 242, 210, 242);
   doc.line(5, 247, 210, 247);
 
+  doc.line(5, 252, 210, 252);
+  doc.line(5, 257, 210, 257);
+  doc.line(5, 262, 210, 262);
+
   /* TITULOS DE CONTENIDO */
   doc.text("CONSECUTIVO:", 45, 48);
   doc.text("FECHA:", 120, 48);
@@ -500,28 +501,32 @@ export function pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport = []
   doc.text("10. HISTORIA OCUPACIONAL", 7, 171);
   doc.text("A. Ha trabajado tiempo completo (8 horas a la semana o más) por 6 meses o más?", 7, 176);
   doc.text("B. Ha trabajado al menos durante 6 meses en un empleo donde tuvo exposición a polvos?", 7, 181);
-  doc.text(`C. Especifique empleo o industria:`, 7, 186);
-  doc.text("D. Total años trabajados?", 7, 191);
-  doc.text("E. La exposición fue?", 7, 196);
-  doc.text("F. Cuál ha sido su ocupación o trabajo usual en el que ha laborado por más tiempo ", 7, 201);
-  doc.text(`G. Empleo y Ocupación?:`, 7, 206);
-  doc.text("H. Negocio, campo o industria?", 7, 211);
+  doc.text("- Especifique empleo o industria:", 7, 186);
+  doc.text("- Total años trabajados?", 7, 191);
+  doc.text("- La exposición fue?", 7, 196);
 
-  doc.text("11. TABAQUISMO ", 7, 216);
-  doc.text("A. Ha fumado cigarrillos, pipa o tabaco (al menos uno(a) al día por un año o 12 onzas de tabaco durante la vida)?", 7, 221);
+  ////
+  doc.text("C. ¿Ha trabajado en en un empleo donde hata exposición a humos y gases químicos?", 7, 201);
+  doc.text("- Especifique empleo y ocupación o industria:", 7, 206);
+  doc.text("- Total años trabajados?", 7, 211);
+  doc.text("- La exposición fue?", 7, 216);
 
-  doc.text("B. Fuma ahora (incluye un mes atrás)?", 7, 226);
-  doc.text("C. A qué edad comenzó a fumar en forma regular? ", 7, 231);
-  doc.text("D. Si ya dejo de fumar totalmente a qué edad lo dejó? ", 7, 236);
-  doc.text("E. Cuantos cigarrillos fuma al día o fumaba? ", 7, 241);
+  ////
+  doc.text("D. Cuál ha sido su ocupación o trabajo usual en el que ha laborado por más tiempo:", 7, 221);
+  doc.text("G. Empleo y Ocupación?:", 7, 226);
+  doc.text("H. Negocio, campo o industria?:", 7, 231);
+
+  doc.text("11. TABAQUISMO ", 7, 236);
+  doc.text("A. Ha fumado cigarrillos, pipa o tabaco (al menos uno(a) al día por un año o 12 onzas de tabaco durante la vida)?", 7, 241);
+
+  doc.text("B. Fuma ahora (incluye un mes atrás)?", 7, 246);
+  doc.text("C. A qué edad comenzó a fumar en forma regular? ", 7, 251);
+  doc.text("D. Si ya dejo de fumar totalmente a qué edad lo dejó? ", 7, 256);
+  doc.text("E. Cuantos cigarrillos fuma al día o fumaba? ", 7, 261);
 
 
   /* RENDERIZADO DE CONTENIDO */
   doc.setFont("helvetica", "normal");
-  doc.text(`${lsDataReport.historiaOcupB1SintR}`, 66, 186);
-  doc.text(`${lsDataReport.historiaOcupC1SintR}`, 51, 206);
-
-
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 42, 30, 30);
   doc.text(`${lsDataReport.id}`, 75, 48);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 147, 48);
@@ -566,23 +571,27 @@ export function pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport = []
   doc.text(`${lsDataReport.presionAltaBSintR}`, 202, 166);
 
   //HISTORIA//
+
   doc.text(`${lsDataReport.historiaOcupASintR}`, 202, 176);
   doc.text(`${lsDataReport.historiaOcupBSintR}`, 202, 181);
 
+  doc.text(`${lsDataReport.historiaOcupB1SintR}`, 66, 186);
   doc.text(`${lsDataReport.historiaOcupB2SintR}`, 202, 191);
   doc.setFontSize(6);
   if (lsDataReport.nameHistoriaOcupB3SintR !== 'SIN REGISTRO') {
     doc.text(`${lsDataReport.nameHistoriaOcupB3SintR}`, 197, 196);
   }
-
   doc.setFontSize(9);
-  doc.text(`${lsDataReport.historiaOcupCSintR}`, 202, 201);
-  doc.text(`${lsDataReport.historiaOcupC2SintR}`, 202, 211);
-  doc.text(`${lsDataReport.tabaquismoASintR}`, 202, 221);
-  doc.text(`${lsDataReport.tabaquismoBSintR}`, 202, 226);
-  doc.text(`${lsDataReport.tabaquismoCSintR}`, 202, 231);
-  doc.text(`${lsDataReport.tabaquismoDSintR}`, 202, 236);
-  doc.text(`${lsDataReport.tabaquismoESintR}`, 202, 241);
+
+  doc.text(`${lsDataReport.historiaOcupD1SintR}`, 150, 221);
+  doc.text(`${lsDataReport.historiaOcupD2SintR}`, 202, 226);
+  doc.text(`${lsDataReport.historiaOcupD3}`, 60, 231);
+
+  doc.text(`${lsDataReport.tabaquismoASintR}`, 202, 241);
+  doc.text(`${lsDataReport.tabaquismoBSintR}`, 202, 246);
+  doc.text(`${lsDataReport.tabaquismoCSintR}`, 202, 251);
+  doc.text(`${lsDataReport.tabaquismoDSintR}`, 202, 256);
+  doc.text(`${lsDataReport.tabaquismoESintR}`, 202, 261);
 
 }
 

@@ -48,11 +48,14 @@ const UpdateLaboratory = () => {
     const [lsEmployee, setLsEmployee] = useState([]);
     const [open, setOpen] = useState(false);
     const [lsVisiometrics, setLsVisiometrics] = useState([]);
-    const [lsInterpretacion, setLsInterpretacion] = useState([]);
 
     const [documento, setDocumento] = useState('');
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
+
+    const [lsInterpretacion, setLsInterpretacion] = useState([]);
+    const [lsInterpretacionTrigli, setLsInterpretacionTrigli] = useState([]);
+    const [lsInterpretacionGlicemia, setLsInterpretacionGlicemia] = useState([]);
 
     const methods = useForm();
     const { handleSubmit } = methods;
@@ -110,12 +113,26 @@ const UpdateLaboratory = () => {
             }));
             setLsMotivo(resultMotivo);
 
-            const lsServerInterpretacion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_Interpretacion);
+            const lsServerInterpretacion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_IINTER_COLESTEROL);
             var resultInterpretacion = lsServerInterpretacion.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsInterpretacion(resultInterpretacion);
+
+            const lsServerInterpretacionTri = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_INTER_TRIGLICE);
+            var resultInterpretacionTri = lsServerInterpretacionTri.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsInterpretacionTrigli(resultInterpretacionTri);
+
+            const lsServerInterpretacionGlicemi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_INTER_GLICEMIA);
+            var resultInterpretacionGlice = lsServerInterpretacionGlicemi.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsInterpretacionGlicemia(resultInterpretacionGlice);
 
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
@@ -361,7 +378,7 @@ const UpdateLaboratory = () => {
                                                 name="interpretacionTrigli"
                                                 label="Interpretación"
                                                 defaultValue={lsVisiometrics.interpretacionTrigli}
-                                                options={lsInterpretacion}
+                                                options={lsInterpretacionTrigli}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>
@@ -405,7 +422,7 @@ const UpdateLaboratory = () => {
                                                 name="interpretacionGlicemia"
                                                 label="Interpretacion"
                                                 defaultValue={lsVisiometrics.interpretacionGlicemia}
-                                                options={lsInterpretacion}
+                                                options={lsInterpretacionGlicemia}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>
@@ -449,7 +466,7 @@ const UpdateLaboratory = () => {
                                                 name="interpretacionCreatinina"
                                                 label="lsInterpretacion"
                                                 defaultValue={lsVisiometrics.interpretacionCreatinina}
-                                                options={lsInterpretacion}
+                                                options={lsInterpretacionGlicemia}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>
@@ -493,7 +510,7 @@ const UpdateLaboratory = () => {
                                                 name="interpretacionBUN"
                                                 label="lsInterpretacion"
                                                 defaultValue={lsVisiometrics.interpretacionBUN}
-                                                options={lsInterpretacion}
+                                                options={lsInterpretacionGlicemia}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>
@@ -524,7 +541,7 @@ const UpdateLaboratory = () => {
                                             name="idParcialOrina"
                                             label="Parcial de Orina"
                                             defaultValue={lsVisiometrics.idParcialOrina}
-                                            options={lsInterpretacion}
+                                            options={lsInterpretacionGlicemia}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -552,7 +569,7 @@ const UpdateLaboratory = () => {
                                             name="hemograma"
                                             label="Hemograma"
                                             defaultValue={lsVisiometrics.hemograma}
-                                            options={lsInterpretacion}
+                                            options={lsInterpretacionGlicemia}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -580,7 +597,7 @@ const UpdateLaboratory = () => {
                                             name="gpt"
                                             label="GPT - (Ref: 7 - 33 Normal)"
                                             defaultValue={lsVisiometrics.gpt}
-                                            options={lsInterpretacion}
+                                            options={lsInterpretacionGlicemia}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -608,7 +625,7 @@ const UpdateLaboratory = () => {
                                             name="got"
                                             label="GoT - (Ref: 5 - 32 Normal)"
                                             defaultValue={lsVisiometrics.got}
-                                            options={lsInterpretacion}
+                                            options={lsInterpretacionGlicemia}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -636,7 +653,7 @@ const UpdateLaboratory = () => {
                                             name="bilirrubina"
                                             label="Bilirrubina Total"
                                             defaultValue={lsVisiometrics.bilirrubina}
-                                            options={lsInterpretacion}
+                                            options={lsInterpretacionGlicemia}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -664,7 +681,7 @@ const UpdateLaboratory = () => {
                                             name="bilirrubinaDirecta"
                                             label="Bilirrubina Directa"
                                             defaultValue={lsVisiometrics.bilirrubinaDirecta}
-                                            options={lsInterpretacion}
+                                            options={lsInterpretacionGlicemia}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
