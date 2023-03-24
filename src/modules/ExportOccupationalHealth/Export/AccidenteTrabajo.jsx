@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ReactExport from 'react-export-excel';
 import { Grid, Button } from '@mui/material';
-import { ViewFormat } from 'components/helpers/Format';
+import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ParametrosExcel } from 'formatdata/ParametrosForm';
 import { GetExcelAccidentRate } from 'api/clients/AccidentRateClient';
@@ -57,6 +57,7 @@ const AccidenteTrabajo = ({ sede, fechaInicio = null, fechaFin = null }) => {
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                         <ExcelColumn label="Empresa" value="empresa" />
                                         <ExcelColumn label="Tipo Contrato" value="tipoContrato" />
+                                        <ExcelColumn label="Estado" value="status" />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombre" value="nombre" />
                                         <ExcelColumn label="Departamento" value="departamento" />
@@ -64,6 +65,7 @@ const AccidenteTrabajo = ({ sede, fechaInicio = null, fechaFin = null }) => {
                                         <ExcelColumn label="Posicion" value="posicion" />
                                         <ExcelColumn label="Grupo" value="grupo" />
                                         <ExcelColumn label="Fecha Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
+                                        <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNaci)} />
                                         <ExcelColumn label="Eps" value="eps" />
                                         <ExcelColumn label="Ges" value="ges" />
                                         <ExcelColumn label="Sede" value="sede" />

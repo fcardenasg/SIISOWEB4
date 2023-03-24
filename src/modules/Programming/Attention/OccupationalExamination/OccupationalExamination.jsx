@@ -498,13 +498,13 @@ const OccupationalExamination = () => {
                 datos.eversionPiesEFU, datos.sensibilidadCaraLateralEFU, datos.rOTAquileanoEFU, datos.signoLasegueEFU, indiceWellsEFU, datos.valorIndiceWellsEFU,
                 datos.observacionEFU,
 
-                FormatDate(datos.fechaRxToraxEPA), datos.resultadoRxToraxEPA, datos.observacionesRxToraxEPA, FormatDate(datos.fechaEspirometriaEPA),
-                datos.resultadoEspirometriaEPA, datos.observacionesEspirometriaEPA, FormatDate(datos.fechaAudiometriaEPA), datos.resultadoAudiometriaEPA,
-                datos.observacionesAudiometriaEPA, FormatDate(datos.fechaVisiometriaEPA), datos.resultadoVisiometriaEPA, datos.observacionesVisiometriaEPA,
-                FormatDate(datos.fechaLaboratorioClinicoEPA), datos.resultadoLaboratorioClinicoEPA, datos.observacionesLaboratorioClinicoEPA,
-                FormatDate(datos.fechaCuestionarioSintomaEPA), datos.resultadoCuestionarioSintomaEPA, datos.observacionesCuestionarioSintomaEPA,
-                FormatDate(datos.fechaEkgEPA), datos.resultadoEkgEPA, datos.observacionesEkgEPA, FormatDate(datos.fechaRnmLumbosacraEPA),
-                datos.resultadoRnmLumbosacraEPA, datos.observacionesRnmLumbosacraEPA, FormatDate(datos.fechaRnmCervicalEPA), datos.resultadoRnmCervicalEPA,
+                datos.fechaRxToraxEPA, datos.resultadoRxToraxEPA, datos.observacionesRxToraxEPA, datos.fechaEspirometriaEPA,
+                datos.resultadoEspirometriaEPA, datos.observacionesEspirometriaEPA, datos.fechaAudiometriaEPA, datos.resultadoAudiometriaEPA,
+                datos.observacionesAudiometriaEPA, datos.fechaVisiometriaEPA, datos.resultadoVisiometriaEPA, datos.observacionesVisiometriaEPA,
+                datos.fechaLaboratorioClinicoEPA, datos.resultadoLaboratorioClinicoEPA, datos.observacionesLaboratorioClinicoEPA,
+                datos.fechaCuestionarioSintomaEPA, datos.resultadoCuestionarioSintomaEPA, datos.observacionesCuestionarioSintomaEPA,
+                datos.fechaEkgEPA, datos.resultadoEkgEPA, datos.observacionesEkgEPA, datos.fechaRnmLumbosacraEPA,
+                datos.resultadoRnmLumbosacraEPA, datos.observacionesRnmLumbosacraEPA, datos.fechaRnmCervicalEPA, datos.resultadoRnmCervicalEPA,
                 datos.observacionesRnmCervicalEPA, datos.observacionEPA,
 
                 datos.dx1, datos.dx2, datos.dx3, datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
@@ -661,6 +661,8 @@ const OccupationalExamination = () => {
                 datos.parentesco1ANFA, datos.parentesco1ObserANFA, datos.parentesco2ANFA, datos.parentesco2ObserANFA, datos.parentesco3ANFA,
                 datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA, datos.lateralidadExamenesFisico
             );
+
+            console.log("Datos => ", DataToInset);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateOccupationalExaminations(DataToInset);

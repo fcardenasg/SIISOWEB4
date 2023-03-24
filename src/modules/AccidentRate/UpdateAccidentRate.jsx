@@ -435,7 +435,7 @@ const UpdateAccidentRate = () => {
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={new Date()}
+                                            defaultValue={lsAccidentRate.fecha}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -477,47 +477,17 @@ const UpdateAccidentRate = () => {
                                     />
                                 </Grid>
 
-                               {/*  <Grid item xs={4}>
-                                    <SelectOnChange
-                                        name="segmentoAfectado"
-                                        label="Segmento Afectado"
-                                        options={lsSegmentoAfectado}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        value={segmentoAfectado}
-                                        onChange={(e) => setSegmentoAfectado(e.target.value)}
-                                    />
-                                </Grid> */}
-
-
-
                                 <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsAccidentRate.idSubsegmento}
-                                                name="idSubsegmento"
-                                                label="Región"
-                                                options={lsRegion}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-
-
-
-
-                                {/* <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="idSubsegmento"
-                                            label="Subsegmento"
-                                            options={subsegmento}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idSubsegmento}
                                             defaultValue={lsAccidentRate.idSubsegmento}
+                                            name="idSubsegmento"
+                                            label="Región"
+                                            options={lsRegion}
+                                            size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
-                                </Grid> */}
+                                </Grid>
 
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
@@ -715,9 +685,7 @@ const UpdateAccidentRate = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
                             </Grid>
-
 
                             <Grid item xs={12} sx={{ pt: 2 }}>
                                 <MainCard title="Registro Fotográfico">
@@ -740,12 +708,8 @@ const UpdateAccidentRate = () => {
                                             />
                                         )}
                                     </Grid>
-
                                 </MainCard>
                             </Grid>
-
-
-
 
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Grid item xs={2}>
@@ -756,32 +720,13 @@ const UpdateAccidentRate = () => {
                                     </AnimateButton>
                                 </Grid>
 
-                                {/* <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button fullWidth variant="outlined" component="label">
-                                            <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                            {TitleButton.SubirArchivo}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={urlFile === null ? true : false} variant="outlined" fullWidth onClick={() => setOpenViewArchivo(true)}>
-                                            {TitleButton.VerArchivo}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid> */}
-
-
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                        <Button variant="outlined" fullWidth onClick={handleClickReport}>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
-
 
                                 <Grid item xs={2}>
                                     <AnimateButton>

@@ -50,8 +50,8 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
 
     doc.text('DATOS DEL REGISTRO', 7, 37);
     doc.text('NOTAS DE EVOLUCIÓN', 7, 80);
-    doc.text('IMPRESIÓN DIAGNOSTICA', 7, 128);
-    doc.text('PLAN DE MANEJO', 7, 156);
+    doc.text('IMPRESIÓN DIAGNOSTICA', 7, 149);
+    doc.text('PLAN DE MANEJO', 7, 175);
     doc.text('CONCEPTO DE APTITUD', 7, 210);
 
     doc.setFontSize(10);
@@ -66,11 +66,11 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.line(5, 75, marXR, 75); /* HORI THREE */
     doc.line(5, 83, marXR, 83); /* HORI FOUR */
 
-    doc.line(5, 123, marXR, 123); /* HORI FIVE */
-    doc.line(5, 131, marXR, 131); /* HORI SIX */
+    doc.line(5, 144, marXR, 144); /* HORI FIVE */
+    doc.line(5, 152, marXR, 152); /* HORI SIX */
 
-    doc.line(5, 151, marXR, 151); /* HORI SEVEN */
-    doc.line(5, 159, marXR, 159); /* HORI OCHO */
+    doc.line(5, 170, marXR, 170); /* HORI SEVEN */
+    doc.line(5, 178, marXR, 178); /* HORI OCHO */
 
     doc.line(5, 205, marXR, 205); /* HORI NINE */
     doc.line(5, 213, marXR, 213); /* HORI TEN */
@@ -125,18 +125,18 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text(`${lsDataReport.nameConceptoActitud}`, 7, 220, { maxWidth: 200, lineHeightFactor: 1.5 });
     doc.setFontSize(6.5);
     doc.text(`${lsDataReport.nota}`, 7, 87, { maxWidth: 193, lineHeightFactor: 1.5 });
-    doc.text(`${lsDataReport.planManejo}`, 7, 163, { maxWidth: 193, lineHeightFactor: 1.5 });
+    doc.text(`${lsDataReport.planManejo}`, 7, 182, { maxWidth: 193, lineHeightFactor: 1.5 });
 
-    doc.setFontSize(10);
+    doc.setFontSize(8);
 
     if (lsDataReport.dx1 !== "")
-        doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 135, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 157, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     if (lsDataReport.dx2 !== "")
-        doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 140, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 162, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     if (lsDataReport.dx3 !== "")
-        doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 145, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 167, { maxWidth: 200, lineHeightFactor: 1.5 });
 
 
     getFirma(doc, lsDataUser, 20);

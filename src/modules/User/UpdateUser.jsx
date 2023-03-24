@@ -30,7 +30,7 @@ const validationSchema = yup.object().shape({
     nombreUsuario: yup.string().required(`${ValidationMessage.Requerido}`),
     nombre: yup.string().required(`${ValidationMessage.Requerido}`),
     telefono: yup.string().required(`${ValidationMessage.Requerido}`),
-    correo: yup.string().email(`${ValidationMessage.ValidarCorreo}`).required(`${ValidationMessage.Requerido}`),
+    correo: yup.string().required(`${ValidationMessage.Requerido}`),
     idRol: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
@@ -41,6 +41,7 @@ const UpdateUser = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [checkResetearPass, setCheckResetearPass] = useState(false);
+    const [checkRespondeRein, setCheckRespondeRein] = useState(false);
     const [checkEstadoUsuario, setCheckEstadoUsuario] = useState(true);
 
     const [lsUsuario, setLsUsuario] = useState([]);
@@ -67,6 +68,7 @@ const UpdateUser = () => {
                 setLsUsuario(lsServerUpdate.data);
                 setFileImg(lsServerUpdate.data.firma);
                 setCheckEstadoUsuario(lsServerUpdate.data.estado);
+                setCheckRespondeRein(lsServerUpdate.data.respondeReintegro);
             }
 
             const lsServerRol = await GetAllRol(0, 0);
@@ -124,7 +126,7 @@ const UpdateUser = () => {
 
             const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
                 datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-                firmaMedico, checkEstadoUsuario, datos.idSede);
+                firmaMedico, checkEstadoUsuario, datos.idSede, checkRespondeRein);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateUsers(DataToUpdate);
@@ -305,6 +307,15 @@ const UpdateUser = () => {
                                 label="Resetear Clave"
                                 onChange={(e) => setCheckResetearPass(e.target.checked)}
                                 checked={checkResetearPass}
+                                size={30}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
+                            <InputCheck
+                                label="¿Este usuario responde ordenes de reintegro?"
+                                onChange={(e) => setCheckRespondeRein(e.target.checked)}
+                                checked={checkRespondeRein}
                                 size={30}
                             />
                         </Grid>

@@ -29,7 +29,7 @@ const validationSchema = yup.object().shape({
     nombreUsuario: yup.string().required(`${ValidationMessage.Requerido}`),
     nombre: yup.string().required(`${ValidationMessage.Requerido}`),
     telefono: yup.string().required(`${ValidationMessage.Requerido}`),
-    correo: yup.string().email(`${ValidationMessage.ValidarCorreo}`).required(`${ValidationMessage.Requerido}`),
+    correo: yup.string().required(`${ValidationMessage.Requerido}`),
     idRol: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
@@ -39,6 +39,7 @@ const User = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [checkUsuario, setCheckUsuario] = useState(true);
+    const [checkRespondeRein, setCheckRespondeRein] = useState(false);
     const [checkEstadoUsuario, setCheckEstadoUsuario] = useState(true);
 
     const [fileImg, setFileImg] = useState(null);
@@ -285,10 +286,18 @@ const User = () => {
 
                 <Grid item xs={12} md={6} lg={4}>
                     <InputCheck
-                        disabled
                         label="¿Desea que la contraseña sea el mismo Usuario?"
                         onChange={(e) => setCheckUsuario(e.target.checked)}
                         checked={checkUsuario}
+                        size={30}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={4}>
+                    <InputCheck
+                        label="¿Este usuario responde ordenes de reintegro?"
+                        onChange={(e) => setCheckRespondeRein(e.target.checked)}
+                        checked={checkRespondeRein}
                         size={30}
                     />
                 </Grid>

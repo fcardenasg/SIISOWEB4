@@ -506,7 +506,7 @@ export function pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport = []
   doc.text("- La exposición fue?", 7, 196);
 
   ////
-  doc.text("C. ¿Ha trabajado en en un empleo donde hata exposición a humos y gases químicos?", 7, 201);
+  doc.text("C. ¿Ha trabajado en en un empleo donde haya exposición a humos y gases químicos?", 7, 201);
   doc.text("- Especifique empleo y ocupación o industria:", 7, 206);
   doc.text("- Total años trabajados?", 7, 211);
   doc.text("- La exposición fue?", 7, 216);
@@ -581,7 +581,14 @@ export function pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport = []
   if (lsDataReport.nameHistoriaOcupB3SintR !== 'SIN REGISTRO') {
     doc.text(`${lsDataReport.nameHistoriaOcupB3SintR}`, 197, 196);
   }
+  if (lsDataReport.nameHistoriaOcupC3SintR !== 'SIN REGISTRO') {
+    doc.text(`${lsDataReport.nameHistoriaOcupC3SintR}`, 197, 216);
+  }
   doc.setFontSize(9);
+  doc.text(`${lsDataReport.historiaOcupCSintR}`, 202, 201);
+  doc.text(`${lsDataReport.historiaOcupC1SintR}`, 85, 206);
+  doc.text(`${lsDataReport.historiaOcupC2SintR}`, 202, 211);
+
 
   doc.text(`${lsDataReport.historiaOcupD1SintR}`, 150, 221);
   doc.text(`${lsDataReport.historiaOcupD2SintR}`, 202, 226);

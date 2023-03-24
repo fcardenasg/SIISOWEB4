@@ -37,7 +37,7 @@ import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import CheckListRefund from './CheckListRefund';
 import { PostRefund } from 'formatdata/RefundForm';
 import { GetByIdRefund, InsertRefund } from 'api/clients/RefundClient';
-import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { GetAllComboUser, GetAllUser, GetByMail } from 'api/clients/UserClient';
 import { generateReportRefund } from './ReportRefund';
 import ViewPDF from 'components/components/ViewPDF';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -188,15 +188,8 @@ const Refund = () => {
             }));
             setLsEstadoEmpleado(resultEstadoEmpleado);
 
-            const lsServerUsuario = await GetAllUser(0, 0);
-            var resultUsuario = lsServerUsuario.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setLsUsuarios(resultUsuario);
-            /* if (lsServerUsuario.status === 200) {
-                
-            } */
+            const lsServerUsuario = await GetAllComboUser();
+            setLsUsuarios(lsServerUsuario.data);
 
             const lsServerEstadoRestriccion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_RESTRICCION);
             var resultEstadoRestriccion = lsServerEstadoRestriccion.data.entities.map((item) => ({

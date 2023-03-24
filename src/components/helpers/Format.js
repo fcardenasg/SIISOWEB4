@@ -2,7 +2,6 @@ import { DefaultValue } from "./Enums";
 
 const FormatDate = (date) => {
     try {
-
         if (date === null) {
             return null;
         } else {
