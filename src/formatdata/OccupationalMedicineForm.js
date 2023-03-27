@@ -15,7 +15,11 @@ export function PostOccupationalMedicine(cedula, resumenCaso = DefaultValue.SINR
     fechaEstructuracionPclInstFinal, indemnizado = DefaultValue.SINREGISTRO_GLOBAL, fechaPagoInstaFinal, entregadoMin = DefaultValue.SINREGISTRO_GLOBAL,
     indemnizadoRecalificado = DefaultValue.SINREGISTRO_GLOBAL, fechaPagoRecalificadoInstaFinal, estadoRHT = '', reintegro = '', reubicado = '', restringido = '',
     jornadaLaboral = '', indemnizacion = '', sede = DefaultValue.SINREGISTRO_GLOBAL, usuario = '', usuarioReporte = '', fechaSistema, fechaInforme, fechaReporte,
-    fechaSistemaReporte, edadCalificado, antiguedadCalificado, urlDocumento = urlDocumento === null ? '' : urlDocumento) {
+    fechaSistemaReporte, edadCalificado, antiguedadCalificado, urlDocumento = urlDocumento === null ? '' : urlDocumento,
+
+    aplica = DefaultValue.SINREGISTRO_GLOBAL, motivoIE = DefaultValue.SINREGISTRO_GLOBAL, estadoEnfermedadLaboral = DefaultValue.SINREGISTRO_GLOBAL, resultadoOrigen = DefaultValue.SINREGISTRO_GLOBAL,
+    fechaCalificacionUltimaInstancia, fechaInvestigacion, origenInvestigacion = DefaultValue.SINREGISTRO_GLOBAL, diferenciaDia = 0, resumenWR = '', accTrabajador = '', resumenSG = '',
+    accSistema = '', peligroAsociadoEnfermedad = '', fechaEntregaMin, pdfMinisterio = pdfMinisterio === null ? '' : pdfMinisterio) {
     return {
         cedula, resumenCaso, fechaRetiro, segmentoAgrupado, segmentoAfectado, subsegmento,
         codDx, nroFurel, regionInfoLaboral, lateralidad, entidadQueMotivaEnvio, entidadDondeEnvia, fechaEntrega, fechaEnvio, investigado,
@@ -28,7 +32,10 @@ export function PostOccupationalMedicine(cedula, resumenCaso = DefaultValue.SINR
         fechaEstructuracionOrigenInstaFinal, instanciaOrigenInstaFinal, pclFinalInstaFinal, instanciaFinal, fechaCalificacionPclInstFinal,
         fechaEstructuracionPclInstFinal, indemnizado, fechaPagoInstaFinal, entregadoMin, indemnizadoRecalificado, fechaPagoRecalificadoInstaFinal,
         estadoRHT, reintegro, reubicado, restringido, jornadaLaboral, indemnizacion, sede, usuario, usuarioReporte, fechaSistema, fechaInforme,
-        fechaReporte, fechaSistemaReporte, edadCalificado, antiguedadCalificado, urlDocumento
+        fechaReporte, fechaSistemaReporte, edadCalificado, antiguedadCalificado, urlDocumento,
+
+        aplica, motivoIE, estadoEnfermedadLaboral, resultadoOrigen, fechaCalificacionUltimaInstancia, fechaInvestigacion, origenInvestigacion,
+        diferenciaDia, resumenWR, accTrabajador, resumenSG, accSistema, peligroAsociadoEnfermedad, fechaEntregaMin, pdfMinisterio
     };
 }
 
@@ -45,7 +52,11 @@ export function PutOccupationalMedicine(id, cedula, resumenCaso = DefaultValue.S
     fechaEstructuracionOrigenInstaFinal, instanciaOrigenInstaFinal = DefaultValue.SINREGISTRO_GLOBAL, pclFinalInstaFinal = 0, instanciaFinal = 0, fechaCalificacionPclInstFinal,
     fechaEstructuracionPclInstFinal, indemnizado = DefaultValue.SINREGISTRO_GLOBAL, fechaPagoInstaFinal, entregadoMin = DefaultValue.SINREGISTRO_GLOBAL, indemnizadoRecalificado = DefaultValue.SINREGISTRO_GLOBAL,
     fechaPagoRecalificadoInstaFinal, estadoRHT = '', reintegro = '', reubicado = '', restringido = '', jornadaLaboral = '', indemnizacion = '', sede = DefaultValue.SINREGISTRO_GLOBAL,
-    usuario = '', usuarioReporte = '', fechaSistema, fechaInforme, fechaReporte, fechaSistemaReporte, edadCalificado, antiguedadCalificado, urlDocumento = urlDocumento === null ? '' : urlDocumento) {
+    usuario = '', usuarioReporte = '', fechaSistema, fechaInforme, fechaReporte, fechaSistemaReporte, edadCalificado, antiguedadCalificado, urlDocumento = urlDocumento === null ? '' : urlDocumento,
+
+    aplica = DefaultValue.SINREGISTRO_GLOBAL, motivoIE = DefaultValue.SINREGISTRO_GLOBAL, estadoEnfermedadLaboral = DefaultValue.SINREGISTRO_GLOBAL, resultadoOrigen = DefaultValue.SINREGISTRO_GLOBAL,
+    fechaCalificacionUltimaInstancia, fechaInvestigacion, origenInvestigacion = DefaultValue.SINREGISTRO_GLOBAL, diferenciaDia = 0, resumenWR = '', accTrabajador = '', resumenSG = '',
+    accSistema = '', peligroAsociadoEnfermedad = '', fechaEntregaMin, pdfMinisterio = pdfMinisterio === null ? '' : pdfMinisterio) {
     return {
         id, cedula, resumenCaso, fechaRetiro, segmentoAgrupado, segmentoAfectado, subsegmento,
         codDx, nroFurel, regionInfoLaboral, lateralidad, entidadQueMotivaEnvio, entidadDondeEnvia, fechaEntrega, fechaEnvio, investigado,
@@ -58,6 +69,9 @@ export function PutOccupationalMedicine(id, cedula, resumenCaso = DefaultValue.S
         fechaEstructuracionOrigenInstaFinal, instanciaOrigenInstaFinal, pclFinalInstaFinal, instanciaFinal, fechaCalificacionPclInstFinal,
         fechaEstructuracionPclInstFinal, indemnizado, fechaPagoInstaFinal, entregadoMin, indemnizadoRecalificado, fechaPagoRecalificadoInstaFinal,
         estadoRHT, reintegro, reubicado, restringido, jornadaLaboral, indemnizacion, sede, usuario, usuarioReporte, fechaSistema, fechaInforme,
-        fechaReporte, fechaSistemaReporte, edadCalificado, antiguedadCalificado, urlDocumento
+        fechaReporte, fechaSistemaReporte, edadCalificado, antiguedadCalificado, urlDocumento,
+
+        aplica, motivoIE, estadoEnfermedadLaboral, resultadoOrigen, fechaCalificacionUltimaInstancia, fechaInvestigacion, origenInvestigacion,
+        diferenciaDia, resumenWR, accTrabajador, resumenSG, accSistema, peligroAsociadoEnfermedad, fechaEntregaMin, pdfMinisterio
     };
 }

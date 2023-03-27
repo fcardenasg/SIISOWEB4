@@ -96,7 +96,7 @@ const Electro = () => {
 
     async function getAll() {
         try {
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Atencion_Audiometria);
+            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Atencion_PARACLINICO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre

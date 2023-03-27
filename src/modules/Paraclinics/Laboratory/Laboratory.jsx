@@ -50,6 +50,7 @@ const Laboratory = () => {
     const [lsProveedor, setLsProveedor] = useState([]);
 
     const [lsInterpretacion, setLsInterpretacion] = useState([]);
+    const [lsInterpretacionColes, setLsInterpretacionColes] = useState([]);
     const [lsInterpretacionTrigli, setLsInterpretacionTrigli] = useState([]);
     const [lsInterpretacionGlicemia, setLsInterpretacionGlicemia] = useState([]);
 
@@ -100,7 +101,7 @@ const Laboratory = () => {
 
     async function getAll() {
         try {
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AtencionEMO);
+            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Atencion_PARACLINICO);
             var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
@@ -114,19 +115,19 @@ const Laboratory = () => {
             }));
             setLsInterpretacion(resultInterpretacion);
 
+            const lsServerInterpretacionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_RESULTADOAUDIOGRAMA);
+            var resultInterpretacionn = lsServerInterpretacionn.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsInterpretacionColes(resultInterpretacionn);
+
             const lsServerInterpretacionTri = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_INTER_TRIGLICE);
             var resultInterpretacionTri = lsServerInterpretacionTri.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
             setLsInterpretacionTrigli(resultInterpretacionTri);
-
-            const lsServerInterpretacionGlicemi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_INTER_GLICEMIA);
-            var resultInterpretacionGlice = lsServerInterpretacionGlicemi.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsInterpretacionGlicemia(resultInterpretacionGlice);
 
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
@@ -305,7 +306,7 @@ const Laboratory = () => {
                                         <InputSelect
                                             name="interpretacionColesteHDL"
                                             label="Interpretación"
-                                            options={lsInterpretacion}
+                                            options={lsInterpretacionColes}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -398,7 +399,7 @@ const Laboratory = () => {
                                         <InputSelect
                                             name="interpretacionGlicemia"
                                             label="Interpretacion"
-                                            options={lsInterpretacionGlicemia}
+                                            options={lsInterpretacionColes}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -439,7 +440,7 @@ const Laboratory = () => {
                                         <InputSelect
                                             name="interpretacionCreatinina"
                                             label="Interpretacion"
-                                            options={lsInterpretacionGlicemia}
+                                            options={lsInterpretacionColes}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -480,7 +481,7 @@ const Laboratory = () => {
                                         <InputSelect
                                             name="interpretacionBUN"
                                             label="Interpretacion"
-                                            options={lsInterpretacionGlicemia}
+                                            options={lsInterpretacionColes}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -509,7 +510,7 @@ const Laboratory = () => {
                                     <InputSelect
                                         name="idParcialOrina"
                                         label="Parcial de Orina"
-                                        options={lsInterpretacionGlicemia}
+                                        options={lsInterpretacionColes}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
@@ -535,7 +536,7 @@ const Laboratory = () => {
                                     <InputSelect
                                         name="hemograma"
                                         label="Hemograma"
-                                        options={lsInterpretacionGlicemia}
+                                        options={lsInterpretacionColes}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
@@ -561,7 +562,7 @@ const Laboratory = () => {
                                     <InputSelect
                                         name="gpt"
                                         label="GPT - (Ref: 7 - 33 Normal)"
-                                        options={lsInterpretacionGlicemia}
+                                        options={lsInterpretacionColes}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
@@ -587,7 +588,7 @@ const Laboratory = () => {
                                     <InputSelect
                                         name="got"
                                         label="GoT - (Ref: 5 - 32 Normal)"
-                                        options={lsInterpretacionGlicemia}
+                                        options={lsInterpretacionColes}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
@@ -613,7 +614,7 @@ const Laboratory = () => {
                                     <InputSelect
                                         name="bilirrubina"
                                         label="Bilirrubina Total"
-                                        options={lsInterpretacionGlicemia}
+                                        options={lsInterpretacionColes}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
@@ -639,7 +640,7 @@ const Laboratory = () => {
                                     <InputSelect
                                         name="bilirrubinaDirecta"
                                         label="Bilirrubina Directa"
-                                        options={lsInterpretacionGlicemia}
+                                        options={lsInterpretacionColes}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>

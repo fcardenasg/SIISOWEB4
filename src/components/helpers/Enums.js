@@ -27,7 +27,7 @@ export const CodCatalogo = {
     EP_EMO_SintomasRespiratorios: 201,
 
     AtencionEMO: 138,
-    Atencion_Audiometria: 206,
+    Atencion_PARACLINICO: 206,
     Empresas_Paraclinicos: 202,
 
     CONCEPTO_ESPACIOCONFINADO: 179,
@@ -47,7 +47,6 @@ export const CodCatalogo = {
 
     PARACLINICO_IINTER_COLESTEROL: 205,
     PARACLINICO_INTER_TRIGLICE: 204,
-    PARACLINICO_INTER_GLICEMIA: 203,
 
     PARACLINICO_PROTECCIÓNAUDITIVA: 174,
     PARACLINICO_SUMINISTRADOPOR: 175,
