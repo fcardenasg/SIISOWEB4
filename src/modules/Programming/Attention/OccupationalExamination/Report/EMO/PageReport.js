@@ -597,7 +597,7 @@ export function generateReportConceptAptitude(
     { align: "right" }
   );
 
-  doc.text("DATOS DEL REGISTRO", 7, 37);
+  doc.text("DATOS PERSONALES", 7, 37);
   doc.setFontSize(10);
   doc.setLineWidth(0.2);
   doc.setDrawColor(128, 128, 128);
@@ -615,7 +615,7 @@ export function generateReportConceptAptitude(
 
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 45, 45);
-  doc.text("NOMBRES:", 120, 45);
+  doc.text("NOMBRE:", 120, 45);
   doc.text("CARGO:", 45, 50);
   doc.text("PROFESIÓN:", 45, 55);
   doc.text("AREA:", 45, 60);
@@ -643,6 +643,8 @@ export function generateReportConceptAptitude(
     lineHeightFactor: 1.5,
   });
 
+
+  doc.text("Cordialmente,", 7, 200);
   getFirma(doc, lsDataUser);
 }
 
@@ -661,7 +663,7 @@ export function generateReportDiagnosis(
     { align: "right" }
   );
 
-  doc.text("DATOS DEL REGISTRO", 7, 37);
+  doc.text("DATOS PERSONALES", 7, 37);
   doc.setFontSize(10);
   doc.setLineWidth(0.2);
   doc.setDrawColor(128, 128, 128);
@@ -681,7 +683,7 @@ export function generateReportDiagnosis(
 
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 7, 45);
-  doc.text("NOMBRES:", 120, 45);
+  doc.text("NOMBRE:", 120, 45);
   doc.text("CARGO:", 7, 50);
   doc.text("PROFESIÓN:", 7, 55);
   doc.text("AREA:", 7, 60);
@@ -740,8 +742,10 @@ export function generateReportDiagnosis(
     lineHeightFactor: 1.5,
   });
 
-  getFirma(doc, lsDataUser, 10);
-  getFirmaEmployee(doc, lsDataReport, 10);
+  doc.text("Cordialmente,", 7, 220);
+
+  getFirma(doc, lsDataUser, 20);
+  getFirmaEmployee(doc, lsDataReport, 20);
 }
 
 /* REPORTE DE RIESGOS OTRAS EMPRESA */
@@ -760,7 +764,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
     { align: "right" }
   );
 
-  doc.text("1. DATOS DEL REGISTRO", 7, 37);
+  doc.text("1. DATOS PERSONALES", 7, 37);
   doc.setFontSize(10);
   doc.setLineWidth(0.2);
   doc.setDrawColor(128, 128, 128);
@@ -786,7 +790,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 7, 43);
   /* SEGUNDA COLUMNA */
-  doc.text("NOMBRES:", 112, 43);
+  doc.text("NOMBRE:", 112, 43);
 
   /* RENDERIZADO */
   doc.setFont("helvetica", "normal");

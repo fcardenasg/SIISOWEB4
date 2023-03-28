@@ -25,7 +25,7 @@ import {
   generateDefinitiveDiagnosis,
 } from "./PageReport";
 
-function getHeader(doc = new jsPDF(), lsDataReport) {
+function getHeader(doc = new jsPDF(), lsDataReport, version = "SIG-0410") {
   var marXR = doc.internal.pageSize.width - 5;
   /* ENCABEZADO REPORTE */
   doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
@@ -36,7 +36,7 @@ function getHeader(doc = new jsPDF(), lsDataReport) {
   doc.text(`${lsDataReport.nameAtencion}`, 110, 18, { align: "center" });
 
   doc.setFontSize(12);
-  doc.text("SIG-0410", 170, 12);
+  doc.text(version, 170, 12);
   doc.setFontSize(10);
   doc.text("Versión 06", 170, 16);
 
@@ -225,7 +225,7 @@ export function generateReportIndex(
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
-  getHeader(doc, lsDataReport);
+  getHeader(doc, lsDataReport, "SIG-0407");
   generateClinicHistoryOtherCompany(doc, lsDataReport, lsRiesgoHLDO, lsWorkHistoryOtherCompany);
   getPiePage(doc, lsDataUser, 3, 18);
 
