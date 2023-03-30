@@ -48,7 +48,7 @@ function getFirma(doc, lsDataUser, my = 0) {
 function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = []) {
     var marXR = doc.internal.pageSize.width - 5;
 
-    doc.text('DATOS DEL REGISTRO', 7, 37);
+    doc.text('DATOS PERSONALES', 7, 37);
     doc.text('MOTIVO DE CONSULTA:', 7, 85);
     doc.text('ENFERMEDAD ACTUAL:', 7, 110);
     doc.text('ANTECEDENTES:', 7, 185);
@@ -99,6 +99,7 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = []) {
     doc.text('AREA:', 120, 60);
     doc.text('ESTADO CIVIL:', 120, 65);
     doc.text('EMAIL:', 120, 70);
+    doc.text('EMPRESA:', 120, 75);
 
     /* DATOS DEL REGISTRO */
     doc.setFont("helvetica", "normal");
@@ -117,6 +118,7 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = []) {
     doc.text(`${lsDataReport.nameArea}`, 150, 60);
     doc.text(`${lsDataReport.nameEstadoCivil}`, 150, 65);
     doc.text(`${lsDataReport.nameCorreo}`, 150, 70);
+    doc.text(`${lsDataReport.nameEmpresa}`, 150, 75);
 
     /* DESCRIPCIONES DE TEXTO */
     doc.setFontSize(7);
