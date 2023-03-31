@@ -284,7 +284,7 @@ const OccupationalMedicine = () => {
                 datos.origenInvestigacion, datos.diferenciaDia, datos.resumenWR, datos.accTrabajador, datos.resumenSG, datos.accSistema, datos.peligroAsociadoEnfermedad,
                 datos.fechaEntregaMin, datos.pdfMinisterio);
 
-                console.log("datos => ", DataToInsert)
+            console.log("datos => ", DataToInsert)
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {

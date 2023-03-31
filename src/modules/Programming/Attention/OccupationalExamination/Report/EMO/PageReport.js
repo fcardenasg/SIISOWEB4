@@ -771,65 +771,96 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
 
   /* CUADRO DATOS */
   doc.line(5, 25, 5, 260); /* IZQUIERDA */
+
   doc.line(5, 32, marXR, 32); /* HORI 1 */
   doc.line(5, 39, marXR, 39); /* HORI 2 */
-  doc.line(5, 45, marXR, 45); /* HORI 3 */
-  doc.line(5, 53, marXR, 53); /* HORI 4 */
-  doc.line(5, 60, marXR, 60); /* HORI 5 */
-  doc.line(5, 66, marXR, 66); /* HORI 5 */
-  doc.line(5, 73, marXR, 73); /* HORI 5 */
-  doc.line(5, 81, marXR, 81); /* HORI 5 */
-  doc.line(5, 88, marXR, 88); /* HORI 5 */
+
+  doc.line(5, 82, marXR, 82); /* HORI 3 */
+  doc.line(5, 90, marXR, 90); /* HORI 4 */
+
+
+  doc.line(5, 114, marXR, 114); /* HORI 5 */
+
+  doc.line(5, 122, marXR, 122); /* HORI 5 */
+  doc.line(5, 130, marXR, 130); /* HORI 5 */
+
   doc.line(5, 260, marXR, 260); /* HORI 6 */
 
-  doc.line(5, 98 + (8 * longitud), marXR, 98 + (8 * longitud)); /* HORI 5 */
-  doc.line(5, 104 + (8 * longitud), marXR, 104 + (8 * longitud)); /* HORI 6 */
+  doc.line(5, 137 + (8 * longitud), marXR, 137 + (8 * longitud)); /* HORI 5 */
+  doc.line(5, 144 + (8 * longitud), marXR, 144 + (8 * longitud)); /* HORI 6 */
 
   doc.line(marXR, 25, marXR, 260); /* DERECHA */
 
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 7, 43);
+  doc.text("GENERO:", 7, 48);
+  doc.text("FECHA DE NACIMIENTO:", 7, 53);
+  doc.text("TURNO:", 7, 58);
+  doc.text("CELULAR PERSONAL:", 7, 63);
+  doc.text("EMAIL:", 7, 68);
+  doc.text("DPTO. DE NACIMIENTO:", 7, 73);
+  doc.text("ESCOLARIDAD:", 7, 78);
+
   /* SEGUNDA COLUMNA */
   doc.text("NOMBRE:", 112, 43);
+  doc.text("EDAD:", 112, 48);
+  doc.text("ESTADO CIVIL:", 112, 53);
+  doc.text("DIRECCIÓN:", 112, 58);
+  doc.text("GRUPO:", 112, 63);
+  doc.text("ARL:", 112, 68);
+  doc.text("CIUDAD DE NACIMIENTO:", 112, 73);
+  doc.text("CONTACTO:", 112, 78);
 
   /* RENDERIZADO */
   doc.setFont("helvetica", "normal");
-  doc.text(`${lsDataReport.documento}`, 45, 43);
-  doc.text(`${lsDataReport.nameEmpleado}`, 150, 43);
+  doc.text(`${lsDataReport.documento}`, 32, 43);
+  doc.text(`${lsDataReport.nameGenero}`, 26, 48);
+  doc.text(`${ViewFormat(lsDataReport.fechaNacimiento)}`, 51, 53);
+  doc.text(`${lsDataReport.nameTurno}`, 22, 58);
+  doc.text(`${lsDataReport.celularEmpleado}`, 46, 63);
+  doc.text(`${lsDataReport.correoEmpleado}`, 21, 68);
+  doc.text(`${lsDataReport.nameDptoNacimiento}`, 49, 73);
+  doc.text(`${lsDataReport.nameContacto}`, 35, 78);
 
+  doc.text(`${lsDataReport.nameEmpleado}`, 130, 43);
+  doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 125, 48);
+  doc.text(`${lsDataReport.nameEstadoCivil}`, 139, 53);
+  doc.text(`${lsDataReport.direccionEmpleado}`, 134, 58);
+  doc.text(`${lsDataReport.nameGrupo}`, 128, 63);
+  doc.text(`${lsDataReport.nameArl}`, 122, 68);
+  doc.text(`${lsDataReport.nameCiudadNacimiento}`, 158, 73);
+  doc.text(`${lsDataReport.nameContacto}`, 135, 78);
 
   /* 2. INFORMACION DE LA EMPRESA Y CARGO */
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-  doc.text("2. INFORMACION DE LA EMPRESA Y CARGO", 7, 50);
+  doc.text("2. INFORMACION DE LA EMPRESA Y CARGO", 7, 87);
 
   /* PRIMERA COLUMNA */
   doc.setFont("helvetica", "bold");
-  doc.text("SEDE:", 7, 57);
-  doc.text("ÁREA:", 7, 64);
-  doc.text("POSICIÓN:", 7, 71);
+  doc.text("SEDE:", 7, 96);
+  doc.text("ÁREA:", 7, 103);
+  doc.text("POSICIÓN:", 7, 110);
   /* SEGUNDA COLUMNA */
-  doc.text("DPTO. TRABAJO:", 112, 57);
-  doc.text("GRUPO:", 112, 64);
-  doc.text("ANTIGUEDAD:", 112, 71);
+  doc.text("DPTO. TRABAJO:", 112, 96);
+  doc.text("GRUPO:", 112, 103);
+  doc.text("ANTIGUEDAD:", 112, 110);
 
   /* 2. RENDERIZADO */
   doc.setFont("helvetica", "normal");
-  doc.text(`${lsDataReport.nameSede}`, 45, 57);
-  doc.text(`${lsDataReport.nameArea}`, 45, 64);
-  doc.text(`${lsDataReport.nameCargo}`, 45, 71);
+  doc.text(`${lsDataReport.nameSede}`, 30, 96);
+  doc.text(`${lsDataReport.nameArea}`, 30, 103);
+  doc.text(`${lsDataReport.nameCargo}`, 30, 110);
 
-  doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 150, 57);
-  doc.text(`${lsDataReport.nameGrupo}`, 150, 64);
-  doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)}`, 150, 71);
-  doc.text("AÑOS", 155, 71);
+  doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 145, 96);
+  doc.text(`${lsDataReport.nameGrupo}`, 145, 103);
+  doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)} AÑOS`, 145, 110);
 
   /* 3. ANTECEDENTES LABORALES */
   doc.setFont("helvetica", "bold");
-  doc.text("3. ANTECEDENTES LABORALES", 7, 78);
+  doc.text("3. ANTECEDENTES LABORALES", 7, 119);
   doc.setFontSize(10);
-  /* 3.1. HISTORIA LABORAL EN OTRAS EMPRESAS */
-  doc.text("3.1. HISTORIA LABORAL EN OTRAS EMPRESAS", 7, 86);
+  doc.text("3.1. HISTORIA LABORAL EN OTRAS EMPRESAS", 7, 127);
   doc.setFontSize(10);
 
   //TABLA DE RENDERIZADO DE RIESGOS
@@ -837,7 +868,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
     styles: { fontSize: 10 },
     theme: 'plain',
     fontStyle: 'normal',
-    margin: { top: 90, left: 7, right: 7 },
+    margin: { top: 130, left: 7, right: 7 },
     body: lsWorkHistoryOtherCompany,
     columns: [
       { header: 'Empresa', dataKey: 'empresa' },
@@ -847,7 +878,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
     ],
   }))
   /* doc.setFont("helvetica", "normal"); */
-  doc.text("3.1.1. EXPOSICIÓN OCUPACIONAL EN OTRAS EMPRESAS", 7, 102 + (8 * longitud));
+  doc.text("3.1.1. EXPOSICIÓN OCUPACIONAL EN OTRAS EMPRESAS", 7, 142 + (8 * longitud));
   doc.setFontSize(10);
 
 
@@ -951,7 +982,9 @@ export function generateClinicHistoryDLTD(
       /* { header: 'Cargo', dataKey: 'cargo' }, */
       { header: 'Riesgo', dataKey: 'riesgo' },
       { header: 'Clase', dataKey: 'clase' },
-      /* { header: 'Exposición', dataKey: 'exposicion' }, */
+
+      { header: 'Medidas De Control', dataKey: 'medidasControl' },
+
       { header: 'Grado Sin Epp', dataKey: 'gradoSinEpp' },
       { header: 'Grado Con Epp', dataKey: 'gradosConEpp' },
       { header: 'Año', dataKey: 'anio' },

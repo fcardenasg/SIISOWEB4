@@ -29,19 +29,15 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
 
     const FormatArray = (medidasControl = '') => {
         if (medidasControl != '') {
-            var array = JSON.parse(medidasControl);
+            var arreglo = JSON.parse(medidasControl);
 
-            var resultMap = array.map((medida) => ({
-                label: medida.label
-            }));
+            var dato = arreglo.map(element => {
+                var arregloString = "";
+                arregloString = element.label + `${arregloString} - `;
+                return arregloString;
+            });
 
-            for (let index = 0; index < resultMap.length; index++) {
-                const element = resultMap[index];
-                const result = element.label + ' - ';
-                if (index < resultMap.length) {
-                    return result;
-                }
-            }
+            return dato;
         }
     }
 

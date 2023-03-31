@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import { Fragment, useEffect, useState } from 'react';
 
 import { CodCatalogo, TitleButton } from 'components/helpers/Enums';
-import Chip from 'ui-component/extended/Chip';
 
 import {
     Button,
@@ -12,12 +11,8 @@ import {
     DialogContent,
     DialogTitle,
     Grid,
-    List,
-    ListItemButton,
-    ListItemIcon,
-    ListItemSecondaryAction,
-    ListItemText,
 } from '@mui/material';
+
 import InputText from 'components/input/InputText';
 import { FormProvider, useForm } from 'react-hook-form';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -30,9 +25,8 @@ import Avatar from 'ui-component/extended/Avatar';
 import SubCard from 'ui-component/cards/SubCard';
 import Cargando from 'components/loading/Cargando';
 
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import userImg from 'assets/img/user.png';
-import { PutWorkHistoryRiskDLTD } from 'formatdata/WorkHistoryRiskForm';
+import { PutWorkHistoryRiskDLTD, PutWorkHistoryRiskDLTD1 } from 'formatdata/WorkHistoryRiskForm';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -105,13 +99,23 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
 
     const handleClick = async (datos) => {
         try {
+            var dato = "";
+            /* if (medicaControl.length != 0) {
+
+                dato = medicaControl.map(element => {
+                    var arregloString = "";
+                    arregloString = element.label + `${arregloString} - `;
+                    return arregloString;
+                });
+            } */
+
             const DataToInsertCOMPANY = PutWorkHistoryRiskDLTD(idRisk, row.idHistoriaLaboral, row.fecha, row.documento, row.idRiesgo,
                 row.idCargo, row.idClase, row.idExposicion, row.gradoSinEPP, row.gradoConEPP, row.medidasControl, datos.anio, datos.mes,
                 row.usuarioRegistro, row.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
-            const DataToInsertDLTD = PutWorkHistoryRiskDLTD(idRisk, row.idHistoriaLaboral, row.fecha, row.documento, row.idRiesgo,
-                row.idCargo, row.idClase, row.idExposicion, gradoSinEPP, gradoConEPP, JSON.stringify(medicaControl), datos.anio, datos.mes,
-                row.usuarioRegistro, row.fechaRegistro, user.nameuser, FormatDate(new Date()));
+            const DataToInsertDLTD = PutWorkHistoryRiskDLTD1(idRisk, row.idHistoriaLaboral, row.fecha, row.documento, row.idRiesgo,
+                row.idCargo, row.idClase, row.idExposicion, gradoSinEPP, gradoConEPP, JSON.stringify(medicaControl), dato,
+                datos.anio, datos.mes, row.usuarioRegistro, row.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
             if (diferen === "DLTD") {
                 const result1 = await UpdateWorkHistoryRisks(DataToInsertDLTD);
