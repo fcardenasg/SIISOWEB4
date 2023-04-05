@@ -100,6 +100,8 @@ export const Url = {
     Ordenes: 'api/Ordenes',
     OrdenesId: 'api/Ordenes/id',
 
+    Antecedente: 'api/Antecedente',
+
     Asesorias: 'api/Asesorias',
     AsesoriasId: 'api/Asesorias/id',
     AsesoriasGetAllByTipoAtencion: 'api/Asesorias/GetAllByTipoAtencion',
@@ -156,6 +158,7 @@ export const Url = {
 
     HistoriaClinica: 'api/HistoriaClinica',
     HistoriaClinicaId: 'api/HistoriaClinica/id',
+    HistoriaClinicaAntecendete: 'api/HistoriaClinica/antecedente',
     HistoriaClinica_GetIdRegistroAtencion: 'api/HistoriaClinica/GetIdRegistroAtencion',
     HistoriaClinica_ValidateIdRegistroAtencion: 'api/HistoriaClinica/ValidateIdRegistroAtencion',
 

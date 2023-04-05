@@ -11,7 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
-import SelectOnChange from 'components/input/SelectOnChange';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { FormatDate } from 'components/helpers/Format';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -31,6 +31,8 @@ import InputOnChange from 'components/input/InputOnChange';
 import useAuth from 'hooks/useAuth';
 import Cargando from 'components/loading/Cargando';
 import { PutOccupationalMedicine } from 'formatdata/OccupationalMedicineForm';
+import ControlModal from 'components/controllers/ControlModal';
+import ViewPDF from 'components/components/ViewPDF';
 
 const OccupationalMedicine = () => {
     const { user } = useAuth();
@@ -39,12 +41,14 @@ const OccupationalMedicine = () => {
     const navigate = useNavigate();
 
     const [timeWait, setTimeWait] = useState(false);
+    const [openViewArchivo, setOpenViewArchivo] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [filePdf, setFilePdf] = useState(null);
+    const [filePdfMin, setFilePdfMin] = useState(null);
 
     const [lsEmployee, setLsEmployee] = useState([]);
     const [lsResumenCaso, setLsResumenCaso] = useState([]);
@@ -59,9 +63,7 @@ const OccupationalMedicine = () => {
     const [lsInstanciaOrigen, setLsInstanciaOrigen] = useState([]);
 
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
-    const [segmentoAgrupado, setSegmentoAgrupado] = useState('');
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
-    const [segmentoAfectado, setSegmentoAfectado] = useState('');
     const [lsSubsegmento, setLsSubsegmento] = useState([]);
     const [documento, setDocumento] = useState('');
     const [textDiagnistico, setTextDiagnostico] = useState('');
@@ -79,33 +81,27 @@ const OccupationalMedicine = () => {
                     setDocumento(lsServerAtencion.data.cedula);
                     handleLoadingDocument(lsServerAtencion.data.cedula);
                     setLsOccupationalMedicine(lsServerAtencion.data);
-                    setFilePdf(lsServerAtencion.data.urlDocumento);
-                    setSegmentoAgrupado(lsServerAtencion.data.segmentoAgrupado);
-                    setSegmentoAfectado(lsServerAtencion.data.segmentoAfectado);
                     setLsSubsegmento(lsServerAtencion.data.subsegmento);
-
-                    // const lsServerSegAfectado = await GetAllSegmentoAgrupado(lsServerAtencion.data.segmentoAgrupado, 0, 0);
-                    // var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                    //     value: item.id,
-                    //     label: item.nombre
-                    // }));
-                    // setLsSegmentoAfectado(resultSegAfectado);
-                    // setSegmentoAfectado(lsServerAtencion.data.segmentoAfectado);
-
-                    // const lsServerSubsegmento = await GetAllBySegmentoAfectado(lsServerAtencion.data.segmentoAfectado, 0, 0);
-                    // var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                    //     value: item.id,
-                    //     label: item.nombre
-                    // }));
-                    // setLsSubsegmento(resultSubsegmento);
-
-                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.codDx);
-                    var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                        value: item.id,
-                        label: item.dx
-                    }));
-                    setLsDiagnistico(resultCie11);
                     setTextDiagnostico(lsServerAtencion.data.codDx);
+
+                    if (lsServerAtencion.data.codDx !== "") {
+                        var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.codDx);
+                        if (lsServerCie11.status === 200) {
+                            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                                value: item.id,
+                                label: item.dx
+                            }));
+                            setLsDiagnistico(resultCie11);
+                        }
+                    }
+
+                    if (lsServerAtencion.data.urlDocumento !== "") {
+                        setFilePdf(lsServerAtencion.data.urlDocumento);
+                    }
+
+                    if (lsServerAtencion.data.pdfMinisterio !== "") {
+                        setFilePdfMin(lsServerAtencion.data.pdfMinisterio);
+                    }
                 }
             } catch (error) { }
         }
@@ -115,7 +111,6 @@ const OccupationalMedicine = () => {
 
     async function getAll() {
         try {
-         
             const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
             var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
                 value: item.id,
@@ -221,39 +216,6 @@ const OccupationalMedicine = () => {
         }
     }
 
-    // const handleChangeSegAgrupado = async (event) => {
-    //     try {
-    //         setLsSegmentoAfectado([]); setLsSubsegmento([]); setSegmentoAfectado(''); setSegmentoAgrupado('');
-
-    //         setSegmentoAgrupado(event.target.value);
-
-    //         const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
-    //         var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-    //             value: item.id,
-    //             label: item.nombre
-    //         }));
-    //         setLsSegmentoAfectado(resultSegAfectado);
-    //     } catch (error) {
-    //         setLsSegmentoAfectado([]);
-    //     }
-    // }
-
-    // const handleChangeSegAfectado = async (event) => {
-    //     try {
-    //         setLsSubsegmento([]);
-    //         setSegmentoAfectado(event.target.value);
-
-    //         const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
-    //         var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-    //             value: item.id,
-    //             label: item.nombre
-    //         }));
-    //         setLsSubsegmento(resultSubsegmento);
-    //     } catch (error) {
-    //         setLsSubsegmento([]);
-    //     }
-    // }
-
     const handleDiagnostico = async (event) => {
         try {
             setTextDiagnostico(event.target.value);
@@ -300,6 +262,25 @@ const OccupationalMedicine = () => {
         }
     }
 
+    const handleFile1 = (event) => {
+        let selectedFile = event.target.files[0];
+
+        if (selectedFile) {
+            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
+                let reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onloadend = (e) => {
+                    setFilePdfMin(e.target.result);
+                }
+            }
+            else {
+                setFilePdfMin('');
+                setOpenError(true);
+                setErrorMessage('Este forma no es un PDF');
+            }
+        }
+    }
+
     useEffect(() => {
         getAll();
     }, []);
@@ -320,7 +301,11 @@ const OccupationalMedicine = () => {
                 FormatDate(datos.fechaCalificacionPclInstFinal), FormatDate(datos.fechaEstructuracionPclInstFinal), datos.indemnizado, FormatDate(datos.fechaPagoInstaFinal),
                 datos.entregadoMin, datos.indemnizadoRecalificado, FormatDate(datos.fechaPagoRecalificadoInstaFinal), datos.estadoRHT, datos.reintegro, datos.reubicado,
                 datos.restringido, datos.jornadaLaboral, datos.indemnizacion, lsEmployee.sede, user.nameuser, user.nameuser, FormatDate(new Date()), FormatDate(new Date()),
-                FormatDate(new Date()), FormatDate(new Date()), "edadCalificado", "antiguedadCalificado", filePdf);
+                FormatDate(new Date()), FormatDate(new Date()), "edadCalificado", "antiguedadCalificado", filePdf,
+
+                datos.aplica, datos.motivoIE, datos.estadoEnfermedadLaboral, datos.resultadoOrigen, datos.fechaCalificacionUltimaInstancia, datos.fechaInvestigacion,
+                datos.origenInvestigacion, datos.diferenciaDia, datos.resumenWR, datos.accTrabajador, datos.resumenSG, datos.accSistema, datos.peligroAsociadoEnfermedad,
+                datos.fechaEntregaMin, filePdfMin);
 
             if (Object.keys(datos.length !== 0)) {
 
@@ -343,6 +328,15 @@ const OccupationalMedicine = () => {
 
     return (
         <Fragment>
+            <ControlModal
+                title="VISUALIZAR ARCHIVO"
+                open={openViewArchivo}
+                onClose={() => setOpenViewArchivo(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={filePdfMin} />
+            </ControlModal>
+
             {timeWait ?
                 <Fragment>
                     <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
@@ -409,7 +403,7 @@ const OccupationalMedicine = () => {
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}> 
+                                        <FormProvider {...methods}>
                                             <InputText
                                                 defaultValue={lsOccupationalMedicine.nroFurel}
                                                 fullWidth
@@ -457,8 +451,8 @@ const OccupationalMedicine = () => {
                                     </Grid>
 
 
-                              
-                              
+
+
 
 
                                     <Grid item xs={3}>
@@ -1121,6 +1115,30 @@ const OccupationalMedicine = () => {
 
                                     <Grid item xs={4}>
                                         <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Entrega MIN"
+                                                name="fechaEntregaMin"
+                                                defaultValue={lsOccupationalMedicine.fechaEntregaMin}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <Button fullWidth size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                            {TitleButton.SubirArchivo}
+                                            <input hidden accept="application/pdf" type="file" onChange={handleFile1} />
+                                        </Button>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="info" size="large" fullWidth
+                                            onClick={() => setOpenViewArchivo(true)} startIcon={<VisibilityIcon fontSize="large" />}>
+                                            {TitleButton.VerArchivo}
+                                        </Button>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
                                             <InputSelect
                                                 defaultValue={lsOccupationalMedicine.indemnizadoRecalificado}
                                                 name="indemnizadoRecalificado"
@@ -1137,6 +1155,173 @@ const OccupationalMedicine = () => {
                                                 label="Fecha Pago"
                                                 name="fechaPagoRecalificadoInstaFinal"
                                                 defaultValue={lsOccupationalMedicine.fechaPagoRecalificadoInstaFinal}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <SubCard darkTitle title={<Typography variant="h4">Investigación Enfermedad Laboral</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.aplica} aplica
+                                                name="aplica"
+                                                label="Aplica"
+                                                options={lsInvestigado}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="motivoIE"
+                                                label="Motivo"
+                                                defaultValue={lsOccupationalMedicine.motivoIE}
+                                                options={lsOrigenARL}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.estadoEnfermedadLaboral}
+                                                name="estadoEnfermedadLaboral"
+                                                label="Estado Enfermedad Laboral"
+                                                options={lsOrigenARL}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.resultadoOrigen}
+                                                name="resultadoOrigen"
+                                                label="Resultado Origen"
+                                                options={lsOrigenARL}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Calificación Última Instancia"
+                                                name="fechaCalificacionUltimaInstancia"
+                                                defaultValue={lsOccupationalMedicine.fechaCalificacionUltimaInstancia}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Investigación"
+                                                name="fechaInvestigacion"
+                                                defaultValue={lsOccupationalMedicine.fechaInvestigacion}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.origenInvestigacion}
+                                                name="origenInvestigacion"
+                                                label="Origen Investigación"
+                                                options={lsOrigenARL}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                type="number"
+                                                fullWidth
+                                                defaultValue={lsOccupationalMedicine.diferenciaDia}
+                                                name="diferenciaDia"
+                                                label="Diferencia Día"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={lsOccupationalMedicine.peligroAsociadoEnfermedad}
+                                                name="peligroAsociadoEnfermedad"
+                                                label="Peligro Asociado A La Enfermedad"
+                                                options={lsOrigenARL}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                fullWidth
+                                                defaultValue={lsOccupationalMedicine.resumenWR}
+                                                name="resumenWR"
+                                                label="Resumen WR"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={4}
+                                                multiline
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                fullWidth
+                                                defaultValue={lsOccupationalMedicine.accTrabajador}
+                                                name="accTrabajador"
+                                                label="ACC Trabajador"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={4}
+                                                multiline
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                fullWidth
+                                                defaultValue={lsOccupationalMedicine.resumenSG}
+                                                name="resumenSG"
+                                                label="Resumen SG"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={4}
+                                                multiline
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                fullWidth
+                                                defaultValue={lsOccupationalMedicine.accSistema}
+                                                name="accSistema"
+                                                label="ACC Sistema"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={4}
+                                                multiline
                                             />
                                         </FormProvider>
                                     </Grid>

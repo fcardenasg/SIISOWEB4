@@ -54,12 +54,14 @@ import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
+import { GetAntecedente } from 'api/clients/MedicalHistoryClient';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Apuntes Personales', icons: <NoteAltIcon fontSize="small" /> },
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
+    { title: 'Ver Antecedentes HC', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
 const validateLastData = (data, tipoCampo = "bool") => {
@@ -119,6 +121,7 @@ const Emo = ({
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [timeWait, setTimeWait] = useState(false);
+    const [openAntecedente, setOpenAntecedente] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
     const [openHistory, setOpenHistory] = useState(false);
@@ -146,6 +149,7 @@ const Emo = ({
     const [lsControlPeriodico, setLsControlPeriodico] = useState([]);
     const [lsPromo, setLsPromo] = useState([]);
 
+    const [textAntecedente, setTextAntecedente] = useState('');
     const [textParaclinico, setTextParaclinico] = useState('');
     const [openParaclinico, setOpenParaclinico] = useState(false);
 
@@ -313,6 +317,11 @@ const Emo = ({
     useEffect(() => {
         async function getAllDxs() {
             try {
+                var dataAntecente = await GetAntecedente(documento);
+                if (dataAntecente.status === 200) {
+                    setTextAntecedente(dataAntecente.data);
+                }
+
                 if (lsLastRecord) {
                     if (lsLastRecord.dx1 !== "") {
                         var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsLastRecord.dx1);
@@ -455,6 +464,21 @@ const Emo = ({
                 title="DICTADO POR VOZ"
             >
                 <ControllerListen />
+            </ControlModal>
+
+            <ControlModal
+                maxWidth="lg"
+                open={openAntecedente}
+                onClose={() => setOpenAntecedente(false)}
+                title="ANTECEDENTES DE HISTORIA CLÍNICA"
+            >
+                <InputOnChange
+                    onChange={(e) => setTextAntecedente(e.target.value)}
+                    value={textAntecedente}
+                    multiline
+                    rows={20}
+                    disabled
+                />
             </ControlModal>
 
             <FullScreenDialog
@@ -860,6 +884,12 @@ const Emo = ({
                                         title={DetailIcons[3].title}
                                         onClick={() => { setOpenHistory(true); setCadenaHistory('ANTECEDENTES_PATALOGICOS') }}
                                         icons={DetailIcons[3].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[4].title}
+                                        onClick={() => setOpenAntecedente(true)}
+                                        icons={DetailIcons[4].icons}
                                     />
                                 </Grid>
                             </SubCard>

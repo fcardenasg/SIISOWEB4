@@ -282,7 +282,7 @@ const OccupationalMedicine = () => {
 
                 datos.aplica, datos.motivoIE, datos.estadoEnfermedadLaboral, datos.resultadoOrigen, datos.fechaCalificacionUltimaInstancia, datos.fechaInvestigacion,
                 datos.origenInvestigacion, datos.diferenciaDia, datos.resumenWR, datos.accTrabajador, datos.resumenSG, datos.accSistema, datos.peligroAsociadoEnfermedad,
-                datos.fechaEntregaMin, datos.pdfMinisterio);
+                datos.fechaEntregaMin, filePdfMin);
 
             console.log("datos => ", DataToInsert)
 
@@ -1195,6 +1195,17 @@ const OccupationalMedicine = () => {
                                         fullWidth
                                         name="diferenciaDia"
                                         label="Diferencia Día"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="peligroAsociadoEnfermedad"
+                                        label="Peligro Asociado A La Enfermedad"
+                                        options={lsOrigenARL}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>

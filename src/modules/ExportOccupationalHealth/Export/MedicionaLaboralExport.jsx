@@ -136,6 +136,22 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Investigado" value="investigado" />
                                         <ExcelColumn label="Usuario" value="usuario" />
                                         <ExcelColumn label="Observaciones" value="observaciones" />
+
+
+                                        <ExcelColumn label="Aplica" value="aplica" />
+                                        <ExcelColumn label="Motivo Investigación Enfermedad Laboral" value="motivoIE" />
+                                        <ExcelColumn label="Estado Enfermedad Laboral" value="estadoEnfermedadLaboral" />
+                                        <ExcelColumn label="Resultado Del Origen" value="resultadoOrigen" />
+                                        <ExcelColumn label="Fecha Calificación Última Instancia" value="fechaCalificacionUltimaInstancia" />
+                                        <ExcelColumn label="Fecha Investigación" value={(fe) => ViewFormat(fe.fechaInvestigacion)} />
+                                        <ExcelColumn label="Origen Investigación" value="origenInvestigacion" />
+                                        <ExcelColumn label="Diferencia Día" value="diferenciaDia" />
+                                        <ExcelColumn label="Resumen WR" value="resumenWR" />
+                                        <ExcelColumn label="ACC Trabajador" value="accTrabajador" />
+                                        <ExcelColumn label="Resumen SG" value="resumenSG" />
+                                        <ExcelColumn label="ACC Sistema" value="accSistema" />
+                                        <ExcelColumn label="Peligro Asociado Enfermedad" value="peligroAsociadoEnfermedad" />
+                                        <ExcelColumn label="Fecha Entrega Min" value={(fe) => ViewFormat(fe.fechaEntregaMin)} />
                                     </ExcelSheet>
                                 </ExcelFile> : null
                             }

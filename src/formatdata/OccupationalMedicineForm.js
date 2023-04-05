@@ -19,7 +19,7 @@ export function PostOccupationalMedicine(cedula, resumenCaso = DefaultValue.SINR
 
     aplica = DefaultValue.SINREGISTRO_GLOBAL, motivoIE = DefaultValue.SINREGISTRO_GLOBAL, estadoEnfermedadLaboral = DefaultValue.SINREGISTRO_GLOBAL, resultadoOrigen = DefaultValue.SINREGISTRO_GLOBAL,
     fechaCalificacionUltimaInstancia, fechaInvestigacion, origenInvestigacion = DefaultValue.SINREGISTRO_GLOBAL, diferenciaDia = 0, resumenWR = '', accTrabajador = '', resumenSG = '',
-    accSistema = '', peligroAsociadoEnfermedad = '', fechaEntregaMin, pdfMinisterio = pdfMinisterio === null ? '' : pdfMinisterio) {
+    accSistema = '', peligroAsociadoEnfermedad = DefaultValue.SINREGISTRO_GLOBAL, fechaEntregaMin, pdfMinisterio = pdfMinisterio === null ? '' : pdfMinisterio) {
     return {
         cedula, resumenCaso, fechaRetiro, segmentoAgrupado, segmentoAfectado, subsegmento,
         codDx, nroFurel, regionInfoLaboral, lateralidad, entidadQueMotivaEnvio, entidadDondeEnvia, fechaEntrega, fechaEnvio, investigado,
@@ -56,7 +56,7 @@ export function PutOccupationalMedicine(id, cedula, resumenCaso = DefaultValue.S
 
     aplica = DefaultValue.SINREGISTRO_GLOBAL, motivoIE = DefaultValue.SINREGISTRO_GLOBAL, estadoEnfermedadLaboral = DefaultValue.SINREGISTRO_GLOBAL, resultadoOrigen = DefaultValue.SINREGISTRO_GLOBAL,
     fechaCalificacionUltimaInstancia, fechaInvestigacion, origenInvestigacion = DefaultValue.SINREGISTRO_GLOBAL, diferenciaDia = 0, resumenWR = '', accTrabajador = '', resumenSG = '',
-    accSistema = '', peligroAsociadoEnfermedad = '', fechaEntregaMin, pdfMinisterio = pdfMinisterio === null ? '' : pdfMinisterio) {
+    accSistema = '', peligroAsociadoEnfermedad = DefaultValue.SINREGISTRO_GLOBAL, fechaEntregaMin, pdfMinisterio = pdfMinisterio === null ? '' : pdfMinisterio) {
     return {
         id, cedula, resumenCaso, fechaRetiro, segmentoAgrupado, segmentoAfectado, subsegmento,
         codDx, nroFurel, regionInfoLaboral, lateralidad, entidadQueMotivaEnvio, entidadDondeEnvia, fechaEntrega, fechaEnvio, investigado,

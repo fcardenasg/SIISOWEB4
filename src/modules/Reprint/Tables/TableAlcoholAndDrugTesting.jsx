@@ -89,7 +89,13 @@ const headCells = [
         numeric: false,
         label: 'Fecha',
         align: 'left'
-    }
+    },
+    {
+        id: 'usuarioRegistro',
+        numeric: false,
+        label: 'Usuario Registro',
+        align: 'left'
+    },
 ];
 
 function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
@@ -359,6 +365,20 @@ const TableAlcoholAndDrugTesting = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {ViewFormat(row.fecha)}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.usuarioRegistro}
                                             </Typography>
                                         </TableCell>
 

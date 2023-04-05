@@ -45,8 +45,8 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { PostAssistance, PutAssistance } from 'formatdata/AssistanceForm';
-import { GetByIdMedicalHistory, GetIdRegistroAtencionMedicalHistory, InsertMedicalHistory, UpdateMedicalHistorys, ValidateIdRegistroAtencionMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import { InsertarAntecente, PostAssistance, PutAssistance } from 'formatdata/AssistanceForm';
+import { GetAntecedente, GetByIdMedicalHistory, GetIdRegistroAtencionMedicalHistory, InsertMedicalHistory, UpdateMedicalHistorys, ValidateIdRegistroAtencionMedicalHistory } from 'api/clients/MedicalHistoryClient';
 import Cargando from 'components/loading/Cargando';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import { GetByMail } from 'api/clients/UserClient';
@@ -62,6 +62,7 @@ import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import HistoryIcon from '@mui/icons-material/History';
 import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
 import AccidentRate from './AccidentRate';
+import { GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 
 const validateLastData = (data, tipoCampo = "bool") => {
     if (tipoCampo === "bool") {
@@ -99,6 +100,7 @@ const DetailIcons = [
     { title: 'Ver Examenes Físicos', icons: <DirectionsRunIcon fontSize="small" /> },
     { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
     { title: 'Histórico de Antecedente', icons: <HistoryIcon fontSize="small" /> },
+    { title: 'Ver Antecedentes HCO', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
 const dataMedicalOrders = [
@@ -162,6 +164,10 @@ const UpdateClinicHistory = () => {
 
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+
+    const [openAntecedente, setOpenAntecedente] = useState(false);
+    const [textAntecedente, setTextAntecedente] = useState('');
+
     const [openUpdate, setOpenUpdate] = useState(false);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [open, setOpen] = useState(false);
@@ -176,6 +182,7 @@ const UpdateClinicHistory = () => {
     const [lsContingencia, setLsContingencia] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
 
+    const [descripAntecedente, setDescripAntecedente] = useState(undefined);
     const [resultData, setResultData] = useState('');
     const [dataPDF, setDataPDF] = useState([]);
 
@@ -293,6 +300,7 @@ const UpdateClinicHistory = () => {
 
     async function getAll() {
         try {
+
             const lsServerAtencionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION);
             var resultAtencion = lsServerAtencionn.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -328,6 +336,21 @@ const UpdateClinicHistory = () => {
                     setDocumento(lsServerAtencion.data.documento);
                     handleLoadingDocument(lsServerAtencion.data.documento);
                     setLsAtencion(lsServerAtencion.data);
+
+                    var dataAntecente = await GetAntecedente(lsServerAtencion.data.documento);
+                    if (dataAntecente.status === 200) {
+                        setDescripAntecedente(dataAntecente.data);
+                    }
+
+                    const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(lsServerAtencion.data.documento);
+                    if (lsServerUltimoRegistro.status === 200) {
+                        setTextAntecedente(lsServerUltimoRegistro.data.especifiqueAP);
+                    }
+
+                    var dataAntecente = await GetAntecedente(lsServerAtencion.data.documento);
+                    if (dataAntecente.status === 200) {
+                        setDescripAntecedente(dataAntecente.data);
+                    }
 
                     const lsServerValidate = await ValidateIdRegistroAtencionMedicalHistory(id);
                     if (lsServerValidate.status === 200) {
@@ -408,12 +431,12 @@ const UpdateClinicHistory = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostAssistance(documento, FormatDate(datos.fecha), id, datos.atencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico,
+                DefaultValue.SINREGISTRO_GLOBAL, datos.motivoConsulta, datos.enfermedadActual, descripAntecedente, datos.revisionSistema, datos.examenFisico,
                 datos.examenParaclinico, datos.dx1, datos.dx2, datos.dx3, datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL,
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             const DataToUpdate = PutAssistance(resultData, documento, FormatDate(datos.fecha), id, datos.atencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, datos.motivoConsulta, datos.enfermedadActual, datos.antecedentes, datos.revisionSistema, datos.examenFisico,
+                DefaultValue.SINREGISTRO_GLOBAL, datos.motivoConsulta, datos.enfermedadActual, descripAntecedente, datos.revisionSistema, datos.examenFisico,
                 datos.examenParaclinico, datos.dx1, datos.dx2, datos.dx3, datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL,
                 lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
@@ -463,6 +486,20 @@ const UpdateClinicHistory = () => {
                 title="DICTADO POR VOZ"
             >
                 <ControllerListen />
+            </ControlModal>
+
+            <ControlModal
+                maxWidth="lg"
+                open={openAntecedente}
+                onClose={() => setOpenAntecedente(false)}
+                title="ANTECEDENTES DE HISTORIA CLÍNICA"
+            >
+                <InputOnChange
+                    onChange={(e) => setTextAntecedente(e.target.value)}
+                    value={textAntecedente}
+                    multiline
+                    rows={20}
+                />
             </ControlModal>
 
             <FullScreenDialog
@@ -720,10 +757,10 @@ const UpdateClinicHistory = () => {
 
                                             <Grid item xs={12}>
                                                 <FormProvider {...methods}>
-                                                    <InputText
-                                                        defaultValue={() => validateLastData(lsAtencion.antecedentes, "string")}
+                                                    <InputOnChange
+                                                        defaultValue={descripAntecedente}
+                                                        onChange={(e) => setDescripAntecedente(e.target.value)}
                                                         fullWidth
-                                                        name="antecedentes"
                                                         label="Antecedentes"
                                                         size={matchesXS ? 'small' : 'medium'}
                                                         multiline
@@ -754,6 +791,12 @@ const UpdateClinicHistory = () => {
                                                     title={DetailIcons[5].title}
                                                     onClick={() => setOpen(true)}
                                                     icons={DetailIcons[5].icons}
+                                                />
+
+                                                <DetailedIcon
+                                                    title={DetailIcons[6].title}
+                                                    onClick={() => setOpenAntecedente(true)}
+                                                    icons={DetailIcons[6].icons}
                                                 />
                                             </Grid>
 
