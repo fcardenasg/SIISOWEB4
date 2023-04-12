@@ -796,10 +796,10 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text("GENERO:", 7, 48);
   doc.text("FECHA DE NACIMIENTO:", 7, 53);
   doc.text("TURNO:", 7, 58);
-  doc.text("CELULAR PERSONAL:", 7, 63);
+  doc.text("CELULAR:", 7, 63);
   doc.text("EMAIL:", 7, 68);
   doc.text("DPTO. DE NACIMIENTO:", 7, 73);
-  doc.text("ESCOLARIDAD:", 7, 78);
+  doc.text("EPS:", 7, 78);
 
   /* SEGUNDA COLUMNA */
   doc.text("NOMBRE:", 112, 43);
@@ -817,10 +817,10 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text(`${lsDataReport.nameGenero}`, 26, 48);
   doc.text(`${ViewFormat(lsDataReport.fechaNacimiento)}`, 51, 53);
   doc.text(`${lsDataReport.nameTurno}`, 22, 58);
-  doc.text(`${lsDataReport.celularEmpleado}`, 46, 63);
+  doc.text(`${lsDataReport.celularEmpleado}`, 30, 63);
   doc.text(`${lsDataReport.correoEmpleado}`, 21, 68);
   doc.text(`${lsDataReport.nameDptoNacimiento}`, 49, 73);
-  doc.text(`${lsDataReport.nameContacto}`, 35, 78);
+  doc.text(`${lsDataReport.nameEps}`, 17, 78);
 
   doc.text(`${lsDataReport.nameEmpleado}`, 130, 43);
   doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 125, 48);
