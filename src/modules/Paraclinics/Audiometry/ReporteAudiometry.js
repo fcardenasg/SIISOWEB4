@@ -54,10 +54,13 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
 
 
     doc.text('1.Registro de Ingreso', 7, 37);
-    doc.text('2.Antecedentes Médicos:', 7, 87);
+    doc.text('2.Antecedentes Médicos:', 7, 85);
     doc.text('3.Antecedentes Ocupacionales:', 7, 177);
     doc.text('4.Otoscopia:', 7, 197);
     doc.text('5.Observaciones:', 7, 217);
+
+    doc.text(`Fecha:`, 120, 37);
+    doc.text(`${ViewFormat(lsDataReport.fecha)}`, 150, 37); 
 
     doc.setFontSize(8);
     doc.setLineWidth(0.2);
@@ -71,8 +74,8 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     doc.line(5, 80, marXR, 80); /* HORI THREE */
     doc.line(5, 88, marXR, 88); /* HORI FOUR */
 
-    doc.line(5, 100, marXR, 100); /* HORI FIVE */
-    doc.line(5, 108, marXR, 108); /* HORI SIX */
+    doc.line(5, 300, marXR, 300); /* HORI FIVE */
+    doc.line(5, 150, marXR, 150); /* HORI SIX */
 
 
     doc.line(5, 230, marXR, 230); /* HORI OCHO */
@@ -122,51 +125,47 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     doc.text(`${lsDataReport.nameCorreo}`, 150, 70);
     doc.text(`${lsDataReport.nameEmpresa}`, 150, 75);
 
-    // /*   doc.text(`Fecha:`, 7, 95);
-    //   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 35, 95); */
-
-
+   
     // /*    doc.text(`Nro. Furat:`, 60, 95); */
     // /* Antecedentes Medicos */
 
-    // doc.setFontSize(8);
-    // doc.text('Otalgia.:', 120, 85);
-    // doc.text(`${lsDataReport.otalgiaAOP}`, 35, 167);
-    // doc.text('Otorrea', 120, 95);
-    // doc.text(`${lsDataReport.otorreaAOP}`, 35, 167);
-    // doc.text('Vértigo.:', 120, 85);
-    // doc.text(`${lsDataReport.vertigoAOP}`, 35, 167);
-    // doc.text('Hipoacusia', 120, 95);
-    // doc.text(`${lsDataReport.tipoAcusiaAOP}`, 35, 167);
-    // doc.text('Familiares', 120, 95);
-    // doc.text(`${lsDataReport.familiaresAOP}`, 35, 167);
-    // /* DESCRIPCIONES DE TEXTO */
+     doc.setFontSize(8);
+     doc.text('Otalgia.:', 7, 93);
+     doc.text(`${lsDataReport.otalgiaAOP}`, 27, 93);
+     doc.text('Otorrea', 47, 93);
+     doc.text(`${lsDataReport.otorreaAOP}`, 67, 93);
+     doc.text('Vértigo.:', 87, 93);
+     doc.text(`${lsDataReport.vertigoAOP}`, 107, 93);
+     doc.text('Hipoacusia', 127, 93);
+     doc.text(`${lsDataReport.tipoAcusiaAOP}`, 147, 93);
+     doc.text('Familiares', 167, 93);
+     doc.text(`${lsDataReport.familiaresAOP}`, 187, 93);
 
-    // doc.setFontSize(8);
-    // doc.text('Prurito.:', 120, 85);
-    // doc.text(`${lsDataReport.luritoAOP}`, 35, 167);
-    // doc.text('Acufenos', 120, 95);
-    // doc.text(`${lsDataReport.acufenosAOP}`, 35, 167);
-    // doc.text('Antecedentes Traumáticos.:', 120, 85);
-    // doc.text(`${lsDataReport.anteceTraumaticosAOP}`, 35, 167);
-    // doc.text('Diabetes', 120, 95);
-    // doc.text(`${lsDataReport.diabetesAOP}`, 35, 167);
-    // doc.text('Parálisis Facial', 120, 95);
-    // doc.text(`${lsDataReport.paralisisAOP}`, 35, 167);
 
-    // /* DESCRIPCIONES DE TEXTO */
 
-    // doc.setFontSize(8);
-    doc.text('Otitis.:', 120, 120);
-    doc.text(`${lsDataReport.otitisAOP}`, 130, 120);
-    // doc.text('Cirugía de Oídos', 120, 95);
-    // doc.text(`${lsDataReport.cirugiaAOP}`, 35, 167);
-    // doc.text('H.T.A.:', 120, 85);
-    // doc.text(`${lsDataReport.htaaop}`, 35, 167);
-    // doc.text('Expo. a Ruidos no Indicados', 120, 95);
-    // doc.text(`${lsDataReport.expoRuidoAOP}`, 35, 167);
-    // doc.text('Farmacológicos', 120, 95);
-    // doc.text(`${lsDataReport.farmacologicosAOP}`, 35, 167);
+     doc.text('Prurito.:', 7, 100);
+     doc.text(`${lsDataReport.luritoAOP}`, 27, 100);
+     doc.text('Acufenos', 47, 100);
+     doc.text(`${lsDataReport.acufenosAOP}`, 67, 100);
+     doc.text('Antecedentes Traumáticos.:', 87, 100);
+     doc.text(`${lsDataReport.anteceTraumaticosAOP}`, 107, 100);
+     doc.text('Diabetes', 127, 100);
+     doc.text(`${lsDataReport.diabetesAOP}`, 147, 100);
+    doc.text('Otitis.:', 167, 100);
+    doc.text(`${lsDataReport.otitisAOP}`, 187, 100);
+
+
+     doc.text('Cirugía de Oídos', 7, 107);
+     doc.text(`${lsDataReport.cirugiaAOP}`, 27, 107);
+     doc.text('H.T.A.:', 47, 107);
+     doc.text(`${lsDataReport.htaaop}`, 67, 107);
+     doc.text('Expo. a Ruidos no Indicados', 87, 107);
+     doc.text(`${lsDataReport.expoRuidoAOP}`, 107, 107);
+    doc.text('Farmacológicos', 127, 107);
+    doc.text(`${lsDataReport.farmacologicosAOP}`, 147, 107);
+      doc.text('Parálisis Facial', 167, 107);
+    doc.text(`${lsDataReport.paralisisAOP}`, 187, 107);
+
 
     // doc.text('Observaciones:', 7, 105);
     // doc.text(`${lsDataReport.observacionAOP}`, 35, 105);
