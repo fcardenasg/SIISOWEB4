@@ -90,7 +90,7 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
                     <Grid item xs={6}>
                         <InputDatePick
                             label="Fecha Inicio"
-                            onChange={(e) => setFechaInicio(e)}
+                            onChange={(e) => setFechaInicio(e.target.value)}
                             value={fechaInicio}
                             size={matchesXS ? 'small' : 'medium'}
                         />
@@ -99,7 +99,7 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
                     <Grid item xs={6}>
                         <InputDatePick
                             label="Fecha Fin"
-                            onChange={(e) => setFechaFin(e)}
+                            onChange={(e) => setFechaFin(e.target.value)}
                             value={fechaFin}
                             size={matchesXS ? 'small' : 'medium'}
                         />
@@ -124,11 +124,15 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
                                     </Button>
                                 </AnimateButton>
                             } filename="LISTA DE REGISTRO DE TAXIS">
-                                <ExcelSheet data={lsCabRegistration} name="CabRegistration">
-                                    <ExcelColumn label="Id" value="idRegistroTaxi" />
+                                <ExcelSheet data={lsCabRegistration} name="Registro De Taxi">
                                     <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                     <ExcelColumn label="Documento" value="documento" />
                                     <ExcelColumn label="Nombre" value="nameEmpleado" />
+
+                                    <ExcelColumn label="Departamento" value="nameDepartamento" />
+                                    <ExcelColumn label="Área" value="nameArea" />
+                                    <ExcelColumn label="Subárea" value="nameSubarea" />
+
                                     <ExcelColumn label="Sede" value="nameSede" />
                                     <ExcelColumn label="Cargo" value="nameCargo" />
                                     <ExcelColumn label="Nro. Celular" value="numeroTelefono" />
@@ -140,7 +144,8 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
                                     <ExcelColumn label="Nro. Taxi" value="nameNrotaxi" />
                                     <ExcelColumn label="Cupo" value="nameCupo" />
                                     <ExcelColumn label="Asigna" value="nameMedico" />
-                                    <ExcelColumn label="Diagnostico" value="diagnostico" />
+                                    <ExcelColumn label="Cod DX" value="diagnostico" />
+                                    <ExcelColumn label="Diagnostico" value="nameDiagnostico" />
                                     <ExcelColumn label="Motivo" value="motivoTraslado" />
                                     <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
                                     <ExcelColumn label="Fecha de registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />

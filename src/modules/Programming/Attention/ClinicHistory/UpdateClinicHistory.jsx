@@ -335,17 +335,6 @@ const UpdateClinicHistory = () => {
                 if (lsServerAtencion.status === 200) {
                     setDocumento(lsServerAtencion.data.documento);
                     handleLoadingDocument(lsServerAtencion.data.documento);
-                    setLsAtencion(lsServerAtencion.data);
-
-                    var dataAntecente = await GetAntecedente(lsServerAtencion.data.documento);
-                    if (dataAntecente.status === 200) {
-                        setDescripAntecedente(dataAntecente.data);
-                    }
-
-                    const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(lsServerAtencion.data.documento);
-                    if (lsServerUltimoRegistro.status === 200) {
-                        setTextAntecedente(lsServerUltimoRegistro.data.especifiqueAP);
-                    }
 
                     var dataAntecente = await GetAntecedente(lsServerAtencion.data.documento);
                     if (dataAntecente.status === 200) {
@@ -409,6 +398,11 @@ const UpdateClinicHistory = () => {
                         }
                     } else {
                         setLsAtencion(lsServerAtencion.data);
+                    }
+
+                    const lsServerUltimoRegistro = await GetLastRecordOccupationalExamination(lsServerAtencion.data.documento);
+                    if (lsServerUltimoRegistro.status == 200) {
+                        setTextAntecedente(lsServerUltimoRegistro.data.especifiqueAP);
                     }
                 }
             } catch (error) { }

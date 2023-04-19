@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ControlModal from 'components/controllers/ControlModal';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -37,22 +36,10 @@ import { GetAllCabRegistration, DeleteCabRegistration } from 'api/clients/CabReg
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
-
-import { generateReporteReportCabRegistration } from './ReportCabRegistration';
-import { GetByIdCabRegistration } from "api/clients/CabRegistrationClient";
-import { GetByMail } from 'api/clients/UserClient';
-import useAuth from 'hooks/useAuth';
-import ViewPDF from 'components/components/ViewPDF';
 import GenerateExcel from './GenerateExcel';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -216,14 +203,12 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListCabRegistration = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const [openModal, setOpenModal] = useState(false);
 
     const [idCheck, setIdCheck] = useState(0);
     const [lsCabRegistration, setLsCabRegistration] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
-    const [openReport, setOpenReport] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('desc');
@@ -233,7 +218,6 @@ const ListCabRegistration = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
-    const [dataPDF, setDataPDF] = useState(null);
 
     async function getAll() {
         try {
@@ -279,16 +263,6 @@ const ListCabRegistration = () => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    const handleClickReport = async () => {
-        try {
-            setOpenReport(true);
-            const lsDataReport = await GetByIdCabRegistration(idCheck);
-            const lsDataUser = await GetByMail(user.nameuser);
-            const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
-            setDataPDF(dataPDFTwo);
-        } catch (err) { }
     };
 
     const handleSelectAllClick = (event) => {
@@ -346,13 +320,6 @@ const ListCabRegistration = () => {
         } catch (error) { }
     }
 
-    const handleClose = () => {
-        setOpenReport(false);
-        setSelected([]);
-        setIdCheck('');
-        setDataPDF(null);
-    }
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsCabRegistration.length) : 0;
 
@@ -360,15 +327,6 @@ const ListCabRegistration = () => {
         <MainCard title="LISTA DE REGISTRO DE TAXI" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <GenerateExcel setOpenModal={setOpenModal} openModal={openModal} />
-
-            <ControlModal
-                title="VISTA DE REPORTE"
-                open={openReport}
-                onClose={handleClose}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={dataPDF} />
-            </ControlModal>
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -387,7 +345,7 @@ const ListCabRegistration = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <Tooltip title="Exportar" onClick={() => setOpenModal(true)}>
@@ -397,22 +355,14 @@ const ListCabRegistration = () => {
                                 </Tooltip>
                             </Grid>
 
-                            <Grid item xs={2}>
-                                <Tooltip title="Impresión" onClick={handleClickReport}>
-                                    <IconButton size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/cabregistration/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/dashboard/ltd")}>
                                     {TitleButton.Cancelar}
@@ -532,7 +482,7 @@ const ListCabRegistration = () => {
                                             onClick={(event) => handleClick(event, row.idRegistroTaxi)}
                                             sx={{ cursor: 'pointer' }}
                                         >
-                                            <Typography 
+                                            <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
