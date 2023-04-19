@@ -132,25 +132,24 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
                                     <ExcelColumn label="Departamento" value="nameDepartamento" />
                                     <ExcelColumn label="Área" value="nameArea" />
                                     <ExcelColumn label="Subárea" value="nameSubarea" />
-
-                                    <ExcelColumn label="Sede" value="nameSede" />
-                                    <ExcelColumn label="Cargo" value="nameCargo" />
-                                    <ExcelColumn label="Nro. Celular" value="numeroTelefono" />
-                                    <ExcelColumn label="EPS" value="nameEps" />
+                                    <ExcelColumn label="Cupo" value="nameCupo" />
                                     <ExcelColumn label="Contingencia" value="nameContingencia" />
                                     <ExcelColumn label="Ruta" value="nameRuta" />
                                     <ExcelColumn label="Destino" value="nameDestino" />
-                                    <ExcelColumn label="Cargado a" value="nameCargadoa" />
                                     <ExcelColumn label="Nro. Taxi" value="nameNrotaxi" />
-                                    <ExcelColumn label="Cupo" value="nameCupo" />
-                                    <ExcelColumn label="Asigna" value="nameMedico" />
-                                    <ExcelColumn label="Cod DX" value="diagnostico" />
                                     <ExcelColumn label="Diagnostico" value="nameDiagnostico" />
+                                    <ExcelColumn label="Cargado a" value="nameCargadoa" />
+                                    <ExcelColumn label="Sede" value="nameSede" />
+
+                                    {/* <ExcelColumn label="Cargo" value="nameCargo" />
+                                    <ExcelColumn label="Nro. Celular" value="numeroTelefono" />
+                                    <ExcelColumn label="EPS" value="nameEps" />
+                                    <ExcelColumn label="Asigna" value="nameMedico" />
                                     <ExcelColumn label="Motivo" value="motivoTraslado" />
                                     <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
                                     <ExcelColumn label="Fecha de registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                     <ExcelColumn label="Usuario que modifica" value="usuarioModifico" />
-                                    <ExcelColumn label="Fecha que modifica" value={(fe) => ViewFormat(fe.fechaModifico)} />
+                                    <ExcelColumn label="Fecha que modifica" value={(fe) => ViewFormat(fe.fechaModifico)} /> */}
                                 </ExcelSheet>
                             </ExcelFile> : null
                         }
