@@ -76,8 +76,6 @@ const UpdateCabRegistration = () => {
 
     async function getAll() {
         try {
-
-
             const lsServerUpdate = await GetByIdCabRegistration(id);
             if (lsServerUpdate.status === 200) {
                 setDocumento(lsServerUpdate.data.documento);
@@ -248,7 +246,7 @@ const UpdateCabRegistration = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Actualizar Accidente de Trabajo"
+                            title="Actualizar Taxis"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

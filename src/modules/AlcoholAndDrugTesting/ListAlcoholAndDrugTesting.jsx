@@ -34,7 +34,6 @@ import MainCard from 'ui-component/cards/MainCard';
 import { GetAllAlcoholAndDrugTesting, DeleteAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
@@ -328,7 +327,7 @@ const ListAlcoholAndDrugTesting = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsAlcoholAndDrugTesting.length) : 0;
 
     return (
-        <MainCard title={<Typography variant="h4">LISTA DE PRUEBA DE ALCOHOL Y DROGAS</Typography>} content={false}>
+        <MainCard title="Lista De Prueba De Alcohol Y Drogas" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -401,8 +400,6 @@ const ListAlcoholAndDrugTesting = () => {
 
                                         <ExcelColumn label="Usuario" value="usuario" />
                                         <ExcelColumn label="Fecha del Sistema" value="fechaSistema" />
-
-
                                     </ExcelSheet>
                                 </ExcelFile>
                             </Grid>

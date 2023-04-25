@@ -164,13 +164,8 @@ const MedicalFormula = () => {
                 if (documento !== '' && lsEmployee.length !== 0) {
                     const result = await InsertMedicalFormula(DataToInsert);
                     if (result.status === 200) {
-                        reset();
-                        setResultData(result.data)
+                        setResultData(result.data);
                         setOpenSuccess(true);
-                        setDocumento('');
-                        setLsEmployee([]);
-                        setTextDx1('');
-                        setLsDx1([]);
                     }
                 } else {
                     setOpenError(true);
@@ -217,7 +212,7 @@ const MedicalFormula = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="REGISTRAR RECETARIO"
+                        title="Registrar Recetario"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -320,7 +315,7 @@ const MedicalFormula = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                        <Button disabled={resultData.length !== 0 ? true : false} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>

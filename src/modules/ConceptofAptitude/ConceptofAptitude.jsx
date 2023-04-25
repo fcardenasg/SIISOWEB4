@@ -148,9 +148,6 @@ const ConceptofAptitude = () => {
                 const result = await InsertConceptofAptitude(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
-                    setDocumento('');
-                    setLsEmployee([]);
-                    reset();
                     setResult(result.data)
                 }
             }
@@ -177,7 +174,7 @@ const ConceptofAptitude = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="REGISTRAR CONCEPTOS"
+                        title="Registrar Concepto De Aptitud"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -242,7 +239,7 @@ const ConceptofAptitude = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                        <Button disabled={result.length === 0 ? false : true} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>

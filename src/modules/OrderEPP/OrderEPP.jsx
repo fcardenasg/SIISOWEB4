@@ -18,29 +18,20 @@ import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import { GetByIdOrderEPP, InsertOrderEPP } from 'api/clients/OrderEPPClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostOrderEPP } from 'formatdata/OrderEPPForm';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { GetByMail } from 'api/clients/UserClient';
 import { generateReportOrderEPP } from './ReportEPP';
 import ViewPDF from 'components/components/ViewPDF';
 
 const validationSchema = yup.object().shape({
     idProvedor: yup.string().required(`${ValidationMessage.Requerido}`),
 });
-
-
-const DetailIcons = [
-    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-]
 
 const OrderEPP = () => {
     const { user } = useAuth();
@@ -57,16 +48,14 @@ const OrderEPP = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const [documento, setDocumento] = useState('');
-
     const [lsEmployee, setLsEmployee] = useState([]);
-
     const [result, setResult] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
     const handleDocumento = async (event) => {
         try {
@@ -90,9 +79,6 @@ const OrderEPP = () => {
         }
     }
 
-
-
-
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
@@ -104,11 +90,8 @@ const OrderEPP = () => {
         } catch (err) { }
     };
 
-    // result.idOrdenesEpp
-
     async function GetAll() {
         try {
-
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
                 value: item.codiProv,
@@ -120,10 +103,7 @@ const OrderEPP = () => {
 
     useEffect(() => {
         GetAll();
-    }, [])
-
-
-
+    }, []);
 
     const handleClick = async (datos) => {
         try {
@@ -134,10 +114,7 @@ const OrderEPP = () => {
                 const result = await InsertOrderEPP(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
-                    setDocumento('');
-                    setLsEmployee([]);
-                    reset();
-                    setResult(result.data)
+                    setResult(result.data);
                 }
             }
         } catch (error) {
@@ -151,8 +128,6 @@ const OrderEPP = () => {
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-
-
             <ControlModal
                 title="VISTA DE REPORTE"
                 open={openReport}
@@ -165,7 +140,7 @@ const OrderEPP = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="REGISTRAR ORDENES EPP"
+                        title="Registrar Ordenes EPP"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -177,7 +152,7 @@ const OrderEPP = () => {
                 <Grid item xs={12}>
                     <SubCard>
                         <Grid container spacing={2}>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6}>
                                 <FormProvider {...methods}>
                                     <InputDatePicker
                                         label="Fecha"
@@ -187,9 +162,7 @@ const OrderEPP = () => {
                                 </FormProvider>
                             </Grid>
 
-
-
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idProvedor"
@@ -201,32 +174,25 @@ const OrderEPP = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-
-
-
-
-                            \
-
                         </Grid>
 
                         <Grid item xs={12} sx={{ pt: 6 }}>
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                        <Button disabled={result.length !== 0 ? true : false} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
 
-                                {result.length !== 0 ?
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="contained" onClick={handleClickReport} fullWidth>
-                                                {TitleButton.Imprimir}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid> : null}
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button disabled={result.length === 0 ? true : false} variant="contained" onClick={handleClickReport} fullWidth>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
@@ -239,8 +205,8 @@ const OrderEPP = () => {
                         </Grid>
                     </SubCard>
                 </Grid>
-            </Grid >
-        </Fragment >
+            </Grid>
+        </Fragment>
     );
 };
 

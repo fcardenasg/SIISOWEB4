@@ -33,7 +33,7 @@ import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllOrderEPP, DeleteOrderEPP }  from 'api/clients/OrderEPPClient';
+import { GetAllOrderEPP, DeleteOrderEPP } from 'api/clients/OrderEPPClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -255,7 +255,7 @@ const ListOrderEPP = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idOrdenesEpp','documento', 'nameEmpleado', 'nameProveedor','fecha'];
+                const properties = ['idOrdenesEpp', 'documento', 'nameEmpleado', 'nameProveedor', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -279,16 +279,6 @@ const ListOrderEPP = () => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    const handleClickReport = async () => {
-        try {
-            setOpenReport(true);
-            const lsDataReport = await GetByIdOrderEPP(idCheck);
-            const lsDataUser = await GetByMail(user.nameuser);
-            const dataPDFTwo = generateReportOrderEPP(lsDataReport.data, lsDataUser.data);
-            setDataPDF(dataPDFTwo);
-        } catch (err) { }
     };
 
     const handleSelectAllClick = (event) => {
@@ -357,7 +347,7 @@ const ListOrderEPP = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsOrderEPP.length) : 0;
 
     return (
-        <MainCard title="LISTA DE ORDENES EPP" content={false}>
+        <MainCard title="Lista De Ordenes EPP" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
@@ -386,7 +376,8 @@ const ListOrderEPP = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <ExcelFile element={
@@ -401,33 +392,23 @@ const ListOrderEPP = () => {
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Proveedor" value="nameProveedor" />                
+                                        <ExcelColumn label="Proveedor" value="nameProveedor" />
                                         <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha de registro" value="fechaRegistro" />
+                                        <ExcelColumn label="Fecha de registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                         <ExcelColumn label="Usuario que modifica" value="usuarioModifico" />
-                                        <ExcelColumn label="Fecha que modifica" value="fechaModifico" />
+                                        <ExcelColumn label="Fecha que modifica" value={(fe) => ViewFormat(fe.fechaModifico)} />
                                     </ExcelSheet>
                                 </ExcelFile>
                             </Grid>
 
-                 
-
-                            <Grid item xs={2}>
-                                <Tooltip title="Impresión" onClick={handleClickReport}>
-                                    <IconButton size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/orderepp/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/dashboard/ltd")}>
                                     {TitleButton.Cancelar}
@@ -561,7 +542,7 @@ const ListOrderEPP = () => {
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                        </TableCell>    
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}

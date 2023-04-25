@@ -85,6 +85,7 @@ function generateReportConceptAptitude(
   doc.text("CONCEPTO DE APTITUD:", 45, 70);
 
   doc.text("RECOMENDACIONES:", 7, 95);
+  doc.text(`${lsDataReport.nameConceptoActitud}`, 95, 70, { maxWidth: 110, lineHeightFactor: 1.5, });
 
   doc.setFont("helvetica", "normal");
 
@@ -96,7 +97,6 @@ function generateReportConceptAptitude(
   doc.text(`${lsDataReport.nameArea}`, 95, 60);
   doc.text(`${lsDataReport.nameDepartamento}`, 95, 65);
 
-  doc.text(`${lsDataReport.nameConceptoActitud}`, 95, 70, { maxWidth: 110, lineHeightFactor: 1.5, });
 
   doc.setFontSize(9);
   doc.text(`${lsDataReport.observacionesNEMTA}`, 7, 105, { maxWidth: 200, lineHeightFactor: 1.5, });

@@ -55,12 +55,22 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin }) => {
                                 } filename="Ausentismo Laboral">
                                     <ExcelSheet data={lsData} name="Lista de Ausentismo Laboral">
                                         <ExcelColumn label="ID" value="id" />
-                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Cedula" value="documento" />
                                         <ExcelColumn label="Nombre" value="nombre" />
-                                        <ExcelColumn label="Departamento Residencia" value="departamentoResidencia" />
+                                        <ExcelColumn label="TipoEmpleado" value="tipoEmpleado" />
+                                        <ExcelColumn label="Tipo_de_Nomina" value="tipoNomina" />
+                                        <ExcelColumn label="Fecha_Inicio" value={(fe) => ViewFormat(fe.fechaInicio)} />
+                                        <ExcelColumn label="Fecha_Fin" value={(fe) => ViewFormat(fe.fechaFin)} />
+                                        <ExcelColumn label="Dias" value="diasSinLaborar" />
+                                        <ExcelColumn label="Tipo_Soporte" value="tipoSoporte" />
+                                        <ExcelColumn label="Categoria" value="categoria" />
+                                        <ExcelColumn label="Comentario" value="observacion" />
+                                        <ExcelColumn label="Usuario_Registro" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha_Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
+                                        <ExcelColumn label="Hora_Registro" value="horaRegistro" />
+
+                                        {/* <ExcelColumn label="Departamento Residencia" value="departamentoResidencia" />
                                         <ExcelColumn label="Municipio Residencia" value="municipioResidencia" />
-                                        <ExcelColumn label="Tipo Empleado" value="tipoEmpleado" />
-                                        <ExcelColumn label="Tipo Nomina" value="tipoNomina" />
                                         <ExcelColumn label="Sede" value="sede" />
                                         <ExcelColumn label="Departamento" value="departamento" />
                                         <ExcelColumn label="Area" value="area" />
@@ -78,15 +88,10 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Tipo Incapacidad" value="tipoIncapacidad" />
                                         <ExcelColumn label="Contigencia" value="contigencia" />
                                         <ExcelColumn label="Estado Caso" value="estadoCaso" />
-                                        <ExcelColumn label="Fecha Inicio" value={(fe) => ViewFormat(fe.fechaInicio)} />
-                                        <ExcelColumn label="Fecha Fin" value={(fe) => ViewFormat(fe.fechaFin)} />
-                                        <ExcelColumn label="Días Sin Laborar" value="diasSinLaborar" />
                                         <ExcelColumn label="Código Dx" value="cod_Dx" />
                                         <ExcelColumn label="Diagnostico" value="dx" />
                                         <ExcelColumn label="Segmento Agrupado" value="nameSegmentoAgrupado" />
                                         <ExcelColumn label="Segmento" value="segmento" />
-                                        <ExcelColumn label="Tipo Soporte" value="tipoSoporte" />
-                                        <ExcelColumn label="Categoria" value="categoria" />
                                         <ExcelColumn label="Ciudad" value="ciudad" />
                                         <ExcelColumn label="Nombre Profesional" value="nombreProfesional" />
                                         <ExcelColumn label="Especialidad" value="especialidad" />
@@ -94,11 +99,9 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Tipo Atencion" value="tipoAtencion" />
                                         <ExcelColumn label="Cumplimiento Requisito" value="cumplimientoRequisito" />
                                         <ExcelColumn label="Regimen" value="regimen" />
-                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                         <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
                                         <ExcelColumn label="Fecha Modificación" value={(fe) => ViewFormat(fe.fechaModificación)} />
-                                        <ExcelColumn label="Ips Expide" value="ipsExpide" />
+                                        <ExcelColumn label="Ips Expide" value="ipsExpide" /> */}
                                     </ExcelSheet>
                                 </ExcelFile> : null
                             }

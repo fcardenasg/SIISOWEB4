@@ -209,11 +209,8 @@ const AlcoholAndDrugTesting = () => {
                         if (Object.keys(datos.length !== 0)) {
                             const result = await InsertAlcoholAndDrugTesting(DataToInsert);
                             if (result.status === 200) {
-                                setOpenSuccess(true); setResultData(result.data); reset();
-                                setLsEmployee([]); setDocumento(''); setConceptoAptitud('');
-                                setRealizada(DefaultValue.Opcion_SI);
-                                setCocaina('4095'); setMarihuana('4095'); setAlcohol('4095');
-                                setMotivo('');
+                                setOpenSuccess(true);
+                                setResultData(result.data);
                             }
                         }
                     } else {
@@ -265,7 +262,7 @@ const AlcoholAndDrugTesting = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="REGISTRAR PRUEBA DE ALCOHOL Y DROGAS"
+                        title="Registrar Prueba De Alcohol Y Drogas"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -653,7 +650,7 @@ const AlcoholAndDrugTesting = () => {
                         <Grid container spacing={2} sx={{ pt: 4 }}>
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                    <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Guardar}
                                     </Button>
                                 </AnimateButton>

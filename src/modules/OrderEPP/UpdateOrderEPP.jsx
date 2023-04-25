@@ -21,32 +21,22 @@ import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import { GetByIdOrderEPP, UpdateOrderEPPs } from 'api/clients/OrderEPPClient';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
-import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, DefaultValue, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutOrderEPP } from 'formatdata/OrderEPPForm';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 
 import ViewEmployee from 'components/views/ViewEmployee';
-
 import Cargando from 'components/loading/Cargando';
-import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { GetByMail } from 'api/clients/UserClient';
 import { generateReportOrderEPP } from './ReportEPP';
 import ViewPDF from 'components/components/ViewPDF';
 
 const validationSchema = yup.object().shape({
     idProvedor: yup.string().required(`${ValidationMessage.Requerido}`),
 });
-
-
-const DetailIcons = [
-    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-]
 
 const UpdateOrderEPP = () => {
     const { user } = useAuth();
@@ -64,13 +54,7 @@ const UpdateOrderEPP = () => {
     const [lsProveedor, setLsProveedor] = useState([]);
     const [documento, setDocumento] = useState('');
 
-
-    const [motivo, setMotivo] = useState('');
-
     const [lsEmployee, setLsEmployee] = useState([]);
-
-
-
     const [lsDataAtencion, setLsDataAtencion] = useState([]);
     const [timeWait, setTimeWait] = useState(false);
 
@@ -78,12 +62,10 @@ const UpdateOrderEPP = () => {
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
     async function getAll() {
         try {
-
-
             const lsServerUpdate = await GetByIdOrderEPP(id);
             if (lsServerUpdate.status === 200) {
                 setDocumento(lsServerUpdate.data.documento);
@@ -91,19 +73,13 @@ const UpdateOrderEPP = () => {
                 setLsDataAtencion(lsServerUpdate.data);
             }
 
-
             const lsServerProveedor = await GetAllSupplier(0, 0);
             var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
             setLsProveedor(resultProveedor);
-
-
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage(`${error}`);
-        }
+        } catch (error) { }
     }
 
     const handleDocumento = async (event) => {
@@ -118,13 +94,13 @@ const UpdateOrderEPP = () => {
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -137,10 +113,6 @@ const UpdateOrderEPP = () => {
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
-
-
-
-
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -156,10 +128,7 @@ const UpdateOrderEPP = () => {
 
     useEffect(() => {
         getAll();
-    }, [])
-
-
-
+    }, []);
 
     const handleClick = async (datos) => {
         const DataToUpdate = PutOrderEPP(id, documento, FormatDate(datos.fecha), datos.idProvedor,
@@ -172,10 +141,7 @@ const UpdateOrderEPP = () => {
                     setOpenUpdate(true);
                 }
             }
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage(`${error}`);
-        }
+        } catch (error) { }
     };
 
     setTimeout(() => {
@@ -189,7 +155,6 @@ const UpdateOrderEPP = () => {
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-
             <ControlModal
                 title="VISTA DE REPORTE"
                 open={openReport}
@@ -201,10 +166,9 @@ const UpdateOrderEPP = () => {
 
             {timeWait ?
                 <Grid container spacing={2}>
-
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="ACTUALIZAR ORDENE EPP"
+                            title="Actualizar Ordenes EPP"
                             key={lsEmployee.documento}
                             documento={documento}
                             onChange={(e) => setDocumento(e.target.value)}
@@ -213,11 +177,10 @@ const UpdateOrderEPP = () => {
                         />
                     </Grid>
 
-
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
                             <Grid container spacing={2}>
-                                <Grid item xs={3}>
+                                <Grid item xs={12} md={6}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
                                             label="Fecha"
@@ -227,9 +190,7 @@ const UpdateOrderEPP = () => {
                                     </FormProvider>
                                 </Grid>
 
-
-
-                                <Grid item xs={3}>
+                                <Grid item xs={12} md={6}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idProvedor"
@@ -241,9 +202,6 @@ const UpdateOrderEPP = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-
-
                             </Grid>
 
                             <Grid item xs={12} sx={{ pt: 4 }}>
@@ -255,8 +213,6 @@ const UpdateOrderEPP = () => {
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
-
-
 
                                     <Grid item xs={2}>
                                         <AnimateButton>

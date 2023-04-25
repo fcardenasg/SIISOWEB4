@@ -34,8 +34,8 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { GetByIdAlcoholAndDrugTesting, InsertAlcoholAndDrugTesting, UpdateAlcoholAndDrugTestings } from 'api/clients/AlcoholAndDrugTestingClient';
-import { PostAlcoholAndDrugTesting, PutAlcoholAndDrugTesting } from 'formatdata/AlcoholAndDrugTestingForm';
+import { GetByIdAlcoholAndDrugTesting, UpdateAlcoholAndDrugTestings } from 'api/clients/AlcoholAndDrugTestingClient';
+import { PutAlcoholAndDrugTesting } from 'formatdata/AlcoholAndDrugTestingForm';
 import { FormatDate } from 'components/helpers/Format';
 import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
@@ -103,7 +103,7 @@ const UpdateAlcoholAndDrugTesting = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAlcoholAndDrugTesting(id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
             const dataPDFTwo = generateReportAlcoholtesting(lsDataReport.data, lsDataUser.data);
 
@@ -270,7 +270,6 @@ const UpdateAlcoholAndDrugTesting = () => {
             </ControlModal>
 
             {timeWait ?
-
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee

@@ -285,16 +285,6 @@ const ListConceptofAptitude = () => {
         setOrderBy(property);
     };
 
-    const handleClickReport = async () => {
-        try {
-            setOpenReport(true);
-            const lsDataReport = await GetByIdConceptofAptitude(idCheck);
-            const lsDataUser = await GetByMail(user.nameuser);
-            const dataPDFTwo = generateReportConceptofAptitude(lsDataReport.data, lsDataUser.data);
-            setDataPDF(dataPDFTwo);
-        } catch (err) { }
-    };
-
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
             const newSelectedId = lsOrderEPP.map((n) => n.idTrabajoenAltura);
@@ -361,7 +351,7 @@ const ListConceptofAptitude = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsOrderEPP.length) : 0;
 
     return (
-        <MainCard title="LISTA DE CONCEPTOS" content={false}>
+        <MainCard title="Lista De Concepto De Aptitud" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
@@ -390,7 +380,7 @@ const ListConceptofAptitude = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <ExcelFile element={
@@ -408,29 +398,21 @@ const ListConceptofAptitude = () => {
                                         <ExcelColumn label="Tipo Concepto" value="nameConcepto" />
                                         <ExcelColumn label="Concepto Aptitud" value="nameConceptoActitud" />
                                         <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha de registro" value="fechaRegistro" />
+                                        <ExcelColumn label="Fecha de registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                         <ExcelColumn label="Usuario que modifica" value="usuarioModifico" />
-                                        <ExcelColumn label="Fecha que modifica" value="fechaModifico" />
+                                        <ExcelColumn label="Fecha que modifica" value={(fe) => ViewFormat(fe.fechaModifico)} />
                                     </ExcelSheet>
                                 </ExcelFile>
                             </Grid>
 
-                            <Grid item xs={2}>
-                                <Tooltip title="Impresión" onClick={handleClickReport}>
-                                    <IconButton size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/conceptofaptitude/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/dashboard/ltd")}>
                                     {TitleButton.Cancelar}

@@ -12,10 +12,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
-import InputText from 'components/input/InputText';
 import InputOnChange from 'components/input/InputOnChange';
 import SelectOnChange from 'components/input/SelectOnChange';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
@@ -26,9 +24,7 @@ import InputSelect from 'components/input/InputSelect';
 import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutAttention } from 'formatdata/AttentionForm';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
@@ -38,11 +34,6 @@ import Cargando from 'components/loading/Cargando';
 import { GetAllUser, GetByMail } from 'api/clients/UserClient';
 import { generateReport } from './ReportAtten';
 import ViewPDF from 'components/components/ViewPDF';
-
-const DetailIcons = [
-    { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
-    { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
-]
 
 const UpdateAttention = () => {
     const { user } = useAuth();
@@ -67,7 +58,7 @@ const UpdateAttention = () => {
     const [peso, setPeso] = useState('');
     const [talla, setTalla] = useState('');
     const [imc, setIMC] = useState('');
-    const [clasificacion, setClasificacion] = useState('Clasificación');
+    const [clasificacion, setClasificacion] = useState('CLASIFICACIÓN');
     const [clasificacionColor, setClasificacionColor] = useState('info');
 
     const [open, setOpen] = useState(false);
@@ -86,6 +77,8 @@ const UpdateAttention = () => {
     const [lsMedicos, setLsMedicos] = useState([]);
 
     const [lsDataAtencion, setLsDataAtencion] = useState([]);
+    const [lsPsicologia, setLsPsicologia] = useState([]);
+    const [sede, setSede] = useState(undefined);
     const [timeWait, setTimeWait] = useState(false);
 
     const methods = useForm();
@@ -94,67 +87,19 @@ const UpdateAttention = () => {
 
     async function getAll() {
         try {
-            const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAtencion);
-            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTipoAtencion(resultTipoAtencion);
-            setLsCodigoTipo(lsServerTipoAtencion.data.entities);
-
-            const lsServerUpdate = await GetByIdAttention(id);
-            if (lsServerUpdate.status === 200) {
-                setDocumento(lsServerUpdate.data.documento);
-                handleLoadingDocument(lsServerUpdate.data.documento);
-                setLsDataAtencion(lsServerUpdate.data);
-                setTipoAtencion(lsServerUpdate.data.tipo);
-                setAtencion(lsServerUpdate.data.atencion);
-                setMotivo(lsServerUpdate.data.motivo);
-
-                console.log("Data de useEffect => ", lsServerUpdate);
-
-                setTalla(lsServerUpdate.data.talla);
-                setIMC(lsServerUpdate.data.imc);
-                setPeso(lsServerUpdate.data.peso);
-
-                setPeso(lsServerUpdate.data.peso);
-
-                var imcFinal = lsServerUpdate.data.peso / Math.pow(lsServerUpdate.data.talla, 2);
-                setIMC(imcFinal.toFixed(1));
-
-                if (imcFinal < 18.4) {
-                    setClasificacion("Bajo de Peso"); setClasificacionColor("info");
-                } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
-                    setClasificacion("Normal"); setClasificacionColor("success");
-                } else if (imcFinal >= 25 && imcFinal <= 29.9) {
-                    setClasificacion("Sobrepeso"); setClasificacionColor("warning");
-                } else if (imcFinal >= 30 && imcFinal <= 34.9) {
-                    setClasificacion("Obesidad Grado I"); setClasificacionColor("error");
-                } else if (imcFinal >= 35 && imcFinal <= 39.9) {
-                    setClasificacion("Obesidad Grado II"); setClasificacionColor("error");
-                } else if (imcFinal > 40) {
-                    setClasificacion("Obesidad Grado III"); setClasificacionColor("error");
-                }
-
-                var lsResulCode = String(lsServerTipoAtencion.data.entities
-                    .filter(code => code.idCatalogo === lsServerUpdate.data.tipo).map(code => code.codigo));
-
-                var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
-                if (lsGetTipo.status === 200) {
-                    var resultMapsTipo = lsGetTipo.data.entities.map((item) => ({
-                        value: item.idCatalogo,
-                        label: item.nombre
-                    }));
-
-                    setLsAtencion(resultMapsTipo);
-                }
-            }
-
             const lsServerMedicos = await GetAllUser(0, 0);
-            var resultMedico = lsServerMedicos.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
+            var resultPsicologia = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_PSICOLOGIA)
+                .map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
+            setLsPsicologia(resultPsicologia);
+
+            var resultMedico = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_MEDICO)
+                .map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
             setLsMedicos(resultMedico);
 
             const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
@@ -192,10 +137,7 @@ const UpdateAttention = () => {
             }));
             setLsMotivoPAD(resultMotivoPAD);
 
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage(`${error}`);
-        }
+        } catch (error) { }
     }
 
     const handleDocumentoSolicita = async (event) => {
@@ -234,20 +176,48 @@ const UpdateAttention = () => {
             setAtencion('');
             setTipoAtencion(event.target.value);
 
-            var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo == event.target.value).map(code => code.codigo));
+            if (sede === DefaultValue.SEDE_PUERTO && event.target.value === DefaultValue.TIPO_ATENCION_ENFERMERIA) {
 
-            var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
-            if (lsGetTipo.status === 200) {
-                var resultMapsTipo = lsGetTipo.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
+                var resultMapsTipoAM = [];
+                var resultMapsTipoAE = [];
+                /* AQUÍ SE CARGAN LAS ATENCIONES MÉDICAS */
+                var lsGetTipoAtencionMedica = await GetAllBySubTipoCatalogo(0, 0, 'SER01', 5);
 
-                setLsAtencion(resultMapsTipo);
+                if (lsGetTipoAtencionMedica.status === 200) {
+                    resultMapsTipoAM = lsGetTipoAtencionMedica.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+                }
+
+                /* AQUÍ SE CARGAN LAS ATENCIONES DE ENFERMERIA */
+                var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+
+                var lsGetTipoAtencionEnfermeria = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+                if (lsGetTipoAtencionEnfermeria.status === 200) {
+                    resultMapsTipoAE = lsGetTipoAtencionEnfermeria.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+                }
+
+                const arrayAtencion = resultMapsTipoAE.concat(resultMapsTipoAM);
+                setLsAtencion(arrayAtencion);
+
+            } else {
+                var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+
+                var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+                if (lsGetTipo.status === 200) {
+                    var resultMapsTipo = lsGetTipo.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+
+                    setLsAtencion(resultMapsTipo);
+                }
             }
-
-        } catch (error) {
-        }
+        } catch (error) { }
     };
 
     const handleChangeTalla = (event) => {
@@ -322,18 +292,141 @@ const UpdateAttention = () => {
 
     useEffect(() => {
         getAll();
-    }, [])
+    }, []);
+
+    async function getArrayAttention(sede, tipo, lsCodigoTipo = []) {
+        try {
+            if (sede === DefaultValue.SEDE_PUERTO && tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA) {
+
+                var resultMapsTipoAM = [];
+                var resultMapsTipoAE = [];
+                /* AQUÍ SE CARGAN LAS ATENCIONES MÉDICAS */
+                var lsGetTipoAtencionMedica = await GetAllBySubTipoCatalogo(0, 0, 'SER01', 5);
+
+                if (lsGetTipoAtencionMedica.status === 200) {
+                    resultMapsTipoAM = lsGetTipoAtencionMedica.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+                }
+
+                /* AQUÍ SE CARGAN LAS ATENCIONES DE ENFERMERIA */
+                var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo === tipo).map(code => code.codigo));
+
+                var lsGetTipoAtencionEnfermeria = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+                if (lsGetTipoAtencionEnfermeria.status === 200) {
+                    resultMapsTipoAE = lsGetTipoAtencionEnfermeria.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+                }
+
+                const arrayAtencion = resultMapsTipoAE.concat(resultMapsTipoAM);
+                setLsAtencion(arrayAtencion);
+
+            } else {
+                var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo === tipo).map(code => code.codigo));
+
+                var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+                if (lsGetTipo.status === 200) {
+                    var resultMapsTipo = lsGetTipo.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+
+                    setLsAtencion(resultMapsTipo);
+                }
+            }
+        } catch (error) { }
+    }
+
+    useEffect(() => {
+        async function getData() {
+            const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAtencion);
+            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsTipoAtencion(resultTipoAtencion);
+            setLsCodigoTipo(lsServerTipoAtencion.data.entities);
+
+            const lsServerUpdate = await GetByIdAttention(id);
+            if (lsServerUpdate.status === 200) {
+                setDocumento(lsServerUpdate.data.documento);
+                handleLoadingDocument(lsServerUpdate.data.documento);
+                setLsDataAtencion(lsServerUpdate.data);
+                setTipoAtencion(lsServerUpdate.data.tipo);
+                setAtencion(lsServerUpdate.data.atencion);
+                setMotivo(lsServerUpdate.data.motivo);
+                setSede(lsServerUpdate.data.sede);
+
+                setTalla(lsServerUpdate.data.talla);
+                setIMC(lsServerUpdate.data.imc);
+                setPeso(lsServerUpdate.data.peso);
+                setPeso(lsServerUpdate.data.peso);
+
+                var imcFinal = lsServerUpdate.data.peso / Math.pow(lsServerUpdate.data.talla, 2);
+                setIMC(imcFinal.toFixed(1));
+
+                if (imcFinal < 18.4) {
+                    setClasificacion("Bajo de Peso"); setClasificacionColor("info");
+                } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
+                    setClasificacion("Normal"); setClasificacionColor("success");
+                } else if (imcFinal >= 25 && imcFinal <= 29.9) {
+                    setClasificacion("Sobrepeso"); setClasificacionColor("warning");
+                } else if (imcFinal >= 30 && imcFinal <= 34.9) {
+                    setClasificacion("Obesidad Grado I"); setClasificacionColor("error");
+                } else if (imcFinal >= 35 && imcFinal <= 39.9) {
+                    setClasificacion("Obesidad Grado II"); setClasificacionColor("error");
+                } else if (imcFinal > 40) {
+                    setClasificacion("Obesidad Grado III"); setClasificacionColor("error");
+                }
+
+                var lsResulCode = String(lsServerTipoAtencion.data.entities
+                    .filter(code => code.idCatalogo === lsServerUpdate.data.tipo).map(code => code.codigo));
+
+                var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+                if (lsGetTipo.status === 200) {
+                    var resultMapsTipo = lsGetTipo.data.entities.map((item) => ({
+                        value: item.idCatalogo,
+                        label: item.nombre
+                    }));
+
+                    setLsAtencion(resultMapsTipo);
+                }
+
+                getArrayAttention(lsServerUpdate.data.sede, lsServerUpdate.data.tipo, lsServerTipoAtencion.data.entities);
+            }
+        }
+
+        getData();
+    }, []);
+
+    const handleChangeSede = async (event) => {
+        try {
+            setSede(event.target.value);
+
+            if (sede === DefaultValue.SEDE_PUERTO) {
+                setTipoAtencion('');
+                setAtencion('');
+                setLsAtencion([]);
+            } else {
+                setAtencion('');
+                setTipoAtencion('');
+                setLsAtencion([]);
+            }
+
+        } catch (error) { }
+    }
 
     const handleClick = async (datos) => {
         try {
             const motivoFinal = motivo === undefined ? datos.motivo : motivo;
 
-            const DataToInsert = PutAttention(id, documento, FormatDate(datos.fecha), datos.sede, tipoAtencion, atencion, datos.estadoCaso, datos.observaciones, 0,
+            const DataToInsert = PutAttention(id, documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, "", 0,
                 "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), "",
                 lsDataAtencion.usuarioRegistro, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
-
-            console.log("Datos => ", DataToInsert);
 
             if (documento !== '' && lsEmployee.length !== 0) {
                 if (Object.keys(datos.length !== 0)) {
@@ -417,16 +510,14 @@ const UpdateAttention = () => {
                                 </Grid>
 
                                 <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="sede"
-                                            label="Sede de Atención"
-                                            defaultValue={lsDataAtencion.sede}
-                                            options={lsSede}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.sede}
-                                        />
-                                    </FormProvider>
+                                    <SelectOnChange
+                                        name="sede"
+                                        label="Sede de Atención"
+                                        value={sede}
+                                        options={lsSede}
+                                        onChange={handleChangeSede}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
 
                                 <Grid item xs={3}>
@@ -461,7 +552,8 @@ const UpdateAttention = () => {
                                                 <InputSelect
                                                     name="estadoCaso"
                                                     label="Estado Caso"
-                                                    defaultValue={lsDataAtencion.estadoCaso}
+                                                    defaultValue={lsDataAtencion.estadoCaso === DefaultValue.SINREGISTRO_GLOBAL ?
+                                                        DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_NUEVO : lsDataAtencion.estadoCaso}
                                                     options={lsEstadoCaso}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.estadoCaso}
@@ -475,7 +567,8 @@ const UpdateAttention = () => {
                                                     <InputSelect
                                                         name="estadoCaso"
                                                         label="Estado Caso"
-                                                        defaultValue={1}
+                                                        defaultValue={lsDataAtencion.estadoCaso === DefaultValue.SINREGISTRO_GLOBAL ?
+                                                            DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_NUEVO : lsDataAtencion.estadoCaso}
                                                         options={lsEstadoCaso}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                         bug={errors.estadoCaso}
@@ -595,9 +688,9 @@ const UpdateAttention = () => {
                                                             <FormProvider {...methods}>
                                                                 <InputSelect
                                                                     name="medico"
-                                                                    label="Médico"
+                                                                    label="Psicología"
                                                                     defaultValue={lsDataAtencion.medico}
-                                                                    options={lsMedicos}
+                                                                    options={lsPsicologia}
                                                                     size={matchesXS ? 'small' : 'medium'}
                                                                     bug={errors.medico}
                                                                 />

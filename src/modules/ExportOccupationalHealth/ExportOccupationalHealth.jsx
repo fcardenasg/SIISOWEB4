@@ -64,7 +64,7 @@ const ExportOccupationalHealth = () => {
         <Fragment>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <SubCard title={<Typography variant="h4">EXPORTACIÓN</Typography>}>
+                    <SubCard title={<Typography variant="h4">Exportación</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={3}>
                                 <Button onClick={() => getAllAgain('EXCEL1')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
@@ -95,7 +95,7 @@ const ExportOccupationalHealth = () => {
 
                 <Grid item xs={12}>
                     <SubCard title={
-                        <Typography variant="h4">EXPORTAR {tipoReporte === 'EXCEL1' ? Title.medicinaLaboral :
+                        <Typography variant="h4">Exportar {tipoReporte === 'EXCEL1' ? Title.medicinaLaboral :
                             tipoReporte === 'EXCEL2' ? Title.reintegro :
                                 tipoReporte === 'EXCEL3' ? Title.accidentalidadTrabajo :
                                     tipoReporte === 'EXCEL4' ? Title.ausentismoLaboral : ''}
