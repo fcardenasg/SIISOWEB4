@@ -57,9 +57,9 @@ import { CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { PostOccupationalExamination, PutOccupationalExamination } from 'formatdata/OccupationalExaminationForm';
 import SubCard from 'ui-component/cards/SubCard';
-import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient';
+import { GetByIdAttention, UpdateAttentions, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
-import { PutAttention } from 'formatdata/AttentionForm';
+import { PutAttention, PutEstadoAtencion } from 'formatdata/AttentionForm';
 import Framingham from './Framingham';
 import { ColorDrummondltd } from 'themes/colors';
 import ListMedicalFormula from './MedicalOrder/ListMedicalFormula';
@@ -107,33 +107,37 @@ const tabsOption = [
 ];
 
 const calculateImc = (peso, talla) => {
-    var imcFinal = peso / Math.pow(talla, 2);
-    var imc = imcFinal.toFixed(1);
+    try {
+        if (peso !== "" || talla !== "") {
+            var imcFinal = peso / Math.pow(talla, 2);
+            var imc = imcFinal.toFixed(1);
 
-    var clasificacion = '';
-    var clasificacionColor = '';
+            var clasificacion = '';
+            var clasificacionColor = '';
 
-    if (imcFinal < 18.4) {
-        clasificacion = "BAJO DE PESO";
-        clasificacionColor = "info";
-    } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
-        clasificacion = "NORMAL";
-        clasificacionColor = "success";
-    } else if (imcFinal >= 25 && imcFinal <= 29.9) {
-        clasificacion = "SOBREPESO";
-        clasificacionColor = "warning";
-    } else if (imcFinal >= 30 && imcFinal <= 34.9) {
-        clasificacion = "OBESIDAD GRADO I";
-        clasificacionColor = "error";
-    } else if (imcFinal >= 35 && imcFinal <= 39.9) {
-        clasificacion = "OBESIDAD GRADO II";
-        clasificacionColor = "error";
-    } else if (imcFinal > 40) {
-        clasificacion = "OBESIDAD GRADO III";
-        clasificacionColor = "error";
-    }
+            if (imcFinal < 18.4) {
+                clasificacion = "BAJO DE PESO";
+                clasificacionColor = "info";
+            } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
+                clasificacion = "NORMAL";
+                clasificacionColor = "success";
+            } else if (imcFinal >= 25 && imcFinal <= 29.9) {
+                clasificacion = "SOBREPESO";
+                clasificacionColor = "warning";
+            } else if (imcFinal >= 30 && imcFinal <= 34.9) {
+                clasificacion = "OBESIDAD GRADO I";
+                clasificacionColor = "error";
+            } else if (imcFinal >= 35 && imcFinal <= 39.9) {
+                clasificacion = "OBESIDAD GRADO II";
+                clasificacionColor = "error";
+            } else if (imcFinal > 40) {
+                clasificacion = "OBESIDAD GRADO III";
+                clasificacionColor = "error";
+            }
 
-    return { imc, clasificacion, clasificacionColor }
+            return { imc, clasificacion, clasificacionColor }
+        }
+    } catch (error) { }
 }
 
 const dataMedicalOrders = [
@@ -281,33 +285,25 @@ const OccupationalExamination = () => {
         } catch (error) { }
     }
 
-    const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
+    const handleUpdateAttentionClose = async (estadoPac) => {
         try {
-            const usuarioCierre = estadoPac === "PENDIENTE POR ATENCIÓN" ? '' : lsDataUpdate.usuarioCierreAtencion;
-
-            const DataToUpdate = PutAttention(id, lsDataUpdate.documento, lsDataUpdate.fecha, lsDataUpdate.sede, lsDataUpdate.tipo,
-                lsDataUpdate.atencion, lsDataUpdate.estadoCaso, lsDataUpdate.observaciones, lsDataUpdate.numeroHistoria, estadoPac,
-                lsDataUpdate.contingencia, lsDataUpdate.turno, lsDataUpdate.diaTurno, lsDataUpdate.motivo, lsDataUpdate.medico,
-                lsDataUpdate.docSolicitante, lsDataUpdate.talla, lsDataUpdate.peso, lsDataUpdate.iMC, usuarioCierre,
-                lsDataUpdate.fechaDigitacion, lsDataUpdate.fechaCierreAtencion, lsDataUpdate.duracion,
-                lsDataUpdate.usuarioRegistro, lsDataUpdate.fechaRegistro, lsDataUpdate.usuarioModifico, lsDataUpdate.fechaModifico);
-
-            await UpdateAttentions(DataToUpdate);
-
-            if (estadoPac === "ATENDIDO") {
-                swal(ParamCloseCase).then(async (willDelete) => {
-                    if (willDelete)
-                        navigate("/programming/list");
-                });
-            } else if (estadoPac === "PENDIENTE POR ATENCIÓN")
-                navigate("/programming/list");
-
+            const DataToUpdate = PutEstadoAtencion(id, estadoPac, '');
+            const result = await UpdateEstadoRegistroAtencion(DataToUpdate);
+            if (result.status === 200) {
+                if (estadoPac === 'ATENDIDO') {
+                    swal(ParamCloseCase).then(async (willDelete) => {
+                        if (willDelete)
+                            navigate('/programming/list');
+                    });
+                } else if (estadoPac === 'PENDIENTE POR ATENCIÓN')
+                    navigate('/programming/list');
+            }
         } catch (error) { }
     }
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -354,10 +350,18 @@ const OccupationalExamination = () => {
     useEffect(() => {
         async function getDataAttention() {
             try {
+                const lsServerValidate = await ValidateIdRegistroAtencion(id);
+                if (lsServerValidate.status === 200) {
+                    setResultIdRegistroAtencion(lsServerValidate.data);
+                }
+
                 const lsServerAtencion = await GetByIdAttention(id);
                 if (lsServerAtencion.status === 200) {
                     getLastData(lsServerAtencion.data.documento);
-                    handleLoadingDocument(lsServerAtencion.data.documento);
+                    const event = {
+                        target: { value: lsServerAtencion.data.documento }
+                    }
+                    handleLoadingDocument(event);
 
                     setIMC(lsServerAtencion.data.imc);
                     setTalla(lsServerAtencion.data.talla);
@@ -370,11 +374,6 @@ const OccupationalExamination = () => {
                     setIMC(resultImc.imc);
                     setClasificacion(resultImc.clasificacion);
                     setClasificacionColor(resultImc.clasificacionColor);
-                }
-
-                const lsServerValidate = await ValidateIdRegistroAtencion(id);
-                if (lsServerValidate.status === 200) {
-                    setResultIdRegistroAtencion(lsServerValidate.data);
                 }
             } catch (error) { }
         }
@@ -661,8 +660,6 @@ const OccupationalExamination = () => {
                 datos.parentesco1ANFA, datos.parentesco1ObserANFA, datos.parentesco2ANFA, datos.parentesco2ObserANFA, datos.parentesco3ANFA,
                 datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA, datos.lateralidadExamenesFisico
             );
-
-            console.log("Datos => ", DataToInset);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateOccupationalExaminations(DataToInset);
@@ -1010,7 +1007,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("PENDIENTE POR ATENCIÓN", lsAtencion)}>
+                                <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose('PENDIENTE POR ATENCIÓN')}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </AnimateButton>
@@ -1018,7 +1015,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose("ATENDIDO", lsAtencion)}>
+                                <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose('ATENDIDO')}>
                                     {TitleButton.CerrarCaso}
                                 </Button>
                             </AnimateButton>

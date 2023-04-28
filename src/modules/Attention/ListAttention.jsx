@@ -279,7 +279,7 @@ const ListAttention = () => {
         setOrderBy(property);
     };
 
-    const handleClickReport = async () => {
+    /* const handleClickReport = async () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAttention(idCheck);
@@ -287,7 +287,7 @@ const ListAttention = () => {
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
-    };
+    }; */
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
@@ -384,7 +384,7 @@ const ListAttention = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <ExcelFile element={
@@ -434,22 +434,22 @@ const ListAttention = () => {
                                 </ExcelFile>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            {/* <Grid item xs={2}>
                                 <Tooltip title="Impresión" onClick={handleClickReport}>
                                     <IconButton size="large">
                                         <PrintIcon />
                                     </IconButton>
                                 </Tooltip>
-                            </Grid>
+                            </Grid> */}
 
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/attention/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/dashboard/ltd")}>
                                     {TitleButton.Cancelar}

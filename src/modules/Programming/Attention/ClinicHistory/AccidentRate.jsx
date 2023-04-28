@@ -108,7 +108,7 @@ const AccidentRate = ({ documentoAT }) => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -174,7 +174,10 @@ const AccidentRate = ({ documentoAT }) => {
 
     async function getAll() {
         try {
-            await handleLoadingDocument(documentoAT);
+            const event = {
+                target: { value: documentoAT }
+            }
+            handleLoadingDocument(event);
 
             const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
             var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({

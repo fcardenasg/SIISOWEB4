@@ -124,7 +124,7 @@ const UpdateAssistance = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);
@@ -141,7 +141,10 @@ const UpdateAssistance = () => {
                 setDocumento(serverData.data.documento);
                 setDiagnosticoArray(JSON.parse(serverData.data.diagnostico));
                 setLsAssistance(serverData.data);
-                handleLoadingDocument(serverData.data.documento);
+                const event = {
+                    target: { value: serverData.data.documento }
+                }
+                handleLoadingDocument(event);
             }
 
             const lsServerCie11 = await GetAllCIE11(0, 0);

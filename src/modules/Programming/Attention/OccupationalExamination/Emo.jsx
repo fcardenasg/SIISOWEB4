@@ -449,6 +449,64 @@ const Emo = ({
         }
     }
 
+    const handleChangeTalla = (event) => {
+        try {
+            setTalla(event.target.value);
+            var talla = event.target.value;
+            var imcFinal = peso / Math.pow(talla, 2);
+            setIMC(imcFinal.toFixed(1));
+
+            if (imcFinal < 18.4) {
+                setClasificacion("BAJO DE PESO")
+                setClasificacionColor("info");
+            } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
+                setClasificacion("NORMAL")
+                setClasificacionColor("success");
+            } else if (imcFinal >= 25 && imcFinal <= 29.9) {
+                setClasificacion("SOBREPESO")
+                setClasificacionColor("warning");
+            } else if (imcFinal >= 30 && imcFinal <= 34.9) {
+                setClasificacion("OBESIDAD GRADO I")
+                setClasificacionColor("error");
+            } else if (imcFinal >= 35 && imcFinal <= 39.9) {
+                setClasificacion("OBESIDAD GRADO II")
+                setClasificacionColor("error");
+            } else if (imcFinal > 40) {
+                setClasificacion("OBESIDAD GRADO III")
+                setClasificacionColor("error");
+            }
+        } catch (error) { }
+    }
+
+    const handleChangePeso = (event) => {
+        try {
+            setPeso(event.target.value);
+
+            var imcFinal = event.target.value / Math.pow(talla, 2);
+            setIMC(imcFinal.toFixed(1));
+
+            if (imcFinal < 18.4) {
+                setClasificacion("BAJO DE PESO")
+                setClasificacionColor("info");
+            } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
+                setClasificacion("NORMAL")
+                setClasificacionColor("success");
+            } else if (imcFinal >= 25 && imcFinal <= 29.9) {
+                setClasificacion("SOBREPESO")
+                setClasificacionColor("warning");
+            } else if (imcFinal >= 30 && imcFinal <= 34.9) {
+                setClasificacion("OBESIDAD GRADO I")
+                setClasificacionColor("error");
+            } else if (imcFinal >= 35 && imcFinal <= 39.9) {
+                setClasificacion("OBESIDAD GRADO II")
+                setClasificacionColor("error");
+            } else if (imcFinal > 40) {
+                setClasificacion("OBESIDAD GRADO III")
+                setClasificacionColor("error");
+            }
+        } catch (error) { }
+    }
+
     setTimeout(() => {
         setTimeWait(true);
     }, 3000);
@@ -2228,10 +2286,9 @@ const Emo = ({
                                     <Grid container spacing={2}>
                                         <Grid item xs={2}>
                                             <InputOnChange
-                                                disabled
                                                 type="number"
                                                 label="Peso(Kilos)"
-                                                onChange={(e) => setPeso(e.target.value)}
+                                                onChange={handleChangePeso}
                                                 value={peso}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
@@ -2239,10 +2296,9 @@ const Emo = ({
 
                                         <Grid item xs={2}>
                                             <InputOnChange
-                                                disabled
                                                 type="number"
                                                 label="Talla(Metros)"
-                                                onChange={(e) => setTalla(e.target.value)}
+                                                onChange={handleChangeTalla}
                                                 value={talla}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />

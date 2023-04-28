@@ -23,8 +23,6 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 
 import { useNavigate } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import Transitions from 'ui-component/extended/Transitions';
 import InputText from 'components/input/InputText';

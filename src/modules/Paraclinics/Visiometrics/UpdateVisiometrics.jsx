@@ -166,7 +166,7 @@ const UpdateVisiometrics = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -247,8 +247,12 @@ const UpdateVisiometrics = () => {
                 }
 
                 setDocumento(serverData.data.documento);
-                handleLoadingDocument(serverData.data.documento);
                 setLsVisiometrics(serverData.data);
+
+                const event = {
+                    target: { value: serverData.data.documento }
+                }
+                handleLoadingDocument(event);
 
                 if (serverData.data.url !== "") {
                     setFilePdf(serverData.data.url);

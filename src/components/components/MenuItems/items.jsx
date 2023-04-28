@@ -64,7 +64,15 @@ export const itemsMenu = [
     selected: false,
     url: '/export/list',
     color: ColorDrummondltd.GrayDrummond
-  }
+  },
+  {
+    title: "Editar Programación",
+    subtitle: "EMO, TRIAGE, Enfermería y Asesorias",
+    icon: GetAppIcon,
+    selected: false,
+    url: '/export/list',
+    color: ColorDrummondltd.GrayDrummond
+  },
 ];
 
 export const itemsMenuOrders = [
@@ -103,7 +111,7 @@ export const itemsOccupationalHealth = [
     url: '/accident-rate/list',
     color: ColorDrummondltd.RedDrummond
   },
-   {
+  {
     title: "Reintegro",
     subtitle: "",
     icon: IconClipboardHeart,

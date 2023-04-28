@@ -105,7 +105,7 @@ const UpdateEvolutionNote = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -123,7 +123,11 @@ const UpdateEvolutionNote = () => {
                 setDiagnosticoArray(JSON.parse(serverData.data.diagnostico));
                 setLsEvolutionNote(serverData.data);
                 setDocumento(serverData.data.documento);
-                handleLoadingDocument(serverData.data.documento);
+
+                const event = {
+                    target: { value: serverData.data.documento }
+                }
+                handleLoadingDocument(event);
             }
 
             const lsServerCie11 = await GetAllCIE11(0, 0);
@@ -175,7 +179,7 @@ const UpdateEvolutionNote = () => {
             }));
             setLsConceptoAptitud(resultConceptoAptitud);
         } catch (error) {
-            
+
         }
     }
 
@@ -190,7 +194,7 @@ const UpdateEvolutionNote = () => {
                 datos.nota, JSON.stringify(diagnosticoArray), datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.nameuser,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
-            
+
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateEvolutionNotes(DataToUpdate);

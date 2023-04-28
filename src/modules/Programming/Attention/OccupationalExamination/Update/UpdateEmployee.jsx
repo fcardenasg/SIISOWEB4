@@ -45,7 +45,7 @@ const validationSchema = yup.object().shape({
     type: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
-const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention }) => {
+const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention, actualizar }) => {
     const { user } = useAuth();
     const WebCamRef = useRef(null);
     const theme = useTheme();
@@ -346,7 +346,10 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                 if (Object.keys(datos.length !== 0)) {
                     const result = await UpdateEmployees(DataToUpdate);
                     if (result.status === 200) {
-                        getDataAttention(result.data.documento);
+                        const event = {
+                            target: { value: result.data.documento }
+                        }
+                        getDataAttention(event);
                         setOpenUpdate(true);
                     }
                 } else {
@@ -357,10 +360,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                 setOpenError(true);
                 setErrorMessage('Exiten campos vacios aún');
             }
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage(`${error}`);
-        }
+        } catch (error) { }
     };
 
     setTimeout(() => {

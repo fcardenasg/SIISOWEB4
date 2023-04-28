@@ -280,7 +280,7 @@ const UpdateAttention = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);
@@ -352,8 +352,12 @@ const UpdateAttention = () => {
 
             const lsServerUpdate = await GetByIdAttention(id);
             if (lsServerUpdate.status === 200) {
+                const event = {
+                    target: { value: lsServerUpdate.data.documento }
+                }
+                handleLoadingDocument(event);
+
                 setDocumento(lsServerUpdate.data.documento);
-                handleLoadingDocument(lsServerUpdate.data.documento);
                 setLsDataAtencion(lsServerUpdate.data);
                 setTipoAtencion(lsServerUpdate.data.tipo);
                 setAtencion(lsServerUpdate.data.atencion);

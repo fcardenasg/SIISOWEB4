@@ -81,8 +81,7 @@ const WorkAbsenteeism = () => {
     const [fechaModifica, setFechaModifica] = useState(new Date());
 
     const methods = useForm();
-    const { handleSubmit, errors, reset } = methods;
-    /* { resolver: yupResolver(validationSchema) } */
+    const { handleSubmit, errors } = methods;
 
     const handleDocumento = async (event) => {
         try {
@@ -99,13 +98,13 @@ const WorkAbsenteeism = () => {
                     setNumeroDias(numeroDias1.data);
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -269,6 +268,30 @@ const WorkAbsenteeism = () => {
         }
     }
 
+    const handleFechaInicio = async (event) => {
+        try {
+            setFechaInicio(event.target.value);
+            var result = NumeroDias(event.target.value, fechaFin);
+            setDiasSinLaborar(result);
+        } catch (error) {
+            setDiasSinLaborar(0);
+            setOpenError(true);
+            setErrorMessage(error.message);
+        }
+    }
+
+    const handleFechaFin = async (event) => {
+        try {
+            setFechaFin(event.target.value);
+            var result = NumeroDias(fechaInicio, event.target.value);
+            setDiasSinLaborar(result);
+        } catch (error) {
+            setDiasSinLaborar(0);
+            setOpenError(true);
+            setErrorMessage(error.message);
+        }
+    }
+
     useEffect(() => {
         getAll();
     }, [])
@@ -289,6 +312,9 @@ const WorkAbsenteeism = () => {
                 const result = await InsertWorkAbsenteeism(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
+
+                    const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(documento);
+                    setNumeroDias(numeroDias1.data);
                 } else {
                     setErrorMessage(Message.RegistroNoGuardado);
                     setOpenError(true);
@@ -323,6 +349,7 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
+                                        defaultValue={DefaultValue.INCAPACIDAD_MEDICA}
                                         name="incapacidad"
                                         label="Incapacidad"
                                         options={lsIncapacidad}
@@ -410,13 +437,7 @@ const WorkAbsenteeism = () => {
                                 <InputDatePick
                                     label="Fecha de Inicio"
                                     value={fechaInicio}
-                                    onChange={(e) => {
-                                        setFechaInicio(e.target.value);
-                                        if (fechaFin) {
-                                            var result = NumeroDias(e.target.value, fechaFin);
-                                            setDiasSinLaborar(result);
-                                        }
-                                    }}
+                                    onChange={handleFechaInicio}
                                 />
                             </Grid>
 
@@ -424,13 +445,7 @@ const WorkAbsenteeism = () => {
                                 <InputDatePick
                                     label="Fecha Fin"
                                     value={fechaFin}
-                                    onChange={(e) => {
-                                        setFechaFin(e.target.value);
-                                        if (fechaInicio) {
-                                            var result = NumeroDias(fechaInicio, e.target.value);
-                                            setDiasSinLaborar(result);
-                                        }
-                                    }}
+                                    onChange={handleFechaFin}
                                 />
                             </Grid>
 
@@ -476,6 +491,7 @@ const WorkAbsenteeism = () => {
                                         options={lsEstadoCaso}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors}
+                                        defaultValue={DefaultValue.INCAPACIDAD_ANTIGUO}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -607,6 +623,7 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
+                                        defaultValue={DefaultValue.INCAPACIDAD_HOSPITALIZACION}
                                         name="tipoAtencion"
                                         label="Tipo de Atención"
                                         options={lsTipoAtencion}
@@ -619,6 +636,7 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
+                                        defaultValue={DefaultValue.Opcion_SI}
                                         name="cumplimientoRequisito"
                                         label="Cumplimiento Requisito"
                                         options={lsCumplimientoRequisito}
@@ -631,6 +649,7 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
+                                    defaultValue={DefaultValue.INCAPACIDAD_EPS}
                                         name="expideInCapacidad"
                                         label="Red que expide"
                                         options={lsRedExpide}
@@ -731,7 +750,7 @@ const WorkAbsenteeism = () => {
                         <Grid item xs={12} sx={{ pt: 4 }}>
                             <Accordion title={<><HistoryIcon color='info' />
                                 <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Historial de días acumulado en incapacidad</Typography></>}>
-                                <HistoryWorkAbsenteeism documento={documento} />
+                                <HistoryWorkAbsenteeism documento={documento} refresh={openSuccess} />
                             </Accordion>
                         </Grid>
 

@@ -281,7 +281,7 @@ const UpdateEvolutionNote = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);
@@ -335,8 +335,11 @@ const UpdateEvolutionNote = () => {
 
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
+                const event = {
+                    target: { value: lsServerAtencion.data.documento }
+                }
+                handleLoadingDocument(event);
                 setDocumento(lsServerAtencion.data.documento);
-                handleLoadingDocument(lsServerAtencion.data.documento);
                 setLsAtencion(lsServerAtencion.data);
 
                 const lsServerValidate = await ValidateIdRegistroAtencionEvolutionNote(id);

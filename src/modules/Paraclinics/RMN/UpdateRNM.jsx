@@ -78,7 +78,7 @@ const UpdateRNM = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -94,8 +94,12 @@ const UpdateRNM = () => {
             const serverData = await GetByIdParaclinics(id);
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
-                handleLoadingDocument(serverData.data.documento);
                 setLsRnm(serverData.data);
+
+                const event = {
+                    target: { value: serverData.data.documento }
+                }
+                handleLoadingDocument(event);
 
                 if (serverData.data.url !== "") {
                     setFilePdf(serverData.data.url);

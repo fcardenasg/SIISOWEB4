@@ -133,7 +133,10 @@ const UpdateOtherAdvice = () => {
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
                 setLsAtencion(lsServerAtencion.data);
-                handleLoadingDocument(lsServerAtencion.data.documento);
+                const event = {
+                    target: { value: lsServerAtencion.data.documento }
+                }
+                handleLoadingDocument(event);
                 setDocumento(lsServerAtencion.data.documento);
             }
 
@@ -155,7 +158,7 @@ const UpdateOtherAdvice = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);

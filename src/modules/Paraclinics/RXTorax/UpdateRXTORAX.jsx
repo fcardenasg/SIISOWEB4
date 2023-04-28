@@ -77,7 +77,7 @@ const UpdateRXTORAX = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -94,7 +94,11 @@ const UpdateRXTORAX = () => {
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
                 setLsRxTorax(serverData.data);
-                handleLoadingDocument(serverData.data.documento);
+                
+                const event = {
+                    target: { value: serverData.data.documento }
+                }
+                handleLoadingDocument(event);
 
                 if (serverData.data.url !== "") {
                     setFilePdf(serverData.data.url);

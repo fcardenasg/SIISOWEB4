@@ -117,23 +117,29 @@ const PsychologicalCounseling = () => {
     const handleDocumento = async (event) => {
         try {
             setDocumento(event?.target.value);
-            if (event.key === 'Enter') {
-                if (event?.target.value !== "") {
+
+            if (event.target.value !== '') {
+                if (event.key === 'Enter') {
+                    if (event?.target.value != "") {
+                        var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+                        console.log(lsServerEmployee);
+
+                        if (lsServerEmployee.status === 200) {
+                            setLsEmployee(lsServerEmployee.data);
+                        }
+                    } else {
+                        setOpenError(true);
+                        setErrorMessage(Message.ErrorDocumento);
+                    }
+                } else {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
                     if (lsServerEmployee.status === 200) {
                         setLsEmployee(lsServerEmployee.data);
                     }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
                 }
             }
-        } catch (error) {
-            setLsEmployee([]);
-            setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
-        }
+        } catch (error) { setLsEmployee([]); }
     }
 
     const handleClickReport = async () => {

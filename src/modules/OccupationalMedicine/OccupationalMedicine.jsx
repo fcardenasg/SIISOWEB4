@@ -13,7 +13,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
@@ -33,6 +33,7 @@ import InputOnChange from 'components/input/InputOnChange';
 import useAuth from 'hooks/useAuth';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
+import InputDatePick from 'components/input/InputDatePick';
 
 const OccupationalMedicine = () => {
     const { user } = useAuth();
@@ -48,6 +49,10 @@ const OccupationalMedicine = () => {
     const [filePdf, setFilePdf] = useState(null);
     const [filePdfMin, setFilePdfMin] = useState(null);
 
+    const [fechaCaliUltimaInstancia, setFechaCaliUltimaInstancia] = useState(null);
+    const [fechaInvestigacion, setFechaInvestigacion] = useState(null);
+    const [diasDiferencia, setDiasDiferencia] = useState(0);
+
     const [lsEmployee, setLsEmployee] = useState([]);
     const [lsResumenCaso, setLsResumenCaso] = useState([]);
     const [lsRegion, setLsRegion] = useState([]);
@@ -60,6 +65,12 @@ const OccupationalMedicine = () => {
     const [lsJuntaCalificadaJRC, setLsJuntaCalificadaJRC] = useState([]);
     const [lsInstanciaOrigen, setLsInstanciaOrigen] = useState([]);
 
+    const [lsInvestigacionEL, setLsInvestigacionEL] = useState([]);
+    const [lsEstadoEnfermedadLaboral, setLsEstadoEnfermedadLaboral] = useState([]);
+    const [lsPeligroAsociado, setLsPeligroAsociado] = useState([]);
+    const [lsResultadoOrigen, setLsResultadoOrigen] = useState([]);
+    const [lsAsesorEL, setLsAsesorEL] = useState([]);
+
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState(undefined);
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
@@ -71,6 +82,30 @@ const OccupationalMedicine = () => {
 
     const methods = useForm();
     const { handleSubmit, reset } = methods;
+
+    const handleFechaInicio = async (event) => {
+        try {
+            setFechaCaliUltimaInstancia(event.target.value);
+            var result = NumeroDias(event.target.value, fechaInvestigacion);
+            setDiasDiferencia(result);
+        } catch (error) {
+            setDiasDiferencia(0);
+            setOpenError(true);
+            setErrorMessage(error.message);
+        }
+    }
+
+    const handleFechaFin = async (event) => {
+        try {
+            setFechaInvestigacion(event.target.value);
+            var result = NumeroDias(fechaCaliUltimaInstancia, event.target.value);
+            setDiasDiferencia(result);
+        } catch (error) {
+            setDiasDiferencia(0);
+            setOpenError(true);
+            setErrorMessage(error.message);
+        }
+    }
 
     async function getAll() {
         try {
@@ -164,6 +199,43 @@ const OccupationalMedicine = () => {
                 label: item.nombre
             }));
             setLsEntidadMotiEnvio(resultEntidadMotiEnvio);
+
+
+            const lsServerEstadoEnfermedadLaboral = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDICINA_LABORAL_ESTADO_ENFERMEDAD_LABORAL);
+            var resultEstadoEnfermedadLaboral = lsServerEstadoEnfermedadLaboral.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsEstadoEnfermedadLaboral(resultEstadoEnfermedadLaboral);
+
+            const lsServerPeligroAsociado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDICINA_LABORAL_PELIGRO_ASOCIADO);
+            var resultPeligroAsociado = lsServerPeligroAsociado.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsPeligroAsociado(resultPeligroAsociado);
+
+            const lsServerResultadoOrigen = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDICINA_LABORAL_RESULTADO_EN_ORIGEN);
+            var resultResultadoOrigen = lsServerResultadoOrigen.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsResultadoOrigen(resultResultadoOrigen);
+
+            const lsServerInvestigacionEL = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDICINA_LABORAL_INVESTIGACION_EL);
+            var resultInvestigacionEL = lsServerInvestigacionEL.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsInvestigacionEL(resultInvestigacionEL);
+
+
+            const lsServerAsesorEl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDICINA_LABORAL_ASESOREL);
+            var resultAsesorEL = lsServerAsesorEl.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsAsesorEL(resultAsesorEL);
         } catch (error) { }
     }
 
@@ -280,11 +352,9 @@ const OccupationalMedicine = () => {
                 datos.restringido, datos.jornadaLaboral, datos.indemnizacion, lsEmployee.sede, user.nameuser, user.nameuser, FormatDate(new Date()), FormatDate(new Date()),
                 FormatDate(new Date()), FormatDate(new Date()), "", "", filePdf,
 
-                datos.aplica, datos.motivoIE, datos.estadoEnfermedadLaboral, datos.resultadoOrigen, datos.fechaCalificacionUltimaInstancia, datos.fechaInvestigacion,
-                datos.origenInvestigacion, datos.diferenciaDia, datos.resumenWR, datos.accTrabajador, datos.resumenSG, datos.accSistema, datos.peligroAsociadoEnfermedad,
+                datos.aplica, datos.motivoIE, datos.estadoEnfermedadLaboral, datos.resultadoOrigen, fechaCaliUltimaInstancia, fechaInvestigacion,
+                datos.origenInvestigacion, diasDiferencia, datos.resumenWR, datos.accTrabajador, datos.resumenSG, datos.accSistema, datos.peligroAsociadoEnfermedad,
                 datos.fechaEntregaMin, filePdfMin);
-
-            console.log("datos => ", DataToInsert)
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
@@ -952,6 +1022,157 @@ const OccupationalMedicine = () => {
                 </Grid>
 
                 <Grid item xs={12}>
+                    <SubCard darkTitle title={<Typography variant="h4">Investigación Enfermedad Laboral</Typography>}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="aplica"
+                                        label="Aplica"
+                                        options={lsInvestigado}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="motivoIE"
+                                        label="Investigación EL"
+                                        options={lsInvestigacionEL}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="estadoEnfermedadLaboral"
+                                        label="Estado"
+                                        options={lsEstadoEnfermedadLaboral}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="origenInvestigacion"
+                                        label="Asesor EL"
+                                        options={lsAsesorEL}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="resultadoOrigen"
+                                        label="Resultado Origen"
+                                        options={lsResultadoOrigen}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <InputDatePick
+                                    label="Fecha Calificación Última Instancia"
+                                    value={fechaCaliUltimaInstancia}
+                                    onChange={handleFechaInicio}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <InputDatePick
+                                    label="Fecha Investigación"
+                                    value={fechaInvestigacion}
+                                    onChange={handleFechaFin}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <InputOnChange
+                                    fullWidth
+                                    disabled
+                                    label="Diferencia De Día"
+                                    onChange={(e) => setDiasDiferencia(e.target.event)}
+                                    value={diasDiferencia}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        fullWidth
+                                        name="resumenWR"
+                                        label="Resumen WR"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        rows={4}
+                                        multiline
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        fullWidth
+                                        name="accTrabajador"
+                                        label="ACC Trabajador"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        rows={4}
+                                        multiline
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        fullWidth
+                                        name="resumenSG"
+                                        label="Resumen SG"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        rows={4}
+                                        multiline
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        fullWidth
+                                        name="accSistema"
+                                        label="ACC Sistema"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        rows={4}
+                                        multiline
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="peligroAsociadoEnfermedad"
+                                        label="Peligro Asociado A La Enfermedad"
+                                        options={lsPeligroAsociado}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                        </Grid>
+                    </SubCard>
+                </Grid>
+
+                <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">Instancia Final</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>
@@ -1103,162 +1324,6 @@ const OccupationalMedicine = () => {
                                         label="Fecha Pago"
                                         name="fechaPagoRecalificadoInstaFinal"
                                         defaultValue={null}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Investigación Enfermedad Laboral</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="aplica"
-                                        label="Aplica"
-                                        options={lsInvestigado}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="motivoIE"
-                                        label="Motivo"
-                                        options={lsOrigenARL}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="estadoEnfermedadLaboral"
-                                        label="Estado Enfermedad Laboral"
-                                        options={lsOrigenARL}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="resultadoOrigen"
-                                        label="Resultado Origen"
-                                        options={lsOrigenARL}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha Calificación Última Instancia"
-                                        name="fechaCalificacionUltimaInstancia"
-                                        defaultValue={null}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha Investigación"
-                                        name="fechaInvestigacion"
-                                        defaultValue={null}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="origenInvestigacion"
-                                        label="Origen Investigación"
-                                        options={lsOrigenARL}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        type="number"
-                                        fullWidth
-                                        name="diferenciaDia"
-                                        label="Diferencia Día"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="peligroAsociadoEnfermedad"
-                                        label="Peligro Asociado A La Enfermedad"
-                                        options={lsOrigenARL}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        fullWidth
-                                        name="resumenWR"
-                                        label="Resumen WR"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        rows={4}
-                                        multiline
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        fullWidth
-                                        name="accTrabajador"
-                                        label="ACC Trabajador"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        rows={4}
-                                        multiline
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        fullWidth
-                                        name="resumenSG"
-                                        label="Resumen SG"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        rows={4}
-                                        multiline
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        fullWidth
-                                        name="accSistema"
-                                        label="ACC Sistema"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        rows={4}
-                                        multiline
                                     />
                                 </FormProvider>
                             </Grid>

@@ -313,6 +313,30 @@ const WorkAbsenteeism = () => {
         }
     }
 
+    const handleFechaInicio = async (event) => {
+        try {
+            setFechaInicio(event.target.value);
+            var result = NumeroDias(event.target.value, fechaFin);
+            setDiasSinLaborar(result);
+        } catch (error) {
+            setDiasSinLaborar(0);
+            setOpenError(true);
+            setErrorMessage(error.message);
+        }
+    }
+
+    const handleFechaFin = async (event) => {
+        try {
+            setFechaFin(event.target.value);
+            var result = NumeroDias(fechaInicio, event.target.value);
+            setDiasSinLaborar(result);
+        } catch (error) {
+            setDiasSinLaborar(0);
+            setOpenError(true);
+            setErrorMessage(error.message);
+        }
+    }
+
     useEffect(() => {
         getAll();
     }, [])
@@ -484,13 +508,7 @@ const WorkAbsenteeism = () => {
                                     <InputDatePick
                                         label="Fecha de Inicio"
                                         value={fechaInicio}
-                                        onChange={(e) => {
-                                            setFechaInicio(e.target.value);
-                                            if (fechaFin) {
-                                                var result = NumeroDias(e.target.value, fechaFin);
-                                                setDiasSinLaborar(result);
-                                            }
-                                        }}
+                                        onChange={handleFechaInicio}
                                     />
                                 </Grid>
 
@@ -498,13 +516,7 @@ const WorkAbsenteeism = () => {
                                     <InputDatePick
                                         label="Fecha Fin"
                                         value={fechaFin}
-                                        onChange={(e) => {
-                                            setFechaFin(e.target.value);
-                                            if (fechaInicio) {
-                                                var result = NumeroDias(fechaInicio, e.target.value);
-                                                setDiasSinLaborar(result);
-                                            }
-                                        }}
+                                        onChange={handleFechaFin}
                                     />
                                 </Grid>
 
@@ -844,7 +856,7 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={12} sx={{ pt: 4 }}>
                                 <Accordion title={<><HistoryIcon color='info' />
                                     <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">HISTORIAL DE AUSENTISMO LABORAL</Typography></>}>
-                                    <HistoryWorkAbsenteeism documento={documento} />
+                                    <HistoryWorkAbsenteeism documento={documento} refresh={openSuccess} />
                                 </Accordion>
                             </Grid>
 

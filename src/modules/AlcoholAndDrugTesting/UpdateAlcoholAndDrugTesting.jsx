@@ -86,7 +86,7 @@ const UpdateAlcoholAndDrugTesting = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);
@@ -137,7 +137,10 @@ const UpdateAlcoholAndDrugTesting = () => {
             const lsServerData = await GetByIdAlcoholAndDrugTesting(id);
             if (lsServerData.status === 200) {
                 setLsAlcoholAndDrugTesting(lsServerData.data);
-                handleLoadingDocument(lsServerData.data.documento);
+                const event = {
+                    target: { value: lsServerData.data.documento }
+                }
+                handleLoadingDocument(event);
                 setDocumento(lsServerData.data.documento);
                 setMotivo(lsServerData.data.idMotivoPrueba);
                 setRealizada(lsServerData.data.idRealizada);

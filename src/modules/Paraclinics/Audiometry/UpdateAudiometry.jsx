@@ -115,7 +115,7 @@ const UpdateAudiometry = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
             }
@@ -195,7 +195,11 @@ const UpdateAudiometry = () => {
                 setLsAudiometrics(serverData.data);
                 setTextDx1(serverData.data.dxAUDIO);
                 setDocumento(serverData.data.documento);
-                handleLoadingDocument(serverData.data.documento);
+
+                const event = {
+                    target: { value: serverData.data.documento }
+                }
+                handleLoadingDocument(event);
 
                 if (serverData.data.dxAUDIO !== "") {
                     var lsServerCie11 = await GetAllByCodeOrName(0, 0, serverData.data.dxAUDIO);

@@ -110,10 +110,14 @@ const UpdateAccidentRate = () => {
                 if (lsServerAtencion.status === 200) {
                     setLsAccidentRate(lsServerAtencion.data);
                     setDocumento(lsServerAtencion.data.documento);
-                    handleLoadingDocument(lsServerAtencion.data.documento);
                     setSegmentoAgrupado(lsServerAtencion.data.idSegmentoAgrupado);
                     setSegmentoAfectado(lsServerAtencion.data.idSegmentoAfectado);
                     setUrlFile(lsServerAtencion.data.url);
+
+                    const event = {
+                        target: { value: lsServerAtencion.data.documento }
+                    }
+                    handleLoadingDocument(event);
 
                     if (lsServerAtencion.data.diagnosticoInicial !== "") {
                         var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.diagnosticoInicial);
@@ -266,7 +270,7 @@ const UpdateAccidentRate = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);

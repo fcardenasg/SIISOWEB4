@@ -137,7 +137,7 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const HistoryWorkAbsenteeism = ({ documento }) => {
+const HistoryWorkAbsenteeism = ({ documento, refresh }) => {
     const [lsTemplate, setLsHistorialAusentismo] = useState([]);
 
     const theme = useTheme();
@@ -156,7 +156,7 @@ const HistoryWorkAbsenteeism = ({ documento }) => {
         }
 
         getAll();
-    }, [documento])
+    }, [documento, refresh]);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';

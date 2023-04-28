@@ -110,6 +110,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
             <Grid item xs={12} sx={{ pb: 4 }}>
                 <Stack direction="row" alignItems="center" alignContent="center" justifyContent="space-between">
                     <TextField
+                        type="number"
                         disabled={disabled}
                         value={documento}
                         onChange={onChange}

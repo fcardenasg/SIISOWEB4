@@ -139,8 +139,12 @@ const UpdateCabRegistration = () => {
             if (lsServerAtencion.status === 200) {
                 setTextDx1(lsServerAtencion.data.diagnostico);
                 setLsDataAtencion(lsServerAtencion.data);
-                handleLoadingDocument(lsServerAtencion.data.documento);
                 setDocumento(lsServerAtencion.data.documento);
+
+                const event = {
+                    target: { value: lsServerAtencion.data.documento }
+                }
+                handleLoadingDocument(event);
 
                 var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.diagnostico);
                 var resultCie11 = lsServerCie11.data.entities.map((item) => ({
@@ -190,7 +194,7 @@ const UpdateCabRegistration = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);

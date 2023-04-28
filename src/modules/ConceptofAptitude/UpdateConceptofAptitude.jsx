@@ -69,9 +69,13 @@ const UpdateOrderEPP = () => {
             const lsServerUpdate = await GetByIdConceptofAptitude(id);
             if (lsServerUpdate.status === 200) {
                 setDocumento(lsServerUpdate.data.documento);
-                handleLoadingDocument(lsServerUpdate.data.documento);
                 setIdConcepto(lsServerUpdate.data.idConcepto);
                 setLsDataAtencion(lsServerUpdate.data);
+
+                const event = {
+                    target: { value: lsServerUpdate.data.documento }
+                }
+                handleLoadingDocument(event);
             }
 
             const lsServerCatalogo = await GetAllCatalog(0, 0);
@@ -135,7 +139,7 @@ const UpdateOrderEPP = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);

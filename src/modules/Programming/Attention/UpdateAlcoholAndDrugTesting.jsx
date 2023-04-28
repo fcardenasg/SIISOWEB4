@@ -92,7 +92,7 @@ const UpdateAlcoholAndDrugTesting = () => {
 
     const handleLoadingDocumento = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -100,11 +100,11 @@ const UpdateAlcoholAndDrugTesting = () => {
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
-    const handleUpdateAttentionClose = async (estadoPac = '', lsDataUpdate = []) => {
+    const handleUpdateAttentionClose = async (estadoPac = '') => {
         try {
             const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : lsAtencion.usuarioCierreAtencion;
 
@@ -207,7 +207,10 @@ const UpdateAlcoholAndDrugTesting = () => {
                 setLsAtencion(lsAtencion.data);
                 setMotivo(lsAtencion.data.motivo);
                 setDocumento(lsAtencion.data.documento);
-                handleLoadingDocumento(lsAtencion.data.documento);
+                const event = {
+                    target: { value: lsAtencion.data.documento }
+                }
+                handleLoadingDocumento(event);
             }
         } catch (error) { }
     }

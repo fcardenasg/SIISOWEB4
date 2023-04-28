@@ -69,8 +69,12 @@ const UpdateOrderEPP = () => {
             const lsServerUpdate = await GetByIdOrderEPP(id);
             if (lsServerUpdate.status === 200) {
                 setDocumento(lsServerUpdate.data.documento);
-                handleLoadingDocument(lsServerUpdate.data.documento);
                 setLsDataAtencion(lsServerUpdate.data);
+
+                const event = {
+                    target: { value: lsServerUpdate.data.documento }
+                }
+                handleLoadingDocument(event);
             }
 
             const lsServerProveedor = await GetAllSupplier(0, 0);
@@ -80,28 +84,6 @@ const UpdateOrderEPP = () => {
             }));
             setLsProveedor(resultProveedor);
         } catch (error) { }
-    }
-
-    const handleDocumento = async (event) => {
-        try {
-            setDocumento(event?.target.value);
-            if (event.key === 'Enter') {
-                if (event?.target.value !== "") {
-                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
-
-                    if (lsServerEmployee.status === 200) {
-                        setLsEmployee(lsServerEmployee.data);
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(Message.ErrorDocumento);
-                }
-            }
-        } catch (error) {
-            setLsEmployee([]);
-            setOpenError(true);
-            setErrorMessage(Message.ErrorDeDatos);
-        }
     }
 
     const handleClickReport = async () => {
@@ -116,7 +98,7 @@ const UpdateOrderEPP = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);
@@ -169,11 +151,12 @@ const UpdateOrderEPP = () => {
                     <Grid item xs={12}>
                         <ViewEmployee
                             title="Actualizar Ordenes EPP"
+                            disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
                             onChange={(e) => setDocumento(e.target.value)}
                             lsEmployee={lsEmployee}
-                            handleDocumento={handleDocumento}
+                            handleDocumento={handleLoadingDocument}
                         />
                     </Grid>
 

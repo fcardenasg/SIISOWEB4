@@ -1,3 +1,4 @@
+import { MessageError } from "components/alert/AlertAll";
 import { DefaultValue } from "./Enums";
 
 const FormatDate = (date) => {
@@ -1382,17 +1383,31 @@ function FrLdl_FrRelacion(hdl = 0, colesterol = 0, triglicerios = 0) {
 }
 
 function NumeroDias(fechaInicio, fechaFin) {
-    try {
-        if (fechaInicio !== null && fechaFin !== null) {
+    if (fechaInicio !== null && fechaFin !== null) {
+        if (fechaInicio === fechaFin) {
             let fechaIni = new Date(fechaInicio);
             let fechaFinn = new Date(fechaFin);
 
             let milisegundosDia = 24 * 60 * 60 * 1000;
             let milisegundosTranscurridos = Math.abs(fechaIni.getTime() - fechaFinn.getTime());
             let diasTranscurridos = Math.round(milisegundosTranscurridos / milisegundosDia);
-            return diasTranscurridos;
-        } else return 0
-    } catch (error) { }
+
+            return diasTranscurridos + 1;
+        } else {
+            if (new Date(fechaInicio) >= new Date(fechaFin)) {
+                throw Error('La fecha de inicio no puede ser mayor a la fecha de fin');
+            }
+
+            let fechaIni = new Date(fechaInicio);
+            let fechaFinn = new Date(fechaFin);
+
+            let milisegundosDia = 24 * 60 * 60 * 1000;
+            let milisegundosTranscurridos = Math.abs(fechaIni.getTime() - fechaFinn.getTime());
+            let diasTranscurridos = Math.round(milisegundosTranscurridos / milisegundosDia);
+
+            return diasTranscurridos + 1;
+        }
+    } else return 0
 }
 
 export {

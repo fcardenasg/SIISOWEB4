@@ -129,8 +129,12 @@ const UpdateOtherAdvice = () => {
             const lsServerAtencion = await GetByIdAdvice(id);
             if (lsServerAtencion.status === 200) {
                 setLsOtherAdvice(lsServerAtencion.data);
-                handleLoadingDocument(lsServerAtencion.data.documento);
                 setDocumento(lsServerAtencion.data.documento);
+
+                const event = {
+                    target: { value: lsServerAtencion.data.documento }
+                }
+                handleLoadingDocument(event);
             }
 
             const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_TIPOASESORIA);
@@ -160,7 +164,7 @@ const UpdateOtherAdvice = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -168,7 +172,7 @@ const UpdateOtherAdvice = () => {
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 

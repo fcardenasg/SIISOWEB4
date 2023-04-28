@@ -174,7 +174,7 @@ const UpdateNoteInfirmary = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -310,8 +310,12 @@ const UpdateNoteInfirmary = () => {
             if (lsServerAtencion.status === 200) {
                 setLsAtencion(lsServerAtencion.data);
                 setDocumento(lsServerAtencion.data.documento);
-                handleLoadingDocument(lsServerAtencion.data.documento);
                 handleAtencion(lsServerAtencion.data.sede, lsServerAtencion.data.tipo);
+
+                const event = {
+                    target: { value: lsServerAtencion.data.documento }
+                }
+                handleLoadingDocument(event);
             }
 
             const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);

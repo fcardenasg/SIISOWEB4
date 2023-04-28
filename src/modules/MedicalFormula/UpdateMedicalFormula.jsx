@@ -75,7 +75,7 @@ const UpdateMedicalFormula = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
@@ -144,8 +144,12 @@ const UpdateMedicalFormula = () => {
             if (lsServerAtencion.status === 200) {
                 setTextDx1(lsServerAtencion.data.diagnostico);
                 setLsMedicalFormula(lsServerAtencion.data);
-                handleLoadingDocument(lsServerAtencion.data.documento);
                 setDocumento(lsServerAtencion.data.documento);
+
+                const event = {
+                    target: { value: lsServerAtencion.data.documento }
+                }
+                handleLoadingDocument(event);
 
                 var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.diagnostico);
                 var resultCie11 = lsServerCie11.data.entities.map((item) => ({

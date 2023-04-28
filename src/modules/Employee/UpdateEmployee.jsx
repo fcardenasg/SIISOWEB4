@@ -366,6 +366,8 @@ const UpdateEmployee = () => {
 
     const handleClick = async (datos) => {
         try {
+            const fotoEmpleado = imgSrc === null ? '' : imgSrc;
+
             const municipioResidencia_DATA = municipioResidencia == '' ? datos.municipioResidencia : municipioResidencia;
             const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
             const municipioTrabaja_DATA = municipioResidenciaTrabaja == '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
@@ -377,21 +379,16 @@ const UpdateEmployee = () => {
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date()),
-                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.nameuser, FormatDate(new Date()), imgSrc, datos.oficio);
+                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.nameuser, FormatDate(new Date()), fotoEmpleado, datos.oficio);
 
-            if (imgSrc != null) {
-                if (Object.keys(datos.length !== 0)) {
-                    const result = await UpdateEmployees(DataToUpdate);
-                    if (result.status === 200) {
-                        setOpenUpdate(true);
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Hubo un problemas al guardo los datos');
+            if (Object.keys(datos.length !== 0)) {
+                const result = await UpdateEmployees(DataToUpdate);
+                if (result.status === 200) {
+                    setOpenUpdate(true);
                 }
             } else {
                 setOpenError(true);
-                setErrorMessage('Exiten campos vacios aún');
+                setErrorMessage('Hubo un problemas al guardo los datos');
             }
         } catch (error) {
             setOpenError(true);

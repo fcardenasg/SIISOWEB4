@@ -229,7 +229,7 @@ const ListOrdersIndividual = () => {
             setLsOrders(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) {
-            
+
         }
     }
 
@@ -323,7 +323,7 @@ const ListOrdersIndividual = () => {
                     setSelected([]);
             });
         } catch (error) {
-            
+
         }
     }
 
@@ -350,16 +350,11 @@ const ListOrdersIndividual = () => {
                             size="small"
                         />
                     </Grid>
+
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
                         <Tooltip title="Copiar">
                             <IconButton size="large">
                                 <FileCopyIcon />
-                            </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title="Impresión" onClick={() => navigate(`/occupational-examination/report/${idCheck}`)}>
-                            <IconButton size="large">
-                                <PrintIcon />
                             </IconButton>
                         </Tooltip>
 
