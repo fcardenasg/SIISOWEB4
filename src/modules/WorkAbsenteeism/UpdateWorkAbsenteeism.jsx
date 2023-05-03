@@ -94,7 +94,7 @@ const WorkAbsenteeism = () => {
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);
@@ -207,7 +207,10 @@ const WorkAbsenteeism = () => {
                 setNumeroDias(numeroDias1.data);
 
                 setDocumento(lsServerData.data.cedula);
-                handleLoadingDocument(lsServerData.data.cedula);
+                const event = {
+                    target: { value: lsServerData.data.cedula }
+                }
+                handleLoadingDocument(event);
 
                 setFechaInicio(lsServerData.data.fechaInicio);
                 setFechaFin(lsServerData.data.fechaFin);

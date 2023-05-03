@@ -16,7 +16,7 @@ const FormatDate = (date) => {
 
 const ViewFormat = (fecha) => {
     try {
-        if (fecha === null) {
+        if (fecha === null || fecha === "") {
             return "";
         } else {
             let day = `${(new Date(fecha).getDate())}`.padStart(2, '0');

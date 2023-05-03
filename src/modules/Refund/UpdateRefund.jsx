@@ -90,11 +90,11 @@ const Refund = () => {
 
     const methods = useForm();
 
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
-            var lsServerEmployee = await GetByIdEmployee(idEmployee);
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
             if (lsServerEmployee.status === 200)
                 setLsEmployee(lsServerEmployee.data);
@@ -232,8 +232,12 @@ const Refund = () => {
             try {
                 const lsServerAtencion = await GetByIdRefund(id);
                 if (lsServerAtencion.status === 200) {
+                    const event = {
+                        target: { value: lsServerAtencion.data.documento }
+                    }
+                    handleLoadingDocument(event);
+
                     setDocumento(lsServerAtencion.data.documento);
-                    handleLoadingDocument(lsServerAtencion.data.documento);
                     setLsRefund(lsServerAtencion.data);
                     setFechaInicio(lsServerAtencion.data.fechaInicio);
                     setFechaFin(lsServerAtencion.data.fechaFin);

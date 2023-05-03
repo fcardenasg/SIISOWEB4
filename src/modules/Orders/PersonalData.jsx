@@ -6,13 +6,13 @@ import {
     Tooltip
 } from '@mui/material';
 
+import ControlModal from 'components/controllers/ControlModal';
 import PropTypes from 'prop-types';
 import { ViewFormat } from 'components/helpers/Format';
 import User from 'assets/img/user.png'
 import Avatar from 'ui-component/extended/Avatar';
 import SubCard from 'ui-component/cards/SubCard';
 import { gridSpacing } from 'store/constant';
-import FullScreenDialog from 'components/controllers/FullScreenDialog'
 import { IconEdit } from '@tabler/icons';
 import PhonelinkRingTwoToneIcon from '@mui/icons-material/PhonelinkRingTwoTone';
 import PinDropTwoToneIcon from '@mui/icons-material/PinDropTwoTone';
@@ -23,7 +23,7 @@ import BusinessIcon from '@mui/icons-material/Business';
 import ElderlyIcon from '@mui/icons-material/Elderly';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import { ListDetailsAll, ListDetails } from 'components/components/ListDetails';
-import UpdateEmployee from './Update/UpdateEmployee';
+import UpdateEmployee from '../Programming/Attention/OccupationalExamination/Update/UpdateEmployee';
 import { useState } from 'react';
 
 const DetailsViewOne = [
@@ -67,22 +67,23 @@ const DetailsViewOne = [
 
 const DetailsViewTwo = [
     { name: 'Sede de Trabajo', }, { name: 'Dirección de residencia mientras trabaja', }, { name: 'Municipio de residencia mientras trabaja', },
-    { name: 'Departamento', }, { name: 'Area', }, { name: 'Posición/Cargo', }, { name: 'Grupo', },
+    { name: 'Departamento', }, { name: 'Área', }, { name: 'Posición/Cargo', }, { name: 'Grupo', },
     { name: 'Turno', }, { name: 'Tipo Contrato', }, { name: 'Fecha Contrato', }, { name: 'Antiguedad', }, { name: 'GES', },
 ]
 
-const PersonalData = ({ lsEmployee = [] }) => {
+const PersonalData = ({ lsEmployee = [], getDataAttention }) => {
     const [openUpdate, setOpenUpdate] = useState(false);
 
     return (
         <Grid container spacing={gridSpacing}>
-            <FullScreenDialog
-                open={openUpdate}
+            <ControlModal
                 title="ACTUALIZAR EMPLEADO"
-                handleClose={() => setOpenUpdate(false)}
+                open={openUpdate}
+                onClose={() => setOpenUpdate(false)}
+                maxWidth="xl"
             >
-                <UpdateEmployee idEmpleado={lsEmployee.documento} setOpenUpdate={setOpenUpdate} key={1} />
-            </FullScreenDialog>
+                <UpdateEmployee idEmpleado={lsEmployee.documento} getDataAttention={getDataAttention} setOpenUpdateTwo={setOpenUpdate} />
+            </ControlModal>
 
             <Grid item lg={6} xs={12}>
                 <SubCard title="Datos Personales" secondary={
@@ -94,10 +95,10 @@ const PersonalData = ({ lsEmployee = [] }) => {
                 }>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item>
-                            <Avatar sx={{ width: 60, height: 60 }} alt="Foto del Empleado" src={lsEmployee.imagenUrl != null ? lsEmployee.imagenUrl : User} />
+                            <Avatar sx={{ width: 60, height: 60 }} alt="Foto del Empleado" src={lsEmployee.imagenUrl !== null ? lsEmployee.imagenUrl : User} />
                         </Grid>
 
-                        {lsEmployee.length != 0 ?
+                        {lsEmployee.length !== 0 ?
                             <Grid item xs zeroMinWidth>
                                 <Typography align="left" variant="h4">
                                     {lsEmployee.nombres}
@@ -111,8 +112,8 @@ const PersonalData = ({ lsEmployee = [] }) => {
                                 <Typography align="left" variant="subtitle2">
                                     {lsEmployee.nameEstadoCivil}
                                 </Typography>
-                            </Grid>
-                            : <></>}
+                            </Grid> : null
+                        }
 
                     </Grid>
 
@@ -132,9 +133,11 @@ const PersonalData = ({ lsEmployee = [] }) => {
 
             <Grid item lg={6} xs={12}>
                 <SubCard title="Información de la Empresa y Cargo" secondary={
-                    <Button disabled={lsEmployee.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
-                        <IconEdit stroke={1.5} />
-                    </Button>
+                    <Tooltip title="Actualizar Empleado">
+                        <Button disabled={lsEmployee.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
+                            <IconEdit stroke={1.5} />
+                        </Button>
+                    </Tooltip>
                 }>
                     <Grid container direction="column" spacing={2}>
                         <ListDetails name={DetailsViewTwo[0].name} campoRender={lsEmployee.nameSede} />
@@ -147,7 +150,7 @@ const PersonalData = ({ lsEmployee = [] }) => {
                         <ListDetails name={DetailsViewTwo[7].name} campoRender={lsEmployee.nameTurno} />
                         <ListDetails name={DetailsViewTwo[8].name} campoRender={lsEmployee.nameTipoContrato} />
                         <ListDetails name={DetailsViewTwo[9].name} campoRender={ViewFormat(lsEmployee.fechaContrato)} />
-                        <ListDetails name={DetailsViewTwo[11].name} campoRender={lsEmployee.ges} />
+                        <ListDetails name={DetailsViewTwo[11].name} campoRender={lsEmployee.nameGes} />
                     </Grid>
                 </SubCard>
             </Grid>
@@ -159,4 +162,5 @@ export default PersonalData;
 
 PersonalData.propTypes = {
     lsEmployee: PropTypes.any,
+    getDataAttention: PropTypes.func,
 };

@@ -45,7 +45,7 @@ const validationSchema = yup.object().shape({
     type: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
-const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention, actualizar }) => {
+const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention }) => {
     const { user } = useAuth();
     const WebCamRef = useRef(null);
     const theme = useTheme();

@@ -1,7 +1,7 @@
 export const Url = {
     Base: 'https://localhost:44347/',
 
-    /* https://siisonew.drummondltd.com:44347/ */
+    /* https://siiso.drummondltd.com:44347 */
     /* https://localhost:44347/ */
 
     Login: 'api/Login',

@@ -223,17 +223,7 @@ const ListCatalog = () => {
             const lsServer = await GetAllCatalog(0, 0);
             setCatalog(lsServer.data.entities);
             setRows(lsServer.data.entities);
-        } catch (error) {
-            dispatch({
-                type: SNACKBAR_OPEN,
-                open: true,
-                message: `${error}`,
-                variant: 'alert',
-                alertSeverity: 'error',
-                close: false,
-                transition: 'SlideUp'
-            })
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -394,133 +384,133 @@ const ListCatalog = () => {
             </CardContent>
 
             <TableContainer>
-          
-        {/* AQUÍ SE HACE PRELOAD */}
-        {catalog.length === 0 ? <Cargando size={220} myy={6} /> :
-                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-                    <EnhancedTableHead
-                        numSelected={selected.length}
-                        order={order}
-                        orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
-                        onRequestSort={handleRequestSort}
-                        rowCount={catalog.length}
-                        theme={theme}
-                        selected={selected}
-                        onClick={handleDelete}
-                    />
-                    <TableBody>
-                        {stableSort(catalog, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
 
-                                if (typeof row === 'string') return null;
+                {/* AQUÍ SE HACE PRELOAD */}
+                {catalog.length === 0 ? <Cargando size={220} myy={6} /> :
+                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                        <EnhancedTableHead
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={catalog.length}
+                            theme={theme}
+                            selected={selected}
+                            onClick={handleDelete}
+                        />
+                        <TableBody>
+                            {stableSort(catalog, getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
 
-                                const isItemSelected = isSelected(row.idCatalogo);
-                                const labelId = `enhanced-table-checkbox-${index}`;
+                                    if (typeof row === 'string') return null;
 
-                                return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={index}
-                                        selected={isItemSelected}
-                                    >
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idCatalogo)}>
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
-                                                }}
-                                            />
-                                        </TableCell>
+                                    const isItemSelected = isSelected(row.idCatalogo);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
-                                            sx={{ cursor: 'pointer' }}
-                                            align="center"
+                                    return (
+                                        <TableRow
+                                            hover
+                                            role="checkbox"
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                            key={index}
+                                            selected={isItemSelected}
                                         >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                #{row.idCatalogo}{' '}
-                                            </Typography>
-                                        </TableCell>
+                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idCatalogo)}>
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemSelected}
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId
+                                                    }}
+                                                />
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.idCatalogo)}
+                                                sx={{ cursor: 'pointer' }}
+                                                align="center"
                                             >
-                                                {row.nombre}{' '}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {' '}
+                                                    #{row.idCatalogo}{' '}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.idCatalogo)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {row.codigo}{' '}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.nombre}{' '}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.idCatalogo)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.idCatalogo)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {row.nameTypeCatalog}{' '}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.codigo}{' '}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/catalog/update/${row.idCatalogo}`)}>
-                                                <IconButton size="large">
-                                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: 53 * emptyRows
-                                }}
-                            >
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.idCatalogo)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.nameTypeCatalog}{' '}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell align="center" sx={{ pr: 3 }}>
+                                                <Tooltip title="Actualizar" onClick={() => navigate(`/catalog/update/${row.idCatalogo}`)}>
+                                                    <IconButton size="large">
+                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            {emptyRows > 0 && (
+                                <TableRow
+                                    style={{
+                                        height: 53 * emptyRows
+                                    }}
+                                >
+                                    <TableCell colSpan={6} />
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
                 }
             </TableContainer>
 
