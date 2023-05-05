@@ -90,7 +90,6 @@ const NoteInfirmary = () => {
     const [lsContingencia, setLsContingencia] = useState([]);
 
     const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
 
     const { handleSubmit, errors, reset } = methods;
 
@@ -106,13 +105,13 @@ const NoteInfirmary = () => {
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -153,9 +152,7 @@ const NoteInfirmary = () => {
                 label: item.nombre
             }));
             setLsDiaTurno(resultDiaTurno);
-        } catch (error) {
-            
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -164,11 +161,8 @@ const NoteInfirmary = () => {
 
     const handleClick = async (datos) => {
         try {
-
             const DataToInsert = PostNoteInfirmary(documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.idTurno, datos.idDiaTurno,
                 JSON.stringify(diagnosticoArray), datos.notaEnfermedad, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
-
-            
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertNoteInfirmary(DataToInsert);
@@ -183,7 +177,7 @@ const NoteInfirmary = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 

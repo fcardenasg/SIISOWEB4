@@ -100,6 +100,9 @@ export const Url = {
     Ordenes: 'api/Ordenes',
     OrdenesId: 'api/Ordenes/id',
 
+    OrdenesParaclinicos: 'api/OrdenesParaclinicos',
+    OrdenesParaclinicosId: 'api/OrdenesParaclinicos/id',
+
     Antecedente: 'api/Antecedente',
 
     Asesorias: 'api/Asesorias',
@@ -186,6 +189,7 @@ export const Url = {
     HistoriaClinicaOcupacionalId: 'api/HistoriaClinicaOcupacional/id',
     HistoriaClinicaOcupacionalReport: 'api/HistoriaClinicaOcupacional/GetById',
     GetLastRecordHisCliOcu: 'api/HistoriaClinicaOcupacional/GetLastRecord',
+    GetLastRegister: 'api/HistoriaClinicaOcupacional/historico',
 
     TipoAtencion: 'api/TipoAtencion',
     AtencionGetAllByTipoAtencion: 'api/Atencion/GetAllByTipoAtencion',

@@ -108,14 +108,14 @@ const UpdateNoteInfirmary = () => {
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const serverData = await GetByIdNoteInfirmary(id);
             if (serverData.status === 200) {
                 setDiagnosticoArray(JSON.parse(serverData.data.procedimientos));
                 setLsNoteInfirmary(serverData.data);
                 setDocumento(serverData.data.documento);
-                
+
                 const event = {
                     target: { value: serverData.data.documento }
                 }
@@ -161,7 +161,7 @@ const UpdateNoteInfirmary = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleClick = async (datos) => {
@@ -179,7 +179,7 @@ const UpdateNoteInfirmary = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 

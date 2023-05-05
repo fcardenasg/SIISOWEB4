@@ -120,9 +120,9 @@ const WorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/Work
 const UpdateWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/UpdateWorkAbsenteeism')));
 
 const ViewOrders = Loadable(lazy(() => import('modules/Orders/ViewOrders')));
-const ListOrdersIndividual = Loadable(lazy(() => import('modules/Orders/ListOrdersIndividual')));
-const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdersIndividual')));
-const UpdateOrdersIndividual = Loadable(lazy(() => import('modules/Orders/UpdateOrdersIndividual')));
+const ListOrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/ListOrdersIndividual')));
+const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/OrdersIndividual')));
+const UpdateOrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/UpdateOrdersIndividual')));
 
 const OccupationalExaminationProgra = Loadable(lazy(() => import('modules/Programming/Attention/OccupationalExamination/OccupationalExamination')));
 const UpdateClinicHistory = Loadable(lazy(() => import('modules/Programming/Attention/ClinicHistory/UpdateClinicHistory')));
