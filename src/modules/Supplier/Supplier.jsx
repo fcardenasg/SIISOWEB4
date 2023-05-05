@@ -27,7 +27,7 @@ import { PostSupplier } from 'formatdata/SupplierForm';
 const validationSchema = yup.object().shape({
     codiProv: yup.string().required(`${ValidationMessage.Requerido}`),
     nombProv: yup.string().required(`${ValidationMessage.Requerido}`),
-   
+
 });
 
 const Supplier = () => {
@@ -78,10 +78,10 @@ const Supplier = () => {
 
     const handleClick = async (datos) => {
         try {
-           /* Recordar aquí modificar el correo por el nombre de usuario */
-           const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
-            datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
-            user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+            /* Recordar aquí modificar el correo por el nombre de usuario */
+            const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
+                datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
+                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertSupplier(DataToInsert);
@@ -168,7 +168,6 @@ const Supplier = () => {
                         <InputSelect
                             name="ciudProv"
                             label="Ciudad"
-                            defaultValue=""
                             options={lsCiudad}
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors}

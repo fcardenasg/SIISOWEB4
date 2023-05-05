@@ -11,3 +11,5 @@ export const UpdateOccupationalExaminations = async (historiaClinicaOcupacional)
 export const DeleteOccupationalExamination = async (idHistoriaClinicaOcupacional) => await deleteData(Url.HistoriaClinicaOcupacional, { idHistoriaClinicaOcupacional });
 
 export const ValidateIdRegistroAtencion = async (idRegistroAtencion) => await getData(Url.HistoriaClinicaOcupacional_ValidateIdRegistroAtencion, { idRegistroAtencion });
+
+export const GetLastRegister = async (documento) => await getData(Url.GetLastRegister, { documento });
