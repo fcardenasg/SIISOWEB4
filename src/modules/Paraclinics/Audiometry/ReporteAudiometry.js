@@ -131,42 +131,47 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
 
      doc.setFontSize(8);
      doc.text('Otalgia:', 7, 93);
-     doc.text(`${lsDataReport.otalgiaAOP}`, 36, 93);
+     doc.text(`${lsDataReport.nameOtalgiaAOP}`, 36, 93);
      doc.text('Otorrea:', 47, 93);
-     doc.text(`${lsDataReport.otorreaAOP}`, 65, 93);
+     doc.text(`${lsDataReport.nameOtorreaAOP}`, 65, 93);
      doc.text('Vértigo:', 80, 93);
-     doc.text(`${lsDataReport.vertigoAOP}`, 121, 93);
+     doc.text(`${lsDataReport.nameVertigoAOP}`, 121, 93);
      doc.text('Hipoacusia:', 137, 93);
-     doc.text(`${lsDataReport.tipoAcusiaAOP}`, 161, 93);
+     doc.text(`${lsDataReport.nameTipoAcusiaAOP}`, 161, 93);
      doc.text('Familiares:', 173, 93);
-     doc.text(`${lsDataReport.familiaresAOP}`, 198, 93);
+     doc.text(`${lsDataReport.nameFamiliaresAOP}`, 198, 93);
 
 
-
+ 
      doc.text('Prurito:', 7, 100);
-     doc.text(`${lsDataReport.luritoAOP}`, 36, 100);
+     doc.text(`${lsDataReport.nameLuritoAOP}`, 36, 100);
      doc.text('Acufenos:', 47, 100);
-     doc.text(`${lsDataReport.acufenosAOP}`, 65, 100);
+     doc.text(`${lsDataReport.nameAcufenosAOP}`, 65, 100);
      doc.text('Antecedentes Traumáticos:', 80, 100);
-     doc.text(`${lsDataReport.anteceTraumaticosAOP}`, 121, 100);
+     doc.text(`${lsDataReport.nameAnteceTraumaticosAOP}`, 121, 100);
      doc.text('Diabetes:', 137, 100);
-     doc.text(`${lsDataReport.diabetesAOP}`, 161, 100);
+     doc.text(`${lsDataReport.nameDiabetesAOP}`, 161, 100);
     doc.text('Otitis:', 173, 100);
-    doc.text(`${lsDataReport.otitisAOP}`, 198, 100);
+    doc.text(`${lsDataReport.nameOtitisAOP}`, 198, 100);
 
 
      doc.text('Cirugía de Oídos:', 7, 107);
-     doc.text(`${lsDataReport.cirugiaAOP}`, 36, 107);
+     doc.text(`${lsDataReport.nameCirugiaAOP}`, 36, 107);
      doc.text('H.T.A.:', 47, 107);
-     doc.text(`${lsDataReport.htaaop}`, 65, 107);
+     doc.text(`${lsDataReport.nameHTAAOP}`, 65, 107);
      doc.text('Expo. a Ruidos no Indicados:', 80, 107);
-     doc.text(`${lsDataReport.expoRuidoAOP}`, 121, 107);
+     doc.text(`${lsDataReport.nameExpoRuidoAOP}`, 121, 107);
     doc.text('Farmacológicos:', 137, 107);
-    doc.text(`${lsDataReport.farmacologicosAOP}`, 161, 107);
+    doc.text(`${lsDataReport.nameFarmacologicosAOP}`, 161, 107);
       doc.text('Parálisis Facial:', 173, 107);
-    doc.text(`${lsDataReport.paralisisAOP}`, 198, 107);
+    doc.text(`${lsDataReport.nameParalisisAOP}`, 198, 107);
 
     doc.line(5, 110, marXR, 110); 
+
+
+ /*    "nameIdReposoAUDIO": "string", */
+ 
+  
 
      doc.text('Observaciones:', 7, 115);
      doc.line(5, 120, marXR, 120); 
@@ -176,70 +181,70 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
      doc.line(5, 135, marXR, 135); 
 
      doc.text('Conducta:', 7, 140);
-     doc.text(`${lsDataReport.nameConductaClasificacion}`, 36, 140);
+     doc.text(`${lsDataReport.nameConducta}`, 21, 140);
 
 
      doc.text('Cambio EPP:', 90, 140);
-     doc.text(`${lsDataReport.idCambioEPP}`, 121, 140);
+     doc.text(`${lsDataReport.nameIdCambioEPP}`, 105, 140);
 
      doc.line(5, 142, marXR, 142); 
 
 
      doc.text('Observaciones:', 7, 147);
-     doc.line(5, 152, marXR, 152); 
+     doc.line(5, 149, marXR, 149); 
 
      doc.text(`${lsDataReport.observacionAUDIO}`, 7, 155);
-     doc.line(5, 157, marXR, 157); 
+     
      doc.line(5, 170, marXR, 170); /* HORI SIX */
 
      doc.line(5, 180, marXR, 180); /* HORI SIX */
    
 
      doc.text('Empresa:', 7, 185);
-     doc.text(`${lsDataReport.idEmpresaAO}`, 20, 185);
+     doc.text(`${lsDataReport.nameEmpresaAO}`, 35, 185);
 
      doc.text('Cargo:', 70, 185);
-     doc.text(`${lsDataReport.idCargoAO}`, 80, 185);
+     doc.text(`${lsDataReport.nameCargoAO}`, 95, 185);
 
-     doc.text('Tiempo Exp.:', 150, 185);
-     doc.text(`${lsDataReport.tiempoExpoAO}`, 170, 185);
+     doc.text('Tiempo Exp.:', 170, 185);
+     doc.text(`${lsDataReport.tiempoExpoAO}`, 185, 185);
 
 
 
      doc.text('Protección Auditiva:', 7, 190);
-     doc.text(`${lsDataReport.idProteccionAuditivaAO}`, 50, 190);
+     doc.text(`${lsDataReport.nameProteccionAudi}`, 35, 190);
 
      doc.text('Suminstrada Por:', 70, 190);
-     doc.text(`${lsDataReport.idSuministradaPorAO}`, 113, 190);
+     doc.text(`${lsDataReport.nameSuministradoPor}`, 95, 190);
 
-     doc.text('Uso:', 150, 190);
-     doc.text(`${lsDataReport.idUsoAO}`, 165, 190);
+     doc.text('Uso:', 170, 190);
+     doc.text(`${lsDataReport.nameUso}`, 185, 190);
 
      doc.line(5, 193, marXR, 193); /* HORI 7 */
      doc.line(5, 200, marXR, 200); /* HORI 7 */
 
-     doc.text('OID CAE:', 7, 210);
-     doc.text(`${lsDataReport.idOdcaeAUDIO}`, 20, 210);
+     doc.text('OID CAE:', 7, 205);
+     doc.text(`${lsDataReport.nameOdCae}`, 30, 205);
 
-     doc.text('OID MT:', 70, 210);
-     doc.text(`${lsDataReport.idOdmtAUDIO}`, 80, 210);
+     doc.text('OID MT:', 70, 205);
+     doc.text(`${lsDataReport.nameOdMt}`, 90, 205);
 
   
-     doc.text('OI CAE:', 7, 215);
-     doc.text(`${lsDataReport.idProteccionAuditivaAO}`, 50, 215);
+     doc.text('OI CAE:', 7, 209);
+     doc.text(`${lsDataReport.nameOiCae}`, 30, 209);
 
-     doc.text('OI MT:', 70, 215);
-     doc.text(`${lsDataReport.idSuministradaPorAO}`, 113, 215);
+     doc.text('OI MT:', 70, 209);
+     doc.text(`${lsDataReport.nameOiMt}`, 90, 209);
 
-
+   
+     doc.text('Reposo Auditivo:', 7, 214);
+     doc.text(`${lsDataReport.nameIdReposoAUDIO}`, 30, 214);
 
 
      doc.line(5, 216, marXR, 216); /* HORI 7 */
      doc.line(5, 223, marXR, 223); /* HORI 7 */
 
-     doc.text(`${lsDataReport.observacionAUDIO}`, 35, 226);
-
-
+     doc.text(`${lsDataReport.observacionAUDIO}`, 7, 226);
 
 
     getFirma(doc, lsDataUser, 24)
