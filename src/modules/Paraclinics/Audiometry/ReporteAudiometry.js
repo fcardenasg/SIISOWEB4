@@ -57,7 +57,7 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     doc.text('2.Antecedentes Médicos:', 7, 85);
     doc.text('3.Antecedentes Ocupacionales:', 7, 177);
     doc.text('4.Otoscopia:', 7, 197);
-    doc.text('5.Observaciones:', 7, 217);
+    doc.text('5.Observaciones:', 7, 220);
 
     doc.text(`Fecha:`, 120, 37);
     doc.text(`${ViewFormat(lsDataReport.fecha)}`, 150, 37); 
@@ -75,7 +75,7 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     doc.line(5, 88, marXR, 88); /* HORI FOUR */
 
     doc.line(5, 300, marXR, 300); /* HORI FIVE */
-    doc.line(5, 150, marXR, 150); /* HORI SIX */
+    
 
 
     doc.line(5, 230, marXR, 230); /* HORI OCHO */
@@ -89,7 +89,7 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
 
     doc.text('Nro. Documento:', 42, 45);
     doc.text('Cargo:', 42, 50);
-    doc.text('Genero:', 42, 55);
+    doc.text('Género:', 42, 55);
     doc.text('EPS:', 42, 60);
     doc.text('Sede:', 42, 65);
     doc.text('Celular:', 42, 70);
@@ -130,128 +130,116 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     // /* Antecedentes Medicos */
 
      doc.setFontSize(8);
-     doc.text('Otalgia.:', 7, 93);
-     doc.text(`${lsDataReport.otalgiaAOP}`, 27, 93);
-     doc.text('Otorrea', 47, 93);
-     doc.text(`${lsDataReport.otorreaAOP}`, 67, 93);
-     doc.text('Vértigo.:', 87, 93);
-     doc.text(`${lsDataReport.vertigoAOP}`, 107, 93);
-     doc.text('Hipoacusia', 127, 93);
-     doc.text(`${lsDataReport.tipoAcusiaAOP}`, 147, 93);
-     doc.text('Familiares', 167, 93);
-     doc.text(`${lsDataReport.familiaresAOP}`, 187, 93);
+     doc.text('Otalgia:', 7, 93);
+     doc.text(`${lsDataReport.otalgiaAOP}`, 36, 93);
+     doc.text('Otorrea:', 47, 93);
+     doc.text(`${lsDataReport.otorreaAOP}`, 65, 93);
+     doc.text('Vértigo:', 80, 93);
+     doc.text(`${lsDataReport.vertigoAOP}`, 121, 93);
+     doc.text('Hipoacusia:', 137, 93);
+     doc.text(`${lsDataReport.tipoAcusiaAOP}`, 161, 93);
+     doc.text('Familiares:', 173, 93);
+     doc.text(`${lsDataReport.familiaresAOP}`, 198, 93);
 
 
 
-     doc.text('Prurito.:', 7, 100);
-     doc.text(`${lsDataReport.luritoAOP}`, 27, 100);
-     doc.text('Acufenos', 47, 100);
-     doc.text(`${lsDataReport.acufenosAOP}`, 67, 100);
-     doc.text('Antecedentes Traumáticos.:', 87, 100);
-     doc.text(`${lsDataReport.anteceTraumaticosAOP}`, 107, 100);
-     doc.text('Diabetes', 127, 100);
-     doc.text(`${lsDataReport.diabetesAOP}`, 147, 100);
-    doc.text('Otitis.:', 167, 100);
-    doc.text(`${lsDataReport.otitisAOP}`, 187, 100);
+     doc.text('Prurito:', 7, 100);
+     doc.text(`${lsDataReport.luritoAOP}`, 36, 100);
+     doc.text('Acufenos:', 47, 100);
+     doc.text(`${lsDataReport.acufenosAOP}`, 65, 100);
+     doc.text('Antecedentes Traumáticos:', 80, 100);
+     doc.text(`${lsDataReport.anteceTraumaticosAOP}`, 121, 100);
+     doc.text('Diabetes:', 137, 100);
+     doc.text(`${lsDataReport.diabetesAOP}`, 161, 100);
+    doc.text('Otitis:', 173, 100);
+    doc.text(`${lsDataReport.otitisAOP}`, 198, 100);
 
 
-     doc.text('Cirugía de Oídos', 7, 107);
-     doc.text(`${lsDataReport.cirugiaAOP}`, 27, 107);
+     doc.text('Cirugía de Oídos:', 7, 107);
+     doc.text(`${lsDataReport.cirugiaAOP}`, 36, 107);
      doc.text('H.T.A.:', 47, 107);
-     doc.text(`${lsDataReport.htaaop}`, 67, 107);
-     doc.text('Expo. a Ruidos no Indicados', 87, 107);
-     doc.text(`${lsDataReport.expoRuidoAOP}`, 107, 107);
-    doc.text('Farmacológicos', 127, 107);
-    doc.text(`${lsDataReport.farmacologicosAOP}`, 147, 107);
-      doc.text('Parálisis Facial', 167, 107);
-    doc.text(`${lsDataReport.paralisisAOP}`, 187, 107);
+     doc.text(`${lsDataReport.htaaop}`, 65, 107);
+     doc.text('Expo. a Ruidos no Indicados:', 80, 107);
+     doc.text(`${lsDataReport.expoRuidoAOP}`, 121, 107);
+    doc.text('Farmacológicos:', 137, 107);
+    doc.text(`${lsDataReport.farmacologicosAOP}`, 161, 107);
+      doc.text('Parálisis Facial:', 173, 107);
+    doc.text(`${lsDataReport.paralisisAOP}`, 198, 107);
+
+    doc.line(5, 110, marXR, 110); 
+
+     doc.text('Observaciones:', 7, 115);
+     doc.line(5, 120, marXR, 120); 
+
+     doc.text(`${lsDataReport.observacionAOP}`, 7, 125);
+
+     doc.line(5, 135, marXR, 135); 
+
+     doc.text('Conducta:', 7, 140);
+     doc.text(`${lsDataReport.nameConductaClasificacion}`, 36, 140);
 
 
-    // doc.text('Observaciones:', 7, 105);
-    // doc.text(`${lsDataReport.observacionAOP}`, 35, 105);
+     doc.text('Cambio EPP:', 90, 140);
+     doc.text(`${lsDataReport.idCambioEPP}`, 121, 140);
+
+     doc.line(5, 142, marXR, 142); 
 
 
-    // doc.text('Conducta:', 120, 105);
-    // doc.text(`${lsDataReport.nameConductaClasificacion}`, 150, 105);
+     doc.text('Observaciones:', 7, 147);
+     doc.line(5, 152, marXR, 152); 
 
+     doc.text(`${lsDataReport.observacionAUDIO}`, 7, 155);
+     doc.line(5, 157, marXR, 157); 
+     doc.line(5, 170, marXR, 170); /* HORI SIX */
 
-    // /*    doc.setFontSize(8); */
-    // doc.text('Cambio EPP:', 7, 113);
-    // doc.text(`${lsDataReport.idCambioEPP}`, 35, 113);
+     doc.line(5, 180, marXR, 180); /* HORI SIX */
+   
 
+     doc.text('Empresa:', 7, 185);
+     doc.text(`${lsDataReport.idEmpresaAO}`, 20, 185);
 
-    // doc.text('Observaciones:', 120, 112);
-    // doc.text(`${lsDataReport.observacionAUDIO}`, 150, 112);
+     doc.text('Cargo:', 70, 185);
+     doc.text(`${lsDataReport.idCargoAO}`, 80, 185);
 
-    // doc.line(5, 116, marXR, 116); /* HORI 7 */
-
-
-
-    // doc.line(5, 124, marXR, 124); /* HORI 7 */
-
-    // doc.line(5, 137, marXR, 137); /* HORI 7 */
-
-
-    // doc.text('Empresa:', 7, 143);
-    // doc.text(`${lsDataReport.idEmpresaAO}`, 35, 143);
-
-    // doc.text('Cargo:', 120, 143);
-    // doc.text(`${lsDataReport.idCargoAO}`, 142, 143);
-
-    // doc.line(5, 146, marXR, 146); /* HORI 7 */
-
-    // doc.text('Tiempo Exp.:', 7, 151);
-    // doc.text(`${lsDataReport.tiempoExpoAO}`, 39, 151);
-
-
-
-    // doc.text('Protección Auditiva:', 120, 151);
-    // doc.text(`${lsDataReport.idProteccionAuditivaAO}`, 150, 151);
-
-    // doc.line(5, 155, marXR, 155); /* HORI 7 */
-
-
-    // doc.text('Suminstrada Por:', 7, 160);
-    // doc.text(`${lsDataReport.idSuministradaPorAO}`, 35, 160);
+     doc.text('Tiempo Exp.:', 150, 185);
+     doc.text(`${lsDataReport.tiempoExpoAO}`, 170, 185);
 
 
 
-    // doc.text('Uso:', 120, 160);
-    // doc.text(`${lsDataReport.idUsoAO}`, 150, 160);
+     doc.text('Protección Auditiva:', 7, 190);
+     doc.text(`${lsDataReport.idProteccionAuditivaAO}`, 50, 190);
 
-    // doc.line(5, 163, marXR, 163); /* HORI 7 */
+     doc.text('Suminstrada Por:', 70, 190);
+     doc.text(`${lsDataReport.idSuministradaPorAO}`, 113, 190);
 
-    // doc.text('CAE:', 7, 167);
-    // doc.text(`${lsDataReport.idOdcaeAUDIO}`, 35, 167);
+     doc.text('Uso:', 150, 190);
+     doc.text(`${lsDataReport.idUsoAO}`, 165, 190);
 
-    // doc.line(5, 170, marXR, 170); /* HORI 7 */
+     doc.line(5, 193, marXR, 193); /* HORI 7 */
+     doc.line(5, 200, marXR, 200); /* HORI 7 */
 
-    // doc.text('MT:', 7, 174);
-    // doc.text(`${lsDataReport.idOdmtAUDIO}`, 35, 167);
+     doc.text('OID CAE:', 7, 210);
+     doc.text(`${lsDataReport.idOdcaeAUDIO}`, 20, 210);
 
-    // doc.text('OD:', 7, 167);
-    // doc.text(`${lsDataReport.nameDxDerecho}`, 35, 167);
+     doc.text('OID MT:', 70, 210);
+     doc.text(`${lsDataReport.idOdmtAUDIO}`, 80, 210);
 
-    // doc.text('OI:', 7, 167);
-    // doc.text(`${lsDataReport.nameDxIzquierdo}`, 35, 167);
+  
+     doc.text('OI CAE:', 7, 215);
+     doc.text(`${lsDataReport.idProteccionAuditivaAO}`, 50, 215);
 
-
-    // doc.text('Reposo  Auditivo:', 7, 167);
-    // doc.text(`${lsDataReport.idReposoAUDIO}`, 35, 167);
-
-    // if (lsDataReport.dxAUDIO !== "")
-    //     doc.text(`DX:   ${lsDataReport.dxAUDIO}   ${lsDataReport.nameDxAUDIO.toUpperCase()}`, 7, 130, { maxWidth: 200, lineHeightFactor: 1.5 });
-
-
-    // doc.text('Observaciones:', 7, 167);
-    // doc.text(`${lsDataReport.observacionAUDIO}`, 35, 167);
+     doc.text('OI MT:', 70, 215);
+     doc.text(`${lsDataReport.idSuministradaPorAO}`, 113, 215);
 
 
-    // doc.line(5, 177, marXR, 177); /* HORI 7 */
 
-    // doc.setFontSize(8);
 
-    // doc.text(`${lsDataReport.seguimiento}`, 7, 182, { maxWidth: 200, lineHeightFactor: 1.5 });
+     doc.line(5, 216, marXR, 216); /* HORI 7 */
+     doc.line(5, 223, marXR, 223); /* HORI 7 */
+
+     doc.text(`${lsDataReport.observacionAUDIO}`, 35, 226);
+
+
 
 
     getFirma(doc, lsDataUser, 24)
