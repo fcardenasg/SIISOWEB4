@@ -122,7 +122,6 @@ const PsychologicalCounseling = () => {
                 if (event.key === 'Enter') {
                     if (event?.target.value != "") {
                         var lsServerEmployee = await GetByIdEmployee(event?.target.value);
-                        console.log(lsServerEmployee);
 
                         if (lsServerEmployee.status === 200) {
                             setLsEmployee(lsServerEmployee.data);

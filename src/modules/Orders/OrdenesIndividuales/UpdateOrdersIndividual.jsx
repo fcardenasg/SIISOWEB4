@@ -22,7 +22,7 @@ import InputSelect from 'components/input/InputSelect';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { PutOrders } from 'formatdata/OrdersForm';
-import { GetByIdOrders, UpdateOrders } from 'api/clients/OrdersClient';
+import { GetAllOrdersParaclinicos, GetByIdOrders, UpdateOrders } from 'api/clients/OrdersClient';
 
 import ViewEmployee from 'components/views/ViewEmployee';
 import ListParaclinico from './ListParaclinico';
@@ -31,6 +31,8 @@ import ListHistoryEmo from './ListHistoryEmo';
 import ViewPDF from 'components/components/ViewPDF';
 import ControlModal from 'components/controllers/ControlModal';
 import SelectOnChange from 'components/input/SelectOnChange';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReporteIndex } from '../Report';
 
 const UpdateOrdersIndividual = () => {
     const { user } = useAuth();
@@ -41,6 +43,7 @@ const UpdateOrdersIndividual = () => {
 
     const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
+    const [disabledButton, setDisabledButton] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
     const [verHistoricoEmo, setVerHistoricoEmo] = useState(false);
     const [tipoExamen, setTipoExamen] = useState('');
@@ -68,7 +71,7 @@ const UpdateOrdersIndividual = () => {
     }
 
     const methods = useForm();
-    const { handleSubmit, errors } = methods;
+    const { handleSubmit } = methods;
 
     useEffect(() => {
         async function getAll() {
@@ -104,6 +107,18 @@ const UpdateOrdersIndividual = () => {
 
         getData();
     }, []);
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdOrders(id);
+            const lsDataReportParaclinico = await GetAllOrdersParaclinicos(0, 0, id);
+            const lsDataUser = await GetByMail(user.nameuser);
+            const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data.entities);
+
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleClick = async (datos) => {
         try {
@@ -177,7 +192,6 @@ const UpdateOrdersIndividual = () => {
                                     </FormProvider>
                                 </Grid>
 
-
                                 <Grid item xs={DefaultValue.TIPO_EXAMEN_CONTROLPERIODICO === tipoExamen ? 5.2 : 6}>
                                     <SelectOnChange
                                         name="idTipoExamen"
@@ -201,7 +215,7 @@ const UpdateOrdersIndividual = () => {
                                     </Grid> : null}
 
                                 <Grid item xs={12}>
-                                    <ListParaclinico lsEmployee={lsEmployee} idOrdenes={id} />
+                                    <ListParaclinico setDisabledButton={setDisabledButton} lsEmployee={lsEmployee} idOrdenes={id} />
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -216,7 +230,7 @@ const UpdateOrdersIndividual = () => {
 
                                         <Grid item xs={2}>
                                             <AnimateButton>
-                                                <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                                <Button disabled={disabledButton ? false : true} variant="outlined" fullWidth onClick={handleClickReport}>
                                                     {TitleButton.Imprimir}
                                                 </Button>
                                             </AnimateButton>

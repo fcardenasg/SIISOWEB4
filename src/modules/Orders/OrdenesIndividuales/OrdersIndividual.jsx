@@ -22,7 +22,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { PostOrders } from 'formatdata/OrdersForm';
-import { GetByIdOrders, GetByIdOrdersParaclinicos, InsertOrders } from 'api/clients/OrdersClient';
+import { GetAllOrdersParaclinicos, GetByIdOrders, GetByIdOrdersParaclinicos, InsertOrders } from 'api/clients/OrdersClient';
 
 import ViewEmployee from 'components/views/ViewEmployee';
 import ListParaclinico from './ListParaclinico';
@@ -66,8 +66,7 @@ const OrdersIndividual = () => {
                 if (event.key === 'Enter') {
                     if (event?.target.value != "") {
                         var lsServerEmployee = await GetByIdEmployee(event?.target.value);
-                        console.log(lsServerEmployee);
-
+                        
                         if (lsServerEmployee.status === 200) {
                             setLsEmployee(lsServerEmployee.data);
                         }
@@ -91,10 +90,11 @@ const OrdersIndividual = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdOrders(23);
-            const lsDataReportParaclinico = await GetByIdOrdersParaclinicos(46);
+            const lsDataReport = await GetByIdOrders(resultData);
+            const lsDataReportParaclinico = await GetAllOrdersParaclinicos(0, 0, resultData);
             const lsDataUser = await GetByMail(user.nameuser);
-            const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
+            const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data.entities);
+
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -108,8 +108,7 @@ const OrdersIndividual = () => {
                     label: item.nombre
                 }));
                 setLsTipoExamen(resultTipoExamen);
-
-                setResultData(23);
+                setTipoExamen(resultTipoExamen[0].value);
             } catch (error) { }
         }
 
@@ -122,12 +121,17 @@ const OrdersIndividual = () => {
                 user.nameuser, undefined, '', undefined);
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertOrders(DataToInsert);
-                if (result.status === 200) {
-                    setResultData(result.data.id);
-                    setOpenSuccess(true);
-                    setDisabledButton(true);
+                if (documento !== '' && lsEmployee.length !== 0) {
+                    const result = await InsertOrders(DataToInsert);
+                    if (result.status === 200) {
+                        setResultData(result.data.id);
+                        setOpenSuccess(true);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(Message.ErrorNoHayDatos);
                 }
+
             }
         } catch (error) {
             setOpenError(true);
@@ -207,14 +211,14 @@ const OrdersIndividual = () => {
 
                             {resultData !== '' ?
                                 <Grid item xs={12}>
-                                    <ListParaclinico lsEmployee={lsEmployee} idOrdenes={resultData} />
+                                    <ListParaclinico setDisabledButton={setDisabledButton} lsEmployee={lsEmployee} idOrdenes={resultData} />
                                 </Grid> : null}
 
                             <Grid item xs={12}>
                                 <Grid container spacing={2} sx={{ pt: 4 }}>
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button disabled={disabledButton ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            <Button disabled={resultData !== '' ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                                 {TitleButton.Guardar}
                                             </Button>
                                         </AnimateButton>
@@ -222,7 +226,7 @@ const OrdersIndividual = () => {
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button /* disabled={disabledButton ? false : true} */ variant="outlined" fullWidth onClick={handleClickReport}>
+                                            <Button disabled={disabledButton ? false : true} variant="outlined" fullWidth onClick={handleClickReport}>
                                                 {TitleButton.Imprimir}
                                             </Button>
                                         </AnimateButton>

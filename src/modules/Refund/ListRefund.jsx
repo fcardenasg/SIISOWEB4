@@ -244,7 +244,7 @@ const ListRefund = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'idContingencia', 'idAtencion', 'fecha', 'usuarioRegistro'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameConceptoReintegro', 'nameEstadoCaso'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

@@ -35,7 +35,7 @@ import { ViewFormat } from 'components/helpers/Format';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import swal from 'sweetalert';
 
-const ListParaclinico = ({ lsEmployee, idOrdenes }) => {
+const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton }) => {
     const { user } = useAuth();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -112,9 +112,14 @@ const ListParaclinico = ({ lsEmployee, idOrdenes }) => {
     async function getAllListParaclinicos() {
         try {
             const lsServer = await GetAllOrdersParaclinicos(0, 0, idOrdenes);
-
-            console.log(lsServer);
-            setLsOrdenesParaclinicos(lsServer.data.entities);
+            if (lsServer.status === 200) {
+                setLsOrdenesParaclinicos(lsServer.data.entities);
+                if (lsServer.data.entities.length !== 0) {
+                    setDisabledButton(true);
+                } else {
+                    setDisabledButton(false);
+                }
+            }
         } catch (error) { }
     }
 

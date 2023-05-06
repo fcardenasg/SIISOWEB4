@@ -369,11 +369,11 @@ const OccupationalMedicine = () => {
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorNoHayDatos}`);
+                    setErrorMessage(Message.ErrorNoHayDatos);
                 }
             } else {
                 setOpenError(true);
-                setErrorMessage(`${Message.ErrorNoHayDatos}`);
+                setErrorMessage(Message.ErrorNoHayDatos);
             }
         } catch (error) {
             setOpenError(true);

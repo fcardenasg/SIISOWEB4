@@ -355,7 +355,7 @@ const ListOrdersIndividual = () => {
                     <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
-                                <Tooltip title="Copiar">
+                                <Tooltip title="Excel">
                                     <IconButton size="large">
                                         <FileCopyIcon />
                                     </IconButton>

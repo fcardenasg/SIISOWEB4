@@ -56,7 +56,7 @@ export function generateReportConcentimiento(doc, lsDataReport = [], lsDataUser 
     doc.text("Consentimiento Informado", 5, 35);
 
     doc.setFontSize(12);
-    doc.text(`Nro. Orden:       ${lsDataUser.id}`, 5, 48);
+    doc.text(`Nro. Orden:       ${lsDataReport.id}`, 5, 48);
     doc.setFontSize(10);
     doc.text(`YO ${lsDataUser.nombre}     IDENTIFICADO CON CC NRO. ${lsDataUser.documento}`, 5, 60);
 

@@ -31,27 +31,42 @@ function getPiePage(doc, lsDataUser) {
     doc.line(5, doc.internal.pageSize.height - 10, 210, doc.internal.pageSize.height - 10);
 
     doc.text(`FECHA DE SISTEMA:  ${new Date().toLocaleString()}`, 10, doc.internal.pageSize.height - 4);
-    doc.text(`USUARIO ACTIVO:  ${lsDataUser.nombre}`, 90, doc.internal.pageSize.height - 4);
-    doc.text("Pag. 1 of 1", 190, doc.internal.pageSize.height - 4);
+    doc.text(`USUARIO ACTIVO:  ${lsDataUser.nombre}`, 150, doc.internal.pageSize.height - 4);
+    /* doc.text(`Pag. ${page} of ${sizePage}`, 190, doc.internal.pageSize.height - 4); */
 }
 
 export function generateReporteIndex(lsDataReport = [], lsDataUser = [], lsDataReportParaclinico) {
     var doc = new jsPDF("p", "mm", "letter");
     /* Concentimiento Informado - Ordenes */
-    /* getHeader(doc, lsDataReport);
+    getHeader(doc, lsDataReport);
     generateReportConcentimiento(doc, lsDataReport, lsDataUser);
-    getPiePage(doc, lsDataUser, 1, 1); */
-
-    /* doc.addPage(); */
-
-    /* getHeader(doc, lsDataReport);
-    generateReportCitacion(doc, lsDataReport, lsDataUser);
-    getPiePage(doc, lsDataUser, 1, 1); */
+    getPiePage(doc, lsDataUser);
+    doc.addPage();
 
     getHeader(doc, lsDataReport);
-    generateReportParaclinico(doc, lsDataReport, lsDataUser, lsDataReportParaclinico);
-    getPiePage(doc, lsDataUser, 1, 1);
+    generateReportCitacion(doc, lsDataReport, lsDataUser);
+    getPiePage(doc, lsDataUser);
+    doc.addPage();
+
+    for (let index = 0; index < lsDataReportParaclinico.length; index++) {
+        const element = lsDataReportParaclinico[index];
+
+        if (lsDataReportParaclinico.length !== 0) {
+            if (element.idParaclinico !== 3541) {
+                getHeader(doc, lsDataReport);
+                generateReportParaclinico(doc, lsDataReport, lsDataUser, element);
+                getPiePage(doc, lsDataUser);
+
+                var numero = lsDataReportParaclinico.length - 1;
+
+                if (index !== numero) {
+                    doc.addPage();
+                }
+            }
+        }
+    }
 
     var dataPDF = doc.output("bloburl");
+
     return dataPDF;
 }
