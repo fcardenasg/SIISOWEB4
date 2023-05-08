@@ -58,7 +58,7 @@ export function generateReportConcentimiento(doc, lsDataReport = [], lsDataUser 
     doc.setFontSize(12);
     doc.text(`Nro. Orden:       ${lsDataReport.id}`, 5, 48);
     doc.setFontSize(10);
-    doc.text(`YO ${lsDataUser.nombre}     IDENTIFICADO CON CC NRO. ${lsDataUser.documento}`, 5, 60);
+    doc.text(`YO ${lsDataReport.nameEmpleado}     IDENTIFICADO CON CC NRO. ${lsDataReport.documento}`, 5, 60);
 
 
     doc.setFont("helvetica", "normal");

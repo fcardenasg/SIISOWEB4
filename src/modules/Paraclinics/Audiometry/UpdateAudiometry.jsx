@@ -33,6 +33,9 @@ import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import InputOnChange from 'components/input/InputOnChange';
 import { GetAllByCodeOrName, } from 'api/clients/CIE11Client';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReport } from './ReporteAudiometry';
+import ViewPDF from 'components/components/ViewPDF';
 
 const UpdateAudiometry = () => {
     const { id } = useParams();
@@ -41,6 +44,8 @@ const UpdateAudiometry = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [dataPDF, setDataPDF] = useState(false);
+    const [openReport, setOpenReport] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
     const [filePdf, setFilePdf] = useState(null);
     const [openError, setOpenError] = useState(false);
@@ -221,7 +226,17 @@ const UpdateAudiometry = () => {
 
     useEffect(() => {
         getAll();
-    }, [])
+    }, []);
+
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdParaclinics(id);
+            const lsDataUser = await GetByMail(user.nameuser);
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
 
     const handleClick = async (datos) => {
         try {
@@ -275,6 +290,15 @@ const UpdateAudiometry = () => {
                     title="DICTADO POR VOZ"
                 >
                     <ControllerListen />
+                </ControlModal>
+
+                <ControlModal
+                    title="VISTA DE REPORTE"
+                    open={openReport}
+                    onClose={() => setOpenReport(false)}
+                    maxWidth="xl"
+                >
+                    <ViewPDF dataPDF={dataPDF} />
                 </ControlModal>
 
                 {timeWait ?
@@ -741,14 +765,23 @@ const UpdateAudiometry = () => {
                         </Grid>
 
                         <Grid item xs={12} sx={{ pt: 4 }}>
-                            <Grid container spacing={2}>
+                            <Grid container spacing={2} >
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Actualizar}
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
                                 <Grid item xs={2}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/audiometry/list")}>

@@ -126,13 +126,13 @@ const Audiometry = () => {
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -205,20 +205,17 @@ const Audiometry = () => {
 
     useEffect(() => {
         getAll();
-    }, [])
-
+    }, []);
 
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdParaclinics(963);
+            const lsDataReport = await GetByIdParaclinics(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
-           // resultData.id
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
-
 
     const handleClick = async (datos) => {
         try {
@@ -245,9 +242,9 @@ const Audiometry = () => {
                 const result = await InsertParaclinics(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
-                    /*           setDocumento(''); */
+                    setDocumento('');
                     setLsEmployee([]);
-                    setResultData(result.data);
+                    setResultData(result.data.id);
                     reset();
                     setFilePdf(null);
                 }
@@ -741,7 +738,7 @@ const Audiometry = () => {
                                 <Grid container spacing={2} >
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            <Button disabled={resultData === "" ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                                 {TitleButton.Guardar}
                                             </Button>
                                         </AnimateButton>
@@ -749,13 +746,11 @@ const Audiometry = () => {
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button /* disabled={resultData.length === 0 ? true : false} */ variant="outlined" fullWidth onClick={handleClickReport}>
+                                            <Button disabled={resultData !== "" ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
                                                 {TitleButton.Imprimir}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
-
-
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
