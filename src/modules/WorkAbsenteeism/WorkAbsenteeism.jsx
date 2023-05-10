@@ -305,19 +305,24 @@ const WorkAbsenteeism = () => {
                 datos.proveedor, departamentoIPS, datos.ciudadIPS, datos.nombreProfesional, datos.especialidad, datos.registroProfesional, datos.tipoAtencion,
                 datos.cumplimientoRequisito, datos.expideInCapacidad, datos.observacionCumplimiento,
 
-                datos.observacion, '', FormatDate(fechaModifica), user.nameuser, FormatDate(new Date()), lsEmployee.tipoContrato, lsEmployee.type,
+                datos.observacion, '', null, user.nameuser, FormatDate(new Date()), lsEmployee.tipoContrato, lsEmployee.type,
                 FormatDate(new Date()), user.nameuser);
 
             if (Object.keys(datos.length !== 0)) {
-                const result = await InsertWorkAbsenteeism(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
+                if (documento !== '' && lsEmployee.length !== 0) {
+                    const result = await InsertWorkAbsenteeism(DataToInsert);
+                    if (result.status === 200) {
+                        setOpenSuccess(true);
 
-                    const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(documento);
-                    setNumeroDias(numeroDias1.data);
+                        const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(documento);
+                        setNumeroDias(numeroDias1.data);
+                    } else {
+                        setErrorMessage(Message.RegistroNoGuardado);
+                        setOpenError(true);
+                    }
                 } else {
-                    setErrorMessage(Message.RegistroNoGuardado);
                     setOpenError(true);
+                    setErrorMessage(Message.ErrorNoHayDatos);
                 }
             }
         } catch (error) {
@@ -649,7 +654,7 @@ const WorkAbsenteeism = () => {
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
-                                    defaultValue={DefaultValue.INCAPACIDAD_EPS}
+                                        defaultValue={DefaultValue.INCAPACIDAD_EPS}
                                         name="expideInCapacidad"
                                         label="Red que expide"
                                         options={lsRedExpide}

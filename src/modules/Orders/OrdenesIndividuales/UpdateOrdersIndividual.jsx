@@ -33,6 +33,7 @@ import ControlModal from 'components/controllers/ControlModal';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReporteIndex } from '../Report';
+import InputCheckBox from 'components/input/InputCheckBox';
 
 const UpdateOrdersIndividual = () => {
     const { user } = useAuth();
@@ -123,7 +124,7 @@ const UpdateOrdersIndividual = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PutOrders(id, documento, datos.fecha, tipoExamen, datos.observaciones,
-                user.nameuser, undefined, '', undefined);
+                user.nameuser, undefined, '', undefined, datos.citacion, datos.consentimientoInformado);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateOrders(DataToInsert);
@@ -213,6 +214,28 @@ const UpdateOrdersIndividual = () => {
                                             </Tooltip>
                                         </AnimateButton>
                                     </Grid> : null}
+
+                                <Grid item xs={6}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Consentimiento Informado"
+                                            name="consentimientoInformado"
+                                            size={30}
+                                            defaultValue={lsDataOrdenes.consentimientoInformado}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={6}>
+                                    <FormProvider {...methods}>
+                                        <InputCheckBox
+                                            label="Citación"
+                                            name="citacion"
+                                            size={30}
+                                            defaultValue={lsDataOrdenes.citacion}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
                                 <Grid item xs={12}>
                                     <ListParaclinico setDisabledButton={setDisabledButton} lsEmployee={lsEmployee} idOrdenes={id} />

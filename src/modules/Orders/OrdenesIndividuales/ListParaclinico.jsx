@@ -92,7 +92,6 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton }) => {
                 const lsServerProveedor = await GetAllSupplier(0, 0);
                 if (lsServerProveedor.status === 200) {
                     setLsProveedor(lsServerProveedor.data.entities);
-
                 }
 
                 const lsServerEstudioParaclinico2 = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTUDIO_EXAMEN_PARACLINICOS);
@@ -101,9 +100,7 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton }) => {
                     label: item.nombre
                 }));
                 setLsEstudioParaclinico(resultEstudioParaclinico);
-            } catch (error) {
-
-            }
+            } catch (error) { }
         }
 
         getAll();
@@ -177,7 +174,7 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton }) => {
             var ciudadMap = fechaExmaneFisico ? DefaultValue.SINREGISTRO_GLOBAL : ciudad;
 
             const DataToInsert = PostOrdersParaclinico(paraclinicos, idOrdenes, proveedorMap, ciudadMap, datos.idTipoExamenLaboratorio,
-                datos.idTipoExamenRNM, datos.fechaExamenFisico, datos.asistio, datos.consentimientoInformado, user.nameuser, undefined, "", undefined);
+                datos.idTipoExamenRNM, datos.fechaExamenFisico, datos.asistio, user.nameuser, undefined, "", undefined);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertOrdersParaclinicos(DataToInsert);
@@ -304,17 +301,6 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton }) => {
                                                 <InputCheckBox
                                                     label="Asistio"
                                                     name="asistio"
-                                                    size={30}
-                                                    defaultValue={false}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-
-                                        <Grid item xs={xsGrid}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="Consentimiento Informado"
-                                                    name="consentimientoInformado"
                                                     size={30}
                                                     defaultValue={false}
                                                 />

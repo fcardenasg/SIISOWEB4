@@ -98,7 +98,7 @@ export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = []) 
     doc.setFont("helvetica", "normal");
     doc.text(`${lsDataReport.id}`, 50, 48);
     doc.text(`${lsDataReport.nameEmpleado}`, 50, 55);
-    doc.text(`${ViewFormat(lsDataReport.fecha)}`, 160, 48);
+    doc.text(`${new Date().toLocaleString()}`, 160, 48);
     doc.text(`${lsDataReport.documento}`, 160, 55);
 
     doc.text(`${lsDataReport.nameCargo}`, 50, 70);
@@ -121,7 +121,7 @@ export function generateReportParaclinico(doc, lsDataReport = [], lsDataUser = [
     var restaPosicion = lsDataReportParaclinico.idParaclinico === 3533 ? 0 : 20;
 
     doc.text(`Nro Orden:        ${lsDataReport.id}`, 5, 35);
-    doc.text(`Fecha Expedición:         ${ViewFormat(lsDataReport.fecha)}`, 120, 35);
+    doc.text(`Fecha Expedición:         ${new Date().toLocaleString()}`, 100, 35);
     doc.setFontSize(10);
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);
@@ -142,7 +142,7 @@ export function generateReportParaclinico(doc, lsDataReport = [], lsDataUser = [
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text(`${lsDataReportParaclinico.nameParaclinico}`, 120, 48);
+    doc.text(`${lsDataReportParaclinico.nameParaclinico} ${lsDataReportParaclinico.nameExamenRNM === null ? "" : lsDataReportParaclinico.nameExamenRNM}`, 100, 48);
     if (lsDataReportParaclinico.idParaclinico === 3533)
         doc.text(`${lsDataReportParaclinico.nameExamenLaboratorio}`, 5, 67, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
 
@@ -150,7 +150,6 @@ export function generateReportParaclinico(doc, lsDataReport = [], lsDataUser = [
     doc.text(`${lsDataReportParaclinico.direccionProveedor}`, 40, 95 - restaPosicion);
     doc.text(`${lsDataReportParaclinico.celularProveedor}`, 40, 102 - restaPosicion);
     doc.text(`${lsDataReportParaclinico.ciudadProveedor}`, 40, 109 - restaPosicion);
-
 
     doc.text("Sirvase realizar por nuestra cuenta a el(la) Empleado(a) en mención, el(los) examen(es) señalado(s).", 5, 120 - restaPosicion);
 

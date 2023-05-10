@@ -355,7 +355,7 @@ const ListAttention = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsAttention.length) : 0;
 
     return (
-        <MainCard title="Lista De Atención" content={false}>
+        <MainCard title="Lista de Atención" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal

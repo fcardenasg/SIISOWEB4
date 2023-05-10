@@ -95,7 +95,6 @@ const headCells = [
         label: 'Proveedor',
         align: 'left'
     },
-
     {
         id: 'fecha',
         numeric: false,
@@ -254,7 +253,7 @@ const ListAudiometry = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameEmpleado', 'nameMotivo', 'nameProveedor', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'nameEmpleado', 'nameMotivo', 'nameProveedor', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -268,6 +267,7 @@ const ListAudiometry = () => {
                 }
                 return matches;
             });
+            setLaboratory(newRows);
         } else {
             setLaboratory(rows);
         }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ReactExport from 'react-export-excel';
 import { Grid, Button } from '@mui/material';
-import { ViewFormat } from 'components/helpers/Format';
+import { ViewFormatMesDiaAnio } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ParametrosExcel } from 'formatdata/ParametrosForm';
 import { GetExcelWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
@@ -54,19 +54,19 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin }) => {
                                     </AnimateButton>
                                 } filename="Ausentismo Laboral">
                                     <ExcelSheet data={lsData} name="Lista de Ausentismo Laboral">
-                                        <ExcelColumn label="ID" value="id" />
+                                        <ExcelColumn label="ID" value="idEmpleado" />
                                         <ExcelColumn label="Cedula" value="documento" />
                                         <ExcelColumn label="Nombre" value="nombre" />
                                         <ExcelColumn label="TipoEmpleado" value="tipoEmpleado" />
                                         <ExcelColumn label="Tipo_de_Nomina" value="tipoNomina" />
-                                        <ExcelColumn label="Fecha_Inicio" value={(fe) => ViewFormat(fe.fechaInicio)} />
-                                        <ExcelColumn label="Fecha_Fin" value={(fe) => ViewFormat(fe.fechaFin)} />
+                                        <ExcelColumn label="Fecha_Inicio" value={(fe) => ViewFormatMesDiaAnio(fe.fechaInicio)} />
+                                        <ExcelColumn label="Fecha_Fin" value={(fe) => ViewFormatMesDiaAnio(fe.fechaFin)} />
                                         <ExcelColumn label="Dias" value="diasSinLaborar" />
                                         <ExcelColumn label="Tipo_Soporte" value="tipoSoporte" />
                                         <ExcelColumn label="Categoria" value="categoria" />
                                         <ExcelColumn label="Comentario" value="observacion" />
                                         <ExcelColumn label="Usuario_Registro" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha_Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
+                                        <ExcelColumn label="Fecha_Registro" value={(fe) => ViewFormatMesDiaAnio(fe.fechaRegistro)} />
                                         <ExcelColumn label="Hora_Registro" value="horaRegistro" />
 
                                         {/* <ExcelColumn label="Departamento Residencia" value="departamentoResidencia" />
@@ -82,7 +82,7 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Afp" value="afp" />
                                         <ExcelColumn label="Turno" value="turno" />
                                         <ExcelColumn label="Empresa" value="empresa" />
-                                        <ExcelColumn label="Fecha Expedición" value={(fe) => ViewFormat(fe.fechaExpedicion)} />
+                                        <ExcelColumn label="Fecha Expedición" value={(fe) => ViewFormatMesDiaAnio(fe.fechaExpedicion)} />
                                         <ExcelColumn label="Nro Incapacidad" value="nroIncapacidad" />
                                         <ExcelColumn label="Ciudad Expedición" value="ciudadExpedicion" />
                                         <ExcelColumn label="Tipo Incapacidad" value="tipoIncapacidad" />
@@ -100,7 +100,7 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Cumplimiento Requisito" value="cumplimientoRequisito" />
                                         <ExcelColumn label="Regimen" value="regimen" />
                                         <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
-                                        <ExcelColumn label="Fecha Modificación" value={(fe) => ViewFormat(fe.fechaModificación)} />
+                                        <ExcelColumn label="Fecha Modificación" value={(fe) => ViewFormatMesDiaAnio(fe.fechaModificación)} />
                                         <ExcelColumn label="Ips Expide" value="ipsExpide" /> */}
                                     </ExcelSheet>
                                 </ExcelFile> : null

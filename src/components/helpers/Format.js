@@ -28,6 +28,20 @@ const ViewFormat = (fecha) => {
     } catch (error) { }
 }
 
+const ViewFormatMesDiaAnio = (fecha) => {
+    try {
+        if (fecha === null || fecha === "") {
+            return "";
+        } else {
+            let day = `${(new Date(fecha).getDate())}`.padStart(2, '0');
+            let month = `${(new Date(fecha).getMonth() + 1)}`.padStart(2, '0');
+            let year = new Date(fecha).getFullYear();
+
+            return `${month}/${day}/${year}`;
+        }
+    } catch (error) { }
+}
+
 function GetEdad(dateString) {
     try {
         let hoy = new Date()
@@ -1413,6 +1427,7 @@ function NumeroDias(fechaInicio, fechaFin) {
 export {
     FormatDate,
     ViewFormat,
+    ViewFormatMesDiaAnio,
     GetEdad,
     EdadFramigan,
     FrColesterol,

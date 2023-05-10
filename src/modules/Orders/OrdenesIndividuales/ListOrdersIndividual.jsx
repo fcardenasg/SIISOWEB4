@@ -83,19 +83,19 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'idTipoExamen',
+        id: 'nameTipoExamen',
         numeric: false,
         label: 'Tipo de Examen',
         align: 'left'
     },
     {
-        id: 'nameSede',
+        id: 'sedeEmpleado',
         numeric: false,
         label: 'Sede',
         align: 'left'
     },
     {
-        id: 'usuarioCreacion',
+        id: 'usuarioRegistro',
         numeric: false,
         label: 'Usuario Que Atiende',
         align: 'left'
@@ -245,7 +245,7 @@ const ListOrdersIndividual = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameEmpleado', 'fecha', 'idTipoExamen', 'nameSede', 'usuarioCreacion'];
+                const properties = ['documento', 'nameEmpleado', 'nameTipoExamen', 'sedeEmpleado', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

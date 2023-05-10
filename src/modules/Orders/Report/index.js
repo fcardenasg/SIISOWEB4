@@ -38,15 +38,20 @@ function getPiePage(doc, lsDataUser) {
 export function generateReporteIndex(lsDataReport = [], lsDataUser = [], lsDataReportParaclinico) {
     var doc = new jsPDF("p", "mm", "letter");
     /* Concentimiento Informado - Ordenes */
-    getHeader(doc, lsDataReport);
-    generateReportConcentimiento(doc, lsDataReport, lsDataUser);
-    getPiePage(doc, lsDataUser);
-    doc.addPage();
 
-    getHeader(doc, lsDataReport);
-    generateReportCitacion(doc, lsDataReport, lsDataUser);
-    getPiePage(doc, lsDataUser);
-    doc.addPage();
+    if (lsDataReport.consentimientoInformado) {
+        getHeader(doc, lsDataReport);
+        generateReportConcentimiento(doc, lsDataReport, lsDataUser);
+        getPiePage(doc, lsDataUser);
+        doc.addPage();
+    }
+
+    if (lsDataReport.citacion) {
+        getHeader(doc, lsDataReport);
+        generateReportCitacion(doc, lsDataReport, lsDataUser);
+        getPiePage(doc, lsDataUser);
+        doc.addPage();
+    }
 
     for (let index = 0; index < lsDataReportParaclinico.length; index++) {
         const element = lsDataReportParaclinico[index];
@@ -67,6 +72,5 @@ export function generateReporteIndex(lsDataReport = [], lsDataUser = [], lsDataR
     }
 
     var dataPDF = doc.output("bloburl");
-
     return dataPDF;
 }

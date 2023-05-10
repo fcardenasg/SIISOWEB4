@@ -22,7 +22,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { PostOrders } from 'formatdata/OrdersForm';
-import { GetAllOrdersParaclinicos, GetByIdOrders, GetByIdOrdersParaclinicos, InsertOrders } from 'api/clients/OrdersClient';
+import { GetAllOrdersParaclinicos, GetByIdOrders, InsertOrders } from 'api/clients/OrdersClient';
 
 import ViewEmployee from 'components/views/ViewEmployee';
 import ListParaclinico from './ListParaclinico';
@@ -32,7 +32,7 @@ import ListHistoryEmo from './ListHistoryEmo';
 import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReporteIndex } from '../Report';
-import { GetByIdAttention } from 'api/clients/AttentionClient';
+import InputCheckBox from 'components/input/InputCheckBox';
 
 const OrdersIndividual = () => {
     const { user } = useAuth();
@@ -66,7 +66,7 @@ const OrdersIndividual = () => {
                 if (event.key === 'Enter') {
                     if (event?.target.value != "") {
                         var lsServerEmployee = await GetByIdEmployee(event?.target.value);
-                        
+
                         if (lsServerEmployee.status === 200) {
                             setLsEmployee(lsServerEmployee.data);
                         }
@@ -118,7 +118,7 @@ const OrdersIndividual = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostOrders(documento, datos.fecha, tipoExamen, datos.observaciones,
-                user.nameuser, undefined, '', undefined);
+                user.nameuser, undefined, '', undefined, datos.citacion, datos.consentimientoInformado);
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
@@ -208,6 +208,29 @@ const OrdersIndividual = () => {
                                         </Tooltip>
                                     </AnimateButton>
                                 </Grid> : null}
+
+                            <Grid item xs={6}>
+                                <FormProvider {...methods}>
+                                    <InputCheckBox
+                                        label="Consentimiento Informado"
+                                        name="consentimientoInformado"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <FormProvider {...methods}>
+                                    <InputCheckBox
+                                        label="Citación"
+                                        name="citacion"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
 
                             {resultData !== '' ?
                                 <Grid item xs={12}>

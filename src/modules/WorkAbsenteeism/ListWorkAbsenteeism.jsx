@@ -262,7 +262,7 @@ const ListWorkAbsenteeism = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id_Inc', 'cedula', 'nameEmpleado', 'dx', 'diasSinLaborar', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'usuarioRegistro'];
+                const properties = ['id_Inc', 'cedula', 'nameEmpleado', 'fechaRegistro', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

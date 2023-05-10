@@ -49,9 +49,9 @@ const Attention = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const [documento, setDocumento] = useState('');
-    const [sede, setSede] = useState(undefined);
-    const [tipoAtencion, setTipoAtencion] = useState(undefined);
-    const [atencion, setAtencion] = useState(undefined);
+    const [sede, setSede] = useState('');
+    const [tipoAtencion, setTipoAtencion] = useState('');
+    const [atencion, setAtencion] = useState('');
     const [motivo, setMotivo] = useState(undefined);
     const [documentoSolicita, setDocumentoSolicita] = useState(undefined);
     const [nombreSolicitante, setNombreSolicitante] = useState(undefined);
@@ -153,23 +153,28 @@ const Attention = () => {
     const handleDocumento = async (event) => {
         try {
             setDocumento(event?.target.value);
-            if (event.key === 'Enter') {
-                if (event?.target.value !== "") {
+
+            if (event.target.value !== '') {
+                if (event.key === 'Enter') {
+                    if (event?.target.value != "") {
+                        var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+
+                        if (lsServerEmployee.status === 200) {
+                            setLsEmployee(lsServerEmployee.data);
+                        }
+                    } else {
+                        setOpenError(true);
+                        setErrorMessage(Message.ErrorDocumento);
+                    }
+                } else {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
                     if (lsServerEmployee.status === 200) {
                         setLsEmployee(lsServerEmployee.data);
                     }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
                 }
             }
-        } catch (error) {
-            setLsEmployee([]);
-            setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
-        }
+        } catch (error) { setLsEmployee([]); }
     }
 
     const handleClickReport = async () => {
@@ -336,16 +341,22 @@ const Attention = () => {
                 motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), "",
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (lsEmployee.length === 0) {
+            if (lsEmployee.length === 0 && documento !== '') {
                 setOpenError(true);
                 setErrorMessage(`${Message.NoExisteDocumento}`);
             } else
                 if (sede === '') {
                     setOpenError(true);
-                    setErrorMessage('Por favor, seleccione una Sede');
+                    setErrorMessage('Por favor, seleccione una sede');
                 } else
-                    if (tipoAtencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione el Tipo Atención'); } else
-                        if (atencion === '') { setOpenError(true); setErrorMessage('Por favor, seleccione la Atención'); } else {
+                    if (tipoAtencion === '') {
+                        setOpenError(true);
+                        setErrorMessage('Por favor, seleccione el tipo atención');
+                    } else
+                        if (atencion === '') {
+                            setOpenError(true);
+                            setErrorMessage('Por favor, seleccione la atención');
+                        } else {
                             if (Object.keys(datos.length !== 0)) {
                                 const result = await InsertAttention(DataToInsert);
                                 if (result.status === 200) {
