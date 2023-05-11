@@ -33,7 +33,7 @@ import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllRequests, DeleteRequests }  from 'api/clients/RequestsClient';
+import { GetAllRequests, DeleteRequests } from 'api/clients/RequestsClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -77,12 +77,6 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-    {
-        id: 'idSolicitudes',
-        numeric: false,
-        label: 'ID',
-        align: 'left'
-    },
     {
         id: 'fechaRecibo',
         numeric: false,
@@ -284,8 +278,8 @@ const ListRequests = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idSolicitudes','fechaRecibo','documentoPeticion', 'nameEmpleado','nameTipoSolicitud','nameResponsableRespuesta',
-                'fechaLimiteRespuesta','fechaRespuesta','fechaRespuesta','nameSede','fecha'];
+                const properties = ['fechaRecibo', 'documentoPeticion', 'nameEmpleado', 'nameTipoSolicitud', 'nameResponsableRespuesta',
+                    'fechaLimiteRespuesta', 'fechaRespuesta', 'fechaRespuesta', 'nameSede', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -323,7 +317,7 @@ const ListRequests = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelectedId = lsRequests.map((n) => n.idSolicitudes);
+            const newSelectedId = lsRequests.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -427,16 +421,16 @@ const ListRequests = () => {
                                     </Tooltip>
                                 } filename="LISTA DE SOLICITUDES">
                                     <ExcelSheet data={lsRequests} name="Requests">
-                                        <ExcelColumn label="Id" value="idSolicitudes" />
+                                        <ExcelColumn label="Id" value="id" />
                                         <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fechaRecibo)} />
                                         <ExcelColumn label="Documento" value="documentoPeticion" />
                                         <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Sede" value="nameSede" />  
-                                        <ExcelColumn label="Cargo" value="nameCargoOficio" />  
-                                        <ExcelColumn label="Celular" value="telefono" />  
-                                        <ExcelColumn label="Área" value="nameArea" />   
-                                        <ExcelColumn label="Tipo de solicitud" value="nameTipoSolicitud" />   
-                                        <ExcelColumn label="Responsable" value="nameResponsableRespuesta" />   
+                                        <ExcelColumn label="Sede" value="nameSede" />
+                                        <ExcelColumn label="Cargo" value="nameCargoOficio" />
+                                        <ExcelColumn label="Celular" value="telefono" />
+                                        <ExcelColumn label="Área" value="nameArea" />
+                                        <ExcelColumn label="Tipo de solicitud" value="nameTipoSolicitud" />
+                                        <ExcelColumn label="Responsable" value="nameResponsableRespuesta" />
                                         <ExcelColumn label="Fecha limite de respuesta" value={(fe) => ViewFormat(fe.fechaLimiteRespuesta)} />
                                         <ExcelColumn label="Fecha de respuesta" value={(fe) => ViewFormat(fe.fechaRespuesta)} />
                                         <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
@@ -494,7 +488,7 @@ const ListRequests = () => {
 
                                 if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.idSolicitudes);
+                                const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -505,7 +499,7 @@ const ListRequests = () => {
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        <TableCell padding="radio" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idSolicitudes)}>
+                                        <TableCell padding="radio" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -519,30 +513,14 @@ const ListRequests = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idSolicitudes)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idSolicitudes}
-                                            </Typography>
-                                        </TableCell>
-
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.idSolicitudes)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.documentoPeticion}
+                                                {row.fechaReciboDLTD}
                                             </Typography>
                                         </TableCell>
 
@@ -550,7 +528,22 @@ const ListRequests = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idSolicitudes)}
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.documento}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -565,22 +558,7 @@ const ListRequests = () => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            onClick={(event) => handleClick(event, row.idSolicitudes)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.nameSede}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.idSolicitudes)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
@@ -592,12 +570,12 @@ const ListRequests = () => {
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/requests/update/${row.idSolicitudes}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/requests/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                        </TableCell>    
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}

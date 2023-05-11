@@ -16,12 +16,15 @@ import InputDatePicker from 'components/input/InputDatePicker';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
 
+import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
@@ -36,6 +39,11 @@ import InputOnChange from 'components/input/InputOnChange';
 import { generateReport } from './ReporteAudiometry';
 import { GetByMail } from 'api/clients/UserClient';
 import ViewPDF from 'components/components/ViewPDF';
+
+const validationSchema = yup.object().shape({
+    idMotivo: yup.string().required(`${ValidationMessage.Requerido}`),
+    idProveedor: yup.string().required(`${ValidationMessage.Requerido}`),
+});
 
 const Audiometry = () => {
     const { user } = useAuth();
@@ -65,8 +73,11 @@ const Audiometry = () => {
     const [textDx1, setTextDx1] = useState('');
     const [lsDx1, setLsDx1] = useState([]);
 
-    const methods = useForm();
-    const { handleSubmit, reset } = methods;
+    const methods = useForm({
+        resolver: yupResolver(validationSchema),
+    });
+
+    const { handleSubmit, reset, formState: { errors } } = methods;
 
     const handleDx1 = async (event) => {
         try {
@@ -310,6 +321,7 @@ const Audiometry = () => {
                                             label="Motivo"
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idMotivo}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -321,6 +333,7 @@ const Audiometry = () => {
                                             label="Proveedor"
                                             options={lsProveedor}
                                             size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idProveedor}
                                         />
                                     </FormProvider>
                                 </Grid>

@@ -1,46 +1,35 @@
-import { DefaultValue } from "components/helpers/Enums";
-
-export function PostRequests(fechaRecibo,recibio,documento,nombre,area,
-    idCargoOficio,idTipoSolicitud,idResponsableRespuesta,fechaLimiteRespuesta,
-    fechaRespuesta,personaResponde,grupo,documentoResponde,entidadSolicitante,
-    medioUtilizado,numeroGuia,observaciones,direccion,correo,telefono,
-    fechaEntrega,fechaReciboDLTD,usuarioReciboDLTD,estado,usuarioRegistro,fechaRegistro,
-    usuarioModifico,fechaModifico) {
+export function PostRequests(documento, fechaReciboDLTD, usuarioReciboDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
+    telefono, observacion, fechaEntrega, metodoUtilizado, numeroGuia, entidadSolicitante, usuarioRegistro, fechaRegistro,
+    usuarioModifico, fechaModifico, archivoSolicitado) {
     return {
-        fechaRecibo,recibio,documento,nombre,area,
-        idCargoOficio,idTipoSolicitud,idResponsableRespuesta,fechaLimiteRespuesta,
-        fechaRespuesta,personaResponde,grupo,documentoResponde,entidadSolicitante,
-        medioUtilizado,numeroGuia,observaciones,direccion,correo,telefono,
-        fechaEntrega,fechaReciboDLTD,usuarioReciboDLTD,estado,usuarioRegistro,fechaRegistro,
-        usuarioModifico,fechaModifico
+        documento, fechaReciboDLTD, usuarioReciboDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
+        telefono, observacion, fechaEntrega, metodoUtilizado, numeroGuia, entidadSolicitante, usuarioRegistro, fechaRegistro,
+        usuarioModifico, fechaModifico, archivoSolicitado
     };
 }
 
-export function PutRequests(idSolicitudes,fechaRecibo,recibio,documento,nombre,area,
-    idCargoOficio,idTipoSolicitud,idResponsableRespuesta,fechaLimiteRespuesta,
-    fechaRespuesta,personaResponde,grupo,documentoResponde,entidadSolicitante,
-    medioUtilizado,numeroGuia,observaciones,direccion,correo,telefono,
-    fechaEntrega,fechaReciboDLTD,usuarioReciboDLTD,estado,usuarioRegistro,fechaRegistro,
-    usuarioModifico,fechaModifico) {
+export function PutRequests(id, documento, fechaReciboDLTD, usuarioReciboDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
+    telefono, observacion, fechaEntrega, metodoUtilizado, numeroGuia, entidadSolicitante, usuarioRegistro, fechaRegistro,
+    usuarioModifico, fechaModifico, archivoSolicitado) {
     return {
-        idSolicitudes,fechaRecibo,recibio,documento,nombre,area,
-        idCargoOficio,idTipoSolicitud,idResponsableRespuesta,fechaLimiteRespuesta,
-        fechaRespuesta,personaResponde,grupo,documentoResponde,entidadSolicitante,
-        medioUtilizado,numeroGuia,observaciones,direccion,correo,telefono,
-        fechaEntrega,fechaReciboDLTD,usuarioReciboDLTD,estado,usuarioRegistro,fechaRegistro,
-        usuarioModifico,fechaModifico
+        id, documento, fechaReciboDLTD, usuarioReciboDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
+        telefono, observacion, fechaEntrega, metodoUtilizado, numeroGuia, entidadSolicitante, usuarioRegistro, fechaRegistro,
+        usuarioModifico, fechaModifico, archivoSolicitado
     };
 }
 
+export function PostRequestsDetalle(idSolicitud, idTipoSolicitud, idAreaRespuesta, idUsuarioResponde, observacion, usuarioRegistro, fechaRegistro,
+    usuarioModifico, fechaModifico, estadoRespuesta, archivoSolicitado) {
+    return {
+        idSolicitud, idTipoSolicitud, idAreaRespuesta, idUsuarioResponde, observacion, usuarioRegistro, fechaRegistro,
+        usuarioModifico, fechaModifico, estadoRespuesta, archivoSolicitado
+    };
+}
 
-// idSolicitudes,fechaRecibo,recibio,documentoPeticion,nombre,area
-// idCargoOficio,idTipoSolicitud,idResponsableRespuesta,fechaLimiteRespuesta,
-// fechaRespuesta,personaResponde,grupo,documentoResponde,entidadSolicitante,
-// medioUtilizado,numeroGuia,observaciones,direccion,correo,telefono,
-// fechaEntrega,fechaReciboDLTD,usuarioReciboDLTD,estado,usuarioRegistro,fechaRegistro,
-// usuarioModifico,fechaModifico,nameArea,nameCargoOficio,nameTipoSolicitud,
-// nameResponsableRespuesta,nameGrupo,nameEntidadSolicitante,nameMedioUtilizadoa,nameEmpleado
-
-
-
-
+export function PutRequestsDetalle(id, idSolicitud, idTipoSolicitud, idAreaRespuesta, idUsuarioResponde, observacion, usuarioRegistro, fechaRegistro,
+    usuarioModifico, fechaModifico, estadoRespuesta, archivoSolicitado) {
+    return {
+        id, idSolicitud, idTipoSolicitud, idAreaRespuesta, idUsuarioResponde, observacion, usuarioRegistro, fechaRegistro,
+        usuarioModifico, fechaModifico, estadoRespuesta, archivoSolicitado
+    };
+}

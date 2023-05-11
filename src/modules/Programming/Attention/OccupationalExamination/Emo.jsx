@@ -147,7 +147,6 @@ const Emo = ({
 
     const [lsIngreso, setLsIngreso] = useState([]);
     const [lsControlPeriodico, setLsControlPeriodico] = useState([]);
-    const [lsPromo, setLsPromo] = useState([]);
 
     const [textAntecedente, setTextAntecedente] = useState('');
     const [textParaclinico, setTextParaclinico] = useState('');
@@ -300,13 +299,6 @@ const Emo = ({
                 label: item.nombre
             }));
             setLsControlPeriodico(resultConceptoActitudControl);
-
-            const lsServerPromo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_CONCEP_APTI_PSICO_PROMO);
-            var resultPromo = lsServerPromo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsPromo(resultPromo);
         } catch (error) { }
     }
 
@@ -3894,7 +3886,7 @@ const Emo = ({
                                                 options={
                                                     atencion === DefaultValue.EMO_ATENCION_INGRESO ? lsIngreso :
                                                         atencion === DefaultValue.EMO_ATENCION_CONTRO ? lsControlPeriodico :
-                                                            atencion === DefaultValue.EMO_ATENCION_PROMO ? lsPromo : []
+                                                            atencion === DefaultValue.EMO_ATENCION_PROMO ? lsIngreso : lsIngreso
                                                 }
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
