@@ -120,6 +120,7 @@ const WorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/Work
 const UpdateWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/UpdateWorkAbsenteeism')));
 
 const ViewOrders = Loadable(lazy(() => import('modules/Orders/ViewOrders')));
+const OrdenesMasivas = Loadable(lazy(() => import('modules/Orders/OrdenesMasivas/OrdenesMasivas')));
 const ListOrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/ListOrdersIndividual')));
 const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/OrdersIndividual')));
 const UpdateOrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/UpdateOrdersIndividual')));
@@ -396,6 +397,12 @@ const MainRoutes = {
         {
             path: '/orderepp/update/:id',
             element: <UpdateOrderEPP />
+        },
+
+        /* Render de Ordenes Masivas */
+        {
+            path: '/orders-masivas/add',
+            element: <OrdenesMasivas />
         },
 
         /* Render de conceptos */

@@ -334,9 +334,9 @@ const ListWorkAbsenteeism = () => {
                     const result = await DeleteWorkAbsenteeism(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
+                        setSelected([]);
+                        GetAll();
                     }
-                    setSelected([]);
-                    GetAll();
                 } else
                     setSelected([]);
             });

@@ -312,13 +312,15 @@ const WorkAbsenteeism = () => {
                 if (documento !== '' && lsEmployee.length !== 0) {
                     const result = await InsertWorkAbsenteeism(DataToInsert);
                     if (result.status === 200) {
-                        setOpenSuccess(true);
+                        if (result.data.message === 'Este ausentismo ya esta registrado') {
+                            setOpenError(true);
+                            setErrorMessage(result.data.message);
+                        } else {
+                            setOpenSuccess(true);
 
-                        const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(documento);
-                        setNumeroDias(numeroDias1.data);
-                    } else {
-                        setErrorMessage(Message.RegistroNoGuardado);
-                        setOpenError(true);
+                            const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(documento);
+                            setNumeroDias(numeroDias1.data);
+                        }
                     }
                 } else {
                     setOpenError(true);

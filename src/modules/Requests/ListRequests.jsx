@@ -30,7 +30,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import swal from 'sweetalert';
 import { visuallyHidden } from '@mui/utils';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { ViewFormat } from 'components/helpers/Format';
+import { NumeroDias, ViewFormat } from 'components/helpers/Format';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllRequests, DeleteRequests } from 'api/clients/RequestsClient';
@@ -78,14 +78,7 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'fechaRecibo',
-        numeric: false,
-        label: 'Fecha de Recibido',
-        align: 'left'
-    },
-
-    {
-        id: 'documentoPeticion',
+        id: 'documento',
         numeric: false,
         label: 'Documento',
         align: 'left'
@@ -97,33 +90,15 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nameTipoSolicitud',
+        id: 'lsSolicitudes',
         numeric: false,
-        label: 'Tipo de Solicitud',
-        align: 'left'
-    },
-    {
-        id: 'nameResponsableRespuesta',
-        numeric: false,
-        label: 'Responsable',
+        label: 'Solicitudes',
         align: 'left'
     },
     {
         id: 'fechaLimiteRespuesta',
         numeric: false,
-        label: 'Fecha Limite de Respuesta',
-        align: 'left'
-    },
-    {
-        id: 'fechaRespuesta',
-        numeric: false,
-        label: 'Fecha de Respuesta',
-        align: 'left'
-    },
-    {
-        id: 'fechaRespuesta',
-        numeric: false,
-        label: 'Días Restantes',
+        label: 'Fecha Limite de Respuesta y Días',
         align: 'left'
     },
     {
@@ -278,8 +253,7 @@ const ListRequests = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['fechaRecibo', 'documentoPeticion', 'nameEmpleado', 'nameTipoSolicitud', 'nameResponsableRespuesta',
-                    'fechaLimiteRespuesta', 'fechaRespuesta', 'fechaRespuesta', 'nameSede', 'fecha'];
+                const properties = ['documento', 'nameEmpleado', 'nameSede'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -361,7 +335,6 @@ const ListRequests = () => {
                     if (result.status === 200) {
                         setOpenDelete(true);
                         setSelected([]);
-                        setIdCheck(0);
                         getAll();
                     }
                 } else
@@ -381,7 +354,7 @@ const ListRequests = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsRequests.length) : 0;
 
     return (
-        <MainCard title="LISTA DE SOLICITUDES" content={false}>
+        <MainCard title="Lista De Solicitudes" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
@@ -440,7 +413,6 @@ const ListRequests = () => {
                                     </ExcelSheet>
                                 </ExcelFile>
                             </Grid>
-
 
                             <Grid item xs={2}>
                                 <Tooltip title="Impresión" onClick={handleClickReport}>
@@ -520,21 +492,6 @@ const ListRequests = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.fechaReciboDLTD}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
                                                 {row.documento}
                                             </Typography>
                                         </TableCell>
@@ -565,7 +522,37 @@ const ListRequests = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {ViewFormat(row.fecha)}
+                                                {row.lsResponsable}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {ViewFormat(row.fechaLimiteRespuesta)} - Días Restantes: {NumeroDias(row.fechaRecibido, row.fechaLimiteRespuesta)}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameSede}
                                             </Typography>
                                         </TableCell>
 

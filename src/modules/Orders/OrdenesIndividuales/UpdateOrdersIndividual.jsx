@@ -18,7 +18,6 @@ import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { CodCatalogo } from 'components/helpers/Enums';
-import InputSelect from 'components/input/InputSelect';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { PutOrders } from 'formatdata/OrdersForm';

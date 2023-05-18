@@ -235,9 +235,9 @@ const ListAttention = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllAttention(0, 0);
-            setLsAttention(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllAttention();
+            setLsAttention(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) { }
     }
 
@@ -278,16 +278,6 @@ const ListAttention = () => {
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
-
-    /* const handleClickReport = async () => {
-        try {
-            setOpenReport(true);
-            const lsDataReport = await GetByIdAttention(idCheck);
-            const lsDataUser = await GetByMail(user.nameuser);
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
-            setDataPDF(dataPDFTwo);
-        } catch (err) { }
-    }; */
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {

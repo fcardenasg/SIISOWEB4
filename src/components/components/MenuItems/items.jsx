@@ -88,8 +88,8 @@ export const itemsMenuOrders = [
     title: "Ordenes Masivas",
     subtitle: "Audimetría, Espirometría, Laboratorio, Visiometría, Electrocardiograma, Examen Físico, RxCLS, RNM, Rx Torax, COVID-19",
     icon: IconGenderBigender,
-    selected: false,
-    url: '/attention/list',
+    selected: true,
+    url: '/orders-masivas/add',
     color: ColorDrummondltd.OrangeDrummond
   },
   {

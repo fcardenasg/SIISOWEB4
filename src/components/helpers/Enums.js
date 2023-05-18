@@ -22,6 +22,8 @@ export const CodCatalogo = {
     Ges: 20,
     Cesantias: 19,
     Oficio: 173,
+    TIPO_SOLICITUD_DEREPETICION: 28,
+    RESPONSABLE_RESPUESTA_DEREPETICION: 112,
 
     TipoconceptoApAl: 192,
     EP_EMO_SintomasRespiratorios: 201,

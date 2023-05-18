@@ -200,8 +200,8 @@ const ListTurner = () => {
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServer = await GetAllAttention(0, 0);
-                setLsAttention(lsServer.data.entities);
+                const lsServer = await GetAllAttention();
+                setLsAttention(lsServer.data);
             } catch (error) { }
         }
 

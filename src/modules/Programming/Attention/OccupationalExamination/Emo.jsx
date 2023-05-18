@@ -3886,7 +3886,7 @@ const Emo = ({
                                                 options={
                                                     atencion === DefaultValue.EMO_ATENCION_INGRESO ? lsIngreso :
                                                         atencion === DefaultValue.EMO_ATENCION_CONTRO ? lsControlPeriodico :
-                                                            atencion === DefaultValue.EMO_ATENCION_PROMO ? lsIngreso : lsIngreso
+                                                            atencion === DefaultValue.EMO_ATENCION_PROMO ? lsControlPeriodico : lsControlPeriodico
                                                 }
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />

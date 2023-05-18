@@ -326,7 +326,7 @@ const ListMedicalFormula = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicalFormula.length) : 0;
 
     return (
-        <MainCard title={<Typography variant="h4">LISTA DE RECETARIO</Typography>} content={false}>
+        <MainCard title={<Typography variant="h4">Listas De Recetario</Typography>} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>

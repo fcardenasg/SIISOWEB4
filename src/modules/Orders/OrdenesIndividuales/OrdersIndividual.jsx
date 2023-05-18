@@ -131,7 +131,6 @@ const OrdersIndividual = () => {
                     setOpenError(true);
                     setErrorMessage(Message.ErrorNoHayDatos);
                 }
-
             }
         } catch (error) {
             setOpenError(true);
@@ -230,7 +229,6 @@ const OrdersIndividual = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-
 
                             {resultData !== '' ?
                                 <Grid item xs={12}>

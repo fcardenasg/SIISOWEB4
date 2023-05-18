@@ -213,11 +213,11 @@ const ListRefund = () => {
     const [openDelete, setOpenDelete] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [messageError, setMessageError] = useState('');
-    const [evolutionNote, setEvolutionNote] = useState([]);
+    const [lsRefund, setlsRefund] = useState([]);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('fecha');
+    const [orderBy, setOrderBy] = useState('id');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -226,9 +226,9 @@ const ListRefund = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllRefund(0, 0);
-            setEvolutionNote(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllRefund();
+            setlsRefund(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) { }
     }
 
@@ -244,7 +244,7 @@ const ListRefund = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nameEmpleado', 'nameConceptoReintegro', 'nameEstadoCaso'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameConceptoReintegro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -258,9 +258,9 @@ const ListRefund = () => {
                 }
                 return matches;
             });
-            setEvolutionNote(newRows);
+            setlsRefund(newRows);
         } else {
-            setEvolutionNote(rows);
+            setlsRefund(rows);
         }
     };
 
@@ -273,7 +273,7 @@ const ListRefund = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = evolutionNote.map((n) => n.id);
+            const newSelectedId = lsRefund.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -333,7 +333,7 @@ const ListRefund = () => {
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - evolutionNote.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsRefund.length) : 0;
 
     return (
         <MainCard title={<Typography variant="h4">Lista De Reintegro</Typography>} content={false}>
@@ -378,7 +378,7 @@ const ListRefund = () => {
             </CardContent>
 
             <TableContainer>
-                {evolutionNote.length === 0 ? <Cargando size={220} myy={6} /> :
+                {lsRefund.length === 0 ? <Cargando size={220} myy={6} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
@@ -386,13 +386,13 @@ const ListRefund = () => {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={evolutionNote.length}
+                            rowCount={lsRefund.length}
                             theme={theme}
                             selected={selected}
                             onClick={handleDelete}
                         />
                         <TableBody>
-                            {stableSort(evolutionNote, getComparator(order, orderBy))
+                            {stableSort(lsRefund, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
 
@@ -533,7 +533,7 @@ const ListRefund = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={evolutionNote.length}
+                count={lsRefund.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { GetAllEmployee, DeleteEmployee, GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -31,11 +30,9 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { visuallyHidden } from '@mui/utils';
 import BodyEmployee from './ViewEmployee';
-import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
-// Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
@@ -45,13 +42,16 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
-import userEmpleado from 'assets/img/user.png';
+
 import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReportEmployee } from './ReportEmployee';
 import useAuth from 'hooks/useAuth';
 import ControlModal from 'components/controllers/ControlModal';
 import Cargando from 'components/loading/Cargando';
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { ColorDrummondltd } from 'themes/colors';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -59,7 +59,6 @@ const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function getModalStyle() {
     const top = 50;
-    const left = 50;
 
     return {
         top: `${top}%`,
@@ -67,7 +66,6 @@ function getModalStyle() {
     };
 }
 
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -81,7 +79,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -92,12 +89,11 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
         id: 'id',
         numeric: false,
-        label: 'Foto',
+        label: '',
         align: 'left'
     },
     {
@@ -137,10 +133,6 @@ const headCells = [
         align: 'left'
     }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -212,11 +204,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -253,16 +240,16 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
 const ListEmployee = () => {
     const { user } = useAuth();
-    const dispatch = useDispatch();
     const [employee, setEmployee] = useState([]);
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
+    const [idCheck, setIdCheck] = useState('');
+    const [openDelete, setOpenDelete] = useState(false);
+    const [open, setOpen] = useState(false);
+
     const theme = useTheme();
-    const [order, setOrder] = useState('desc');
+    const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('nombres');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
@@ -273,18 +260,13 @@ const ListEmployee = () => {
     const [dataPDF, setDataPDF] = useState(null);
     const [openReport, setOpenReport] = useState(false);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
-    async function GetAll() {
+    async function getAll() {
         try {
-            const lsServer = await GetAllEmployee(0, 0);
-            setEmployee(lsServer.data.entities);
-            setRows(lsServer.data.entities);
-        } catch (error) {
-
-        }
+            const lsServer = await GetAllEmployee();
+            setEmployee(lsServer.data);
+            setRows(lsServer.data);
+        } catch (error) { }
     }
-
-    //reporte Imprimir
 
     const handleClickReport = async () => {
         try {
@@ -296,10 +278,7 @@ const ListEmployee = () => {
         } catch (err) { }
     };
 
-
     const [modalStyle] = useState(getModalStyle);
-
-    const [open, setOpen] = useState(false);
     const handleOpen = () => {
         setOpen(true);
     };
@@ -310,12 +289,10 @@ const ListEmployee = () => {
         setIdCheck('');
     };
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -344,16 +321,13 @@ const ListEmployee = () => {
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
-
         if (event.target.checked) {
             const newSelectedId = employee.map((n) => n.documento);
             setSelected(newSelectedId);
@@ -362,7 +336,6 @@ const ListEmployee = () => {
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
         setIdCheck(id);
 
@@ -391,26 +364,21 @@ const ListEmployee = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
-
-    /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
-            const result = await DeleteEmployee(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            setSearch('');
-            GetAll();
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteEmployee(idCheck);
+
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                        setSelected([]);
+                        setIdCheck(0);
+                        getAll();
+                    }
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
 
         }
@@ -422,7 +390,8 @@ const ListEmployee = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employee.length) : 0;
 
     return (
-        <MainCard title="LISTA DE EMPLEADOS" content={false}>
+        <MainCard title="Lista De Empleados" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
                 title="VISTA DE REPORTE"
@@ -433,7 +402,6 @@ const ListEmployee = () => {
                 <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -517,7 +485,6 @@ const ListEmployee = () => {
                                 </Tooltip>
                             </Grid>
 
-                            {/* product add & dialog */}
                             <Grid item xs={4}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/employee/add")}>
@@ -537,9 +504,7 @@ const ListEmployee = () => {
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
-                {/* AQUÍ SE HACE PRELOAD */}
                 {employee.length === 0 ? <Cargando size={220} myy={6} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
@@ -558,7 +523,6 @@ const ListEmployee = () => {
                                 {stableSort(employee, getComparator(order, orderBy))
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row, index) => {
-                                        /** Make sure no display bugs if row isn't an OrderData object */
                                         if (typeof row === 'string') return null;
 
                                         const isItemSelected = isSelected(row.documento);
@@ -573,8 +537,6 @@ const ListEmployee = () => {
                                                 key={index}
                                                 selected={isItemSelected}
                                             >
-                                                {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
 
                                                 <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.documento)}>
                                                     <Checkbox
@@ -594,7 +556,9 @@ const ListEmployee = () => {
                                                     sx={{ cursor: 'pointer' }}
                                                     align="center"
                                                 >
-                                                    <Avatar alt="Foto Empleado" src={row.imagenUrl === '' ? userEmpleado : row.imagenUrl} />
+                                                    <Avatar sx={{ bgcolor: ColorDrummondltd.RedDrummond }}>
+                                                        <Typography sx={{ color: 'white' }} >{row.nombres.charAt(0)}</Typography>
+                                                    </Avatar>
                                                 </TableCell>
 
                                                 <TableCell

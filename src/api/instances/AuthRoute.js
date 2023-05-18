@@ -21,6 +21,7 @@ export const Url = {
     GetAllBySubTipoCatalogo: 'api/Catalogo/GetAllBySubTipoCatalogo',
 
     Empleado: 'api/Empleado',
+    EmpleadoOrdenes: 'api/Empleado/buscar-ordenes',
     EmpleadoId: 'api/Empleado/id',
 
     Reintegro: 'api/Reintegro',
@@ -124,6 +125,9 @@ export const Url = {
 
     Solicitudes: 'api/Solicitudes',
     SolicitudesId: 'api/Solicitudes/id',
+
+    SolicitudDetalle: 'api/SolicitudDetalle',
+    SolicitudDetallePendiente: 'api/SolicitudDetalle/pendiente-respuesta',
 
     ApuntesPersonales: 'api/ApuntesPersonales',
     ApuntesPersonalesId: 'api/ApuntesPersonales/id',

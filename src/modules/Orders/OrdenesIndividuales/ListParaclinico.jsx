@@ -31,7 +31,6 @@ import SubCard from 'ui-component/cards/SubCard';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { PostOrdersParaclinico } from 'formatdata/OrdersForm';
 import { DeleteOrdersParaclinicos, GetAllOrdersParaclinicos, InsertOrdersParaclinicos } from 'api/clients/OrdersClient';
-import { ViewFormat } from 'components/helpers/Format';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import swal from 'sweetalert';
 
@@ -225,7 +224,7 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton }) => {
                                             <TableCell component="th" scope="row">{row.nameParaclinico}</TableCell>
                                             <TableCell>{row.nameProveedor}</TableCell>
                                             <TableCell>{row.nameCiudad}</TableCell>
-                                            <TableCell>{ViewFormat(row.fechaRegistro)}</TableCell>
+                                            <TableCell>{new Date(row.fechaRegistro).toLocaleString()}</TableCell>
 
                                             <TableCell>
                                                 <Grid container spacing={2}>

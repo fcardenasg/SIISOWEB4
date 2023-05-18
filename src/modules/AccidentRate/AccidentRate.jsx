@@ -583,7 +583,7 @@ const AccidentRate = () => {
                                 <Grid container spacing={12}>
                                     <Grid textAlign="center" item xs={12}>
                                         <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                            SUBIR REGISTRO EN PDF
+                                            {TitleButton.SubirArchivo}
                                             <input hidden accept="application/pdf" type="file" onChange={handleFile} />
                                         </Button>
                                     </Grid>

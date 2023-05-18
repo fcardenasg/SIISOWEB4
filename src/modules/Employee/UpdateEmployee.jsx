@@ -409,7 +409,7 @@ const UpdateEmployee = () => {
                     <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
                     <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                    <SubCard darkTitle title={<Typography variant="h4">DATOS PERSONALES</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos Personales</Typography>}>
                         <ModalChildren
                             open={open}
                             onClose={() => setOpen(false)}
@@ -581,7 +581,7 @@ const UpdateEmployee = () => {
                     </SubCard>
                     <Grid sx={{ pb: 2 }} />
 
-                    <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN CONTRACTUAL</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Información Contractual</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
@@ -755,7 +755,7 @@ const UpdateEmployee = () => {
                     </SubCard>
                     <Grid sx={{ pb: 2 }} />
 
-                    <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN DEMOGRÁFICA</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Información Demográfica</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={4}>
                                 <SelectOnChange
@@ -885,7 +885,7 @@ const UpdateEmployee = () => {
                     </SubCard>
                     <Grid sx={{ pb: 2 }} />
 
-                    <SubCard darkTitle title={<Typography variant="h4">SEGURIDAD SOCIAL</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Seguridad Social</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>

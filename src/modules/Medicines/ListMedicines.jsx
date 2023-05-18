@@ -224,9 +224,7 @@ const ListMedicines = () => {
                 setLsMedicamentos(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             }
-        } catch (error) {
-
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -320,7 +318,7 @@ const ListMedicines = () => {
                     setSelected([]);
             });
         } catch (error) {
-            
+
         }
     }
 

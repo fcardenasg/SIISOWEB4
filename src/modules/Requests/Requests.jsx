@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -9,9 +9,11 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+
 import * as yup from 'yup';
 import { ValidationMessage } from 'components/helpers/Enums';
 import { yupResolver } from '@hookform/resolvers/yup';
+
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import ControlModal from 'components/controllers/ControlModal';
@@ -25,9 +27,17 @@ import { PostRequests } from 'formatdata/RequestsForm';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import ViewEmployee from 'components/views/ViewEmployee';
+import InputOnChange from 'components/input/InputOnChange';
+
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import ViewPDF from 'components/components/ViewPDF';
+import InputDatePick from 'components/input/InputDatePick';
+import ListRequestsDetaills from './ListRequestsDetaills';
 
 const validationSchema = yup.object().shape({
-    idContingencia: yup.string().required(`${ValidationMessage.Requerido}`),
+    fechaReciboDLTD: yup.string().required(`${ValidationMessage.Requerido}`),
+    usuarioReciboDLTD: yup.string().required(`${ValidationMessage.Requerido}`)
 });
 
 const Requests = () => {
@@ -42,15 +52,41 @@ const Requests = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [documento, setDocumento] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
+    const [datosEmpleado, setDatosEmpleado] = useState({
+        direccion: '',
+        correo: '',
+        telefono: ''
+    });
 
-    const [result, setResult] = useState([]);
+    const [fechaInicio, setFechaInicio] = useState(null);
+    const [fechaFin, setFechaFin] = useState(null);
+
+    const [result, setResult] = useState('');
     const [dataPDF, setDataPDF] = useState(null);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
     });
+    const { handleSubmit, formState: { errors } } = methods;
 
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const allowedFiles = ['application/pdf'];
+    const handleFile = async (event) => {
+        let selectedFile = event.target.files[0];
+
+        if (selectedFile) {
+            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
+                let reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onloadend = async (e) => {
+                    setDataPDF(e.target.result);
+                }
+            }
+            else {
+                setOpenError(true);
+                setErrorMessage('Este forma no es un PDF');
+            }
+        }
+    }
 
     const handleDocumento = async (event) => {
         try {
@@ -61,6 +97,12 @@ const Requests = () => {
 
                     if (lsServerEmployee.status === 200) {
                         setLsEmployee(lsServerEmployee.data);
+
+                        setDatosEmpleado({
+                            direccion: lsServerEmployee.data.direccionResidencia,
+                            correo: lsServerEmployee.data.email,
+                            telefono: lsServerEmployee.data.celular
+                        })
                     }
                 } else {
                     setOpenError(true);
@@ -74,18 +116,30 @@ const Requests = () => {
         }
     }
 
+    const handleFechaInicio = (event) => {
+        try {
+            setFechaInicio(event.target.value);
+
+            var dias = 15;
+            var fecha = new Date(event.target.value);
+            fecha.setDate(fecha.getDate() + dias);
+            setFechaFin(fecha);
+        } catch (error) { }
+    }
+
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostRequests(documento, FormatDate(datos.fechaReciboDLTD), datos.usuarioReciboDLTD, FormatDate(datos.fechaRecibido),
-                FormatDate(datos.fechaLimiteRespuesta), datos.direccion, datos.correo, datos.telefono, datos.observacion, FormatDate(datos.fechaEntrega),
-                datos.metodoUtilizado, datos.numeroGuia, datos.entidadSolicitante, user.nameuser, undefined, "", undefined, datos.archivoSolicitado);
+            const DataToInsert = PostRequests(documento, FormatDate(datos.fechaReciboDLTD), datos.usuarioReciboDLTD, FormatDate(fechaInicio),
+                FormatDate(fechaFin), datosEmpleado.direccion, datosEmpleado.correo, datosEmpleado.telefono, datos.observacion,
+                FormatDate(datos.fechaEntrega), datos.metodoUtilizado, datos.numeroGuia, datos.entidadSolicitante, user.nameuser, null, null,
+                null, dataPDF);
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
                     const result = await InsertRequests(DataToInsert);
                     if (result.status === 200) {
                         setOpenSuccess(true);
-                        setResult(result.data.id)
+                        setResult(result.data.id);
                     }
                 } else {
                     setOpenError(true);
@@ -98,7 +152,6 @@ const Requests = () => {
         }
     };
 
-
     return (
         <Fragment>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
@@ -110,7 +163,7 @@ const Requests = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                {/* <ViewPDF dataPDF={dataPDF} /> */}
+                <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
             <Grid container spacing={2}>
@@ -133,8 +186,8 @@ const Requests = () => {
                                     <InputDatePicker
                                         label="Fecha de Recibido"
                                         name="fechaReciboDLTD"
-                                        defaultValue={new Date()}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.fechaReciboDLTD}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -145,8 +198,8 @@ const Requests = () => {
                                         fullWidth
                                         label="Recibido por"
                                         name="usuarioReciboDLTD"
-                                        defaultValue=""
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.usuarioReciboDLTD}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -159,10 +212,10 @@ const Requests = () => {
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <FormProvider {...methods}>
-                                    <InputDatePicker
+                                    <InputDatePick
+                                        onChange={handleFechaInicio}
+                                        value={fechaInicio}
                                         label="Fecha de Recibido"
-                                        name="fechaRecibido"
-                                        defaultValue={new Date()}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
@@ -170,10 +223,11 @@ const Requests = () => {
 
                             <Grid item xs={6}>
                                 <FormProvider {...methods}>
-                                    <InputDatePicker
+                                    <InputDatePick
+                                        onChange={(e) => setFechaFin(e.target.value)}
+                                        value={fechaFin}
                                         label="Fecha Limite de Respuesta"
                                         name="fechaLimiteRespuesta"
-                                        defaultValue={new Date()}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
@@ -187,39 +241,39 @@ const Requests = () => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
+                                    <InputOnChange
+                                        onChange={(e) => setDatosEmpleado({ ...datosEmpleado, direccion: e.target.value })}
+                                        value={datosEmpleado.direccion}
                                         fullWidth
                                         label="Dirección"
                                         name="direccion"
                                         size={matchesXS ? 'small' : 'medium'}
-
                                     />
                                 </FormProvider>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
+                                    <InputOnChange
+                                        onChange={(e) => setDatosEmpleado({ ...datosEmpleado, correo: e.target.value })}
+                                        value={datosEmpleado.correo}
                                         fullWidth
                                         label="Correo Electrónico"
                                         name="correo"
                                         size={matchesXS ? 'small' : 'medium'}
-
                                     />
                                 </FormProvider>
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue=""
+                                    <InputOnChange
+                                        onChange={(e) => setDatosEmpleado({ ...datosEmpleado, telefono: e.target.value })}
+                                        value={datosEmpleado.telefono}
                                         fullWidth
                                         label="Teléfono"
                                         name="telefono"
                                         size={matchesXS ? 'small' : 'medium'}
-
                                     />
                                 </FormProvider>
                             </Grid>
@@ -235,7 +289,6 @@ const Requests = () => {
                                     <InputDatePicker
                                         label="Fecha de Entrega"
                                         name="fechaEntrega"
-                                        defaultValue={new Date()}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
@@ -244,12 +297,10 @@ const Requests = () => {
                             <Grid item xs={12} md={6} lg={3}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="metodoUtilizado"
                                         label="Metodo Utilizado"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.motivoTraslado}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -257,12 +308,10 @@ const Requests = () => {
                             <Grid item xs={12} md={6} lg={3}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="numeroGuia"
                                         label="Número Guia"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.motivoTraslado}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -270,55 +319,77 @@ const Requests = () => {
                             <Grid item xs={12} md={6} lg={3}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         name="entidadSolicitante"
                                         label="Entidad Solicitante"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.motivoTraslado}
                                     />
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={12}>
+                            <Grid item xs={10}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue=""
                                         fullWidth
                                         multiline
-                                        rows={5}
+                                        rows={3}
                                         name="observacion"
                                         label="Observación"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.motivoTraslado}
                                     />
                                 </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <AnimateButton>
+                                            <Button size="large" variant="contained" component="label" fullWidth startIcon={<UploadFileIcon />}>
+                                                {TitleButton.SubirArchivo}
+                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth disabled={dataPDF === null ? true : false} onClick={() => setOpenReport(true)} startIcon={<VisibilityIcon />}>
+                                                {TitleButton.VerArchivo}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+
+                            {result !== '' ?
+                                <Grid item xs={12}>
+                                    <ListRequestsDetaills lsEmployee={lsEmployee} idSolicitud={result} />
+                                </Grid> : null}
+                        </Grid>
+
+                        <Grid item xs={12} sx={{ pt: 6 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button disabled={result === '' ? false : true} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/requests/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </SubCard>
                 </Grid>
-
-                <Grid item xs={12} sx={{ pt: 6 }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/requests/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                    </Grid>
-                </Grid >
-            </Grid >
-        </Fragment >
+            </Grid>
+        </Fragment>
     );
 };
 
