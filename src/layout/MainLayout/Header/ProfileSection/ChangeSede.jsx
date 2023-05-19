@@ -60,6 +60,7 @@ const ChangeSede = () => {
             var result = await UpdateSedeUser(DataToUpdate);
             if (result.status === 200) {
                 setOpenSuccess(true);
+                setErrorMessage("Sede cambiada con exito");
 
                 setTimeout(async () => {
                     await logout();
@@ -76,12 +77,8 @@ const ChangeSede = () => {
 
     return (
         <Fragment>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-           
-     
-
-
 
             {getSede !== '' ?
                 <Grid container spacing={2}>
@@ -97,15 +94,9 @@ const ChangeSede = () => {
                         </FormProvider>
                     </Grid>
 
-
-                    {/* <Grid sx={{ pt: 2 }} container justifyContent="left" alignItems="center">
-                        <IconReportMedical size={20} /> */}
-                        <Typography sx={{ pt: 1.5 }} align="center" variant="body2">
+                    <Typography sx={{ pt: 1.5 }} align="center" variant="body2">
                         Recuerde que al cambiar la sede y presionar el botón grabar, automáticamente le cerrara la sesión"
-                        </Typography>
-                    {/* </Grid> */}
-
-
+                    </Typography>
 
                     <Grid item xs={12}>
                         <AnimateButton>

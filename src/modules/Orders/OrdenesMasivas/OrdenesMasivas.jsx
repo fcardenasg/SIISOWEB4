@@ -25,7 +25,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { PostOrders } from 'formatdata/OrdersForm';
-import { GetAllOrdersParaclinicos, GetByIdOrders, InsertOrders } from 'api/clients/OrdersClient';
+import { GetAllOrdersParaclinicos, GetByIdOrders, GetByOrders, InsertOrders } from 'api/clients/OrdersClient';
 
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
@@ -36,10 +36,11 @@ import InputSelect from 'components/input/InputSelect';
 import InputOnChange from 'components/input/InputOnChange';
 import SearchIcon from '@mui/icons-material/Search';
 import CardsEmployee from './Cards/CardsEmployee';
+import SelectOnChange from 'components/input/SelectOnChange';
+import InputCheck from 'components/input/InputCheck';
+import InputDatePick from 'components/input/InputDatePick';
 
-const validationSchema = yup.object().shape({
-    idTipoExamen: yup.string().required(`${ValidationMessage.Requerido}`),
-});
+const lsOrdenesEmpleado = [];
 
 const OrdenesMasivas = () => {
     const { user } = useAuth();
@@ -47,12 +48,16 @@ const OrdenesMasivas = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [resultData, setResultData] = useState('');
-    const [tipoExamen, setTipoExamen] = useState('');
     const [dataPDF, setDataPDF] = useState(null);
-    const [disabledButton, setDisabledButton] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [verHistoricoEmo, setVerHistoricoEmo] = useState(false);
+
+    const [datosControlados, setDatosControlados] = useState({
+        fecha: null,
+        tipoExamen: '',
+        citacion: false,
+        consentimientoInformado: false
+    });
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -61,19 +66,17 @@ const OrdenesMasivas = () => {
     const [search, setSearch] = useState('');
     const [lsTipoExamen, setLsTipoExamen] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
-
-    const methods = useForm({
-        resolver: yupResolver(validationSchema),
-    });
-    const { handleSubmit, formState: { errors } } = methods;
+    const [lsEmployeeTwo, setLsEmployeeTwo] = useState([]);
 
     const handleSearch = async () => {
         try {
             if (search !== '') {
                 var lsServerEmployee = await GetAllEmployeeOrdenes(search);
 
-                if (lsServerEmployee.status === 200)
+                if (lsServerEmployee.status === 200) {
                     setLsEmployee(lsServerEmployee.data);
+                    setLsEmployeeTwo(lsServerEmployee.data)
+                }
             } else {
                 setOpenError(true);
                 setErrorMessage("Por favor ingrese el nombre o documento del empleado");
@@ -84,18 +87,6 @@ const OrdenesMasivas = () => {
         }
     }
 
-    const handleClickReport = async () => {
-        try {
-            setOpenReport(true);
-            const lsDataReport = await GetByIdOrders(resultData);
-            const lsDataReportParaclinico = await GetAllOrdersParaclinicos(0, 0, resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
-            const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data.entities);
-
-            setDataPDF(dataPDFTwo);
-        } catch (err) { }
-    };
-
     useEffect(() => {
         async function getAll() {
             try {
@@ -105,20 +96,37 @@ const OrdenesMasivas = () => {
                     label: item.nombre
                 }));
                 setLsTipoExamen(resultTipoExamen);
-                setTipoExamen(resultTipoExamen[0].value);
             } catch (error) { }
         }
 
         getAll();
     }, []);
 
-    const handleClick = async (empleado) => {
+    const handleClick = async (indexEmpleado) => {
         try {
-            const documentoEmpleado = lsEmployee[empleado].documento;
+            var documentoEmpleado = lsEmployee[indexEmpleado].documento;
 
+            const DataToInsert = PostOrders(documentoEmpleado, datosControlados.fecha, datosControlados.tipoExamen, null,
+                user.nameuser, undefined, '', undefined, datosControlados.citacion, datosControlados.consentimientoInformado);
 
+            if (datosControlados.tipoExamen === '') {
+                setOpenError(true);
+                setErrorMessage("Por favor ingresar el tipo de examen");
+            } else if (datosControlados.fecha === null) {
+                setOpenError(true);
+                setErrorMessage("Por favor ingresar la fecha de los exámenes");
+            } else {
+                const resultOrden = await InsertOrders(DataToInsert);
+                if (resultOrden.status === 200) {
+                    const lsResultado = await GetByOrders(resultOrden.data);
+                    if (lsResultado.status === 200) {
+                        lsOrdenesEmpleado.push({ ...lsResultado.data });
+                    }
 
-
+                    setOpenSuccess(true);
+                    setErrorMessage("Empleado agregado para examen");
+                }
+            }
         } catch (error) {
             setOpenError(true);
             setErrorMessage(Message.RegistroNoGuardado);
@@ -127,7 +135,7 @@ const OrdenesMasivas = () => {
 
     return (
         <Fragment>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal
@@ -152,31 +160,49 @@ const OrdenesMasivas = () => {
                 <Grid item xs={12}>
                     <SubCard title="Registrar Ordenes Masivas">
                         <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <SelectOnChange
+                                    onChange={(e) => setDatosControlados({ ...datosControlados, tipoExamen: e.target.value })}
+                                    value={datosControlados.tipoExamen}
+                                    name="idTipoExamen"
+                                    label="Tipo Examen"
+                                    options={lsTipoExamen}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <InputDatePick
+                                    onChange={(e) => setDatosControlados({ ...datosControlados, fecha: e.target.value })}
+                                    value={datosControlados.fecha}
+                                    label="Fecha"
+                                    name="fecha"
+                                />
+                            </Grid>
+
+                            <Grid item xs={2.5}>
+                                <InputCheck
+                                    onChange={(e) => setDatosControlados({ ...datosControlados, consentimientoInformado: e.target.checked })}
+                                    checked={datosControlados.consentimientoInformado}
+                                    label="Consentimiento Informado"
+                                    name="consentimientoInformado"
+                                    size={30}
+                                />
+                            </Grid>
+
+                            <Grid item xs={1.5}>
+                                <InputCheck
+                                    onChange={(e) => setDatosControlados({ ...datosControlados, citacion: e.target.checked })}
+                                    checked={datosControlados.citacion}
+                                    label="Citación"
+                                    name="citacion"
+                                    size={30}
+                                />
+                            </Grid>
+
                             <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idTipoExamen"
-                                        label="Tipo Examen"
-                                        options={lsTipoExamen}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idTipoExamen}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={6}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha"
-                                        name="fecha"
-                                        defaultValue={new Date()}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={8}>
-                                <Grid container direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
-                                    <Grid item xs={6}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={10}>
                                         <InputOnChange
                                             label="Buscar por"
                                             onChange={(e) => setSearch(e.target.value)}
@@ -185,7 +211,7 @@ const OrdenesMasivas = () => {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={1.5}>
+                                    <Grid item xs={2}>
                                         <AnimateButton>
                                             <Button variant="outlined" size="small" onClick={handleSearch} fullWidth>
                                                 <IconButton aria-label="delete">
@@ -216,6 +242,15 @@ const OrdenesMasivas = () => {
                         <Grid container spacing={2} sx={{ pt: 4 }}>
                             <Accordion title={<><PersonIcon />
                                 <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Empleados Seleccionados Para Examenes</Typography></>}>
+
+                                <Grid container spacing={2} sx={{ pt: 1 }}>
+                                    {lsOrdenesEmpleado.map((enti, index) => (
+                                        <Grid key={index} item xs={12} sm={6} lg={3}>
+                                            {console.log("Datos => ", enti)}
+                                            <CardsEmployee lsEmployee={enti} /* handleClick={() => handleClick(index)} */ />
+                                        </Grid>
+                                    ))}
+                                </Grid>
                             </Accordion>
                         </Grid>
                     </SubCard>

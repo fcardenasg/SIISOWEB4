@@ -213,41 +213,6 @@ const UpdateAccidentRate = () => {
         } catch (error) { }
     }
 
-    /* const handleChangeSegAgrupado = async (event) => {
-        try {
-            setSubsegmento([]);
-            setSegmentoAgrupado(event.target.value);
-
-            const lsServerSegAfectado = await GetAllBySegAgrupado(event.target.value, 0, 0);
-            var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setLsSegmentoAfectado(resultSegAfectado);
-
-        } catch (error) {
-            setLsSegmentoAfectado([]);
-        }
-    } */
-
-    /* const handleChangeSegAfectado = async (event) => {
-        try {
-            setSegmentoAfectado(event.target.value);
-
-            const lsServerSubsegmento = await GetAllBySegAfectado(event.target.value, 0, 0);
-            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setSubsegmento(resultSubsegmento);
-
-        } catch (error) {
-            setSubsegmento([]);
-        }
-    } */
-
-
-
     const allowedFiles = ['application/pdf'];
     const handleFile = async (event) => {
         let selectedFile = event.target.files[0];
@@ -336,22 +301,16 @@ const UpdateAccidentRate = () => {
         getAll();
     }, []);
 
-
-
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAccidentRate(resultData.id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataReport = await GetByIdAccidentRate(id);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
-
-
-
-
 
     setTimeout(() => {
         if (lsAccidentRate.length !== 0)

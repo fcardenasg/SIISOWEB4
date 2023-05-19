@@ -250,6 +250,8 @@ const Audiometry = () => {
 
 
             if (Object.keys(datos.length !== 0)) {
+                
+
                 const result = await InsertParaclinics(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);

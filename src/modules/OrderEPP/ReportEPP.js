@@ -1,4 +1,4 @@
-import { GetEdad, ViewFormat } from "components/helpers/Format";
+import {  ViewFormat } from "components/helpers/Format";
 import jsPDF from "jspdf";
 import LogoReport from 'assets/img/LogoReport.png';
 

@@ -6,6 +6,7 @@ import {
     useMediaQuery,
     Typography
 } from '@mui/material';
+
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -36,7 +37,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import CheckListRefund from './CheckListRefund';
 import { PutRefund } from 'formatdata/RefundForm';
-import { GetByIdRefund, UpdateRefunds } from 'api/clients/RefundClient';
+import { GetByIdRefund, InsertListaChekeo, UpdateRefunds } from 'api/clients/RefundClient';
 import { GetAllUser } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -288,9 +289,23 @@ const Refund = () => {
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorNoHayDatos}`);
+                    setErrorMessage(Message.ErrorNoHayDatos);
                 }
             }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
+        }
+    };
+
+    const handleClickGenerateListChekeo = async () => {
+        try {
+            const lsChekeo = await InsertListaChekeo(id);
+            if (lsChekeo.data === true) {
+                setOpenSuccess(true);
+                setErrorMessage("Lista generada con éxito");
+            }
+
         } catch (error) {
             setOpenError(true);
             setErrorMessage(Message.RegistroNoGuardado);
@@ -304,7 +319,7 @@ const Refund = () => {
 
     return (
         <Fragment>
-            <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageUpdate message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal
@@ -714,7 +729,7 @@ const Refund = () => {
                             </Transitions>
 
                             <Grid container spacing={2} sx={{ pt: 4 }}>
-                                <Grid item xs={2}>
+                                <Grid item xs={3}>
                                     <AnimateButton>
                                         <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Actualizar}
@@ -722,7 +737,7 @@ const Refund = () => {
                                     </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={3}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
                                             {TitleButton.Imprimir}
@@ -730,7 +745,15 @@ const Refund = () => {
                                     </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={2}>
+                                <Grid item xs={3}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={handleClickGenerateListChekeo}>
+                                            Generar Lista Chequeo
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={3}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/refund/list")}>
                                             {TitleButton.Cancelar}

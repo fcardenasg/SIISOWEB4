@@ -7,3 +7,5 @@ export const InsertRefund = async (reintegro) => await postData(Url.Reintegro, r
 export const GetExcelRefund = async (parametroExcel) => await postData(Url.ReintegroExcel, parametroExcel);
 export const UpdateRefunds = async (reintegro) => await putData(Url.Reintegro, reintegro);
 export const DeleteRefund = async (idReintegro) => await deleteData(Url.Reintegro, { idReintegro });
+
+export const InsertListaChekeo = async (id) => await getData(Url.ReintegroGenerarList, { id });

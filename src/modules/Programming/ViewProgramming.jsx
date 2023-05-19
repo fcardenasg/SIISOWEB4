@@ -206,7 +206,7 @@ const ViewProgramming = ({ programming, getAll }) => {
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <Typography variant="h6">{GetEdad(new Date(programming.fechaNacimi))} AÑOS</Typography>
+                                        <Typography variant="h6">{GetEdad(programming.fechaNacimi)} AÑOS</Typography>
                                     </Grid>
                                 </Grid>
                             </Grid>

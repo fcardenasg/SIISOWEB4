@@ -113,7 +113,7 @@ const UpdateOrdersIndividual = () => {
             setOpenReport(true);
             const lsDataReport = await GetByIdOrders(id);
             const lsDataReportParaclinico = await GetAllOrdersParaclinicos(0, 0, id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
             const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data.entities);
 
             setDataPDF(dataPDFTwo);

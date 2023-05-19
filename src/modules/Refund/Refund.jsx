@@ -37,7 +37,7 @@ import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import CheckListRefund from './CheckListRefund';
 import { PostRefund } from 'formatdata/RefundForm';
 import { GetByIdRefund, InsertRefund } from 'api/clients/RefundClient';
-import { GetAllComboUser, GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { GetAllComboUser, GetByMail } from 'api/clients/UserClient';
 import { generateReportRefund } from './ReportRefund';
 import ViewPDF from 'components/components/ViewPDF';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -698,7 +698,7 @@ const Refund = () => {
                     <SubCard darkTitle title={<Typography variant="h4">Lista De Chequeo</Typography>}>
 
                         <Transitions type="collapse" in={viewListRefund} position="top-left" direction="up">
-                            <CheckListRefund idReintegro={resultData.id} />
+                            <CheckListRefund idReintegro={resultData} />
                         </Transitions>
 
                         <Grid container spacing={2} sx={{ pt: 4 }}>

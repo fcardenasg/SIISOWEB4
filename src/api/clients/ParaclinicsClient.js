@@ -9,8 +9,8 @@ export const GetAllByDocumentoPara = async (page, pageSize, documento) =>
 export const GetAllByDocumentoParacli = async (page, pageSize, idTipoParaclinico, documento) =>
     await getData(Url.Paraclinicos_GetAllByDocumentoParacli, { page, pageSize, idTipoParaclinico, documento });
 
-export const GetAllByTypeParaclinics = async (page, pageSize, idTipoParaclinico) =>
-    await getData(Url.Paraclinicos_GetAllByTypeParaclinico, { page, pageSize, idTipoParaclinico });
+export const GetAllByTypeParaclinics = async (idTipoParaclinico) =>
+    await getData(Url.Paraclinicos_GetAllByTypeParaclinico, { idTipoParaclinico });
 
 export const GetByIdParaclinics = async (id) => await getData(Url.ParaclinicosId, { id });
 export const InsertParaclinics = async (paraclinicos) => await postData(Url.Paraclinicos, paraclinicos);

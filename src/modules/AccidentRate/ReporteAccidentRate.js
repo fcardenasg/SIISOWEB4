@@ -71,39 +71,33 @@ function generateReporteAccidentRate(doc = new jsPDF(), lsDataReport = [], lsDat
 
     doc.line(5, 230, marXR, 230); /* HORI OCHO */
 
-  
+
     doc.line(40, 39, 40, 80); /* LINEA VERTI ONE */
     doc.line(marXR, 32, marXR, 230); /* DERECHA */
 
     /* TITULOS DE CONTENIDO */
     doc.setFontSize(8);
 
-doc.text('Nro. Documento:', 42, 45);
-doc.text('Cargo:', 42, 50);
-doc.text('Genero:', 42, 55);
-doc.text('EPS:', 42, 60);
-doc.text('Sede:', 42, 65);
-doc.text('Celular:', 42, 70);
-doc.text('Tipo de Contrato:', 42, 75);
+    doc.text('Nro. Documento:', 42, 45);
+    doc.text('Cargo:', 42, 50);
+    doc.text('Genero:', 42, 55);
+    doc.text('EPS:', 42, 60);
+    doc.text('Sede:', 42, 65);
+    doc.text('Celular:', 42, 70);
+    doc.text('Tipo de Contrato:', 42, 75);
 
-doc.text('Nombres:', 120, 45);
-doc.text('Departamento:', 120, 50);
-doc.text('Edad:', 120, 55);
-doc.text('AFP:', 120, 60);
-doc.text('Área:', 120, 65);
-doc.text('Correo Electrónico:', 120, 70);
-doc.text('Empresa:', 120, 75);
-
-///////////////////////////////////////////////////////////
-
-
-// "nameCausa": "string",
-// "nameClase": "string",
+    doc.text('Nombres:', 120, 45);
+    doc.text('Departamento:', 120, 50);
+    doc.text('Edad:', 120, 55);
+    doc.text('AFP:', 120, 60);
+    doc.text('Área:', 120, 65);
+    doc.text('Correo Electrónico:', 120, 70);
+    doc.text('Empresa:', 120, 75);
 
 
     /* DATOS DEL REGISTRO */
     doc.setFont("helvetica", "normal");
-     doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 45, 30, 30); 
+    doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 45, 30, 30);
     doc.text(`${lsDataReport.documento}`, 70, 45);
     doc.text(`${lsDataReport.nameCargo}`, 70, 50);
     doc.text(`${lsDataReport.nameGenero}`, 70, 55);
@@ -116,14 +110,14 @@ doc.text('Empresa:', 120, 75);
 
     doc.text(`${lsDataReport.nameEmpleado}`, 150, 45);
     doc.text(`${lsDataReport.nameDepartamento}`, 150, 50);
-    
+
     doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 150, 55);
     doc.text(" AÑO", 154, 55);
 
     doc.text(`${lsDataReport.nameAfp}`, 150, 60);
     doc.text(`${lsDataReport.nameArea}`, 150, 65);
     doc.text(`${lsDataReport.nameCorreo}`, 150, 70);
-    doc.text(`${lsDataReport.nameEmpresa}`, 150, 75);
+    doc.text(`${lsDataReport.nameEmpresa}`, 145, 75);
 
 
     /* INFORMACIÓN DE ACCIDENTALIDAD */
@@ -132,21 +126,15 @@ doc.text('Empresa:', 120, 75);
     doc.text('Consecutivo Nro.:', 120, 85);
     doc.text(`${lsDataReport.id}`, 150, 85);
 
-  
+
     doc.text(`Fecha:`, 7, 95);
     doc.text(`${ViewFormat(lsDataReport.fecha)}`, 35, 95);
- /*    doc.text(`Nro. Furat:`, 60, 95); */
-
-
-   
+    /*    doc.text(`Nro. Furat:`, 60, 95); */
 
     doc.text('Nro. Historia:', 120, 95);
     // doc.text(`${lsDataReport.nameSubmotivo}`, 160, 95);
 
-
     /* DESCRIPCIONES DE TEXTO */
-    
-  
     doc.text('Clase A.T.:', 7, 105);
     doc.text(`${lsDataReport.nameClase}`, 35, 105);
 
@@ -154,25 +142,24 @@ doc.text('Empresa:', 120, 75);
     doc.text('Causa A.T.:', 120, 105);
     doc.text(`${lsDataReport.nameCausa}`, 150, 105);
 
-   
- /*    doc.setFontSize(8); */
-    doc.text('Segmento Agrupado:', 7, 113);
-    doc.text(`${lsDataReport.segmentoAgrupado}`, 35, 113);
 
- 
-    doc.text('Segmento Afectado:', 120, 112);
-    doc.text(`${lsDataReport.nameRegion}`, 150, 112);
+    doc.text('Segmento Agrupado:', 7, 113);
+    doc.setFontSize(6);
+    doc.text(`${lsDataReport.segmentoAgrupado}`, 35, 113);
+    doc.text(`${lsDataReport.nameRegion}`, 175, 113);
+
+    doc.setFontSize(8);
+    doc.text('Segmento Afectado:', 145, 113);
 
     doc.line(5, 116, marXR, 116); /* HORI 7 */
 
     if (lsDataReport.codDxInicial !== "")
-    doc.text(`Diagnóstico Inicial:   ${lsDataReport.codDxInicial}   ${lsDataReport.dxInicial.toUpperCase()}`, 7, 130, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Diagnóstico Inicial:   ${lsDataReport.codDxInicial}   ${lsDataReport.dxInicial.toUpperCase()}`, 7, 130, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-if (lsDataReport.codDxFinal !== "")
-    doc.text(`Diagnóstico Final:   ${lsDataReport.codDxFinal}   ${lsDataReport.dxFinal.toUpperCase()}`, 7, 135, { maxWidth: 200, lineHeightFactor: 1.5 });
+    if (lsDataReport.codDxFinal !== "")
+        doc.text(`Diagnóstico Final:   ${lsDataReport.codDxFinal}   ${lsDataReport.dxFinal.toUpperCase()}`, 7, 135, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     doc.line(5, 124, marXR, 124); /* HORI 7 */
-
     doc.line(5, 137, marXR, 137); /* HORI 7 */
 
 
@@ -190,7 +177,7 @@ if (lsDataReport.codDxFinal !== "")
     doc.text('Días Trabajo Transitorio:', 7, 151);
     doc.text(`${lsDataReport.diasTw}`, 39, 151);
 
-    
+
 
     doc.text('Días Incapacidad:', 120, 151);
     doc.text(`${lsDataReport.diasIncapacidad}`, 150, 151);
@@ -201,7 +188,7 @@ if (lsDataReport.codDxFinal !== "")
     doc.text('Paraclinicos:', 7, 160);
     doc.text(`${lsDataReport.px}`, 35, 160);
 
-    
+
 
     doc.text('Estado:', 120, 160);
     doc.text(`${lsDataReport.nameStatus}`, 150, 160);
@@ -217,7 +204,7 @@ if (lsDataReport.codDxFinal !== "")
 
     doc.text('SEGUIMIENTO:', 7, 174);
 
-  
+
 
     doc.line(5, 177, marXR, 177); /* HORI 7 */
 
@@ -226,7 +213,7 @@ if (lsDataReport.codDxFinal !== "")
     doc.text(`${lsDataReport.seguimiento}`, 7, 182, { maxWidth: 200, lineHeightFactor: 1.5 });
 
 
-    getFirma(doc, lsDataUser,24)
+    getFirma(doc, lsDataUser, 24)
 }
 
 export function generateReport(lsDataReport = [], lsDataUser) {

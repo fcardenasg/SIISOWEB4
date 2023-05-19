@@ -7,17 +7,11 @@ import {
 } from '@mui/material';
 import { Fragment } from 'react';
 
-const SelectOnChange = ({ bug, disabled, options, value, onChange, size, label, name }) => {
-    let isError = false;
-    let errorMessage = '';
-    if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
-        isError = true;
-        errorMessage = bug[name].message;
-    }
+const SelectOnChange = ({ disabled, options, value, onChange, size, label, name }) => {
 
     return (
         <Fragment>
-            <FormControl fullWidth error={isError}>
+            <FormControl fullWidth>
                 <InputLabel htmlFor="my-input" id="demo-simple-select-label" sx={{ fontSize: 14 }}>
                     {label}
                 </InputLabel>
@@ -45,7 +39,6 @@ const SelectOnChange = ({ bug, disabled, options, value, onChange, size, label, 
 export default SelectOnChange;
 
 SelectOnChange.propTypes = {
-    bug: PropTypes.object,
     onChange: PropTypes.func,
     name: PropTypes.string,
     disabled: PropTypes.bool,

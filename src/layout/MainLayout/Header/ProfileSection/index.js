@@ -88,7 +88,7 @@ const ProfileSection = () => {
     return (
         <Fragment>
             <ControlModal
-                title="CAMBIAR DE SEDE DE ATENCIÓN"
+                title="Cambiar De Sede De Atención"
                 open={openModalSede}
                 onClose={() => setOpenModalSede(false)}
                 maxWidth="xs"

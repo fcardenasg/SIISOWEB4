@@ -139,7 +139,7 @@ const AddFramingham = () => {
                     setRelacion(frRelaci.relacion);
                     setFrLdl(frRelaci.ldl);
 
-                    const frRies = GetRiesgos(frPunta, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
+                    const frRies = GetRiesgos(frPunta, GetEdad(lsEmployee.fechaNaci), lsEmployee.nameGenero);
                     setRiesgo({
                         dxRiesgo: frRies.dxRiesgo,
                         riesgoAbsoluto: lsEmployee.nameGenero === 'MASCULINO' ? frRies.riesgoAbsolutoH : frRies.riesgoAbsolutoM,
@@ -165,8 +165,8 @@ const AddFramingham = () => {
 
                     if (lsServerEmployee.status === 200) {
                         setLsEmployee(lsServerEmployee.data);
-                        setFrEdad(EdadFramigan(GetEdad(new Date(lsServerEmployee.data.fechaNaci)), lsServerEmployee.data.nameGenero));
-                        setFrHdl(FrHdl(GetEdad(new Date(lsServerEmployee.data.fechaNaci)), lsServerEmployee.data.nameGenero));
+                        setFrEdad(EdadFramigan(GetEdad(lsServerEmployee.data.fechaNaci), lsServerEmployee.data.nameGenero));
+                        setFrHdl(FrHdl(GetEdad(lsServerEmployee.data.fechaNaci), lsServerEmployee.data.nameGenero));
                     }
                 } else {
                     setOpenError(true);

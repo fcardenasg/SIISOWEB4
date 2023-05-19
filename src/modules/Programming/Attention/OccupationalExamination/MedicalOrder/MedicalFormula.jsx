@@ -209,7 +209,7 @@ const MedicalFormula = ({ setListMedicalFormula, contingencia, setNewMedicalForm
                                                 <Typography variant="h6">{lsEmployee.nameGenero}</Typography>
                                             </Grid>
                                             <Grid item>
-                                                <Typography variant="h6">{GetEdad(new Date(lsEmployee.fechaNaci))} AÑOS</Typography>
+                                                <Typography variant="h6">{GetEdad(lsEmployee.fechaNaci)} AÑOS</Typography>
                                             </Grid>
                                         </Grid>
                                     </Grid>

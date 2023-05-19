@@ -73,7 +73,7 @@ const headCells = [
         id: 'documento',
         numeric: false,
         label: 'Documento',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'nameEmpleado',
@@ -231,11 +231,11 @@ const ListCytology = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllByTypeParaclinics(0, 0, DefaultValue.PARACLINICO_CITOLOGIA);
-            setCytology(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllByTypeParaclinics(DefaultValue.PARACLINICO_CITOLOGIA);
+            setCytology(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) {
-        
+
         }
     }
 
@@ -330,7 +330,7 @@ const ListCytology = () => {
                     setSelected([]);
             });
         } catch (error) {
-        
+
         }
     }
 
@@ -451,7 +451,6 @@ const ListCytology = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
                                         >
                                             {row.documento}
                                         </TableCell>

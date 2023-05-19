@@ -75,7 +75,7 @@ const headCells = [
         id: 'documento',
         numeric: false,
         label: 'Documento',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'nameEmpleado',
@@ -224,7 +224,7 @@ const ListPSA = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -233,9 +233,9 @@ const ListPSA = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllByTypeParaclinics(0, 0, DefaultValue.PARACLINICO_PSA);
-            setPsa(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllByTypeParaclinics(DefaultValue.PARACLINICO_PSA);
+            setPsa(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) {
             
         }
@@ -453,7 +453,6 @@ const ListPSA = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
                                         >
                                             {row.documento}
                                         </TableCell>

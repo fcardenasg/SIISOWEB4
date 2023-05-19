@@ -271,7 +271,7 @@ const OccupationalExamination = () => {
                 setRelacion(frRelaci.relacion);
                 setFrLdl(frRelaci.ldl);
 
-                const frRies = GetRiesgos(frPunta, GetEdad(new Date(lsEmployee.fechaNaci)), lsEmployee.nameGenero);
+                const frRies = GetRiesgos(frPunta, GetEdad(lsEmployee.fechaNaci), lsEmployee.nameGenero);
                 setRiesgo({
                     dxRiesgo: frRies.dxRiesgo,
                     riesgoAbsoluto: lsEmployee.nameGenero === 'MASCULINO' ? frRies.riesgoAbsolutoH : frRies.riesgoAbsolutoM,
@@ -307,8 +307,8 @@ const OccupationalExamination = () => {
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
-                setFrEdad(EdadFramigan(GetEdad(new Date(lsServerEmployee.data.fechaNaci)), lsServerEmployee.data.nameGenero));
-                setFrHdl(FrHdl(GetEdad(new Date(lsServerEmployee.data.fechaNaci)), lsServerEmployee.data.nameGenero));
+                setFrEdad(EdadFramigan(GetEdad(lsServerEmployee.data.fechaNaci), lsServerEmployee.data.nameGenero));
+                setFrHdl(FrHdl(GetEdad(lsServerEmployee.data.fechaNaci), lsServerEmployee.data.nameGenero));
             }
         } catch (error) {
             setLsEmployee([]);
@@ -830,7 +830,7 @@ const OccupationalExamination = () => {
                                             <Typography variant="h5">{lsEmployee.nameGenero}</Typography>
                                         </Grid>
                                         <Grid item>
-                                            <Typography variant="h5">{GetEdad(new Date(lsEmployee.fechaNaci))} AÑOS</Typography>
+                                            <Typography variant="h5">{GetEdad(lsEmployee.fechaNaci)} AÑOS</Typography>
                                         </Grid>
                                     </Grid>
 

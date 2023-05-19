@@ -27,7 +27,7 @@ const CardsEmployee = ({ lsEmployee = [], handleClick }) => {
                     <Grid container spacing={gridSpacing} direction="row-reverse" justifyContent="center" alignItems="center">
                         <Grid item xs={3}>
                             <Avatar sx={{ bgcolor: ColorDrummondltd.RedDrummond, width: 60, height: 60 }}>
-                                <Typography sx={{ color: 'white' }} >{lsEmployee.nombres.charAt(0)}</Typography>
+                                <Typography sx={{ color: 'white' }} >{lsEmployee.nombres !== "" ? lsEmployee.nombres.charAt(0) : ""}</Typography>
                             </Avatar>
                         </Grid>
 

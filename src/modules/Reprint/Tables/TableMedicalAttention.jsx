@@ -170,9 +170,7 @@ const TableMedicalAttention = () => {
                 const lsServer = await GetAllMedicalHistory(0, 0);
                 setLsMedicalAttention(lsServer.data.entities);
                 setRows(lsServer.data.entities);
-
-            } catch (error) {
-            }
+            } catch (error) { }
         }
 
         GetAll();

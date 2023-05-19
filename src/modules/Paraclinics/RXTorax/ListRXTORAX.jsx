@@ -74,7 +74,7 @@ const headCells = [
         id: 'documento',
         numeric: false,
         label: 'Documento',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'nameEmpleado',
@@ -232,9 +232,9 @@ const ListRXTORAX = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllByTypeParaclinics(0, 0, DefaultValue.PARACLINICO_RXTORAX);
-            setRxtorax(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllByTypeParaclinics(DefaultValue.PARACLINICO_RXTORAX);
+            setRxtorax(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) {
             
         }
@@ -452,7 +452,6 @@ const ListRXTORAX = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
                                         >
                                             {row.documento}
                                         </TableCell>

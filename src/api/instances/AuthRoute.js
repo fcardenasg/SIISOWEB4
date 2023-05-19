@@ -27,6 +27,7 @@ export const Url = {
     Reintegro: 'api/Reintegro',
     ReintegroExcel: 'api/Reintegro/GenerateExcel',
     ReintegroId: 'api/Reintegro/id',
+    ReintegroGenerarList: 'api/Reintegro/lista-chekeo',
 
     Framingham: 'api/Framingham',
     FraminghamId: 'api/Framingham/id',
@@ -100,6 +101,7 @@ export const Url = {
 
     Ordenes: 'api/Ordenes',
     OrdenesId: 'api/Ordenes/id',
+    LsOrdenes: 'api/Ordenes/empleados-ordenes',
 
     OrdenesParaclinicos: 'api/OrdenesParaclinicos',
     OrdenesParaclinicosId: 'api/OrdenesParaclinicos/id',
