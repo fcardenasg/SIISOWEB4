@@ -77,12 +77,6 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'fecha',
-        numeric: false,
-        label: 'Fecha',
-        align: 'left'
-    },
-    {
         id: 'nameTipoExamen',
         numeric: false,
         label: 'Tipo de Examen',
@@ -92,6 +86,12 @@ const headCells = [
         id: 'sedeEmpleado',
         numeric: false,
         label: 'Sede',
+        align: 'left'
+    },
+    {
+        id: 'fecha',
+        numeric: false,
+        label: 'Fecha',
         align: 'left'
     },
     {
@@ -215,8 +215,8 @@ const ListOrdersIndividual = () => {
     const [lsOrders, setLsOrders] = useState([]);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('fechaRegistro');
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -463,21 +463,6 @@ const ListOrdersIndividual = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {ViewFormat(row.fecha)}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
                                                 {row.nameTipoExamen}
                                             </Typography>
                                         </TableCell>
@@ -494,6 +479,21 @@ const ListOrdersIndividual = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {row.sedeEmpleado}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {ViewFormat(row.fecha)}
                                             </Typography>
                                         </TableCell>
 

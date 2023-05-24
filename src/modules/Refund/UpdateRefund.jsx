@@ -55,6 +55,9 @@ const Refund = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    /* Eliminar Mas Adelante */
+    const [recargarLista, setRecargarLista] = useState(false);
+
     const [openReport, setOpenReport] = useState(false);
 
     const [viewListRefund, setViewListRefund] = useState(false);
@@ -304,6 +307,7 @@ const Refund = () => {
             if (lsChekeo.data === true) {
                 setOpenSuccess(true);
                 setErrorMessage("Lista generada con éxito");
+                setRecargarLista(true);
             }
 
         } catch (error) {
@@ -582,7 +586,7 @@ const Refund = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
+                        <SubCard darkTitle>
                             <Grid container spacing={2}>
                                 <Grid item xs={8}>
                                     <FormProvider {...methods}>
@@ -725,7 +729,7 @@ const Refund = () => {
                         <SubCard darkTitle title={<Typography variant="h4">Lista de Chequeo</Typography>}>
 
                             <Transitions type="collapse" in={viewListRefund} position="top-left" direction="up">
-                                <CheckListRefund idReintegro={id} />
+                                <CheckListRefund idReintegro={id} recargarLista={recargarLista} setRecargarLista={setRecargarLista} />
                             </Transitions>
 
                             <Grid container spacing={2} sx={{ pt: 4 }}>
@@ -747,7 +751,7 @@ const Refund = () => {
 
                                 <Grid item xs={3}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={handleClickGenerateListChekeo}>
+                                        <Button disabled={recargarLista ? true : false} variant="outlined" fullWidth onClick={handleClickGenerateListChekeo}>
                                             Generar Lista Chequeo
                                         </Button>
                                     </AnimateButton>

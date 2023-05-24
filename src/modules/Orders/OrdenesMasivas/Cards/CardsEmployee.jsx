@@ -2,8 +2,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 // material-ui
-import { useTheme, styled } from '@mui/material/styles';
-import { Button, Card, Divider, Grid, Typography } from '@mui/material';
+import { Button, Divider, Grid, Typography } from '@mui/material';
 
 // project imports
 import Avatar from 'ui-component/extended/Avatar';
@@ -11,14 +10,14 @@ import { gridSpacing } from 'store/constant';
 
 // assets
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import AddIcon from '@mui/icons-material/Add';
-import userEmpleado from 'assets/img/user.png';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { ViewFormat } from 'components/helpers/Format';
 import { ColorDrummondltd } from 'themes/colors';
+import { TitleButton } from 'components/helpers/Enums';
 
-const CardsEmployee = ({ lsEmployee = [], handleClick }) => {
+const CardsEmployee = ({ lsEmployee = [], handleClick, handleDelete, views = false }) => {
 
     return (
         <SubCard sx={{ border: '4px solid', }}>
@@ -73,13 +72,21 @@ const CardsEmployee = ({ lsEmployee = [], handleClick }) => {
 
                 <Grid item xs={12}>
                     <Grid container direction="row" justifyContent="center" alignItems="center">
-                        <Grid item xs={8}>
-                            <AnimateButton>
-                                <Button variant="contained" onClick={handleClick} startIcon={<AddCircleOutlineOutlinedIcon fontSize="small" />} fullWidth>
-                                    Agregar
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
+                        {views ?
+                            <Grid item xs={8}>
+                                <AnimateButton>
+                                    <Button color="error" variant="contained" onClick={handleDelete} startIcon={<HighlightOffIcon fontSize="small" />} fullWidth>
+                                        {TitleButton.Eliminar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid> :
+                            <Grid item xs={8}>
+                                <AnimateButton>
+                                    <Button variant="contained" onClick={handleClick} startIcon={<AddCircleOutlineOutlinedIcon fontSize="small" />} fullWidth>
+                                        Agregar
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>}
                     </Grid>
                 </Grid>
             </Grid>

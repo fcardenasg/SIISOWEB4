@@ -1,0 +1,20 @@
+[
+    {
+        "idParaclinico": 3535,
+        "idOrdenes": 0,
+        "idProveedor": "6",
+        "idCiudad": "5491",
+        "usuarioRegistro": "Fcardenas",
+        "fechaRegistro": "24/5/2023, 10:15:24",
+        "usuarioModifico": ""
+    },
+    {
+        "idParaclinico": 3534,
+        "idOrdenes": 0,
+        "idProveedor": "54",
+        "idCiudad": "5491",
+        "usuarioRegistro": "Fcardenas",
+        "fechaRegistro": "24/5/2023, 10:15:31",
+        "usuarioModifico": ""
+    }
+]

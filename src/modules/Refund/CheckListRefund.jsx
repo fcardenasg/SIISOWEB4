@@ -132,7 +132,7 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const CheckListRefund = ({ idReintegro }) => {
+const CheckListRefund = ({ idReintegro, setRecargarLista, recargarLista }) => {
     const [listRefund, setListRefund] = useState([]);
     const [openListPDF, setOpenListPDF] = useState(false);
     const [idListPDF, setIdListPDF] = useState(false);
@@ -148,11 +148,15 @@ const CheckListRefund = ({ idReintegro }) => {
             try {
                 var lsCheckedReintegro = await GetAllReintegro(0, 0, idReintegro);
                 setListRefund(lsCheckedReintegro.data.entities);
+                if (lsCheckedReintegro.data.entities.length !== 0) {
+                    setRecargarLista(true);
+                }
+
             } catch (error) { }
         }
 
         GetAll();
-    }, [idReintegro, openListPDF]);
+    }, [idReintegro, openListPDF, recargarLista]);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';

@@ -5,55 +5,53 @@ import {
     Grid, Button,
     useMediaQuery,
     IconButton,
-    Tooltip,
     Typography
 } from '@mui/material';
 
-import { GetAllEmployeeOrdenes, GetByIdEmployee } from 'api/clients/EmployeeClient';
-import * as yup from "yup";
-import { yupResolver } from '@hookform/resolvers/yup';
+import { GetAllEmployeeOrdenes } from 'api/clients/EmployeeClient';
 
 import { useNavigate } from 'react-router-dom';
-import { useForm, FormProvider } from 'react-hook-form';
-import { DefaultValue, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import useAuth from 'hooks/useAuth';
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
+import { MessageSuccess, MessageError, MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputDatePicker from 'components/input/InputDatePicker';
 import { CodCatalogo } from 'components/helpers/Enums';
 import PersonIcon from '@mui/icons-material/Person';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { PostOrders } from 'formatdata/OrdersForm';
-import { GetAllOrdersParaclinicos, GetByIdOrders, GetByOrders, InsertOrders } from 'api/clients/OrdersClient';
+import { DeleteOrders, GetByOrders, InsertOrders } from 'api/clients/OrdersClient';
 
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
-import { GetByMail } from 'api/clients/UserClient';
-import { generateReporteIndex } from '../Report';
 import Accordion from 'components/accordion/Accordion';
-import InputSelect from 'components/input/InputSelect';
 import InputOnChange from 'components/input/InputOnChange';
 import SearchIcon from '@mui/icons-material/Search';
 import CardsEmployee from './Cards/CardsEmployee';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputCheck from 'components/input/InputCheck';
 import InputDatePick from 'components/input/InputDatePick';
+import swal from 'sweetalert';
+import ListParaclinico from './ListParaclinico';
 
-const lsOrdenesEmpleado = [];
+const lsIdOrdenes = [];
 
 const OrdenesMasivas = () => {
+    console.log("lsIdOrdenes => ", lsIdOrdenes);
+
     const { user } = useAuth();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [lsOrdenesEmpleado, setLsOrdenesEmpleado] = useState([]);
+    const [openDelete, setOpenDelete] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
     const [openReport, setOpenReport] = useState(false);
-    const [verHistoricoEmo, setVerHistoricoEmo] = useState(false);
+    const [lsTipoExamen, setLsTipoExamen] = useState([]);
 
     const [datosControlados, setDatosControlados] = useState({
-        fecha: null,
+        fecha: new Date(),
         tipoExamen: '',
         citacion: false,
         consentimientoInformado: false
@@ -64,9 +62,7 @@ const OrdenesMasivas = () => {
     const [openError, setOpenError] = useState(false);
 
     const [search, setSearch] = useState('');
-    const [lsTipoExamen, setLsTipoExamen] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [lsEmployeeTwo, setLsEmployeeTwo] = useState([]);
 
     const handleSearch = async () => {
         try {
@@ -75,7 +71,6 @@ const OrdenesMasivas = () => {
 
                 if (lsServerEmployee.status === 200) {
                     setLsEmployee(lsServerEmployee.data);
-                    setLsEmployeeTwo(lsServerEmployee.data)
                 }
             } else {
                 setOpenError(true);
@@ -102,31 +97,58 @@ const OrdenesMasivas = () => {
         getAll();
     }, []);
 
-    const handleClick = async (indexEmpleado) => {
+    const handleDelete = async (index, idOrden) => {
+        try {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteOrders(idOrden);
+                    if (result.status === 200) {
+                        lsOrdenesEmpleado.splice(index, 1);
+
+                        setOpenDelete(true);
+                    }
+                }
+            });
+        } catch (error) {
+
+        }
+    };
+
+    const handleClickEmpleado = async (indexEmpleado) => {
         try {
             var documentoEmpleado = lsEmployee[indexEmpleado].documento;
 
             const DataToInsert = PostOrders(documentoEmpleado, datosControlados.fecha, datosControlados.tipoExamen, null,
                 user.nameuser, undefined, '', undefined, datosControlados.citacion, datosControlados.consentimientoInformado);
 
-            if (datosControlados.tipoExamen === '') {
-                setOpenError(true);
-                setErrorMessage("Por favor ingresar el tipo de examen");
-            } else if (datosControlados.fecha === null) {
-                setOpenError(true);
-                setErrorMessage("Por favor ingresar la fecha de los exámenes");
-            } else {
-                const resultOrden = await InsertOrders(DataToInsert);
-                if (resultOrden.status === 200) {
-                    const lsResultado = await GetByOrders(resultOrden.data);
-                    if (lsResultado.status === 200) {
-                        lsOrdenesEmpleado.push({ ...lsResultado.data });
-                    }
+            var existe = lsOrdenesEmpleado.some(x => x.documento === documentoEmpleado);
 
-                    setOpenSuccess(true);
-                    setErrorMessage("Empleado agregado para examen");
+            if (!existe) {
+                if (datosControlados.tipoExamen === '') {
+                    setOpenError(true);
+                    setErrorMessage("Por favor ingresar el tipo de examen");
+                } else if (datosControlados.fecha === null) {
+                    setOpenError(true);
+                    setErrorMessage("Por favor ingresar la fecha de los exámenes");
+                } else {
+                    const resultOrden = await InsertOrders(DataToInsert);
+                    if (resultOrden.status === 200) {
+                        const lsResultado = await GetByOrders(resultOrden.data);
+                        if (lsResultado.status === 200) {
+                            setLsOrdenesEmpleado([...lsOrdenesEmpleado, lsResultado.data]);
+                            lsIdOrdenes.push(resultOrden.data);
+                        }
+
+                        setOpenSuccess(true);
+                        setErrorMessage("Empleado agregado para examen");
+                    }
                 }
+            } else {
+                setOpenError(true);
+                setErrorMessage("Este empleado ya se agrego");
             }
+
+
         } catch (error) {
             setOpenError(true);
             setErrorMessage(Message.RegistroNoGuardado);
@@ -135,17 +157,9 @@ const OrdenesMasivas = () => {
 
     return (
         <Fragment>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
-            <ControlModal
-                title="Historico De Controles Periódicos"
-                open={verHistoricoEmo}
-                onClose={() => setVerHistoricoEmo(false)}
-                maxWidth="md"
-            >
-                {/* <ListHistoryEmo documento={documento} /> */}
-            </ControlModal>
 
             <ControlModal
                 title="VISTA DE REPORTE"
@@ -231,7 +245,7 @@ const OrdenesMasivas = () => {
                                 <Grid container spacing={2} sx={{ pt: 1 }}>
                                     {lsEmployee.map((enti, index) => (
                                         <Grid key={index} item xs={12} sm={6} lg={3}>
-                                            <CardsEmployee lsEmployee={enti} handleClick={() => handleClick(index)} />
+                                            <CardsEmployee lsEmployee={enti} handleClick={() => handleClickEmpleado(index)} />
                                         </Grid>
                                     ))}
                                 </Grid>
@@ -244,14 +258,47 @@ const OrdenesMasivas = () => {
                                 <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Empleados Seleccionados Para Examenes</Typography></>}>
 
                                 <Grid container spacing={2} sx={{ pt: 1 }}>
-                                    {lsOrdenesEmpleado.map((enti, index) => (
+                                    {lsOrdenesEmpleado && lsOrdenesEmpleado.map((enti, index) => (
                                         <Grid key={index} item xs={12} sm={6} lg={3}>
-                                            {console.log("Datos => ", enti)}
-                                            <CardsEmployee lsEmployee={enti} /* handleClick={() => handleClick(index)} */ />
+                                            <CardsEmployee lsEmployee={enti} handleDelete={() => handleDelete(index, enti.id)} views={true} />
                                         </Grid>
                                     ))}
                                 </Grid>
                             </Accordion>
+                        </Grid>
+                        {lsOrdenesEmpleado.length !== 0 ?
+                            <Grid container spacing={2} sx={{ pt: 4 }}>
+                                <Accordion title={<><PersonIcon />
+                                    <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Asignar Examenes</Typography></>}>
+
+                                    <ListParaclinico lsEmployee={lsEmployee} />
+                                </Accordion>
+                            </Grid> : null}
+
+                        <Grid container spacing={2} sx={{ pt: 4 }}>
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button /* disabled={resultData !== '' ? true : false} */ variant="contained" fullWidth /* onClick={handleSubmit(handleClick)} */>
+                                        {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button /* disabled={disabledButton ? false : true} */ variant="outlined" fullWidth /* onClick={handleClickReport} */>
+                                        {TitleButton.Imprimir}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/orders/view")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
                         </Grid>
                     </SubCard>
                 </Grid>

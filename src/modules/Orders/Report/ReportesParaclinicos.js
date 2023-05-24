@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import { ViewFormat } from 'components/helpers/Format';
+import { DefaultValue } from 'components/helpers/Enums';
 
 function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
     doc.addImage(
@@ -69,7 +70,7 @@ export function generateReportConcentimiento(doc, lsDataReport = [], lsDataUser 
     getFirmaEmployee(doc, lsDataReport);
 }
 
-export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = []) {
+export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = [], lsDataReportParaclinico = []) {
 
     var cantidadParaclinico = lsDataReport.lsParaclinicos.length * 6;
 
@@ -91,14 +92,15 @@ export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = []) 
     doc.text('Area:', 120, 77);
     doc.text('Sede:', 120, 84);
     doc.setFontSize(12);
-    doc.text(`${ViewFormat(lsDataReport.fecha)}`, 100, 120, null, null, "center");
+    doc.text(`${lsDataReportParaclinico.filter(x => x.idParaclinico === DefaultValue.ORDENES_FECHA_EXAM_FISICO)
+        .map(x => ViewFormat(x.fechaExamenFisico))}`, 100, 120, null, null, "center");
 
     /* RENDERIZADO DE CONTENIDO */
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.text(`${lsDataReport.id}`, 50, 48);
     doc.text(`${lsDataReport.nameEmpleado}`, 50, 55);
-    doc.text(`${new Date().toLocaleString()}`, 160, 48);
+    doc.text(`${ViewFormat(lsDataReport.fecha)}`, 160, 48);
     doc.text(`${lsDataReport.documento}`, 160, 55);
 
     doc.text(`${lsDataReport.nameCargo}`, 50, 70);
@@ -121,7 +123,7 @@ export function generateReportParaclinico(doc, lsDataReport = [], lsDataUser = [
     var restaPosicion = lsDataReportParaclinico.idParaclinico === 3533 ? 0 : 20;
 
     doc.text(`Nro Orden:        ${lsDataReport.id}`, 5, 35);
-    doc.text(`Fecha Expedición:         ${new Date().toLocaleString()}`, 100, 35);
+    doc.text(`Fecha Expedición:         ${ViewFormat(lsDataReport.fecha)}`, 100, 35);
     doc.setFontSize(10);
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);

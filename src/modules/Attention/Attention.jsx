@@ -23,9 +23,7 @@ import InputSelect from 'components/input/InputSelect';
 import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostAttention } from 'formatdata/AttentionForm';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
@@ -199,12 +197,12 @@ const Attention = () => {
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -341,9 +339,9 @@ const Attention = () => {
                 motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), "",
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (lsEmployee.length === 0 && documento !== '') {
+            if (lsEmployee.length === 0 && documento === '') {
                 setOpenError(true);
-                setErrorMessage(`${Message.NoExisteDocumento}`);
+                setErrorMessage(Message.NoExisteDocumento);
             } else
                 if (sede === '') {
                     setOpenError(true);
@@ -361,13 +359,13 @@ const Attention = () => {
                                 const result = await InsertAttention(DataToInsert);
                                 if (result.status === 200) {
                                     setOpenSuccess(true);
-                                    setDocumento('');
                                     setTipoAtencion('');
                                     setAtencion('');
                                     setSede('');
-                                    setLsEmployee([]);
                                     reset();
                                     setResult(result.data)
+                                    setDocumento('');
+                                    setLsEmployee([]);
                                 }
                             }
                         }

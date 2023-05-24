@@ -107,10 +107,10 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton }) => {
 
     async function getAllListParaclinicos() {
         try {
-            const lsServer = await GetAllOrdersParaclinicos(0, 0, idOrdenes);
+            const lsServer = await GetAllOrdersParaclinicos(idOrdenes);
             if (lsServer.status === 200) {
-                setLsOrdenesParaclinicos(lsServer.data.entities);
-                if (lsServer.data.entities.length !== 0) {
+                setLsOrdenesParaclinicos(lsServer.data);
+                if (lsServer.data.length !== 0) {
                     setDisabledButton(true);
                 } else {
                     setDisabledButton(false);

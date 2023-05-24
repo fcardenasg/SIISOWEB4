@@ -91,9 +91,9 @@ const OrdersIndividual = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdOrders(resultData);
-            const lsDataReportParaclinico = await GetAllOrdersParaclinicos(0, 0, resultData);
+            const lsDataReportParaclinico = await GetAllOrdersParaclinicos(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
-            const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data.entities);
+            const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
 
             setDataPDF(dataPDFTwo);
         } catch (err) { }
@@ -124,7 +124,7 @@ const OrdersIndividual = () => {
                 if (documento !== '' && lsEmployee.length !== 0) {
                     const result = await InsertOrders(DataToInsert);
                     if (result.status === 200) {
-                        setResultData(result.data.id);
+                        setResultData(result.data);
                         setOpenSuccess(true);
                     }
                 } else {

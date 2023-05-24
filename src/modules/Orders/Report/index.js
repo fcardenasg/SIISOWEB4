@@ -1,6 +1,7 @@
 import jsPDF from "jspdf";
 import LogoReport from 'assets/img/LogoReport.png';
 import { generateReportConcentimiento, generateReportCitacion, generateReportParaclinico } from "./ReportesParaclinicos";
+import { DefaultValue } from "components/helpers/Enums";
 
 function getHeader(doc = new jsPDF(), lsDataReport, version = "SIG-0408") {
     /* ENCABEZADO REPORTE */
@@ -48,7 +49,7 @@ export function generateReporteIndex(lsDataReport = [], lsDataUser = [], lsDataR
 
     if (lsDataReport.citacion) {
         getHeader(doc, lsDataReport);
-        generateReportCitacion(doc, lsDataReport, lsDataUser);
+        generateReportCitacion(doc, lsDataReport, lsDataUser, lsDataReportParaclinico);
         getPiePage(doc, lsDataUser);
         doc.addPage();
     }
@@ -57,7 +58,7 @@ export function generateReporteIndex(lsDataReport = [], lsDataUser = [], lsDataR
         const element = lsDataReportParaclinico[index];
 
         if (lsDataReportParaclinico.length !== 0) {
-            if (element.idParaclinico !== 3541) {
+            if (element.idParaclinico !== DefaultValue.ORDENES_FECHA_EXAM_FISICO) {
                 getHeader(doc, lsDataReport);
                 generateReportParaclinico(doc, lsDataReport, lsDataUser, element);
                 getPiePage(doc, lsDataUser);
