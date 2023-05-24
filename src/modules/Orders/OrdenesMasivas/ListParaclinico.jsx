@@ -4,7 +4,6 @@ import { useTheme } from '@mui/material/styles';
 import {
     Grid, Button,
     useMediaQuery,
-    Typography,
     TableCell,
     TableRow,
     TableContainer,
@@ -30,11 +29,11 @@ import InputSelect from 'components/input/InputSelect';
 import SubCard from 'ui-component/cards/SubCard';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { PostOrdersParaclinico } from 'formatdata/OrdersForm';
-import { DeleteOrdersParaclinicos, GetAllOrdersParaclinicos, InsertOrdersParaclinicos } from 'api/clients/OrdersClient';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import swal from 'sweetalert';
+import { ViewFormat } from 'components/helpers/Format';
 
-const ListParaclinico = ({ idOrdenes, setDisabledButton }) => {
+const ListParaclinico = ({ setLsOrdenesParaclinicos, lsOrdenesParaclinicos }) => {
     const { user } = useAuth();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -55,9 +54,6 @@ const ListParaclinico = ({ idOrdenes, setDisabledButton }) => {
     const [lsLaboratorio, setLsLaboratorio] = useState([]);
     const [lsTipoRNM, setLsTipoRNM] = useState([]);
     const [lsEstudioParaclinico, setLsEstudioParaclinico] = useState([]);
-    const [lsOrdenesParaclinicos, setLsOrdenesParaclinicos] = useState([]);
-
-    console.log("lsOrdenesParaclinicos => ", lsOrdenesParaclinicos);
 
     const xsGrid = paraclinicos === DefaultValue.ORDENES_LABORATORIO || paraclinicos === DefaultValue.ORDENES_RNM
         || paraclinicos === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? 3 : 4;
@@ -154,7 +150,7 @@ const ListParaclinico = ({ idOrdenes, setDisabledButton }) => {
             var ciudadMap = fechaExmaneFisico ? DefaultValue.SINREGISTRO_GLOBAL : ciudad;
 
             const DataToInsert = PostOrdersParaclinico(paraclinicos, 0, proveedorMap, ciudadMap, datos.idTipoExamenLaboratorio,
-                datos.idTipoExamenRNM, datos.fechaExamenFisico, datos.asistio, user.nameuser, new Date().toLocaleString(), "", undefined);
+                datos.idTipoExamenRNM, datos.fechaExamenFisico, datos.asistio, user.nameuser, new Date(), "", undefined);
 
 
             var existe = lsOrdenesParaclinicos.some(x => x.idParaclinico === paraclinicos);
@@ -211,7 +207,7 @@ const ListParaclinico = ({ idOrdenes, setDisabledButton }) => {
                                             <TableCell>{lsEstudioParaclinico.filter(x => x.value === Number(row.idParaclinico)).map(x => x.label)}</TableCell>
                                             <TableCell>{lsProveedor.filter(x => x.codiProv === row.idProveedor).map(x => x.nombProv)}</TableCell>
                                             <TableCell>{lsCiudad.filter(x => x.value === Number(row.idCiudad)).map(x => x.label)}</TableCell>
-                                            <TableCell>{row.fechaRegistro}</TableCell>
+                                            <TableCell>{ViewFormat(row.fechaRegistro)}</TableCell>
 
                                             <TableCell>
                                                 <Grid container spacing={2}>

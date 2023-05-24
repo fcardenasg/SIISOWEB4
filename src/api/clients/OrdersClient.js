@@ -11,4 +11,5 @@ export const DeleteOrders = async (idOrdenes) => await deleteData(Url.Ordenes, {
 export const GetAllOrdersParaclinicos = async (idOrdenes) => await getData(Url.OrdenesParaclinicos, { idOrdenes });
 export const GetByIdOrdersParaclinicos = async (id) => await getData(Url.OrdenesParaclinicosId, { id });
 export const InsertOrdersParaclinicos = async (ordenesParaclinicos) => await postData(Url.OrdenesParaclinicos, ordenesParaclinicos);
+export const InsertOrdersParaclinicosMasiva = async (insertMasivoDTO) => await postData(Url.OrdenesParaclinicosMasiva, insertMasivoDTO);
 export const DeleteOrdersParaclinicos = async (idOrdenesParaclinicos) => await deleteData(Url.OrdenesParaclinicos, { idOrdenesParaclinicos });

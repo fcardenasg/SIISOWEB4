@@ -19,8 +19,8 @@ import { CodCatalogo } from 'components/helpers/Enums';
 import PersonIcon from '@mui/icons-material/Person';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
-import { PostOrders } from 'formatdata/OrdersForm';
-import { DeleteOrders, GetByOrders, InsertOrders } from 'api/clients/OrdersClient';
+import { PostOrders, PostOrdersMasiva } from 'formatdata/OrdersForm';
+import { DeleteOrders, GetByOrders, InsertOrders, InsertOrdersParaclinicosMasiva } from 'api/clients/OrdersClient';
 
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
@@ -37,13 +37,12 @@ import ListParaclinico from './ListParaclinico';
 const lsIdOrdenes = [];
 
 const OrdenesMasivas = () => {
-    console.log("lsIdOrdenes => ", lsIdOrdenes);
-
     const { user } = useAuth();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [lsOrdenesParaclinicos, setLsOrdenesParaclinicos] = useState([]);
     const [lsOrdenesEmpleado, setLsOrdenesEmpleado] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
@@ -149,6 +148,21 @@ const OrdenesMasivas = () => {
             }
 
 
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
+        }
+    };
+
+    const handleClick = async () => {
+        try {
+            const DataToInsert = PostOrdersMasiva(lsIdOrdenes, lsOrdenesParaclinicos);
+
+            const result = await InsertOrdersParaclinicosMasiva(DataToInsert);
+            if (result.status === 200) {
+                setErrorMessage(Message.Guardar);
+                setOpenSuccess(true);
+            }
         } catch (error) {
             setOpenError(true);
             setErrorMessage(Message.RegistroNoGuardado);
@@ -271,14 +285,14 @@ const OrdenesMasivas = () => {
                                 <Accordion title={<><PersonIcon />
                                     <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Asignar Examenes</Typography></>}>
 
-                                    <ListParaclinico lsEmployee={lsEmployee} />
+                                    <ListParaclinico setLsOrdenesParaclinicos={setLsOrdenesParaclinicos} lsOrdenesParaclinicos={lsOrdenesParaclinicos} />
                                 </Accordion>
                             </Grid> : null}
 
                         <Grid container spacing={2} sx={{ pt: 4 }}>
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button /* disabled={resultData !== '' ? true : false} */ variant="contained" fullWidth /* onClick={handleSubmit(handleClick)} */>
+                                    <Button /* disabled={resultData !== '' ? true : false} */ variant="contained" fullWidth onClick={handleClick}>
                                         {TitleButton.Guardar}
                                     </Button>
                                 </AnimateButton>

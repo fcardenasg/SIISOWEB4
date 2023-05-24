@@ -105,6 +105,7 @@ export const Url = {
 
     OrdenesParaclinicos: 'api/OrdenesParaclinicos',
     OrdenesParaclinicosId: 'api/OrdenesParaclinicos/id',
+    OrdenesParaclinicosMasiva: 'api/OrdenesParaclinicos/masiva',
 
     Antecedente: 'api/Antecedente',
 

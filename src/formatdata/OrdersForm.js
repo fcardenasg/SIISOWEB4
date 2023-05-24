@@ -21,3 +21,9 @@ export function PostOrdersParaclinico(idParaclinico, idOrdenes, idProveedor, idC
         fechaExamenFisico, asistio, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }
+
+export function PostOrdersMasiva(listaOrdenes = [], listaParaclinicos = []) {
+    return {
+        listaOrdenes, listaParaclinicos
+    };
+}
