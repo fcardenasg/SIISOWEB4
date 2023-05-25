@@ -32,7 +32,7 @@ import { DefaultData, Message, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 
-import { DeleteAdvice, GetAllByTipoAtencion2 } from 'api/clients/AdviceClient';
+import { DeleteAdvice, GetAllByTipoAtencion } from 'api/clients/AdviceClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -71,25 +71,19 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'id',
-        numeric: false,
-        label: 'ID',
-        align: 'left'
-    },
-    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
         align: 'left'
     },
     {
-        id: 'nameTiAtencion',
+        id: 'nameEmpleado',
         numeric: false,
-        label: 'Tipo Atención',
+        label: 'Nombres',
         align: 'left'
     },
     {
-        id: 'usuarioRegistro',
+        id: 'nameTipoAtencion',
         numeric: false,
         label: 'Tipo Atencion',
         align: 'left'
@@ -98,6 +92,12 @@ const headCells = [
         id: 'fecha',
         numeric: false,
         label: 'Fecha',
+        align: 'left'
+    },
+    {
+        id: 'usuarioRegistra',
+        numeric: false,
+        label: 'Usuario Registra',
         align: 'left'
     },
 ];
@@ -212,10 +212,10 @@ const ListOtherAdvice = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
-    const [medicalAdvice, setMedicalAdvice] = useState([]);
+    const [lsMedicalAdvice, setLsMedicalAdvice] = useState([]);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
@@ -225,12 +225,10 @@ const ListOtherAdvice = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllByTipoAtencion2(0, 0, DefaultData.ASESORIA_MEDICA, DefaultData.AsesoriaPsicologica);
-            setMedicalAdvice(lsServer.data.entities);
-            setRows(lsServer.data.entities);
-        } catch (error) {
-
-        }
+            const lsServer = await GetAllByTipoAtencion(0, false);
+            setLsMedicalAdvice(lsServer.data);
+            setRows(lsServer.data);
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -245,7 +243,7 @@ const ListOtherAdvice = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'fecha', 'usuarioRegistro', 'nameTiAtencion'];
+                const properties = ['documento', 'nameEmpleado', 'fecha', 'nameTipoAtencion', 'usuarioRegistra'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -259,9 +257,9 @@ const ListOtherAdvice = () => {
                 }
                 return matches;
             });
-            setMedicalAdvice(newRows);
+            setLsMedicalAdvice(newRows);
         } else {
-            setMedicalAdvice(rows);
+            setLsMedicalAdvice(rows);
         }
     };
 
@@ -274,7 +272,7 @@ const ListOtherAdvice = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = medicalAdvice.map((n) => n.id);
+            const newSelectedId = lsMedicalAdvice.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -331,7 +329,7 @@ const ListOtherAdvice = () => {
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medicalAdvice.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicalAdvice.length) : 0;
 
     return (
         <MainCard title={<Typography variant="h4">Lista De Otras Asesorías</Typography>} content={false}>
@@ -362,7 +360,7 @@ const ListOtherAdvice = () => {
                                         </IconButton>
                                     </Tooltip>
                                 } filename="Asesoría Médica">
-                                    <ExcelSheet data={medicalAdvice} name="Asesoría Médica">
+                                    <ExcelSheet data={lsMedicalAdvice} name="Asesoría Médica">
                                         <ExcelColumn label="Id" value="id" />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Fecha" value="fecha" />
@@ -413,13 +411,13 @@ const ListOtherAdvice = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={medicalAdvice.length}
+                        rowCount={lsMedicalAdvice.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(medicalAdvice, getComparator(order, orderBy))
+                        {stableSort(lsMedicalAdvice, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
 
@@ -454,16 +452,6 @@ const ListOtherAdvice = () => {
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
-                                            {row.id}
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
@@ -483,7 +471,7 @@ const ListOtherAdvice = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameTiAtencion}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -498,7 +486,7 @@ const ListOtherAdvice = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.usuarioRegistro}
+                                                {row.nameTipoAtencion}
                                             </Typography>
                                         </TableCell>
 
@@ -514,6 +502,21 @@ const ListOtherAdvice = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {FormatDate(row.fecha)}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.usuarioRegistra}
                                             </Typography>
                                         </TableCell>
 
@@ -543,7 +546,7 @@ const ListOtherAdvice = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={medicalAdvice.length}
+                count={lsMedicalAdvice.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

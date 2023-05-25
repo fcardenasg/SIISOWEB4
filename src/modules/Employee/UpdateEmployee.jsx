@@ -105,7 +105,7 @@ const UpdateEmployee = () => {
     const [timeWait, setTimeWait] = useState(false);
     const [lsOficio, setOficio] = useState([]);
 
-    async function GetAll() {
+    async function getAll() {
         try {
 
             const lsServerEmployeeId = await GetByIdEmployee(id);
@@ -293,7 +293,7 @@ const UpdateEmployee = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, []);
 
     const methods = useForm(

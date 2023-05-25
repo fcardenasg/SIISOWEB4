@@ -555,7 +555,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                     <InputDatePicker
                                         label="Fecha de Contrato"
                                         name="fechaContrato"
-                                        defaultValue={employee.fechaContrato}
+                                        defaultValue={FormatDate(employee.fechaContrato)}
                                     />
                                 </FormProvider>
                             </Grid>

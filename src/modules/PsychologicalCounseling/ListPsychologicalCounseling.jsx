@@ -27,7 +27,7 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-import { FormatDate } from 'components/helpers/Format';
+import { ViewFormat } from 'components/helpers/Format';
 import { DefaultData, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -72,15 +72,27 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'id',
-        numeric: false,
-        label: 'ID',
-        align: 'left'
-    },
-    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
+        align: 'left'
+    },
+    {
+        id: 'nameEmpleado',
+        numeric: false,
+        label: 'Nombres',
+        align: 'left'
+    },
+    {
+        id: 'nameMotivo',
+        numeric: false,
+        label: 'Motivo',
+        align: 'left'
+    },
+    {
+        id: 'nameEstadoCaso',
+        numeric: false,
+        label: 'Estado Caso',
         align: 'left'
     },
     {
@@ -90,23 +102,11 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'usuarioRegistro',
+        id: 'usuarioRegistra',
         numeric: false,
         label: 'Usuario',
         align: 'left'
     },
-    {
-        id: 'nameTiAtencion',
-        numeric: false,
-        label: 'Tipo Atencion',
-        align: 'left'
-    },
-    {
-        id: 'nameEstadoCaso',
-        numeric: false,
-        label: 'Estado Caso',
-        align: 'left'
-    }
 ];
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
@@ -218,11 +218,11 @@ EnhancedTableToolbar.propTypes = {
 const ListPsychologicalCounseling = () => {
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
-    const [medicalAdvice, setMedicalAdvice] = useState([]);
+    const [lsMedicalAdvice, setLsMedicalAdvice] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
@@ -232,9 +232,9 @@ const ListPsychologicalCounseling = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllByTipoAtencion(0, 0, DefaultData.AsesoriaPsicologica);
-            setMedicalAdvice(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllByTipoAtencion(DefaultData.AsesoriaPsicologica, true);
+            setLsMedicalAdvice(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) { }
     }
 
@@ -250,7 +250,7 @@ const ListPsychologicalCounseling = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'fecha', 'usuarioRegistro', 'motivo', 'nameTiAtencion', 'nameEstadoCaso'];
+                const properties = ['documento', 'fecha', 'usuarioRegistra', 'nameMotivo', 'nameEmpleado', 'nameEstadoCaso'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -264,9 +264,9 @@ const ListPsychologicalCounseling = () => {
                 }
                 return matches;
             });
-            setMedicalAdvice(newRows);
+            setLsMedicalAdvice(newRows);
         } else {
-            setMedicalAdvice(rows);
+            setLsMedicalAdvice(rows);
         }
     };
 
@@ -278,7 +278,7 @@ const ListPsychologicalCounseling = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelectedId = medicalAdvice.map((n) => n.id);
+            const newSelectedId = lsMedicalAdvice.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -332,7 +332,7 @@ const ListPsychologicalCounseling = () => {
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medicalAdvice.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicalAdvice.length) : 0;
 
     return (
         <MainCard title={<Typography variant="h4">Lista De Asesorías Psicológicas</Typography>} content={false}>
@@ -365,7 +365,7 @@ const ListPsychologicalCounseling = () => {
                                         </IconButton>
                                     </Tooltip>
                                 } filename="Asesoría Médica">
-                                    <ExcelSheet data={medicalAdvice} name="Asesoría Médica">
+                                    <ExcelSheet data={lsMedicalAdvice} name="Asesoría Médica">
                                         <ExcelColumn label="Id" value="id" />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Fecha" value="fecha" />
@@ -414,13 +414,13 @@ const ListPsychologicalCounseling = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={medicalAdvice.length}
+                        rowCount={lsMedicalAdvice.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(medicalAdvice, getComparator(order, orderBy))
+                        {stableSort(lsMedicalAdvice, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
 
@@ -455,16 +455,6 @@ const ListPsychologicalCounseling = () => {
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
-                                            {row.id}
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
@@ -484,7 +474,7 @@ const ListPsychologicalCounseling = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {FormatDate(row.fecha)}
+                                                {row.nameEmpleado}
                                             </Typography>
                                         </TableCell>
 
@@ -499,7 +489,7 @@ const ListPsychologicalCounseling = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameTiAtencion}
+                                                {row.nameMotivo}
                                             </Typography>
                                         </TableCell>
 
@@ -529,7 +519,22 @@ const ListPsychologicalCounseling = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.usuarioRegistro}
+                                                {ViewFormat(row.fecha)}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.usuarioRegistra}
                                             </Typography>
                                         </TableCell>
 
@@ -559,7 +564,7 @@ const ListPsychologicalCounseling = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={medicalAdvice.length}
+                count={lsMedicalAdvice.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

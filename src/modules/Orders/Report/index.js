@@ -73,5 +73,6 @@ export function generateReporteIndex(lsDataReport = [], lsDataUser = [], lsDataR
     }
 
     var dataPDF = doc.output("bloburl");
-    return dataPDF;
+    var bytePDF = doc.output('datauristring');
+    return { dataPDF, bytePDF };
 }

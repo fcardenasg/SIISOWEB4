@@ -252,7 +252,6 @@ export const DefaultValue = {
     PAD_MOTIVO_SOSPECHA: 3802,
 
     AT_PSICO: 3909,
-    AT_ASESORIA_MEDICA: 3911,
 
     VIDEO_LLAMADA: 7319,
 

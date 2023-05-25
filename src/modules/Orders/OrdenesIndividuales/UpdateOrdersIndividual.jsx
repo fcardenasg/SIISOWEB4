@@ -116,7 +116,9 @@ const UpdateOrdersIndividual = () => {
             const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
             const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
 
-            setDataPDF(dataPDFTwo);
+            setDataPDF(dataPDFTwo.dataPDF);
+
+            console.log("PDF => ", dataPDFTwo.bytePDF);
         } catch (err) { }
     };
 

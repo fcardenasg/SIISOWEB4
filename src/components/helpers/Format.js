@@ -1,4 +1,3 @@
-import { MessageError } from "components/alert/AlertAll";
 import { DefaultValue } from "./Enums";
 
 const FormatDate = (date) => {
@@ -56,7 +55,7 @@ function GetEdad(dateString) {
                 edad--
             }
             return edad;
-        } else return 0 ;
+        } else return 0;
     } catch (error) { }
 }
 

@@ -700,7 +700,7 @@ const UpdateAttention = () => {
                                                                 />
                                                             </FormProvider>
                                                         </Grid>
-                                                    </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && atencion == DefaultValue.AT_ASESORIA_MEDICA ?
+                                                    </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && atencion == DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA ?
                                                         <Fragment>
                                                             <Grid item xs={3}>
                                                                 <FormProvider {...methods}>
@@ -727,7 +727,7 @@ const UpdateAttention = () => {
                                                                     />
                                                                 </FormProvider>
                                                             </Grid>
-                                                        </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && (atencion != DefaultValue.AT_ASESORIA_MEDICA || atencion != DefaultValue.AT_PSICO) ?
+                                                        </Fragment> : tipoAtencion == DefaultValue.TIP_AT_ASESORIA && (atencion != DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA || atencion != DefaultValue.AT_PSICO) ?
                                                             <Fragment>
                                                                 <Grid item xs={3}>
                                                                     <FormProvider {...methods}>

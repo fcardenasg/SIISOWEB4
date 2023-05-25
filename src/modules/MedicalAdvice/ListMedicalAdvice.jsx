@@ -70,12 +70,6 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'id',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
@@ -94,9 +88,21 @@ const headCells = [
         align: 'left'
     },
     {
+        id: 'nameSubmotivo',
+        numeric: false,
+        label: 'Submotivo',
+        align: 'left'
+    },
+    {
         id: 'fecha',
         numeric: false,
         label: 'Fecha',
+        align: 'left'
+    },
+    {
+        id: 'usuarioRegistra',
+        numeric: false,
+        label: 'Usuario',
         align: 'left'
     },
 ];
@@ -210,11 +216,11 @@ EnhancedTableToolbar.propTypes = {
 const ListMedicalAdvice = () => {
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
-    const [medicalAdvice, setMedicalAdvice] = useState([]);
+    const [lsMedicalAdvice, setLsMedicalAdvice] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
@@ -224,11 +230,10 @@ const ListMedicalAdvice = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllByTipoAtencion(0, 0, DefaultData.ASESORIA_MEDICA);
-            setMedicalAdvice(lsServer.data.entities);
-            setRows(lsServer.data.entities);
-        } catch (error) {
-        }
+            const lsServer = await GetAllByTipoAtencion(DefaultData.ASESORIA_MEDICA, true);
+            setLsMedicalAdvice(lsServer.data);
+            setRows(lsServer.data);
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -243,7 +248,7 @@ const ListMedicalAdvice = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nameEmpleado', 'nameMotivo ', 'fecha'];
+                const properties = ['documento', 'nameEmpleado', 'nameMotivo', 'nameSubmotivo', 'fecha', 'usuarioRegistra'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -257,9 +262,9 @@ const ListMedicalAdvice = () => {
                 }
                 return matches;
             });
-            setMedicalAdvice(newRows);
+            setLsMedicalAdvice(newRows);
         } else {
-            setMedicalAdvice(rows);
+            setLsMedicalAdvice(rows);
         }
     };
 
@@ -271,7 +276,7 @@ const ListMedicalAdvice = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelectedId = medicalAdvice.map((n) => n.id);
+            const newSelectedId = lsMedicalAdvice.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -325,7 +330,7 @@ const ListMedicalAdvice = () => {
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medicalAdvice.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicalAdvice.length) : 0;
 
     return (
         <MainCard title="Lista De Asesorías Médicas Especializadas" content={false}>
@@ -358,7 +363,7 @@ const ListMedicalAdvice = () => {
                                         </IconButton>
                                     </Tooltip>
                                 } filename="Asesoría Médica">
-                                    <ExcelSheet data={medicalAdvice} name="Asesoría Médica">
+                                    <ExcelSheet data={lsMedicalAdvice} name="Asesoría Médica">
                                         <ExcelColumn label="Id" value="id" />
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Fecha" value="fecha" />
@@ -402,8 +407,7 @@ const ListMedicalAdvice = () => {
             </CardContent>
 
             <TableContainer>
-                {/* AQUÍ SE HACE PRELOAD */}
-                {medicalAdvice.length === 0 ? <Cargando size={220} myy={6} /> :
+                {lsMedicalAdvice.length === 0 ? <Cargando size={220} myy={6} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
@@ -411,13 +415,13 @@ const ListMedicalAdvice = () => {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={medicalAdvice.length}
+                            rowCount={lsMedicalAdvice.length}
                             theme={theme}
                             selected={selected}
                             onClick={handleDelete}
                         />
                         <TableBody>
-                            {stableSort(medicalAdvice, getComparator(order, orderBy))
+                            {stableSort(lsMedicalAdvice, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
 
@@ -443,17 +447,6 @@ const ListMedicalAdvice = () => {
                                                         'aria-labelledby': labelId
                                                     }}
                                                 />
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
-                                                sx={{ cursor: 'pointer' }}
-                                                align="center"
-                                            >
-                                                {row.id}
                                             </TableCell>
 
                                             <TableCell
@@ -512,7 +505,37 @@ const ListMedicalAdvice = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
+                                                    {row.nameSubmotivo}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
                                                     {ViewFormat(row.fecha)}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.usuarioRegistra}
                                                 </Typography>
                                             </TableCell>
 
@@ -543,7 +566,7 @@ const ListMedicalAdvice = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={medicalAdvice.length}
+                count={lsMedicalAdvice.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
