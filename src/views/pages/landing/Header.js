@@ -13,6 +13,7 @@ import { gridSpacing } from 'store/constant';
 
 import LogoDrummondLTD from 'assets/img/LogoDrummondLTD.png';
 import LogoDrummondEnergy from 'assets/img/LogoDrummondEnergy.png';
+import config from 'config';
 import { ColorDrummondltd } from 'themes/colors';
 
 const HeaderPage = () => {
@@ -108,8 +109,7 @@ const HeaderPage = () => {
 
                                     <Grid item xs={6}>
                                         <AnimateButton>
-                                            <Button to="login" variant="outlined" component={RouterLink} color="error"
-                                                sx={{ color: ColorDrummondltd.RedDrummond }} target="_blank">
+                                            <Button href="https://www.youtube.com/" variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }} target="_blank">
                                                 <CardMedia
                                                     component="img"
                                                     image={LogoDrummondEnergy}

@@ -7,8 +7,6 @@ import {
     Typography,
 } from '@mui/material';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
@@ -71,7 +69,7 @@ const AccidentRate = () => {
     const [openError, setOpenError] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [resultData, setResultData] = useState([]);
+    const [resultData, setResultData] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
     const [documento, setDocumento] = useState('');
     const [lsClase, setLsClase] = useState([]);
@@ -121,13 +119,13 @@ const AccidentRate = () => {
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -251,7 +249,7 @@ const AccidentRate = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAccidentRate(resultData.id);
+            const lsDataReport = await GetByIdAccidentRate(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
@@ -265,7 +263,7 @@ const AccidentRate = () => {
                 1, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
                 datos.diagnosticoFinal, datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
                 datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, undefined, '', undefined);
 
             if (Object.keys(datos.length !== 0)) {
                 if (lsEmployee.length !== 0) {
@@ -613,7 +611,7 @@ const AccidentRate = () => {
 
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                    <Button disabled={resultData === '' ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
                                         {TitleButton.Imprimir}
                                     </Button>
                                 </AnimateButton>

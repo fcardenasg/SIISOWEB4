@@ -6,6 +6,7 @@ export const Url = {
 
     Login: 'api/Login',
     RecuperarPasswordCorreo: 'api/Login/RecuperarPasswordCorreo',
+    EnviarExamenesCorreo: 'api/Login/enviar-paraclinicos',
     ChangePassword: 'api/Login/ChangePassword',
     Usuario: 'api/Usuario',
 

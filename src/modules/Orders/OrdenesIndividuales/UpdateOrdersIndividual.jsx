@@ -33,6 +33,8 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReporteIndex } from '../Report';
 import InputCheckBox from 'components/input/InputCheckBox';
+import { EnviarExamenes } from 'formatdata/MailForm';
+import { EnviarExamenesCorreo } from 'api/clients/MailClient';
 
 const UpdateOrdersIndividual = () => {
     const { user } = useAuth();
@@ -41,6 +43,7 @@ const UpdateOrdersIndividual = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [bytePdf, setBytePdf] = useState('');
     const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [disabledButton, setDisabledButton] = useState(false);
@@ -117,8 +120,21 @@ const UpdateOrdersIndividual = () => {
             const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
 
             setDataPDF(dataPDFTwo.dataPDF);
+            setBytePdf(dataPDFTwo.file64);
+        } catch (err) { }
+    };
 
-            console.log("PDF => ", dataPDFTwo.bytePDF);
+    const handleClickPorCorreo = async () => {
+        try {
+            const Correo = {
+                Correo: "gerencia@rubikapp.com.co",
+                Adjunto: bytePdf
+            }
+
+            const result = await EnviarExamenesCorreo(Correo);
+            if (result.status === 200) {
+                setOpenSuccess(true);
+            }
         } catch (err) { }
     };
 
@@ -264,6 +280,14 @@ const UpdateOrdersIndividual = () => {
                                             <AnimateButton>
                                                 <Button variant="outlined" fullWidth onClick={() => navigate("/orders-individual/list")}>
                                                     {TitleButton.Cancelar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" fullWidth onClick={handleClickPorCorreo}>
+                                                    Enviar Por Correo
                                                 </Button>
                                             </AnimateButton>
                                         </Grid>

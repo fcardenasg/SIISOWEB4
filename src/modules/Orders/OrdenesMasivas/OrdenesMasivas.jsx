@@ -20,7 +20,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { PostOrders, PostOrdersMasiva } from 'formatdata/OrdersForm';
-import { DeleteOrders, GetByOrders, InsertOrders, InsertOrdersParaclinicosMasiva } from 'api/clients/OrdersClient';
+import { DeleteOrders, GetAllOrdersParaclinicos, GetByIdOrders, GetByOrders, InsertOrders, InsertOrdersParaclinicosMasiva } from 'api/clients/OrdersClient';
 
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
@@ -33,6 +33,10 @@ import InputCheck from 'components/input/InputCheck';
 import InputDatePick from 'components/input/InputDatePick';
 import swal from 'sweetalert';
 import ListParaclinico from './ListParaclinico';
+import { GetByMail } from 'api/clients/UserClient';
+import { generateReporteIndex } from '../Report';
+import { EnviarExamenesCorreo } from 'api/clients/MailClient';
+import UpdateEmployee from 'modules/Programming/Attention/OccupationalExamination/Update/UpdateEmployee';
 
 const lsIdOrdenes = [];
 
@@ -42,6 +46,9 @@ const OrdenesMasivas = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [documento, setDocumento] = useState('');
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [desabilitarSave, setDesabilitarSave] = useState(false);
     const [lsOrdenesParaclinicos, setLsOrdenesParaclinicos] = useState([]);
     const [lsOrdenesEmpleado, setLsOrdenesEmpleado] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
@@ -95,6 +102,48 @@ const OrdenesMasivas = () => {
 
         getAll();
     }, []);
+
+    const handleClickReport = async (idOrden) => {
+        try {
+
+            setOpenReport(true);
+            const lsDataReport = await GetByIdOrders(idOrden);
+            const lsDataReportParaclinico = await GetAllOrdersParaclinicos(idOrden);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+
+            const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
+
+            setDataPDF(dataPDFTwo.dataPDF);
+        } catch (err) { }
+    };
+
+    const handleClickEnviar = async (correoEmpleado, idOrden) => {
+        try {
+            const lsDataReport = await GetByIdOrders(idOrden);
+            const lsDataReportParaclinico = await GetAllOrdersParaclinicos(idOrden);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+            const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
+
+            setTimeout(() => {
+                async function enviarReporte() {
+                    const Correo = {
+                        Correo: correoEmpleado,
+                        Adjunto: dataPDFTwo.file64
+                    }
+
+                    const result = await EnviarExamenesCorreo(Correo);
+                    if (result.status === 200) {
+                        setErrorMessage(result.data);
+                        setOpenSuccess(true);
+                    }
+                }
+
+                enviarReporte();
+            }, 1500);
+
+
+        } catch (err) { }
+    };
 
     const handleDelete = async (index, idOrden) => {
         try {
@@ -154,6 +203,16 @@ const OrdenesMasivas = () => {
         }
     };
 
+    const handleClickEditarEmpleado = async (docu) => {
+        try {
+            setDocumento(docu);
+            setOpenUpdate(true);
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
+        }
+    };
+
     const handleClick = async () => {
         try {
             const DataToInsert = PostOrdersMasiva(lsIdOrdenes, lsOrdenesParaclinicos);
@@ -162,12 +221,32 @@ const OrdenesMasivas = () => {
             if (result.status === 200) {
                 setErrorMessage(Message.Guardar);
                 setOpenSuccess(true);
+
+                setDesabilitarSave(true);
             }
         } catch (error) {
             setOpenError(true);
             setErrorMessage(Message.RegistroNoGuardado);
         }
     };
+
+    const handleLoadingDocument = async () => {
+        try {
+            if (search !== '') {
+                var lsServerEmployee = await GetAllEmployeeOrdenes(search);
+
+                if (lsServerEmployee.status === 200) {
+                    setLsEmployee(lsServerEmployee.data);
+                }
+            } else {
+                setOpenError(true);
+                setErrorMessage("Por favor ingrese el nombre o documento del empleado");
+            }
+        } catch (error) {
+            setLsEmployee([]);
+            setErrorMessage(Message.ErrorDeDatos);
+        }
+    }
 
     return (
         <Fragment>
@@ -178,10 +257,19 @@ const OrdenesMasivas = () => {
             <ControlModal
                 title="VISTA DE REPORTE"
                 open={openReport}
-                onClose={() => setOpenReport(false)}
+                onClose={() => { setDataPDF(null); setOpenReport(false); }}
                 maxWidth="xl"
             >
                 <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
+            <ControlModal
+                title="ACTUALIZAR EMPLEADO"
+                open={openUpdate}
+                onClose={() => setOpenUpdate(false)}
+                maxWidth="xl"
+            >
+                <UpdateEmployee idEmpleado={documento} getDataAttention={handleLoadingDocument} setOpenUpdateTwo={setOpenUpdate} />
             </ControlModal>
 
             <Grid container spacing={2}>
@@ -259,7 +347,10 @@ const OrdenesMasivas = () => {
                                 <Grid container spacing={2} sx={{ pt: 1 }}>
                                     {lsEmployee.map((enti, index) => (
                                         <Grid key={index} item xs={12} sm={6} lg={3}>
-                                            <CardsEmployee lsEmployee={enti} handleClick={() => handleClickEmpleado(index)} />
+                                            <CardsEmployee lsEmployee={enti}
+                                                handleClick={() => handleClickEmpleado(index)}
+                                                handleDelete={() => handleClickEditarEmpleado(enti.documento)}
+                                                editarEmployee={true} />
                                         </Grid>
                                     ))}
                                 </Grid>
@@ -280,6 +371,7 @@ const OrdenesMasivas = () => {
                                 </Grid>
                             </Accordion>
                         </Grid>
+
                         {lsOrdenesEmpleado.length !== 0 ?
                             <Grid container spacing={2} sx={{ pt: 4 }}>
                                 <Accordion title={<><PersonIcon />
@@ -289,19 +381,29 @@ const OrdenesMasivas = () => {
                                 </Accordion>
                             </Grid> : null}
 
+
+                        {desabilitarSave ?
+                            <Grid container spacing={2} sx={{ pt: 4 }}>
+                                <Accordion title={<><PersonIcon />
+                                    <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Imprimir O/Y Enviar Por Correo</Typography></>}>
+
+                                    <Grid container spacing={2} sx={{ pt: 1 }}>
+                                        {lsOrdenesEmpleado && lsOrdenesEmpleado.map((enti, index) => (
+                                            <Grid key={index} item xs={12} sm={6} lg={3}>
+                                                <CardsEmployee lsEmployee={enti}
+                                                    handleClick={() => handleClickEnviar(enti.correoEmpleado, enti.id)}
+                                                    handleDelete={() => handleClickReport(enti.id)} views={true} report={true} />
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Accordion>
+                            </Grid> : null}
+
                         <Grid container spacing={2} sx={{ pt: 4 }}>
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button /* disabled={resultData !== '' ? true : false} */ variant="contained" fullWidth onClick={handleClick}>
+                                    <Button disabled={desabilitarSave} variant="contained" fullWidth onClick={handleClick}>
                                         {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button /* disabled={disabledButton ? false : true} */ variant="outlined" fullWidth /* onClick={handleClickReport} */>
-                                        {TitleButton.Imprimir}
                                     </Button>
                                 </AnimateButton>
                             </Grid>

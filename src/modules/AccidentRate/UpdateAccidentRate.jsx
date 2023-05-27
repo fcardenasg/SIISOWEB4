@@ -35,7 +35,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { GetAllBySegAgrupado, GetAllBySegAfectado, GetAllSegmentoAgrupado, GetAllBySegmentoAfectado } from 'api/clients/OthersClients';
+import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { GetByIdAccidentRate, UpdateAccidentRates } from 'api/clients/AccidentRateClient';
 import { PutAccidentRate } from 'formatdata/AccidentRateForm';
@@ -64,13 +64,9 @@ const UpdateAccidentRate = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [resultData, setResultData] = useState([]);
     const [dataPDF, setDataPDF] = useState(null);
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState(undefined);
-    const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
-    const [segmentoAfectado, setSegmentoAfectado] = useState(undefined);
-    /* const [subsegmento, setSubsegmento] = useState([]); */
 
     const [openReport, setOpenReport] = useState(false);
     const [urlFile, setUrlFile] = useState(null);
@@ -111,7 +107,6 @@ const UpdateAccidentRate = () => {
                     setLsAccidentRate(lsServerAtencion.data);
                     setDocumento(lsServerAtencion.data.documento);
                     setSegmentoAgrupado(lsServerAtencion.data.idSegmentoAgrupado);
-                    setSegmentoAfectado(lsServerAtencion.data.idSegmentoAfectado);
                     setUrlFile(lsServerAtencion.data.url);
 
                     const event = {
@@ -315,7 +310,7 @@ const UpdateAccidentRate = () => {
     setTimeout(() => {
         if (lsAccidentRate.length !== 0)
             setTimeWait(true);
-    }, 1500);
+    }, 2000);
 
     const handleClick = async (datos) => {
         try {
@@ -323,14 +318,13 @@ const UpdateAccidentRate = () => {
                 1, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
                 datos.diagnosticoFinal, datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
                 datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                lsAccidentRate.usuarioRegistro, undefined, user.nameuser, undefined);
 
             if (Object.keys(datos.length !== 0)) {
                 if (lsEmployee.length !== 0) {
                     const result = await UpdateAccidentRates(DataToInsert);
                     if (result.status === 200) {
                         setOpenSuccess(true);
-                        setResultData(result.data);
                     }
                 } else {
                     setOpenError(true);

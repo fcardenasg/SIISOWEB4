@@ -193,7 +193,7 @@ export const DefaultValue = {
     GeneroWomen: 2,
     OrdenadoPor_Reintegro_MedicoDLTD: 5180,
 
-    
+
 
     ATENCION_ATENDIDO: 'ATENDIDO',
     ATENCION_PENDIENTE_ATENDIDO: 'PENDIENTE POR ATENCIÓN',
@@ -314,6 +314,7 @@ export const TitleButton = {
     Seleccionadas: 'Seleccionadas',
     Regresar: 'Regresar',
     RegresarACargos: 'Regresar A Cargos',
+    EnviarCorreo: 'Enviar',
 }
 
 export const ValidationMessage = {

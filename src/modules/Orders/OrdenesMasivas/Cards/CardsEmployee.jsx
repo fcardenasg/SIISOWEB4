@@ -1,14 +1,9 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 
-// material-ui
 import { Button, Divider, Grid, Typography } from '@mui/material';
-
-// project imports
 import Avatar from 'ui-component/extended/Avatar';
 import { gridSpacing } from 'store/constant';
 
-// assets
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -16,8 +11,13 @@ import SubCard from 'ui-component/cards/SubCard';
 import { ViewFormat } from 'components/helpers/Format';
 import { ColorDrummondltd } from 'themes/colors';
 import { TitleButton } from 'components/helpers/Enums';
+import { Fragment } from 'react';
 
-const CardsEmployee = ({ lsEmployee = [], handleClick, handleDelete, views = false }) => {
+import EditIcon from '@mui/icons-material/Edit';
+import MailIcon from '@mui/icons-material/Mail';
+import PrintIcon from '@mui/icons-material/Print';
+
+const CardsEmployee = ({ lsEmployee = [], handleClick, handleDelete, views = false, report = false, editarEmployee = false }) => {
 
     return (
         <SubCard sx={{ border: '4px solid', }}>
@@ -72,21 +72,58 @@ const CardsEmployee = ({ lsEmployee = [], handleClick, handleDelete, views = fal
 
                 <Grid item xs={12}>
                     <Grid container direction="row" justifyContent="center" alignItems="center">
-                        {views ?
-                            <Grid item xs={8}>
-                                <AnimateButton>
-                                    <Button color="error" variant="contained" onClick={handleDelete} startIcon={<HighlightOffIcon fontSize="small" />} fullWidth>
-                                        {TitleButton.Eliminar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid> :
-                            <Grid item xs={8}>
-                                <AnimateButton>
-                                    <Button variant="contained" onClick={handleClick} startIcon={<AddCircleOutlineOutlinedIcon fontSize="small" />} fullWidth>
-                                        Agregar
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>}
+                        {report ? <Fragment>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="contained" onClick={handleDelete} startIcon={<PrintIcon fontSize="small" />} fullWidth>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={6}>
+                                    <AnimateButton>
+                                        <Button variant="contained" onClick={handleClick} startIcon={<MailIcon fontSize="small" />} fullWidth>
+                                            {TitleButton.EnviarCorreo}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+                        </Fragment> : editarEmployee ?
+                            <Fragment>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6}>
+                                        <AnimateButton>
+                                            <Button variant="contained" onClick={handleClick} startIcon={<AddCircleOutlineOutlinedIcon fontSize="small" />} fullWidth>
+                                                Agregar
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <AnimateButton>
+                                            <Button variant="contained" onClick={handleDelete} startIcon={<EditIcon fontSize="small" />} fullWidth>
+                                                Editar
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+                                </Grid>
+                            </Fragment> : views ?
+                                <Grid item xs={8}>
+                                    <AnimateButton>
+                                        <Button color="error" variant="contained" onClick={handleDelete} startIcon={<HighlightOffIcon fontSize="small" />} fullWidth>
+                                            {TitleButton.Eliminar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid> :
+                                <Grid item xs={8}>
+                                    <AnimateButton>
+                                        <Button variant="contained" onClick={handleClick} startIcon={<AddCircleOutlineOutlinedIcon fontSize="small" />} fullWidth>
+                                            Agregar
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>}
                     </Grid>
                 </Grid>
             </Grid>

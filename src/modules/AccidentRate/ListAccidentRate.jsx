@@ -67,12 +67,24 @@ const headCells = [
         id: 'documento',
         numeric: false,
         label: 'Documento',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'nameEmpleado',
         numeric: false,
         label: 'Nombre',
+        align: 'left'
+    },
+    {
+        id: 'nameCausaAccidente',
+        numeric: false,
+        label: 'Causa Accidente',
+        align: 'left'
+    },
+    {
+        id: 'nameClaseAccidente',
+        numeric: false,
+        label: 'Clase Accidente',
         align: 'left'
     },
     {
@@ -82,17 +94,11 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nameCausa',
+        id: 'usuarioRegistro',
         numeric: false,
-        label: 'Causa Accidente',
+        label: 'Usuario Registro',
         align: 'left'
     },
-    {
-        id: 'nameClase',
-        numeric: false,
-        label: 'Clase Accidente',
-        align: 'left'
-    }
 ];
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
@@ -218,9 +224,9 @@ const ListAccidentRate = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllAccidentRate(0, 0);
-            setlsAccidentRate(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllAccidentRate();
+            setlsAccidentRate(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) {
         }
     }
@@ -237,7 +243,7 @@ const ListAccidentRate = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameEmpleado', 'fecha', 'nameCausa', 'nameClase'];
+                const properties = ['documento', 'nameEmpleado', 'nameCausaAccidente', 'nameClaseAccidente', 'fecha', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -365,7 +371,6 @@ const ListAccidentRate = () => {
             </CardContent>
 
             <TableContainer>
-                {/* AQUÍ SE HACE PRELOAD */}
                 {lsAccidentRate.length === 0 ? <Cargando size={220} myy={6} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
@@ -413,7 +418,6 @@ const ListAccidentRate = () => {
                                                 scope="row"
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
-                                                align="center"
                                             >
                                                 {row.documento}
                                             </TableCell>
@@ -444,6 +448,36 @@ const ListAccidentRate = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
+                                                    {row.nameCausaAccidente}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.nameClaseAccidente}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
                                                     {ViewFormat(row.fecha)}
                                                 </Typography>
                                             </TableCell>
@@ -459,22 +493,7 @@ const ListAccidentRate = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nameCausa}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.nameClase}
+                                                    {row.usuarioRegistro}
                                                 </Typography>
                                             </TableCell>
 

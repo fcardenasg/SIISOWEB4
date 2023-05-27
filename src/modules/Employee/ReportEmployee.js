@@ -1,11 +1,15 @@
 import jsPDF from "jspdf";
-import LogoReport from "assets/img/LogoReport.png";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
+
+import config from "config";
+import LogoReportLtd from 'assets/img/LogoReportLTD.png';
+import LogoReportEnergy from 'assets/img/LogoReportEnergy.png';
 
 /* Encabezado */
 function getHeader(doc) {
   /* ENCABEZADO REPORTE */
-  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.addImage(config.typeDashboard === 'ltd' ? LogoReportLtd : LogoReportEnergy, "PNG", 5, 5,
+    config.typeDashboard === 'ltd' ? 60 : 50, 15);
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
@@ -88,7 +92,7 @@ function pageEmployee(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(110, 188, 110, 210); /* LINEA SEIS */
 
 
-  
+
   doc.line(110, 220, 110, 230); /* LINEA 8 */
 
 
@@ -100,7 +104,7 @@ function pageEmployee(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 91, 210, 91);
   doc.line(5, 99, 210, 99);
   doc.line(5, 108, 210, 108);
-  
+
   //RESULTADO
   doc.line(5, 118, 210, 118);
   doc.line(5, 128, 210, 128);
@@ -134,17 +138,17 @@ function pageEmployee(doc, lsDataReport = [], lsDataUser = []) {
 
   doc.text("INFORMACIÓN CONTRACTUAL", 6, 79);
   doc.text("FECHA CONTRATO:", 6, 88);
-  doc.text("TIPO DE CONTRATO:",112,88);
-  doc.text("ROL:",6,97);
-  doc.text("ROSTER:",112,97);
-  doc.text("GENERAL:",6,105);
-  doc.text("DEPARTAMENTO:",112,105);
-  doc.text("ÁREA:",6,114);
-  doc.text("SUBAREA: ",112,114);
-  doc.text("GRUPO: ",6,124);
-  doc.text("TURNO: ",112,124);
-  doc.text("ROTACIÓN: ",6,134);
-  doc.text("ESTADO: ",112,134);
+  doc.text("TIPO DE CONTRATO:", 112, 88);
+  doc.text("ROL:", 6, 97);
+  doc.text("ROSTER:", 112, 97);
+  doc.text("GENERAL:", 6, 105);
+  doc.text("DEPARTAMENTO:", 112, 105);
+  doc.text("ÁREA:", 6, 114);
+  doc.text("SUBAREA: ", 112, 114);
+  doc.text("GRUPO: ", 6, 124);
+  doc.text("TURNO: ", 112, 124);
+  doc.text("ROTACIÓN: ", 6, 134);
+  doc.text("ESTADO: ", 112, 134);
 
 
   doc.text("INFORMACIÓN DEMOGRÁFICA", 6, 144);
@@ -173,13 +177,13 @@ function pageEmployee(doc, lsDataReport = [], lsDataUser = []) {
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 42, 30, 30);
   doc.text(`${lsDataReport.documento}`, 68, 44);
   doc.text(`${lsDataReport.nombres}`, 140, 44);
-  doc.text(`${lsDataReport.nameSede}`, 68,50);
+  doc.text(`${lsDataReport.nameSede}`, 68, 50);
   doc.text(`${lsDataReport.nameCompany}`, 140, 50);
   doc.text(`${lsDataReport.celular}`, 67, 56);
   doc.text(`${lsDataReport.email}`, 156, 56);
   doc.text(`${ViewFormat(lsDataReport.fechaNaci)}`, 87, 62);
   doc.text(`${GetEdad(lsDataReport.fechaNaci)}`, 140, 62);
-  doc.text(`${lsDataReport.nameGenero}`, 68,67);
+  doc.text(`${lsDataReport.nameGenero}`, 68, 67);
   doc.text(`${lsDataReport.nameEstadoCivil}`, 140, 67);
   doc.text(`${lsDataReport.contacto}`, 68, 73);
   doc.text(`${lsDataReport.telefonoContacto}`, 156, 73);
@@ -198,7 +202,7 @@ function pageEmployee(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${lsDataReport.nameTurno}`, 145, 124);
   doc.text(`${lsDataReport.rotation}`, 30, 134);
   doc.text(`${lsDataReport.namePayStatus}`, 145, 134);
-  
+
 
   //INFORMACIÓN DEMOGRÁFICA
 
@@ -220,18 +224,18 @@ function pageEmployee(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${lsDataReport.nameCesantias}`, 160, 206);
 
 
- //"DATOS ADICIONALESL
+  //"DATOS ADICIONALESL
 
 
- doc.text(`${ViewFormat(lsDataReport.termDate)}`, 61, 226);
- doc.text(`${lsDataReport.ges}`, 160, 226);
+  doc.text(`${ViewFormat(lsDataReport.termDate)}`, 61, 226);
+  doc.text(`${lsDataReport.ges}`, 160, 226);
 
 }
 
 /* Renderizado Principal INDEX  */
 export function generateReportEmployee(lsDataReport = [], lsDataUser = []) {
   var doc = new jsPDF("p", "mm", "letter");
- 
+
   getHeader(doc);
   pageEmployee(doc, lsDataReport, lsDataUser);
   getPiePage(doc, lsDataUser, 1);

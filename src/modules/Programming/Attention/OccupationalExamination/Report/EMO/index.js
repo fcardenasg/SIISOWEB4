@@ -1,5 +1,7 @@
 import jsPDF from "jspdf";
-import LogoReport from "assets/img/LogoReport.png";
+import config from "config";
+import LogoReportLtd from 'assets/img/LogoReportLTD.png';
+import LogoReportEnergy from 'assets/img/LogoReportEnergy.png';
 import { pageCompanyNotification, pageWorkerNotification } from "./TrabajoAl";
 import { pageFramingham } from "./Framingham";
 import {
@@ -28,7 +30,8 @@ import {
 function getHeader(doc = new jsPDF(), lsDataReport, version = "SIG-0410") {
   var marXR = doc.internal.pageSize.width - 5;
   /* ENCABEZADO REPORTE */
-  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.addImage(config.typeDashboard === 'ltd' ? LogoReportLtd : LogoReportEnergy, "PNG", 5, 5,
+    config.typeDashboard === 'ltd' ? 60 : 50, 15);
   doc.setFontSize(10);
 
   doc.text("DIVISIÓN MÉDICA", 110, 10, { align: "center" });
@@ -49,7 +52,8 @@ function getHeader(doc = new jsPDF(), lsDataReport, version = "SIG-0410") {
 // trabajo en altura
 export function getHeaderTA(doc) {
   /* ENCABEZADO REPORTE */
-  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.addImage(config.typeDashboard === 'ltd' ? LogoReportLtd : LogoReportEnergy, "PNG", 5, 5,
+    config.typeDashboard === 'ltd' ? 60 : 50, 15);
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
@@ -77,7 +81,8 @@ export function getHeaderTA(doc) {
 // FRaminhang
 export function getHeaderFR(doc) {
   /* ENCABEZADO REPORTE */
-  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.addImage(config.typeDashboard === 'ltd' ? LogoReportLtd : LogoReportEnergy, "PNG", 5, 5,
+    config.typeDashboard === 'ltd' ? 60 : 50, 15);
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
@@ -116,7 +121,8 @@ export function getHeaderFR(doc) {
 /* Encabezado */
 export function getHeaderEc(doc) {
   /* ENCABEZADO REPORTE */
-  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.addImage(config.typeDashboard === 'ltd' ? LogoReportLtd : LogoReportEnergy, "PNG", 5, 5,
+    config.typeDashboard === 'ltd' ? 60 : 50, 15);
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
@@ -145,7 +151,8 @@ export function getHeaderEc(doc) {
 
 export function getHeaderQS(doc) {
   /* ENCABEZADO REPORTE */
-  doc.addImage(LogoReport, "PNG", 5, 5, 60, 15);
+  doc.addImage(config.typeDashboard === 'ltd' ? LogoReportLtd : LogoReportEnergy, "PNG", 5, 5,
+    config.typeDashboard === 'ltd' ? 60 : 50, 15);
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
