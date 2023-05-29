@@ -30,7 +30,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { visuallyHidden } from '@mui/utils';
 import BodyEmployee from './ViewEmployee';
-import { TitleButton } from 'components/helpers/Enums';
+import { TitleButton, Message } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -52,6 +52,8 @@ import Cargando from 'components/loading/Cargando';
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ColorDrummondltd } from 'themes/colors';
+
+import config from 'config';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -394,7 +396,7 @@ const ListEmployee = () => {
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
@@ -494,7 +496,7 @@ const ListEmployee = () => {
 
                             <Grid item xs={4}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/dashboard/ltd")}>
+                                    onClick={() => navigate(config.defaultPath)}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>

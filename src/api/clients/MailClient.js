@@ -1,4 +1,4 @@
 import { Url } from '../instances/AuthRoute';
-import { getData, deleteData, postData, putData } from '../UtilInstance';
+import { postData } from '../UtilInstance';
 
-export const EnviarExamenesCorreo = async (enviarExamenesParaclinicos) => await postData(Url.EnviarExamenesCorreo, enviarExamenesParaclinicos);
+export const SendParaclinicalExams = async (enviarExamenesParaclinicos) => await postData(Url.EnviarExamenesPorCorreo, enviarExamenesParaclinicos);

@@ -41,8 +41,7 @@ export async function getData(url = '', parametros = {}) {
             .then(respuesta => {
                 if (respuesta.status !== 200) throw Error(respuesta.status);
                 return respuesta;
-            }).catch((error) => {
-            })
+            }).catch((error) => { })
     } catch (error) { }
 }
 

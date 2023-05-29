@@ -22,7 +22,7 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
-import { TitleButton } from 'components/helpers/Enums';
+import { TitleButton, Message } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 import { visuallyHidden } from '@mui/utils';
@@ -35,6 +35,8 @@ import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
 import { GetAllAlcoholAndDrugTesting, GetByIdAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
 import { generateReportAlcoholtesting } from 'modules/Programming/Attention/Report/Alcoholtesting';
+
+import config from 'config';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -236,7 +238,7 @@ const TableAlcoholAndDrugTesting = () => {
     return (
         <Fragment>
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => { setOpenReport(false); setDataPDF(null) }}
                 maxWidth="xl"
@@ -264,7 +266,7 @@ const TableAlcoholAndDrugTesting = () => {
 
                     <Grid item xs={1}>
                         <AnimateButton>
-                            <Button onClick={() => navigate('/dashboard/ltd')} variant="contained">
+                            <Button onClick={() => navigate(config.defaultPath)} variant="contained">
                                 {TitleButton.Cancelar}
                             </Button>
                         </AnimateButton>

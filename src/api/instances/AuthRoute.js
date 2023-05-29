@@ -1,12 +1,11 @@
-export const Url = {
-    Base: 'https://localhost:44347/',
+import config from "config";
 
-    /* https://siiso.drummondltd.com:44347/ */
-    /* https://localhost:44347/ */
+export const Url = {
+    Base: config.rutaApi,
 
     Login: 'api/Login',
     RecuperarPasswordCorreo: 'api/Login/RecuperarPasswordCorreo',
-    EnviarExamenesCorreo: 'api/Login/enviar-paraclinicos',
+    EnviarExamenesPorCorreo: 'api/Login/enviar-paraclinicos',
     ChangePassword: 'api/Login/ChangePassword',
     Usuario: 'api/Usuario',
 

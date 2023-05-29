@@ -5,7 +5,7 @@ export default function Cargando({ size = 250, myy = 4, mxx = 4, }) {
         <>
             <Grid item sx={{ my: myy, mx: mxx }}>
                 <Grid container justifyContent="center">
-                    <CircularProgress color="success" size={size} />
+                    <CircularProgress size={size} />
                 </Grid>
             </Grid>
         </>

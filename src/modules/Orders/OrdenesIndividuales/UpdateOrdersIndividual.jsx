@@ -33,8 +33,7 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReporteIndex } from '../Report';
 import InputCheckBox from 'components/input/InputCheckBox';
-import { EnviarExamenes } from 'formatdata/MailForm';
-import { EnviarExamenesCorreo } from 'api/clients/MailClient';
+import { SendParaclinicalExams } from 'api/clients/MailClient';
 
 const UpdateOrdersIndividual = () => {
     const { user } = useAuth();
@@ -104,6 +103,11 @@ const UpdateOrdersIndividual = () => {
                         target: { value: serverData.data.documento }
                     }
                     handleLoadingDocument(event);
+
+                    setTimeout(() => {
+                        if (serverData.status === 200)
+                            setTimeWait(true);
+                    }, 2000);
                 }
             } catch (error) { }
         }
@@ -111,29 +115,38 @@ const UpdateOrdersIndividual = () => {
         getData();
     }, []);
 
-    const handleClickReport = async () => {
-        try {
-            setOpenReport(true);
-            const lsDataReport = await GetByIdOrders(id);
-            const lsDataReportParaclinico = await GetAllOrdersParaclinicos(id);
-            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
-            const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
+    useEffect(() => {
+        async function generateReport() {
+            try {
+                const lsDataReport = await GetByIdOrders(id);
+                const lsDataReportParaclinico = await GetAllOrdersParaclinicos(id);
+                const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+                const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
 
-            setDataPDF(dataPDFTwo.dataPDF);
-            setBytePdf(dataPDFTwo.file64);
-        } catch (err) { }
-    };
+                setDataPDF(dataPDFTwo.dataPDF);
+                setBytePdf(dataPDFTwo.file64);
+            } catch (error) { }
+        }
+
+        generateReport();
+    }, [id]);
 
     const handleClickPorCorreo = async () => {
         try {
             const Correo = {
-                Correo: "gerencia@rubikapp.com.co",
+                Correo: lsEmployee.email,
                 Adjunto: bytePdf
             }
 
-            const result = await EnviarExamenesCorreo(Correo);
+            const result = await SendParaclinicalExams(Correo);
             if (result.status === 200) {
-                setOpenSuccess(true);
+                if (result.data === 'Correo enviado') {
+                    setErrorMessage(result.data);
+                    setOpenSuccess(true);
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(Message.CorreoNoEnviado);
+                }
             }
         } catch (err) { }
     };
@@ -155,14 +168,9 @@ const UpdateOrdersIndividual = () => {
         }
     };
 
-    setTimeout(() => {
-        if (lsDataOrdenes.length !== 0)
-            setTimeWait(true);
-    }, 1500);
-
     return (
         <Fragment>
-            <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageUpdate message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal
@@ -175,7 +183,7 @@ const UpdateOrdersIndividual = () => {
             </ControlModal>
 
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
@@ -270,7 +278,7 @@ const UpdateOrdersIndividual = () => {
 
                                         <Grid item xs={2}>
                                             <AnimateButton>
-                                                <Button disabled={disabledButton ? false : true} variant="outlined" fullWidth onClick={handleClickReport}>
+                                                <Button disabled={disabledButton ? false : true} variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
                                                     {TitleButton.Imprimir}
                                                 </Button>
                                             </AnimateButton>

@@ -11,6 +11,7 @@ import { GetAllAtencion } from 'api/clients/AttentionClient';
 import { DefaultValue, TitleButton } from 'components/helpers/Enums';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
+import config from 'config';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -146,7 +147,7 @@ const ListProgramming = () => {
 
                     <Grid item xs={4} md={1.5}>
                         <Button fullWidth variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                            onClick={() => navigate("/dashboard/ltd")}>
+                            onClick={() => navigate(config.defaultPath)}>
                             {TitleButton.Cancelar}
                         </Button>
                     </Grid>

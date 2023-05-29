@@ -307,7 +307,7 @@ const AccidentRate = () => {
             </FullScreenDialog>
 
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"

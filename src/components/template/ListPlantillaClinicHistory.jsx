@@ -32,6 +32,7 @@ import useAuth from 'hooks/useAuth';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
 import { generateReportClinicHistory } from 'modules/Programming/Attention/Report/ClinicHistory';
+import { Message } from 'components/helpers/Enums';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -219,7 +220,7 @@ const ListPlantillaClinicHistory = () => {
     return (
         <Fragment>
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => { setOpenReport(false); setDataPDF(null) }}
                 maxWidth="xl"

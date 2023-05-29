@@ -41,6 +41,7 @@ import { ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import { GetAllFramingham } from 'api/clients/FraminghamClient';
+import config from 'config';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -382,7 +383,7 @@ const ListAudiometry = () => {
 
                             <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/dashboard/ltd")}>
+                                    onClick={() => navigate(config.defaultPath)}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>

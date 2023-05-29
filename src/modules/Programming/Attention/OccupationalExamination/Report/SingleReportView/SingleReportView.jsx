@@ -12,7 +12,7 @@ import { generateReportIndex } from "../EMO";
 import ControlModal from "components/controllers/ControlModal";
 import ViewPDF from "components/components/ViewPDF";
 import { generateConceptoExamenOcupacional, generateCuestionarioSintomasRespiratorio, generateEspacioConfinado, generateFramingham, generateHistoriaClinicaOcupacional, generateTrabajoAltura } from "./Report";
-
+import { Message } from 'components/helpers/Enums';
 
 const SingleReportView = ({ documento, resultData, atencion }) => {
     const { user } = useAuth();
@@ -66,7 +66,7 @@ const SingleReportView = ({ documento, resultData, atencion }) => {
     return (
         <Fragment>
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"

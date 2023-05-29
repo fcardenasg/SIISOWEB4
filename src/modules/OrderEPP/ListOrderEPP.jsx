@@ -31,23 +31,20 @@ import swal from 'sweetalert';
 import { visuallyHidden } from '@mui/utils';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
-import { TitleButton } from 'components/helpers/Enums';
+import { TitleButton, Message } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllOrderEPP, DeleteOrderEPP } from 'api/clients/OrderEPPClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 
-import { generateReportOrderEPP } from './ReportEPP';
-import { GetByIdOrderEPP } from "api/clients/OrderEPPClient";
-import { GetByMail } from 'api/clients/UserClient';
 import useAuth from 'hooks/useAuth';
 import ViewPDF from 'components/components/ViewPDF';
+import config from 'config';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -351,7 +348,7 @@ const ListOrderEPP = () => {
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={handleClose}
                 maxWidth="xl"
@@ -410,7 +407,7 @@ const ListOrderEPP = () => {
 
                             <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/dashboard/ltd")}>
+                                    onClick={() => navigate(config.defaultPath)}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>

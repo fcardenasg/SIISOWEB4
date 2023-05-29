@@ -27,7 +27,7 @@ import { visuallyHidden } from '@mui/utils';
 import { GetAllTemplate } from 'api/clients/TemplateClient';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { TitleButton } from 'components/helpers/Enums';
+import { TitleButton , Message} from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllNoteInfirmary, GetByIdNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
 import { ViewFormat } from 'components/helpers/Format';
@@ -36,6 +36,7 @@ import useAuth from 'hooks/useAuth';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
 import { generateReportNursing } from 'modules/Programming/Attention/Report/Nursing';
+import config from 'config';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -238,7 +239,7 @@ const TableInfirmary = () => {
     return (
         <Fragment>
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => { setOpenReport(false); setDataPDF(null) }}
                 maxWidth="xl"
@@ -266,7 +267,7 @@ const TableInfirmary = () => {
 
                     <Grid item xs={1}>
                         <AnimateButton>
-                            <Button onClick={() => navigate('/dashboard/ltd')} variant="contained">
+                            <Button onClick={() => navigate(config.defaultPath)} variant="contained">
                                 {TitleButton.Cancelar}
                             </Button>
                         </AnimateButton>

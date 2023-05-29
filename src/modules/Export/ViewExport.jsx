@@ -15,6 +15,7 @@ import ExportMedicalAttention from './Export/ExportMedicalAttention';
 import ExportEmo from './Export/ExportEmo';
 import ExportInfirmary from './Export/ExportInfirmary';
 import { useNavigate } from 'react-router-dom';
+import config from 'config';
 
 const Title = {
     asesoria: 'ASESORÍAS',
@@ -120,7 +121,7 @@ const ViewExport = () => {
 
                         secondary={
                             <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                onClick={() => navigate("/dashboard/ltd")}>
+                                onClick={() => navigate(config.defaultPath)}>
                                 {TitleButton.Cancelar}
                             </Button>
                         }

@@ -126,7 +126,7 @@ const ChangePassword = () => {
                                                     gutterBottom
                                                     variant={matchDownSM ? 'h3' : 'h2'}
                                                 >
-                                                    CAMBIAR CONTRASEÑA
+                                                    Cambiar Contraseña
                                                 </Typography>
                                             </Grid>
                                         </Grid>

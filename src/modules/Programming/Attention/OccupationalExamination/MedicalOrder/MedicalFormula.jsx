@@ -24,8 +24,7 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ListMedicalFormula from 'components/template/ListMedicalFormula';
 
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
-import InputMultiSelects from 'components/input/InputMultiSelects';
-import { DefaultValue, TitleButton } from 'components/helpers/Enums';
+import { DefaultValue, TitleButton, Message } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton'
 import SubCard from 'ui-component/cards/SubCard';
 
@@ -33,7 +32,7 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdMedicalFormula, InsertMedicalFormula } from 'api/clients/MedicalFormulaClient';
-import { GetAllByCodeOrName, GetAllCIE11 } from 'api/clients/CIE11Client';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { PostMedicalFormula } from 'formatdata/MedicalFormulaForm';
 import { FormatDate } from 'components/helpers/Format';
 import ViewPDF from 'components/components/ViewPDF';
@@ -169,7 +168,7 @@ const MedicalFormula = ({ setListMedicalFormula, contingencia, setNewMedicalForm
             </FullScreenDialog>
 
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"

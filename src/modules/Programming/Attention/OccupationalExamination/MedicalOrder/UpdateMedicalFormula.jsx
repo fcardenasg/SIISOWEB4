@@ -24,7 +24,7 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
-import { DefaultValue, TitleButton } from 'components/helpers/Enums';
+import { DefaultValue, TitleButton, Message } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton'
 import SubCard from 'ui-component/cards/SubCard';
 
@@ -194,7 +194,7 @@ const UpdateMedicalFormula = ({ setNewMedicalFormula, contingencia, setUpdateMed
             </FullScreenDialog>
 
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"

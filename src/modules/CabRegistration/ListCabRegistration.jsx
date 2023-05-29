@@ -41,6 +41,8 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { IconFileExport } from '@tabler/icons';
 import GenerateExcel from './GenerateExcel';
 
+import config from 'config';
+
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -364,7 +366,7 @@ const ListCabRegistration = () => {
 
                             <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/dashboard/ltd")}>
+                                    onClick={() => navigate(config.defaultPath)}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>

@@ -35,7 +35,7 @@ import swal from 'sweetalert';
 import ListParaclinico from './ListParaclinico';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReporteIndex } from '../Report';
-import { EnviarExamenesCorreo } from 'api/clients/MailClient';
+import { SendParaclinicalExams } from 'api/clients/MailClient';
 import UpdateEmployee from 'modules/Programming/Attention/OccupationalExamination/Update/UpdateEmployee';
 
 const lsIdOrdenes = [];
@@ -131,7 +131,7 @@ const OrdenesMasivas = () => {
                         Adjunto: dataPDFTwo.file64
                     }
 
-                    const result = await EnviarExamenesCorreo(Correo);
+                    const result = await SendParaclinicalExams(Correo);
                     if (result.status === 200) {
                         setErrorMessage(result.data);
                         setOpenSuccess(true);
@@ -255,7 +255,7 @@ const OrdenesMasivas = () => {
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => { setDataPDF(null); setOpenReport(false); }}
                 maxWidth="xl"

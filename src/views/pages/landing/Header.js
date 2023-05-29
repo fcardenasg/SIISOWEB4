@@ -15,6 +15,68 @@ import LogoDrummondLTD from 'assets/img/LogoDrummondLTD.png';
 import LogoDrummondEnergy from 'assets/img/LogoDrummondEnergy.png';
 import config from 'config';
 import { ColorDrummondltd } from 'themes/colors';
+import { Fragment } from 'react';
+
+const ChangeButtons = () => {
+    return (
+        <Fragment>
+            {config.typeDashboard === 'ltd' ?
+                <Fragment>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button to="login" variant="outlined" color="error"
+                                sx={{ color: ColorDrummondltd.RedDrummond }} component={RouterLink} target="_blank">
+                                <CardMedia
+                                    component="img"
+                                    image={LogoDrummondLTD}
+                                    alt="Logo DrummondLTD"
+                                />
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button href="https://siiso.drummondenergy.com/login" variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }} target="_blank">
+                                <CardMedia
+                                    component="img"
+                                    image={LogoDrummondEnergy}
+                                    alt="Logo DrummondLTD"
+                                />
+                            </Button>
+                        </AnimateButton>
+
+                    </Grid>
+                </Fragment> :
+                <Fragment>
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button to="login" variant="outlined" color="error"
+                                sx={{ color: ColorDrummondltd.RedDrummond }} component={RouterLink} target="_blank">
+                                <CardMedia
+                                    component="img"
+                                    image={LogoDrummondEnergy}
+                                    alt="Logo DrummondLTD"
+                                />
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <Button href="https://siiso.drummondltd.com/login" variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }} target="_blank">
+                                <CardMedia
+                                    component="img"
+                                    image={LogoDrummondLTD}
+                                    alt="Logo DrummondLTD"
+                                />
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                </Fragment>}
+        </Fragment>
+    )
+}
 
 const HeaderPage = () => {
     const navigate = useNavigate();
@@ -94,30 +156,7 @@ const HeaderPage = () => {
                                 }}
                             >
                                 <Grid container spacing={2} sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                                    <Grid item xs={6}>
-                                        <AnimateButton>
-                                            <Button to="login" variant="outlined" color="error"
-                                                sx={{ color: ColorDrummondltd.RedDrummond }} component={RouterLink} target="_blank">
-                                                <CardMedia
-                                                    component="img"
-                                                    image={LogoDrummondLTD}
-                                                    alt="Logo DrummondLTD"
-                                                />
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item xs={6}>
-                                        <AnimateButton>
-                                            <Button href="https://www.youtube.com/" variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }} target="_blank">
-                                                <CardMedia
-                                                    component="img"
-                                                    image={LogoDrummondEnergy}
-                                                    alt="Logo DrummondLTD"
-                                                />
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                                    <ChangeButtons />
                                 </Grid>
                             </motion.div>
                         </Grid>

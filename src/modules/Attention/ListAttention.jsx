@@ -31,23 +31,20 @@ import swal from 'sweetalert';
 import { visuallyHidden } from '@mui/utils';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
-import { TitleButton } from 'components/helpers/Enums';
+import { TitleButton, Message } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllAttention, DeleteAttention } from 'api/clients/AttentionClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import Cargando from 'components/loading/Cargando';
-import { generateReport } from './ReportAtten';
-import { GetByIdAttention } from "api/clients/AttentionClient";
-import { GetByMail } from 'api/clients/UserClient';
 import useAuth from 'hooks/useAuth';
 import ViewPDF from 'components/components/ViewPDF';
+import config from 'config';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -349,7 +346,7 @@ const ListAttention = () => {
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={handleClose}
                 maxWidth="xl"
@@ -424,14 +421,6 @@ const ListAttention = () => {
                                 </ExcelFile>
                             </Grid>
 
-                            {/* <Grid item xs={2}>
-                                <Tooltip title="Impresión" onClick={handleClickReport}>
-                                    <IconButton size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid> */}
-
                             <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/attention/add")}>
@@ -441,7 +430,7 @@ const ListAttention = () => {
 
                             <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/dashboard/ltd")}>
+                                    onClick={() => navigate(config.defaultPath)}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>

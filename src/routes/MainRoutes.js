@@ -829,7 +829,7 @@ const MainRoutes = {
         },
 
         {
-            path: '/dashboard/ltd',
+            path: '/dashboard/drummond',
             element: <DashboardDefault />
         },
         {

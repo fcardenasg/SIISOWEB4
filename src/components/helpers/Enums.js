@@ -349,6 +349,8 @@ export const Message = {
     ErrorNoHayDatos: 'No hay datos buscados, vuelva a intentarlo',
 
     CampoRequerido: 'Este campo es requerido',
+    CorreoNoEnviado: 'No se pudo enviar el correo',
+    VistaReporte: 'Vista De Reporte',
 
 
 }

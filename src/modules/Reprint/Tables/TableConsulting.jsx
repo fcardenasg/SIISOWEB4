@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 
 import { visuallyHidden } from '@mui/utils';
-import { DefaultValue, TitleButton } from 'components/helpers/Enums';
+import { DefaultValue, TitleButton, Message } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
@@ -37,6 +37,7 @@ import { generateReportOtherAdvice } from 'modules/Programming/Attention/Report/
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
+import config from 'config';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -257,7 +258,7 @@ const TableConsulting = () => {
     return (
         <Fragment>
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => { setOpenReport(false); setDataPDF(null) }}
                 maxWidth="xl"
@@ -285,7 +286,7 @@ const TableConsulting = () => {
 
                     <Grid item xs={1}>
                         <AnimateButton>
-                            <Button onClick={() => navigate('/dashboard/ltd')} variant="contained">
+                            <Button onClick={() => navigate(config.defaultPath)} variant="contained">
                                 {TitleButton.Cancelar}
                             </Button>
                         </AnimateButton>

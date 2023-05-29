@@ -31,6 +31,7 @@ import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
 import { generateReportEvolutionNote } from 'modules/Programming/Attention/Report/EvolutionNote';
 import { GetAllEvolutionNote, GetByIdEvolutionNote } from 'api/clients/EvolutionNoteClient';
+import { Message } from 'components/helpers/Enums';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -218,7 +219,7 @@ const ListPlantillaEvolutionNote = () => {
     return (
         <Fragment>
             <ControlModal
-                title="VISTA DE REPORTE"
+                title={Message.VistaReporte}
                 open={openReport}
                 onClose={() => { setOpenReport(false); setDataPDF(null) }}
                 maxWidth="xl"
