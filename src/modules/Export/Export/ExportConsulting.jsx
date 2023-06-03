@@ -15,33 +15,33 @@ const ExportConsulting = ({ sede, atencion, fechaInicio, fechaFin }) => {
 
     async function getDataForExport() {
         try {
-            const lsDataExport = await GetAllAdvice(0, 0);
+            const lsDataExport = await GetAllAdvice();
             if (lsDataExport.status === 200) {
                 var result = [];
 
                 if (sede === '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
+                    result = lsDataExport.data.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
                         && FormatDate(asesoria.fecha) <= FormatDate(fechaFin)).map(datos => datos);
 
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
+                    result = lsDataExport.data.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
                         && FormatDate(asesoria.fecha) <= FormatDate(fechaFin) && asesoria.idSede === sede).map(datos => datos);
 
                     setLsData(result);
                 }
 
                 if (sede === '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
+                    result = lsDataExport.data.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
                         && FormatDate(asesoria.fecha) <= FormatDate(fechaFin) && asesoria.idTipoAtencion === atencion).map(datos => datos);
 
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
+                    result = lsDataExport.data.filter(asesoria => FormatDate(asesoria.fecha) >= FormatDate(fechaInicio)
                         && FormatDate(asesoria.fecha) <= FormatDate(fechaFin) && asesoria.idSede === sede &&
                         asesoria.idTipoAtencion === atencion).map(datos => datos);
 

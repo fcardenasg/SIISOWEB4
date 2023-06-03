@@ -182,7 +182,6 @@ const TableEmo = () => {
         GetAll();
     }, []);
 
-    /* Metodo de Reporte */
     const handleClickReport = async (id, documento) => {
         try {
             setOpenReport(true);

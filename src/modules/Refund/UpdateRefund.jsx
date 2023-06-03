@@ -38,9 +38,11 @@ import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import CheckListRefund from './CheckListRefund';
 import { PutRefund } from 'formatdata/RefundForm';
 import { GetByIdRefund, InsertListaChekeo, UpdateRefunds } from 'api/clients/RefundClient';
-import { GetAllUser } from 'api/clients/UserClient';
+import { GetAllUser, GetByMail } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
 import SelectOnChange from 'components/input/SelectOnChange';
+import { generateReportRefund } from './ReportRefund';
+import ViewPDF from 'components/components/ViewPDF';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -91,6 +93,8 @@ const Refund = () => {
     const [lsDx2, setLsDx2] = useState([]);
     const [textDx2, setTextDx2] = useState('');
     const [ordenadoPor, setOrdenadoPor] = useState('');
+
+    const [dataPDF, setDataPDF] = useState(null);
 
     const methods = useForm();
 
@@ -275,6 +279,17 @@ const Refund = () => {
         getData();
     }, [id]);
 
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const lsDataReport = await GetByIdRefund(id);
+            const lsDataUser = await GetByMail(user.nameuser);
+
+            const dataPDFTwo = generateReportRefund(lsDataReport.data, lsDataUser.data);
+            setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PutRefund(id, documento, datos.dx1, datos.dx2, datos.idOrigenDx1, datos.idOrigenDx2, datos.resumen,
@@ -289,6 +304,7 @@ const Refund = () => {
                     const result = await UpdateRefunds(DataToInsert);
                     if (result.status === 200) {
                         setOpenSuccess(true);
+                        setErrorMessage(Message.Actualizar);
                     }
                 } else {
                     setOpenError(true);
@@ -333,6 +349,15 @@ const Refund = () => {
                 title="DICTADO POR VOZ"
             >
                 <ControllerListen />
+            </ControlModal>
+
+            <ControlModal
+                title={Message.VistaReporte}
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="xl"
+            >
+                <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
             <FullScreenDialog
@@ -743,7 +768,7 @@ const Refund = () => {
 
                                 <Grid item xs={3}>
                                     <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                        <Button variant="outlined" fullWidth onClick={handleClickReport}>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

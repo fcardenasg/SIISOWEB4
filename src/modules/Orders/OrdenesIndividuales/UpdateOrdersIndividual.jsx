@@ -23,6 +23,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import { PutOrders } from 'formatdata/OrdersForm';
 import { GetAllOrdersParaclinicos, GetByIdOrders, UpdateOrders } from 'api/clients/OrdersClient';
 
+import SendIcon from '@mui/icons-material/Send';
 import ViewEmployee from 'components/views/ViewEmployee';
 import ListParaclinico from './ListParaclinico';
 import Cargando from 'components/loading/Cargando';
@@ -34,6 +35,7 @@ import { GetByMail } from 'api/clients/UserClient';
 import { generateReporteIndex } from '../Report';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { SendParaclinicalExams } from 'api/clients/MailClient';
+import { LoadingButton } from '@mui/lab';
 
 const UpdateOrdersIndividual = () => {
     const { user } = useAuth();
@@ -42,11 +44,12 @@ const UpdateOrdersIndividual = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [bytePdf, setBytePdf] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [dataPDF, setDataPDF] = useState(null);
+
     const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [disabledButton, setDisabledButton] = useState(false);
-    const [dataPDF, setDataPDF] = useState(null);
     const [verHistoricoEmo, setVerHistoricoEmo] = useState(false);
     const [tipoExamen, setTipoExamen] = useState('');
 
@@ -115,41 +118,50 @@ const UpdateOrdersIndividual = () => {
         getData();
     }, []);
 
-    useEffect(() => {
-        async function generateReport() {
-            try {
-                const lsDataReport = await GetByIdOrders(id);
-                const lsDataReportParaclinico = await GetAllOrdersParaclinicos(id);
-                const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
-                const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
-
-                setDataPDF(dataPDFTwo.dataPDF);
-                setBytePdf(dataPDFTwo.file64);
-            } catch (error) { }
-        }
-
-        generateReport();
-    }, [id]);
-
-    const handleClickPorCorreo = async () => {
+    async function generateReport(action = '') {
         try {
-            const Correo = {
-                Correo: lsEmployee.email,
-                Adjunto: bytePdf
+            if (action === 'correo') {
+                setLoading(true);
             }
 
-            const result = await SendParaclinicalExams(Correo);
-            if (result.status === 200) {
-                if (result.data === 'Correo enviado') {
-                    setErrorMessage(result.data);
-                    setOpenSuccess(true);
+            const lsDataReport = await GetByIdOrders(id);
+            const lsDataReportParaclinico = await GetAllOrdersParaclinicos(id);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+            const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
+
+            if (action === 'correo') {
+                if (lsEmployee.email !== '' || lsEmployee.email !== undefined) {
+                    const Correo = {
+                        Correo: lsEmployee.email,
+                        Adjunto: dataPDFTwo.file64
+                    }
+
+                    const result = await SendParaclinicalExams(Correo);
+                    if (result.status === 200) {
+                        if (result.data === 'Correo enviado') {
+
+                            setTimeout(() => {
+                                if (result.status === 200) {
+                                    setErrorMessage(result.data);
+                                    setOpenSuccess(true);
+                                    setLoading(false);
+                                }
+                            }, 2000);
+                        } else {
+                            setOpenError(true);
+                            setErrorMessage(Message.CorreoNoEnviado);
+                        }
+                    }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(Message.CorreoNoEnviado);
+                    setErrorMessage(Message.SinCorreo);
                 }
+            } else {
+                setOpenReport(true);
+                setDataPDF(dataPDFTwo.dataPDF);
             }
-        } catch (err) { }
-    };
+        } catch (error) { }
+    }
 
     const handleClick = async (datos) => {
         try {
@@ -263,7 +275,7 @@ const UpdateOrdersIndividual = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <ListParaclinico setDisabledButton={setDisabledButton} lsEmployee={lsEmployee} idOrdenes={id} />
+                                    <ListParaclinico setDisabledButton={setDisabledButton} disabledButton={disabledButton} lsEmployee={lsEmployee} idOrdenes={id} />
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -286,16 +298,24 @@ const UpdateOrdersIndividual = () => {
 
                                         <Grid item xs={2}>
                                             <AnimateButton>
-                                                <Button variant="outlined" fullWidth onClick={() => navigate("/orders-individual/list")}>
-                                                    {TitleButton.Cancelar}
-                                                </Button>
+                                                <LoadingButton
+                                                    fullWidth
+                                                    disabled={!disabledButton}
+                                                    onClick={() => generateReport('correo')}
+                                                    loading={loading}
+                                                    loadingPosition="end"
+                                                    startIcon={<SendIcon />}
+                                                    variant="outlined"
+                                                >
+                                                    {TitleButton.EnviarCorreo}
+                                                </LoadingButton>
                                             </AnimateButton>
                                         </Grid>
 
                                         <Grid item xs={2}>
                                             <AnimateButton>
-                                                <Button variant="outlined" fullWidth onClick={handleClickPorCorreo}>
-                                                    Enviar Por Correo
+                                                <Button variant="outlined" fullWidth onClick={() => navigate("/orders-individual/list")}>
+                                                    {TitleButton.Cancelar}
                                                 </Button>
                                             </AnimateButton>
                                         </Grid>

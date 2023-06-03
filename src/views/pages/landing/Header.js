@@ -17,6 +17,9 @@ import config from 'config';
 import { ColorDrummondltd } from 'themes/colors';
 import { Fragment } from 'react';
 
+const urlLtd = 'https://siiso.drummondltd.com/login';
+const urlEnergy = 'https://siiso.drummondenergy.com:444/login';
+
 const ChangeButtons = () => {
     return (
         <Fragment>
@@ -37,7 +40,7 @@ const ChangeButtons = () => {
 
                     <Grid item xs={6}>
                         <AnimateButton>
-                            <Button href="https://siiso.drummondenergy.com/login" variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }} target="_blank">
+                            <Button href={urlEnergy} variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }} target="_blank">
                                 <CardMedia
                                     component="img"
                                     image={LogoDrummondEnergy}
@@ -64,7 +67,7 @@ const ChangeButtons = () => {
 
                     <Grid item xs={6}>
                         <AnimateButton>
-                            <Button href="https://siiso.drummondltd.com/login" variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }} target="_blank">
+                            <Button href={urlLtd} variant="outlined" color="error" sx={{ color: ColorDrummondltd.RedDrummond }} target="_blank">
                                 <CardMedia
                                     component="img"
                                     image={LogoDrummondLTD}

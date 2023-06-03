@@ -80,36 +80,6 @@ export function getHeader(doc) {
   doc.line(5, 25, 210, 25);
 }
 
-/* Pie de Pag. */
-function getPiePage(doc, lsDataUser, page, pageSize) {
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
-  doc.setLineWidth(1);
-  doc.setDrawColor(255, 0, 0);
-  doc.line(
-    5,
-    doc.internal.pageSize.height - 10,
-    210,
-    doc.internal.pageSize.height - 10
-  );
-
-  doc.text(
-    `FECHA DE SISTEMA:  ${new Date().toLocaleString()}`,
-    10,
-    doc.internal.pageSize.height - 4
-  );
-  doc.text(
-    `USUARIO ACTIVO:  ${lsDataUser.nombre}`,
-    90,
-    doc.internal.pageSize.height - 4
-  );
-  doc.text(
-    `Pag. ${page} of ${pageSize}`,
-    190,
-    doc.internal.pageSize.height - 4
-  );
-}
-
 /* Pag. 1 */
 export function pageCompanyNotification(
   doc, lsDataReport = [], lsDataUser = []) {
@@ -177,7 +147,10 @@ export function pageCompanyNotification(
   doc.text(`${lsDataReport.id}`, 75, 48);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 147, 48);
   doc.text(`${lsDataReport.documento}`, 75, 55);
+  doc.setFontSize(7);
   doc.text(`${lsDataReport.nameEmpleado}`, 147, 55);
+
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameGenero}`, 75, 62);
   doc.text(`${lsDataReport.nameArea}`, 147, 62);
   doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 75, 69);
@@ -405,7 +378,10 @@ export function pageWorkerNotification(
   doc.text(`${lsDataReport.nameSede}`, 71, 48);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 138, 48);
   doc.text(`${lsDataReport.documento}`, 71, 53);
+  doc.setFontSize(7);
   doc.text(`${lsDataReport.nameEmpleado}`, 138, 53);
+
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameRiesgoCardiovascularNEMTA}`, 95, 58);
   doc.text(`${lsDataReport.nameClasificacionNEMTA}`, 146, 58);
 

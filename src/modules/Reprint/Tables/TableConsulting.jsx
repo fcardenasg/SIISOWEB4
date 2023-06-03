@@ -30,7 +30,7 @@ import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import { ViewFormat } from 'components/helpers/Format';
 import { GetAllAdvice, GetByIdAdvice } from 'api/clients/AdviceClient';
-import useAuth from 'hooks/useAuth';
+
 import { generateReport } from 'modules/Programming/Attention/Report/MedicalAdvice';
 import { generateReportPsycho } from 'modules/Programming/Attention/Report/Psychological';
 import { generateReportOtherAdvice } from 'modules/Programming/Attention/Report/OtherAdvice';
@@ -170,12 +170,10 @@ const TableConsulting = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllAdvice(0, 0);
-                setLsConsulting(lsServer.data.entities);
-                setRows(lsServer.data.entities);
-            } catch (error) {
-
-            }
+                const lsServer = await GetAllAdvice();
+                setLsConsulting(lsServer.data);
+                setRows(lsServer.data);
+            } catch (error) { }
         }
 
         GetAll();
@@ -372,7 +370,7 @@ const TableConsulting = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameTiAtencion}
+                                                {row.nameTipoAtencion}
                                             </Typography>
                                         </TableCell>
 
@@ -400,7 +398,7 @@ const TableConsulting = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.usuarioRegistro}
+                                                {row.usuarioRegistra}
                                             </Typography>
                                         </TableCell>
 

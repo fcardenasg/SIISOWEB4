@@ -170,7 +170,10 @@ export function pageCompanyNotificationEC(
   doc.text(`${lsDataReport.id}`, 75, 48);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 147, 48);
   doc.text(`${lsDataReport.documento}`, 75, 55);
+  doc.setFontSize(8);
   doc.text(`${lsDataReport.nameEmpleado}`, 147, 55);
+
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameGenero}`, 75, 62);
   doc.text(`${lsDataReport.nameArea}`, 147, 62);
   doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 75, 69);
@@ -395,7 +398,10 @@ export function pageWorkerNotificationEC(doc, lsDataReport = [], lsDataUser = []
   doc.text(`${lsDataReport.nameSede}`, 71, 48);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 138, 48);
   doc.text(`${lsDataReport.documento}`, 71, 53);
+  doc.setFontSize(8);
   doc.text(`${lsDataReport.nameEmpleado}`, 138, 53);
+
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameRiesgoCardiovascularNEMTA}`, 95, 58);
   doc.text(`${lsDataReport.nameClasificacionNEMTA}`, 146, 58);
 

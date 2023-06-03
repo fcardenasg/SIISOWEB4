@@ -13,8 +13,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import ControlModal from 'components/controllers/ControlModal';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
-import { useDispatch } from 'react-redux';
-import { SNACKBAR_OPEN } from 'store/actions';
+
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import { GetByIdConceptofAptitude, UpdateConceptofAptitudes } from 'api/clients/ConceptofAptitudeClient';
@@ -53,8 +52,6 @@ const UpdateOrderEPP = () => {
 
     const [lsConceptoActitud, setConceptoActitud] = useState([]);
     const [lsCodigoFilterConceptoActitud, setCodigoConceptoActitud] = useState([]);
-
-    const dispatch = useDispatch();
 
     const [lsEmployee, setLsEmployee] = useState([]);
     const [idConceptoActitud, setConceptoatp] = useState('');
@@ -124,15 +121,8 @@ const UpdateOrderEPP = () => {
                 }));
                 return resultConceptoActitud;
             } else {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: 'Problemas al traer los datos de combo',
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
+                setOpenError(true);
+                setErrorMessage('Problemas al traer los datos de combo');
             }
         } catch (error) { }
     }
@@ -154,7 +144,7 @@ const UpdateOrderEPP = () => {
     }, []);
 
     const handleClick = async (datos) => {
-        const idConceptoActitud_DATA = idConceptoActitud == '' ? datos.idConceptoActitud : idConceptoActitud;
+        const idConceptoActitud_DATA = idConceptoActitud === '' ? datos.idConceptoActitud : idConceptoActitud;
 
         const DataToUpdate = PutConceptofAptitude(id, idConcepto, documento, FormatDate(datos.fecha), idConceptoActitud_DATA,
             datos.observacionesNEMTA, user.nameuser, user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
@@ -281,7 +271,7 @@ const UpdateOrderEPP = () => {
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button variant="contained" onClick={handleClickReport} fullWidth>
+                                            <Button variant="outlined" onClick={handleClickReport} fullWidth>
                                                 {TitleButton.Imprimir}
                                             </Button>
                                         </AnimateButton>

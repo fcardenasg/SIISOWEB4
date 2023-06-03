@@ -18,7 +18,6 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
 import { PostListaArchivoRefund } from 'formatdata/RefundForm';
-import Cargando from 'components/loading/Cargando';
 import { FormatDate } from 'components/helpers/Format';
 
 const UploadPdf = ({ idListaReintegro }) => {
@@ -34,9 +33,9 @@ const UploadPdf = ({ idListaReintegro }) => {
 
     async function getAll() {
         try {
-            var lsCheckedReintegro = await GetAllByIdListaReintegroArchivo(0, 0, idListaReintegro);
+            var lsCheckedReintegro = await GetAllByIdListaReintegroArchivo(idListaReintegro);
             if (lsCheckedReintegro.status === 200) {
-                setLsArchivosReintegro(lsCheckedReintegro.data.entities);
+                setLsArchivosReintegro(lsCheckedReintegro.data);
             }
 
         } catch (error) { }

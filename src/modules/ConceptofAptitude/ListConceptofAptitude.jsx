@@ -75,12 +75,6 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'idTrabajoenAltura',
-        numeric: false,
-        label: 'ID',
-        align: 'left'
-    },
-    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
@@ -219,7 +213,6 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListConceptofAptitude = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState(0);
     const [lsOrderEPP, setLsOrderEPP] = useState([]);
@@ -256,7 +249,7 @@ const ListConceptofAptitude = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idTrabajoenAltura', 'documento', 'nameEmpleado', 'nameConcepto', 'nameConceptoActitud', 'fecha'];
+                const properties = ['documento', 'nameEmpleado', 'nameConcepto', 'nameConceptoActitud', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -472,22 +465,6 @@ const ListConceptofAptitude = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.idTrabajoenAltura}
-                                            </Typography>
-                                        </TableCell>
-
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.idTrabajoenAltura)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
                                                 {row.documento}
                                             </Typography>
                                         </TableCell>
@@ -536,8 +513,6 @@ const ListConceptofAptitude = () => {
                                                 {row.nameConceptoActitud}
                                             </Typography>
                                         </TableCell>
-
-
 
                                         <TableCell
                                             component="th"

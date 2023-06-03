@@ -24,6 +24,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import { PostOrders } from 'formatdata/OrdersForm';
 import { GetAllOrdersParaclinicos, GetByIdOrders, InsertOrders } from 'api/clients/OrdersClient';
 
+import SendIcon from '@mui/icons-material/Send';
 import ViewEmployee from 'components/views/ViewEmployee';
 import ListParaclinico from './ListParaclinico';
 import SelectOnChange from 'components/input/SelectOnChange';
@@ -33,6 +34,8 @@ import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReporteIndex } from '../Report';
 import InputCheckBox from 'components/input/InputCheckBox';
+import { SendParaclinicalExams } from 'api/clients/MailClient';
+import { LoadingButton } from '@mui/lab';
 
 const OrdersIndividual = () => {
     const { user } = useAuth();
@@ -40,9 +43,11 @@ const OrdersIndividual = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [dataPDF, setDataPDF] = useState(null);
+    const [loading, setLoading] = useState(false);
+
     const [resultData, setResultData] = useState('');
     const [tipoExamen, setTipoExamen] = useState('');
-    const [dataPDF, setDataPDF] = useState(null);
     const [disabledButton, setDisabledButton] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [verHistoricoEmo, setVerHistoricoEmo] = useState(false);
@@ -87,17 +92,46 @@ const OrdersIndividual = () => {
         }
     }
 
-    const handleClickReport = async () => {
+    async function generateReport(action = '') {
         try {
-            setOpenReport(true);
+            if (action === 'correo') {
+                setLoading(true);
+            }
+
+
             const lsDataReport = await GetByIdOrders(resultData);
             const lsDataReportParaclinico = await GetAllOrdersParaclinicos(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
             const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
 
-            setDataPDF(dataPDFTwo);
-        } catch (err) { }
-    };
+            if (action === 'correo') {
+                const Correo = {
+                    Correo: lsEmployee.email,
+                    Adjunto: dataPDFTwo.file64
+                }
+
+                const result = await SendParaclinicalExams(Correo);
+                if (result.status === 200) {
+                    if (result.data === 'Correo enviado') {
+
+                        setTimeout(() => {
+                            if (result.status === 200) {
+                                setErrorMessage(result.data);  
+                                setOpenSuccess(true);
+                                setLoading(false);
+                            }
+                        }, 2000);
+                    } else {
+                        setOpenError(true);
+                        setErrorMessage(Message.CorreoNoEnviado);
+                    }
+                }
+            } else {
+                setOpenReport(true);
+                setDataPDF(dataPDFTwo.dataPDF);
+            }
+        } catch (error) { }
+    }
 
     useEffect(() => {
         async function getAll() {
@@ -125,6 +159,7 @@ const OrdersIndividual = () => {
                     const result = await InsertOrders(DataToInsert);
                     if (result.status === 200) {
                         setResultData(result.data);
+                        setErrorMessage(Message.Guardar);
                         setOpenSuccess(true);
                     }
                 } else {
@@ -140,7 +175,7 @@ const OrdersIndividual = () => {
 
     return (
         <Fragment>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal
@@ -247,9 +282,25 @@ const OrdersIndividual = () => {
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button disabled={disabledButton ? false : true} variant="outlined" fullWidth onClick={handleClickReport}>
+                                            <Button disabled={!disabledButton} variant="outlined" fullWidth onClick={() => generateReport('imprimir')}>
                                                 {TitleButton.Imprimir}
                                             </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <LoadingButton
+                                                fullWidth
+                                                disabled={!disabledButton}
+                                                onClick={() => generateReport('correo')}
+                                                loading={loading}
+                                                loadingPosition="end"
+                                                startIcon={<SendIcon />}
+                                                variant="outlined"
+                                            >
+                                                {TitleButton.EnviarCorreo}
+                                            </LoadingButton>
                                         </AnimateButton>
                                     </Grid>
 

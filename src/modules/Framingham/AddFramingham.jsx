@@ -193,7 +193,7 @@ const AddFramingham = () => {
     const handleClick = async (datos) => {
         try {
 
-            const DataToInsert = PostFramingham(documento, FormatDate(datos.fechaFRA), 0, 0, 0, '', tencion, DefaultValue.SINREGISTRO_GLOBAL,
+            const DataToInsert = PostFramingham(documento, FormatDate(datos.fecha), 0, 0, 0, '', tencion, DefaultValue.SINREGISTRO_GLOBAL,
                 '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, FormatDate(datos.fechaLaboratorioFRA), colesterol, hdl, trigliceridos,
                 '', glicemia, fuma, datos.observacionFRA, frLdl, relacion, frEdad, frColesterol, frHdl,
                 frGlicemia, frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
@@ -265,7 +265,7 @@ const AddFramingham = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="REGISTRAR FRAMINGHAM"
+                        title="Registrar Framingham"
                         key={lsEmployee.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -281,7 +281,7 @@ const AddFramingham = () => {
                                 <FormProvider {...methods}>
                                     <InputDatePicker
                                         label="Fecha"
-                                        name="fechaFRA"
+                                        name="fecha"
                                         defaultValue={new Date()}
                                     />
                                 </FormProvider>
@@ -433,7 +433,7 @@ const AddFramingham = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" onClick={handleClickReport} fullWidth>
+                                        <Button variant="outlined" onClick={handleClickReport} fullWidth>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

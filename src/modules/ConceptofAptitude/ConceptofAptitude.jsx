@@ -55,7 +55,7 @@ const ConceptofAptitude = () => {
 
     const [documento, setDocumento] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [result, setResult] = useState([]);
+    const [resultData, setResultData] = useState('');
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -88,7 +88,7 @@ const ConceptofAptitude = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdConceptofAptitude(result.idTrabajoenAltura);
+            const lsDataReport = await GetByIdConceptofAptitude(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
             const dataPDFTwo = generateReportConceptofAptitude(lsDataReport.data, lsDataUser.data);
 
@@ -123,7 +123,7 @@ const ConceptofAptitude = () => {
         }
     }
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerConceptoActitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoconceptoApAl);
             var resultConceptoActitud = lsServerConceptoActitud.data.entities.map((item) => ({
@@ -136,7 +136,7 @@ const ConceptofAptitude = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, []);
 
     const handleClick = async (datos) => {
@@ -147,8 +147,16 @@ const ConceptofAptitude = () => {
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertConceptofAptitude(DataToInsert);
                 if (result.status === 200) {
-                    setOpenSuccess(true);
-                    setResult(result.data)
+                    if (result.data === Message.NoExisteDocumento) {
+                        setOpenError(true);
+                        setErrorMessage(result.data);
+                    } else if (result.data === Message.ErrorDocumento) {
+                        setOpenError(true);
+                        setErrorMessage(result.data);
+                    } else {
+                        setOpenSuccess(true);
+                        setResultData(result.data);
+                    }
                 }
             }
         } catch (error) {
@@ -239,7 +247,7 @@ const ConceptofAptitude = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={result.length === 0 ? false : true} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                        <Button disabled={resultData === '' ? false : true} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
@@ -247,7 +255,7 @@ const ConceptofAptitude = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={result.length !== 0 ? false : true} variant="contained" onClick={handleClickReport} fullWidth>
+                                        <Button disabled={resultData !== '' ? false : true} variant="outlined" onClick={handleClickReport} fullWidth>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

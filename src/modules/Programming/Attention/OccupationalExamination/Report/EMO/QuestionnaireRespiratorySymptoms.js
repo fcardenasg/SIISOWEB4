@@ -173,22 +173,23 @@ export function pageQuestionnaireRespiratorySymptomsOne(doc, lsDataReport = [], 
   doc.text("B. Usted suele toser así casi todos los días por 3 meses consecutivos o por más de un año?", 7, 236);
   doc.text("Describa la naturaleza de esta condición", 7, 241);
 
-
-
   /* RENDERIZADO DE CONTENIDO */
   doc.setFont("helvetica", "normal");
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 42, 30, 30);
   doc.text(`${lsDataReport.id}`, 75, 48);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 147, 48);
   doc.text(`${lsDataReport.documento}`, 75, 55);
+
+  doc.setFontSize(8);
   doc.text(`${lsDataReport.nameEmpleado}`, 147, 55);
+
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameGenero}`, 75, 62);
   doc.text(`${lsDataReport.nameArea}`, 147, 62);
   doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 75, 69);
   doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)}`, 147, 69);
 
   /* RENDERIZADO DETALLE  */
-
   doc.text(`${lsDataReport.tosAUsualSin}`, 202, 91);
   doc.text(`${lsDataReport.tosEnLaSemanaSintR}`, 202, 96);
   doc.text(`${lsDataReport.tosMananaSintR}`, 202, 102);
@@ -354,27 +355,27 @@ export function pageQuestionnaireRespiratorySymptomsTwo(doc, lsDataReport = [], 
   doc.text("6. Otras enfermedades del tórax?", 7, 241);
   doc.text("Especifique", 7, 246);
 
-
   /* RENDERIZADO DE CONTENIDO */
   doc.setFont("helvetica", "normal");
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 42, 30, 30);
   doc.text(`${lsDataReport.id}`, 75, 48);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 147, 48);
   doc.text(`${lsDataReport.documento}`, 75, 55);
+  doc.setFontSize(8);
   doc.text(`${lsDataReport.nameEmpleado}`, 147, 55);
+
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameGenero}`, 75, 62);
   doc.text(`${lsDataReport.nameArea}`, 147, 62);
   doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 75, 69);
   doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)}`, 147, 69);
 
   /* RENDERIZADO DETALLE  DISNEA*/
-
   doc.text(`${lsDataReport.disneaASintR}`, 202, 90);
   doc.text(`${lsDataReport.disneaBSintR}`, 202, 96);
   doc.text(`${lsDataReport.disneaCSintR}`, 202, 101);
   doc.text(`${lsDataReport.disneaDSintR}`, 202, 106);
   doc.text(`${lsDataReport.disneaESintR}`, 202, 111);
-
 
   //GRIPA Y TORAX
   doc.text(`${lsDataReport.enferToraxASintR}`, 202, 121);
@@ -531,7 +532,10 @@ export function pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport = []
   doc.text(`${lsDataReport.id}`, 75, 48);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 147, 48);
   doc.text(`${lsDataReport.documento}`, 75, 55);
+  doc.setFontSize(8);
   doc.text(`${lsDataReport.nameEmpleado}`, 147, 55);
+
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameGenero}`, 75, 62);
   doc.text(`${lsDataReport.nameArea}`, 147, 62);
   doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 75, 69);
@@ -669,7 +673,10 @@ export function pageQuestionnaireRespiratorySymptomsFour(doc, lsDataReport = [],
   doc.text(`${lsDataReport.id}`, 75, 48);
   doc.text(`${ViewFormat(lsDataReport.fecha)}`, 147, 48);
   doc.text(`${lsDataReport.documento}`, 75, 55);
+  doc.setFontSize(8);
   doc.text(`${lsDataReport.nameEmpleado}`, 147, 55);
+
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameGenero}`, 75, 62);
   doc.text(`${lsDataReport.nameArea}`, 147, 62);
   doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 75, 69);

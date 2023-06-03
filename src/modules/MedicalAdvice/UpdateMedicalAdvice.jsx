@@ -199,7 +199,9 @@ const UpdateMedicalAdvice = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAdvice(id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+
+            console.log("Datos => ", lsDataReport, lsDataUser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);

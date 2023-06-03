@@ -237,13 +237,14 @@ function generatePage3(doc = new jsPDF(), lsDataReport = [], lsDataUser) {
     doc.text('REDUCCIÓN ORDENADA POR', 50, 45);
     doc.text('FECHA INICIO', 100, 45);
     doc.text('FECHA FIN', 140, 45);
-    doc.text('ESTADO', 180, 45);
+    doc.text('ESTADO', 170, 45);
 
+    doc.setFont("helvetica", "normal");
     doc.text(`${lsDataReport.tipoReduccion}`, 7, 52);
     doc.text(`${lsDataReport.ordenadaPorSinHorario}`, 50, 52);
     doc.text(`${ViewFormat(lsDataReport.fechaInicioHorario)}`, 100, 52);
     doc.text(`${ViewFormat(lsDataReport.fechaFinHorario)}`, 140, 52);
-    doc.text(`${lsDataReport.estadoCaso}`, 180, 52);
+    doc.text(`${lsDataReport.estadoCaso}`, 170, 52);
 
     /* CAMPOS DE LA TABLA */
     doc.setFontSize(7);
@@ -292,21 +293,21 @@ export function generateReportRefund(lsDataReport = [], lsDataUser) {
     doc.setFont("helvetica", "bold");
     getHeader(doc);
     generatePage1(doc, lsDataReport, lsDataUser);
-    getPiePage(doc, lsDataUser, 1, 3);
+    getPiePage(doc, lsDataUser, 1, 2);
 
     doc.addPage();
 
     doc.setFont("helvetica", "bold");
     getHeader(doc);
     generatePage2(doc, lsDataReport, lsDataUser);
-    getPiePage(doc, lsDataUser, 2, 3);
+    getPiePage(doc, lsDataUser, 2, 2);
 
-    doc.addPage();
+    /* doc.addPage();
 
     doc.setFont("helvetica", "bold");
     getHeader(doc);
     generatePage3(doc, lsDataReport, lsDataUser);
-    getPiePage(doc, lsDataUser, 3, 3);
+    getPiePage(doc, lsDataUser, 3, 3); */
 
     var dataPDF = doc.output("bloburl");
     return dataPDF;

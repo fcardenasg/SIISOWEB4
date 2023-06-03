@@ -36,8 +36,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { DeleteParaclinics, GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
-import { ViewFormat } from 'components/helpers/Format';
+import { DeleteParaclinics, GenerateReportParaclinics, GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import FullScreenDialogs from 'components/controllers/FullScreenDialog';
@@ -219,11 +219,12 @@ const ListAudiometry = () => {
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
     const [laboratory, setLaboratory] = useState([]);
+    const [laboratoryReport, setLaboratoryReport] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [open, setOpen] = useState(false);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
@@ -236,6 +237,9 @@ const ListAudiometry = () => {
             const lsServer = await GetAllByTypeParaclinics(DefaultValue.PARACLINICO_AUDIOMETRIA);
             setLaboratory(lsServer.data);
             setRows(lsServer.data);
+
+            const lsServerReport = await GenerateReportParaclinics(DefaultValue.PARACLINICO_AUDIOMETRIA);
+            setLaboratoryReport(lsServerReport.data);
         } catch (error) {
 
         }
@@ -369,21 +373,24 @@ const ListAudiometry = () => {
                                             <IconFileExport />
                                         </IconButton>
                                     </Tooltip>
-                                } filename="Audiometrías">
-                                    <ExcelSheet data={laboratory} name="Audiometrías">
+                                } filename="Lista Audiometria">
+                                    <ExcelSheet data={laboratoryReport} name="Audiometrias">
                                         <ExcelColumn label="Id" value="id" />
-                                        <ExcelColumn label="Fecha" value="fecha" />
+                                        <ExcelColumn label="Fecha" value={(fe) => FormatDate(fe.fecha)} />
+
                                         <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Motivo" value="nameMotivo" />
-                                        <ExcelColumn label="Conducta" value="nameConductaClasificacion" />
-                                        <ExcelColumn label="Conclusión" value="nameConclusion" />
-                                        <ExcelColumn label="Proveedor" value="nameProveedor" />
-                                        <ExcelColumn label="DX" value="nameDxAUDIO" />
-                                        <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
-                                        <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
-                                        <ExcelColumn label="Fecha de Modificación" value="fechaModifico" />
+                                        <ExcelColumn label="Nombre" value="nombre" />
+                                        <ExcelColumn label="Motivo" value="motivo" />
+                                        <ExcelColumn label="Proveedor" value="proveedor" />
+                                        <ExcelColumn label="Conducta" value="conducta" />
+                                        <ExcelColumn label="Conclusión" value="conclusion" />
+                                        <ExcelColumn label="Codigo DX" value="codDX" />
+                                        <ExcelColumn label="DX" value="dx" />
+
+                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
+                                        <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
+                                        <ExcelColumn label="Fecha Modifico" value="fechaModifico" />
                                     </ExcelSheet>
                                 </ExcelFile>
                             </Grid>

@@ -20,7 +20,7 @@ import { ViewFormat } from 'components/helpers/Format';
 
 import UploadIcon from '@mui/icons-material/Upload';
 import { visuallyHidden } from '@mui/utils';
-import { GetAllByIdListaReintegroArchivo, GetAllReintegro } from 'api/clients/ListRefundClient';
+import { GetAllReintegro } from 'api/clients/ListRefundClient';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import UploadPdf from './UploadPdf';
@@ -146,9 +146,9 @@ const CheckListRefund = ({ idReintegro, setRecargarLista, recargarLista }) => {
     useEffect(() => {
         async function GetAll() {
             try {
-                var lsCheckedReintegro = await GetAllReintegro(0, 0, idReintegro);
-                setListRefund(lsCheckedReintegro.data.entities);
-                if (lsCheckedReintegro.data.entities.length !== 0) {
+                var lsCheckedReintegro = await GetAllReintegro(idReintegro);
+                setListRefund(lsCheckedReintegro.data);
+                if (lsCheckedReintegro.data.length !== 0) {
                     setRecargarLista(true);
                 }
 

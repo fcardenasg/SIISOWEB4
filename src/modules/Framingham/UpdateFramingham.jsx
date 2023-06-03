@@ -433,7 +433,7 @@ const AddFramingham = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" onClick={handleClickReport} fullWidth>
+                                        <Button variant="outlined" onClick={handleClickReport} fullWidth>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

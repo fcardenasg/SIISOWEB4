@@ -55,7 +55,7 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = []) {
     doc.text('DATOS PERSONALES', 7, 37);
     doc.text('MOTIVO DE CONSULTA:', 7, 85);
     doc.text('ENFERMEDAD ACTUAL:', 7, 110);
-    doc.text('ANTECEDENTES:', 7, 185);
+    doc.text('ANTECEDENTES:', 7, 165);
     doc.text('REVISIÓN POR SISTEMA:', 7, 240);
 
     doc.setFontSize(10);
@@ -73,8 +73,8 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = []) {
     doc.line(5, 105, marXR, 105); /* HORI FIVE */
     doc.line(5, 113, marXR, 113); /* HORI SIX */
 
-    doc.line(5, 180, marXR, 180); /* HORI NINE */
-    doc.line(5, 188, marXR, 188); /* HORI TEN */
+    doc.line(5, 160, marXR, 160); /* HORI NINE */
+    doc.line(5, 168, marXR, 168); /* HORI TEN */
 
     doc.line(5, 235, marXR, 235); /* HORI 11 */
     doc.line(5, 243, marXR, 243); /* HORI 12 */
@@ -128,7 +128,7 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = []) {
     doc.setFontSize(7);
     doc.text(`${lsDataReport.motivoConsulta}`, 7, 93, { maxWidth: 200, lineHeightFactor: 1.5 });
     doc.text(`${lsDataReport.enfermedadActual}`, 7, 117, { maxWidth: 200, lineHeightFactor: 1.5 });
-    doc.text(`${lsDataReport.antecedentes}`, 7, 192, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.text(`${lsDataReport.antecedentes}`, 7, 175, { maxWidth: 200, lineHeightFactor: 1.5 });
     doc.text(`${lsDataReport.revisionSistema}`, 7, 248, { maxWidth: 200, lineHeightFactor: 1.5 });
 }
 
@@ -136,9 +136,9 @@ function generateReportMedicalAdvicPageTwo(doc = new jsPDF(), lsDataReport = [],
     var marXR = doc.internal.pageSize.width - 5;
 
     doc.text('EXAMEN FÍSICO:', 7, 37);
-    doc.text('IMPRESIÓN DIAGNOSTICA:', 7, 85);
-    doc.text('PLAN DE MANEJO:', 7, 113);
-    doc.text('EXAMEN PARACLÍNICO:', 7, 180);
+    doc.text('IMPRESIÓN DIAGNOSTICA:', 7, 105);
+    doc.text('PLAN DE MANEJO:', 7, 140);
+    doc.text('EXAMEN PARACLÍNICO:', 7, 195);
     doc.text('CONDUCTA:', 7, 215);
 
     doc.setFontSize(10);
@@ -150,14 +150,14 @@ function generateReportMedicalAdvicPageTwo(doc = new jsPDF(), lsDataReport = [],
     doc.line(5, 32, marXR, 32); /* HORI ONE */
     doc.line(5, 40, marXR, 40); /* HORI TWO  */
 
-    doc.line(5, 80, marXR, 80); /* HORI THREE */
-    doc.line(5, 88, marXR, 88); /* HORI FOUR */
+    doc.line(5, 100, marXR, 100); /* HORI THREE */
+    doc.line(5, 108, marXR, 108); /* HORI FOUR */
 
-    doc.line(5, 108, marXR, 108); /* HORI FIVE */
-    doc.line(5, 116, marXR, 116); /* HORI SIX */
+    doc.line(5, 135, marXR, 135); /* HORI FIVE */
+    doc.line(5, 143, marXR, 143); /* HORI SIX */
 
-    doc.line(5, 175, marXR, 175); /* HORI SEVEN */
-    doc.line(5, 183, marXR, 183); /* HORI OCHO */
+    doc.line(5, 190, marXR, 190); /* HORI SEVEN */
+    doc.line(5, 198, marXR, 198); /* HORI OCHO */
 
     doc.line(5, 210, marXR, 210); /* HORI NINE */
     doc.line(5, 218, marXR, 218); /* HORI TEN */
@@ -169,22 +169,22 @@ function generateReportMedicalAdvicPageTwo(doc = new jsPDF(), lsDataReport = [],
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
 
-    doc.text(`${lsDataReport.examenFisico}`, 7, 45, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     if (lsDataReport.dx1 !== "")
-        doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 92, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 120, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     if (lsDataReport.dx2 !== "")
-        doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 97, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 125, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     if (lsDataReport.dx3 !== "")
-        doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 102, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 130, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     doc.setFontSize(7);
 
-    doc.text(`${lsDataReport.planManejo}`, 7, 120, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.text(`${lsDataReport.planManejo}`, 7, 150, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.text(`${lsDataReport.examenFisico}`, 7, 45, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-    doc.text(`${lsDataReport.examenParaclinico}`, 7, 187, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.text(`${lsDataReport.examenParaclinico}`, 7, 205, { maxWidth: 200, lineHeightFactor: 1.5 });
     doc.setFontSize(11);
     doc.text(`${lsDataReport.nameConceptoActitud}`, 7, 225, { maxWidth: 200, lineHeightFactor: 1.5 });
 

@@ -343,14 +343,16 @@ export const Message = {
     RegistroNoGuardado: 'No se pudo guardar el registro',
     RegistroNoEliminado: 'No se pudo eliminar el registro',
 
-    NoExisteDocumento: 'El numero de documento no existe.',
+    NoExisteDocumento: 'Este empleado no existe',
     ErrorDocumento: 'Por favor, ingrese un número de documento',
     ErrorDeDatos: 'Hubo un error al buscar los datos, vuelva a intentarlo',
     ErrorNoHayDatos: 'No hay datos buscados, vuelva a intentarlo',
 
     CampoRequerido: 'Este campo es requerido',
     CorreoNoEnviado: 'No se pudo enviar el correo',
+    SinCorreo: 'Este empleado no tiene correo registrado',
     VistaReporte: 'Vista De Reporte',
+    Empleado: 'Vista De Reporte',
 
 
 }

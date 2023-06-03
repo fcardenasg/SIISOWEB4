@@ -1,7 +1,7 @@
 import { Url } from '../instances/AuthRoute';
 import { getData, deleteData, postData, putData } from '../UtilInstance';
 
-export const GetAllAdvice = async (page, pageSize) => await getData(Url.Asesorias, { page, pageSize });
+export const GetAllAdvice = async () => await getData(Url.AsesoriasAll);
 export const GetAllByTipoAtencion = async (idTipoAtencion, otra) => await getData(Url.Asesorias, { idTipoAtencion, otra });
 export const GetByIdAdvice = async (id) => await getData(Url.AsesoriasId, { id });
 export const InsertAdvice = async (asesorias) => await postData(Url.Asesorias, asesorias);

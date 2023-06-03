@@ -631,7 +631,11 @@ export function generateReportConceptAptitude(
   doc.setFont("helvetica", "normal");
   doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 41, 30, 30);
   doc.text(`${lsDataReport.documento}`, 95, 45);
+
+  doc.setFontSize(8);
   doc.text(`${lsDataReport.nameEmpleado}`, 142, 45);
+
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameCargo}`, 95, 50);
   doc.text(`${lsDataReport.nameOficio}`, 95, 55);
   doc.text(`${lsDataReport.nameArea}`, 95, 60);
@@ -700,7 +704,11 @@ export function generateReportDiagnosis(
   /* RENDERIZADO */
   doc.setFont("helvetica", "normal");
   doc.text(`${lsDataReport.documento}`, 55, 45);
+
+  doc.setFontSize(8);
   doc.text(`${lsDataReport.nameEmpleado}`, 142, 45);
+
+  doc.setFontSize(10);
   doc.text(`${lsDataReport.nameCargo}`, 55, 50);
   doc.text(`${lsDataReport.nameOficio}`, 55, 55);
   doc.text(`${lsDataReport.nameArea}`, 55, 60);
@@ -822,7 +830,10 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text(`${lsDataReport.nameDptoNacimiento}`, 49, 73);
   doc.text(`${lsDataReport.nameEps}`, 17, 78);
 
+  doc.setFontSize(8);
   doc.text(`${lsDataReport.nameEmpleado}`, 130, 43);
+
+  doc.setFontSize(10);
   doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 125, 48);
   doc.text(`${lsDataReport.nameEstadoCivil}`, 139, 53);
   doc.text(`${lsDataReport.direccionEmpleado}`, 134, 58);

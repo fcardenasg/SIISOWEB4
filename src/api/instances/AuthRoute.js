@@ -33,8 +33,6 @@ export const Url = {
     FraminghamId: 'api/Framingham/id',
 
     ListaReintegro: 'api/ListaReintegro',
-    ListaReintegro_GetAllReintegro: 'api/ListaReintegro/GetAllReintegro',
-    ListaReintegroId: 'api/ListaReintegro/id',
 
     ListaReintegroArchivo: 'api/ListaReintegroArchivo',
 
@@ -96,7 +94,8 @@ export const Url = {
     Paraclinicos: 'api/Paraclinicos',
     Paraclinicos_GetAllByDocumento: 'api/Paraclinicos/GetAllByDocumento',
     Paraclinicos_GetAllByDocumentoParacli: 'api/Paraclinicos/GetAllByDocumentoParacli',
-    Paraclinicos_GetAllByTypeParaclinico: 'api/Paraclinicos/GetAllByTipoParaclinico',
+    Paraclinicos_Por: 'api/Paraclinicos/listarpor-paraclinico',
+    Paraclinicos_Report: 'api/Paraclinicos/reporte',
     ParaclinicosId: 'api/Paraclinicos/id',
 
     Ordenes: 'api/Ordenes',
@@ -110,6 +109,7 @@ export const Url = {
     Antecedente: 'api/Antecedente',
 
     Asesorias: 'api/Asesorias',
+    AsesoriasAll: 'api/Asesorias/all',
     AsesoriasId: 'api/Asesorias/id',
     /* AsesoriasGetAllByTipoAtencion: 'api/Asesorias/GetAllByTipoAtencion',
     AsesoriasGetAllByTipoAtencion2: 'api/Asesorias/GetAllByTipoAtencion2', */

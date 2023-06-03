@@ -34,7 +34,7 @@ import { DeleteOrdersParaclinicos, GetAllOrdersParaclinicos, InsertOrdersParacli
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import swal from 'sweetalert';
 
-const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton }) => {
+const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledButton }) => {
     const { user } = useAuth();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -178,17 +178,18 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton }) => {
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertOrdersParaclinicos(DataToInsert);
                 if (result.status === 200) {
-                    if (result.data.message == 'Este paraclinico ya esta registrado') {
+                    if (result.data.message === 'Este paraclinico ya esta registrado') {
                         setOpenError(true);
                         setErrorMessage(result.data.message);
                     } else {
+                        setDisabledButton({ ...disabledButton, disButtonMail: true });
                         setAddItemClickedEmpresa(false);
-                        setOpenSuccess(true);
                         getAllListParaclinicos();
                         setParaclinicos('');
                         setProveedor('');
                         setCiudad('');
                         reset();
+                        setOpenSuccess(true);
                     }
                 }
             }
