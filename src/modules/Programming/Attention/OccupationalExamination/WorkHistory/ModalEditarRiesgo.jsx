@@ -50,7 +50,6 @@ const ModalEditarRiesgo = ({ open = false, diferen, onClose, idRisk, title, getA
                 }));
                 setLsCargo(resultCargo);
 
-
                 if (diferen === "COMPANY") {
                     const lsServerWorkHistoryOC = await GetByIdWorkHistoryOtherCompany(idRisk);
                     setLsWorkHistory(lsServerWorkHistoryOC.data);

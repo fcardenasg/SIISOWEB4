@@ -315,6 +315,9 @@ export const TitleButton = {
     Regresar: 'Regresar',
     RegresarACargos: 'Regresar A Cargos',
     EnviarCorreo: 'Enviar',
+    AgregarOrden: 'Agregar',
+    Editar: 'Editar',
+    EnvioMasivo: 'Envío Masivo',
 }
 
 export const ValidationMessage = {
@@ -338,6 +341,9 @@ export const Message = {
 
     TituloCargar: '¿Desea cargar la exposición ocupacional?',
     TextoCargar: 'Se cargaran los riesgos, esto puede demorar un poco',
+
+    TituloOrdenes: '¿Esta seguro de guardar las ordenes?',
+    TextoAgregarOrdenes: 'Luego de guardar no podra agregar otro empleado ni paraclinico',
 
     NoEliminar: 'No se pudo eliminar el registro',
     RegistroNoGuardado: 'No se pudo guardar el registro',

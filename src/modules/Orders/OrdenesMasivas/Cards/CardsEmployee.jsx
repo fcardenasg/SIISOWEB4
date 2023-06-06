@@ -13,11 +13,51 @@ import { ColorDrummondltd } from 'themes/colors';
 import { TitleButton } from 'components/helpers/Enums';
 import { Fragment } from 'react';
 
+import SendIcon from '@mui/icons-material/Send';
 import EditIcon from '@mui/icons-material/Edit';
 import MailIcon from '@mui/icons-material/Mail';
 import PrintIcon from '@mui/icons-material/Print';
+import { LoadingButton } from '@mui/lab';
 
-const CardsEmployee = ({ lsEmployee = [], handleClick, handleDelete, views = false, report = false, editarEmployee = false }) => {
+const ValidateButtons = ({ handleClick1, handleClick2, TitleOne, TitleTwo, iconOne, iconTwo, vista, loading }) => {
+    return (
+        <Fragment>
+            <Grid item xs={vista === 'views' ? 12 : 6}>
+                <AnimateButton>
+                    <Button color={vista === 'views' ? 'error' : 'primary'} variant="contained" onClick={handleClick1} startIcon={iconOne} fullWidth>
+                        {TitleOne}
+                    </Button>
+                </AnimateButton>
+            </Grid>
+
+            {vista !== 'views' && vista !== 'print' ?
+                <Grid item xs={6}>
+                    <AnimateButton>
+                        <Button variant="contained" onClick={handleClick2} startIcon={iconTwo} fullWidth>
+                            {TitleTwo}
+                        </Button>
+                    </AnimateButton>
+                </Grid> : vista === 'print' ?
+                    <Grid item xs={6}>
+                        <AnimateButton>
+                            <LoadingButton
+                                fullWidth
+                                onClick={handleClick2}
+                                loading={loading}
+                                loadingPosition="end"
+                                startIcon={iconTwo}
+                                variant="contained"
+                            >
+                                {TitleTwo}
+                            </LoadingButton>
+                        </AnimateButton>
+                    </Grid> : null
+            }
+        </Fragment>
+    );
+}
+
+const CardsEmployee = ({ lsEmployee = [], handleClick1, handleClick2, vista = '', loading }) => {
 
     return (
         <SubCard sx={{ border: '4px solid', }}>
@@ -71,59 +111,33 @@ const CardsEmployee = ({ lsEmployee = [], handleClick, handleDelete, views = fal
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center">
-                        {report ? <Fragment>
-                            <Grid container spacing={2}>
-                                <Grid item xs={6}>
-                                    <AnimateButton>
-                                        <Button variant="contained" onClick={handleDelete} startIcon={<PrintIcon fontSize="small" />} fullWidth>
-                                            {TitleButton.Imprimir}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={6}>
-                                    <AnimateButton>
-                                        <Button variant="contained" onClick={handleClick} startIcon={<MailIcon fontSize="small" />} fullWidth>
-                                            {TitleButton.EnviarCorreo}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </Fragment> : editarEmployee ?
-                            <Fragment>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={6}>
-                                        <AnimateButton>
-                                            <Button variant="contained" onClick={handleClick} startIcon={<AddCircleOutlineOutlinedIcon fontSize="small" />} fullWidth>
-                                                Agregar
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item xs={6}>
-                                        <AnimateButton>
-                                            <Button variant="contained" onClick={handleDelete} startIcon={<EditIcon fontSize="small" />} fullWidth>
-                                                Editar
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Fragment> : views ?
-                                <Grid item xs={8}>
-                                    <AnimateButton>
-                                        <Button color="error" variant="contained" onClick={handleDelete} startIcon={<HighlightOffIcon fontSize="small" />} fullWidth>
-                                            {TitleButton.Eliminar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid> :
-                                <Grid item xs={8}>
-                                    <AnimateButton>
-                                        <Button variant="contained" onClick={handleClick} startIcon={<AddCircleOutlineOutlinedIcon fontSize="small" />} fullWidth>
-                                            Agregar
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>}
+                    <Grid container spacing={2}>
+                        <ValidateButtons
+                            TitleOne={
+                                vista === 'print' ? TitleButton.Imprimir :
+                                    vista === 'editEmployee' ? TitleButton.AgregarOrden :
+                                        vista === 'views' ? TitleButton.Eliminar : null
+                            }
+                            TitleTwo={
+                                vista === 'print' ? TitleButton.EnviarCorreo :
+                                    vista === 'editEmployee' ? TitleButton.Editar :
+                                        vista === 'views' ? TitleButton.Eliminar : null
+                            }
+                            handleClick1={handleClick1}
+                            handleClick2={handleClick2}
+                            iconOne={
+                                vista === 'print' ? <PrintIcon fontSize="small" /> :
+                                    vista === 'editEmployee' ? <AddCircleOutlineOutlinedIcon fontSize="small" /> :
+                                        vista === 'views' ? <HighlightOffIcon fontSize="small" /> : null
+                            }
+                            iconTwo={
+                                vista === 'print' ? <SendIcon fontSize="small" /> :
+                                    vista === 'editEmployee' ? <EditIcon fontSize="small" /> :
+                                        vista === 'views' ? <HighlightOffIcon fontSize="small" /> : null
+                            }
+                            vista={vista}
+                            loading={loading}
+                        />
                     </Grid>
                 </Grid>
             </Grid>

@@ -65,8 +65,8 @@ const WorkHistoryRiesgoDLTD = ({ getSumaRiesgo, documento, atencion }) => {
 
     const handleClickNuevo = (id) => {
         try {
-            swal(ParamLoadingData).then(async (willDelete) => {
-                if (willDelete) {
+            swal(ParamLoadingData).then(async (willLoading) => {
+                if (willLoading) {
                     if (id == 1) {
                         const lsRiesgoQuimico = await RiskDLTDDeleteAndInsertRisk(DefaultValue.RiesgoQuimico, documento, atencion);
                         if (lsRiesgoQuimico.status === 200) {

@@ -5,8 +5,8 @@ import { Message } from 'components/helpers/Enums';
 import { Snackbar } from '@mui/material';
 
 export const ParamDelete = {
-    title: `${Message.TituloEliminar}`,
-    text: `${Message.TextoEliminar}`,
+    title: Message.TituloEliminar,
+    text: Message.TextoEliminar,
     icon: "error",
     buttons: ["Cancelar", "Si"],
     dangerMode: true,
@@ -19,8 +19,8 @@ export const ParamDelete = {
 }
 
 export const ParamCloseCase = {
-    title: `${Message.TituloCerrarCaso}`,
-    text: `${Message.TextoCerrarCaso}`,
+    title: Message.TituloCerrarCaso,
+    text: Message.TextoCerrarCaso,
     icon: "warning",
     buttons: ["Cancelar", "Si"],
     dangerMode: true,
@@ -33,8 +33,22 @@ export const ParamCloseCase = {
 }
 
 export const ParamLoadingData = {
-    title: `${Message.TituloCargar}`,
-    text: `${Message.TextoCargar}`,
+    title: Message.TituloCargar,
+    text: Message.TextoCargar,
+    icon: "warning",
+    buttons: ["Cancelar", "Si"],
+    dangerMode: true,
+    confirm: {
+        text: "Si",
+    },
+    cancel: {
+        text: "Cancelar",
+    },
+}
+
+export const ParamOrderMasiva = {
+    title: Message.TituloOrdenes,
+    text: Message.TextoAgregarOrdenes,
     icon: "warning",
     buttons: ["Cancelar", "Si"],
     dangerMode: true,

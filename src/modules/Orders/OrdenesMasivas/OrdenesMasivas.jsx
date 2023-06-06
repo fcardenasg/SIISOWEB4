@@ -13,7 +13,7 @@ import { GetAllEmployeeOrdenes } from 'api/clients/EmployeeClient';
 import { useNavigate } from 'react-router-dom';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import useAuth from 'hooks/useAuth';
-import { MessageSuccess, MessageError, MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { MessageSuccess, MessageError, MessageDelete, ParamDelete, ParamOrderMasiva } from 'components/alert/AlertAll';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
 import PersonIcon from '@mui/icons-material/Person';
@@ -46,6 +46,7 @@ const OrdenesMasivas = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [loading, setLoading] = useState(false);
     const [documento, setDocumento] = useState('');
     const [openUpdate, setOpenUpdate] = useState(false);
     const [desabilitarSave, setDesabilitarSave] = useState(false);
@@ -55,6 +56,8 @@ const OrdenesMasivas = () => {
     const [dataPDF, setDataPDF] = useState(null);
     const [openReport, setOpenReport] = useState(false);
     const [lsTipoExamen, setLsTipoExamen] = useState([]);
+
+    const [lsArchivos, setLsArchivos] = useState([]);
 
     const [datosControlados, setDatosControlados] = useState({
         fecha: new Date(),
@@ -77,12 +80,16 @@ const OrdenesMasivas = () => {
 
                 if (lsServerEmployee.status === 200) {
                     setLsEmployee(lsServerEmployee.data);
+
+                    if (lsServerEmployee.data.length === 0) {
+                        setOpenError(true);
+                        setErrorMessage('No hay resultados');
+                    }
                 }
             } else {
                 setOpenError(true);
-                setErrorMessage("Por favor ingrese el nombre o documento del empleado");
+                setErrorMessage('Por favor ingrese el nombre o documento del empleado');
             }
-
         } catch (error) {
             setLsEmployee([]);
         }
@@ -119,6 +126,7 @@ const OrdenesMasivas = () => {
 
     const handleClickEnviar = async (correoEmpleado, idOrden) => {
         try {
+            setLoading(true);
             const lsDataReport = await GetByIdOrders(idOrden);
             const lsDataReportParaclinico = await GetAllOrdersParaclinicos(idOrden);
             const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
@@ -135,13 +143,55 @@ const OrdenesMasivas = () => {
                     if (result.status === 200) {
                         setErrorMessage(result.data);
                         setOpenSuccess(true);
+                        setTimeout(() => {
+                            setLoading(false);
+                        }, 500);
                     }
                 }
 
                 enviarReporte();
-            }, 1500);
+            }, 1000);
+        } catch (err) { }
+    };
 
+    const handleClickEnviarMasivo = async () => {
+        try {
+            /* setLoading(true); */
+            console.log("lsOrdenesEmpleado => ", lsOrdenesEmpleado);
 
+            for (let index = 0; index < lsOrdenesEmpleado.length; index++) {
+                var element = lsOrdenesEmpleado[index];
+
+                var lsDataReport = await GetByIdOrders(element.id);
+                var lsDataReportParaclinico = await GetAllOrdersParaclinicos(element.id);
+                var lsDataUser = await GetByMail(user.nameuser);
+                var dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
+
+                var Correo = {
+                    Documento: element.documento,
+                    Correo: element.correoEmpleado,
+                    Adjunto: dataPDFTwo.file64
+                }
+
+                setLsArchivos([...lsArchivos, Correo]);
+            }
+
+            console.log("Datos masivos => ", lsArchivos);
+
+            /* setTimeout(() => {
+                async function enviarReporte() {
+                    const result = await SendParaclinicalExams(lsArchivos);
+                    if (result.status === 200) {
+                        setErrorMessage(result.data);
+                        setOpenSuccess(true);
+                        setTimeout(() => {
+                            setLoading(false);
+                        }, 500);
+                    }
+                }
+
+                enviarReporte();
+            }, 1000); */
         } catch (err) { }
     };
 
@@ -213,23 +263,6 @@ const OrdenesMasivas = () => {
         }
     };
 
-    const handleClick = async () => {
-        try {
-            const DataToInsert = PostOrdersMasiva(lsIdOrdenes, lsOrdenesParaclinicos);
-
-            const result = await InsertOrdersParaclinicosMasiva(DataToInsert);
-            if (result.status === 200) {
-                setErrorMessage(Message.Guardar);
-                setOpenSuccess(true);
-
-                setDesabilitarSave(true);
-            }
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
-        }
-    };
-
     const handleLoadingDocument = async () => {
         try {
             if (search !== '') {
@@ -247,6 +280,37 @@ const OrdenesMasivas = () => {
             setErrorMessage(Message.ErrorDeDatos);
         }
     }
+
+    const handleClick = async () => {
+        try {
+            const DataToInsert = PostOrdersMasiva(lsIdOrdenes, lsOrdenesParaclinicos);
+
+            if (lsIdOrdenes.length !== 0) {
+                if (lsOrdenesParaclinicos.length !== 0) {
+                    swal(ParamOrderMasiva).then(async (willSave) => {
+                        if (willSave) {
+                            const result = await InsertOrdersParaclinicosMasiva(DataToInsert);
+                            if (result.status === 200) {
+                                setErrorMessage(Message.Guardar);
+                                setOpenSuccess(true);
+
+                                setDesabilitarSave(true);
+                            }
+                        }
+                    });
+                } else {
+                    setOpenError(true);
+                    setErrorMessage('No se han registrado paraclinico');
+                }
+            } else {
+                setOpenError(true);
+                setErrorMessage('No hay empleado agregados para examenes');
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
+        }
+    };
 
     return (
         <Fragment>
@@ -348,9 +412,9 @@ const OrdenesMasivas = () => {
                                     {lsEmployee.map((enti, index) => (
                                         <Grid key={index} item xs={12} sm={6} lg={3}>
                                             <CardsEmployee lsEmployee={enti}
-                                                handleClick={() => handleClickEmpleado(index)}
-                                                handleDelete={() => handleClickEditarEmpleado(enti.documento)}
-                                                editarEmployee={true} />
+                                                handleClick1={() => handleClickEmpleado(index)}
+                                                handleClick2={() => handleClickEditarEmpleado(enti.documento)}
+                                                vista='editEmployee' />
                                         </Grid>
                                     ))}
                                 </Grid>
@@ -365,7 +429,7 @@ const OrdenesMasivas = () => {
                                 <Grid container spacing={2} sx={{ pt: 1 }}>
                                     {lsOrdenesEmpleado && lsOrdenesEmpleado.map((enti, index) => (
                                         <Grid key={index} item xs={12} sm={6} lg={3}>
-                                            <CardsEmployee lsEmployee={enti} handleDelete={() => handleDelete(index, enti.id)} views={true} />
+                                            <CardsEmployee lsEmployee={enti} handleClick1={() => handleDelete(index, enti.id)} vista='views' />
                                         </Grid>
                                     ))}
                                 </Grid>
@@ -391,8 +455,9 @@ const OrdenesMasivas = () => {
                                         {lsOrdenesEmpleado && lsOrdenesEmpleado.map((enti, index) => (
                                             <Grid key={index} item xs={12} sm={6} lg={3}>
                                                 <CardsEmployee lsEmployee={enti}
-                                                    handleClick={() => handleClickEnviar(enti.correoEmpleado, enti.id)}
-                                                    handleDelete={() => handleClickReport(enti.id)} views={true} report={true} />
+                                                    handleClick1={() => handleClickReport(enti.id)}
+                                                    handleClick2={() => handleClickEnviar(enti.correoEmpleado, enti.id)}
+                                                    vista='print' loading={loading} />
                                             </Grid>
                                         ))}
                                     </Grid>
@@ -404,6 +469,14 @@ const OrdenesMasivas = () => {
                                 <AnimateButton>
                                     <Button disabled={desabilitarSave} variant="contained" fullWidth onClick={handleClick}>
                                         {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={handleClickEnviarMasivo}>
+                                        {TitleButton.EnvioMasivo}
                                     </Button>
                                 </AnimateButton>
                             </Grid>

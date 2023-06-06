@@ -290,7 +290,7 @@ const UpdateOrdersIndividual = () => {
 
                                         <Grid item xs={2}>
                                             <AnimateButton>
-                                                <Button disabled={disabledButton ? false : true} variant="outlined" fullWidth onClick={() => setOpenReport(true)}>
+                                                <Button disabled={disabledButton ? false : true} variant="outlined" fullWidth onClick={() => generateReport('imprimir')}>
                                                     {TitleButton.Imprimir}
                                                 </Button>
                                             </AnimateButton>

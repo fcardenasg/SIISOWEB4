@@ -68,7 +68,7 @@ const Refund = () => {
 
     const [numeroDia, setNumeroDia] = useState(0);
     const [documento, setDocumento] = useState('');
-    const [resultData, setResultData] = useState([]);
+    const [resultData, setResultData] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
     const [lsEstadoEmpleado, setLsEstadoEmpleado] = useState([]);
     const [lsEstadoRestriccion, setLsEstadoRestriccion] = useState([]);
@@ -96,7 +96,7 @@ const Refund = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdRefund(1337);
+            const lsDataReport = await GetByIdRefund(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportRefund(lsDataReport.data, lsDataUser.data);
@@ -181,8 +181,6 @@ const Refund = () => {
 
     async function getAll() {
         try {
-            setViewListRefund(true);
-            
             const lsServerEstadoEmpleado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_EMPLEADO);
             var resultEstadoEmpleado = lsServerEstadoEmpleado.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -274,7 +272,7 @@ const Refund = () => {
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorNoHayDatos}`);
+                    setErrorMessage(Message.ErrorNoHayDatos);
                 }
             }
         } catch (error) {
@@ -700,7 +698,7 @@ const Refund = () => {
                     <SubCard darkTitle title={<Typography variant="h4">Lista De Chequeo</Typography>}>
 
                         <Transitions type="collapse" in={viewListRefund} position="top-left" direction="up">
-                            <CheckListRefund idReintegro={1337} />
+                            <CheckListRefund idReintegro={resultData} />
                         </Transitions>
 
                         <Grid container spacing={2} sx={{ pt: 4 }}>

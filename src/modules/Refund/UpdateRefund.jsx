@@ -283,7 +283,7 @@ const Refund = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdRefund(id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
             const dataPDFTwo = generateReportRefund(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
